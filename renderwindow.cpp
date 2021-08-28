@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "components.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -165,7 +166,7 @@ void RenderWindow::render()
         //send data to shader
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[0]->mComponents.at(0))->mMatrix.constData());
         //draw the object
         mVisualObjects[0]->draw();
 

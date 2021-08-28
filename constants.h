@@ -20,5 +20,13 @@ namespace gsl  //Game School Lib
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
+
+    enum Components
+    {
+        NONE = -1,
+        TRANSFORM = 0,
+        MESH,
+        MATERIAL
+    };
 }
 #endif // CONSTANTS_H

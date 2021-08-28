@@ -6,6 +6,7 @@
 #include "vertex.h"
 #include "matrix4x4.h"
 #include "shader.h"
+#include "components.h"
 
 class RenderWindow;
 
@@ -22,6 +23,8 @@ public:
 
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
+    std::vector<Components*> mComponents;
+
 protected:
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
@@ -29,6 +32,7 @@ protected:
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+
 
 };
 #endif // VISUALOBJECT_H
