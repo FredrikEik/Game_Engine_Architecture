@@ -132,7 +132,7 @@ void RenderWindow::init()
     //testing triangle class
     temp = new Triangle();
     temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
+    static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
@@ -179,10 +179,10 @@ void RenderWindow::render()
         glUniform1i(mTextureUniform, 1);
         glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
         mVisualObjects[1]->draw();
 
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before
