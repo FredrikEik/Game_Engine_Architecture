@@ -155,6 +155,7 @@ void RenderWindow::render()
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
     //This should be in a loop!
@@ -170,6 +171,7 @@ void RenderWindow::render()
         //draw the object
         mVisualObjects[0]->draw();
 
+
         //Second object - triangle
         //what shader to use - texture shader
         glUseProgram(mShaderPrograms[1]->getProgram() );
@@ -179,6 +181,7 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
         mVisualObjects[1]->draw();
+
         mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
@@ -194,6 +197,8 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -291,7 +296,10 @@ void RenderWindow::checkForGLerrors()
     {
         const QList<QOpenGLDebugMessage> messages = mOpenGLDebugLogger->loggedMessages();
         for (const QOpenGLDebugMessage &message : messages)
-            qDebug() << message;
+        {
+            if (!(message.type() == message.OtherType)) // got rid of "object ... will use VIDEO memory as the source for buffer object operations"
+                qDebug() << message;
+        }
     }
     else
     {
