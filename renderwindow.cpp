@@ -47,6 +47,8 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
+
+    auto start = std::chrono::high_resolution_clock::now();
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
@@ -142,6 +144,10 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<float> duration = (end - start);
+    qDebug() << "exec tid (RenderWindow::init()): "<<duration.count()*1000.f << "i ms";
 }
 
 // Called each frame - doing the rendering
