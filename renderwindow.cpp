@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "grid.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -134,6 +135,10 @@ void RenderWindow::init()
     temp->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
+    temp = new grid(250, 5);
+    temp->init();
+    mVisualObjects.push_back(temp);
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -168,6 +173,7 @@ void RenderWindow::render()
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
         //draw the object
         mVisualObjects[0]->draw();
+        mVisualObjects[2]->draw();
 
         //Second object - triangle
         //what shader to use - texture shader
