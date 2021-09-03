@@ -22,6 +22,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    components.h \
     constants.h \
     gltypes.h \
     input.h \
