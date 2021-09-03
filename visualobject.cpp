@@ -7,8 +7,9 @@ VisualObject::VisualObject()
 
 VisualObject::~VisualObject()
 {
-   glDeleteVertexArrays( 1, &mVAO );
-   glDeleteBuffers( 1, &mVBO );
+    //TODO: do this in the proper component
+   //glDeleteVertexArrays( 1, &mVAO );
+   //glDeleteBuffers( 1, &mVBO );
 }
 
 void VisualObject::init()
