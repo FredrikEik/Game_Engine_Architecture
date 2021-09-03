@@ -7,6 +7,7 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
+    component.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     renderwindow.cpp \
@@ -22,6 +23,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    component.h \
     constants.h \
     gltypes.h \
     input.h \
