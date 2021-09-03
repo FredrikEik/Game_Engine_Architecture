@@ -1,13 +1,18 @@
 #include "triangle.h"
 #include "vertex.h"
+#include "Components.h"
+
 
 Triangle::Triangle()
 {
-                                // Positions            // Colors       //UV
+    mComponents.push_back(new TransformComponent());
+    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
+    tempTrans->mMatrix.setToIdentity();
+
+                            // Positions            // Colors       //UV
     mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
     mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
     mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
-    mMatrix.setToIdentity();
 }
 
 Triangle::~Triangle()
@@ -46,6 +51,7 @@ void Triangle::init()
 
 void Triangle::draw()
 {
+
     glBindVertexArray( mVAO );
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);

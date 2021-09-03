@@ -1,15 +1,20 @@
 #include "xyz.h"
 #include "vertex.h"
 #include "shader.h"
+#include "Components.h"
 
 XYZ::XYZ() {
+    mComponents.push_back(new TransformComponent());
+    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
+    tempTrans->mMatrix.setToIdentity();
+
+
     mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
     mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
     mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
     mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
-    mMatrix.setToIdentity();
 }
 
 XYZ::~XYZ()
