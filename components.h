@@ -14,17 +14,17 @@ public:
 
 };
 
-class TransformComponent : public Components
+class TransformComponent
 {
 public:
-    TransformComponent() {mComponentType = gsl::TRANSFORM;};
+    TransformComponent();
     gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent : public Components
+class MeshComponent
 {
 public:
-    MeshComponent() {mComponentType = gsl::MESH;};
+    MeshComponent();
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
 
@@ -33,10 +33,10 @@ public:
     GLuint mEAB{0};
 };
 
-class MaterialComponent : public Components
+class MaterialComponent
 {
 public:
-    MaterialComponent() {mComponentType = gsl::MATERIAL;};
+    MaterialComponent();
     GLuint mShaderProgram;
     GLint mTextureUnit;
 
