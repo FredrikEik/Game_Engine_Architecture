@@ -4,3 +4,8 @@ Component::Component()
 {
 
 }
+
+void Component::update()
+{
+
+}
