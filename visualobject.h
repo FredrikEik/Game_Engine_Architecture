@@ -25,12 +25,7 @@ public:
 
 protected:
 
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
 
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
 
 };
 #endif // VISUALOBJECT_H

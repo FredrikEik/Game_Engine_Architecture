@@ -27,6 +27,13 @@ public:
 
     MeshComponent(){mComponentType = gsl::MESH;};
 
+    std::vector<Vertex> mVertices;
+    std::vector<GLuint> mIndices;
+
+    GLuint mVAO{0};
+    GLuint mVBO{0};
+    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+
 };
 
 class MaterialCOmponent : public Components{
