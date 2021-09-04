@@ -1,6 +1,6 @@
 #include "inputsystem.h"
 
-InputSystem::InputSystem()
+InputSystem:: InputSystem()
 {
 
 }
@@ -8,10 +8,10 @@ InputSystem::InputSystem()
 
 void InputSystem::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape) //Shuts down whole program
-    {
-        mMainWindow->close();
-    }
+//    if (event->key() == Qt::Key_Escape) //Shuts down whole program
+//    {
+//        mMainWindow->close();
+//    }
 
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)

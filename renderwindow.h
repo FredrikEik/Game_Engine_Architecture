@@ -40,7 +40,7 @@ private slots:
     void render();
 
 private:
-    CameraInputComponent Camerainput;
+    CameraInputComponent *Camerainput;
 
     void init();
 

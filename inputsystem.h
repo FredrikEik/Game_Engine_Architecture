@@ -13,7 +13,7 @@ public:
     InputSystem();
     Camera mCurrentCamera;
     Input mInput;
-    MainWindow *mMainWindow;
+   // MainWindow *mMainWindow;
 
 private:
     float mCameraSpeed{0.05f};

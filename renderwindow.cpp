@@ -138,14 +138,14 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
 }
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
 
-
-    Camerainput.update(mCurrentCamera);
+    Camerainput->update(mCurrentCamera);
     mCurrentCamera->update();
 
     //Keyboard / mouse input
