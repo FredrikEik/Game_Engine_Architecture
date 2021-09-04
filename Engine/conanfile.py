@@ -6,7 +6,8 @@ class ConanPackage(ConanFile):
 	settings = "os", "compiler", "build_type", "arch"
 	requires = [
         ('glad/0.1.34'),
-        ('glfw/3.3.4')
+        ('glfw/3.3.4'),
+	('glm/0.9.9.8'),
     ]
 	generators = "cmake"
 	options = {
@@ -28,6 +29,7 @@ class ConanPackage(ConanFile):
 	def imports(self):
 		self.copy("*.dll", dst="bin", src="bin")
 		self.copy("*.dylib*", dst="bin", src="lib")
+		
 
 	def build(self):
 		cmake = self.configure_cmake()
