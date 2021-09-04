@@ -5,14 +5,14 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-
+#include "gameobject.h"
 #include "input.h"
 #include "constants.h"
 
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class VisualObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -67,7 +67,8 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    //std::vector<VisualObject*> mVisualObjects;
+    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

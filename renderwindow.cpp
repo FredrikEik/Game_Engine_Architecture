@@ -13,7 +13,7 @@
 #include "mainwindow.h"
 #include "gameobject.h"
 #include "xyz.h"
-#include "triangle.h"
+#include "cube.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -125,15 +125,19 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    VisualObject *temp = new XYZ();
-    temp->init();
-    mVisualObjects.push_back(temp);
+    //VisualObject *temp = new XYZ();
+    //temp->init();
+    //mVisualObjects.push_back(temp);
+
+    GameObject *cube = new Cube();
+    cube->init();
+    mGameObjects.push_back(cube);
 
     //testing triangle class
-    temp = new Triangle();
-    temp->init();
-    static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+    //temp = new Triangle();
+    //temp->init();
+    //static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
+    //mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -167,9 +171,10 @@ void RenderWindow::render()
         //send data to shader
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[0]->mComponents.at(0))->mMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transformComp->mMatrix.constData());
         //draw the object
-        mVisualObjects[0]->draw();
+        //mVisualObjects[0]->draw();
+        mGameObjects[0]->draw();
 
 
         //Second object - triangle
@@ -179,10 +184,10 @@ void RenderWindow::render()
         glUniform1i(mTextureUniform, 1);
         glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
-        mVisualObjects[1]->draw();
+        //glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
+        //mVisualObjects[1]->draw();
 
-        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before

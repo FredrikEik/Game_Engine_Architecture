@@ -23,6 +23,8 @@ public:
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+
+    GLint mMatrixUniform{0};
 };
 
 class MaterialComponent

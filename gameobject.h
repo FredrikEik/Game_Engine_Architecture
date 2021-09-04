@@ -14,9 +14,7 @@ public:
 
     std::string mName;
 
-    MeshComponent* mesh;
-    MaterialComponent* material;
-    TransformComponent* transform;
+    TransformComponent* transformComp;
 };
 #endif // GAMEOBJECT_H
 
