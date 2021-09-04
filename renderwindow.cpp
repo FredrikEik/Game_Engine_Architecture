@@ -11,7 +11,7 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
+#include "gameobject.h"
 #include "xyz.h"
 #include "triangle.h"
 #include "camera.h"

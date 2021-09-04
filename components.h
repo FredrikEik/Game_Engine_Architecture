@@ -6,14 +6,6 @@
 #include "vertex.h"
 
 
-class Components
-{
-public:
-    Components() : mComponentType{gsl::NONE}{};
-    gsl::Components mComponentType;
-
-};
-
 class TransformComponent
 {
 public:
