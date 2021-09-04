@@ -8,6 +8,9 @@
 
 #include "input.h"
 #include "constants.h"
+#include "camerainputcomponent.h"
+#include "inputsystem.h"
+#include "inputcomponent.h"
 
 class QOpenGLContext;
 class Shader;
@@ -37,6 +40,8 @@ private slots:
     void render();
 
 private:
+    CameraInputComponent Camerainput;
+
     void init();
 
     void checkForGLerrors();
@@ -70,10 +75,6 @@ private:
     std::vector<VisualObject*> mVisualObjects;
 
     Input mInput;
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
-    int mMouseXlast{0};
-    int mMouseYlast{0};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
@@ -85,14 +86,7 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
-protected:
-    //The QWindow that we inherit from has these functions to capture mouse and keyboard.
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
+
 };
 
 #endif // RENDERWINDOW_H

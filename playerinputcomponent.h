@@ -1,16 +1,21 @@
-#ifndef PLAYERINPUTCOMPONENT_H
-#define PLAYERINPUTCOMPONENT_H
-#include "inputcomponent.h"
+//#ifndef PLAYERINPUTCOMPONENT_H
+//#define PLAYERINPUTCOMPONENT_H
+//#include "inputcomponent.h"
+//#include <QKeyEvent>
+//#include <player.h>
 
-class PlayerInputComponent : public InputComponent
-{
-public:
-    PlayerInputComponent();
-    virtual void update(/*sende inn peker til spiller*/);
-    Input *mInput;
+//class PlayerInputComponent : public InputComponent
+//{
+//public:
+//    PlayerInputComponent();
+//    virtual void update(Player *mPlayer);
+//    Input *mInput;
 
-private:
-  static const int WALK_ACCELERATION = 1;
-};
+//private:
+//   int WALK_ACCELERATION = 1;
 
-#endif // PLAYERINPUTCOMPONENT_H
+
+
+//};
+
+//#endif // PLAYERINPUTCOMPONENT_H

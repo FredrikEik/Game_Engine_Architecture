@@ -1,22 +1,21 @@
-#include "playerinputcomponent.h"
-#include "input.h"
+//#include "playerinputcomponent.h"
+//#include "input.h"
 
-PlayerInputComponent::PlayerInputComponent()
-{
 
-}
+//PlayerInputComponent::PlayerInputComponent()
+//{
 
-void PlayerInputComponent::update()
-{
-    switch (Controller::getJoystickDirection())
-    {
-      case mInput->A==true:
-        bjorn.velocity -= WALK_ACCELERATION;
-        break;
+//}
 
-      case mInput->D==true:
-        bjorn.velocity += WALK_ACCELERATION;
-        break;
-    }
-  }
-}
+//void PlayerInputComponent::update(Player *mPlayer)
+//{
+//    if(mInput->W == true)
+//        mPlayer->velocity += WALK_ACCELERATION;
+//    if(mInput->S == true)
+//       mPlayer->velocity -= WALK_ACCELERATION;
+//    if(mInput->D == true)
+//        mPlayer->velocity += WALK_ACCELERATION;
+//    if(mInput->A == true)
+//        mPlayer->velocity -= WALK_ACCELERATION;
+
+//}
