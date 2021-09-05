@@ -50,14 +50,15 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
 	assert(entityID < core::MAX_ENTITIES);
 	packedComponentArray.push_back(T(entityID));
 	uint32 componentID = packedComponentArray.back().ID;
-	sparseComponentArray.at(entityID) = componentID;
+	sparseComponentArray.at(entityID) = packedComponentArray.size()-1;
 	
-	return componentID;
+	return packedComponentArray.back().ID;
 }
 
 template<class T>
 inline bool ComponentManager<T>::removeComponent(uint32 entityID)
 {
+	//std::cout << "Removing component on entity " << entityID << "Size of vector: "<<packedComponentArray.size()<< '\n';
 	assert(entityID < core::MAX_ENTITIES);
 	uint32 positionInPacked{ sparseComponentArray.at(entityID) };
 	sparseComponentArray.at(entityID) = -1; // Invalidating the component lookup
@@ -66,14 +67,17 @@ inline bool ComponentManager<T>::removeComponent(uint32 entityID)
 	// This works because the order in the packed array does not matter.
 	if (positionInPacked != packedComponentArray.size() - 1)
 	{
+		//std::cout << "Position in packed: " << positionInPacked << '\n';
 		packedComponentArray.at(positionInPacked) = packedComponentArray[packedComponentArray.size() - 1];
 
-		uint32 swappedEntityID = packedComponentArray[positionInPacked].entityID;
+		uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
+		//std::cout << "New entity ID: " << swappedEntityID << '\n';
 
 		sparseComponentArray[swappedEntityID] = positionInPacked;
 	}
 
 	packedComponentArray.pop_back();
+	//std::cout <<"Size of vector after pop: " << packedComponentArray.size() << "\n\n";
 	return true;
 }
 
@@ -81,6 +85,7 @@ template<class T>
 inline T ComponentManager<T>::getComponent(uint32 entityID)
 {
 	assert(entityID >= 0 && entityID < packedComponentArray.size());
+	assert(entityID < sparseComponentArray.size());
 	return packedComponentArray.at(sparseComponentArray.at(entityID));
 }
 
