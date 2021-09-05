@@ -4,7 +4,8 @@
 #include <vector>
 #include <assert.h>
 #include <algorithm>
-/* There should only ever exist one class per component type. 
+
+/* There should only ever exist one class per component type. Therefore, do NOT instantiate this directly. Go through Factory
 * The class exists as a way to manage all the components of a given type. 
 * The intention is to make lookups very fast and easy
 * Drawbacks: It is using a lot of memory, generating and array the size of MAX_ENTITIES*4byte per component type, in addition to all the components.
@@ -12,6 +13,7 @@
 template<class T>
 class ComponentManager
 {
+	friend class Factory;
 public:
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
@@ -21,26 +23,33 @@ public:
 			it=-1;
 	}
 	~ComponentManager();
-
-	uint32 createComponent(uint32 entityID);
-	bool removeComponent(uint32 entityID);
-
 	T getComponent(uint32 entityID);
 
 	std::vector<T>& getComponentArray();
+protected:
+public:
+	uint32 createComponent(uint32 entityID);
+	bool assignComponent(uint32 componentID, uint32 entityID);
+	/**Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
+	* Call cleanUp when there is time available to free the memory.*/
+	void removeComponent(uint32 entityID);
+
+
+	void cleanUp();
 private:
 	/* This array contains the location in the packedComponentArray
 	for a specific entity's component*/
 	std::array<uint32, core::MAX_ENTITIES>& sparseComponentArray;
 	// This array contains all the components
 	std::vector<T>& packedComponentArray;
-
+	bool packedComponentDirty{ false };
 };
 
 template<class T>
 inline ComponentManager<T>::~ComponentManager()
 {
 	delete &sparseComponentArray;
+	
 	delete &packedComponentArray;
 }
 
@@ -48,49 +57,66 @@ template<class T>
 inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
 {
 	assert(entityID < core::MAX_ENTITIES);
-	packedComponentArray.push_back(T(entityID));
-	uint32 componentID = packedComponentArray.back().ID;
-	sparseComponentArray.at(entityID) = packedComponentArray.size()-1;
+	sparseComponentArray[entityID] = packedComponentArray.size();
+
+	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
 	
 	return packedComponentArray.back().ID;
 }
 
 template<class T>
-inline bool ComponentManager<T>::removeComponent(uint32 entityID)
+inline bool ComponentManager<T>::assignComponent(uint32 componentID, uint32 entityID)
 {
-	//std::cout << "Removing component on entity " << entityID << "Size of vector: "<<packedComponentArray.size()<< '\n';
-	assert(entityID < core::MAX_ENTITIES);
-	uint32 positionInPacked{ sparseComponentArray.at(entityID) };
-	sparseComponentArray.at(entityID) = -1; // Invalidating the component lookup
+	if (componentID < packedComponentArray.size())
+	{
+		sparseComponentArray[entityID] = componentID;
+		return true;
+	}
 
-	// If the component is not the last element in the vector, swap it with the last element
+	return false;
+}
+
+template<class T>
+inline void ComponentManager<T>::removeComponent(uint32 entityID)
+{
+	assert(entityID < core::MAX_ENTITIES);
+	uint32 positionInPacked{ sparseComponentArray[entityID] };
+	sparseComponentArray[entityID] = -1; // Invalidating the component lookup
+
+	// If the component is not the last element in the vector, overwrite it with the last element
 	// This works because the order in the packed array does not matter.
 	if (positionInPacked != packedComponentArray.size() - 1)
 	{
-		//std::cout << "Position in packed: " << positionInPacked << '\n';
-		packedComponentArray.at(positionInPacked) = packedComponentArray[packedComponentArray.size() - 1];
+		packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
 		uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
-		//std::cout << "New entity ID: " << swappedEntityID << '\n';
-
 		sparseComponentArray[swappedEntityID] = positionInPacked;
 	}
 
+	// Remove the component and mark the vector dirty.
 	packedComponentArray.pop_back();
-	//std::cout <<"Size of vector after pop: " << packedComponentArray.size() << "\n\n";
-	return true;
+	packedComponentDirty = true;
 }
 
 template<class T>
 inline T ComponentManager<T>::getComponent(uint32 entityID)
 {
-	assert(entityID >= 0 && entityID < packedComponentArray.size());
-	assert(entityID < sparseComponentArray.size());
-	return packedComponentArray.at(sparseComponentArray.at(entityID));
+	assert(entityID >= 0 && sparseComponentArray[entityID]< packedComponentArray.size());
+	return packedComponentArray[sparseComponentArray[entityID]];
 }
 
 template<class T>
 inline std::vector<T>& ComponentManager<T>::getComponentArray()
 {
 	return (packedComponentArray);
+}
+
+template<class T>
+inline void ComponentManager<T>::cleanUp()
+{
+	if (packedComponentDirty)
+	{
+		packedComponentArray.shrink_to_fit();
+		packedComponentDirty = false;
+	}
 }

@@ -3,7 +3,9 @@
 #include <iostream>
 #include "Components/BaseComponent.h"
 #include "Components/ComponentManager.h"
+#include "Factory.h"
 #include <chrono>
+#include <typeindex>
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -38,8 +40,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main()
 {
+	uint32 elements{ 500000000 };
 	ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
-	uint32 elements{ 5000000 };
 	for (uint16 j = 0; j < 10; ++j)
 	{
 		auto start = std::chrono::system_clock::now();
@@ -47,6 +49,8 @@ int main()
 		{
 			testManager.createComponent(i);
 		}
+		testManager.cleanUp();
+
 		auto doneCreating = std::chrono::system_clock::now();
 		//std::cout << test.entityID << test.ID<<'\n';
 		for (uint32 i{}; i < elements; ++i)
@@ -66,15 +70,28 @@ int main()
 		}
 		auto done = std::chrono::system_clock::now();
 
-		std::cout << "Time to create 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
-		std::cout << "Time to loop over 5000000 components by entityID: " << std::chrono::duration_cast<std::chrono::microseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000.f << " seconds\n";
-		std::cout << "Time to change a value in all 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000.f << " seconds\n";
-		std::cout << "Time to remove all 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneIteratingArray).count() / 1000000.f << " seconds\n";
-		std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::microseconds>(done - start).count() / 1000000.f << " seconds\n";
+		std::cout << "Time to create "<<elements<<" components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneCreating - start).count() / 1000000000.f << " seconds\n";
+		std::cout << "Time to loop over " << elements << " components by entityID: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000000.f << " seconds\n";
+		std::cout << "Time to change a value in all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000000.f << " seconds\n";
+		std::cout << "Time to remove all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - doneIteratingArray).count() / 1000000000.f << " seconds\n";
+		std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - start).count() / 1000000000.f << " seconds\n";
 		//std::cout << "The manager is using " << sizeof() << " bytes\n\n";
 	}
 	delete &testManager;
 	std::cout << "Waiting";
+
+	////auto start = std::chrono::system_clock::now();
+
+	////Factory &factory = (*new Factory);
+	////for (uint32 i{}; i < elements; ++i)
+	////{
+	////	factory.createComponent<testComponent>(i);
+	////}
+	////auto done = std::chrono::system_clock::now();
+
+
+	////std::cout << "Time to create 5000000 components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - start).count() / 1000000.f << " seconds\n";
+	////std::cout<<"Array size: " <<factory.getManager<testComponent>(std::type_index(typeid(testComponent))).getComponentArray().size()<<'\n';
 	return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
