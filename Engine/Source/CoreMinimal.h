@@ -7,3 +7,8 @@ typedef unsigned long uint32;
 typedef signed long int32;
 typedef unsigned long long uint64;
 typedef signed long long int64;
+
+namespace core
+{
+	constexpr uint32 MAX_ENTITIES{ 5000000 };
+}

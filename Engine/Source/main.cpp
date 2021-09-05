@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Components/BaseComponent.h"
+#include "Components/ComponentManager.h"
+#include <chrono>
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -35,6 +38,44 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main()
 {
+	//ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
+	//uint32 elements{ 5000000 };
+	//for (uint16 j = 0; j < 10; ++j)
+	//{
+	//	auto start = std::chrono::system_clock::now();
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		testManager.createComponent(i);
+	//	}
+	//	auto doneCreating = std::chrono::system_clock::now();
+	//	//std::cout << test.entityID << test.ID<<'\n';
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		auto comp = testManager.getComponent(i);
+	//		//comp.pos[1] = 8;
+	//	}
+	//	auto doneLoopingOneByOne = std::chrono::system_clock::now();
+
+	//	for (auto it : testManager.getComponentArray())
+	//		it.pos[0] = 10;
+	//	auto doneIteratingArray = std::chrono::system_clock::now();
+
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		testManager.removeComponent(i);
+	//	}
+	//	auto done = std::chrono::system_clock::now();
+
+	//	std::cout << "Time to create 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
+	//	std::cout << "Time to loop over 5000000 components by entityID: " << std::chrono::duration_cast<std::chrono::microseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000.f << " seconds\n";
+	//	std::cout << "Time to change a value in all 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000.f << " seconds\n";
+	//	std::cout << "Time to remove all 5000000 components: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneIteratingArray).count() / 1000000.f << " seconds\n";
+	//	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::microseconds>(done - start).count() / 1000000.f << " seconds\n";
+	//	//std::cout << "The manager is using " << sizeof() << " bytes\n\n";
+	//}
+	//delete &testManager;
+	//std::cout << "Waiting";
+	//return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
