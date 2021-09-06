@@ -4,42 +4,27 @@
 #include "constants.h"
 #include "matrix4x4.h"
 #include "vertex.h"
+#include "gltypes.h"
 
-
-class Components
+struct TransformComponent
 {
-public:
-    Components() : mComponentType{gsl::NONE}{};
-    gsl::Components mComponentType;
-
-};
-
-class TransformComponent : public Components
-{
-public:
-    TransformComponent() {mComponentType = gsl::TRANSFORM;};
     gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent : public Components
+struct MeshComponent
 {
-public:
-    MeshComponent() {mComponentType = gsl::MESH;};
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
-
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+    std::vector<Vertex> mVertices;
+    std::vector<GLuint> mIndices;
+    GLuint mDrawType{GL_TRIANGLES};
 };
 
-class MaterialComponent : public Components
+struct MaterialComponent
 {
-public:
-    MaterialComponent() {mComponentType = gsl::MATERIAL;};
-    GLuint mShaderProgram;
-    GLint mTextureUnit;
-
+    GLuint mShaderProgram{0};
+    GLint mTextureUnit{0};
 };
 
 #endif // COMPONENTS_H

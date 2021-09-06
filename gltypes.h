@@ -11,6 +11,17 @@ using GLdouble = double;
 using GLint = int;
 using GLuint = unsigned int;
 using GLenum = unsigned int;
+
+#define GL_POINTS                         0x0000
+#define GL_LINES                          0x0001
+#define GL_LINE_LOOP                      0x0002
+#define GL_LINE_STRIP                     0x0003
+#define GL_TRIANGLES                      0x0004
+#define GL_TRIANGLE_STRIP                 0x0005
+#define GL_TRIANGLE_FAN                   0x0006
+#define GL_QUADS                          0x0007
+#define GL_QUAD_STRIP                     0x0008
+#define GL_POLYGON                        0x0009
 #else
 
 //minGW on windows

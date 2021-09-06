@@ -2,18 +2,18 @@
 #define VISUALOBJECT_H
 
 #include <QOpenGLFunctions_4_1_Core>
-#include <vector>
-#include "components.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init() = 0;
-    virtual void draw() = 0;
 
     std::string mName;
-    std::vector<Components*> mComponents;
+
+    struct TransformComponent* mTransform{nullptr};
+    struct MeshComponent* mMesh{nullptr};
+    struct MaterialComponent* mMaterial{nullptr};
 };
 #endif // VISUALOBJECT_H
 
