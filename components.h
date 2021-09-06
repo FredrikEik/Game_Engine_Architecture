@@ -6,14 +6,14 @@
 #include "vertex.h"
 
 
-class TransformComponent
+struct TransformComponent
 {
 public:
     TransformComponent();
     gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent
+struct MeshComponent
 {
 public:
     MeshComponent();
@@ -27,7 +27,7 @@ public:
     GLint mMatrixUniform{0};
 };
 
-class MaterialComponent
+struct MaterialComponent
 {
 public:
     MaterialComponent();

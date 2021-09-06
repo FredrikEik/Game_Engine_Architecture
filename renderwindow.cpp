@@ -14,6 +14,7 @@
 #include "gameobject.h"
 #include "xyz.h"
 #include "cube.h"
+#include "mariocube.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -89,7 +90,7 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
-
+    //mTextures
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
@@ -129,9 +130,14 @@ void RenderWindow::init()
     //temp->init();
     //mVisualObjects.push_back(temp);
 
+    /*
     GameObject *cube = new Cube();
     cube->init();
     mGameObjects.push_back(cube);
+    */
+    GameObject *marioCube = new MarioCube();
+    marioCube->init();
+    mGameObjects.push_back(marioCube);
 
     //testing triangle class
     //temp = new Triangle();
