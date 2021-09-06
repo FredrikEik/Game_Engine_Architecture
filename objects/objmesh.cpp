@@ -3,7 +3,7 @@
 #include "vector2d.h"
 #include "vertex.h"
 #include <vector>
-#include "Components.h"
+#include "systems/ecs/Components.h"
 
 #include <iostream>
 #include <sstream>

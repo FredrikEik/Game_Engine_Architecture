@@ -5,7 +5,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-#include "cube.h"
+#include "objects/cube.h"
 #include "input.h"
 #include "constants.h"
 

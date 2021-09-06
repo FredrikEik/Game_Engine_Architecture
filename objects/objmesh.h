@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "visualobject.h"
-#include "Components.h"
+#include "systems/ecs/Components.h"
 
 class ObjMesh : public VisualObject
 {

@@ -1,6 +1,6 @@
 #include "cube.h"
 #include "vertex.h"
-#include "Components.h"
+#include "systems/ecs/Components.h"
 
 Cube::Cube()
 {

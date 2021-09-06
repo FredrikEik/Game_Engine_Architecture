@@ -12,15 +12,15 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "visualobject.h"
-#include "xyz.h"
-#include "triangle.h"
+#include "objects/xyz.h"
+#include "objects/triangle.h"
 #include "camera.h"
 #include "constants.h"
-#include "objmesh.h"
-#include "cube.h"
+#include "objects/objmesh.h"
+#include "objects/cube.h"
 
 #include "texture.h"
-#include "Components.h"
+#include "systems/ecs/Components.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)

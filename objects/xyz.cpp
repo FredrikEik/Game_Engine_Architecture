@@ -1,7 +1,7 @@
 #include "xyz.h"
 #include "vertex.h"
 #include "shader.h"
-#include "Components.h"
+#include "systems/ecs/Components.h"
 
 XYZ::XYZ() {
     mComponents.push_back(new TransformComponent());
