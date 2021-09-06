@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     matrix4x4.cpp \
     objmesh.cpp \
     renderwindow.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     matrix4x4.h \
     objmesh.h \
     renderwindow.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
     texture.h \

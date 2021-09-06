@@ -66,7 +66,6 @@ void ObjMesh::readFile(std::string filename)
     mComponents.push_back(new MeshComponent());
     MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
     //Open File
-    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
     std::ifstream fileIn;
     fileIn.open (filename, std::ifstream::in);
     if(!fileIn)
@@ -206,6 +205,52 @@ void ObjMesh::readFile(std::string filename)
     fileIn.close();
 }
 
+
+void ObjMesh::makeVertex()
+{
+
+    mComponents.push_back(new MeshComponent());
+    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
+    while(true)
+    {
+        if(oneLine[OBJi] != '/' && oneLine[OBJi] != ' ' ) {oneWord += oneLine[OBJi]; OBJi++;}
+        else {indexPos = std::stoi(oneWord); oneWord.clear(); OBJi++; break;}
+    }
+
+    while(true)
+    {
+        if(oneLine[OBJi] != '/' && oneLine[OBJi] != ' ') {oneWord += oneLine[OBJi]; OBJi++;}
+        else {indexUVs = std::stoi(oneWord); oneWord.clear(); OBJi++; break;}
+    }
+
+    while(true)
+    {
+        if(oneLine[OBJi] != ' ' && oneLine[OBJi] != ' ') {oneWord += oneLine[OBJi]; OBJi++;}
+        else {indexNorms = std::stoi(oneWord); oneWord.clear(); OBJi++; break;}
+    }
+
+    int posIndex = indexPos -1;
+    int normalsIndex = indexNorms -1;
+    int texcoordsIndex = indexUVs -1;
+
+    tempMesh->mVertices.push_back
+            (
+                Vertex
+                (
+                    importedPos[posIndex].x(),
+                    importedPos[posIndex].y(),
+                    importedPos[posIndex].z(),
+                    importedNorms[normalsIndex].x(),
+                    importedNorms[normalsIndex].y(),
+                    importedNorms[normalsIndex].z(),
+                    importedUVs[texcoordsIndex].x(),
+                    importedUVs[texcoordsIndex].y()
+                )
+            );
+
+    tempMesh->mIndices.push_back(indices++);
+}
+
 void ObjMesh::draw()
 {
     MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
@@ -213,5 +258,5 @@ void ObjMesh::draw()
     glBindVertexArray( tempMesh->mVAO );
     glDrawElements(GL_TRIANGLES, tempMesh->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
-    qDebug() << "draw obj";
+   // qDebug() << "draw obj";
 }

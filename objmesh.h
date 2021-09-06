@@ -1,31 +1,41 @@
 #ifndef OBJMESH_H
 #define OBJMESH_H
-
+#include <sstream>
 
 #include "visualobject.h"
-
+#include "Components.h"
 
 class ObjMesh : public VisualObject
 {
 public:
-    ObjMesh(std::string filename);
-    ~ObjMesh() override;
+    ObjMesh(std::string fileName);
+    ~ObjMesh();
 
     virtual void draw() override;
     virtual void init() override;
 
-    gsl::Vector3D BoundingBoxMin;
-    gsl::Vector3D BoundingBoxMax;
+    void readFile(std::string fileName);
+    void makeVertex();
+    void moveAlongCurve(unsigned int increment, std::vector<QVector3D> points, VisualObject* ground);
 
-    std::string filename;
+    std::ifstream objFile;
+    std::string oneLine;
+    std::string oneWord = "";
+    std::stringstream sStream;
+    float v1 = 0;
+    float v2 = 0;
+    float v3 = 0;
+    std::vector<QVector3D> importedPos;
+    std::vector<QVector3D> importedNorms;
+    std::vector<QVector2D> importedUVs;
+    size_t OBJi{2};
 
-    void setBoundingBox(gsl::Vector3D Min, gsl::Vector3D Max);
+    int indexPos;
+    int indexUVs;
+    int indexNorms;
+    int indices = 0;
 
-    bool CheckCollide(gsl::Vector3D Pmin, gsl::Vector3D Pmax);
-
-    void reset();
-
-    void readFile(std::string filename);
+    MeshComponent mMesh;
 };
 
 #endif // OBJMESH_H

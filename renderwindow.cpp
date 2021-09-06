@@ -150,10 +150,10 @@ void RenderWindow::init()
 
 
 //goat
-      temp = new ObjMesh("../GEA2021/Assets/Textures/goat.obj");
+      temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
       temp ->init();
       static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-3.f, 0.f, -3.f);
-      static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.scale(3.f, 3.f, 3.f);
+     //static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.scale(3.f, 3.f, 3.f);
       mVisualObjects.push_back(temp );
 
 
