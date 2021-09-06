@@ -6,6 +6,7 @@
 #include "vertex.h"
 #include "matrix4x4.h"
 #include "shader.h"
+#include "components.h"
 
 class RenderWindow;
 
@@ -16,19 +17,15 @@ public:
     virtual void init();
     virtual void draw()=0;
 
-    gsl::Matrix4x4 mMatrix;
+    //gsl::Matrix4x4 mMatrix;
 
     std::string mName;
 
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
-protected:
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
-
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+    TransformComponent* mTransformComp{nullptr};
+    MeshComponent* mMeshComp{nullptr};
+    MaterialComponent* mMaterialComp{nullptr};
 
 };
 #endif // VISUALOBJECT_H
