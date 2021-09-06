@@ -4,6 +4,7 @@
 #include "Components/BaseComponent.h"
 #include "Components/ComponentManager.h"
 #include "Factory.h"
+#include "Systems/BaseSystem.h"
 #include <chrono>
 #include <typeindex>
 
@@ -40,58 +41,71 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 int main()
 {
-	uint32 elements{ 500000000 };
-	ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
-	for (uint16 j = 0; j < 10; ++j)
+	uint32 elements{ 5000000 };
+	//ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
+	//for (uint16 j = 0; j < 1; ++j)
+	//{
+	//	auto start = std::chrono::system_clock::now();
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		testManager.createComponent(i);
+	//	}
+	//	testManager.cleanUp();
+
+	//	auto doneCreating = std::chrono::system_clock::now();
+	//	//std::cout << test.entityID << test.ID<<'\n';
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		auto comp = testManager.getComponent(i);
+	//		comp.pos[1] = 8;
+	//	}
+	//	auto doneLoopingOneByOne = std::chrono::system_clock::now();
+
+	//	for (auto it : testManager.getComponentArray())
+	//		it.pos[0] = 10;
+	//	auto doneIteratingArray = std::chrono::system_clock::now();
+
+	//	for (uint32 i{}; i < elements; ++i)
+	//	{
+	//		testManager.removeComponent(i);
+	//	}
+	//	auto done = std::chrono::system_clock::now();
+
+	//	std::cout << "Time to create "<<elements<<" components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneCreating - start).count() / 1000000000.f << " seconds\n";
+	//	std::cout << "Time to loop over " << elements << " components by entityID: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000000.f << " seconds\n";
+	//	std::cout << "Time to change a value in all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000000.f << " seconds\n";
+	//	std::cout << "Time to remove all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - doneIteratingArray).count() / 1000000000.f << " seconds\n";
+	//	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - start).count() / 1000000000.f << " seconds\n";
+	//	//std::cout << "The manager is using " << sizeof() << " bytes\n\n";
+	//}
+	//delete &testManager;
+	//std::cout << "Waiting";
+
+	auto start = std::chrono::system_clock::now();
+
+	Factory &factory = (*new Factory);
+	for (uint32 i{}; i < elements; ++i)
 	{
-		auto start = std::chrono::system_clock::now();
-		for (uint32 i{}; i < elements; ++i)
-		{
-			testManager.createComponent(i);
-		}
-		testManager.cleanUp();
-
-		auto doneCreating = std::chrono::system_clock::now();
-		//std::cout << test.entityID << test.ID<<'\n';
-		for (uint32 i{}; i < elements; ++i)
-		{
-			auto comp = testManager.getComponent(i);
-			comp.pos[1] = 8;
-		}
-		auto doneLoopingOneByOne = std::chrono::system_clock::now();
-
-		for (auto it : testManager.getComponentArray())
-			it.pos[0] = 10;
-		auto doneIteratingArray = std::chrono::system_clock::now();
-
-		for (uint32 i{}; i < elements; ++i)
-		{
-			testManager.removeComponent(i);
-		}
-		auto done = std::chrono::system_clock::now();
-
-		std::cout << "Time to create "<<elements<<" components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneCreating - start).count() / 1000000000.f << " seconds\n";
-		std::cout << "Time to loop over " << elements << " components by entityID: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000000.f << " seconds\n";
-		std::cout << "Time to change a value in all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000000.f << " seconds\n";
-		std::cout << "Time to remove all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - doneIteratingArray).count() / 1000000000.f << " seconds\n";
-		std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - start).count() / 1000000000.f << " seconds\n";
-		//std::cout << "The manager is using " << sizeof() << " bytes\n\n";
+		factory.createComponent<testComponent>(i);
 	}
-	delete &testManager;
-	std::cout << "Waiting";
+	auto doneCreating = std::chrono::system_clock::now();
 
-	////auto start = std::chrono::system_clock::now();
+	TestSystem* system = new TestSystem();
+	system->updateAll(factory.getManager<testComponent>());
 
-	////Factory &factory = (*new Factory);
-	////for (uint32 i{}; i < elements; ++i)
-	////{
-	////	factory.createComponent<testComponent>(i);
-	////}
-	////auto done = std::chrono::system_clock::now();
+	auto doneUpdating = std::chrono::system_clock::now();
+	std::cout << "Updated variable: " << factory.getManager<testComponent>().getComponent(100).pos[0] << '\n';
 
+	for (uint32 i{}; i < elements; ++i)
+	{
+		factory.removeComponent<testComponent>(i);
+	}
+	auto done = std::chrono::system_clock::now();
 
-	////std::cout << "Time to create 5000000 components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - start).count() / 1000000.f << " seconds\n";
-	////std::cout<<"Array size: " <<factory.getManager<testComponent>(std::type_index(typeid(testComponent))).getComponentArray().size()<<'\n';
+	std::cout << "Time to create " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
+	std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
+	std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
+	delete system;
 	return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

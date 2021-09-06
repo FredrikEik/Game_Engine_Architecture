@@ -13,11 +13,20 @@ public:
 	Factory(): componentManagers{(*new std::unordered_map<std::type_index, ComponentManager<Component>*>)}{}
 	~Factory();
 
+	// This is 2-3 times slower than creating components directly through the manager when creating many components.
+	// If you need to create a lot of components, consider doing it through getManager directly.
+	// When creating a few components, use this.
 	template <typename T>
 	uint32 createComponent(uint32 entityID);
 
+	// This is 10 times slower than removing directly through the manager when removing many components.
+	// If you need to delete a lot of components, consider doing it through getManager directly.
+	// For one component, this is faster
 	template <typename T>
-	ComponentManager<T>& getManager(std::type_index classType);
+	void removeComponent(uint32 entityID);
+
+	template <typename T>
+	ComponentManager<T>& getManager();
 
 private:
 	std::unordered_map<std::type_index, ComponentManager<Component>*>& componentManagers;
@@ -48,7 +57,16 @@ inline uint32 Factory::createComponent(uint32 entityID)
 }
 
 template<typename T>
-inline ComponentManager<T>& Factory::getManager(std::type_index classType)
+inline void Factory::removeComponent(uint32 entityID)
 {
-	return (*(ComponentManager<T>*)componentManagers.at(classType));
+	std::type_index classType = std::type_index(typeid(T));
+	assert(componentManagers.find(classType) != componentManagers.end());
+
+	(*(ComponentManager<T>*)componentManagers.at(classType)).removeComponent(entityID);
+}
+
+template<typename T>
+inline ComponentManager<T>& Factory::getManager()
+{
+	return (*(ComponentManager<T>*)componentManagers.at(std::type_index(typeid(T))));
 }

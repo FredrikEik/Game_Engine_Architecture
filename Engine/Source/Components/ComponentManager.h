@@ -34,7 +34,6 @@ public:
 	* Call cleanUp when there is time available to free the memory.*/
 	void removeComponent(uint32 entityID);
 
-
 	void cleanUp();
 private:
 	/* This array contains the location in the packedComponentArray
