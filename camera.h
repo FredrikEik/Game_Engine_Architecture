@@ -1,48 +1,65 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "matrix4x4.h"
-#include "vector3d.h"
-/**
-  This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
-  the forward / backward is wrong, when steered with W and S.
- */
-class Camera
+#include <QOpenGLFunctions_4_1_Core>
+#include <QMatrix4x4>
+
+class Camera : public QOpenGLFunctions_4_1_Core
 {
 public:
     Camera();
 
+    void perspective(float degrees, float aspect, float nearplane, float farplane);
+    void lookAt(const QVector3D& at, const QVector3D& up);
+    void translate(QVector3D vector);
+
+    void moveRight(float deltaLocation);
+    void moveForward(float deltaLocation);
+    void moveUp(float deltaLocation);
     void pitch(float degrees);
     void yaw(float degrees);
+
+    //Updates
+    void update(GLint projectionMatrix, GLint viewMatrix);
     void updateRightVector();
     void updateForwardVector();
-    void update();
+    void updateUpVector();
 
-    gsl::Matrix4x4 mViewMatrix;
-    gsl::Matrix4x4 mProjectionMatrix;
+    void setPosition(const QVector3D &position);
+    void setTarget(class VisualObject *target);
+    void setEditorCamera(bool editorCamera);
 
-    void setPosition(const gsl::Vector3D &position);
+    QMatrix4x4 viewMatrix() const;
+    QMatrix4x4 projectionMatrix() const;
+    QVector3D position() const;
+    QVector3D up() const;
+    bool editorCamera() const;
 
-    void setSpeed(float speed);
-    void updateHeigth(float deltaHeigth);
-    void moveRight(float delta);
-
-    gsl::Vector3D position() const;
-    gsl::Vector3D up() const;
 
 private:
-    gsl::Vector3D mForward{0.f, 0.f, -1.f};
-    gsl::Vector3D mRight{1.f, 0.f, 0.f};
-    gsl::Vector3D mUp{0.f, 1.f, 0.f};
+    QVector3D m_eye{};
 
-    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
-    float mPitch{0.f};
-    float mYaw{0.f};
+    //Direction, position and orientation
+    QVector3D m_position{};
+    QVector3D m_right{1.f,0.f,0.f};
+    QVector3D m_forward{0.f,0.f,1.f};
+    QVector3D m_up{0.f, 1.f, 0.f};
+    float m_pitch{};
+    float m_yaw{};
 
-    gsl::Matrix4x4 mYawMatrix;
-    gsl::Matrix4x4 mPitchMatrix;
+    //Locked camera
+    float m_cameraOffset{};
+    bool m_editorCamera{true};
+    QVector3D m_lockedPositionOffset{}; //Used to point at where the camera should be in 3rd person mode
 
-    float mSpeed{0.f}; //camera will move by this speed along the mForward vector
+    //Matrices
+    QMatrix4x4 m_projectionMatrix{};
+    QMatrix4x4 m_viewMatrix{};
+    QMatrix4x4 m_yawMatrix{};
+    QMatrix4x4 m_pitchMatrix{};
+
+    class VisualObject* m_target; //For use in 3rd person mode
+
 };
 
 #endif // CAMERA_H

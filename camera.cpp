@@ -1,94 +1,170 @@
 #include "camera.h"
-#include <QDebug>
+#include "mathfunctions.h"
+#include "visualobject.h"
+#include "math.h"
 
 Camera::Camera()
 {
-    mViewMatrix.setToIdentity();
-    mProjectionMatrix.setToIdentity();
+    m_eye = QVector3D(0,50,5);
 
-    mYawMatrix.setToIdentity();
-    mPitchMatrix.setToIdentity();
+    m_lockedPositionOffset = (QVector3D(0, 7, -15));
+    m_projectionMatrix.setToIdentity();
+    m_viewMatrix.setToIdentity();
+
+    m_pitchMatrix.setToIdentity();
+    m_yawMatrix.setToIdentity();
+}
+
+void Camera::perspective(float degrees, float aspectRatio, float nearplane, float farplane)
+{
+    m_projectionMatrix.setToIdentity();
+    m_projectionMatrix.perspective(degrees, aspectRatio, nearplane, farplane);
+}
+
+void Camera::lookAt(const QVector3D &at, const QVector3D &up)
+{
+    m_viewMatrix.setToIdentity();
+    m_viewMatrix.lookAt(m_eye, at, up);
+}
+
+void Camera::update(GLint projectionMatrix, GLint viewMatrix)
+{
+    initializeOpenGLFunctions();
+
+    if(m_editorCamera)
+    {
+        //Free camera - TODO: update for locked
+        m_viewMatrix = QMatrix4x4
+                (
+                 m_right.x(),   m_right.y(),   m_right.z(),   0.f,
+                 m_up.x(),      m_up.y(),      m_up.z(),      0.f,
+                 m_forward.x(), m_forward.y(), m_forward.z(), 0.f,
+                 0.f,           0.f,           0.f,           1.f
+                );
+
+        gsm::MathFunctions::rotateX(m_pitch, m_pitchMatrix);
+
+        m_viewMatrix.translate(-m_position);
+
+    }
+    else
+    {
+        m_viewMatrix.setToIdentity();
+        QVector3D targetPos = m_target->getPosition();
+        m_viewMatrix.lookAt(targetPos + m_lockedPositionOffset, targetPos, QVector3D(0,1,0));
+    }
+
+    glUniformMatrix4fv(projectionMatrix, 1, GL_FALSE, m_projectionMatrix.constData());
+    glUniformMatrix4fv(viewMatrix, 1, GL_FALSE, m_viewMatrix.constData());
+}
+
+void Camera::translate(QVector3D vector)
+{
+    m_viewMatrix.translate(vector.x(), vector.y(), vector.z());
+}
+
+void Camera::moveRight(float deltaLocation)
+{
+    QVector3D right = m_right;
+    right.setY(0.f);
+    m_position += right * deltaLocation;
+}
+
+void Camera::moveForward(float deltaLocation)
+{
+    m_position -= m_forward * deltaLocation;
+}
+
+void Camera::moveUp(float deltaLocation)
+{
+    m_position += QVector3D{0.f, 1.f, 0.f} * deltaLocation;
 }
 
 void Camera::pitch(float degrees)
 {
-    //  rotate around mRight
-    mPitch -= degrees;
+    m_pitch += degrees;
+
+    if(m_pitch > 89.f)
+        m_pitch = 89.f;
+    if(m_pitch < -89.f)
+        m_pitch = -89.f;
+
     updateForwardVector();
 }
 
 void Camera::yaw(float degrees)
 {
-    // rotate around mUp
-    mYaw -= degrees;
+    m_yaw += degrees;
     updateForwardVector();
 }
 
-void Camera::updateRightVector()
-{
-    mRight = mForward^mUp;
-    mRight.normalize();
-//    qDebug() << "Right " << mRight;
-}
-
+//call first
 void Camera::updateForwardVector()
 {
-    mRight = gsl::Vector3D(1.f, 0.f, 0.f);
-    mRight.rotateY(mYaw);
-    mRight.normalize();
-    mUp = gsl::Vector3D(0.f, 1.f, 0.f);
-    mUp.rotateX(mPitch);
-    mUp.normalize();
-    mForward = mUp^mRight;
+    QVector3D dir{};
+    float yawRad = gsm::MathFunctions::degreesToRadians(m_yaw);
+    float pitchRad = gsm::MathFunctions::degreesToRadians(m_pitch);
+
+    dir.setX(cos(yawRad) * cos(pitchRad)); //X == X :)
+    dir.setY(sin(pitchRad)); //Up in world space
+    dir.setZ(sin(yawRad) * cos(pitchRad)); //Actually Y in world space
+    m_forward = dir;
+    m_forward.normalize();
 
     updateRightVector();
+    updateUpVector();
 }
 
-void Camera::update()
+//Call before updateUpVector()
+void Camera::updateRightVector()
 {
-    mYawMatrix.setToIdentity();
-    mPitchMatrix.setToIdentity();
-
-    mPitchMatrix.rotateX(mPitch);
-    mYawMatrix.rotateY(mYaw);
-
-    mPosition -= mForward * mSpeed;
-
-    mViewMatrix = mPitchMatrix* mYawMatrix;
-    mViewMatrix.translate(-mPosition);
+    m_up = {0.f, 1.f, 0.f};
+    m_right = QVector3D::crossProduct(m_up, m_forward);
+    m_right.normalize();
 }
 
-void Camera::setPosition(const gsl::Vector3D &position)
+//Call after updateRightVector()
+void Camera::updateUpVector()
 {
-    mPosition = position;
+    m_up = QVector3D::crossProduct(m_forward, m_right);
 }
 
-void Camera::setSpeed(float speed)
+void Camera::setPosition(const QVector3D &position)
 {
-    mSpeed = speed;
+    m_position = position;
 }
 
-void Camera::updateHeigth(float deltaHeigth)
+QVector3D Camera::position() const
 {
-    mPosition.y += deltaHeigth;
+    return m_position;
 }
 
-void Camera::moveRight(float delta)
+QVector3D Camera::up() const
 {
-    //This fixes a bug in the up and right calculations
-    //so camera always holds its height when straifing
-    //should be fixed thru correct right calculations!
-    gsl::Vector3D right = mRight;
-    right.y = 0.f;
-    mPosition += right * delta;
+    return m_up;
 }
 
-gsl::Vector3D Camera::position() const
+bool Camera::editorCamera() const
 {
-    return mPosition;
+    return m_editorCamera;
 }
 
-gsl::Vector3D Camera::up() const
+void Camera::setEditorCamera(bool editorCamera)
 {
-    return mUp;
+    m_editorCamera = editorCamera;
+}
+
+void Camera::setTarget(VisualObject *target)
+{
+    m_target = target;
+}
+
+QMatrix4x4 Camera::viewMatrix() const
+{
+    return m_viewMatrix;
+}
+
+QMatrix4x4 Camera::projectionMatrix() const
+{
+    return m_projectionMatrix;
 }

@@ -5,21 +5,22 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-
+#include <vector>
 #include "input.h"
-#include "constants.h"
+//#include "quadtree.h"
 
 class QOpenGLContext;
 class Shader;
+class Texture;
 class MainWindow;
 class VisualObject;
+class InteractiveObject;
 class Camera;
-class Texture;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
 // We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
-// This is the same as using glad and glw from general OpenGL tutorials
+// This is the same as using "glad" and "glw" from general OpenGL tutorials
 class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
@@ -29,64 +30,77 @@ public:
 
     QOpenGLContext *context() { return mContext; }
 
-    void exposeEvent(QExposeEvent *) override;
+    void exposeEvent(QExposeEvent *) override;  //gets called when app is shown and resized
 
-    void toggleWireframe(bool buttonState);
+    bool mRotate{true};     //Check if triangle should rotate
+    void togglePlay(bool shouldPlay);
 
 private slots:
-    void render();
+    void render();          //the actual render - function
 
 private:
-    void init();
+    void init();            //initialize things we need before rendering
 
-    void checkForGLerrors();
+    VisualObject* createObject(VisualObject* object, std::string objectName, std::string shaderToUse, QVector3D position); //Used to create a new object for the scene.
+    void createAllObjects(bool bReset);
 
-    void calculateFramerate();
+    //Data containers
+    std::unordered_map<std::string, VisualObject*> m_objectMap; //Primary object container
+//    gsm::QuadTree<std::string, VisualObject*> m_quadTree;
+    VisualObject* m_light{nullptr}; //Scene lightning
+    VisualObject* m_world{nullptr}; //The scene map
+    VisualObject* m_skybox{nullptr}; //The skybox
+    class Player* m_player{nullptr};  //The player
 
-    void startOpenGLDebugger();
-
+    //Camera
+    Camera* m_camera{nullptr};
+    Input m_input;
     void setCameraSpeed(float value);
+    void setMouseSensitivity(float value);
+    float m_cameraSpeed{0.05f};
+    float m_cameraRotateSpeed{0.1f};
+    float m_cameraAspectRatio{1.f};
+    float m_mouseSensitiviy{1.f};
+    int m_mouseXlast{0};
+    int m_mouseYlast{0};
 
-    void handleInput();
+    //Debug
+    bool bWiremode{false};
+    bool bKeyReleased{true};
 
-    void setupPlainShader(int shaderIndex);
-    GLint mMatrixUniform{-1};
-    GLint vMatrixUniform{-1};
-    GLint pMatrixUniform{-1};
+    QOpenGLContext *mContext{nullptr};  //Our OpenGL context
+    bool mInitialized{false};
 
-    void setupTextureShader(int shaderIndex);
-    GLint mMatrixUniform1{-1};
-    GLint vMatrixUniform1{-1};
-    GLint pMatrixUniform1{-1};
-    GLint mTextureUniform{-1};
+    //Textures
+    std::unordered_map<std::string, Texture*> m_textureMap;
 
-    class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
+    //Shaders
+    std::unordered_map<std::string, Shader*> m_shaderProgramMap;
+    Shader* m_shaderDebug{nullptr};
 
-    class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
-
-    Camera *mCurrentCamera{nullptr};
-    float mAspectratio{1.f};
-
-    std::vector<VisualObject*> mVisualObjects;
-
-    Input mInput;
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
-    int mMouseXlast{0};
-    int mMouseYlast{0};
-
-    QOpenGLContext *mContext{nullptr};
-    bool mInitialized;
+    GLuint mVAO;                        //OpenGL reference to our VAO
+    GLuint mVBO;                        //OpenGL reference to our VBO
 
     QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
-    QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
+    QElapsedTimer mTimeStart;               //time variable that reads the calculated FPS
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
-    class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+    class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};  //helper class to get some clean debug info from OpenGL
+
+    void checkForGLerrors();            //helper function that uses QOpenGLDebugLogger or plain glGetError()
+
+    void calculateFramerate();          //as name says
+
+    void startOpenGLDebugger();         //starts QOpenGLDebugLogger if possible
+
+    void handleInput();   //Handles the input from mouse/keyboard
+
+    void createCoins();
 
 protected:
-    //The QWindow that we inherit from has these functions to capture mouse and keyboard.
+    //The QWindow that we inherit from have these functions to capture
+    // - mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
