@@ -58,6 +58,9 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
 	assert(entityID < core::MAX_ENTITIES);
 	sparseComponentArray[entityID] = packedComponentArray.size();
 
+	// Constructing a new T and pushing it to the packed array
+	// The array is already on the heap, so we don't need to use new. 
+	// This way, the objects will be in a contiguous
 	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
 	
 	return packedComponentArray.back().ID;

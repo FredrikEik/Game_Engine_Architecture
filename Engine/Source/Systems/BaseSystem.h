@@ -16,4 +16,4 @@ public:
 	TestSystem(){}
 
 	void updateAll(class ComponentManager<class testComponent>& manager);
-};
+};    
