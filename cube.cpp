@@ -107,5 +107,5 @@ void Cube::draw()
     glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
     glBindVertexArray(0);
 
-    qDebug() << "draw cube";
+    //qDebug() << "draw cube";
 }

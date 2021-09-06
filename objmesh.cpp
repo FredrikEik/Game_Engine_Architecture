@@ -3,6 +3,7 @@
 #include "vector2d.h"
 #include "vertex.h"
 #include <vector>
+#include "Components.h"
 
 #include <iostream>
 #include <sstream>
@@ -11,9 +12,12 @@
 
 ObjMesh::ObjMesh(std::string filename) : VisualObject ()
 {
-    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
-    readFile(filename);
+    mComponents.push_back(new TransformComponent());
+   TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
     tempTrans->mMatrix.setToIdentity();
+    readFile(filename);
+
+    //qDebug() << filename.data();
 }
 
 ObjMesh::~ObjMesh()
@@ -59,7 +63,7 @@ void ObjMesh::init()
 
 void ObjMesh::readFile(std::string filename)
 {
-
+    mComponents.push_back(new MeshComponent());
     MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
     //Open File
     //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
@@ -209,4 +213,5 @@ void ObjMesh::draw()
     glBindVertexArray( tempMesh->mVAO );
     glDrawElements(GL_TRIANGLES, tempMesh->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
+    qDebug() << "draw obj";
 }

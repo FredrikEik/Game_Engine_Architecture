@@ -94,12 +94,15 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("goat.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -144,10 +147,14 @@ void RenderWindow::init()
        temp ->init();
        static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-2.f, 0.f, -2.f);
        mVisualObjects.push_back(temp );
-       //static_cast<TransformComponent*>(temp ->mComponents.at(0))->mMatrix.scale(8.f, 0.1f, 8.f);
 
 
-      // temp = new ObjMesh("test");
+//goat
+      temp = new ObjMesh("../GEA2021/Assets/Textures/goat.obj");
+      temp ->init();
+      static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-3.f, 0.f, -3.f);
+      static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.scale(3.f, 3.f, 3.f);
+      mVisualObjects.push_back(temp );
 
 
     //********************** Set up camera **********************
@@ -192,6 +199,14 @@ void RenderWindow::render()
         //cube
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[2]->mComponents.at(0))->mMatrix.constData());
         mVisualObjects[2]->draw();
+
+        //goat
+        glUseProgram(mShaderPrograms[1]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[3]->mComponents.at(0))->mMatrix.constData());
+        glUniform1i(mTextureUniform, 1);
+        mVisualObjects[3]->draw();
 
         //triangle
         //what shader to use - texture shader
