@@ -6,9 +6,8 @@
 class CameraInputComponent : public InputComponent
 {
 public:
-    void update(Camera *mCamera);
-private:
-    Input mInput;
+    void update(Camera *mCamera,Input mInput);
+
 
 };
 #endif // CAMERAINPUTCOMPONENT_H

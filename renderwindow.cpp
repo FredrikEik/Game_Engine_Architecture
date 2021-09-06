@@ -150,12 +150,12 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-
-    Camerainput->update(mCurrentCamera);
+   // HandleInput();
+    Camerainput->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
 
     //Keyboard / mouse input
-//    handleInput();
+
 
 //    mCurrentCamera->update();
 
@@ -331,6 +331,25 @@ void RenderWindow::startOpenGLDebugger()
             if (mOpenGLDebugLogger->initialize()) // initializes in the current context
                 qDebug() << "Started OpenGL debug logger!";
         }
+    }
+}
+void RenderWindow::HandleInput()
+{
+    mCurrentCamera->setSpeed(0.f);
+    if(mInput.RMB == true)
+    {
+        if(mInput.W == true)
+            mCurrentCamera->setSpeed(mInputComponent->mCameraSpeed);
+        if(mInput.S == true)
+            mCurrentCamera->setSpeed(-mInputComponent->mCameraSpeed);
+        if(mInput.D == true)
+            mCurrentCamera->moveRight(mInputComponent->mCameraSpeed);
+        if(mInput.A == true)
+            mCurrentCamera->moveRight (-mInputComponent->mCameraSpeed);
+        if(mInput.Q == true)
+            mCurrentCamera->updateHeigth (-mInputComponent->mCameraSpeed);
+        if(mInput.E == true)
+            mCurrentCamera->updateHeigth (mInputComponent->mCameraSpeed);
     }
 }
 

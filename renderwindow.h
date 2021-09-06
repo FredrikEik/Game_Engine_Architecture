@@ -45,6 +45,8 @@ private:
     InputSystem *mInputSystem;
     Input mInput;
 
+    void HandleInput();
+
     void init();
 
     void checkForGLerrors();
