@@ -18,7 +18,7 @@ struct MeshComponent
     GLuint mEAB{0};
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
-    GLuint mDrawType{GL_TRIANGLES};
+    GLenum mDrawType{GL_TRIANGLES};
 };
 
 struct MaterialComponent

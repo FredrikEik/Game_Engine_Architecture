@@ -126,19 +126,20 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
-    /****************** THIS SHOULD USE THE RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
-    /***** not separate classes init() - function ****************/
+    /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
+    /***** should not use separate classes init() - function ****************/
+
+    //Axis
     VisualObject *temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
-
     mVisualObjects.push_back(temp);
 
-    //testing triangle class
+    //dog triangle
     temp = new Triangle();
     temp->init();
-    temp->mMaterial->mShaderProgram = 1; //texture shader
-    temp->mMaterial->mTextureUnit = 1;
+    temp->mMaterial->mShaderProgram = 1;    //texture shader
+    temp->mMaterial->mTextureUnit = 1;      //dog texture
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
@@ -147,12 +148,13 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-// Called each frame - doing the rendering
+// Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-    //Keyboard / mouse input
+    //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
 
+    // Camera update - should be in a general game loop, not directly in the render loop
     mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
