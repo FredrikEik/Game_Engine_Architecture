@@ -16,6 +16,8 @@
 #include "triangle.h"
 #include "camera.h"
 #include "constants.h"
+#include "objmesh.h"
+#include "cube.h"
 
 #include "texture.h"
 #include "Components.h"
@@ -138,6 +140,15 @@ void RenderWindow::init()
     static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
        mVisualObjects.push_back(temp);
 
+       temp  = new Cube();
+       temp ->init();
+       static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-2.f, 0.f, -2.f);
+       mVisualObjects.push_back(temp );
+       //static_cast<TransformComponent*>(temp ->mComponents.at(0))->mMatrix.scale(8.f, 0.1f, 8.f);
+
+
+      // temp = new ObjMesh("test");
+
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -178,8 +189,11 @@ void RenderWindow::render()
         //draw the object
         mVisualObjects[0]->draw();
 
+        //cube
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[2]->mComponents.at(0))->mMatrix.constData());
+        mVisualObjects[2]->draw();
 
-        //Second object - triangle
+        //triangle
         //what shader to use - texture shader
         glUseProgram(mShaderPrograms[1]->getProgram() );
         //what texture (slot) to use
@@ -188,8 +202,13 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
          glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
         mVisualObjects[1]->draw();
+        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);
+        //just to move the triangle each frame
 
-        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+
+
+
+
 
     }
 
@@ -198,7 +217,12 @@ void RenderWindow::render()
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
 
-    //using our expanded OpenGL debugger to check if everything is OK.
+    //using our expanded OpenGL debugger to check if everything is OK.+
+
+
+
+
+
     checkForGLerrors();
 
     //Qt require us to call this swapBuffers() -function.

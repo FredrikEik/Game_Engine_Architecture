@@ -5,7 +5,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-
+#include "cube.h"
 #include "input.h"
 #include "constants.h"
 
@@ -68,6 +68,8 @@ private:
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
+
+    Cube *mycube;
 
     Input mInput;
     float mCameraSpeed{0.05f};

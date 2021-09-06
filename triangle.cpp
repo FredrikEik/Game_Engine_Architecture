@@ -13,9 +13,10 @@ Triangle::Triangle()
        MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.back());
 
                             // Positions            // Colors       //UV
-    tempMesh->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    tempMesh->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    tempMesh-> mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    tempMesh->mVertices.push_back(Vertex(-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f)); // Bottom Left
+    tempMesh->mVertices.push_back(Vertex(0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f)); // Bottom Right
+    tempMesh-> mVertices.push_back(Vertex(0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f)); // Top
+
 }
 
 Triangle::~Triangle()
@@ -58,6 +59,6 @@ void Triangle::draw()
 {
     MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
     glBindVertexArray( tempMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
     glBindVertexArray(0);
 }
