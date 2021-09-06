@@ -1,7 +1,6 @@
 #include "inputcomponent.h"
 
+InputComponent::~InputComponent() {}
 
-void InputComponent::update()
-{
 
-}
+

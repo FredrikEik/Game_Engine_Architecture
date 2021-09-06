@@ -2,19 +2,20 @@
 
 void CameraInputComponent::update(Camera *mCamera)
 {
-    if(mInput->RMB)
+    mCamera->setSpeed(0.f);
+    if(mInput.RMB == true)
     {
-        if(mInput->W)
-            mCamera->setSpeed(CAMERA_SPEED);
-        if(mInput->S)
-            mCamera->setSpeed(-CAMERA_SPEED);
-        if(mInput->D)
-            mCamera->moveRight(CAMERA_SPEED);
-        if(mInput->A)
-            mCamera->moveRight (-CAMERA_SPEED);
-        if(mInput->Q)
-            mCamera->updateHeigth (-CAMERA_SPEED);
-        if(mInput->E)
-            mCamera->updateHeigth (CAMERA_SPEED);
+        if(mInput.W == true)
+            mCamera->setSpeed(mCameraSpeed);
+        if(mInput.S == true)
+            mCamera->setSpeed(-mCameraSpeed);
+        if(mInput.D == true)
+            mCamera->moveRight(mCameraSpeed);
+        if(mInput.A == true)
+            mCamera->moveRight (-mCameraSpeed);
+        if(mInput.Q == true)
+            mCamera->updateHeigth (-mCameraSpeed);
+        if(mInput.E == true)
+            mCamera->updateHeigth (mCameraSpeed);
     }
 }

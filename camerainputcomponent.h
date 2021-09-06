@@ -6,11 +6,9 @@
 class CameraInputComponent : public InputComponent
 {
 public:
-
     void update(Camera *mCamera);
 private:
-    Input *mInput;
-    static const int CAMERA_SPEED = 1;
+    Input mInput;
 
 };
 #endif // CAMERAINPUTCOMPONENT_H

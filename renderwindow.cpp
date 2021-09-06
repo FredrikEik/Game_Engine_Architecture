@@ -139,6 +139,12 @@ void RenderWindow::init()
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
+
+    //********************** create input **********************
+    Camerainput = new CameraInputComponent();
+    mInputComponent = new InputComponent();
+    mInputSystem = new InputSystem();
+
 }
 
 // Called each frame - doing the rendering
@@ -328,3 +334,154 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
+
+
+void RenderWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) //Shuts down whole program
+    {
+        mMainWindow->close();
+    }
+
+    //    You get the keyboard input like this
+    if(event->key() == Qt::Key_W)
+    {
+        mInput.W = true;
+    }
+    if(event->key() == Qt::Key_S)
+    {
+        mInput.S = true;
+    }
+    if(event->key() == Qt::Key_D)
+    {
+        mInput.D = true;
+    }
+    if(event->key() == Qt::Key_A)
+    {
+        mInput.A = true;
+    }
+    if(event->key() == Qt::Key_Q)
+    {
+        mInput.Q = true;
+    }
+    if(event->key() == Qt::Key_E)
+    {
+        mInput.E = true;
+    }
+
+    if(event->key() == Qt::Key_Up)
+    {
+        mInput.UP = true;
+    }
+    if(event->key() == Qt::Key_Down)
+    {
+        mInput.DOWN = true;
+    }
+    if(event->key() == Qt::Key_Left)
+    {
+        mInput.LEFT = true;
+    }
+    if(event->key() == Qt::Key_Right)
+    {
+        mInput.RIGHT = true;
+    }
+
+}
+
+void RenderWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_W)
+    {
+        mInput.W = false;
+    }
+    if(event->key() == Qt::Key_S)
+    {
+        mInput.S = false;
+    }
+    if(event->key() == Qt::Key_D)
+    {
+        mInput.D = false;
+    }
+    if(event->key() == Qt::Key_A)
+    {
+        mInput.A = false;
+    }
+    if(event->key() == Qt::Key_Q)
+    {
+        mInput.Q = false;
+    }
+    if(event->key() == Qt::Key_E)
+    {
+        mInput.E = false;
+    }
+    if(event->key() == Qt::Key_Up)
+    {
+        mInput.UP = false;
+    }
+    if(event->key() == Qt::Key_Down)
+    {
+        mInput.DOWN = false;
+    }
+    if(event->key() == Qt::Key_Left)
+    {
+        mInput.LEFT = false;
+    }
+    if(event->key() == Qt::Key_Right)
+    {
+        mInput.RIGHT = false;
+    }
+
+}
+
+void RenderWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton)
+        mInput.RMB = true;
+    if (event->button() == Qt::LeftButton)
+        mInput.LMB = true;
+    if (event->button() == Qt::MiddleButton)
+        mInput.MMB = true;
+}
+
+void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::RightButton)
+        mInput.RMB = false;
+    if (event->button() == Qt::LeftButton)
+        mInput.LMB = false;
+    if (event->button() == Qt::MiddleButton)
+        mInput.MMB = false;
+}
+
+void RenderWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mInput.RMB)
+    {
+        //Using mMouseXYlast as deltaXY so we don't need extra variables
+        mInputComponent->mMouseXlast = event->pos().x() - mInputComponent->mMouseXlast;
+       mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
+
+        if (mInputComponent->mMouseXlast != 0)
+            mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
+        if (mInputComponent->mMouseYlast != 0)
+            mCurrentCamera->pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+    }
+    mInputComponent->mMouseXlast = event->pos().x();
+    mInputComponent->mMouseYlast = event->pos().y();
+}
+
+
+void RenderWindow::wheelEvent(QWheelEvent *event)
+{
+    QPoint numDegrees = event->angleDelta() / 8;
+
+    //if RMB, change the speed of the camera
+    if (mInput.RMB)
+    {
+        if (numDegrees.y() < 1)
+            mCurrentCamera->setSpeed(0.001f);
+        if (numDegrees.y() > 1)
+            mInputSystem->setCameraSpeed(-0.001f);
+    }
+    event->accept();
+}

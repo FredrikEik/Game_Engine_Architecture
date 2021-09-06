@@ -1,6 +1,4 @@
 #include "component.h"
 
-void Component::update()
-{
 
-}
+Component::~Component() {}

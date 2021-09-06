@@ -10,7 +10,6 @@ SOURCES += main.cpp \
     camerainputcomponent.cpp \
     component.cpp \
     gameobject.cpp \
-    graphicscomponent.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     constants.h \
     gameobject.h \
     gltypes.h \
-    graphicscomponent.h \
     input.h \
     inputcomponent.h \
     inputsystem.h \

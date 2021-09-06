@@ -8,9 +8,8 @@
 
 #include "input.h"
 #include "constants.h"
-#include "camerainputcomponent.h"
 #include "inputsystem.h"
-#include "inputcomponent.h"
+
 
 class QOpenGLContext;
 class Shader;
@@ -35,12 +34,16 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+     void setCameraSpeed(float value);
 
 private slots:
     void render();
 
 private:
     CameraInputComponent *Camerainput;
+    InputComponent *mInputComponent;
+    InputSystem *mInputSystem;
+    Input mInput;
 
     void init();
 
@@ -50,9 +53,6 @@ private:
 
     void startOpenGLDebugger();
 
-    void setCameraSpeed(float value);
-
-    void handleInput();
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -72,9 +72,10 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
+
     std::vector<VisualObject*> mVisualObjects;
 
-    Input mInput;
+
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
@@ -86,6 +87,13 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
+protected:
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
 
 };
 

@@ -9,8 +9,7 @@ class Component
 {
 public:
 
-    virtual ~Component() {}
-    void update();
+    virtual ~Component();
 
 private:
     float x,y,z;
