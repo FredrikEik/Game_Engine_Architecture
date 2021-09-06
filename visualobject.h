@@ -23,12 +23,14 @@ public:
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
 protected:
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
 
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+/** Flyttes inn i MeshComponent */
+  std::vector<Vertex> mVertices;
+  std::vector<GLuint> mIndices;
+
+  GLuint mVAO{0};
+  GLuint mVBO{0};
+  GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
 
 };
 #endif // VISUALOBJECT_H

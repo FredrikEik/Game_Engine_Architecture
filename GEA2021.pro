@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
+    Components.cpp \
     camera.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
@@ -21,6 +22,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    Components.h \
     camera.h \
     constants.h \
     gltypes.h \
