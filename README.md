@@ -16,4 +16,4 @@ Open the Engine folder (GEA2021/Engine) in a terminal and run the following comm
 
 ### How to make a graph file of dependencies:
 
-$ conan info \<Engine folder> --graph=file.html
+`$ conan info \<Engine folder> --graph=file.html`
