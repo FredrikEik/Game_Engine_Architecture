@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     objects/projectile.cpp \
     objects/objmesh.cpp \
     renderwindow.cpp \
+    systems/ecs/entity.cpp \
     systems/ecs/resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     objects/projectile.h \
     objects/objmesh.h \
     renderwindow.h \
+    systems/ecs/entity.h \
     systems/ecs/resourcemanager.h \
     shader.h \
     mainwindow.h \

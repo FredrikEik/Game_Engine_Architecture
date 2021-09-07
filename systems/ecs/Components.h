@@ -6,6 +6,8 @@
 #include "matrix4x4.h"
 #include "vertex.h"
 
+//namespace ecs{
+
 class Components{
 public:
     Components() : mComponentType{gsl::NONE}{};
@@ -39,6 +41,18 @@ public:
 class MaterialCOmponent : public Components{
 
     MaterialCOmponent(){mComponentType = gsl::MATERIAL;};
+};
+class materialId
+{
+    MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
+    unsigned short mMaterialIndex{0};        //Material 0 = default material
+
+};
+
+class Collider : public Components
+{
+    gsl::Colliders mType{gsl::NOCOLLIDER};
+
 };
 
 

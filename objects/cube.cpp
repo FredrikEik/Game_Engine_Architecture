@@ -1,7 +1,9 @@
 #include "cube.h"
 #include "vertex.h"
 #include "systems/ecs/Components.h"
+#include "systems/ecs/entity.h"
 
+//using namespace ecs;
 Cube::Cube()
 {
     mComponents.push_back(new TransformComponent());

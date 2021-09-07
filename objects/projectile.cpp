@@ -4,3 +4,8 @@ projectile::projectile()
 {
 
 }
+
+projectile::~projectile()
+{
+    delete this;
+}
