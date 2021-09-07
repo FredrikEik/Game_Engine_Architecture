@@ -126,13 +126,16 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
     VisualObject *temp = new XYZ();
+    temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
 
     //testing triangle class
     temp = new Triangle();
     temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
+    temp->mMaterial->mShaderProgram = 1;    //texture shader
+    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
@@ -168,30 +171,52 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Draws the objects
-    //This should be in a loop!
+    for(int i{0}; i < mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+
+        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+
+        //This block sets up the uniforms for the shader used in the material
+        //Also sets up texture if needed.
+        int viewMatrix{-1};
+        int projectionMatrix{-1};
+        int modelMatrix{-1};
+
+        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        {
+            viewMatrix = vMatrixUniform;
+            projectionMatrix = pMatrixUniform;
+            modelMatrix = mMatrixUniform;
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        {
+            viewMatrix = vMatrixUniform1;
+            projectionMatrix = pMatrixUniform1;
+            modelMatrix = mMatrixUniform1;
+
+            //Now mMaterial component holds texture slot directly - probably should be changed
+            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+        }
+        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-        //draw the object
-        mVisualObjects[0]->draw();
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        //Second object - triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        //draw the object
+        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+        glBindVertexArray(0);
     }
+
+    //Moves the dog triangle - should be mada another way!!!!
+    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

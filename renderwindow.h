@@ -9,6 +9,8 @@
 #include "input.h"
 #include "constants.h"
 #include "inputsystem.h"
+#include "component.h"
+#include "shapefactory.h"
 
 
 class QOpenGLContext;
