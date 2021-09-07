@@ -61,6 +61,7 @@ void MarioCube::init(/*GLint matrixUniform[4]*/)
 void MarioCube::draw()
 {
     glBindVertexArray( meshComp->mVAO );
-    glUniformMatrix4fv( meshComp->mMatrixUniform, 1, GL_FALSE, transformComp->mMatrix.constData());
+    //glUniformMatrix4fv( meshComp->mMatrixUniform, 1, GL_FALSE, transformComp->mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, meshComp->mVertices.size());
+    glBindVertexArray(0);
 }

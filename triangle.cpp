@@ -3,16 +3,15 @@
 
 Triangle::Triangle()
 {
-    mComponents.push_back(new TransformComponent());
-    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
-    tempTrans->mMatrix.setToIdentity();
+    transformComp = new TransformComponent();
+    transformComp->mMatrix.setToIdentity();
 
-    mComponents.push_back(new MeshComponent());
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.back());
+    meshComp = new MeshComponent();
+
                                 // Positions            // Colors       //UV
-    tempMesh->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    tempMesh->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    tempMesh->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    meshComp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+    meshComp->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    meshComp->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 }
 
 Triangle::~Triangle()
@@ -24,19 +23,19 @@ void Triangle::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &tempMesh->mVAO );
-    glBindVertexArray( tempMesh->mVAO );
+    glGenVertexArrays( 1, &meshComp->mVAO );
+    glBindVertexArray( meshComp->mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &tempMesh->mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, tempMesh->mVBO );
+    glGenBuffers( 1, &meshComp->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, meshComp->mVBO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glBufferData( GL_ARRAY_BUFFER, tempMesh->mVertices.size()*sizeof( Vertex ),
-                  tempMesh->mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER,
+                  meshComp->mVertices.size()*sizeof( Vertex ),
+                  meshComp->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0  );          // array buffer offset
@@ -55,8 +54,7 @@ void Triangle::init()
 
 void Triangle::draw()
 {
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
-    glBindVertexArray( tempMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
+    glBindVertexArray(meshComp->mVAO );
+    glDrawArrays(GL_TRIANGLES, 0, meshComp->mVertices.size());
     glBindVertexArray(0);
 }

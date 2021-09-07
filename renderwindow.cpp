@@ -15,6 +15,7 @@
 #include "xyz.h"
 #include "cube.h"
 #include "plane.h"
+#include "triangle.h"
 #include "mariocube.h"
 #include "camera.h"
 #include "constants.h"
@@ -131,24 +132,29 @@ void RenderWindow::init()
     //temp->init();
     //mVisualObjects.push_back(temp);
 
+
     /*
     GameObject *cube = new Cube();
     cube->init();
     mGameObjects.push_back(cube);
     */
+
+    /*
     GameObject *marioCube = new MarioCube(); 
     marioCube->init();
     mGameObjects.push_back(marioCube);
-    /*GameObject* plane = new Plane();
-    plane->init();
-    mGameObjects.push_back(plane);*/
+    */
 
+    GameObject *plane = new Plane();
+    plane->init();
+    mGameObjects.push_back(plane);
 
     //testing triangle class
-    //temp = new Triangle();
-    //temp->init();
-    //static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
-    //mVisualObjects.push_back(temp);
+
+    GameObject *triangle = new Triangle();
+    triangle->init();
+    mGameObjects.push_back(triangle);
+
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -173,7 +179,7 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    //This should be in a loop!
+    //This should be in a loop! <- Ja vi må loope dette :/
     {
         //First objekct - xyz
         //what shader to use
@@ -184,19 +190,18 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transformComp->mMatrix.constData());
         //draw the object
-        //mVisualObjects[0]->draw();
         mGameObjects[0]->draw();
 
 
         //Second object - triangle
         //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
+        //glUseProgram(mShaderPrograms[1]->getProgram() );
         //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
+        //glUniform1i(mTextureUniform, 1);
         glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        //glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
-        //mVisualObjects[1]->draw();
+        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transformComp->mMatrix.constData());
+        mGameObjects[1]->draw();
 
         //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }

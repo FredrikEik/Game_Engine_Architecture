@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     vertex.cpp \
-    xyz.cpp
+    xyz.cpp \
+    triangle.cpp
 
 HEADERS += \
     camera.h \
@@ -49,7 +50,8 @@ HEADERS += \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
-    xyz.h
+    xyz.h \
+    triangle.h
 
 FORMS += \
     mainwindow.ui

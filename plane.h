@@ -1,5 +1,5 @@
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef PLANE_H
+#define PLANE_H
 
 #pragma once
 
@@ -21,4 +21,4 @@ private:
 
 };
 
-#endif // CUBE_H
+#endif // PLANE_H

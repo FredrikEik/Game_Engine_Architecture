@@ -7,7 +7,7 @@ Plane::Plane()
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
 
-    // Positions             // Colors          // UV
+                                            // Positions             // Colors          // UV
     meshComp->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
     meshComp->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
     meshComp->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
@@ -16,8 +16,8 @@ Plane::Plane()
     meshComp->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
     meshComp->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
 
-    transformComp->mMatrix.setToIdentity();
 
+    transformComp->mMatrix.setToIdentity();
 }
 
 Plane::~Plane() {}
@@ -67,4 +67,5 @@ void Plane::draw()
     glBindVertexArray( meshComp->mVAO );
     glUniformMatrix4fv( meshComp->mMatrixUniform, 1, GL_FALSE, transformComp->mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, meshComp->mVertices.size());
+    glBindVertexArray(0);
 }
