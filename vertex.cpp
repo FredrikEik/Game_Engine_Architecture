@@ -24,6 +24,20 @@ Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b , gsl::Vector2D c)
     mST = c;
 }
 
+Vertex::Vertex(QVector3D a, QVector3D b, QVector2D c)
+{
+    mXYZ.setX(a[0]);
+    mXYZ.setY(a[1]);
+    mXYZ.setZ(a[2]);
+
+    mNormal.setX(b[0]);
+    mNormal.setY(b[1]);
+    mNormal.setZ(b[2]);
+
+    mST.setX(c[0]);
+    mST.setY(c[1]);
+}
+
 Vertex::~Vertex() { }
 
 void Vertex::set_xyz(GLfloat *xyz)

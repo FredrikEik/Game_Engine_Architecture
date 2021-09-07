@@ -17,16 +17,13 @@ public:
     virtual void init();
     virtual void draw()=0;
 
-    //gsl::Matrix4x4 mMatrix;
-
     std::string mName;
-
-    RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
     TransformComponent* mTransformComp{nullptr};
     MeshComponent* mMeshComp{nullptr};
     MaterialComponent* mMaterialComp{nullptr};
 
+    RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 };
 #endif // VISUALOBJECT_H
 

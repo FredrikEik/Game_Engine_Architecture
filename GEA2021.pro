@@ -10,6 +10,7 @@ SOURCES += main.cpp \
     components.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    objmesh.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    objmesh.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \

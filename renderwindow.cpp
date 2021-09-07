@@ -130,12 +130,12 @@ void RenderWindow::init()
     mVisualObjects.push_back(temp);
 
     //testing triangle class
-//    temp = new Triangle();
-//    temp->init();
-//    temp->mMaterialComp->mShaderProgram = 1;
-//    temp->mMaterialComp->mTextureUnit = 1;
-//    temp->mTransformComp->mMatrix.translate(0.f, 0.f, .5f);
-//    mVisualObjects.push_back(temp);
+    temp = new Triangle();
+    temp->init();
+    temp->mMaterialComp->mShaderProgram = 1;
+    temp->mMaterialComp->mTextureUnit = 1;
+    temp->mTransformComp->mMatrix.translate(0.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -174,16 +174,16 @@ void RenderWindow::render()
         //draw the object
         mVisualObjects[0]->draw();
 
-//        //Second object - triangle
-//        //what shader to use - texture shader
-//        glUseProgram(mShaderPrograms[1]->getProgram() );
-//        //what texture (slot) to use
-//        glUniform1i(mTextureUniform, 1);
-//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mTransformComp->mMatrix.constData());
-//        mVisualObjects[1]->draw();
-//        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        //Second object - triangle
+        //what shader to use - texture shader
+        glUseProgram(mShaderPrograms[1]->getProgram() );
+        //what texture (slot) to use
+        glUniform1i(mTextureUniform, 1);
+        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mTransformComp->mMatrix.constData());
+        mVisualObjects[1]->draw();
+        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before

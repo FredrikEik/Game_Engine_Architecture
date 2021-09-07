@@ -3,6 +3,10 @@
 
 Triangle::Triangle()
 {
+    mTransformComp = new TransformComponent();
+    mTransformComp->mMatrix.setToIdentity();
+    mMeshComp = new MeshComponent();
+    mMaterialComp = new MaterialComponent();
                                 // Positions            // Colors       //UV
     mMeshComp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
     mMeshComp->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
