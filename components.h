@@ -29,6 +29,11 @@ struct MeshComponent
     GLuint mEAB{0};
 };
 
+struct ShaderComponent
+{
+
+};
+
 struct TextureComponent
 {
     GLuint mShaderProgram{0};
