@@ -8,6 +8,11 @@
 
 #include "input.h"
 #include "constants.h"
+#include "inputsystem.h"
+#include "camerainputcomponent.h"
+#include "component.h"
+#include "objmesh.h"
+#include "shapefactory.h"
 
 class QOpenGLContext;
 class Shader;
@@ -32,11 +37,17 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+     void setCameraSpeed(float value);
 
 private slots:
     void render();
 
 private:
+    CameraInputComponent *Camerainput;
+    InputComponent *mInputComponent;
+    InputSystem *mInputSystem;
+    Input mInput;
+
     void init();
 
     void checkForGLerrors();
@@ -45,9 +56,6 @@ private:
 
     void startOpenGLDebugger();
 
-    void setCameraSpeed(float value);
-
-    void handleInput();
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -67,13 +75,10 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
+
     std::vector<VisualObject*> mVisualObjects;
 
-    Input mInput;
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
-    int mMouseXlast{0};
-    int mMouseYlast{0};
+
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
@@ -86,13 +91,13 @@ private:
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
 protected:
-    //The QWindow that we inherit from has these functions to capture mouse and keyboard.
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
-    void wheelEvent(QWheelEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
+
 };
 
 #endif // RENDERWINDOW_H

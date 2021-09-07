@@ -1,15 +1,26 @@
 #include "xyz.h"
 #include "vertex.h"
 #include "shader.h"
+#include "component.h"
+#include <vector>
+#include "gltypes.h"
 
 XYZ::XYZ() {
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
-    mMatrix.setToIdentity();
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+
+    mMesh = new MeshComponent();
+
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    mMesh->mDrawType = GL_LINES;
+
+    mMaterial = new MaterialComponent();
 }
 
 XYZ::~XYZ()
@@ -20,18 +31,20 @@ void XYZ::init()
 {
     initializeOpenGLFunctions();
 
+
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
+    glGenVertexArrays( 1, &mMesh->mVAO );
+    glBindVertexArray( mMesh->mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
+    glGenBuffers( 1, &mMesh->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof( Vertex ), mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof( Vertex ),
+                  mMesh->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mMesh->mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
@@ -46,8 +59,9 @@ void XYZ::init()
     glBindVertexArray(0);
 }
 
-void XYZ::draw()
-{
-    glBindVertexArray( mVAO );
-    glDrawArrays(GL_LINES, 0, mVertices.size());
-}
+//void XYZ::draw()
+//{
+//    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
+//    glBindVertexArray( tempMesh->mVAO );
+//    glDrawArrays(GL_LINES, 0, tempMesh->mVertices.size());
+//}

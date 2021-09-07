@@ -41,6 +41,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 RenderWindow::~RenderWindow()
 {
+
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
@@ -124,28 +125,44 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
+    //Axis
     VisualObject *temp = new XYZ();
+    temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
 
-    //testing triangle class
-    temp = new Triangle();
+
+    //dog triangle
+    temp = new Triangle;
     temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
+    temp->mMaterial->mShaderProgram = 1;    //texture shader
+    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+
+    //********************** create input **********************
+    Camerainput = new CameraInputComponent();
+    mInputComponent = new InputComponent();
+    mInputSystem = new InputSystem();
+
 }
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    //Keyboard / mouse input
-    handleInput();
-
+   // HandleInput();
+    Camerainput->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
+
+    //Keyboard / mouse input
+
+
+//    mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -156,30 +173,51 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Draws the objects
-    //This should be in a loop!
+    for(int i{0}; i < mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+
+        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+
+        //This block sets up the uniforms for the shader used in the material
+        //Also sets up texture if needed.
+        int viewMatrix{-1};
+        int projectionMatrix{-1};
+        int modelMatrix{-1};
+
+        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        {
+            viewMatrix = vMatrixUniform;
+            projectionMatrix = pMatrixUniform;
+            modelMatrix = mMatrixUniform;
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        {
+            viewMatrix = vMatrixUniform1;
+            projectionMatrix = pMatrixUniform1;
+            modelMatrix = mMatrixUniform1;
+
+            //Now mMaterial component holds texture slot directly - probably should be changed
+            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+        }
+        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-        //draw the object
-        mVisualObjects[0]->draw();
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        //Second object - triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        //draw the object
+        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+        glBindVertexArray(0);
     }
+
+    //Moves the dog triangle - should be mada another way!!!!
+    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -322,37 +360,7 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-void RenderWindow::setCameraSpeed(float value)
-{
-    mCameraSpeed += value;
 
-    //Keep within some min and max values
-    if(mCameraSpeed < 0.01f)
-        mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
-}
-
-void RenderWindow::handleInput()
-{
-    //Camera
-    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
-    {
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
-    }
-}
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -386,12 +394,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mInput.E = true;
     }
-    if(event->key() == Qt::Key_Z)
-    {
-    }
-    if(event->key() == Qt::Key_X)
-    {
-    }
+
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = true;
@@ -408,12 +411,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mInput.RIGHT = true;
     }
-    if(event->key() == Qt::Key_U)
-    {
-    }
-    if(event->key() == Qt::Key_O)
-    {
-    }
+
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
@@ -442,12 +440,6 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     {
         mInput.E = false;
     }
-    if(event->key() == Qt::Key_Z)
-    {
-    }
-    if(event->key() == Qt::Key_X)
-    {
-    }
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = false;
@@ -464,12 +456,7 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     {
         mInput.RIGHT = false;
     }
-    if(event->key() == Qt::Key_U)
-    {
-    }
-    if(event->key() == Qt::Key_O)
-    {
-    }
+
 }
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
@@ -492,6 +479,24 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
         mInput.MMB = false;
 }
 
+void RenderWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mInput.RMB)
+    {
+        //Using mMouseXYlast as deltaXY so we don't need extra variables
+        mInputComponent->mMouseXlast = event->pos().x() - mInputComponent->mMouseXlast;
+       mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
+
+        if (mInputComponent->mMouseXlast != 0)
+            mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
+        if (mInputComponent->mMouseYlast != 0)
+            mCurrentCamera->pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+    }
+    mInputComponent->mMouseXlast = event->pos().x();
+    mInputComponent->mMouseYlast = event->pos().y();
+}
+
+
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
@@ -500,26 +505,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            mInputSystem->setCameraSpeed(-0.001f);
     }
     event->accept();
-}
-
-void RenderWindow::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mInput.RMB)
-    {
-        //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mMouseXlast = event->pos().x() - mMouseXlast;
-        mMouseYlast = event->pos().y() - mMouseYlast;
-
-        if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
-        if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
-    }
-    mMouseXlast = event->pos().x();
-    mMouseYlast = event->pos().y();
 }
