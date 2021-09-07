@@ -12,33 +12,54 @@ public:
     Copmonents();
 };
 
-class TransformComponent
+//class TransformComponent
+//{
+//public:
+//    TransformComponent();
+//    gsl::Matrix4x4 mMatrix;
+//};
+
+//class MeshComponent
+//{
+//public:
+//    MeshComponent();
+//    std::vector<Vertex> mVertices;
+//    std::vector<GLuint> mIndices;
+
+//    GLuint mVAO{0};
+//    GLuint mVBO{0};
+//    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+
+//    GLenum mDrawType{GL_TRIANGLES};
+//};
+
+//class MaterialComponent
+//{
+//public:
+//    MaterialComponent();
+//    GLuint mShaderProgram{};
+//    GLint mTextureUnit{};
+//};
+
+struct TransformComponent
 {
-public:
-    TransformComponent();
     gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent
+struct MeshComponent
 {
-public:
-    MeshComponent();
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
-
     GLuint mVAO{0};
     GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
-
+    GLuint mEAB{0};
+    std::vector<Vertex> mVertices;
+    std::vector<GLuint> mIndices;
     GLenum mDrawType{GL_TRIANGLES};
 };
 
-class MaterialComponent
+struct MaterialComponent
 {
-public:
-    MaterialComponent();
-    GLuint mShaderProgram{};
-    GLint mTextureUnit{};
+    GLuint mShaderProgram{0};
+    GLint mTextureUnit{0};
 };
 
 #endif // COMPONENTS_H
