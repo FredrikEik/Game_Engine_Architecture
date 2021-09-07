@@ -4,12 +4,10 @@
 #include "systems/ecs/Components.h"
 
 XYZ::XYZ() {
-    mComponents.push_back(new TransformComponent());
-    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
-    tempTrans->mMatrix.setToIdentity();
+mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
 
-    mComponents.push_back(new MeshComponent());
-       MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.back());
+tempMesh = new MeshComponent();
 
     tempMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     tempMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
@@ -17,6 +15,10 @@ XYZ::XYZ() {
     tempMesh->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
     tempMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
     tempMesh->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    tempMesh->mDrawType = GL_LINES;
+
+    mMaterial = new MaterialComponent();
 }
 
 XYZ::~XYZ()
@@ -27,7 +29,6 @@ void XYZ::init()
 {
     initializeOpenGLFunctions();
 
-       MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &tempMesh->mVAO );
     glBindVertexArray( tempMesh->mVAO );
@@ -54,9 +55,8 @@ void XYZ::init()
     glBindVertexArray(0);
 }
 
-void XYZ::draw()
-{
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
-    glBindVertexArray( tempMesh->mVAO );
-    glDrawArrays(GL_LINES, 0, tempMesh->mVertices.size());
-}
+//void XYZ::draw()
+//{
+//    glBindVertexArray( tempMesh->mVAO );
+//    glDrawArrays(GL_LINES, 0, tempMesh->mVertices.size());
+//}

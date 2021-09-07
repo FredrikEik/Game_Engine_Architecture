@@ -11,7 +11,7 @@ public:
     ObjMesh(std::string fileName);
     ~ObjMesh();
 
-    virtual void draw() override;
+    //virtual void draw() override;
     virtual void init() override;
 
     void readFile(std::string fileName);

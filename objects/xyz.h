@@ -11,7 +11,7 @@ public:
    ~XYZ() override;
 
    void init() override;
-   void draw() override;
+   //void draw() override;
 };
 
 #endif // XYZ_H

@@ -5,29 +5,17 @@
 #include "constants.h"
 #include "matrix4x4.h"
 #include "vertex.h"
-
+#include "gltypes.h"
+#include "constants.h"
 //namespace ecs{
 
-class Components{
-public:
-    Components() : mComponentType{gsl::NONE}{};
-    gsl::Components mComponentType;
 
-};
+struct TransformComponent{
 
-class TransformComponent : public Components{
-
-public:
-
-    TransformComponent() {mComponentType = gsl::TRANSFORM;};
     gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent : public Components{
-
-public:
-
-    MeshComponent(){mComponentType = gsl::MESH;};
+struct MeshComponent{
 
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
@@ -36,20 +24,24 @@ public:
     GLuint mVBO{0};
     GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
 
+     GLenum mDrawType{GL_TRIANGLES};
+
 };
 
-class MaterialCOmponent : public Components{
+struct MaterialComponent{
 
-    MaterialCOmponent(){mComponentType = gsl::MATERIAL;};
+    GLuint mShaderProgram{0};
+    GLint mTextureUnit{0};
 };
-class materialId
+
+struct materialId
 {
     MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
     unsigned short mMaterialIndex{0};        //Material 0 = default material
 
 };
 
-class Collider : public Components
+struct collider
 {
     gsl::Colliders mType{gsl::NOCOLLIDER};
 

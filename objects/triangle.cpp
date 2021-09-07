@@ -5,17 +5,18 @@
 
 Triangle::Triangle()
 {
-    mComponents.push_back(new TransformComponent());
-    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
-    tempTrans->mMatrix.setToIdentity();
-
-    mComponents.push_back(new MeshComponent());
-       MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.back());
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    tempMesh = new MeshComponent();
 
                             // Positions            // Colors       //UV
     tempMesh->mVertices.push_back(Vertex(-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f)); // Bottom Left
     tempMesh->mVertices.push_back(Vertex(0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f)); // Bottom Right
     tempMesh-> mVertices.push_back(Vertex(0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f)); // Top
+
+    tempMesh->mDrawType = GL_TRIANGLES;
+
+    mMaterial = new MaterialComponent();
 
 }
 
@@ -27,8 +28,6 @@ void Triangle::init()
 {
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
 
     glGenVertexArrays( 1, &tempMesh->mVAO );
     glBindVertexArray( tempMesh->mVAO );
@@ -55,10 +54,10 @@ void Triangle::init()
     glBindVertexArray(0);
 }
 
-void Triangle::draw()
-{
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
-    glBindVertexArray( tempMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
-    glBindVertexArray(0);
-}
+//void Triangle::draw()
+//{
+
+//    glBindVertexArray( tempMesh->mVAO );
+//    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
+//    glBindVertexArray(0);
+//}

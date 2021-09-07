@@ -15,13 +15,16 @@ public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init();
-    virtual void draw()=0;
+    //virtual void draw()=0;
 
 
     std::string mName;
+    struct TransformComponent* mTransform{nullptr};
+    struct MeshComponent* tempMesh{nullptr};
+    struct MaterialComponent* mMaterial{nullptr};
 
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
-    std::vector<Components*> mComponents;
+
 
 protected:
 

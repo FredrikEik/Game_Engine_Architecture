@@ -6,13 +6,11 @@
 //using namespace ecs;
 Cube::Cube()
 {
-    mComponents.push_back(new TransformComponent());
-    TransformComponent *tempTrans = static_cast<TransformComponent*>(mComponents.back());
-    tempTrans->mMatrix.setToIdentity();
+       mTransform = new TransformComponent();
 
+       mTransform->mMatrix.setToIdentity();
 
-    mComponents.push_back(new MeshComponent());
-       MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.back());
+       tempMesh = new MeshComponent();
 
        tempMesh->mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
        tempMesh->mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
@@ -63,7 +61,7 @@ Cube::Cube()
        tempMesh->mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
 
 
-
+        mMaterial = new MaterialComponent();
 }
 
 Cube::~Cube()
@@ -75,7 +73,7 @@ void Cube::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
+
 
     glGenVertexArrays( 1, &tempMesh->mVAO );
     glBindVertexArray( tempMesh->mVAO );
@@ -102,12 +100,11 @@ void Cube::init()
     glBindVertexArray(0);
 }
 
-void Cube::draw()
-{
-    MeshComponent *tempMesh = static_cast<MeshComponent*>(mComponents.at(1));
-    glBindVertexArray( tempMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
-    glBindVertexArray(0);
+//void Cube::draw()
+//{
+//    glBindVertexArray( tempMesh->mVAO );
+//    glDrawArrays(GL_TRIANGLES, 0, tempMesh->mVertices.size());
+//    glBindVertexArray(0);
 
-    //qDebug() << "draw cube";
-}
+//    //qDebug() << "draw cube";
+//}

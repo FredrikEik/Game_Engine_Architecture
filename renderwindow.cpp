@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "visualobject.h"
+
 #include "shader.h"
 #include "mainwindow.h"
 #include "visualobject.h"
@@ -135,26 +137,32 @@ void RenderWindow::init()
     //********************** Making the object to be drawn **********************
     VisualObject *temp = new XYZ();
     temp->init();
+    temp->mMaterial->mShaderProgram = 0;
     mVisualObjects.push_back(temp);
 
     //testing triangle class
-    temp = new Triangle();
-    temp->init();
-    static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(0.f, 0.f, .5f);
+       temp = new Triangle();
+       temp->init();
+       temp->mMaterial->mShaderProgram = 1;    //texture shader
+       temp->mMaterial->mTextureUnit = 1;      //dog texture
+       temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
        mVisualObjects.push_back(temp);
 
        temp  = new Cube();
        temp ->init();
-       static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-2.f, 0.f, -2.f);
-       mVisualObjects.push_back(temp );
+//       temp->mMaterial->mShaderProgram = 0;
+//       temp->mTransform->mMatrix.translate(-2.f, 0.f, -2.f);
+//       mVisualObjects.push_back(temp );
 
 
 //goat
-      temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
-      temp ->init();
-      static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.translate(-3.f, 0.f, -3.f);
-     //static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.scale(3.f, 3.f, 3.f);
-      mVisualObjects.push_back(temp );
+   //   temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
+    //  temp ->init();
+//      temp->mMaterial->mShaderProgram = 1;    //texture shader
+//      temp->mMaterial->mTextureUnit = 2;      //dog texture
+//      temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
+//     //static_cast<TransformComponent*>(temp->mComponents.at(0))->mMatrix.scale(3.f, 3.f, 3.f);
+//      mVisualObjects.push_back(temp );
 
 
     //********************** Set up camera **********************
@@ -169,9 +177,10 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    //Keyboard / mouse input
+    //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
 
+    // Camera update - should be in a general game loop, not directly in the render loop
     mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
@@ -181,69 +190,70 @@ void RenderWindow::render()
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    //This should be in a loop!
+    for(int i{0}; i < mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+
+        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+
+        //This block sets up the uniforms for the shader used in the material
+        //Also sets up texture if needed.
+        int viewMatrix{-1};
+        int projectionMatrix{-1};
+        int modelMatrix{-1};
+
+        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        {
+            viewMatrix = vMatrixUniform;
+            projectionMatrix = pMatrixUniform;
+            modelMatrix = mMatrixUniform;
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        {
+            viewMatrix = vMatrixUniform1;
+            projectionMatrix = pMatrixUniform1;
+            modelMatrix = mMatrixUniform1;
+
+            //Now mMaterial component holds texture slot directly - probably should be changed
+            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+        }
+        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[0]->mComponents.at(0))->mMatrix.constData());
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+
         //draw the object
-        mVisualObjects[0]->draw();
-
-        //cube
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[2]->mComponents.at(0))->mMatrix.constData());
-        mVisualObjects[2]->draw();
-
-        //goat
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[3]->mComponents.at(0))->mMatrix.constData());
-        glUniform1i(mTextureUniform, 1);
-        mVisualObjects[3]->draw();
-
-        //triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);
-        //just to move the triangle each frame
-
-
-
-
-
-
+        glBindVertexArray( mVisualObjects[i]->tempMesh->mVAO );
+        glDrawArrays(mVisualObjects[i]->tempMesh->mDrawType, 0, mVisualObjects[i]->tempMesh->mVertices.size());
+        glBindVertexArray(0);
     }
+
+    //Moves the dog triangle - should be mada another way!!!!
+    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
 
-    //using our expanded OpenGL debugger to check if everything is OK.+
-
-
-
-
-
+    //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    glUseProgram(0);
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)

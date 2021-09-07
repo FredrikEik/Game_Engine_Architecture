@@ -13,7 +13,7 @@ public:
     ~Triangle() override;
 
     void init() override;
-    void draw() override;
+    //void draw() override;
 };
 
 #endif // TRIANGLE_H

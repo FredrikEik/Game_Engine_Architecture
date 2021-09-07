@@ -7,6 +7,8 @@
 #define MAX_ENTITIES_TYPE unsigned short    //have to hold MAX_ENTITIES !!!
 #define MAX_COMPONENTS 100                  //could be made dynamic by using std::vectors
 
+#define GL_TRIANGLES                      0x0004
+
 
 namespace gsl  //Game School Lib
 {
