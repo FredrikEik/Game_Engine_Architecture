@@ -2,6 +2,10 @@
 #define COMPONENTS_H
 
 #include <QOpenGLFunctions_4_1_Core>
+#include "constants.h"
+#include "matrix4x4.h"
+#include "gltypes.h"
+#include "vertex.h"
 
 class Components
 {
@@ -9,24 +13,29 @@ public:
     Components();
 };
 
-class TransformComponent : public Components
+struct TransformComponent
 {
-
+    gsl::Matrix4x4 mMatrix;
 };
 
-class MeshComponent : public Components
+struct MeshComponent
 {
+    std::vector<Vertex> mVertices;
+    std::vector<GLuint> mIndices;
+    GLuint mDrawType{GL_TRIANGLES};
+
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
 };
 
-class TextureComponent : public Components
+struct TextureComponent
 {
-
+    GLuint mShaderProgram{0};
+    GLint mTextureUnit{0};
 };
 
-class CollisionComponent : public Components
+struct CollisionComponent
 {
 
 };
