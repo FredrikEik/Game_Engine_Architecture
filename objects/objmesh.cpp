@@ -17,8 +17,8 @@ ObjMesh::ObjMesh(std::string filename) : VisualObject ()
     mTransform->mMatrix.setToIdentity();
     readFile(filename);
 
-    //qDebug() << filename.data();
-    tempMesh = new MeshComponent();
+
+
     mMaterial = new MaterialComponent();
 }
 
@@ -63,6 +63,8 @@ void ObjMesh::init()
 
 void ObjMesh::readFile(std::string filename)
 {
+
+        tempMesh = new MeshComponent();
 
     //Open File
     std::ifstream fileIn;
@@ -194,7 +196,7 @@ void ObjMesh::readFile(std::string filename)
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
                    tempMesh-> mVertices.push_back(tempVert);
                 }
-               tempMesh-> mIndices.push_back(temp_index++);
+              tempMesh-> mIndices.push_back(temp_index++);
             }
             continue;
         }
