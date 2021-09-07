@@ -14,6 +14,7 @@
 #include "gameobject.h"
 #include "xyz.h"
 #include "cube.h"
+#include "plane.h"
 #include "mariocube.h"
 #include "camera.h"
 #include "constants.h"
@@ -135,9 +136,13 @@ void RenderWindow::init()
     cube->init();
     mGameObjects.push_back(cube);
     */
-    GameObject *marioCube = new MarioCube();
+    GameObject *marioCube = new MarioCube(); 
     marioCube->init();
     mGameObjects.push_back(marioCube);
+    /*GameObject* plane = new Plane();
+    plane->init();
+    mGameObjects.push_back(plane);*/
+
 
     //testing triangle class
     //temp = new Triangle();

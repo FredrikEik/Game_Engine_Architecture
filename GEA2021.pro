@@ -18,6 +18,7 @@ SOURCES += main.cpp \
     gsl/matrix4x4.cpp \
     mariocube.cpp \
     objreader.cpp \
+    plane.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     gsl/matrix4x4.h \
     mariocube.h \
     objreader.h \
+    plane.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
