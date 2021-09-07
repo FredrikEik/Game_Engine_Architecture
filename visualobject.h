@@ -6,6 +6,7 @@
 #include "vertex.h"
 #include "matrix4x4.h"
 #include "shader.h"
+#include "Components.h"
 
 class RenderWindow;
 
@@ -13,11 +14,11 @@ class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();
     virtual ~VisualObject();
-    virtual void init();
+    virtual void init(); // GLint matrixUniform ????
     virtual void draw()=0;
-
+/** Flyttes inn i TransformComponent */
     gsl::Matrix4x4 mMatrix;
-
+/** -------------------------------- */
     std::string mName;
 
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()

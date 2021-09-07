@@ -13,4 +13,5 @@ VisualObject::~VisualObject()
 
 void VisualObject::init()
 {
+
 }

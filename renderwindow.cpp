@@ -17,6 +17,8 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "Components.h"
+#include "Cube.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -133,6 +135,10 @@ void RenderWindow::init()
     temp->init();
     temp->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
+
+//    temp = new Cube();
+//    temp->init();
+//    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();

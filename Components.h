@@ -8,6 +8,7 @@
 struct Material
 {
     Material();
+
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
 };
@@ -15,14 +16,18 @@ struct Material
 struct Transform
 {
     Transform();
+
     gsl::Matrix4x4 mMatrix;
 };
 
 struct Mesh
 {
     Mesh();
+
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
+
+    GLint mMatrixUniform{0};
 
     GLuint mVAO{0};
     GLuint mVBO{0};
