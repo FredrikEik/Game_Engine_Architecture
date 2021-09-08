@@ -78,8 +78,6 @@ private:
 
     std::vector<VisualObject*> mVisualObjects;
 
-
-
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 

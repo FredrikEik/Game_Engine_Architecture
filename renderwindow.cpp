@@ -132,13 +132,13 @@ void RenderWindow::init()
     mVisualObjects.push_back(temp);
 
 
-    //dog triangle
-    temp = new Triangle;
-    temp->init();
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+//    //dog triangle
+//    temp = new Triangle;
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 1;    //texture shader
+//    temp->mMaterial->mTextureUnit = 1;      //dog texture
+//    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();

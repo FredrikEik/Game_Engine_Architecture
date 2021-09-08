@@ -18,33 +18,43 @@ public:
     virtual void init() override;
 };
 
-//class ShapeFactory {
-//    virtual Shape* create() = 0;
-//public:
-//    virtual ~ShapeFactory() {}
-//};
+class ShapeFactory : public Shape{
+public:
+    virtual ~ShapeFactory() {}
+    void createShape(int id);
+private:
+    Shape* myShapes[3];
+    bool circleExist = false;
+    bool squareExist = false;
+    bool triangleExist = false;
+
+};
 
 class Circle : public Shape {
-public:
     Circle();
-    //void erase();
+public:
     ~Circle(){}
-    Shape* create(){ return new Circle; };
+    friend class ShapeFactory;
+private:
+    void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
+    void circleUnitBall();
+    void makeTriangle(const gsl::Vector3D& v1, const gsl::Vector3D& v2, const gsl::Vector3D& v3);
+    int m_rekursjoner;
+    int m_index;
 };
 
 class Square : public Shape {
+    Square(int n=0);
 public:
-    Square();
-    //void erase()
     ~Square() {}
-    Shape* create() { return new Square; }
+    friend class ShapeFactory;
 };
 
 class Triangle : public Shape {
-public:
     Triangle();
+public:
     ~Triangle() {};
-    Shape* create() { return new Triangle; }
+    friend class ShapeFactory;
 };
 
 
