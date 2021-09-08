@@ -130,12 +130,26 @@ void RenderWindow::init()
     temp->init();
     mVisualObjects.push_back(temp);
 
-    //testing triangle class
+    //testing ShapeFactory - Triangle
     temp = new Triangle();
     temp->init();
     temp->mMaterial->mShaderProgram = 1;    //texture shader
     temp->mMaterial->mTextureUnit = 1;      //dog texture
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+
+    //testing ShapeFactory - Circle
+    temp = new Circle();
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mTransform->mMatrix.translate(4.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+
+    //testing ShapeFactory - Square
+    temp = new Square();
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mTransform->mMatrix.translate(-4.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
@@ -153,14 +167,9 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-   // HandleInput();
+
     Camerainput->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
-
-    //Keyboard / mouse input
-
-
-//    mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
