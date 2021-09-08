@@ -10,7 +10,7 @@ public:
    XYZ();
    ~XYZ() override;
 
-   void init() override;
+   void init(GLint matrixUniform) override;
    void draw() override;
 };
 

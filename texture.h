@@ -12,26 +12,29 @@ class Texture : protected QOpenGLFunctions_4_1_Core
 {
 public:
     Texture();  //basic texture from code
-    Texture(const std::string &filename, bool cubeMap = false);
-    float getHeightFromIndex(int i);
-    std::string mTextureFilename;
+    Texture(const std::string &filename);
+    virtual ~Texture();
 
-    int mColumns{};
-    int mRows{};
-    unsigned char *mBitmap{nullptr};
-    ///If this is a cubemap, this will be an array of 6 mBitmaps
-    unsigned char *mCubemap[6]{nullptr};
+    GLuint id() const;
+    std::string textureFilename;
 
-    GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called
+    int rows() const;
+    int columns() const;
+    unsigned char *bitmap() const;
+    int bytesPrPixel() const;
 
-private:
-    int mBytesPrPixel{};
-    bool mAlphaUsed{false};
-    void readBitmap(const std::string &filename);
-    void readCubeMap();
-    void setTexture();
-    void setCubemapTexture();
+protected:
+    GLubyte m_pixels[16];     // For the standard texture from the no-parameter constructor
+    GLuint m_GLTextureId{0};          //Texture ID that OpenGL makes when glGenTextures is called
+    unsigned char *m_bitmap;
+    int m_columns;
+    int m_rows;
+    int m_bytesPrPixel;
+    bool m_alphaUsed{false};
+    void readBitmap(const std::string& filename);
+    virtual void setTexture();
 
+protected:
     //this is put inside this class to avoid spamming the main namespace
     //with stuff that only is used inside this class
 
@@ -63,5 +66,6 @@ private:
         ODWORD bfOffBits;
     };
 };
+
 
 #endif // TEXTURE_H

@@ -64,34 +64,100 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
         glGetShaderInfoLog( fragment, 512, nullptr, infoLog );
         std::cout << "ERROR SHADER FRAGMENT " << fragmentPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
     }
-    // Shader Program
-    this->program = glCreateProgram( );
-    glAttachShader( this->program, vertex );
-    glAttachShader( this->program, fragment );
-    glLinkProgram( this->program );
+    // Shader Program linking
+    this->m_program = glCreateProgram( );
+    glAttachShader( this->m_program, vertex );
+    glAttachShader( this->m_program, fragment );
+    glLinkProgram( this->m_program );
     // Print linking errors if any
-    glGetProgramiv( this->program, GL_LINK_STATUS, &success );
+    glGetProgramiv( this->m_program, GL_LINK_STATUS, &success );
+
+    //making nice output name:
+    std::string shadername{vertexPath};
+    shadername.resize(shadername.size()-5); //deleting ".vert"
+
     if (!success)
     {
-        glGetProgramInfoLog( this->program, 512, nullptr, infoLog );
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                  << "  " << vertexPath <<  "\n   " << infoLog << std::endl;
+        glGetProgramInfoLog( this->m_program, 512, nullptr, infoLog );
+        qDebug() << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+                  << "  " << shadername.c_str() <<  "\n   " << infoLog;
     }
     else
     {
-        qDebug() << vertexPath << "shader was successfully compiled!";
+        qDebug() << "GLSL shader" << shadername.c_str() << "was successfully compiled!";
     }
     // Delete the shaders as they're linked into our program now and no longer needed
+    // The shader program is now on the GPU and we reference it by using the m_program variable
     glDeleteShader( vertex );
     glDeleteShader( fragment );
 }
 
 void Shader::use()
 {
-    glUseProgram( this->program );
+    glUseProgram(this->m_program);
 }
 
 GLuint Shader::getProgram() const
 {
-    return program;
+    return m_program;
+}
+
+GLuint Shader::getModelMatrixUniform() const
+{
+    return m_modelMatrixUniform;
+}
+
+GLint Shader::getProjectionMatrixUniform() const
+{
+    return m_projectionMatrixUniform;
+}
+
+GLint Shader::getViewMatrixUniform() const
+{
+    return m_viewMatrixUniform;
+}
+
+GLint Shader::getLightColorUniform() const
+{
+    return m_lightColorUniform;
+}
+
+GLint Shader::getLightPositionUniform() const
+{
+    return m_lightPositionUniform;
+}
+
+GLint Shader::getAmbientStrengthUniform() const
+{
+    return m_ambientStrengthUniform;
+}
+
+GLint Shader::getLightStrengthUniform() const
+{
+    return m_lightStrengthUniform;
+}
+
+GLint Shader::getObjectColorUniform() const
+{
+    return m_objectColorUniform;
+}
+
+GLint Shader::getSpecularStrengthUniform() const
+{
+    return m_specularStrengthUniform;
+}
+
+GLint Shader::getSpecularExponentUniform() const
+{
+    return m_specularExponentUniform;
+}
+
+GLint Shader::getObjectAlphaUniform() const
+{
+    return m_objectAlphaUniform;
+}
+
+GLint Shader::getTextureUniform() const
+{
+    return m_textureUniform;
 }

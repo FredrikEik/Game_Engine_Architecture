@@ -17,13 +17,49 @@ public:
     Shader(const GLchar *vertexPath, const GLchar *fragmentPath);
 
     // Use the current shader
-    void use( );
+    virtual void use();
+
+    //setup for the shader
+    virtual void setup() = 0;
 
     //Get program number for this shader
     GLuint getProgram() const;
+    GLuint getModelMatrixUniform() const;
+    GLint getProjectionMatrixUniform() const;
+    GLint getViewMatrixUniform() const;
+
+    GLint getLightColorUniform() const;
+    GLint getLightPositionUniform() const;
+    GLint getAmbientStrengthUniform() const;
+    GLint getLightStrengthUniform() const;
+    GLint getObjectColorUniform() const;
+    GLint getSpecularStrengthUniform() const;
+    GLint getSpecularExponentUniform() const;
+    GLint getObjectAlphaUniform() const;
+    GLint getTextureUniform() const;
+
+protected:
+    GLint m_modelMatrixUniform{-1};
+    GLint m_projectionMatrixUniform{-1};
+    GLint m_viewMatrixUniform{-1};
+
+    GLint m_ambientStrengthUniform{-1};
+    GLint m_lightStrengthUniform{-1};
+    GLint m_lightColorUniform{-1};
+    GLint m_lightPositionUniform{-1};
+
+    GLint m_objectColorUniform{-1};
+    GLint m_cameraPositionUniform{-1};
+
+    GLint m_specularStrengthUniform{-1};
+    GLint m_specularExponentUniform{-1};
+
+    GLint m_objectAlphaUniform{-1};
+
+    GLint m_textureUniform{-1};
 
 private:
-    GLuint program;
+    GLuint m_program;
 };
 
 #endif
