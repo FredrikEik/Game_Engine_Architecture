@@ -19,7 +19,7 @@ public:
 
 
 private:
-    std::vector<Components> components;
+    std::vector<gsl::Components> components;
     std::vector<Entity> entities;
 
 };

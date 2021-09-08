@@ -9,7 +9,7 @@
 class Entity
 {
 public:
-    Entity();
+    Entity(int id);
     MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
         std::string mName{"NoName"};
 
