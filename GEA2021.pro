@@ -9,6 +9,7 @@ SOURCES += main.cpp \
     camera.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    plane.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    plane.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \

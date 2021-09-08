@@ -14,6 +14,7 @@
 #include "visualobject.h"
 #include "xyz.h"
 #include "triangle.h"
+#include "plane.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -128,10 +129,15 @@ void RenderWindow::init()
     temp->init();
     mVisualObjects.push_back(temp);
 
+
     //testing triangle class
     temp = new Triangle();
     temp->init();
     temp->mMatrix.translate(0.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+
+    temp= new Plane();
+    temp->init();
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
@@ -157,6 +163,7 @@ void RenderWindow::render()
 
     //Draws the objects
     //This should be in a loop!
+
     {
         //First objekct - xyz
         //what shader to use
