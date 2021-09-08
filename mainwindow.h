@@ -21,6 +21,8 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
+    void on_MakePlane_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

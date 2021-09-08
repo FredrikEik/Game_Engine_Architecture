@@ -145,8 +145,8 @@ void RenderWindow::init()
     mGameObjects.push_back(marioCube);
     */
 
-    factory->createObject("Plane");
-    factory->createObject("Triangle");
+    //factory->createObject("Plane");
+    //factory->createObject("Triangle");
 
 
     //********************** Set up camera **********************
@@ -302,6 +302,10 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderWindow::createPlane()
+{
+    factory->createObject("Plane");
+}
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()

@@ -34,6 +34,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    void createPlane();
+
 private slots:
     void render();
 
@@ -49,6 +51,7 @@ private:
     void setCameraSpeed(float value);
 
     void handleInput();
+
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
