@@ -6,6 +6,8 @@
 #include "glad/glad.h"
 #include "../Components/Components.h"
 #include "glm/glm.hpp"
+#include "../Assets/DefaultAssets.h"
+
 
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
 {
@@ -169,3 +171,27 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
     inputFile.close();
     return true;
 }
+
+
+//bool MeshSystem::defaultMesh(DefaultAsset defaultAsset, MeshComponent& meshComponent)
+//{
+//    switch (defaultAsset)
+//    {
+//    case asset_CUBE:
+//        loadCube(meshComponent);
+//        break;
+//    case asset_SPHERE:
+//        break;
+//    case asset_PLANE:
+//        break;
+//    default:
+//        assert(false); // Loading assets that don't exist, halt the program
+//        return false;
+//    }
+//    return true;
+//}
+//
+//void MeshSystem::loadCube(MeshComponent& meshComponent)
+//{
+//
+//}

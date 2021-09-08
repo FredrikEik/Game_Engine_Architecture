@@ -7,7 +7,6 @@
 #include <filesystem>
 #include "Systems/MeshSystem.h"
 
-
 //TODO: std::filesystem::path is not hashable. Swap out for a hashable key. E.G std::filesystem::hash_value
 class Factory
 {
@@ -15,7 +14,7 @@ public:
 	//friend class ComponentManager;
 	
 	Factory(): componentManagers{(*new std::unordered_map<std::type_index, ComponentManager<Component>*>)},
-		reusableAssetComponents{(*new std::unordered_map<std::filesystem::path, std::pair<std::type_index, uint32>>)} {}
+		reusableAssetComponents{(*new std::unordered_map<std::size_t, std::pair<std::type_index, uint32>>)} {}
 	~Factory();
 
 	// This is 2-3 times slower than creating components directly through the manager when creating many components.
@@ -30,9 +29,8 @@ public:
 	template <typename T>
 	void removeComponent(uint32 entityID);
 
-
-	template <typename T>
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
+	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 
 	template <typename T>
 	ComponentManager<T>& getManager();
@@ -47,7 +45,7 @@ private:
 	/** Stores a pair based on the path
 	* @param type_index to locate the component manager in componentManagers
 	* @param uint32 is the component ID within the component manager. */
-	std::unordered_map<std::filesystem::path, std::pair<std::type_index, uint32>>& reusableAssetComponents;
+	std::unordered_map<std::size_t, std::pair<std::type_index, uint32>>& reusableAssetComponents;
 };
 
 Factory::~Factory()
@@ -86,31 +84,31 @@ inline void Factory::removeComponent(uint32 entityID)
 	(*(ComponentManager<T>*)componentManagers.at(classType)).removeComponent(entityID);
 }
 
-template <typename T>
 inline uint32 Factory::loadAsset(uint32 entityID, const std::filesystem::path& filePath)
 {
 	if (assetExists(filePath))
 		return assignAsset(entityID, filePath);
 
 	if (filePath.extension() == ".obj")
-		return loadMesh(filePath);
+		return loadMesh(filePath, entityID);
 
 	// Reading unsupported assets, the program should end.
-	assert(true);
+	assert(false);
 	return uint32();
 }
 
+
+
 inline bool Factory::assetExists(const std::filesystem::path& filePath)
 {
-	return reusableAssetComponents.find(filePath) != reusableAssetComponents.end();
+	return reusableAssetComponents.find(std::filesystem::hash_value(filePath)) != reusableAssetComponents.end();
 }
 
 inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path& filePath)
 {
-	//std::pair<std::type_index, uint32> reusableLocator = reusableAssetComponents.at(filePath);
-	//componentManagers.at(reusableLocator.first)->assignComponent(reusableLocator.second, entityID);
-	//return reusableLocator.second;
-	return 0;
+	std::pair<std::type_index, uint32> reusableLocator = reusableAssetComponents.at(std::filesystem::hash_value(filePath));
+	componentManagers.at(reusableLocator.first)->assignComponent(reusableLocator.second, entityID);
+	return reusableLocator.second;
 }
 
 
@@ -122,7 +120,12 @@ inline ComponentManager<T>& Factory::getManager()
 
 inline uint32 Factory::loadMesh(const std::filesystem::path& filePath, uint32 entityID)
 {
-	uint32 meshComponent = createComponent<MeshComponent>(entityID);
+	uint32 componentID = createComponent<MeshComponent>(entityID);
 	MeshSystem::loadMesh(filePath, getManager<MeshComponent>().getComponent(entityID));
-	return meshComponent;
+
+	reusableAssetComponents.insert(std::pair< std::size_t, std::pair<std::type_index, uint32>>
+				(std::filesystem::hash_value(filePath),
+				std::pair<std::type_index, uint32>(std::type_index(typeid(MeshComponent)), componentID)));
+
+	return componentID;
 }

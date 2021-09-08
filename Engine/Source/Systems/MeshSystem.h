@@ -9,10 +9,12 @@ class MeshSystem final : public BaseSystem
 {
 public:
 	static bool loadMesh(const std::filesystem::path& filePath, class MeshComponent& meshComponent);
+    //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
 
 private:
 	static void initialize(class MeshComponent& meshComponent);
 	static bool readObj(const std::filesystem::path& filePath, class MeshComponent& meshComponent);
+    //static void loadCube(class MeshComponent& meshComponent);
 
 
     // Used to keep track of the indexes for a single vertex in a face from obj files
