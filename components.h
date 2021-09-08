@@ -7,30 +7,34 @@
 #include "gltypes.h"
 #include "vertex.h"
 
-class Components
-{
-public:
-    Components();
-};
+
 
 struct TransformComponent
 {
+public:
+    TransformComponent();
     gsl::Matrix4x4 mMatrix;
 };
 
 struct MeshComponent
 {
+public:
+    MeshComponent();
+
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
-    GLuint mDrawType{GL_TRIANGLES};
 
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+
+    GLint mMatrixUniform{0};
 };
 
 struct TextureComponent
 {
+    TextureComponent();
+
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
 };
