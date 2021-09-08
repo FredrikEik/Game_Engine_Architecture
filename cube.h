@@ -1,9 +1,9 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include "visualobject.h"
+#include "GameObject.h"
 
-class Cube : public VisualObject
+class Cube : public GameObject
 {
 public:
     Cube();

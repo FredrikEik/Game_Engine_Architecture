@@ -11,7 +11,7 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
+#include "GameObject.h"
 #include "xyz.h"
 #include "triangle.h"
 #include "camera.h"
@@ -19,6 +19,7 @@
 #include "texture.h"
 #include "Components.h"
 #include "Cube.h"
+#include "Sphere.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -127,18 +128,18 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    VisualObject *temp = new XYZ();
+    GameObject *temp = new XYZ();
     mGameObjects.push_back(temp);
     temp->init();
 
-    //testing triangle class
-    temp = new Triangle();
-    mGameObjects.push_back(temp);
+    mGameObjects.push_back(temp = new Triangle());
     temp->init();
 
-    temp = new Cube();
-    mGameObjects.push_back(temp);
+    mGameObjects.push_back(temp = new Cube());
     temp->init();
+
+//    mGameObjects.push_back(temp = new Sphere(2));
+//    temp->init();
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -175,6 +176,7 @@ void RenderWindow::render()
         //draw the object
         mGameObjects[0]->draw();
         mGameObjects[2]->draw();
+//        mGameObjects[3]->draw();
 
         //Second object - triangle
         //what shader to use - texture shader

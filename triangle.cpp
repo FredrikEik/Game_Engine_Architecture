@@ -35,7 +35,7 @@ void Triangle::init()
     //Vertex Buffer Object to hold vertices - VBO
     glBufferData( GL_ARRAY_BUFFER, mesh->mVertices.size()*sizeof( Vertex ), mesh->mVertices.data(), GL_STATIC_DRAW );
 
-    // 1rst attribute buffer : vertices
+    // 1st attribute buffer : vertices
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0  );          // array buffer offset
     glEnableVertexAttribArray(0);
 

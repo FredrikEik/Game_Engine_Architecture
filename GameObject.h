@@ -1,5 +1,5 @@
-#ifndef VISUALOBJECT_H
-#define VISUALOBJECT_H
+#ifndef GAMEOBJECT_H
+#define GAMEOBJECT_H
 
 #include <QOpenGLFunctions_4_1_Core>
 #include <vector>
@@ -10,11 +10,11 @@
 
 class RenderWindow;
 
-class VisualObject : public QOpenGLFunctions_4_1_Core {
+class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
-    VisualObject();
-    virtual ~VisualObject();
-    virtual void init(); // GLint matrixUniform ????
+    GameObject();
+    virtual ~GameObject();
+    virtual void init();
     virtual void draw()=0;
 
     std::string mName;
@@ -25,5 +25,5 @@ public:
     Transform* transform;   //TransformComponent
 
 };
-#endif // VISUALOBJECT_H
+#endif // GAMEOBJECT_H
 

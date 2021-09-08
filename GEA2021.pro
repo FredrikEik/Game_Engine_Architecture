@@ -7,6 +7,7 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     Components.cpp \
+    GameObject.cpp \
     camera.cpp \
     cube.cpp \
     matrix3x3.cpp \
@@ -14,16 +15,17 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    sphere.cpp \
     texture.cpp \
     triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
     vertex.cpp \
-    visualobject.cpp \
     xyz.cpp
 
 HEADERS += \
     Components.h \
+    GameObject.h \
     camera.h \
     constants.h \
     cube.h \
@@ -35,12 +37,12 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    sphere.h \
     texture.h \
     triangle.h \
     vector2d.h \
     vector3d.h \
     vertex.h \
-    visualobject.h \
     xyz.h
 
 FORMS += \

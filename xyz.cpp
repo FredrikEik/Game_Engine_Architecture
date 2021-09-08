@@ -19,10 +19,6 @@ XYZ::XYZ(){
     transform->mMatrix.setToIdentity();
 }
 
-XYZ::~XYZ()
-{
-}
-
 void XYZ::init()
 {
     initializeOpenGLFunctions();
@@ -37,7 +33,7 @@ void XYZ::init()
 
     glBufferData( GL_ARRAY_BUFFER, mesh->mVertices.size()*sizeof( Vertex ), mesh->mVertices.data(), GL_STATIC_DRAW );
 
-    // 1rst attribute buffer : vertices
+    // 1st attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, mesh->mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);

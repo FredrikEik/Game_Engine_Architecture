@@ -17,6 +17,14 @@ namespace gsl  //Game School Lib
         PHONGSHADER
     };
 
+    enum Compoents
+        {
+            NONE = 0,
+            TRANSFORM = 1,
+            MESH,
+            MATERIAL
+        };
+
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};

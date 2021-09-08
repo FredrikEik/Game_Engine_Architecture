@@ -1,17 +1,17 @@
-#include "visualobject.h"
+#include "GameObject.h"
 #include "shader.h"
 
-VisualObject::VisualObject()
+GameObject::GameObject()
 {
 }
 
-VisualObject::~VisualObject()
+GameObject::~GameObject()
 {
    glDeleteVertexArrays( 1, &mesh->mVAO );
    glDeleteBuffers( 1, &mesh->mVBO );
 }
 
-void VisualObject::init()
+void GameObject::init()
 {
 
 }

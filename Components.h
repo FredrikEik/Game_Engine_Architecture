@@ -4,6 +4,7 @@
 #include "matrix4x4.h"
 #include "vertex.h"
 #include "constants.h"
+#include "gltypes.h"
 
 struct Material
 {
@@ -32,6 +33,8 @@ struct Mesh
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+
+    GLenum mDrawType{GL_TRIANGLES};
 };
 
 #endif // COMPONENTS_H
