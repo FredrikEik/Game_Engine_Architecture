@@ -16,22 +16,13 @@ public:
     virtual ~VisualObject();
     virtual void init(); // GLint matrixUniform ????
     virtual void draw()=0;
-/** Flyttes inn i TransformComponent */
-    gsl::Matrix4x4 mMatrix;
-/** -------------------------------- */
-    std::string mName;
 
+    std::string mName;
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
-protected:
-
-/** Flyttes inn i MeshComponent */
-  std::vector<Vertex> mVertices;
-  std::vector<GLuint> mIndices;
-
-  GLuint mVAO{0};
-  GLuint mVBO{0};
-  GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+    Mesh* mesh;             //MeshComponent
+    Material* material;     //MaterialComponent
+    Transform* transform;   //TransformComponent
 
 };
 #endif // VISUALOBJECT_H

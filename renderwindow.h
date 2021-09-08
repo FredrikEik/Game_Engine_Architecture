@@ -67,7 +67,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    std::vector<VisualObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

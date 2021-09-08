@@ -43,6 +43,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 RenderWindow::~RenderWindow()
 {
+
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
@@ -127,18 +128,17 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
     VisualObject *temp = new XYZ();
+    mGameObjects.push_back(temp);
     temp->init();
-    mVisualObjects.push_back(temp);
 
     //testing triangle class
     temp = new Triangle();
+    mGameObjects.push_back(temp);
     temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
 
-//    temp = new Cube();
-//    temp->init();
-//    mVisualObjects.push_back(temp);
+    temp = new Cube();
+    mGameObjects.push_back(temp);
+    temp->init();
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -164,27 +164,28 @@ void RenderWindow::render()
     //Draws the objects
     //This should be in a loop!
     {
-        //First objekct - xyz
+        //First object - xyz
         //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUseProgram(mShaderPrograms[0]->getProgram());
 
         //send data to shader
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transform->mMatrix.constData());
         //draw the object
-        mVisualObjects[0]->draw();
+        mGameObjects[0]->draw();
+        mGameObjects[2]->draw();
 
         //Second object - triangle
         //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
+        glUseProgram(mShaderPrograms[1]->getProgram());
         //what texture (slot) to use
         glUniform1i(mTextureUniform, 1);
         glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transform->mMatrix.constData());
+        mGameObjects[1]->draw();
+        mGameObjects[1]->transform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before

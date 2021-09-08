@@ -11,9 +11,7 @@ public:
     void draw() override;
 private:
 
-    Transform* transform;
-    Mesh* mesh;
-    Material* material;
+
 };
 
 #endif // CUBE_H
