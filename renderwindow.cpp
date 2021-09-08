@@ -145,8 +145,8 @@ void RenderWindow::init()
     mGameObjects.push_back(marioCube);
     */
 
-    factory->createObject("Plane");
-    factory->createObject("Triangle");
+    //factory->createObject("Plane");
+    //factory->createObject("Triangle");
 
 
 
@@ -172,8 +172,10 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
+
     //Draws the objects
     //This should be in a loop! <- Ja vi må loope dette :/
+    if(factory->mGameObjects.size() > 0)
     {
         //First objekct - xyz
         //what shader to use
@@ -189,6 +191,19 @@ void RenderWindow::render()
         factory->mGameObjects[i]->draw();
          }
 
+        for (int i=0; i<factory->mGameObjects.size(); i++){
+                //send data to shader
+                glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+                glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, factory->mGameObjects[i]->transformComp->mMatrix.constData());
+                //draw the object
+                factory->mGameObjects[i]->draw();
+
+                }
+        }
+
+        /*
+
         //Second object - triangle
         //what shader to use - texture shader
         //glUseProgram(mShaderPrograms[1]->getProgram() );
@@ -201,8 +216,10 @@ void RenderWindow::render()
 
 
 
-        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-    }
+        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame*/
+
+
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -307,6 +324,10 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderWindow::createPlane()
+{
+    factory->createObject("Plane");
+}
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()

@@ -79,10 +79,26 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+    ui->createDropDownBox->addItem("Cube");
+    ui->createDropDownBox->addItem("Plane");
+    ui->createDropDownBox->addItem("Mario");
 }
 
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
+}
+
+void MainWindow::on_MakePlane_clicked()
+{
+    mRenderWindow->createPlane();
+}
+
+void MainWindow::on_comboBox_activated(const QString &arg1)
+{
+    if (arg1 == "Plane")
+    {
+        mRenderWindow->createPlane();
+    }
 }
