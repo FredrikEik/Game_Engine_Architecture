@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include "gameobject.h"
+#include "factory.h"
 #include "input.h"
 #include "constants.h"
 
@@ -67,8 +68,10 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
+    Factory* factory = new Factory;
+
     //std::vector<VisualObject*> mVisualObjects;
-    std::vector<GameObject*> mGameObjects;
+
 
     Input mInput;
     float mCameraSpeed{0.05f};

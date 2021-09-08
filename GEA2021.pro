@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
     cube.cpp \
+    factory.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     components.h \
     constants.h \
     cube.h \
+    factory.h \
     gameobject.h \
     gltypes.h \
     input.h \
