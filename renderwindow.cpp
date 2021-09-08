@@ -24,6 +24,7 @@
 #include "constants.h"
 #include "objects/objmesh.h"
 #include "objects/cube.h"
+#include "widget.h"
 
 #include "texture.h"
 #include "systems/ecs/Components.h"
@@ -56,6 +57,7 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
+
 
     auto start = std::chrono::high_resolution_clock::now();
     //Connect the gameloop timer to the render function:
@@ -240,7 +242,7 @@ void RenderWindow::render()
     }
 
     //Moves the dog triangle - should be mada another way!!!!
-    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        //just to move the triangle each frame
 
 
     //Calculate framerate before
@@ -343,6 +345,15 @@ void RenderWindow::toggleWireframe(bool buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
+    }
+}
+
+void RenderWindow::transformObject(bool state)
+{
+    if(state)
+    {
+        qDebug() << "checked";
+         mVisualObjects[1]->mTransform->mMatrix.scale(1.1f, 1.1f, 1.1f);
     }
 }
 

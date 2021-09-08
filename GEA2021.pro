@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     vector3d.cpp \
     vertex.cpp \
     visualobject.cpp \
-    objects/xyz.cpp
+    objects/xyz.cpp \
+    widget.cpp \
+    widgettransform.cpp
 
 HEADERS += \
     systems/ecs/Components.h \
@@ -48,10 +50,14 @@ HEADERS += \
     vector3d.h \
     vertex.h \
     visualobject.h \
-    objects/xyz.h
+    objects/xyz.h \
+    widget.h \
+    widgettransform.h
 
 FORMS += \
-    mainwindow.ui
+    WidgetTransform.ui \
+    mainwindow.ui \
+    widgettransform.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \

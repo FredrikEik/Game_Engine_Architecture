@@ -17,6 +17,7 @@ class VisualObject;
 class Camera;
 class Texture;
 
+
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
 // We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
@@ -33,6 +34,8 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+
+    void transformObject(bool state);
 
 private slots:
     void render();
@@ -63,6 +66,8 @@ private:
     GLint vMatrixUniform1{-1};
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
+
+
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
