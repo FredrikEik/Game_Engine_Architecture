@@ -8,6 +8,7 @@
 #include <chrono>
 #include <typeindex>
 
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
