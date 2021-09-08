@@ -79,6 +79,9 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+    ui->createDropDownBox->addItem("Cube");
+    ui->createDropDownBox->addItem("Plane");
+    ui->createDropDownBox->addItem("Mario");
 }
 
 //Example of a slot called from the button on the top of the program.

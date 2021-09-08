@@ -35,23 +35,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
-        <item>
-         <property name="text">
-          <string>Cube</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Plane</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>MarioBox</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="createDropDownBox"/>
       </item>
      </layout>
     </item>
