@@ -145,8 +145,8 @@ void RenderWindow::init()
     mGameObjects.push_back(marioCube);
     */
 
-    //factory->createObject("Plane");
-    //factory->createObject("Triangle");
+    factory->createObject("Plane");
+    factory->createObject("Triangle");
 
 
     //********************** Set up camera **********************
