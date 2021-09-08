@@ -12,3 +12,6 @@ namespace core
 {
 	constexpr uint32 MAX_ENTITIES{ 5000000 };
 }
+
+#define DEBUG_LOG(msg) \
+	std::cout << __FILE__ << "(" << __LINE__ << "): " << msg << std::endl

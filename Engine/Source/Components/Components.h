@@ -24,10 +24,11 @@ public:
 
 class MeshComponent final : public Component
 {
+public:
 	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 	GLuint m_VAO{};
 	GLuint m_VBO{};
-	GLuint m_EAB{};
+	GLuint m_EBO{};
 	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
 	GLenum m_drawType{ GL_TRIANGLES };

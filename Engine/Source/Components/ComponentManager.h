@@ -14,7 +14,6 @@ template<class T>
 class ComponentManager
 {
 	friend class Factory;
-public:
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
 		packedComponentArray{ (*new std::vector<T>) }
@@ -23,6 +22,7 @@ public:
 			it=-1;
 	}
 	~ComponentManager();
+public:
 	T getComponent(uint32 entityID);
 
 	std::vector<T>& getComponentArray();

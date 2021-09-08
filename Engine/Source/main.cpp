@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "Components/BaseComponent.h"
+#include "Components/Components.h"
 #include "Components/ComponentManager.h"
 #include "Factory.h"
 #include "Systems/BaseSystem.h"
@@ -82,31 +82,37 @@ int main()
 	//delete &testManager;
 	//std::cout << "Waiting";
 
+	std::cout<<"something"; for (int i = 0; i<10, i++;)
+	std::cout << " some shit lalalala" << std::endl; std::cout << "some thing" <<
+		"more to do"; int mongo = 3;
+
 	auto start = std::chrono::system_clock::now();
 
-	Factory &factory = (*new Factory);
-	for (uint32 i{}; i < elements; ++i)
-	{
-		factory.createComponent<testComponent>(i);
-	}
-	auto doneCreating = std::chrono::system_clock::now();
+	//Factory &factory = (*new Factory);
+	//factory.loadAsset<MeshComponent>(0, "some/file.path/mesh");
+	//for (uint32 i{}; i < elements; ++i)
+	//{
+	//	factory.createComponent<testComponent>(i);
+	//}
+	//auto doneCreating = std::chrono::system_clock::now();
 
 
-	TestSystem* system = new TestSystem();
-	system->updateAll(factory.getManager<testComponent>());
-	auto doneUpdating = std::chrono::system_clock::now();
-	std::cout << "Updated variable: " << factory.getManager<testComponent>().getComponent(100).pos[0] << '\n';
-	delete system;
+	//TestSystem* system = new TestSystem();
+	//system->updateAll(factory.getManager<testComponent>());
+	//auto doneUpdating = std::chrono::system_clock::now();
+	//std::cout << "Updated variable: " << factory.getManager<testComponent>().getComponent(100).pos[0] << '\n';
+	//delete system;
 
-	for (uint32 i{}; i < elements; ++i)
-	{
-		factory.removeComponent<testComponent>(i);
-	}
-	auto done = std::chrono::system_clock::now();
+	//for (uint32 i{}; i < elements; ++i)
+	//{
+	//	factory.removeComponent<testComponent>(i);
+	//}
+	//auto done = std::chrono::system_clock::now();
 
-	std::cout << "Time to create " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
-	std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
-	std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
+	//std::cout << "Time to create " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
+	//std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
+	//std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
+	//delete& factory;
 	return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
