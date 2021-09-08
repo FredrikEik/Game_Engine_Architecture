@@ -34,7 +34,7 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void createPlane();
+    void buttonCreate(std::string objectName);
 
 private slots:
     void render();

@@ -314,10 +314,12 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::createPlane()
+void RenderWindow::buttonCreate(std::string objectName)
 {
-    factory->createObject("Plane");
+    factory->createObject(objectName);
 }
+
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()

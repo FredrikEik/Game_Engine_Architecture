@@ -81,7 +81,8 @@ void MainWindow::init()
     mRenderWindowContainer->setFocus();
     ui->createDropDownBox->addItem("Cube");
     ui->createDropDownBox->addItem("Plane");
-    ui->createDropDownBox->addItem("Mario");
+    ui->createDropDownBox->addItem("Triangle");
+    ui->createDropDownBox->addItem("MarioCube");
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -92,13 +93,12 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_MakePlane_clicked()
 {
-    mRenderWindow->createPlane();
+    mRenderWindow->buttonCreate(itemToSpawn);
 }
 
-void MainWindow::on_comboBox_activated(const QString &arg1)
+
+
+void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
 {
-    if (arg1 == "Plane")
-    {
-        mRenderWindow->createPlane();
-    }
+            itemToSpawn = arg1.toStdString();
 }

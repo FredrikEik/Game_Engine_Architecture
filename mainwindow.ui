@@ -30,7 +30,7 @@
       <item>
        <widget class="QPushButton" name="MakePlane">
         <property name="text">
-         <string>Create Plane</string>
+         <string>Create Object</string>
         </property>
        </widget>
       </item>
