@@ -149,6 +149,7 @@ void RenderWindow::init()
     factory->createObject("Triangle");
 
 
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -178,23 +179,27 @@ void RenderWindow::render()
         //what shader to use
         glUseProgram(mShaderPrograms[0]->getProgram() );
 
+
+        for (int i=0; i<factory->mGameObjects.size(); i++){
         //send data to shader
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, factory->mGameObjects[0]->transformComp->mMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, factory->mGameObjects[i]->transformComp->mMatrix.constData());
         //draw the object
-        factory->mGameObjects[0]->draw();
-
+        factory->mGameObjects[i]->draw();
+         }
 
         //Second object - triangle
         //what shader to use - texture shader
         //glUseProgram(mShaderPrograms[1]->getProgram() );
         //what texture (slot) to use
         //glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, factory->mGameObjects[1]->transformComp->mMatrix.constData());
-        factory->mGameObjects[1]->draw();
+//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, factory->mGameObjects[1]->transformComp->mMatrix.constData());
+//        factory->mGameObjects[1]->draw();
+
+
 
         //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
