@@ -7,11 +7,10 @@
 class Component 
 {
 public:
-	inline Component(uint32 entity, uint32 componentID) : entityID{ entity }, ID{ componentID } {}
+	Component(uint32 entity, uint32 componentID) : entityID{ entity }, ID{ componentID } {}
 	~Component(){}
 	uint32 ID;
 	uint32 entityID;
-
 };
 
 class testComponent final : public Component 

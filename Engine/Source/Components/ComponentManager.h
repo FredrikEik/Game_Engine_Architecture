@@ -27,7 +27,7 @@ public:
 
 	std::vector<T>& getComponentArray();
 protected:
-public:
+//public:
 	uint32 createComponent(uint32 entityID);
 	bool assignComponent(uint32 componentID, uint32 entityID);
 	/**Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
@@ -48,7 +48,6 @@ template<class T>
 inline ComponentManager<T>::~ComponentManager()
 {
 	delete &sparseComponentArray;
-	
 	delete &packedComponentArray;
 }
 

@@ -90,11 +90,12 @@ int main()
 	}
 	auto doneCreating = std::chrono::system_clock::now();
 
+
 	TestSystem* system = new TestSystem();
 	system->updateAll(factory.getManager<testComponent>());
-
 	auto doneUpdating = std::chrono::system_clock::now();
 	std::cout << "Updated variable: " << factory.getManager<testComponent>().getComponent(100).pos[0] << '\n';
+	delete system;
 
 	for (uint32 i{}; i < elements; ++i)
 	{
@@ -105,7 +106,6 @@ int main()
 	std::cout << "Time to create " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
 	std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
 	std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
-	delete system;
 	return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
