@@ -9,6 +9,7 @@
 #include "input.h"
 #include "constants.h"
 
+
 class QOpenGLContext;
 class Shader;
 class MainWindow;
@@ -48,6 +49,9 @@ private:
     void setCameraSpeed(float value);
 
     void handleInput();
+
+    void Minwidget();
+
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -96,5 +100,8 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 };
+
+
+
 
 #endif // RENDERWINDOW_H

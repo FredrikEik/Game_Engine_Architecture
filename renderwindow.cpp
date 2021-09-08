@@ -6,6 +6,10 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <QtWidgets>
+#include <QLabel>
+#include <QWidget>
+
 
 #include <iostream>
 
@@ -392,6 +396,29 @@ void RenderWindow::setCameraSpeed(float value)
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
 }
+void RenderWindow::Minwidget()
+{
+
+//    class MyWidget : public QWidget{
+//    public:
+//        MyWidget(QWidget *parent =NULL) : QWidget(parent){
+//            this->resize(400, 240);
+//            this->setWindowTitle("GUI, hvor du kan legge til objekt ved å trykke på en knapp");
+//            QPushButton* but1 = new QPushButton("circle");
+//            QPushButton* but2 = new QPushButton("triangel");
+//            QPushButton* but3 = new QPushButton("square");
+
+//            QHBoxLayout *layout = new QHBoxLayout;
+//            layout->addWidget(but1);
+//            layout->addWidget(but2);
+//            layout->addWidget(but3);
+//            this->setLayout(layout);
+//        }
+//    };
+
+//    MyWidget widget;
+//    widget.show();
+}
 
 void RenderWindow::handleInput()
 {
@@ -451,6 +478,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -472,6 +500,9 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
     }
     if(event->key() == Qt::Key_O)
+    {
+    }
+    if(event->key() == Qt::Key_P)
     {
     }
 }
