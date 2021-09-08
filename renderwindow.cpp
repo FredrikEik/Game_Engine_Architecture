@@ -190,16 +190,6 @@ void RenderWindow::render()
         //draw the object
         factory->mGameObjects[i]->draw();
          }
-
-        for (int i=0; i<factory->mGameObjects.size(); i++){
-                //send data to shader
-                glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-                glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-                glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, factory->mGameObjects[i]->transformComp->mMatrix.constData());
-                //draw the object
-                factory->mGameObjects[i]->draw();
-
-                }
         }
 
         /*
