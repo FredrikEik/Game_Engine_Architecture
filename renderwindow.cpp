@@ -18,7 +18,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "components.h"
-#include "factory.h"
+#include "gameobjectmanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)

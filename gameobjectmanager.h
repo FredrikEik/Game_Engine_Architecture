@@ -1,5 +1,5 @@
-#ifndef FACTORY_H
-#define FACTORY_H
+#ifndef GAMEOBJECTMANAGER_H
+#define GAMEOBJECTMANAGER_H
 
 #include "xyz.h"
 #include "camera.h"
@@ -8,6 +8,7 @@
 #include "renderwindow.h"
 #include "visualobject.h"
 
+using namespace std;
 
 //Camera *mCurrentCamera{nullptr};
 //float mAspectratio{1.f};
@@ -16,4 +17,4 @@
 
 void createObjects();
 
-#endif // FACTORY_H
+#endif // GAMEOBJECTMANAGER_H

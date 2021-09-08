@@ -1,4 +1,4 @@
-#include "factory.h"
+#include "gameobjectmanager.h"
 
 void createObjects()
 {
