@@ -23,6 +23,8 @@ private slots:
 
     void on_MakePlane_clicked();
 
+    void on_comboBox_activated(const QString &arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

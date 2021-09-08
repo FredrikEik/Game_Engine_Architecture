@@ -91,3 +91,11 @@ void MainWindow::on_MakePlane_clicked()
 {
     mRenderWindow->createPlane();
 }
+
+void MainWindow::on_comboBox_activated(const QString &arg1)
+{
+    if (arg1 == "Plane")
+    {
+        mRenderWindow->createPlane();
+    }
+}
