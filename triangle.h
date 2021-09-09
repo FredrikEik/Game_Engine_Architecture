@@ -13,3 +13,18 @@ public:
 };
 
 #endif // TRIANGLE_H
+/*
+Entity Triangle
+
+MeshComponent
+TransformComponent
+
+
+0
+
+meshComponents[0] = new MeshComponent(TRIANGLE_MESH)
+transformComponent[0]
+
+*/
+
+

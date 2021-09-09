@@ -136,26 +136,27 @@ void RenderWindow::init()
     temp->init();
     mVisualObjects.push_back(temp);
 ////*************************************start**////////////
+    RenderSystem * renderSys = new RenderSystem;
 
-    TriangelMesh = new MeshComponent() ;
-    TriangleMaterial = new MaterialComponent();
     TriangleTransform = new TransformComponent();
-    RenderSys;
+
 
     // Positions            // Colors       //UV
     TriangleTransform->mMatrix.setToIdentity();
 
-
+    TriangelMesh = new MeshComponent() ;
     TriangelMesh->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
     TriangelMesh->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
     TriangelMesh->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
     TriangelMesh->mDrawType = GL_TRIANGLES;
+    TriangleMaterial = new MaterialComponent();
+    renderSys->init(TriangelMesh);
+
 
     TriangleMaterial->mShaderProgram = 1;
     TriangleMaterial->mTextureUnit = 1;
 
     TriangleTransform->mMatrix.translate(0.f, 0.f, .5f);
-    RenderSys->init(TriangelMesh);
 
 ////*************************************start**////////////
     //dog triangle
@@ -240,7 +241,6 @@ void RenderWindow::render()
     int viewMatrix1{-1};
     int projectionMatrix1{-1};
     int modelMatrix1{-1};
-    RenderSys->init(TriangelMesh);
 
     viewMatrix1 = vMatrixUniform;
     projectionMatrix1 = pMatrixUniform;

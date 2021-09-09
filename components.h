@@ -28,3 +28,39 @@ struct MaterialComponent
 };
 
 #endif // COMPONENTS_H
+
+/*
+MeshFactory->GetMesh("MeshName.obj")
+
+
+createMeshComponentForEntity(int EntityId)
+{
+    Mesh x = MeshFactory->GetMesh("MESH.mesh")
+    MeshComponents[enTityid] = new MeshComponent(x)
+
+
+}
+
+
+tick()
+{
+    per each meshcompoonet
+            meshSystem->Render(meshComponent)
+}
+
+
+array MeshComponents -> rendre et mesh
+for()
+{
+
+}
+
+
+
+
+array Actor
+    MeshComponent
+    Dingledang
+    QHashIterator
+    Møkk
+*/
