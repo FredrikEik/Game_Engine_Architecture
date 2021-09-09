@@ -5,7 +5,7 @@ meshsystem::meshsystem()
 
 }
 
-MeshComponent * meshsystem::CreateMeshComponent(std::string input, int entity, bool bInProjDir)
+void meshsystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
 {
     std::string filename = gsl::ModelFilePath + input;
 
@@ -151,6 +151,7 @@ MeshComponent * meshsystem::CreateMeshComponent(std::string input, int entity, b
     //beeing a nice boy and closing the file after use
     fileIn.close();
 
-    //mesh->entity = entity;
-    return mesh;
+
+    mesh->entity = 0;
+    mesh->mDrawType = GL_TRIANGLES;
 }

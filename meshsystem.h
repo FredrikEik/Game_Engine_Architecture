@@ -20,13 +20,10 @@ class meshsystem
 public:
     meshsystem();
     void CreateMeshComponent();
-    MeshComponent * CreateMeshComponent(std::string input, int entity, bool bInProjDir = false);
+    void CreateMeshComponent(std::string input, MeshComponent * mesh);
 
     //void CreateMeshComponent(std::string defaultMesh);
     //MeshComponent OBJReader();
-
-
-    MeshComponent * mesh;
 };
 
 #endif // MESHSYSTEM_H

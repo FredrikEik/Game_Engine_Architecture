@@ -165,20 +165,23 @@ void RenderWindow::init()
     entities.push_back(0);
 
     TransformComponent * Susy = new TransformComponent();
-    Susy->entity = 0;
-    Susy->mMatrix.translate(0.f, 0.f, .9f);
     Susy->mMatrix.setToIdentity();
 
 
     transformCompVec.push_back(Susy);
-    meshCompVec.push_back(MeshSys->CreateMeshComponent("Susanne.obj", 0));
-    meshCompVec[0]->mDrawType = GL_TRIANGLES;
+    MeshComponent * SusyMesh = new MeshComponent();
+    MeshSys->CreateMeshComponent("Suzanne.obj", SusyMesh);
+    meshCompVec.push_back(SusyMesh);
 
     MaterialComponent * SusyMat = new MaterialComponent();
     SusyMat->entity = 0;
     SusyMat->mShaderProgram = 0;
     SusyMat->mTextureUnit = 0;
     MaterialCompVec.push_back(SusyMat);
+
+    Susy->entity = 0;
+    Susy->mMatrix.translate(0.f, 0.f, .9f);
+
 
     RenderSys->init(meshCompVec[0]);
     ///
@@ -261,6 +264,19 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
+    if(entities[0] == meshCompVec[0]->entity && entities[0] == transformCompVec[0]->entity && entities[0] == MaterialCompVec[0]->entity){
+        glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
+        RenderSys->draw(meshCompVec[0],
+                MaterialCompVec[0],
+                transformCompVec[0],
+                vMatrixUniform,
+                pMatrixUniform,
+                mMatrixUniform,
+                mCurrentCamera);
+
+    }
+
+
     //RENDER TRIANGLE
     //GLUSEPROGRAM GETS THE CURRENT MATERIAL
     glUseProgram(mShaderPrograms[TriangleMaterial->mShaderProgram]->getProgram());
@@ -276,17 +292,7 @@ void RenderWindow::render()
 
     //for(auto i = entities.begin(); i < entities.end(); i++){
 
-    if(entities[0] == meshCompVec[0]->entity && entities[0] == transformCompVec[0]->entity && entities[0] == MaterialCompVec[0]->entity){
-        glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
-        RenderSys->draw(meshCompVec[0],
-                MaterialCompVec[0],
-                transformCompVec[0],
-                vMatrixUniform,
-                pMatrixUniform,
-                mMatrixUniform,
-                mCurrentCamera);
 
-    }
     // }
 
 
