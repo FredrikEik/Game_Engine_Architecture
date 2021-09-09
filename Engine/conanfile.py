@@ -10,7 +10,9 @@ class ConanPackage(ConanFile):
 	('glm/0.9.9.8'),
         ('imgui/1.83'),
     ]
-	generators = "cmake"
+	generators = {
+                "cmake"
+                }
 	options = {
 		"shared": [True, False]
 	}
@@ -30,10 +32,10 @@ class ConanPackage(ConanFile):
 	def imports(self):
                 self.copy("*.dll", dst="bin", src="bin")
                 self.copy("*.dylib*", dst="bin", src="lib")
-                self.copy("imgui_impl_glfw.cpp", dst="res/bindings", src="bindings")
-                self.copy("imgui_impl_opengl3.cpp", dst="res/bindings", src="backends")
-                self.copy("imgui_impl_glfw.h", dst="../Res/bindings", src="./bindings")
-                self.copy("imgui_impl_opengl3.h", dst="./res/bindings", src="backends")	
+                self.copy("imgui_impl_glfw.cpp", dst="../Source/imgui/bindings", src="./res/bindings")
+                self.copy("imgui_impl_opengl3.cpp", dst="../Source/imgui/bindings", src="./res/bindings")
+                self.copy("imgui_impl_glfw.h", dst="../Source/imgui/bindings", src="./res/bindings")
+                self.copy("imgui_impl_opengl3.h", dst="../Source/imgui/bindings", src="./res/bindings")	
 
 
 	def build(self):

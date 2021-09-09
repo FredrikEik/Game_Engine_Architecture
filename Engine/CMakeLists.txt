@@ -35,6 +35,8 @@ assign_source_group(${SOURCE})
 assign_source_group(${SHADERFILES})
 
 add_executable(GameInJin ${SOURCE} ${SHADERFILES})
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameInJin)
+
 target_compile_features(GameInJin 
 		PUBLIC
 			 cxx_std_17

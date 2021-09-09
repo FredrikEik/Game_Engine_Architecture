@@ -1,4 +1,6 @@
 #include <imgui.h>
+#include "imgui/bindings/imgui_impl_glfw.h"
+#include "imgui/bindings/imgui_impl_opengl3.h"
 
 
 #include <glad/glad.h>
@@ -146,16 +148,15 @@ int main()
 
 
 	Shader ourShader = Shader("basicShader.vert", "basicShader.frag");
-	/*
+	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& IO = ImGui::GetID(); (void)IO;
-
+	ImGuiIO& io = ImGui::GetIO();
+	// Setup Platform/Renderer bindings
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 460");
-
+	ImGui_ImplOpenGL3_Init("#version 460 core");
+	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	*/
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -163,16 +164,15 @@ int main()
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
-		//ImGui::Text("Hello, world %d", 123);
 
 
 
 		//// input
 		processInput(window);
 		// feed inputs to dear imgui, start new frame
-		//ImGui_ImplOpenGL3_NewFrame();
-		//ImGui_ImplGlfw_NewFrame();
-		//ImGui::NewFrame();
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -186,23 +186,21 @@ int main()
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		// render your GUI
-		//ImGui::Begin("Demo window");
-		//ImGui::Button("Hello!");
-		//ImGui::End();
+		ImGui::Begin("Demo window");
+		ImGui::Button("Hello!");
+		ImGui::End();
 
 		// Render dear imgui into screen
-		//ImGui::Render();
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
 		glfwSwapBuffers(window);
 	}
 
-	/*
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-	*/
 	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
 	return 0;
