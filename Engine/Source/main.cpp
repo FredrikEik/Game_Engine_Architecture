@@ -82,10 +82,6 @@ int main()
 	//delete &testManager;
 	//std::cout << "Waiting";
 
-	std::cout<<"something"; for (int i = 0; i<10, i++;)
-	std::cout << " some shit lalalala" << std::endl; std::cout << "some thing" <<
-		"more to do"; int mongo = 3;
-
 	auto start = std::chrono::system_clock::now();
 
 	//Factory &factory = (*new Factory);

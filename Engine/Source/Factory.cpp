@@ -21,3 +21,9 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 
 	return uint32();
 }
+
+Factory::~Factory()
+{
+	delete& componentManagers;
+	delete& reusableAssetComponents;
+}

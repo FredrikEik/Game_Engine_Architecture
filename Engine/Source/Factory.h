@@ -48,13 +48,6 @@ private:
 	std::unordered_map<std::size_t, std::pair<std::type_index, uint32>>& reusableAssetComponents;
 };
 
-Factory::~Factory()
-{
-	delete& componentManagers;
-	delete& reusableAssetComponents;
-}
-
-
 
 // This halves the speed of creating components. 
 // It is plenty fast enough for creating a few components
