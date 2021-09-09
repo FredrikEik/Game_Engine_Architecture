@@ -94,29 +94,29 @@ void MainWindow::on_pushButton_2_clicked()
     mRenderWindow->transformObject();
 }
 
-void MainWindow::on_pushButton_3_clicked()
-{
-    //mRenderWindow->spawnObject(in);
-}
+//void MainWindow::on_pushButton_3_clicked()
+//{
+//    //mRenderWindow->spawnObject(in);
+//}
 
-void MainWindow::on_lineEdit_textEdited(const QString &arg1)
-{
-   // mRenderWindow->spawnObject(arg1);
-}
+//void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+//{
+//   // mRenderWindow->spawnObject(arg1);
+//}
 
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
-{
-   mRenderWindow->spawnObject(arg1);
-}
+//void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+//{
+//   mRenderWindow->spawnObject(arg1);
+//}
 
 
-void MainWindow::on_comboBox_activated(const QString &arg1)
-{
-    if(arg1 == "spawn cube")
-    {
-        qDebug() << "cube spawn";
-    }
-}
+//void MainWindow::on_comboBox_activated(const QString &arg1)
+//{
+//    if(arg1 == "spawn cube")
+//    {
+//        qDebug() << "cube spawn";
+//    }
+//}
 
 void MainWindow::on_comboBox_activated(int index)
 {
