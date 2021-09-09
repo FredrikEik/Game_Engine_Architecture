@@ -69,7 +69,7 @@ private:
     float mAspectratio{1.f};
 
     Factory* factory = new Factory;
-    ResourceManager* resourceManager = new ResourceManager;
+
 
     //std::vector<VisualObject*> mVisualObjects;
 

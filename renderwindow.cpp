@@ -155,6 +155,8 @@ void RenderWindow::init()
     mGameObjects.push_back(triangle);
     */
 
+
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -317,8 +319,9 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 void RenderWindow::buttonCreate(std::string objectName)
 {
+    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);
     factory->createObject(objectName);
-    resourceManager->saveMesh("fileName", objectName);
+
 }
 
 

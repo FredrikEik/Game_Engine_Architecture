@@ -1,10 +1,13 @@
 #include "mariocube.h"
 #include "objreader.h"
 
+
 MarioCube::MarioCube()
 {
-    ObjReader objReader;
-    objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
+    //ObjReader objReader;
+
+   // objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
+
 
 }
 

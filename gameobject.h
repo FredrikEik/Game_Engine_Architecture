@@ -18,6 +18,8 @@ public:
     MeshComponent* getMeshComponent(){return meshComp;}
     MaterialComponent* getMaterialComponent(){return materialComp;}
 
+    void setMeshComponent(MeshComponent* newMeshComp){meshComp=newMeshComp;}
+
 private:
     TransformComponent* transformComp;
     MeshComponent* meshComp;

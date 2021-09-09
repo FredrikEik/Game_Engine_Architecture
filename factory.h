@@ -13,12 +13,7 @@ public:
     std::vector<GameObject*> mGameObjects;
 
     void createObject(std::string objectName);
-};
 
-
-class ResourceManager
-{
-public:
     void saveMesh(std::string fileName, std::string nickName);
 
 
