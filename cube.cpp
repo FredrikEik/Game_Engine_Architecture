@@ -4,8 +4,8 @@
 Cube::Cube()
 {
     MeshComp = new MeshComponent();
-    TransformComp = new TransformComponent();
     TextureComp = new TextureComponent();
+    TransformComp = new TransformComponent();
 
     // Positions             // Colors          // UV
     MeshComp->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});

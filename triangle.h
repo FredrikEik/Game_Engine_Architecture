@@ -4,9 +4,10 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <vector>
 #include <matrix4x4.h>
-#include "visualobject.h"
+//#include "visualobject.h"
+#include "gameobject.h"
 
-class Triangle : public VisualObject
+class Triangle : public GameObject
 {
 public:
     Triangle();
@@ -14,6 +15,11 @@ public:
 
     void init() override;
     void draw() override;
+
+private:
+
+    MeshComponent* MeshComp;
+    TextureComponent* TextureComp;
 };
 
 #endif // TRIANGLE_H
