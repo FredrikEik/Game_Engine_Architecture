@@ -17,7 +17,7 @@ class ComponentArray : public IComponentArray
 public:
     //ComponentManager();
 
-    void AddComponent(Entity entity, T component)
+    void InsertComponent(Entity entity, T component)
     {
         assert(m_entityToIndex.find(entity) == m_entityToIndex.end() && "Entity allready have a component of that type");
 
@@ -29,7 +29,7 @@ public:
         m_size++;
     }
 
-    void RemoveComponent(Entity entity)
+    void ClearComponent(Entity entity)
     {
         assert(m_entityToIndex.find(entity) != m_entityToIndex.end() && "Trying to remove non-exsisting component!");
 
@@ -38,7 +38,7 @@ public:
         size_t indexOfLastEntity = m_size-1;
         m_componentArray[indexOfRemovedEntity] = m_componentArray[indexOfLastEntity];
 
-        //Update maps
+        //Update and clean maps
         Entity entityOfLastElement = m_IndexToEntity[indexOfLastEntity];
         m_entityToIndex[entityOfLastElement] = indexOfRemovedEntity;
         m_IndexToEntity[indexOfRemovedEntity] = entityOfLastElement;
@@ -61,12 +61,12 @@ public:
     {
         if (m_entityToIndex.find(entity) != m_entityToIndex.end())
         {
-            RemoveComponent(entity);
+            ClearComponent(entity);
         }
     }
 
 private:
-    //TODO: Find a better solution than maps?
+    //TODO: Find a better solution than maps? events?
     std::array<T, MAX_ENTITIES> m_componentArray;
 
     std::unordered_map<Entity, size_t> m_entityToIndex;
