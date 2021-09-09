@@ -8,6 +8,8 @@
 
 #include "input.h"
 #include "constants.h"
+#include "components.h"
+#include "rendersystem.h"
 
 class QOpenGLContext;
 class Shader;
@@ -32,6 +34,13 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+
+    MeshComponent * TriangelMesh;
+    MaterialComponent *TriangleMaterial;
+    TransformComponent *TriangleTransform;
+    RenderSystem *RenderSys;
+
+
 
 private slots:
     void render();

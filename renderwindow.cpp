@@ -18,6 +18,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "components.h"
+#include "rendersystem.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -134,7 +135,29 @@ void RenderWindow::init()
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
+////*************************************start**////////////
 
+    TriangelMesh = new MeshComponent() ;
+    TriangleMaterial = new MaterialComponent();
+    TriangleTransform = new TransformComponent();
+    RenderSys;
+
+    // Positions            // Colors       //UV
+    TriangleTransform->mMatrix.setToIdentity();
+
+
+    TriangelMesh->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+    TriangelMesh->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    TriangelMesh->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    TriangelMesh->mDrawType = GL_TRIANGLES;
+
+    TriangleMaterial->mShaderProgram = 1;
+    TriangleMaterial->mTextureUnit = 1;
+
+    TriangleTransform->mMatrix.translate(0.f, 0.f, .5f);
+    RenderSys->init(TriangelMesh);
+
+////*************************************start**////////////
     //dog triangle
     temp = new Triangle();
     temp->init();
@@ -165,6 +188,8 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
+
+
 
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
@@ -210,9 +235,34 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
+    //RENDER TRIANGLE
+    glUseProgram(mShaderPrograms[TriangleMaterial->mShaderProgram]->getProgram());
+    int viewMatrix1{-1};
+    int projectionMatrix1{-1};
+    int modelMatrix1{-1};
+    RenderSys->init(TriangelMesh);
+
+    viewMatrix1 = vMatrixUniform;
+    projectionMatrix1 = pMatrixUniform;
+    modelMatrix1 = mMatrixUniform;
+
+    //Now mMaterial component holds texture slot directly - probably should be changed
+
+
+    glUniformMatrix4fv( viewMatrix1, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+    glUniformMatrix4fv( projectionMatrix1, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+    glUniformMatrix4fv( modelMatrix1, 1, GL_TRUE,TriangleTransform->mMatrix.constData());
+
+    //draw the object
+
+    glBindVertexArray( TriangelMesh->mVAO);
+    glDrawArrays(TriangelMesh->mDrawType, 0, TriangelMesh->mVertices.size());
+    glBindVertexArray(0);
+
+
     //Moves the dog triangle - should be mada another way!!!!
     mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-
+    TriangleTransform->mMatrix.translate(-.002f, -.002f, .002f);
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

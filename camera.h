@@ -20,9 +20,6 @@ public:
     void updateForwardVector();
     void update();
 
-    //gsl::Matrix4x4 mViewMatrix;
-    //gsl::Matrix4x4 mProjectionMatrix;
-
     void setPosition(const gsl::Vector3D &position);
 
     void setSpeed(float speed);
