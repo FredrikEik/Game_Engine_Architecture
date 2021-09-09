@@ -35,8 +35,9 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void transformObject();
-
+    void transformObjectX(double in);
+    void transformObjectY(double in);
+    void transformObjectZ(double in);
     void spawnObject(QString input);
 
 private slots:

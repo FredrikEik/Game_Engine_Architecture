@@ -91,32 +91,8 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    mRenderWindow->transformObject();
+    //mRenderWindow->transformObject();
 }
-
-//void MainWindow::on_pushButton_3_clicked()
-//{
-//    //mRenderWindow->spawnObject(in);
-//}
-
-//void MainWindow::on_lineEdit_textEdited(const QString &arg1)
-//{
-//   // mRenderWindow->spawnObject(arg1);
-//}
-
-//void MainWindow::on_lineEdit_textChanged(const QString &arg1)
-//{
-//   mRenderWindow->spawnObject(arg1);
-//}
-
-
-//void MainWindow::on_comboBox_activated(const QString &arg1)
-//{
-//    if(arg1 == "spawn cube")
-//    {
-//        qDebug() << "cube spawn";
-//    }
-//}
 
 void MainWindow::on_comboBox_activated(int index)
 {
@@ -137,4 +113,22 @@ void MainWindow::on_comboBox_activated(int index)
         qDebug() << "triangle";
         mRenderWindow->spawnObject("triangle");
     }
+}
+
+void MainWindow::on_doubleSpinBox_valueChanged(double arg1)
+{
+    //x
+    mRenderWindow->transformObjectX(arg1);
+}
+
+void MainWindow::on_doubleSpinBox_2_valueChanged(double arg1)
+{
+    //y
+    mRenderWindow->transformObjectY(arg1);
+}
+
+void MainWindow::on_doubleSpinBox_3_valueChanged(double arg1)
+{
+    //z
+    mRenderWindow->transformObjectZ(arg1);
 }

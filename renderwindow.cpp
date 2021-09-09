@@ -348,10 +348,22 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::transformObject()
+void RenderWindow::transformObjectX(double in)
 {
-         mVisualObjects[1]->mTransform->mMatrix.scale(1.1f, 1.1f, 1.1f);
+        // mVisualObjects[1]->mTransform->mMatrix.setRotationToVector(in); //scaler
+        //mVisualObjects[1]->mTransform->mMatrix.translate(in);
+     mVisualObjects[1]->mTransform->mMatrix.rotateX(in);
 
+}
+
+void RenderWindow::transformObjectY(double in)
+{
+    mVisualObjects[1]->mTransform->mMatrix.rotateY(in);
+}
+
+void RenderWindow::transformObjectZ(double in)
+{
+    mVisualObjects[1]->mTransform->mMatrix.rotateZ(in);
 }
 
 void RenderWindow::spawnObject(QString in)

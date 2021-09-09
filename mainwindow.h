@@ -26,15 +26,13 @@ private slots:
 
     void on_pushButton_2_clicked();
 
-//    void on_pushButton_3_clicked();
-
-//    void on_lineEdit_textEdited(const QString &arg1);
-
-//    void on_lineEdit_textChanged(const QString &arg1);
-
-//    void on_comboBox_activated(const QString &arg1);
-
     void on_comboBox_activated(int index);
+
+    void on_doubleSpinBox_valueChanged(double arg1);
+
+    void on_doubleSpinBox_2_valueChanged(double arg1);
+
+    void on_doubleSpinBox_3_valueChanged(double arg1);
 
 private:
     void init();
@@ -44,5 +42,7 @@ private:
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
 };
+void on_doubleSpinBox_valueChanged(double arg1);
+
 
 #endif // MAINWINDOW_H
