@@ -26,10 +26,10 @@ widget::widget(QWidget  *parent) : QWidget(parent){
 
 }
 
-void widget::on_push_toggled(bool checked)
-{
+//void widget::on_push_toggled(bool checked)
+//{
 
-    mRenderWindow->transformObject(checked);
+//    mRenderWindow->transformObject(checked);
 
-}
+//}
 

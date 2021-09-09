@@ -13,7 +13,7 @@ public:
     explicit widget(QWidget  *parent = nullptr);
 
 private slots:
- void on_push_toggled(bool checked);
+ //void on_push_toggled(bool checked);
 
 private:
 RenderWindow *mRenderWindow;

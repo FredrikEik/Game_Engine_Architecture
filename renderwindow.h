@@ -35,7 +35,9 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void transformObject(bool state);
+    void transformObject();
+
+    void spawnObject();
 
 private slots:
     void render();

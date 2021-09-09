@@ -88,7 +88,12 @@ void MainWindow::on_pushButton_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
-void MainWindow::on_pushButton_2_clicked(bool checked)
+void MainWindow::on_pushButton_2_clicked()
 {
-    mRenderWindow->transformObject(checked);
+    mRenderWindow->transformObject();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    mRenderWindow->spawnObject();
 }

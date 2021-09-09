@@ -348,13 +348,21 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::transformObject(bool state)
+void RenderWindow::transformObject()
 {
-    if(state)
-    {
-        qDebug() << "checked";
          mVisualObjects[1]->mTransform->mMatrix.scale(1.1f, 1.1f, 1.1f);
-    }
+
+}
+
+void RenderWindow::spawnObject()
+{
+
+    VisualObject *temp = new Cube();
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;
+    temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
+    mVisualObjects.push_back(temp );
+
 }
 
 //Uses QOpenGLDebugLogger if this is present
