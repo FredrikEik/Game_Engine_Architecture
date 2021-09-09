@@ -154,12 +154,12 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    for(int i{0}; i < mVisualObjects.size(); i++)
+    for(int i{0}; i < mResource->mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+        glUseProgram(mShaderPrograms[mResource->mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
         /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
 
@@ -169,36 +169,37 @@ void RenderWindow::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        if (mResource->mVisualObjects[i]->mMaterial->mShaderProgram == 0)
         {
             viewMatrix = vMatrixUniform;
             projectionMatrix = pMatrixUniform;
             modelMatrix = mMatrixUniform;
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        else if (mResource->mVisualObjects[i]->mMaterial->mShaderProgram == 1)
         {
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
 
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform, mResource->mVisualObjects[i]->mMaterial->mTextureUnit);
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mResource->mVisualObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+        glBindVertexArray( mResource->mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mResource->mVisualObjects[i]->mMesh->mDrawType, 0,
+                     mResource->mVisualObjects[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
     }
 
     //Moves the dog triangle - should be mada another way!!!!
-    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    mResource->mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
 
     //Calculate framerate before

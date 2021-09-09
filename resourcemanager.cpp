@@ -30,13 +30,14 @@ void ResourceManager::manageObjects()
 //    VisualObject *dagsDog;
 
     //Set up camera
-    Camera *mCurrentCamera{nullptr};
+//    Camera *mCurrentCamera;
 
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+//    mCurrentCamera = new Camera();
+//    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-void ResourceManager::addObject(std::string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID)
+void ResourceManager::addObject(std::string name, int id,
+                                int TransformID, int MeshID, int MaterialID, int GravityID)
 {
 
     VisualObject * CurrentVisualObject;

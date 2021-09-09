@@ -10,7 +10,7 @@ public:
     virtual void init() = 0;
 
     std::string mName;
-    int entitiyID;
+    int entitiyID = 0;
 
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};

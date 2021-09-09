@@ -68,7 +68,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+//    std::vector<VisualObject*> mVisualObjects;
     ResourceManager *mResource;
 
     Input mInput;

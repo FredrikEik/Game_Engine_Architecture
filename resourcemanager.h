@@ -15,8 +15,8 @@ public:
     void manageObjects();
     void addObject(std::string name = "DefaultGameObject", int id = 0,
                    int TransformID = 0, int MeshID = 0, int MaterialID = 0, int GravityID = 0);
-private:
     std::vector<VisualObject*> mVisualObjects;
+private:
 };
 
 #endif // RESOURCEMANAGER_H
