@@ -1,6 +1,6 @@
 ﻿#include "gameobjectmanager.h"
 
-void GameObjectManager::manageObjects(Camera mCurrentCamera)
+void GameObjectManager::manageObjects(/*mCurrentCamera*/)
 {
 
     //Axis
@@ -22,7 +22,7 @@ void GameObjectManager::manageObjects(Camera mCurrentCamera)
     //  mVisualObjects.push_back(temp);
 
     //Set up camera position
-    mCurrentCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    //mCurrentCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
 void GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)

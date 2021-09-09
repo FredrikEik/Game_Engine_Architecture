@@ -18,7 +18,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "components.h"
-#include "gameobjectmanager.h"
+#include "gameObjectManager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -128,13 +128,13 @@ void RenderWindow::init()
     //********************** Making the objects to be drawn **********************
 
     //Set up camera
-    //mCurrentCamera = new Camera();
+    mCurrentCamera = new Camera();
 
-    Camera mCurrentCamera;
-    //mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    //Camera mCurrentCamera;
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     // Made my own GameObjectManager
-    gObjectManager->manageObjects(mCurrentCamera);
+    //gObjectManager->manageObjects(mCurrentCamera);
 
 }
 

@@ -34,7 +34,7 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    GameObjectManager *gObjectManager;
+    //GameObjectManager *gObjectManager;
 
 private slots:
     void render();
