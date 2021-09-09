@@ -91,14 +91,14 @@ void MainWindow::on_pushButton_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
-void MainWindow::on_MakePlane_clicked()
-{
-    mRenderWindow->buttonCreate(itemToSpawn);
-}
-
 
 
 void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
 {
             itemToSpawn = arg1.toStdString();
+}
+
+void MainWindow::on_CreateObject_clicked()
+{
+        mRenderWindow->buttonCreate(itemToSpawn);
 }

@@ -28,7 +28,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="MakePlane">
+       <widget class="QPushButton" name="CreateObject">
         <property name="text">
          <string>Create Object</string>
         </property>

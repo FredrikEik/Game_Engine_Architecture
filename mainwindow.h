@@ -21,11 +21,9 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
-    void on_MakePlane_clicked();
-
-
-
     void on_createDropDownBox_currentTextChanged(const QString &arg1);
+
+    void on_CreateObject_clicked();
 
 private:
     void init();
