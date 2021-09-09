@@ -86,3 +86,8 @@ void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+
+}

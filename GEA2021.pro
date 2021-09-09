@@ -6,7 +6,8 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 INCLUDEPATH += \
-    ./gsl
+    ./gsl \
+    ./Assets
 
 SOURCES += main.cpp \
     camera.cpp \
@@ -15,6 +16,7 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     objectfactory.cpp \
+    objimport.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -38,6 +40,7 @@ HEADERS += \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
     objectfactory.h \
+    objimport.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
