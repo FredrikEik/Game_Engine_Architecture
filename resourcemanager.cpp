@@ -15,6 +15,8 @@
 
 ResourceManager::ResourceManager()
 {
+    //This is a hack - to make sure my MeshComponens are not moved for now
+    //Please fix
     mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
 }
 
