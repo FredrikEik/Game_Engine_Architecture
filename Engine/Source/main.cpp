@@ -5,6 +5,7 @@
 #include "Components/ComponentManager.h"
 #include "Factory.h"
 #include "Systems/BaseSystem.h"
+#include "ECSManager.h"
 #include <chrono>
 #include <typeindex>
 
@@ -39,9 +40,23 @@ void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-
+//template <typename... Ts>
+//void swallow(Ts&&...) {
+//}
+//
+//template <typename T>
+//int create(int i) {
+//	std::cout << typeid(T).name()<<" id: " << i << '\n';
+//	return 0;
+//}
+//
+//template<typename... Ts>
+//void createObject(int i) {
+//	swallow(create<Ts>(i)...);
+//}
 int main()
 {
+	//createObject<MeshComponent, testComponent, TransformComponent>(1);
 	uint32 elements{ 5000000 };
 	//ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
 	//for (uint16 j = 0; j < 1; ++j)
@@ -83,7 +98,8 @@ int main()
 	//std::cout << "Waiting";
 
 	auto start = std::chrono::system_clock::now();
-
+	auto manager = ECSManager();
+	manager.addComponents<MeshComponent, testComponent, TransformComponent>(0);
 	//Factory &factory = (*new Factory);
 	//factory.loadAsset<MeshComponent>(0, "some/file.path/mesh");
 	//for (uint32 i{}; i < elements; ++i)

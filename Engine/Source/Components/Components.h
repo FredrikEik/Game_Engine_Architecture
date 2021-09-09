@@ -3,8 +3,9 @@
 #include "glad/glad.h"
 #include <vector>
 #include "../Vertex.h"
+#include "glm/glm.hpp"
 
-class Component 
+struct Component 
 {
 public:
 	Component(uint32 entity, uint32 componentID) : entityID{ entity }, ID{ componentID } {}
@@ -13,7 +14,7 @@ public:
 	uint32 entityID;
 };
 
-class testComponent final : public Component 
+struct testComponent : public Component
 {
 public:
 	testComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
@@ -22,7 +23,7 @@ public:
 	float pos[3]{};
 };
 
-class MeshComponent final : public Component
+struct MeshComponent final : public Component
 {
 public:
 	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
@@ -32,4 +33,11 @@ public:
 	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
 	GLenum m_drawType{ GL_TRIANGLES };
+};
+
+struct TransformComponent final : public Component
+{
+	TransformComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::mat4x4 transform{};
 };

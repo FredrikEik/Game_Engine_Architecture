@@ -3,7 +3,6 @@
 #include "glm/glm.hpp" // Every place that use vertex probably use glm anyways
 
 
-
 class Vertex
 {
 public:

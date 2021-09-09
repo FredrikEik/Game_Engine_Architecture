@@ -63,7 +63,7 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
 	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
-	
+
 	return packedComponentArray.back().ID;
 }
 

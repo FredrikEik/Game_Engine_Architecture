@@ -6,16 +6,17 @@
 #include <typeindex>
 #include <filesystem>
 #include "Systems/MeshSystem.h"
+#include <iostream>
 
-//TODO: std::filesystem::path is not hashable. Swap out for a hashable key. E.G std::filesystem::hash_value
+// There should only exist one factory, get it through the ECSManager
 class Factory
 {
-public:
-	//friend class ComponentManager;
-	
+	friend class ECSManager;
 	Factory(): componentManagers{(*new std::unordered_map<std::type_index, ComponentManager<Component>*>)},
 		reusableAssetComponents{(*new std::unordered_map<std::size_t, std::pair<std::type_index, uint32>>)} {}
 	~Factory();
+public:
+	
 
 	// This is 2-3 times slower than creating components directly through the manager when creating many components.
 	// If you need to create a lot of components, consider doing it through getManager directly.
