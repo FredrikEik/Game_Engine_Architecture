@@ -22,12 +22,6 @@ private:
     TransformComponent* transformComp;
     MeshComponent* meshComp;
     MaterialComponent* materialComp;
-
-    /*
-    TransformComponent* transformComp;
-    MeshComponent* meshComp;
-    MaterialComponent* materialComp;
-    */
 };
 #endif // GAMEOBJECT_H
 

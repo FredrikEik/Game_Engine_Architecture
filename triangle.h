@@ -14,10 +14,6 @@ public:
 
     void init() override;
     void draw() override;
-
-private:
-    MeshComponent* meshComp;
-    MaterialComponent* materialComp;
 };
 
 #endif // TRIANGLE_H

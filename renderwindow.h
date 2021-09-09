@@ -51,8 +51,6 @@ private:
     void setCameraSpeed(float value);
 
     void handleInput();
-	
-    void setupPlainShader(int shaderIndex);
 
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];

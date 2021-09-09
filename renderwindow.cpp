@@ -130,33 +130,24 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
-
-
-
+    //factory->createObject("Plane");
+    //factory->createObject("Triangle");
+    //factory->createObject("Cube");
+    //factory->createObject("MarioCube");
 
     /*
     GameObject *marioCube = new MarioCube();
     marioCube->init();
-    marioCube->getMaterialComponent()->mShaderProgram = 1;
     mGameObjects.push_back(marioCube);
-    */
-
-    //factory->createObject("Plane");
-    //factory->createObject("Triangle");
 
     GameObject *plane = new Plane();
     plane->init();
-    mGameObjects.push_back(plane);*/
+    mGameObjects.push_back(plane);
 
     GameObject *cube = new Cube();
     cube->init();
-    cube->getMaterialComponent()->mShaderProgram = 1;
-    cube->getMaterialComponent()->mTextureUnit = 1;
     mGameObjects.push_back(cube);
 
-    //testing triangle class
-
-    /*
     GameObject *triangle = new Triangle();
     triangle->init();
     mGameObjects.push_back(triangle);
@@ -199,24 +190,22 @@ void RenderWindow::render()
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
-        //First objekct - xyz
-        //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
-
-
         for (unsigned int i=0; i<factory->mGameObjects.size(); i++)
 		{	
-			unsigned int shaderProgramIndex = mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
+            if(shaderProgramIndex == 1)
+            {
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-			glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mGameObjects[i]->getTransformComponent()->mMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 			//draw the object
 			factory->mGameObjects[i]->draw();
-			factory->mGameObjects[i]->transformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
+            factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
          }
-        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame*/
     }
 
     //Calculate framerate before

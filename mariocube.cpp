@@ -5,7 +5,6 @@ MarioCube::MarioCube()
 {
     ObjReader objReader;
     objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", *getMeshComponent());
-    //getTransformComponent()->mMatrix.setToIdentity();
 
 }
 

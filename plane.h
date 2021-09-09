@@ -13,12 +13,6 @@ public:
 
     void draw() override;
     void init() override;
-
-private:
-
-    MeshComponent* meshComp;
-    MaterialComponent* materialComp;
-
 };
 
 #endif // PLANE_H
