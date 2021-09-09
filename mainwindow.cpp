@@ -80,6 +80,8 @@ void MainWindow::init()
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
     ui->comboBox->addItem("Cube");
+    ui->comboBox->addItem("Triangle");
+    ui->comboBox->addItem("Goat");
 }
 
 //Example of a slot called from the button on the top of the program.
