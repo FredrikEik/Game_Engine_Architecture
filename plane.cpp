@@ -5,6 +5,7 @@ Plane::Plane()
     mVertices.push_back(Vertex(0.0,0.0,0.0, 0.0,0.0,0.0));
     mVertices.push_back(Vertex(1.0,0.0,0.0, 0.0,0.0,0.0));
     mVertices.push_back(Vertex(1.0,0.0,1.0, 0.0,0.0,0.0));
+    mVertices.push_back(Vertex(1.0,0.0,1.0, 0.0,0.0,0.0));
     mVertices.push_back(Vertex(0.0,0.0,1.0, 0.0,0.0,0.0));
     mMatrix.setToIdentity();
 }
@@ -47,6 +48,6 @@ void Plane::init()
 void Plane::draw()
 {
     glBindVertexArray( mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());
     glBindVertexArray(0);
 }

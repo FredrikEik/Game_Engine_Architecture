@@ -163,7 +163,7 @@ void RenderWindow::render()
 
     //Draws the objects
     //This should be in a loop!
-
+    for (auto it=mVisualObjects.begin(); it!=mVisualObjects.end(); it++)
     {
         //First objekct - xyz
         //what shader to use
@@ -186,6 +186,14 @@ void RenderWindow::render()
         glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
         mVisualObjects[1]->draw();
         mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[2]->mMatrix.constData());
+        mVisualObjects[2]->draw();
+
+
     }
 
     //Calculate framerate before
