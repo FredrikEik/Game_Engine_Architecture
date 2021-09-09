@@ -182,15 +182,18 @@ void RenderWindow::render()
         glUseProgram(mShaderPrograms[0]->getProgram() );
 
 
-        for (int i=0; i<factory->mGameObjects.size(); i++){
+        for (unsigned int i=0; i<factory->mGameObjects.size(); i++){
         //send data to shader
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, factory->mGameObjects[i]->transformComp->mMatrix.constData());
         //draw the object
         factory->mGameObjects[i]->draw();
+        factory->mGameObjects[i]->transformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
          }
         }
+
+
 
         /*
 
@@ -206,7 +209,7 @@ void RenderWindow::render()
 
 
 
-        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame*/
+        static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame*/
 
 
 
