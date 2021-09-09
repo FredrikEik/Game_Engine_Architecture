@@ -8,6 +8,7 @@ namespace gsl  //Game School Lib
     const std::string ProjectFolderName{"../GEA2021/"};
     const std::string AssetFilePath{ProjectFolderName + "Assets/"};
     const std::string TextureFilePath{AssetFilePath + "Textures/"};
+    const std::string MeshFilePath{AssetFilePath + "Meshes/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
 
     const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!

@@ -144,6 +144,14 @@ void RenderWindow::init()
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     mGameObjects.push_back(temp);
 
+    //Suzanne:
+//    suzanne.obj
+    temp = resourceManager.AddObject("suzanne.obj");
+    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp->mTransform->mMatrix.translate(1.f, 1.f, -.5f);
+    temp->mTransform->mMatrix.scale(0.5f);
+    mGameObjects.push_back(temp);
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));

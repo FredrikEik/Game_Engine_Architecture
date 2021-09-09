@@ -30,7 +30,7 @@ GameObject *ResourceManager::AddObject(std::string filename)
 
     //Simple "factory" - making the meshobject said in the filename
     if (filename.find(".obj") != std::string::npos)
-        meshIndex = readObj(filename);
+        meshIndex = readObj(gsl::MeshFilePath + filename);
     if (filename.find("axis") != std::string::npos)
         meshIndex = makeAxis();
     if (filename.find("triangle") != std::string::npos)
@@ -57,8 +57,6 @@ int ResourceManager::readObj(std::string filename)
     mMeshComponents.emplace_back(MeshComponent());
     MeshComponent &temp = mMeshComponents.back();
 
-    //Open File
-    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
     std::ifstream fileIn;
     fileIn.open (filename, std::ifstream::in);
     if(!fileIn)
