@@ -17,6 +17,9 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "objmesh.h"
+#include "gameobject.h"
+#include "resourcemanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -123,7 +126,11 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
+
     //********************** Making the object to be drawn **********************
+
+
+    //--> De første to bruker fortsatt sin egen init(), men bruker egne components.
     VisualObject *temp = new XYZ();
     temp->mMaterialComp->mShaderProgram = 0;
     temp->init();
@@ -137,9 +144,40 @@ void RenderWindow::init()
     temp->mTransformComp->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
+// forsøk på å lage en resourcemanager.
+    ResourceManager *tempResourceManager = new ResourceManager;
+
+    tempResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+
+
+
+//    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+//          temp ->init();
+//          temp->mMaterialComp->mShaderProgram = 0;    //texture shader
+//          temp->mTransformComp->mMatrix.translate(-3.f, 0.f, -3.f);
+//          mVisualObjects.push_back(temp );
+
+
+
+//    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\box.obj");
+//        temp ->init();
+//        temp->mMaterialComp->mShaderProgram = 0;    //texture shader
+//        temp->mTransformComp->mMatrix.translate(3.f, 0.f, -3.f);
+//        mVisualObjects.push_back(temp );
+
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+
+//    for(int i{0}; i < mVisualObjects.size(); i++)
+//    {
+//        mVisualObjects[i]->mShaderComp->mMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "mMatrix" );
+//        mVisualObjects[i]->mShaderComp->vMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "vMatrix" );
+//        mVisualObjects[i]->mShaderComp->pMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "pMatrix" );
+//        mVisualObjects[i]->mShaderComp->TextureUniform = glGetUniformLocation(mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "textureSampler");
+//    }
 }
 
 // Called each frame - doing the rendering
@@ -161,29 +199,38 @@ void RenderWindow::render()
     //Draws the objects
     //This should be in a loop!
 
-
+    for(int i{0}; i < mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
-
+        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
+        if(mVisualObjects[i]->mMaterialComp->mShaderProgram == 0)
+        {
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
+        }else if(mVisualObjects[i]->mMaterialComp->mShaderProgram == 1){
         //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mTransformComp->mMatrix.constData());
+        glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterialComp->mTextureUnit);
+        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
+        }
         //draw the object
-        mVisualObjects[0]->draw();
+        glBindVertexArray( mVisualObjects[i]->mMeshComp->mVAO );
+        glDrawArrays(mVisualObjects[i]->mMeshComp->mDrawType, 0, mVisualObjects[i]->mMeshComp->mVertices.size());
+        glBindVertexArray(0);
 
         //Second object - triangle
         //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mTransformComp->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+//        glUseProgram(mShaderPrograms[1]->getProgram() );
+//        //what texture (slot) to use
+//        glUniform1i(mTextureUniform, 1);
+//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mTransformComp->mMatrix.constData());
+//        mVisualObjects[1]->draw();
+//        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before

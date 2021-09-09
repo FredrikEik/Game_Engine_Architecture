@@ -50,7 +50,7 @@ void Triangle::init()
 
 void Triangle::draw()
 {
-    glBindVertexArray( mMeshComp->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(0);
+//    glBindVertexArray( mMeshComp->mVAO );
+//    glDrawArrays(GL_TRIANGLES, 0, 3);
+//    glBindVertexArray(0);
 }

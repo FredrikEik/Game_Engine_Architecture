@@ -28,7 +28,7 @@ public:
 
     GLuint mVAO{0};
     GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+    GLuint mEAB{0};
 
     GLenum mDrawType{GL_TRIANGLES};
 };
@@ -41,9 +41,32 @@ public:
     GLint mTextureUnit{};
 };
 
-class RenderComponent
-{
 
+class ShaderComponent
+{
+public:
+    GLint mMatrixUniform{0};
+    GLint vMatrixUniform{0};
+    GLint pMatrixUniform{0};
+    GLint TextureUniform{0};
+};
+
+// TO DO: Create multiple shadercomponents, plainshadercomp, textureshadercomp...
+class PlainShaderComponent
+{
+public:
+    GLint mMatrixUniform{0};
+    GLint vMatrixUniform{0};
+    GLint pMatrixUniform{0};
+};
+
+class TextureShaderComponent
+{
+public:
+    GLint mMatrixUniform{0};
+    GLint vMatrixUniform{0};
+    GLint pMatrixUniform{0};
+    GLint TextureUniform{0};
 };
 
 

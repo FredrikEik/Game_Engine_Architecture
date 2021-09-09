@@ -8,10 +8,12 @@ TARGET      = GEA2021
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
+    gameobject.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     objmesh.cpp \
     renderwindow.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
@@ -26,6 +28,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    gameobject.h \
     gltypes.h \
     input.h \
     math_constants.h \
@@ -33,6 +36,7 @@ HEADERS += \
     matrix4x4.h \
     objmesh.h \
     renderwindow.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
     texture.h \

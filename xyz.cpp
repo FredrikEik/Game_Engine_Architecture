@@ -7,6 +7,7 @@ XYZ::XYZ() {
     mTransformComp->mMatrix.setToIdentity();
     mMeshComp = new MeshComponent();
 
+
     mMeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mMeshComp->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mMeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
@@ -55,6 +56,6 @@ void XYZ::init()
 
 void XYZ::draw()
 {
-    glBindVertexArray( mMeshComp->mVAO );
-    glDrawArrays(GL_LINES, 0, mMeshComp->mVertices.size());
+//    glBindVertexArray( mMeshComp->mVAO );
+//    glDrawArrays(GL_LINES, 0, mMeshComp->mVertices.size());
 }

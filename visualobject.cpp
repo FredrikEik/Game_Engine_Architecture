@@ -1,8 +1,15 @@
 #include "visualobject.h"
 #include "shader.h"
+#include "string"
 
 VisualObject::VisualObject()
 {
+}
+
+VisualObject::VisualObject(std::string name)
+    : mName(name)
+{
+    ID = ID++;
 }
 
 VisualObject::~VisualObject()
