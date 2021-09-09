@@ -4,7 +4,7 @@
 #include <vector>
 #include <typeindex>
 #include <filesystem>
-
+#include "Components/ComponentManager.h"
 class ECSManager
 {
 public:
@@ -29,6 +29,9 @@ public:
 
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
 	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
+
+	template <typename T>
+	class ComponentManager<T>& getManager();
 private:
 	class Factory& factory;
 	template <typename... Ts>
@@ -48,6 +51,12 @@ inline void ECSManager::addComponents(uint32 entityID)
 	swallow(addComponent<Types>(entityID)...);
 }
 
+
+template<typename T>
+inline ComponentManager<T>& ECSManager::getManager()
+{
+	return factory.getManager<T>();
+}
 
 // Don't mind this. Just unpacking variadic template arguments :))))
 template <typename... Ts>

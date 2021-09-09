@@ -26,6 +26,9 @@ public:
 	T getComponent(uint32 entityID);
 
 	std::vector<T>& getComponentArray();
+
+	// Shrink the packedComponentArray if it is dirty
+	void cleanUp();
 protected:
 //public:
 	uint32 createComponent(uint32 entityID, bool isReusable);
@@ -34,7 +37,6 @@ protected:
 	* Call cleanUp when there is time available to free the memory.*/
 	void removeComponent(uint32 entityID);
 
-	void cleanUp();
 private:
 	/* This array contains the location in the packedComponentArray
 	for a specific entity's component*/

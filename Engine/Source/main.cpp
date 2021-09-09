@@ -84,6 +84,7 @@ int main()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// can be used to calc deltatime
