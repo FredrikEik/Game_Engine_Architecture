@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <QOpenGLFunctions_4_1_Core>
+#include <cmath>
 #include "matrix4x4.h"
 #include "vector3d.h"
 /**

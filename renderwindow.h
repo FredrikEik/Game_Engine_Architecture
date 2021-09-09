@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "resourcemanager.h"
 
 class QOpenGLContext;
 class Shader;
@@ -68,6 +69,7 @@ private:
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
+    ResourceManager *mResource;
 
     Input mInput;
     float mCameraSpeed{0.05f};
