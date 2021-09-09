@@ -1,5 +1,6 @@
 #include "objectfactory.h"
 #include "cube.h"
+#include "triangle.h"
 
 ObjectFactory::ObjectFactory()
 {
@@ -14,8 +15,16 @@ void ObjectFactory::createObject(std::string objectName)
     {
         willCreateObject = new Cube;
     }
+    /**if(objectName == "Triangle")
+    {
+        willCreateObject = new Triangle;
+    }*/
 
-    willCreateObject->init();
-    mGameObject.push_back(willCreateObject);
+    if(objectName != "")
+    {
+        willCreateObject->init();
+        mGameObject.push_back(willCreateObject);
+    }
+
     return;
 }

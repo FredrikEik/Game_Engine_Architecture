@@ -294,6 +294,11 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderWindow::ObjectButton(std::string object)
+{
+    ObjFactory->createObject(object);
+}
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()
