@@ -4,14 +4,8 @@
 MarioCube::MarioCube()
 {
     ObjReader objReader;
-    meshComp = new MeshComponent();
-    objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", *meshComp);
-
-    transformComp = new TransformComponent();
-
-
-
-    transformComp->mMatrix.setToIdentity();
+    objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", *getMeshComponent());
+    //getTransformComponent()->mMatrix.setToIdentity();
 
 }
 
@@ -26,20 +20,20 @@ void MarioCube::init(/*GLint matrixUniform[4]*/)
        //mMaterial->setActiveTextureSlot(2);
        //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
-       glGenVertexArrays( 1, &meshComp->mVAO );
-       glBindVertexArray( meshComp->mVAO );
+       glGenVertexArrays( 1, &getMeshComponent()->mVAO );
+       glBindVertexArray( getMeshComponent()->mVAO );
 
 
-       glGenBuffers( 1, &meshComp->mVBO );
-       glBindBuffer( GL_ARRAY_BUFFER, meshComp->mVBO );
+       glGenBuffers( 1, &getMeshComponent()->mVBO );
+       glBindBuffer( GL_ARRAY_BUFFER, getMeshComponent()->mVBO );
 
        glBufferData( GL_ARRAY_BUFFER,                     //what buffer type
-                     meshComp->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
-                     meshComp->mVertices.data(),                    //the actual vertices
+                     getMeshComponent()->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
+                     getMeshComponent()->mVertices.data(),                    //the actual vertices
                      GL_STATIC_DRAW                       //should the buffer be updated on the GPU
                      );
 
-       glBindBuffer(GL_ARRAY_BUFFER, meshComp->mVBO);
+       glBindBuffer(GL_ARRAY_BUFFER, getMeshComponent()->mVBO);
 
        // 1rst attribute buffer : coordinates
 
@@ -60,8 +54,7 @@ void MarioCube::init(/*GLint matrixUniform[4]*/)
 
 void MarioCube::draw()
 {
-    glBindVertexArray( meshComp->mVAO );
-    //glUniformMatrix4fv( meshComp->mMatrixUniform, 1, GL_FALSE, transformComp->mMatrix.constData());
-    glDrawArrays(GL_TRIANGLES, 0, meshComp->mVertices.size());
+    glBindVertexArray( getMeshComponent()->mVAO );
+    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
