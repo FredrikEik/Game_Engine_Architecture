@@ -13,7 +13,6 @@
 #include "mainwindow.h"
 #include "visualobject.h"
 #include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -114,7 +113,7 @@ void RenderWindow::init()
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
@@ -124,21 +123,7 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
-    //Axis
-    VisualObject *temp = new XYZ();
-    temp->mMaterial->mShaderProgram = 0; //plain shader
-    temp->init();
-    mVisualObjects.push_back(temp);
-
-
-//    //dog triangle
-//    temp = new Triangle;
-//    temp->init();
-//    temp->mMaterial->mShaderProgram = 1;    //texture shader
-//    temp->mMaterial->mTextureUnit = 1;      //dog texture
-//    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-//    mVisualObjects.push_back(temp);
+    initObject();
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -146,31 +131,59 @@ void RenderWindow::init()
 
 
     //********************** create input **********************
-    Camerainput = new CameraInputComponent();
+    mCamerainput = new CameraInputComponent();
+    mPlayerinput = new PlayerInputComponent();
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
 
 }
 
-// Called each frame - doing the rendering
-void RenderWindow::render()
+void RenderWindow::initObject()
 {
-   // HandleInput();
-    Camerainput->update(mCurrentCamera, mInput);
-    mCurrentCamera->update();
+    //********************** Making the object to be drawn **********************
+    //Axis
+    VisualObject *temp = new XYZ();
+    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp->init();
+    mVisualObjects.push_back(temp);
 
-    //Keyboard / mouse input
+    temp = mShapeFactory.createShape("Obj");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    mVisualObjects.push_back(temp);
 
+    temp = mShapeFactory.createShape("Triangle");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+//    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
 
-//    mCurrentCamera->update();
+    temp = mShapeFactory.createShape("Circle");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mTransform->mMatrix.translate(2.f, 1.f, .5f);
+    mVisualObjects.push_back(temp);
 
-    mTimeStart.restart(); //restart FPS clock
-    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+    temp = mShapeFactory.createShape("Square");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mTransform->mMatrix.translate(-2.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
 
-    initializeOpenGLFunctions();    //must call this every frame it seems...
+    temp = mShapeFactory.createShape("Plain");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    mVisualObjects.push_back(temp);
 
-    //to clear the screen for each redraw
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    mPlayer = new Player();
+    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->init();
+    mVisualObjects.push_back(mPlayer);
+}
+
+void RenderWindow::drawObject()
+{
 
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
@@ -210,13 +223,32 @@ void RenderWindow::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        //draw the object
         glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
         glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
-    }
 
-    //Moves the dog triangle - should be mada another way!!!!
+    }
+}
+
+// Called each frame - doing the rendering
+void RenderWindow::render()
+{
+    // HandleInput();
+    mCamerainput->update(mCurrentCamera, mInput);
+    mPlayerinput->update(mPlayer, mInput);
+    mCurrentCamera->update();
+
+    mTimeStart.restart(); //restart FPS clock
+    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+
+    initializeOpenGLFunctions();    //must call this every frame it seems...
+
+    //to clear the screen for each redraw
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    drawObject();
+
+    //Moves the obj - should be mada another way!!!!
     mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
     //Calculate framerate before
@@ -485,7 +517,7 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mInputComponent->mMouseXlast = event->pos().x() - mInputComponent->mMouseXlast;
-       mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
+        mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
 
         if (mInputComponent->mMouseXlast != 0)
             mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);

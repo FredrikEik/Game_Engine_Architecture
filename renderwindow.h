@@ -11,8 +11,8 @@
 #include "inputsystem.h"
 #include "camerainputcomponent.h"
 #include "component.h"
-#include "objmesh.h"
 #include "shapefactory.h"
+#include "playerinputcomponent.h"
 
 class QOpenGLContext;
 class Shader;
@@ -37,25 +37,32 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
-     void setCameraSpeed(float value);
+    void setCameraSpeed(float value);
 
 private slots:
     void render();
 
 private:
-    CameraInputComponent *Camerainput;
+    CameraInputComponent *mCamerainput;
+    PlayerInputComponent* mPlayerinput;
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
+    ShapeFactory mShapeFactory;
     Input mInput;
+    Player* mPlayer;
+    bool circleExist = true;
+    bool squareExist = true;
+    bool triangleExist = true;
 
     void init();
+    void initObject();
+    void drawObject();
 
     void checkForGLerrors();
 
     void calculateFramerate();
 
     void startOpenGLDebugger();
-
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -74,7 +81,6 @@ private:
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
-
 
     std::vector<VisualObject*> mVisualObjects;
 

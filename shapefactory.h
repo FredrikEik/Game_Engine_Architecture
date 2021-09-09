@@ -1,61 +1,72 @@
 #ifndef SHAPEFACTORY_H
 #define SHAPEFACTORY_H
 #include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <vector>
 #include "vertex.h"
 #include "shader.h"
-#include "component.h"
-#include <vector>
 #include "gltypes.h"
 
 #include "visualobject.h"
 
 using namespace std;
 
-class Shape : public VisualObject {
-public:
-    Shape();
-    ~Shape(){};
-    virtual void init() override;
-};
-
-class ShapeFactory : public Shape{
+class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
-    void createShape(int id);
+    VisualObject* createShape(string shapeName);
 private:
-    Shape* myShapes[3];
-    bool circleExist = false;
-    bool squareExist = false;
-    bool triangleExist = false;
-
+    void createCircle();
+    void createSquare();
+    void createTriangle();
+    void createPlain();
+    void createObj();
+    VisualObject* myShapes[5];
 };
 
-class Circle : public Shape {
-    Circle();
+class Circle : public VisualObject
+{
 public:
+    Circle();
     ~Circle(){}
-    friend class ShapeFactory;
 private:
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
-    void circleUnitBall();
+    void circleUnit();
     void makeTriangle(const gsl::Vector3D& v1, const gsl::Vector3D& v2, const gsl::Vector3D& v3);
     int m_rekursjoner;
     int m_index;
 };
 
-class Square : public Shape {
-    Square(int n=0);
+class Square : public VisualObject
+{
 public:
+    Square();
     ~Square() {}
-    friend class ShapeFactory;
 };
 
-class Triangle : public Shape {
-    Triangle();
+class Triangle : public VisualObject
+{
 public:
+    Triangle();
     ~Triangle() {};
-    friend class ShapeFactory;
 };
 
+class Plain : public VisualObject
+{
+public:
+    Plain();
+    ~Plain(){};
+};
+
+class ObjMesh : public VisualObject
+{
+public:
+    ObjMesh(std::string filename);
+    ~ObjMesh(){};
+private:
+    void readFile(std::string filename);
+};
 
 #endif // SHAPEFACTORY_H

@@ -1,13 +1,13 @@
 #ifndef VISUALOBJECT_H
 #define VISUALOBJECT_H
-
+#include "component.h"
 #include <QOpenGLFunctions_4_1_Core>
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();
     virtual ~VisualObject();
-    virtual void init() = 0;
+    virtual void init();
 
     std::string mName;
 
