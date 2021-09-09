@@ -9,6 +9,8 @@ class ResourceManager
 public:
     ResourceManager();
 
+
+
 private:
     void readFile(std::string filename);
 };

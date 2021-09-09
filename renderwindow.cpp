@@ -11,7 +11,7 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
+#include "gameobject.h"
 #include "xyz.h"
 #include "triangle.h"
 #include "camera.h"
@@ -130,10 +130,10 @@ void RenderWindow::init()
     /***** should not use separate classes init() - function ****************/
 
     //Axis
-    VisualObject *temp = new XYZ();
+    GameObject *temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
-    mVisualObjects.push_back(temp);
+    mGameObjects.push_back(temp);
 
     //dog triangle
     temp = new Triangle();
@@ -141,7 +141,7 @@ void RenderWindow::init()
     temp->mMaterial->mShaderProgram = 1;    //texture shader
     temp->mMaterial->mTextureUnit = 1;      //dog texture
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+    mGameObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -167,12 +167,12 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    for(int i{0}; i < mVisualObjects.size(); i++)
+    for(int i{0}; i < mGameObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
         /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
 
@@ -182,36 +182,36 @@ void RenderWindow::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
         {
             viewMatrix = vMatrixUniform;
             projectionMatrix = pMatrixUniform;
             modelMatrix = mMatrixUniform;
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
         {
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
 
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+        glBindVertexArray( mGameObjects[i]->mMesh->mVAO );
+        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
     }
 
     //Moves the dog triangle - should be mada another way!!!!
-    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
 
     //Calculate framerate before

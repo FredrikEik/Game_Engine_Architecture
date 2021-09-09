@@ -23,7 +23,7 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     vertex.cpp \
-    visualobject.cpp \
+    gameobject.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -44,7 +44,7 @@ HEADERS += \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
-    visualobject.h \
+    gameobject.h \
     xyz.h
 
 FORMS += \

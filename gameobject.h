@@ -3,10 +3,10 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 
-class VisualObject : public QOpenGLFunctions_4_1_Core {
+class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
-    VisualObject();
-    virtual ~VisualObject();
+    GameObject();
+    virtual ~GameObject();
     virtual void init() = 0;
 
     std::string mName;

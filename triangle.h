@@ -1,9 +1,9 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-#include "visualobject.h"
+#include "gameobject.h"
 
-class Triangle : public VisualObject
+class Triangle : public GameObject
 {
 public:
     Triangle();
