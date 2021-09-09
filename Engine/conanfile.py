@@ -8,6 +8,7 @@ class ConanPackage(ConanFile):
         ('glad/0.1.34'),
         ('glfw/3.3.4'),
 	('glm/0.9.9.8'),
+        ('imgui/1.83'),
     ]
 	generators = "cmake"
 	options = {
@@ -17,7 +18,7 @@ class ConanPackage(ConanFile):
 		"shared": False,
 		"glad:egl_version": None, "glad:gl_profile": "compatibility",
 		"glad:gl_version": 4.6, "glad:gles1_version": None, "glad:extensions":'', "glad:gles2_version": None, "glad:glsc2_version": None, "glad:glx_version": None,
-		"glad:no_loader": False, "glad:shared": True, "glad:spec": "gl", "glad:wgl_version": None, "glfw:vulkan_static": False, "glfw:shared": True
+		"glad:no_loader": False, "glad:shared": False, "glad:spec": "gl", "glad:wgl_version": None, "glfw:vulkan_static": False, "glfw:shared": False
 	}
 #	exports_sources = "Source/*", "CMakeLists.txt"
 
@@ -27,9 +28,13 @@ class ConanPackage(ConanFile):
 		return cmake
 
 	def imports(self):
-		self.copy("*.dll", dst="bin", src="bin")
-		self.copy("*.dylib*", dst="bin", src="lib")
-		
+                self.copy("*.dll", dst="bin", src="bin")
+                self.copy("*.dylib*", dst="bin", src="lib")
+                self.copy("imgui_impl_glfw.cpp", dst="res/bindings", src="bindings")
+                self.copy("imgui_impl_opengl3.cpp", dst="res/bindings", src="backends")
+                self.copy("imgui_impl_glfw.h", dst="../Res/bindings", src="./bindings")
+                self.copy("imgui_impl_opengl3.h", dst="./res/bindings", src="backends")	
+
 
 	def build(self):
 		cmake = self.configure_cmake()

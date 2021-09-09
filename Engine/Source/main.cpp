@@ -1,3 +1,6 @@
+#include <imgui.h>
+
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -7,6 +10,10 @@
 #include "Systems/BaseSystem.h"
 #include <chrono>
 #include <typeindex>
+#include "Shader.h"
+
+
+
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -81,7 +88,7 @@ int main()
 	//}
 	//delete &testManager;
 	//std::cout << "Waiting";
-
+	/*
 	auto start = std::chrono::system_clock::now();
 
 	Factory &factory = (*new Factory);
@@ -108,6 +115,7 @@ int main()
 	std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
 	delete system;
 	return 0;
+		*/
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -128,6 +136,7 @@ int main()
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+
 	//Note that processed coordinates in OpenGL are between - 1 and 1
 	//so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
 	glViewport(0, 0, 800, 600);
@@ -136,15 +145,34 @@ int main()
 	glfwSetScrollCallback(window, scroll_callback);
 
 
+	Shader ourShader = Shader("basicShader.vert", "basicShader.frag");
+	/*
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& IO = ImGui::GetID(); (void)IO;
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 460");
+
+	ImGui::StyleColorsDark();
+	*/
 
 	while (!glfwWindowShouldClose(window))
 	{
+		glfwPollEvents();
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
+		//ImGui::Text("Hello, world %d", 123);
+
+
+
 		//// input
 		processInput(window);
-
+		// feed inputs to dear imgui, start new frame
+		//ImGui_ImplOpenGL3_NewFrame();
+		//ImGui_ImplGlfw_NewFrame();
+		//ImGui::NewFrame();
 
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -157,13 +185,24 @@ int main()
 		//WIREFRAME mode
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		// render your GUI
+		//ImGui::Begin("Demo window");
+		//ImGui::Button("Hello!");
+		//ImGui::End();
+
+		// Render dear imgui into screen
+		//ImGui::Render();
+		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
-		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}
 
-
+	/*
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	*/
 	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
 	return 0;
