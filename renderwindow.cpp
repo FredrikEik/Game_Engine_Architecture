@@ -145,11 +145,17 @@ void RenderWindow::init()
     mGameObjects.push_back(temp);
 
     //Suzanne:
-//    suzanne.obj
     temp = resourceManager.AddObject("suzanne.obj");
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->mTransform->mMatrix.translate(1.f, 1.f, -.5f);
     temp->mTransform->mMatrix.scale(0.5f);
+    mGameObjects.push_back(temp);
+
+    //Suzanne 2 to check if resource handelig is correct:
+    temp = resourceManager.AddObject("suzanne.obj");
+    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
+    temp->mTransform->mMatrix.scale(0.3f);
     mGameObjects.push_back(temp);
 
     //********************** Set up camera **********************

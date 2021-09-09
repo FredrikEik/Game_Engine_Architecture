@@ -30,17 +30,29 @@ GameObject *ResourceManager::AddObject(std::string filename)
 {
     int meshIndex{-1};
 
-    //Simple "factory" - making the meshobject said in the filename
-    if (filename.find(".obj") != std::string::npos)
-        meshIndex = readObj(gsl::MeshFilePath + filename);
-    if (filename.find("axis") != std::string::npos)
-        meshIndex = makeAxis();
-    if (filename.find("triangle") != std::string::npos)
-        meshIndex = makeTriangle();
+    //check if asset is made:
+    auto result = mMeshComponentMap.find(filename);
+    //if already made
+    if (result != mMeshComponentMap.end()) {        //found!!!
+        meshIndex = result->second;
+    }
+    //not made, make new
+    else {
+        //Simple "factory" - making the meshobject said in the filename
+        if (filename.find(".obj") != std::string::npos)
+            meshIndex = readObj(gsl::MeshFilePath + filename);
+        if (filename.find("axis") != std::string::npos)
+            meshIndex = makeAxis();
+        if (filename.find("triangle") != std::string::npos)
+            meshIndex = makeTriangle();
 
-    //safety - if nothing is made I just make a triangle
-    if (meshIndex == -1)
-        meshIndex = makeTriangle();
+        //safety - if nothing is made I just make a triangle
+        if (meshIndex == -1)
+            meshIndex = makeTriangle();
+
+        //update mMeshComponentMap with new asset
+        mMeshComponentMap.emplace(filename, meshIndex);
+    }
 
     GameObject* tempObject = new GameObject();
 
@@ -62,8 +74,11 @@ int ResourceManager::readObj(std::string filename)
     std::ifstream fileIn;
     fileIn.open (filename, std::ifstream::in);
     if(!fileIn)
-        qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
-
+    {
+        qDebug() << "ERROR: Could not open file for reading: " << QString::fromStdString(filename);
+        qDebug() << "****** using arbitrary mesh as replacement!";
+        return 0;    //hack - this will crash if no meshes are made yet
+    }
     //One line at a time-variable
     std::string oneLine;
     //One word at a time-variable
@@ -198,6 +213,8 @@ int ResourceManager::readObj(std::string filename)
     fileIn.close();
 
     initMesh(temp);
+
+    qDebug() << QString::fromStdString(filename) << "successfully loaded";
 
     return mMeshComponents.size()-1;    //returns index to last object
 }

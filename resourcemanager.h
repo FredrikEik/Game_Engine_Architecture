@@ -17,8 +17,8 @@ public:
 
 private:
     ResourceManager();  //singleton
-    void operator=(ResourceManager&);           //Assignment operator
-    ResourceManager(const ResourceManager&);    //Copy constructor
+    void operator=(ResourceManager&){};           //Assignment operator
+    ResourceManager(const ResourceManager&){};    //Copy constructor
 
     int readObj(std::string filename);
     int makeAxis();
@@ -26,6 +26,7 @@ private:
 
     void initMesh(MeshComponent & tempMeshComp);
 
+    std::map<std::string, unsigned int> mMeshComponentMap;
     std::vector<MeshComponent> mMeshComponents;
 
 };
