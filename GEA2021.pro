@@ -16,6 +16,7 @@ SOURCES += main.cpp \
     gameobjectmanager.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    objreader.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    objreader.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \

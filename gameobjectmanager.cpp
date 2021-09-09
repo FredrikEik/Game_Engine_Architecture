@@ -1,6 +1,6 @@
 ﻿#include "gameobjectmanager.h"
 
-void manageObjects()
+void GameObjectManager::manageObjects()
 {
 
     //Axis
@@ -27,7 +27,7 @@ void manageObjects()
 
 }
 
-void addObject(std::string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
+void GameObjectManager::addObject(std::string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
 {
     GameObject * CurrentGameObject;
 
@@ -59,6 +59,6 @@ void addObject(std::string name, int id, bool TransformID, int MeshID, int Mater
         CurrentGameObject->mGravity->gravitationalForce = 1^2;
     }
 
-    //mGameObjects.push_back(name);
+    mGameObjects.push_back(CurrentGameObject);
     id++;
 }
