@@ -9,6 +9,11 @@ INCLUDEPATH += \
     ./gsl \
     ./Shaders
 
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
+
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
@@ -18,12 +23,15 @@ SOURCES += main.cpp \
     resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
+    soundmanager.cpp \
+    soundsource.cpp \
     texture.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     vertex.cpp \
     gameobject.cpp \
+    wavfilehandler.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -39,12 +47,15 @@ HEADERS += \
     resourcemanager.h \
     shader.h \
     mainwindow.h \
+    soundmanager.h \
+    soundsource.h \
     texture.h \
     triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
     gameobject.h \
+    wavfilehandler.h \
     xyz.h
 
 FORMS += \
