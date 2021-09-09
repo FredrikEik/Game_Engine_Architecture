@@ -1,6 +1,7 @@
 #include "soundmanager.h"
 #include "wavfilehandler.h"
 #include <iostream>
+#include <QDebug>
 
 SoundManager* SoundManager::mInstance = NULL;
 
@@ -13,7 +14,7 @@ SoundManager::SoundManager() :
 
 bool SoundManager::init()
 {
-    std::cout << "Intializing OpenAL!\n";
+    qDebug() << "Intializing OpenAL!\n";
     mDevice = alcOpenDevice(NULL);
     if (mDevice)
     {
@@ -26,10 +27,10 @@ bool SoundManager::init()
 
     if (!mDevice)
     {
-        std::cout << "Device not made!\n";
+        qDebug() << "Device not made!\n";
     }
     else
-        std::cout << "Intialization complete!\n";
+        qDebug() << "Intialization complete!\n";
 
     //Start listing of found sound devices:
     //Not jet implemented
@@ -58,19 +59,19 @@ bool SoundManager::checkError()
     case AL_NO_ERROR:
         break;
     case AL_INVALID_NAME:
-        std::cout << "Invalid name!\n";
+        qDebug() << "Invalid name!\n";
         return false;
     case AL_INVALID_ENUM:
-        std::cout << "Invalid enum!\n";
+        qDebug() << "Invalid enum!\n";
         return false;
     case AL_INVALID_VALUE:
-        std::cout << "Invalid value!\n";
+        qDebug() << "Invalid value!\n";
         return false;
     case AL_INVALID_OPERATION:
-        std::cout << "Invalid operation!\n";
+        qDebug() << "Invalid operation!\n";
         return false;
     case AL_OUT_OF_MEMORY:
-        std::cout << "Out of memory!\n";
+        qDebug() << "Out of memory!\n";
         return false;
     default: break;
     }

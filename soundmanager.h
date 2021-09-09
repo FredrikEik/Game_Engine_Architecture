@@ -45,7 +45,10 @@ public:
     static SoundManager* getInstance()          ///< Get pointer to singleton instance.
     {
         if (!mInstance)
+        {
             mInstance = new SoundManager();
+            mInstance->init();
+        }
         return mInstance;
     }
 
