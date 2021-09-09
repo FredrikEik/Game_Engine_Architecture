@@ -6,6 +6,7 @@
 #include "objreader.h"
 #include <QDebug>
 
+#define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
 
 Factory::Factory()
 {
@@ -14,12 +15,13 @@ Factory::Factory()
 
 void Factory::createObject(std::string objectName)
 {
+
     GameObject* objectToCreate;
 
     if(objectName == "Cube")
     {
         objectToCreate = new Cube;
-        if(storedMeshes.find("Cube") != storedMeshes.end()) //If cube mesh exists
+        if(EXISTS("Cube")) //If cube mesh exists
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
         }
@@ -30,7 +32,7 @@ void Factory::createObject(std::string objectName)
     else if(objectName == "Plane")
     {
         objectToCreate = new Plane;
-        if(storedMeshes.find("Plane") != storedMeshes.end()) //If Plane mesh exists
+        if(EXISTS("Plane")) //If Plane mesh exists
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Plane"]));
         }
@@ -41,7 +43,7 @@ void Factory::createObject(std::string objectName)
     else if(objectName == "Triangle")
     {
         objectToCreate = new Triangle;
-        if(storedMeshes.find("Triangle") != storedMeshes.end()) //If Triangle mesh exists
+        if(EXISTS("Triangle")) //If Triangle mesh exists
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Triangle"]));
         }
@@ -52,7 +54,7 @@ void Factory::createObject(std::string objectName)
     else if(objectName == "MarioCube")
     {
         objectToCreate = new MarioCube;
-        if(storedMeshes.find("MarioCube") != storedMeshes.end()) //If MarioCube mesh exists
+        if(EXISTS("MarioCube")) //If MarioCube mesh exists
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["MarioCube"]));
         }
@@ -69,14 +71,13 @@ void Factory::createObject(std::string objectName)
 
     void Factory::saveMesh(std::string fileName, std::string nickName)
     {
-    if(storedMeshes.find(nickName) == storedMeshes.end()){
-        ObjReader objReader;
-        MeshComponent* newMesh = new MeshComponent();
-        objReader.readFile(fileName, &newMesh->mVertices, &newMesh->mIndices);
-        storedMeshes.insert(std::pair<std::string, MeshComponent*>{nickName, newMesh});
-    }
-//    else if(storedMeshes.find(nickName) != storedMeshes.end()){
-//        qDebug() << storedMeshes.size();
-
-//        }
+     if(EXISTS(nickName)){
+        qDebug() << storedMeshes.size();
+        }
+        else {
+            ObjReader objReader;
+            MeshComponent* newMesh = new MeshComponent();
+            objReader.readFile(fileName, &newMesh->mVertices, &newMesh->mIndices);
+            storedMeshes.insert(std::pair<std::string, MeshComponent*>{nickName, newMesh});
+        }
 }
