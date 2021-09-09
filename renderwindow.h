@@ -33,6 +33,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    GameObject* addObject(std::string assetName, int shaderType = 0, int textureUnit = 0);
+
 private slots:
     void render();
 

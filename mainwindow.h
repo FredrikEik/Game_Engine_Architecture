@@ -21,6 +21,10 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
+    void on_actionAdd_Triangle_triggered();
+
+    void on_actionAdd_Suzanne_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;

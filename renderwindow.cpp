@@ -126,34 +126,24 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
+    // should be moved out to a scene or GameManager class
 
-    /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
-    /***** should not use separate classes init() - function ****************/
-
-    ResourceManager& resourceManager = ResourceManager::getInstance();
 
     //Axis
-    GameObject *temp = resourceManager.AddObject("axis");
-    temp->mMaterial->mShaderProgram = 0; //plain shader
-    mGameObjects.push_back(temp);
+    GameObject *temp = addObject("axis");
 
     //dog triangle
-    temp = resourceManager.AddObject("triangle");
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    temp = addObject("triangle", 1, 1);
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    mGameObjects.push_back(temp);
 
     //Suzanne:
-    temp = resourceManager.AddObject("suzanne.obj");
-    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp = addObject("suzanne.obj");
     temp->mTransform->mMatrix.translate(1.f, 1.f, -.5f);
     temp->mTransform->mMatrix.scale(0.5f);
     mGameObjects.push_back(temp);
 
     //Suzanne 2 to check if resource handelig is correct:
-    temp = resourceManager.AddObject("suzanne.obj");
-    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp = addObject("suzanne.obj");
     temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
     temp->mTransform->mMatrix.scale(0.3f);
     mGameObjects.push_back(temp);
@@ -330,6 +320,22 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
     }
+}
+
+GameObject* RenderWindow::addObject(std::string assetName, int shaderType, int textureUnit)
+{
+    //This function should not belong to RenderWindow - but for now the whole scene is kept here!
+    GameObject *temp = ResourceManager::getInstance().AddObject(assetName);
+    temp->mMaterial->mShaderProgram = shaderType;
+    temp->mMaterial->mTextureUnit = textureUnit;
+
+    //quick hackety-hack to move objects made
+    static float value = 0.f;
+
+    temp->mTransform->mMatrix.translate(value,value, value);
+    mGameObjects.push_back(temp);
+    value += 0.2f;
+    return temp;
 }
 
 //Uses QOpenGLDebugLogger if this is present

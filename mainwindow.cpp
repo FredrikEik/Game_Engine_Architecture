@@ -86,3 +86,15 @@ void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
 }
+
+void MainWindow::on_actionAdd_Triangle_triggered()
+{
+    mRenderWindow->addObject("triangle");
+}
+
+
+void MainWindow::on_actionAdd_Suzanne_triggered()
+{
+      mRenderWindow->addObject("suzanne.obj");
+}
+
