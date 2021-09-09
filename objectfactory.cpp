@@ -1,6 +1,6 @@
 #include "objectfactory.h"
 
-//ObjectFactory::ObjectFactory()
-//{
+ObjectFactory::ObjectFactory()
+{
 
-//}
+}

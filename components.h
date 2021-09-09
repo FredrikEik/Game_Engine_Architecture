@@ -12,14 +12,14 @@
 struct TransformComponent
 {
 public:
-    TransformComponent();
+    TransformComponent(){}
     gsl::Matrix4x4 mMatrix;
 };
 
 struct MeshComponent
 {
 public:
-    MeshComponent();
+    MeshComponent(){}
 
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
@@ -31,23 +31,23 @@ public:
     GLint mMatrixUniform{0};
 };
 
-struct ShaderComponent
-{
+//struct ShaderComponent
+//{
 
-};
+//};
 
 struct TextureComponent
 {
-    TextureComponent();
+    TextureComponent(){}
 
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
 };
 
-struct CollisionComponent
-{
+//struct CollisionComponent
+//{
 
-};
+//};
 
 
 #endif // COMPONENTS_H
