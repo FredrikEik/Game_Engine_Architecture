@@ -12,7 +12,8 @@ using namespace std;
 
 class GameObjectManager
 {
-    void manageObjects();
+public:
+    void manageObjects(Camera mCurrentCamera);
     void addObject(std::string name = "DefaultGameObject", int id = 0, bool TransformID = 0, int MeshID = 0, int MaterialID = 0, bool GravityID = 0);
 };
 #endif // GAMEOBJECTMANAGER_H

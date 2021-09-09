@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "gameobjectmanager.h"
 
 class QOpenGLContext;
 class Shader;
@@ -32,6 +33,8 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+
+    GameObjectManager *gObjectManager;
 
 private slots:
     void render();
