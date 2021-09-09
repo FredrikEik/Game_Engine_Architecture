@@ -5,14 +5,7 @@
 #include <bitset>
 #include "components.h"
 
-using Entity = GLuint;
-const Entity MAX_ENTITIES = 1000;
-
-using ComponentType = GLubyte;
-const ComponentType MAX_COMPONENTS = 16;
-
 using Signature = std::bitset<MAX_COMPONENTS>;
-
 
 class EntityManager
 {
@@ -30,8 +23,10 @@ private:
     //Holds availeble Id's for entitys to use.
     std::queue<Entity> m_availableEntityIDs;
 
+    //Holds the signatures of the existing enteties.
     std::array<Signature, MAX_ENTITIES> m_signatures;
 
+    //A simple counter used to determined if we went above the maximum allowed enteties.
     Entity m_livingEntitiyCounter{0};
 };
 

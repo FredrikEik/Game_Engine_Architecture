@@ -31,6 +31,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    componentmanager.h \
     components.h \
     constants.h \
     cubemapshader.h \

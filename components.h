@@ -5,6 +5,13 @@
 #include <qmatrix4x4.h>
 #include "vertex.h"
 
+using ComponentType = GLubyte;
+const ComponentType MAX_COMPONENTS = 16;
+
+//TODO: move to factory? maybe not...
+using Entity = GLuint;
+const Entity MAX_ENTITIES = 1000;
+
 struct TransformComponent
 {
     QMatrix4x4 m_modelMatrix{};
