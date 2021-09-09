@@ -93,14 +93,7 @@ void MainWindow::on_pushButton_2_clicked()
     mRenderWindow->ObjectButton(ObjectSpawn);
 }
 
-void MainWindow::on_comboBox_activated(const QString &arg1)
+void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
 {
     ObjectSpawn = arg1.toStdString();
-}
-
-
-
-void MainWindow::on_comboBox_editTextChanged(const QString &arg1)
-{
-
 }

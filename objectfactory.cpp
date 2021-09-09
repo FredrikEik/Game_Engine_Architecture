@@ -26,6 +26,8 @@ void ObjectFactory::createObject(std::string objectName)
     {
         willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
     }
+    else
+        return;
 
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
