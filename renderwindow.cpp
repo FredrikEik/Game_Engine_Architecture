@@ -137,9 +137,6 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(temp);
 
     ObjFactory->createObject("Cube");
-        ObjFactory->createObject("Cube");
-            ObjFactory->createObject("Cube");
-                ObjFactory->createObject("Cube");
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -190,10 +187,7 @@ void RenderWindow::render()
 
     if(ObjFactory->mGameObject.size() > 0)
     {
-        //First objekct - xyz
-        //what shader to use
         glUseProgram(mShaderPrograms[0]->getProgram() );
-
 
         for (unsigned int i=0; i<ObjFactory->mGameObject.size(); i++){
             //send data to shader
@@ -202,21 +196,14 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->TransformComp->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-            ObjFactory->mGameObject[1]->TransformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
+            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
         }
     }
 
-    //Calculate framerate before
-    // checkForGLerrors() because that takes a long time
-    // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
 
-    //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
-    //Qt require us to call this swapBuffers() -function.
-    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-    // and wait for vsync.
     mContext->swapBuffers(this);
 }
 
