@@ -197,7 +197,7 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
-    //Moves the dog triangle - should be mada another way!!!!
+    //Moves the dog triangle - should be made another way!!!!
     mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
 
