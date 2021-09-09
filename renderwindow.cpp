@@ -18,6 +18,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "components.h"
+#include "resourcemanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -129,15 +130,15 @@ void RenderWindow::init()
     /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
     /***** should not use separate classes init() - function ****************/
 
+    ResourceManager& resourceManager = ResourceManager::getInstance();
+
     //Axis
-    GameObject *temp = new XYZ();
+    GameObject *temp = resourceManager.AddObject("axis");
     temp->mMaterial->mShaderProgram = 0; //plain shader
-    temp->init();
     mGameObjects.push_back(temp);
 
     //dog triangle
-    temp = new Triangle();
-    temp->init();
+    temp = resourceManager.AddObject("triangle");
     temp->mMaterial->mShaderProgram = 1;    //texture shader
     temp->mMaterial->mTextureUnit = 1;      //dog texture
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
@@ -326,7 +327,8 @@ void RenderWindow::checkForGLerrors()
         const QList<QOpenGLDebugMessage> messages = mOpenGLDebugLogger->loggedMessages();
         for (const QOpenGLDebugMessage &message : messages)
         {
-            if (!(message.type() == message.OtherType)) // got rid of "object ... will use VIDEO memory as the source for buffer object operations"
+            if (!(message.type() == message.OtherType)) // got rid of "object ...
+                                                        //will use VIDEO memory as the source for buffer object operations"
                 qDebug() << message;
         }
     }

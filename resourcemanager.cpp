@@ -1,24 +1,61 @@
 #include "resourcemanager.h"
 
-#include "vector3d.h"
-#include "vector2d.h"
-#include "vertex.h"
 #include <sstream>
 #include <fstream>
 #include <vector>
 #include <QString>
 #include <QDebug>
 
+#include "components.h"
+#include "vector3d.h"
+#include "vector2d.h"
+#include "vertex.h"
+#include "gameobject.h"
+#include "constants.h"
+
 ResourceManager::ResourceManager()
 {
+    mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
+}
 
+ResourceManager &ResourceManager::getInstance()
+{
+    static ResourceManager *mInstance = new ResourceManager();
+    return *mInstance;
+}
+
+GameObject *ResourceManager::AddObject(std::string filename)
+{
+    int meshIndex{-1};
+
+    //Simple "factory" - making the meshobject said in the filename
+    if (filename.find(".obj") != std::string::npos)
+        meshIndex = readObj(filename);
+    if (filename.find("axis") != std::string::npos)
+        meshIndex = makeAxis();
+    if (filename.find("triangle") != std::string::npos)
+        meshIndex = makeTriangle();
+
+    //safety - if nothing is made I just make a triangle
+    if (meshIndex == -1)
+        meshIndex = makeTriangle();
+
+    GameObject* tempObject = new GameObject();
+
+    //Dangerous, because vector can resize and will move pointers:
+    tempObject->mMesh = &mMeshComponents.at(meshIndex);     //This is a hack, please fix
+    tempObject->mMaterial = new MaterialComponent();
+    tempObject->mTransform = new TransformComponent();
+    tempObject->mTransform->mMatrix.identity();
+    return tempObject; //temporary to get to compile
 }
 
 
-void ResourceManager::readFile(std::string filename)
+int ResourceManager::readObj(std::string filename)
 {
-    std::vector<Vertex> tempVertices;
-    std::vector<GLuint> tempIndices;
+    //should check if this object is new before this!
+    mMeshComponents.emplace_back(MeshComponent());
+    MeshComponent &temp = mMeshComponents.back();
 
     //Open File
     //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
@@ -144,14 +181,14 @@ void ResourceManager::readFile(std::string filename)
                 if (uv > -1)    //uv present!
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                    tempVertices.push_back(tempVert);
+                    temp.mVertices.push_back(tempVert);
                 }
                 else            //no uv in mesh data, use 0, 0 as uv
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                    tempVertices.push_back(tempVert);
+                    temp.mVertices.push_back(tempVert);
                 }
-                tempIndices.push_back(temp_index++);
+                temp.mIndices.push_back(temp_index++);
             }
             continue;
         }
@@ -159,4 +196,84 @@ void ResourceManager::readFile(std::string filename)
 
     //beeing a nice boy and closing the file after use
     fileIn.close();
+
+    initMesh(temp);
+
+    return mMeshComponents.size()-1;    //returns index to last object
+}
+
+int ResourceManager::makeAxis()
+{
+    //should check if this object is new before this!
+    mMeshComponents.emplace_back(MeshComponent());
+    MeshComponent &temp = mMeshComponents.back();
+
+    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    temp.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    temp.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    temp.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    temp.mDrawType = GL_LINES;
+
+    initMesh(temp);
+
+    return mMeshComponents.size()-1;    //returns index to last object
+}
+
+int ResourceManager::makeTriangle()
+{
+    //should check if this object is new before this!
+    mMeshComponents.emplace_back(MeshComponent());
+    MeshComponent &temp = mMeshComponents.back();
+    temp.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+    temp.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    temp.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+
+    temp.mDrawType = GL_TRIANGLES;
+    initMesh(temp);
+
+    return mMeshComponents.size()-1;    //returns index to last object
+}
+
+
+void ResourceManager::initMesh(MeshComponent &tempMeshComp)
+{
+    //must call this to use OpenGL functions
+    initializeOpenGLFunctions();
+
+    //Vertex Array Object - VAO
+    glGenVertexArrays( 1, &tempMeshComp.mVAO );
+    glBindVertexArray( tempMeshComp.mVAO );
+
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers( 1, &tempMeshComp.mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, tempMeshComp.mVBO );
+
+    glBufferData( GL_ARRAY_BUFFER, tempMeshComp.mVertices.size()*sizeof(Vertex), tempMeshComp.mVertices.data(), GL_STATIC_DRAW );
+
+    // 1rst attribute buffer : position
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    // 2nd attribute buffer : normal
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(1);
+
+    // 3rd attribute buffer : uvs
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glEnableVertexAttribArray(2);
+
+    //Second buffer - holds the indices (Element Array Buffer - EAB):
+    if(tempMeshComp.mIndices.size() > 0) {
+        glGenBuffers(1, &tempMeshComp.mEAB);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempMeshComp.mEAB);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempMeshComp.mIndices.size() * sizeof(GLuint), tempMeshComp.mIndices.data(), GL_STATIC_DRAW);
+    }
+
+    glBindVertexArray(0);
+
+    tempMeshComp.mIndexCount = tempMeshComp.mIndices.size();
+    tempMeshComp.mVertexCount = tempMeshComp.mVertices.size();
 }
