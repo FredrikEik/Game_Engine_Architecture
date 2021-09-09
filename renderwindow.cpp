@@ -320,7 +320,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::buttonCreate(std::string objectName)
 {
     if(objectName == "MarioCube"){
-    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //    temporary fix since all objects are not .obj
+    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
     }
     factory->createObject(objectName);
 

@@ -18,7 +18,6 @@ public:
 
 
 private:
-    int resourceId;
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
 
 
