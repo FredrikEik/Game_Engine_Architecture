@@ -17,6 +17,7 @@ public:
     GameObject* readObj(std::string filename);
     GameObject* addTriangle();
     GameObject* addCube();
+    GameObject* addXYZ();
 
 private:
 //    GameObject* tempObj{nullptr};

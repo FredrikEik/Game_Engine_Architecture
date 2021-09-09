@@ -269,3 +269,25 @@ GameObject* ResourceManageer::addCube()
     tempObj->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     return tempObj;
 }
+
+GameObject *ResourceManageer::addXYZ()
+{
+    GameObject* tempObj = new GameObject();
+    tempObj->mName = "XYZ";
+    tempObj->mTransform = new TransformComponent();
+    tempObj->mTransform->mMatrix.setToIdentity();
+
+    tempObj->mMesh = new MeshComponent();
+
+    tempObj->mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    tempObj->mMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    tempObj->mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    tempObj->mMesh->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    tempObj->mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    tempObj->mMesh->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    tempObj->mMaterial = new MaterialComponent();
+    tempObj->init();
+
+    return tempObj;
+}

@@ -124,18 +124,20 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    GameObject *temp;
+//    GameObject *temp;
 //    temp = new XYZ();
 //    temp->init();
 //    mVisualObjects.push_back(temp);
 
     mVisualObjects.push_back(source->addCube());
+    mVisualObjects.push_back(source->addTriangle());
+    mVisualObjects.push_back(source->addXYZ());
 
     //testing triangle class
-    temp = new TriangleTest();
-    temp->init();
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+//    temp = new TriangleTest();
+//    temp->init();
+//    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -176,12 +178,22 @@ void RenderWindow::render()
         //what shader to use - texture shader
         glUseProgram(mShaderPrograms[1]->getProgram() );
         //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[0]->mTransform->mMatrix.constData());
-        mVisualObjects[0]->draw();
-        mVisualObjects[0]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        for(int i = 0; i < mVisualObjects.size(); i++)
+        {
+            glUniform1i(mTextureUniform, 1);
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+            if(mVisualObjects[i]->mName == "XYZ")
+            {
+                mVisualObjects[i]->drawLines();
+            }
+            else
+            {
+                mVisualObjects[i]->draw();
+            }
+        }
+        //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
     //Calculate framerate before

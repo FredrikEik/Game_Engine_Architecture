@@ -50,3 +50,10 @@ void GameObject::draw()
     glBindVertexArray(0);
 }
 
+void GameObject::drawLines()
+{
+    glBindVertexArray( mMesh->mVAO );
+    glDrawArrays(GL_LINES, 0, mMesh->mVertices.size());
+    glBindVertexArray(0);
+}
+
