@@ -8,11 +8,14 @@
 
 #include "input.h"
 #include "constants.h"
+#include "objectfactory.h"
+#include "gameobject.h"
 
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class VisualObject;
+//class VisualObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -67,7 +70,9 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    ObjectFactory* ObjFactory = new ObjectFactory;
+
+//    std::vector<VisualObject*> mVisualObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
