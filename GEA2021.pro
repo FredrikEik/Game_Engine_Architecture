@@ -11,6 +11,7 @@ INCLUDEPATH += \
 
 SOURCES += main.cpp \
     camera.cpp \
+    cameracomponent.cpp \
     components.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
@@ -27,6 +28,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    cameracomponent.h \
     components.h \
     constants.h \
     gltypes.h \
