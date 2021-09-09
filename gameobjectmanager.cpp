@@ -2,16 +2,16 @@
 
 void manageObjects()
 {
-    int id;
+
     //Axis
     //  GameObject *temp = new XYZ();
     //  temp->mMaterial->mShaderProgram = 0; //plain shader
     //  temp->init();
     //  mVisualObjects.push_back(temp);
 
+    int id;
     string temp = "ost";
-
-        addObject(temp, id, 1, 1, 1, 0);
+    addObject(temp, id, 1, 1, 1, 0);
 
     //Dag's dog triangle
     //  temp = new Triangle();
@@ -24,6 +24,8 @@ void manageObjects()
     //GameObject *dagsDog;
 
     //Set up camera
+    Camera *mCurrentCamera{nullptr};
+
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
@@ -33,9 +35,8 @@ void addObject(std::string name, int id, int TransformID, int MeshID, int Materi
 
     GameObject * CurrentGameObject;
 
-    CurrentGameObject->entitiyID++;
+    CurrentGameObject->entitiyID = id;
     CurrentGameObject->mName = name;
-    //GameObject *name;
 
     CurrentGameObject->init();
 
@@ -60,4 +61,6 @@ void addObject(std::string name, int id, int TransformID, int MeshID, int Materi
     {
         //name->mGravity->mGravity = gravity;
     }
+
+    id++;
 }

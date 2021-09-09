@@ -1,4 +1,4 @@
-#include "renderwindow.h"
+﻿#include "renderwindow.h"
 #include <QTimer>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -127,8 +127,7 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
-    /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
-    /***** should not use separate classes init() - function ****************/
+    // Made my own GameObjectManager
     manageObjects();
 
 }

@@ -1,4 +1,4 @@
-#include "camera.h"
+﻿#include "camera.h"
 #include <QDebug>
 
 Camera::Camera()
@@ -79,7 +79,7 @@ void Camera::moveRight(float delta)
     //so camera always holds its height when straifing
     //should be fixed thru correct right calculations!
     gsl::Vector3D right = mRight;
-    right.y = 0.f;
+    right.y = 0.0f;
     mPosition += right * delta;
 }
 
