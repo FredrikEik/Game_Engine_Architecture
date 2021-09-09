@@ -30,7 +30,7 @@ void Factory::createObject(std::string objectName)
     {
         objectToCreate = new MarioCube;
     }
-    else{}
+    else{return;}
 
     objectToCreate->init();
     mGameObjects.push_back(objectToCreate);
