@@ -30,6 +30,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    ECScoordinator.h \
     camera.h \
     compmanager.h \
     componentarray.h \
