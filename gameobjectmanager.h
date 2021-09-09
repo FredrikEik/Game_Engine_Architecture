@@ -6,7 +6,7 @@
 #include "triangle.h"
 #include "components.h"
 #include "renderwindow.h"
-#include "visualobject.h"
+#include "gameobject.h"
 
 using namespace std;
 
@@ -15,6 +15,9 @@ using namespace std;
 
 //std::vector<VisualObject*> mVisualObjects;
 
-void createObjects();
+void manageObjects();
+int addObject(string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID);
+
+string objectName;
 
 #endif // GAMEOBJECTMANAGER_H

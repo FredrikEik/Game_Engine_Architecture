@@ -11,7 +11,7 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
+#include "gameobject.h"
 #include "xyz.h"
 #include "triangle.h"
 #include "camera.h"
@@ -129,7 +129,7 @@ void RenderWindow::init()
 
     /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
     /***** should not use separate classes init() - function ****************/
-    createObjects();
+    manageObjects();
 
 }
 

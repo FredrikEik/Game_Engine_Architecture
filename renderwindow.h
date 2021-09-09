@@ -12,7 +12,7 @@
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class VisualObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -67,7 +67,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    std::vector<GameObject*> mVisualObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

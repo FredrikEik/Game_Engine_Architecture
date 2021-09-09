@@ -2,9 +2,9 @@
 #define XYZ_H
 
 #include <QOpenGLFunctions_4_1_Core>
-#include "visualobject.h"
+#include "gameobject.h"
 
-class XYZ : public VisualObject
+class XYZ : public GameObject
 {
 public:
    XYZ();

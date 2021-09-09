@@ -12,6 +12,7 @@ INCLUDEPATH += \
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
+    gameobject.cpp \
     gameobjectmanager.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
@@ -23,13 +24,13 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     vertex.cpp \
-    visualobject.cpp \
     xyz.cpp
 
 HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    gameobject.h \
     gameobjectmanager.h \
     gltypes.h \
     input.h \
@@ -44,7 +45,6 @@ HEADERS += \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
-    visualobject.h \
     xyz.h
 
 FORMS += \

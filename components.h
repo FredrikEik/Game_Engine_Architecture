@@ -27,4 +27,10 @@ struct MaterialComponent
     GLint mTextureUnit{0};
 };
 
+struct GravityComponent
+{
+    bool affectedByGravity;
+    float gravitationalForce;
+};
+
 #endif // COMPONENTS_H
