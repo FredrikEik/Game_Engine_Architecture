@@ -46,7 +46,6 @@ template<typename... Types>
 inline void ECSManager::addComponents(uint32 entityID)
 {
 	swallow(addComponent<Types>(entityID)...);
-	//(addComponent<Types>(entityID)...);
 }
 
 

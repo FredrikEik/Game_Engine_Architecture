@@ -17,13 +17,13 @@ public:
 	uint32 entityID;
 };
 
-struct UniqueComponent : public Component
-{
-public:
-	UniqueComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
-	~UniqueComponent() {}
-
-};
+//struct UniqueComponent : public Component
+//{
+//public:
+//	UniqueComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+//	~UniqueComponent() {}
+//
+//};
 
 struct testComponent : public Component
 {
@@ -34,16 +34,24 @@ public:
 	float pos[3]{};
 };
 
-struct MeshComponent final : public UniqueComponent
+struct MeshComponent final : public Component
 {
 public:
-	MeshComponent(uint32 entity, uint32 componentID) : UniqueComponent(entity, componentID) {}
+	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 	GLuint m_VAO{};
 	GLuint m_VBO{};
 	GLuint m_EBO{};
 	GLenum m_drawType{ GL_TRIANGLES };
 	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
+};
+
+struct CameraComponent final : public Component
+{
+	CameraComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::mat4x4 m_viewMatrix{};
+	glm::mat4x4 m_projectionMatrix{};
 };
 
 struct TransformComponent final : public Component
