@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "components.h"
 #include "rendersystem.h"
+#include "meshsystem.h"
 
 class QOpenGLContext;
 class Shader;
@@ -35,10 +36,20 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+
     MeshComponent * TriangelMesh;
     MaterialComponent *TriangleMaterial;
     TransformComponent *TriangleTransform;
+
     RenderSystem *RenderSys = new RenderSystem();
+    meshsystem * MeshSys = new meshsystem();
+
+    std::vector<int> entities;
+
+    std::vector<MeshComponent*> meshCompVec;
+    std::vector<TransformComponent*> transformCompVec;
+    std::vector<MaterialComponent*> MaterialCompVec;
+
 
 
 

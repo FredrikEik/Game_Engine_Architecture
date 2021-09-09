@@ -4,6 +4,8 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QFile>
+#include <QFileDialog>
 
 #include "renderwindow.h"
 
@@ -85,4 +87,9 @@ void MainWindow::init()
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
+}
+
+void MainWindow::on_actionCustom_OBJ_triggered()
+{
+
 }

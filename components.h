@@ -8,11 +8,13 @@
 
 struct TransformComponent
 {
+    int entity = 0;
     gsl::Matrix4x4 mMatrix;
 };
 
 struct MeshComponent
 {
+    int entity = 0;
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
@@ -23,6 +25,7 @@ struct MeshComponent
 
 struct MaterialComponent
 {
+    int entity = 0;
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
 };

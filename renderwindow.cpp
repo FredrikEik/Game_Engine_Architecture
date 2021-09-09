@@ -135,7 +135,7 @@ void RenderWindow::init()
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
-////*************************************start**////////////
+    ////*************************************start**////////////
 
     TriangleTransform = new TransformComponent();
 
@@ -157,7 +157,33 @@ void RenderWindow::init()
 
     TriangleTransform->mMatrix.translate(0.f, 0.f, .5f);
 
-////*************************************start**////////////
+    ////*************************************start**////////////
+
+
+
+    ///PURE ECS TEST
+    entities.push_back(0);
+
+    TransformComponent * Susy = new TransformComponent();
+    Susy->entity = 0;
+    Susy->mMatrix.translate(0.f, 0.f, .9f);
+    Susy->mMatrix.setToIdentity();
+
+
+    transformCompVec.push_back(Susy);
+    meshCompVec.push_back(MeshSys->CreateMeshComponent("Susanne.obj", 0));
+    meshCompVec[0]->mDrawType = GL_TRIANGLES;
+
+    MaterialComponent * SusyMat = new MaterialComponent();
+    SusyMat->entity = 0;
+    SusyMat->mShaderProgram = 0;
+    SusyMat->mTextureUnit = 0;
+    MaterialCompVec.push_back(SusyMat);
+
+    RenderSys->init(meshCompVec[0]);
+    ///
+
+
     //dog triangle
     temp = new Triangle();
     temp->init();
@@ -246,6 +272,22 @@ void RenderWindow::render()
                     pMatrixUniform,     //Projection matrix
                     mMatrixUniform,     //ModelMatrix
                     mCurrentCamera );   //Camera
+
+
+    //for(auto i = entities.begin(); i < entities.end(); i++){
+
+    if(entities[0] == meshCompVec[0]->entity && entities[0] == transformCompVec[0]->entity && entities[0] == MaterialCompVec[0]->entity){
+        glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
+        RenderSys->draw(meshCompVec[0],
+                MaterialCompVec[0],
+                transformCompVec[0],
+                vMatrixUniform,
+                pMatrixUniform,
+                mMatrixUniform,
+                mCurrentCamera);
+
+    }
+    // }
 
 
     //Moves the dog triangle - should be mada another way!!!!

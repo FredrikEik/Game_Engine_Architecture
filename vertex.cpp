@@ -93,6 +93,32 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
+Vertex::Vertex(QVector3D vec1, QVector3D vec2, QVector2D vec3)
+{
+    mXYZ.setX(vec1.x());
+    mXYZ.setY(vec1.y());
+    mXYZ.setZ(vec1.z());
+
+    mNormal.setX(vec2.x());
+    mNormal.setY(vec2.y());
+    mNormal.setZ(vec2.z());
+
+    mST.setX(vec3.x());
+    mST.setY(vec3.y());
+}
+
+Vertex::Vertex(QVector3D vec1, QVector3D vec2)
+{
+    mXYZ.setX(vec1.x());
+    mXYZ.setY(vec1.y());
+    mXYZ.setZ(vec1.z());
+
+    mNormal.setX(vec2.x());
+    mNormal.setY(vec2.y());
+    mNormal.setZ(vec2.z());
+}
+
+
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";

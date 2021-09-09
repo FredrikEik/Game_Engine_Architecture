@@ -15,6 +15,7 @@ SOURCES += main.cpp \
     components.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    meshsystem.cpp \
     rendersystem.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    meshsystem.h \
     rendersystem.h \
     renderwindow.h \
     shader.h \
