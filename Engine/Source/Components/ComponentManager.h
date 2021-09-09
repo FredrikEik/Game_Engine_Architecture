@@ -19,7 +19,7 @@ class ComponentManager
 		packedComponentArray{ (*new std::vector<T>) }
 	{
 		for (auto &it: sparseComponentArray)
-			it=-1;
+			it=core::MAX_ENTITIES+1;
 	}
 	~ComponentManager();
 public:
@@ -28,7 +28,7 @@ public:
 	std::vector<T>& getComponentArray();
 protected:
 //public:
-	uint32 createComponent(uint32 entityID);
+	uint32 createComponent(uint32 entityID, bool isReusable);
 	bool assignComponent(uint32 componentID, uint32 entityID);
 	/**Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
 	* Call cleanUp when there is time available to free the memory.*/
@@ -42,6 +42,8 @@ private:
 	// This array contains all the components
 	std::vector<T>& packedComponentArray;
 	bool packedComponentDirty{ false };
+
+	bool bIsReusable{ false };
 };
 
 template<class T>
@@ -52,9 +54,11 @@ inline ComponentManager<T>::~ComponentManager()
 }
 
 template<class T>
-inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
+inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusable)
 {
 	assert(entityID < core::MAX_ENTITIES);
+
+	bIsReusable = isReusable;
 
 	// Assigning the components location in the packed array to the sparse array
 	sparseComponentArray[entityID] = packedComponentArray.size();
@@ -84,7 +88,7 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 {
 	assert(entityID < core::MAX_ENTITIES);
 	uint32 positionInPacked{ sparseComponentArray[entityID] };
-	sparseComponentArray[entityID] = -1; // Invalidating the component lookup
+	sparseComponentArray[entityID] = core::MAX_ENTITIES + 1; // Invalidating the component lookup.
 
 	// If the component is not the last element in the vector, overwrite it with the last element
 	// This works because the order in the packed array does not matter.
@@ -97,7 +101,8 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	}
 
 	// Remove the component and mark the vector dirty.
-	packedComponentArray.pop_back();
+	assert(packedComponentArray.size() > 0);
+	packedComponentArray.pop_back(); // Does not fuck up without this
 	packedComponentDirty = true;
 }
 

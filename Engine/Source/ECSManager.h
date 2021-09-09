@@ -3,6 +3,8 @@
 #include <array>
 #include <vector>
 #include <typeindex>
+#include <filesystem>
+
 class ECSManager
 {
 public:
@@ -22,12 +24,16 @@ public:
 	void destroyEntity(uint32 entityID);
 
 	uint32 newEntity();
+
+	void printEntity(uint32 entityID);
+
+	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
+	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 private:
 	class Factory& factory;
 	template <typename... Ts>
 	void swallow(Ts&&...);
-	template <typename T>
-	int create(int i);
+
 	/** Reads as std::pair<isActive, std::pair<type_index of component, componentID>>
 	* Iterating the entire array can be slow if entities are spread out, but that should not be necessary. 
 	*/
@@ -40,8 +46,8 @@ template<typename... Types>
 inline void ECSManager::addComponents(uint32 entityID)
 {
 	swallow(addComponent<Types>(entityID)...);
+	//(addComponent<Types>(entityID)...);
 }
-
 
 
 // Don't mind this. Just unpacking variadic template arguments :))))
@@ -55,12 +61,11 @@ inline uint32 ECSManager::addComponent(uint32 entityID)
 {
 	uint32 componentID{ factory.createComponent<T>(entityID) };
 	std::pair<std::type_index, uint32> componentLocation(std::type_index(typeid(T)), componentID);
-	entities.at(entityID).second.push_back(componentLocation);
+
+	entities.at(entityID).second.push_back(componentLocation); // THIS FUCKS UP
 
 	return componentID;
 }
-
-
 
 template<typename T>
 inline bool ECSManager::removeComponent(uint32 entityID)

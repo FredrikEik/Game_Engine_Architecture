@@ -6,6 +6,7 @@
 #include "Factory.h"
 #include "Systems/BaseSystem.h"
 #include "ECSManager.h"
+#include "Assets/DefaultAssets.h"
 #include <chrono>
 #include <typeindex>
 
@@ -98,8 +99,28 @@ int main()
 	//std::cout << "Waiting";
 
 	auto start = std::chrono::system_clock::now();
-	auto manager = ECSManager();
-	manager.addComponents<MeshComponent, testComponent, TransformComponent>(0);
+	ECSManager& manager = (*new ECSManager());
+	uint32 entity = manager.newEntity();
+	manager.addComponents<MeshComponent, testComponent, TransformComponent>(entity);
+	manager.printEntity(entity);
+	//uint32 entity2 = manager.newEntity();
+	//manager.addComponents<MeshComponent, testComponent, TransformComponent>(entity2);
+	//manager.printEntity(entity2);
+
+	std::cout << "\nDestroying one now: \n";
+	//manager.removeComponent<MeshComponent>(entity);
+	//manager.removeComponent<testComponent>(entity);
+	//manager.removeComponent<TransformComponent>(entity);
+	manager.destroyEntity(entity);
+	manager.printEntity(entity);
+
+	std::cout << "\nCreating one now, id should be 0: \n";
+	entity = manager.newEntity();
+	//manager.addComponent<MeshComponent>(entity);
+	manager.addComponents<TransformComponent>(entity);
+
+	//return 0;
+
 	//Factory &factory = (*new Factory);
 	//factory.loadAsset<MeshComponent>(0, "some/file.path/mesh");
 	//for (uint32 i{}; i < elements; ++i)
@@ -125,7 +146,7 @@ int main()
 	//std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
 	//std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
 	//delete& factory;
-	return 0;
+	//return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -154,7 +175,10 @@ int main()
 	glfwSetScrollCallback(window, scroll_callback);
 
 
-
+	manager.loadAsset(entity, asset_CUBE);
+	manager.printEntity(entity);
+	// Somehow deleting the manager after destroying and then adding an entity crashes
+	delete& manager;
 	while (!glfwWindowShouldClose(window))
 	{
 		// can be used to calc deltatime

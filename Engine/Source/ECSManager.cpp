@@ -2,7 +2,7 @@
 #include "Factory.h"
 #include <iostream>
 ECSManager::ECSManager()
-	: entities{ (*new std::array<std::pair<uint32, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>) },
+	: entities{ (*new std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>) },
 	factory{*new Factory},
 	availableEntityIDs{*new std::vector<uint32>}
 {
@@ -15,9 +15,9 @@ ECSManager::ECSManager()
 
 ECSManager::~ECSManager()
 {
-	delete& factory;
+	//delete& factory;
 	delete& entities;
-	delete& availableEntityIDs;
+	//delete& availableEntityIDs;
 }
 
 
@@ -25,17 +25,47 @@ uint32 ECSManager::newEntity()
 {
 	uint32 entityID = availableEntityIDs.back();
 	availableEntityIDs.pop_back();
-	std::pair<uint32, std::vector<std::pair<std::type_index, uint32>>> entity(entityID, std::vector<std::pair<std::type_index, uint32>>());
+	assert(!entities[entityID].first); // Trying to assign an entity that is already in use.
+
+	std::pair<bool, std::vector<std::pair<std::type_index, uint32>>> entity(true, 
+								std::vector<std::pair<std::type_index, uint32>>());
+	entities[entityID] = entity;
 
 	return entityID;
 }
 
+
+
 void ECSManager::destroyEntity(uint32 entityID)
 {
-	std::vector<std::pair<std::type_index, uint32>> components = entities.at(entityID).second;
+	std::vector<std::pair<std::type_index, uint32>> components = entities[entityID].second;
 	for (uint32 i{}; i < components.size(); ++i)
 	{
-		// TODO: Add a remove in factory that takes type_index instead of <T>
-		factory.removeComponent() // Purposeful compile error
+		factory.removeComponent(entityID, components[i].first, components[i].second); 
 	}
+	entities[entityID].second.clear();
+	entities[entityID].first = false;
+	availableEntityIDs.push_back(entityID);
+}
+
+void ECSManager::printEntity(uint32 entityID)
+{
+	std::vector<std::pair<std::type_index, uint32>> components = entities[entityID].second;
+	std::cout << "Entity id: " << entityID << ". Active: " << entities[entityID].first << '\n'
+		<<"Number of components: "<<components.size()<<'\n';
+	for (uint32 i{}; i < components.size(); ++i)
+	{
+		std::cout << components[i].first.name() << '\n';
+	}
+
+}
+
+uint32 ECSManager::loadAsset(uint32 entityID, const std::filesystem::path& filePath)
+{
+	return factory.loadAsset(entityID, filePath);
+}
+
+uint32 ECSManager::loadAsset(uint32 entityID, enum DefaultAsset defaultAsset)
+{
+	return factory.loadAsset(entityID, defaultAsset);
 }
