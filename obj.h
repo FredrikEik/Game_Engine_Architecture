@@ -7,10 +7,8 @@ class Obj : public VisualObject
 {
 public:
     Obj(std::string filename);
-    ~Obj() override;
-
-   // virtual void draw() override;
-    void init(/*GLint matrixUniform*/);
+    ~Obj();
+    void init() override;
 
 private:
     void readFile(std::string filename);
@@ -18,3 +16,6 @@ private:
 };
 
 #endif // OBJ_H
+
+
+

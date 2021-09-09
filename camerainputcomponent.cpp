@@ -6,16 +6,16 @@ void CameraInputComponent::update(Camera *mCamera,Input mInput)
     if(mInput.RMB == true)
     {
         if(mInput.W == true)
-            mCamera->updateHeigth(mCameraSpeed);
+            mCamera->setSpeed(-mCameraSpeed);
         if(mInput.S == true)
-            mCamera->updateHeigth(-mCameraSpeed);
+            mCamera->setSpeed(mCameraSpeed);
         if(mInput.D == true)
             mCamera->moveRight(mCameraSpeed);
         if(mInput.A == true)
             mCamera->moveRight (-mCameraSpeed);
         if(mInput.Q == true)
-            mCamera->setSpeed (-mCameraSpeed);
+            mCamera->updateHeigth (-mCameraSpeed);
         if(mInput.E == true)
-            mCamera->setSpeed (mCameraSpeed);
+            mCamera->updateHeigth (mCameraSpeed);
     }
 }

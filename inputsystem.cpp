@@ -6,6 +6,7 @@ InputSystem:: InputSystem()
 }
 
 
+
 void InputSystem::setCameraSpeed(float value)
 {
     mCameraSpeed += value;

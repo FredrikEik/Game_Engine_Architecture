@@ -1,23 +1,23 @@
 #include "obj.h"
 #include "vertex.h"
-#include <vector>
-#include <iostream>
+#include "component.h"
 #include <sstream>
 #include <fstream>
 #include <string>
-#include "component.h"
 
-Obj::Obj(std::string filename) //: VisualObject ()
+Obj::Obj(std::string filename) : VisualObject ()
 {
-    readFile(filename);
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
 
     mMesh = new MeshComponent();
 
+    readFile(filename);
+
     mMesh->mDrawType = GL_TRIANGLES;
 
     mMaterial = new MaterialComponent();
+
 }
 
 Obj::~Obj()
@@ -25,23 +25,24 @@ Obj::~Obj()
 
 }
 
-void Obj::init(/*GLint matrixUniform*/)
+void Obj::init()
 {
-    //must call this to use OpenGL functions
-   // mMatrixUniform = matrixUniform;
     initializeOpenGLFunctions();
+
 
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &mMesh->mVAO );
     glBindVertexArray( mMesh->mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1,&mMesh->mVBO );
+    glGenBuffers( 1, &mMesh->mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof(Vertex), mMesh->mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof( Vertex ),
+                  mMesh->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
+    glBindBuffer(GL_ARRAY_BUFFER, mMesh->mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
@@ -50,18 +51,11 @@ void Obj::init(/*GLint matrixUniform*/)
     glEnableVertexAttribArray(1);
 
     // 3rd attribute buffer : uvs
-    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(2);
-
-    //Second buffer - holds the indices (Element Array Buffer - EAB):
-    glGenBuffers(1, &mMesh->mEAB);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mMesh->mEAB);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mMesh->mIndices.size() * sizeof(GLuint), mMesh->mIndices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
-
-
 
 void Obj::readFile(std::string filename)
 {
@@ -97,19 +91,14 @@ void Obj::readFile(std::string filename)
 
         if (oneWord == "#")
         {
-            //Ignore this line
-            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
             continue;
         }
         if (oneWord == "")
         {
-            //Ignore this line
-            //            qDebug() << "Line is blank ";
             continue;
         }
         if (oneWord == "v")
         {
-            //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
             gsl::Vector3D tempVertex;
             sStream >> oneWord;
             tempVertex.setX (std::stof(oneWord));
@@ -118,15 +107,12 @@ void Obj::readFile(std::string filename)
             sStream >> oneWord;
             tempVertex.setZ  (std::stof(oneWord));
 
-            //Vertex made - pushing it into vertex-vector
-
             tempVertecies.push_back(tempVertex);
 
             continue;
         }
         if (oneWord == "vt")
         {
-            //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
             gsl::Vector2D tempUV;
             sStream >> oneWord;
             tempUV.setX  (std::stof(oneWord));
@@ -140,7 +126,7 @@ void Obj::readFile(std::string filename)
         }
         if (oneWord == "vn")
         {
-            //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+
             gsl::Vector3D tempNormal;
             sStream >> oneWord;
             tempNormal.setX (std::stof(oneWord));
@@ -155,8 +141,6 @@ void Obj::readFile(std::string filename)
         }
         if (oneWord == "f")
         {
-            //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
-            //int slash; //used to get the / from the v/t/n - format
             int index, normal, uv;
             for(int i = 0; i < 3; i++)
             {
@@ -199,16 +183,5 @@ void Obj::readFile(std::string filename)
             continue;
         }
     }
-
-    //beeing a nice boy and closing the file after use
     fileIn.close();
 }
-
-
-
-//void Obj::draw()
-//{
-//    glBindVertexArray( mVAO );
-//    glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, nullptr);
-//    glBindVertexArray(0);
-//}

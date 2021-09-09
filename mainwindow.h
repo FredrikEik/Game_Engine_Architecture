@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QComboBox>
 #include <QMainWindow>
+
 
 class QWidget;
 class RenderWindow;
@@ -17,6 +19,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+   // void commandChanged(const QString& command_text);
+
 
 private slots:
     void on_pushButton_toggled(bool checked);

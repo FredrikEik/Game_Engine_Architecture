@@ -11,6 +11,8 @@
 #include "inputsystem.h"
 #include "component.h"
 #include "shapefactory.h"
+#include "obj.h"
+#include "playerinputcomponent.h"
 
 
 class QOpenGLContext;
@@ -36,7 +38,16 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
-     void setCameraSpeed(float value);
+    void setCameraSpeed(float value);
+
+    bool makeCircle = false;
+
+    bool makeSquare = false;
+
+    bool makeTriangle = false;
+
+    bool makeObj = false;
+
 
 private slots:
     void render();
@@ -45,8 +56,15 @@ private:
     CameraInputComponent *Camerainput;
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
-    Input mInput;
+    PlayerInputComponent *mPlayerInput;
+    Player *mPlayer;
 
+    Input mInput;
+    ShapeFactory mShapeFactory;
+
+
+    void initObjects();
+    void makeObject();
     void HandleInput();
 
     void init();

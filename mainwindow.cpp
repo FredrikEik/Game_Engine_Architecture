@@ -13,13 +13,39 @@ MainWindow::MainWindow(QWidget *parent) :
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
     init();
+
+//    QStringList commands = { "  ", "Triangle", "Circle", "Square", "Obj" };
+//    ui->comboBox->addItems(commands);
+//    connect(this->ui->comboBox, SIGNAL(currentIndexChanged(const Qstring&)),
+//            this, SLOT(commandChanged(const Qstring&)));
+
 }
+
+
+//void MainWindow::commandChanged(const QString &command_text)
+//{
+//    if(command_text=="Triangle")
+//    {
+//     mRenderWindow->makeTriangle = true;
+//    }else if(command_text=="Circle")
+//    {
+//      mRenderWindow->makeCircle = true;
+//    }else if(command_text=="Square")
+//    {
+//      mRenderWindow->makeSquare = true;
+//    }else if(command_text=="Obj")
+//    {
+//        mRenderWindow->makeObj = true;
+//    }
+//}
 
 MainWindow::~MainWindow()
 {
     delete mRenderWindow;
     delete ui;
 }
+
+
 
 void MainWindow::init()
 {

@@ -2,63 +2,56 @@
 #define SHAPEFACTORY_H
 
 #include <iostream>
-#include <string>
+#include "vertex.h"
+#include "shader.h"
+#include <vector>
+#include "gltypes.h"
+
 #include "visualobject.h"
-#include "vector3d.h"
 
-class Shape : public VisualObject{
+using namespace std;
+
+class ShapeFactory{
 public:
-    virtual void init() override;
-    virtual ~Shape() {}
-
+    virtual ~ShapeFactory() {}
+    VisualObject* createShape(string shapeName);
+private:
+    void createCircle();
+    void createSquare();
+    void createTriangle();
+    void createPlain();
+    VisualObject* myShapes[4];
 };
 
-class ShapeFactory : public Shape
-{
+class Circle : public VisualObject {
 public:
-    void createShapes(int id);
-    virtual ~ShapeFactory();
+    Circle();
+    ~Circle(){}
 private:
-    Shape* myShapes[3];
-    bool circleExist = false;
-    bool squareExist = false;
-    bool triangleExist = false;
-
-};
-
-class Circle : public Shape {
-
-public:
-    Circle(int n=0);
-    ~Circle() { }
-    Shape *create(){return new Circle;};
-    friend class ShapeFactory;
-
-private:
+    void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
+    void circleUnit();
+    void makeTriangle(const gsl::Vector3D& v1, const gsl::Vector3D& v2, const gsl::Vector3D& v3);
     int m_rekursjoner;
-    int m_indeks;               // brukes i rekursjon, til å bygge m_vertices
-    void makeTriangel(gsl::Vector3D& v1, gsl::Vector3D& v2, gsl::Vector3D& v3);
-    void subDivide(gsl::Vector3D& a, gsl::Vector3D& b, gsl::Vector3D& c, int n);
-    void oktaederUnitBall();
+    int m_index;
 };
 
-class Square : public Shape {
-
+class Square : public VisualObject {
 public:
     Square();
-    ~Square() { }
-    Shape* create(){return new Square;};
-    friend class ShapeFactory;
+    ~Square() {}
 };
 
-class Triangle : public Shape {
-
+class Triangle : public VisualObject {
 public:
     Triangle();
-    ~Triangle() {  }
-    Shape* create(){return new Triangle;};
-    friend class ShapeFactory;
-
+    ~Triangle() {};
 };
 
-#endif // SHAPEFACTORY_H
+class Plain : public VisualObject {
+public:
+    Plain();
+    ~Plain() {};
+};
+
+
+#endif //  SHAPEFACTORY_H
