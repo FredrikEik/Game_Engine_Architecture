@@ -22,6 +22,8 @@
 #include "texture.h"
 #include "components.h"
 #include "factory.h"
+#include "objreader.h"
+
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -202,7 +204,9 @@ void RenderWindow::render()
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
-			//draw the object
+
+            //draw the object
+
 			factory->mGameObjects[i]->draw();
             factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
          }
@@ -314,6 +318,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::buttonCreate(std::string objectName)
 {
     factory->createObject(objectName);
+    resourceManager->saveMesh("fileName", objectName);
 }
 
 
