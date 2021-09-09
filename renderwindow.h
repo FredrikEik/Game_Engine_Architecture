@@ -38,7 +38,7 @@ public:
     MeshComponent * TriangelMesh;
     MaterialComponent *TriangleMaterial;
     TransformComponent *TriangleTransform;
-    //RenderSystem *RenderSys = new RenderSystem();
+    RenderSystem *RenderSys = new RenderSystem();
 
 
 

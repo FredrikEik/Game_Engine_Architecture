@@ -136,7 +136,6 @@ void RenderWindow::init()
     temp->init();
     mVisualObjects.push_back(temp);
 ////*************************************start**////////////
-    RenderSystem * renderSys = new RenderSystem;
 
     TriangleTransform = new TransformComponent();
 
@@ -150,7 +149,7 @@ void RenderWindow::init()
     TriangelMesh->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
     TriangelMesh->mDrawType = GL_TRIANGLES;
     TriangleMaterial = new MaterialComponent();
-    renderSys->init(TriangelMesh);
+    RenderSys->init(TriangelMesh);
 
 
     TriangleMaterial->mShaderProgram = 1;
@@ -237,27 +236,16 @@ void RenderWindow::render()
     }
 
     //RENDER TRIANGLE
+    //GLUSEPROGRAM GETS THE CURRENT MATERIAL
     glUseProgram(mShaderPrograms[TriangleMaterial->mShaderProgram]->getProgram());
-    int viewMatrix1{-1};
-    int projectionMatrix1{-1};
-    int modelMatrix1{-1};
 
-    viewMatrix1 = vMatrixUniform;
-    projectionMatrix1 = pMatrixUniform;
-    modelMatrix1 = mMatrixUniform;
-
-    //Now mMaterial component holds texture slot directly - probably should be changed
-
-
-    glUniformMatrix4fv( viewMatrix1, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-    glUniformMatrix4fv( projectionMatrix1, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-    glUniformMatrix4fv( modelMatrix1, 1, GL_TRUE,TriangleTransform->mMatrix.constData());
-
-    //draw the object
-
-    glBindVertexArray( TriangelMesh->mVAO);
-    glDrawArrays(TriangelMesh->mDrawType, 0, TriangelMesh->mVertices.size());
-    glBindVertexArray(0);
+    RenderSys->draw(TriangelMesh,       //Meshcomponent
+                    TriangleMaterial,   //MaterialComponent
+                    TriangleTransform,  //TransformComponent
+                    vMatrixUniform,     //viewMatrix
+                    pMatrixUniform,     //Projection matrix
+                    mMatrixUniform,     //ModelMatrix
+                    mCurrentCamera );   //Camera
 
 
     //Moves the dog triangle - should be mada another way!!!!
