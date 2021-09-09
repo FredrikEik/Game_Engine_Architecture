@@ -57,96 +57,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 //}
 int main()
 {
-	//createObject<MeshComponent, testComponent, TransformComponent>(1);
-	uint32 elements{ 5000000 };
-	//ComponentManager<testComponent>& testManager = (*new ComponentManager<testComponent>());
-	//for (uint16 j = 0; j < 1; ++j)
-	//{
-	//	auto start = std::chrono::system_clock::now();
-	//	for (uint32 i{}; i < elements; ++i)
-	//	{
-	//		testManager.createComponent(i);
-	//	}
-	//	testManager.cleanUp();
-
-	//	auto doneCreating = std::chrono::system_clock::now();
-	//	//std::cout << test.entityID << test.ID<<'\n';
-	//	for (uint32 i{}; i < elements; ++i)
-	//	{
-	//		auto comp = testManager.getComponent(i);
-	//		comp.pos[1] = 8;
-	//	}
-	//	auto doneLoopingOneByOne = std::chrono::system_clock::now();
-
-	//	for (auto it : testManager.getComponentArray())
-	//		it.pos[0] = 10;
-	//	auto doneIteratingArray = std::chrono::system_clock::now();
-
-	//	for (uint32 i{}; i < elements; ++i)
-	//	{
-	//		testManager.removeComponent(i);
-	//	}
-	//	auto done = std::chrono::system_clock::now();
-
-	//	std::cout << "Time to create "<<elements<<" components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneCreating - start).count() / 1000000000.f << " seconds\n";
-	//	std::cout << "Time to loop over " << elements << " components by entityID: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneLoopingOneByOne - doneCreating).count() / 1000000000.f << " seconds\n";
-	//	std::cout << "Time to change a value in all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(doneIteratingArray - doneLoopingOneByOne).count() / 1000000000.f << " seconds\n";
-	//	std::cout << "Time to remove all " << elements << " components: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - doneIteratingArray).count() / 1000000000.f << " seconds\n";
-	//	std::cout << "Total time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(done - start).count() / 1000000000.f << " seconds\n";
-	//	//std::cout << "The manager is using " << sizeof() << " bytes\n\n";
-	//}
-	//delete &testManager;
-	//std::cout << "Waiting";
-
-	auto start = std::chrono::system_clock::now();
-	ECSManager& manager = (*new ECSManager());
-	uint32 entity = manager.newEntity();
-	manager.addComponents<MeshComponent, testComponent, TransformComponent>(entity);
-	manager.printEntity(entity);
-	//uint32 entity2 = manager.newEntity();
-	//manager.addComponents<MeshComponent, testComponent, TransformComponent>(entity2);
-	//manager.printEntity(entity2);
-
-	std::cout << "\nDestroying one now: \n";
-	//manager.removeComponent<MeshComponent>(entity);
-	//manager.removeComponent<testComponent>(entity);
-	//manager.removeComponent<TransformComponent>(entity);
-	manager.destroyEntity(entity);
-	manager.printEntity(entity);
-
-	std::cout << "\nCreating one now, id should be 0: \n";
-	entity = manager.newEntity();
-	//manager.addComponent<MeshComponent>(entity);
-	manager.addComponents<TransformComponent>(entity);
-
-	//return 0;
-
-	//Factory &factory = (*new Factory);
-	//factory.loadAsset<MeshComponent>(0, "some/file.path/mesh");
-	//for (uint32 i{}; i < elements; ++i)
-	//{
-	//	factory.createComponent<testComponent>(i);
-	//}
-	//auto doneCreating = std::chrono::system_clock::now();
-
-
-	//TestSystem* system = new TestSystem();
-	//system->updateAll(factory.getManager<testComponent>());
-	//auto doneUpdating = std::chrono::system_clock::now();
-	//std::cout << "Updated variable: " << factory.getManager<testComponent>().getComponent(100).pos[0] << '\n';
-	//delete system;
-
-	//for (uint32 i{}; i < elements; ++i)
-	//{
-	//	factory.removeComponent<testComponent>(i);
-	//}
-	//auto done = std::chrono::system_clock::now();
-
-	//std::cout << "Time to create " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneCreating - start).count() / 1000000.f << " seconds\n";
-	//std::cout << "Time to update " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(doneUpdating - doneCreating).count() / 1000000.f << " seconds\n";
-	//std::cout << "Time to remove " << elements << " components with factory: " << std::chrono::duration_cast<std::chrono::microseconds>(done - doneUpdating).count() / 1000000.f << " seconds\n";
-	//delete& factory;
-	//return 0;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -174,11 +84,6 @@ int main()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-
-	manager.loadAsset(entity, asset_CUBE);
-	manager.printEntity(entity);
-	// Somehow deleting the manager after destroying and then adding an entity crashes
-	delete& manager;
 	while (!glfwWindowShouldClose(window))
 	{
 		// can be used to calc deltatime

@@ -13,6 +13,7 @@ ECSManager::ECSManager()
 		availableEntityIDs.push_back(core::MAX_ENTITIES - i - 1);
 }
 
+
 ECSManager::~ECSManager()
 {
 	//delete& factory;
