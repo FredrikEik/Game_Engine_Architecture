@@ -125,11 +125,14 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
+    //********************** Making the objects to be drawn **********************
 
     // Made my own GameObjectManager
     manageObjects();
 
+    //Set up camera
+    mCurrentCamera = new Camera();
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

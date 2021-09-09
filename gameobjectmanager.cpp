@@ -21,18 +21,14 @@ void manageObjects()
     //  temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     //  mVisualObjects.push_back(temp);
 
-    //GameObject *dagsDog;
-
     //Set up camera
-    Camera *mCurrentCamera{nullptr};
+//    mCurrentCamera = new Camera();
+//    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-void addObject(std::string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID)
+void addObject(std::string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
 {
-
     GameObject * CurrentGameObject;
 
     CurrentGameObject->entitiyID = id;
@@ -48,19 +44,21 @@ void addObject(std::string name, int id, int TransformID, int MeshID, int Materi
 
     if (MeshID != 0)
     {
-        //Read from an obj file
+        CurrentGameObject->mMaterial->mTextureUnit = MeshID;      //dog texture
     }
 
     if (MaterialID != 0)
     {
         CurrentGameObject->mMaterial->mShaderProgram = MaterialID;
-        CurrentGameObject->mMaterial->mTextureUnit = MaterialID;
+        //CurrentGameObject->mMaterial->mTextureUnit = MasawdterialID;
     }
 
     if (GravityID != 0)
     {
-        //name->mGravity->mGravity = gravity;
+        CurrentGameObject->mGravity->affectedByGravity = 1;
+        CurrentGameObject->mGravity->gravitationalForce = 1^2;
     }
 
+    //mGameObjects.push_back(name);
     id++;
 }
