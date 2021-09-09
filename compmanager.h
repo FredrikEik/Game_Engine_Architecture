@@ -3,7 +3,6 @@
 
 
 #include <typeinfo>
-//#include "componentarray.h"
 #include "componentarray.h"
 #include "components.h"
 
@@ -75,7 +74,7 @@ private:
     std::unordered_map<const char*, ComponentType> m_ComponentTypes{};
 
     //Map of pointers to the component arrays.
-    std::unordered_map<const char*, std::shared_ptr<class IComponentArray>> m_ComponentArrays{};
+    std::unordered_map<const char*, std::shared_ptr<IComponentArray>> m_ComponentArrays{};
 
     //The component type for the next registered component, starting at 0.
     ComponentType m_NextComponentType{0};

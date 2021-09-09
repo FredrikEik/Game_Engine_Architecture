@@ -50,6 +50,8 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    systembase.h \
+    systemmanager.h \
     texture.h \
     textureshader.h \
     triangle.h \

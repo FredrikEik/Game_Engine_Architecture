@@ -43,16 +43,4 @@ struct MaterialComponent
     GLint m_textureUnit;
 };
 
-//struct ShaderComponent
-//{
-//    std::string m_shaderName; //Might not need this?
-//    class Shader* m_shader;
-//};
-
-//struct TextureComponent
-//{
-//    std::string m_textureName; //Might not need this?
-//    class Texture* m_texture;
-//};
-
 #endif // COMPONENTS_H
