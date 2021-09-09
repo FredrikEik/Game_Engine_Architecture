@@ -8,6 +8,7 @@ TARGET      = GEA2021
 SOURCES += main.cpp \
     camera.cpp \
     cubemapshader.cpp \
+    entitymanager.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
     matrix3x3.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     components.h \
     constants.h \
     cubemapshader.h \
+    entitymanager.h \
     gltypes.h \
     input.h \
     interactiveobject.h \
