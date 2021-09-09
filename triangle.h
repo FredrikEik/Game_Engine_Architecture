@@ -4,7 +4,11 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <vector>
 #include <matrix4x4.h>
+<<<<<<< Updated upstream
 #include "visualobject.h"
+=======
+#include "gameobject.h"
+>>>>>>> Stashed changes
 
 class Triangle : public VisualObject
 {
