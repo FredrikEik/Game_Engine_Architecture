@@ -8,6 +8,9 @@
 
 #include "input.h"
 #include "constants.h"
+#include "gameobject.h"
+#include "triangletest.h"
+#include "resourcemanageer.h"
 
 class QOpenGLContext;
 class Shader;
@@ -67,13 +70,14 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    std::vector<GameObject*> mVisualObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
+    ResourceManageer* source;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
