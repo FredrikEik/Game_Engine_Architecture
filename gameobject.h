@@ -1,4 +1,4 @@
-#ifndef GAMEOBJECT_H
+﻿#ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
 #include <QOpenGLFunctions_4_1_Core>
@@ -10,6 +10,7 @@ public:
     virtual void init() = 0;
 
     std::string mName;
+    int entitiyID;
 
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};

@@ -1,4 +1,4 @@
-#ifndef GAMEOBJECTMANAGER_H
+﻿#ifndef GAMEOBJECTMANAGER_H
 #define GAMEOBJECTMANAGER_H
 
 #include "xyz.h"
@@ -13,11 +13,11 @@ using namespace std;
 //Camera *mCurrentCamera{nullptr};
 //float mAspectratio{1.f};
 
-//std::vector<VisualObject*> mVisualObjects;
+//std::vector<GameObject*> mGameObjects;
 
 void manageObjects();
-int addObject(string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID);
+void addObject(std::string name = "DefaultGameObject", int id = 0, int TransformID = 0, int MeshID = 0, int MaterialID = 0, int GravityID = 0);
 
-string objectName;
+//string objectName;
 
 #endif // GAMEOBJECTMANAGER_H

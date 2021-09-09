@@ -1,4 +1,4 @@
-#include "gameobjectmanager.h"
+﻿#include "gameobjectmanager.h"
 
 void manageObjects()
 {
@@ -9,7 +9,9 @@ void manageObjects()
     //  temp->init();
     //  mVisualObjects.push_back(temp);
 
-        //addObject(temp, 1, 1, 1, 0);
+    string temp = "ost";
+
+        addObject(temp, id, 1, 1, 1, 0);
 
     //Dag's dog triangle
     //  temp = new Triangle();
@@ -19,40 +21,43 @@ void manageObjects()
     //  temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     //  mVisualObjects.push_back(temp);
 
-        id = {addObject("dagsDog", id, 1, 1, 1, 0)};
+    //GameObject *dagsDog;
 
     //Set up camera
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-int addObject(string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID)
+void addObject(std::string name, int id, int TransformID, int MeshID, int MaterialID, int GravityID)
 {
-    if (name == std::unique)
+
+    GameObject * CurrentGameObject;
+
+    CurrentGameObject->entitiyID++;
+    CurrentGameObject->mName = name;
+    //GameObject *name;
+
+    CurrentGameObject->init();
+
+    if (TransformID == 1)
     {
-        id++;
-
-        if (TransformID == 1)
-        {
-            new XYZ();
-            name->mTransform->mMatrix.translate(0.0f, 0.0f, 0.5f);
-        }
-
-        if (MeshID != 0)
-        {
-
-        }
-
-        if (MaterialID != 0)
-        {
-            name->mMaterial->mShaderProgram = MaterialID;
-            name->mMaterial->mTextureUnit = MaterialID;
-        }
-
-        if (GravityID != 0)
-        {
-            name->mGravity->mGravity = gravity;
-        }
+        new XYZ();
+        CurrentGameObject->mTransform->mMatrix.translate(0.0f, 0.0f, 0.5f);
     }
-return id;
+
+    if (MeshID != 0)
+    {
+        //Read from an obj file
+    }
+
+    if (MaterialID != 0)
+    {
+        CurrentGameObject->mMaterial->mShaderProgram = MaterialID;
+        CurrentGameObject->mMaterial->mTextureUnit = MaterialID;
+    }
+
+    if (GravityID != 0)
+    {
+        //name->mGravity->mGravity = gravity;
+    }
 }

@@ -1,4 +1,4 @@
-#ifndef RENDERWINDOW_H
+﻿#ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
 #include <QWindow>
@@ -67,7 +67,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<GameObject*> mVisualObjects;
+    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
