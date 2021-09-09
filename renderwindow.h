@@ -7,8 +7,8 @@
 #include <QElapsedTimer>
 #include <vector>
 #include "input.h"
-//#include "quadtree.h"
 
+class ECScoordinator;
 class QOpenGLContext;
 class Shader;
 class Texture;
@@ -42,7 +42,10 @@ private:
     void init();            //initialize things we need before rendering
 
     VisualObject* createObject(VisualObject* object, std::string objectName, std::string shaderToUse, QVector3D position); //Used to create a new object for the scene.
-    void createAllObjects(bool bReset);
+    void createAllObjects(/*bool bReset*/);
+
+    //BOSS MAN - This is supposed to oversee most things!
+    std::unique_ptr<ECScoordinator> ECScord{};
 
     //Data containers
     std::unordered_map<std::string, VisualObject*> m_objectMap; //Primary object container

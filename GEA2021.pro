@@ -16,7 +16,6 @@ SOURCES += main.cpp \
     phongshader.cpp \
     plainshader.cpp \
     plane.cpp \
-    player.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
