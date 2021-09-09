@@ -8,7 +8,7 @@ ObjReader::ObjReader()
 
 }
 
-void ObjReader::readFile(std::string filename, MeshComponent &meshComp)
+void ObjReader::readFile(std::string filename, std::vector<Vertex> *mVertices, std::vector<GLuint> *mIndices)
 {
     //Open File
        //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
@@ -135,14 +135,14 @@ void ObjReader::readFile(std::string filename, MeshComponent &meshComp)
                    if (uv > -1)    //uv present!
                    {
                        Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                       meshComp.mVertices.push_back(tempVert);
+                       mVertices->push_back(tempVert);
                    }
                    else            //no uv in mesh data, use 0, 0 as uv
                    {
                        Vertex tempVert(tempVertecies[index], tempNormals[normal], QVector2D(0.0f, 0.0f));
-                       meshComp.mVertices.push_back(tempVert);
+                       mVertices->push_back(tempVert);
                    }
-                   meshComp.mIndices.push_back(temp_index++);
+                   mIndices->push_back(temp_index++);
                }
                continue;
            }

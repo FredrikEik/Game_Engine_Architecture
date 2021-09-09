@@ -10,7 +10,7 @@ public:
 
     ObjReader();
 
-    void readFile(std::string filename, MeshComponent &meshComp);
+    void readFile(std::string filename, std::vector<Vertex> *mVertices, std::vector<GLuint> *mIndices);
 private:
 
 };

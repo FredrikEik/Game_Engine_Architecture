@@ -44,3 +44,5 @@ void Factory::createObject(std::string objectName)
     mGameObjects.push_back(objectToCreate);
     return;
 }
+
+

@@ -4,7 +4,7 @@
 MarioCube::MarioCube()
 {
     ObjReader objReader;
-    objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", *getMeshComponent());
+    objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
 
 }
 
