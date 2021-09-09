@@ -14,27 +14,29 @@ template<class T>
 class ComponentManager
 {
 	friend class Factory;
-public:
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
 		packedComponentArray{ (*new std::vector<T>) }
 	{
 		for (auto &it: sparseComponentArray)
-			it=-1;
+			it=core::MAX_ENTITIES+1;
 	}
 	~ComponentManager();
+public:
 	T getComponent(uint32 entityID);
 
 	std::vector<T>& getComponentArray();
+
+	// Shrink the packedComponentArray if it is dirty
+	void cleanUp();
 protected:
-public:
-	uint32 createComponent(uint32 entityID);
+//public:
+	uint32 createComponent(uint32 entityID, bool isReusable);
 	bool assignComponent(uint32 componentID, uint32 entityID);
 	/**Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
 	* Call cleanUp when there is time available to free the memory.*/
 	void removeComponent(uint32 entityID);
 
-	void cleanUp();
 private:
 	/* This array contains the location in the packedComponentArray
 	for a specific entity's component*/
@@ -42,20 +44,23 @@ private:
 	// This array contains all the components
 	std::vector<T>& packedComponentArray;
 	bool packedComponentDirty{ false };
+
+	bool bIsReusable{ false };
 };
 
 template<class T>
 inline ComponentManager<T>::~ComponentManager()
 {
 	delete &sparseComponentArray;
-	
 	delete &packedComponentArray;
 }
 
 template<class T>
-inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
+inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusable)
 {
 	assert(entityID < core::MAX_ENTITIES);
+
+	bIsReusable = isReusable;
 
 	// Assigning the components location in the packed array to the sparse array
 	sparseComponentArray[entityID] = packedComponentArray.size();
@@ -64,7 +69,7 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID)
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
 	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
-	
+
 	return packedComponentArray.back().ID;
 }
 
@@ -85,7 +90,7 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 {
 	assert(entityID < core::MAX_ENTITIES);
 	uint32 positionInPacked{ sparseComponentArray[entityID] };
-	sparseComponentArray[entityID] = -1; // Invalidating the component lookup
+	sparseComponentArray[entityID] = core::MAX_ENTITIES + 1; // Invalidating the component lookup.
 
 	// If the component is not the last element in the vector, overwrite it with the last element
 	// This works because the order in the packed array does not matter.
@@ -98,7 +103,8 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	}
 
 	// Remove the component and mark the vector dirty.
-	packedComponentArray.pop_back();
+	assert(packedComponentArray.size() > 0);
+	packedComponentArray.pop_back(); // Does not fuck up without this
 	packedComponentDirty = true;
 }
 

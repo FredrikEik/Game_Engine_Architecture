@@ -1,6 +1,6 @@
 #include "BaseSystem.h"
 #include "../Components/ComponentManager.h"
-#include "../Components/BaseComponent.h"
+#include "../Components/Components.h"
 
 void TestSystem::updateAll(ComponentManager<class testComponent>& manager)
 {
