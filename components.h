@@ -8,7 +8,7 @@
 using ComponentType = GLubyte;
 const ComponentType MAX_COMPONENTS = 16;
 
-//TODO: move to factory? maybe not...
+//TODO: move to factory? maybe constants?
 using Entity = GLuint;
 const Entity MAX_ENTITIES = 1000;
 

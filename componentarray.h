@@ -4,15 +4,15 @@
 #include <components.h>
 
 //TODO: Try to make events work so that virtual functions is not needed.
-class IComponentManager
+class IComponentArray
 {
 public:
-    virtual ~IComponentManager() = default;
+    virtual ~IComponentArray() = default;
     virtual void EntityDestroyed(Entity entity) = 0;
 };
 
 template<typename T>
-class ComponentManager : public IComponentManager
+class ComponentArray : public IComponentArray
 {
 public:
     //ComponentManager();
