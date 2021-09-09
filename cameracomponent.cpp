@@ -1,6 +1,7 @@
-#include "cameracomponent.h"
+/*#include "cameracomponent.h"
 
 cameraComponent::cameraComponent()
 {
 
 }
+*/

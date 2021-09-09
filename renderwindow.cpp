@@ -200,8 +200,8 @@ void RenderWindow::render()
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
@@ -273,7 +273,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     //    qDebug() << mCamera.mProjectionMatrix;
 }
 
