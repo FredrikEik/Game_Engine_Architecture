@@ -2,6 +2,10 @@
 
 GameObject::GameObject()
 {
+    meshComp = new MeshComponent();
+    transformComp = new TransformComponent();
+    materialComp = new MaterialComponent();
+    transformComp->mMatrix.setToIdentity();
 }
 
 GameObject::~GameObject()

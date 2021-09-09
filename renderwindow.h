@@ -49,15 +49,14 @@ private:
 
     void handleInput();
 
-    void setupPlainShader(int shaderIndex);
-    GLint mMatrixUniform{-1};
-    GLint vMatrixUniform{-1};
-    GLint pMatrixUniform{-1};
 
+    GLint mMatrixUniform[4];
+    GLint vMatrixUniform[4];
+    GLint pMatrixUniform[4];
+
+    void setupPlainShader(int shaderIndex);
     void setupTextureShader(int shaderIndex);
-    GLint mMatrixUniform1{-1};
-    GLint vMatrixUniform1{-1};
-    GLint pMatrixUniform1{-1};
+
     GLint mTextureUniform{-1};
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures

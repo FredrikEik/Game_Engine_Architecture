@@ -133,32 +133,47 @@ void RenderWindow::init()
     //mVisualObjects.push_back(temp);
 
 
-    /*
-    GameObject *cube = new Cube();
-    cube->init();
-    mGameObjects.push_back(cube);
-    */
 
     /*
-    GameObject *marioCube = new MarioCube(); 
+    GameObject *marioCube = new MarioCube();
     marioCube->init();
+    marioCube->getMaterialComponent()->mShaderProgram = 1;
     mGameObjects.push_back(marioCube);
     */
 
+    /*
     GameObject *plane = new Plane();
     plane->init();
-    mGameObjects.push_back(plane);
+    mGameObjects.push_back(plane);*/
+
+    GameObject *cube = new Cube();
+    cube->init();
+    cube->getMaterialComponent()->mShaderProgram = 1;
+    cube->getMaterialComponent()->mTextureUnit = 1;
+    mGameObjects.push_back(cube);
 
     //testing triangle class
 
+    /*
     GameObject *triangle = new Triangle();
     triangle->init();
     mGameObjects.push_back(triangle);
-
+    */
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
+
+    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+
+    setupPlainShader(0);
+    setupTextureShader(1);
 }
 
 // Called each frame - doing the rendering
@@ -178,33 +193,26 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
-    //Draws the objects
-    //This should be in a loop! <- Ja vi må loope dette :/
+    //Draws all game objects
+    for(int i = 0; i < mGameObjects.size(); i++)
     {
-        //First objekct - xyz
-        //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        unsigned int shaderProgramIndex = mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 
-        //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transformComp->mMatrix.constData());
-        //draw the object
-        mGameObjects[0]->draw();
+        glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
+        if(shaderProgramIndex == 1)
+        {
+            glUniform1i(mTextureUniform, mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+        }
 
+        glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
-        //Second object - triangle
-        //what shader to use - texture shader
-        //glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        //glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transformComp->mMatrix.constData());
-        mGameObjects[1]->draw();
-
-        //static_cast<TransformComponent*>(mVisualObjects[1]->mComponents.at(0))->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        mGameObjects[i]->draw();
     }
+
+
+    //glUniform1i(mTextureUniform, 1);
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -224,16 +232,16 @@ void RenderWindow::render()
 
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
 void RenderWindow::setupTextureShader(int shaderIndex)
 {
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 

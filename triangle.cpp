@@ -2,16 +2,10 @@
 #include "vertex.h"
 
 Triangle::Triangle()
-{
-    transformComp = new TransformComponent();
-    transformComp->mMatrix.setToIdentity();
-
-    meshComp = new MeshComponent();
-
-                                // Positions            // Colors       //UV
-    meshComp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    meshComp->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    meshComp->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+{                                                   // Positions            // Colors       //UV
+    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.f}); // Bottom Left
+    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.f}); // Bottom Right
+    getMeshComponent()->mVertices.push_back(Vertex{ 0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 }
 
 Triangle::~Triangle()
