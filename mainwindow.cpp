@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
@@ -95,5 +96,45 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    mRenderWindow->spawnObject();
+    //mRenderWindow->spawnObject(in);
+}
+
+void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+{
+   // mRenderWindow->spawnObject(arg1);
+}
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+   mRenderWindow->spawnObject(arg1);
+}
+
+
+void MainWindow::on_comboBox_activated(const QString &arg1)
+{
+    if(arg1 == "spawn cube")
+    {
+        qDebug() << "cube spawn";
+    }
+}
+
+void MainWindow::on_comboBox_activated(int index)
+{
+    if(index == 1)
+    {
+        qDebug() << "cube";
+        mRenderWindow->spawnObject("cube");
+    }
+
+    if(index == 2)
+    {
+        qDebug() << "goat";
+        mRenderWindow->spawnObject("goat");
+    }
+
+    if(index == 3)
+    {
+        qDebug() << "triangle";
+        mRenderWindow->spawnObject("triangle");
+    }
 }

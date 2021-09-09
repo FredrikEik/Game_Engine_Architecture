@@ -45,10 +45,36 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="text">
-       <string>spawn object</string>
+     <widget class="QComboBox" name="comboBox">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
+      <property name="editable">
+       <bool>false</bool>
+      </property>
+      <property name="currentText">
+       <string>object name</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>object name</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>spawn cube</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>spawn obj</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>spawn triangle</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item>

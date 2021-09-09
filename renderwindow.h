@@ -37,7 +37,7 @@ public:
 
     void transformObject();
 
-    void spawnObject();
+    void spawnObject(QString input);
 
 private slots:
     void render();

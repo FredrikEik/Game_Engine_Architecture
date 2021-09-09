@@ -147,27 +147,27 @@ void RenderWindow::init()
     mVisualObjects.push_back(temp);
 
     //testing triangle class
-       temp = new Triangle();
-       temp->init();
-       temp->mMaterial->mShaderProgram = 1;    //texture shader
-       temp->mMaterial->mTextureUnit = 1;      //dog texture
-       temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-       mVisualObjects.push_back(temp);
+//       temp = new Triangle();
+//       temp->init();
+//       temp->mMaterial->mShaderProgram = 1;    //texture shader
+//       temp->mMaterial->mTextureUnit = 1;      //dog texture
+//       temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+//       mVisualObjects.push_back(temp);
 
-       temp  = new Cube();
-       temp ->init();
-       temp->mMaterial->mShaderProgram = 0;
-       temp->mTransform->mMatrix.translate(-2.f, 0.f, -2.f);
-       mVisualObjects.push_back(temp );
+//       temp  = new Cube();
+//       temp ->init();
+//       temp->mMaterial->mShaderProgram = 0;
+//       temp->mTransform->mMatrix.translate(-2.f, 0.f, -2.f);
+//       mVisualObjects.push_back(temp );
 
 
-//goat
-      temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
-      temp ->init();
-      temp->mMaterial->mShaderProgram = 1;    //texture shader
-      temp->mMaterial->mTextureUnit = 2;      //dog texture
-      temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
-      mVisualObjects.push_back(temp );
+////goat
+//      temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
+//      temp ->init();
+//      temp->mMaterial->mShaderProgram = 1;    //texture shader
+//      temp->mMaterial->mTextureUnit = 2;      //dog texture
+//      temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
+//      mVisualObjects.push_back(temp );
 
 
     //********************** Set up camera **********************
@@ -354,13 +354,34 @@ void RenderWindow::transformObject()
 
 }
 
-void RenderWindow::spawnObject()
+void RenderWindow::spawnObject(QString in)
 {
+//temporary solution
+    VisualObject *temp;
+    if(in == "cube")
+    {
+        temp = new Cube();
+        temp->mMaterial->mShaderProgram = 0;
+        temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
+    }
+    if(in == "triangle")
+    {
+        temp = new Triangle();
+        temp->mMaterial->mShaderProgram = 1;    //texture shader
+        temp->mMaterial->mTextureUnit = 1;      //dog texture
+        temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    }
+    if(in == "goat")
+    {
+        temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
+        temp->mMaterial->mShaderProgram = 1;    //texture shader
+        temp->mMaterial->mTextureUnit = 2;      //dog texture
+        temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
+    }
+    else
+        qDebug() << "no matching file to create";
 
-    VisualObject *temp = new Cube();
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;
-    temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
     mVisualObjects.push_back(temp );
 
 }

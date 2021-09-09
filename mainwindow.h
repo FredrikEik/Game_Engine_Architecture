@@ -28,9 +28,18 @@ private slots:
 
     void on_pushButton_3_clicked();
 
+    void on_lineEdit_textEdited(const QString &arg1);
+
+    void on_lineEdit_textChanged(const QString &arg1);
+
+    void on_comboBox_activated(const QString &arg1);
+
+    void on_comboBox_activated(int index);
+
 private:
     void init();
     Ui::MainWindow *ui;
+    std::string in;
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
