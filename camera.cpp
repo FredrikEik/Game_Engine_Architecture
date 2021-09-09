@@ -38,6 +38,7 @@ void Camera::updateForwardVector()
     mRight.normalize();
     mUp = gsl::Vector3D(0.f, 1.f, 0.f);
     mUp.rotateX(mPitch);
+    mUp.rotateY(mYaw);
     mUp.normalize();
     mForward = mUp^mRight;
 
