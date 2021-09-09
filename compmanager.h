@@ -1,7 +1,9 @@
-#ifndef COMPONENTMANAGER_H
-#define COMPONENTMANAGER_H
+#ifndef COMPMANAGER_H
+#define COMPMANAGER_H
+
 
 #include <typeinfo>
+//#include "componentarray.h"
 #include "componentarray.h"
 #include "components.h"
 
@@ -64,7 +66,7 @@ public:
         for (const auto &pair : m_ComponentArrays)
         {
             const auto &component = pair.second;
-            component->EntityDestroyed();
+            component->EntityDestroyed(entity);
         }
     }
 
@@ -89,6 +91,4 @@ private:
     }
 };
 
-
-
-#endif // COMPONENTMANAGER_H
+#endif // COMPMANAGER_H
