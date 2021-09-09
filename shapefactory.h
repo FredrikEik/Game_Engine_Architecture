@@ -6,6 +6,9 @@
 #include "shader.h"
 #include <vector>
 #include "gltypes.h"
+#include <sstream>
+#include <fstream>
+#include <string>
 
 #include "visualobject.h"
 
@@ -20,7 +23,8 @@ private:
     void createSquare();
     void createTriangle();
     void createPlain();
-    VisualObject* myShapes[4];
+    void createObj();
+    VisualObject* myShapes[5];
 };
 
 class Circle : public VisualObject {
@@ -51,6 +55,14 @@ class Plain : public VisualObject {
 public:
     Plain();
     ~Plain() {};
+};
+
+class Obj : public VisualObject {
+public:
+    Obj(std::string filename);
+    ~Obj() {};
+private:
+    void readFile(std::string filename);
 };
 
 

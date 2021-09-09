@@ -1,21 +1,20 @@
-#ifndef OBJ_H
-#define OBJ_H
-#include "visualobject.h"
-#include <QOpenGLFunctions_4_1_Core>
+//#ifndef OBJ_H
+//#define OBJ_H
+//#include "visualobject.h"
+//#include <QOpenGLFunctions_4_1_Core>
 
-class Obj : public VisualObject
-{
-public:
-    Obj(std::string filename);
-    ~Obj();
-    void init() override;
+//class Obj : public VisualObject
+//{
+//public:
+//    Obj(std::string filename);
+//    ~Obj();
 
-private:
-    void readFile(std::string filename);
+//private:
+//    void readFile(std::string filename);
 
-};
+//};
 
-#endif // OBJ_H
+//#endif // OBJ_H
 
 
 

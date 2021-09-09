@@ -152,10 +152,12 @@ void RenderWindow::initObjects()
 
 
     //testing OBJ
-    mVisualObjects.push_back(temp = new Obj("../GEA2021/Assets/Monkey.obj"));
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp = mShapeFactory.createShape("Obj");
     temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
     temp->mTransform->mMatrix.translate(-1.f, .5f, .5f);
+    mVisualObjects.push_back(temp);
+
 
     //testing ShapeFactory - Triangle
     temp = mShapeFactory.createShape("Triangle");

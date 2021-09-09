@@ -14,7 +14,6 @@ SOURCES += main.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
-    obj.cpp \
     player.cpp \
     playerinputcomponent.cpp \
     renderwindow.cpp \
@@ -41,7 +40,6 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    obj.h \
     player.h \
     playerinputcomponent.h \
     renderwindow.h \
