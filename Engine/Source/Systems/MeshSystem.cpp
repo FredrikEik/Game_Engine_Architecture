@@ -25,16 +25,19 @@ bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& 
 void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager)
 {
 
-    ComponentManager<MeshComponent>& meshManager = manager->getManager<MeshComponent>();
-    ComponentManager<TransformComponent>& transManager = manager->getManager<TransformComponent>();
-    auto& meshArray = meshManager.getComponentArray();
+    ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
+    ComponentManager<TransformComponent>* transManager = manager->getComponentManager<TransformComponent>();
+    if (!meshManager || !transManager)
+        return;
 
+    auto& meshArray = meshManager->getComponentArray();
+    shader->use();
     for (auto& meshComp : meshArray)
     {
-        auto& transComp = transManager.getComponent(meshComp.entityID);
-        transComp.transform = glm::mat4(1.0f);
+        auto& transComp = transManager->getComponent(meshComp.entityID);
+        //transComp.transform = glm::mat4(1.0f);
 
-        //glm::translate(transComp.transform, glm::vec3(1.0f, 0.3f, 0.1f));
+        transComp.transform = glm::translate(transComp.transform, glm::vec3(.0010f, .003f, 0.001f));
         
         glBindVertexArray(meshComp.m_VAO); 
         glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);

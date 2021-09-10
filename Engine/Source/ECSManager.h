@@ -32,8 +32,10 @@ public:
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
 	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 
+	//Factory::ReusableAsset get
+
 	template <typename T>
-	class ComponentManager<T>& getManager();
+	class ComponentManager<T>* getComponentManager();
 private:
 	class Factory& factory;
 	template <typename... Ts>
@@ -55,9 +57,9 @@ inline void ECSManager::addComponents(uint32 entityID)
 
 
 template<typename T>
-inline ComponentManager<T>& ECSManager::getManager()
+inline ComponentManager<T>* ECSManager::getComponentManager()
 {
-	return factory.getManager<T>();
+	return factory.getComponentManager<T>();
 }
 
 // Don't mind this. Just unpacking variadic template arguments :))))

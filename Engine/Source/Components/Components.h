@@ -38,6 +38,7 @@ struct MeshComponent final : public Component
 {
 public:
 	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	std::size_t hash{};
 	GLuint m_VAO{};
 	GLuint m_VBO{};
 	GLuint m_EBO{};
@@ -58,5 +59,5 @@ struct TransformComponent final : public Component
 {
 	TransformComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 
-	glm::mat4x4 transform{};
+	glm::mat4x4 transform{ glm::mat4(1.0f) };
 };

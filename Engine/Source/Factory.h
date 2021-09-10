@@ -15,9 +15,24 @@ class Factory
 	Factory() : componentManagers{ (new std::unordered_map<std::type_index, ComponentManager<Component>*>) },
 		reusableAssetComponents{ (*new std::unordered_map<std::size_t, ReusableAsset>) } {}
 	~Factory();
-public:
-	
 
+public:
+	struct ReusableAsset
+	{
+		ReusableAsset(std::type_index type, uint32 compID, uint32 firstEntity)
+			:componentType{ type }, componentID{ compID }, entitiesUsingAsset{ firstEntity }
+		{}
+		std::type_index componentType;
+		uint32 componentID;
+		std::vector<uint32> entitiesUsingAsset;
+	};
+
+	template <typename T>
+	ComponentManager<T>* getComponentManager();
+
+	struct ReusableAsset getReusableAsset(std::size_t hash);
+
+private:
 	// This is 2-3 times slower than creating components directly through the manager when creating many components.
 	// If you need to create a lot of components, consider doing it through getManager directly.
 	// When creating a few components, use this.
@@ -35,10 +50,6 @@ public:
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
 	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 
-	template <typename T>
-	ComponentManager<T>& getManager();
-
-private:
 	uint32 loadMesh(const std::filesystem::path& filePath, uint32 entityID);
 
 	bool assetExists(const std::filesystem::path& filePath);
@@ -46,15 +57,7 @@ private:
 
 	std::unordered_map<std::type_index, ComponentManager<Component>*>* componentManagers{};
 
-	struct ReusableAsset
-	{
-		ReusableAsset(std::type_index type, uint32 compID, uint32 firstEntity)
-			:componentType{type}, componentID{compID}, entitiesUsingAsset{firstEntity}
-		{}
-		std::type_index componentType;
-		uint32 componentID;
-		std::vector<uint32> entitiesUsingAsset;
-	};
+
 
 	/** Stores a pair based on the path
 	* @param type_index to locate the component manager in componentManagers
@@ -126,20 +129,27 @@ inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path&
 
 
 template<typename T>
-inline ComponentManager<T>& Factory::getManager()
+inline ComponentManager<T>* Factory::getComponentManager()
 {
-	return (*(ComponentManager<T>*)componentManagers->at(std::type_index(typeid(T))));
+	if (componentManagers->find(std::type_index(typeid(T))) == componentManagers->end())
+		return nullptr;
+
+	return ((ComponentManager<T>*)componentManagers->at(std::type_index(typeid(T))));
 }
 
 inline uint32 Factory::loadMesh(const std::filesystem::path& filePath, uint32 entityID)
 {
 	uint32 componentID = createComponent<MeshComponent>(entityID, true);
-	MeshSystem::loadMesh(filePath, getManager<MeshComponent>().getComponent(entityID));
+	MeshComponent& component = getComponentManager<MeshComponent>()->getComponent(entityID);
+	MeshSystem::loadMesh(filePath, component);
 
 	ReusableAsset reusableAsset(std::type_index(typeid(MeshComponent)), componentID, entityID);
 
+	std::size_t hash{ std::filesystem::hash_value(filePath) };
+	component.hash = hash;
+
 	reusableAssetComponents.insert(std::pair< std::size_t, ReusableAsset>
-				(std::filesystem::hash_value(filePath), reusableAsset));
+				(hash, reusableAsset));
 
 	return componentID;
 }

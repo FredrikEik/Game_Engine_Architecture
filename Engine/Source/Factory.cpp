@@ -8,6 +8,12 @@ Factory::~Factory()
 	delete& reusableAssetComponents;
 }
 
+Factory::ReusableAsset Factory::getReusableAsset(std::size_t hash)
+{
+	
+	return reusableAssetComponents.at(hash);
+}
+
 uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 {
 	switch (defaultAsset)

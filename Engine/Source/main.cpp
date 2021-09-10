@@ -70,20 +70,7 @@ bool shouldCaptureMouse{ false };
 //fov
 float fov{ 45.0f };
 
-//template <typename... Ts>
-//void swallow(Ts&&...) {
-//}
-//
-//template <typename T>
-//int create(int i) {
-//	std::cout << typeid(T).name()<<" id: " << i << '\n';
-//	return 0;
-//}
-//
-//template<typename... Ts>
-//void createObject(int i) {
-//	swallow(create<Ts>(i)...);
-//}
+
 int main()
 {
 
@@ -130,7 +117,7 @@ int main()
 	view = glm::lookAt(cameraPos, cameraTarget, up);
 
 
-	Shader* ourShader = new Shader("../Shaders/basicShader.vert", "../Shaders/basicShader.frag");
+	Shader* ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -144,15 +131,11 @@ int main()
 
 	// ECS RENDER A CUBE
 	ECSManager* ECS = new ECSManager();
-	uint32 EntityID = ECS->newEntity();
-	
-	ECS->loadAsset(EntityID, asset_CUBE);
-	
-	ECS->addComponent<TransformComponent>(EntityID);
-	
-
-
-
+	//uint32 EntityID = ECS->newEntity();
+	//
+	//ECS->loadAsset(EntityID, asset_CUBE);
+	//
+	//ECS->addComponent<TransformComponent>(EntityID);
 
 
 	while (!glfwWindowShouldClose(window))
@@ -181,7 +164,14 @@ int main()
 		// render your GUI
 
 		ImGui::Begin("Demo window");
-		ImGui::Button("Hello!");
+		if (ImGui::Button("Spawn cube"))
+		{
+			uint32 entity = ECS->newEntity();
+			ECS->loadAsset(entity, asset_CUBE);
+			ECS->addComponent<TransformComponent>(entity);
+			std::cout << "Adding entity "<<entity<<'\n';
+		}
+		
 		ImGui::End();
 
 		MeshSystem::draw(ourShader, "u_model", ECS);

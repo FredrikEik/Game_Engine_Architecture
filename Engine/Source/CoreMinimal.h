@@ -10,7 +10,7 @@ typedef signed long long int64;
 
 namespace core
 {
-	constexpr uint32 MAX_ENTITIES{ 5000000 };
+	constexpr uint32 MAX_ENTITIES{ 50000 };
 }
 
 #define DEBUG_LOG(msg) \
