@@ -50,13 +50,19 @@ void MarioCube::init(/*GLint matrixUniform[4]*/)
        glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
        glEnableVertexAttribArray(2);
 
-       glBindVertexArray(0);
+       //Second buffer - holds the indices (Element Array Buffer - EAB):
+       glGenBuffers(1, &getMeshComponent()->mEAB);
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mEAB);
+       glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mIndices.size() * sizeof(GLuint), getMeshComponent()->mIndices.data(), GL_STATIC_DRAW);
+
+       glBindVertexArray(0);  
 }
 
 
 void MarioCube::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
