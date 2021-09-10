@@ -99,6 +99,7 @@ void meshsystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
             //Vertex made - pushing it into vertex-vector
             tempNormals.push_back(tempNormal);
             //tempColors.push_back(QVector3D{0,0,0}/*tempNormal*/);
+
             continue;
         }
         if (oneWord == "f")
