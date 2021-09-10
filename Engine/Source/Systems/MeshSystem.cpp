@@ -34,15 +34,18 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     shader->use();
     for (auto& meshComp : meshArray)
     {
-        auto& transComp = transManager->getComponent(meshComp.entityID);
-        //transComp.transform = glm::mat4(1.0f);
+        std::vector<uint32> entitiesUsingMesh{ manager->getReusableAsset(meshComp.hash).entitiesUsingAsset };
 
-        transComp.transform = glm::translate(transComp.transform, glm::vec3(.0010f, .003f, 0.001f));
+        for (uint32 i{}; i < entitiesUsingMesh.size(); ++i)
+        {
+            auto& transComp = transManager->getComponent(i); // Figure out why cube only draws once;
         
-        glBindVertexArray(meshComp.m_VAO); 
-        glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
-        glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transComp.transform));
-		glBindVertexArray(0);
+            glBindVertexArray(meshComp.m_VAO); 
+            glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+            glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transComp.transform));
+		    glBindVertexArray(0);
+
+        }
 
     }
 

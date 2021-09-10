@@ -69,3 +69,8 @@ uint32 ECSManager::loadAsset(uint32 entityID, enum DefaultAsset defaultAsset)
 {
 	return factory.loadAsset(entityID, defaultAsset);
 }
+
+Factory::ReusableAsset ECSManager::getReusableAsset(std::size_t hash)
+{
+	return factory.getReusableAsset(hash);
+}

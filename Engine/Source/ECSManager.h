@@ -32,7 +32,7 @@ public:
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
 	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 
-	//Factory::ReusableAsset get
+	Factory::ReusableAsset getReusableAsset(std::size_t hash);
 
 	template <typename T>
 	class ComponentManager<T>* getComponentManager();

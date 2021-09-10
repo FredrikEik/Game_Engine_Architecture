@@ -12,6 +12,7 @@
 #include "Systems/BaseSystem.h"
 #include "ECSManager.h"
 #include "Assets/DefaultAssets.h"
+#include "Systems/TransformSystem.h"
 #include <chrono>
 #include <typeindex>
 #include "Shader.h"
@@ -116,7 +117,7 @@ int main()
 	glm::mat4 view;
 	view = glm::lookAt(cameraPos, cameraTarget, up);
 
-
+	
 	Shader* ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -172,6 +173,16 @@ int main()
 			std::cout << "Adding entity "<<entity<<'\n';
 		}
 		
+		//// TEMP UPDATE
+		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
+		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
+
+
+		//if (ImGui::Button("Destroy entity 0"))
+		//{
+		//	ECS->destroyEntity(0);
+		//}
+
 		ImGui::End();
 
 		MeshSystem::draw(ourShader, "u_model", ECS);

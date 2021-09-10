@@ -116,10 +116,12 @@ inline bool Factory::assetExists(const std::filesystem::path& filePath)
 
 inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path& filePath)
 {
-	ReusableAsset reusableAsset = 
+	ReusableAsset &reusableAsset = 
 		reusableAssetComponents.at(std::filesystem::hash_value(filePath));
+
 	componentManagers->at(reusableAsset.componentType)->
 		assignComponent(reusableAsset.componentID, entityID);
+
 	reusableAsset.entitiesUsingAsset.push_back(entityID);
 	//TODO: Remove sort if position is not important
 	std::sort(reusableAsset.entitiesUsingAsset.begin(), reusableAsset.entitiesUsingAsset.end());

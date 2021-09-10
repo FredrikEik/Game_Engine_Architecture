@@ -10,7 +10,7 @@ class testComponent;
 template<class T>
 class ComponentManager;
 
-class TestSystem : public BaseSystem
+class TestSystem final : public BaseSystem
 {
 public:
 	TestSystem(){}
