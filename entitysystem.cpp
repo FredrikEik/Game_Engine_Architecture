@@ -10,9 +10,8 @@ EntitySystem::~EntitySystem()
 
 }
 
-void EntitySystem::construct(int EntityId, std::vector<int> *entitivec, TransformComponent *TransComp, MeshComponent *MeshComp, MaterialComponent *MatComp, std::string ObjReader,meshsystem * MeshSys, std::vector<MeshComponent *> meshVec, std::vector<TransformComponent *> transVec, std::vector<MaterialComponent *> MatVec, QVector3D StartPos, GLuint shader, GLint texture)
+void EntitySystem::construct(int EntityId, TransformComponent *TransComp, MeshComponent *MeshComp, MaterialComponent *MatComp, std::string ObjReader,meshsystem * MeshSys, std::vector<MeshComponent *> meshVec, std::vector<TransformComponent *> transVec, std::vector<MaterialComponent *> MatVec, QVector3D StartPos, GLuint shader, GLint texture)
 {
-    entitivec->push_back(EntityId);
 
     TransComp->mMatrix.setToIdentity();
     TransComp->entity = EntityId;

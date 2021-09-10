@@ -11,6 +11,7 @@
 #include "components.h"
 #include "rendersystem.h"
 #include "meshsystem.h"
+#include "entitysystem.h"
 
 class QOpenGLContext;
 class Shader;
@@ -43,8 +44,9 @@ public:
 
     RenderSystem *RenderSys = new RenderSystem();
     meshsystem * MeshSys = new meshsystem();
+    EntitySystem * entitySys = new EntitySystem();
 
-    std::vector<int>* entities;
+    std::vector<int> entities;
 
     std::vector<MeshComponent*> meshCompVec;
     std::vector<TransformComponent*> transformCompVec;

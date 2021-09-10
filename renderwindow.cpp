@@ -162,7 +162,7 @@ void RenderWindow::init()
 
 
     ///PURE ECS TEST
-    entities->push_back(0);
+    entities.push_back(0);
 
     TransformComponent * Susy = new TransformComponent();
     Susy->mMatrix.setToIdentity();
@@ -188,7 +188,7 @@ void RenderWindow::init()
     ///
 
     ///PURE ECS TEST
-    entities->push_back(1);
+    entities.push_back(1);
 
     TransformComponent * headTran = new TransformComponent();
     headTran->mMatrix.setToIdentity();
@@ -211,6 +211,13 @@ void RenderWindow::init()
     RenderSys->init(meshCompVec[1]);
     ///
 
+
+    entities.push_back(2);
+    MaterialComponent * matc1 = new MaterialComponent();
+    MeshComponent * mc1 = new MeshComponent();
+    TransformComponent * tc1 = new TransformComponent();
+    entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
+    RenderSys->init(mc1);
 
     //dog triangle
     temp = new Triangle();
@@ -289,9 +296,9 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
-    int morradi = entities->size();
-    for(int i = 0; i < morradi; i++){
-        if(entities->at(i) == meshCompVec[i]->entity && entities->at(i) == transformCompVec[i]->entity && entities->at(i) == MaterialCompVec[i]->entity){
+    int eSize = entities.size();
+    for(int i = 0; i < eSize-1; i++){
+        if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             RenderSys->draw(meshCompVec[i],
                     MaterialCompVec[i],

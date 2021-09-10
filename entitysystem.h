@@ -9,7 +9,6 @@ public:
     EntitySystem();
     ~EntitySystem();
     void construct(int EntityId,
-                   std::vector<int>* entitivec,
                    TransformComponent* TransComp,
                    MeshComponent* MeshComp,
                    MaterialComponent* MatComp,
