@@ -10,7 +10,7 @@
 #include "constants.h"
 #include "gameobject.h"
 #include "triangletest.h"
-#include "resourcemanager.h"
+#include "resourcemanageer.h"
 
 class QOpenGLContext;
 class Shader;
@@ -77,7 +77,7 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-    ResourceManager* source;
+    ResourceManageer* source;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
