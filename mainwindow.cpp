@@ -89,24 +89,20 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
-        mRenderWindow->toggleShapes(1);
+    mRenderWindow->toggleShapes(1);
 }
-
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
     mRenderWindow->toggleShapes(2);
 }
 
-
 void MainWindow::on_actionAdd_Square_triggered()
 {
     mRenderWindow->toggleShapes(3);
 }
 
-
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
     mRenderWindow->toggleShapes(0);
 }
-

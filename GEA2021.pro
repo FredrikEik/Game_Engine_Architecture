@@ -8,7 +8,6 @@ TARGET      = GEA2021
 SOURCES += main.cpp \
     camera.cpp \
     camerainputcomponent.cpp \
-    combobox.cpp \
     component.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
@@ -30,7 +29,6 @@ SOURCES += main.cpp \
 HEADERS += \
     camera.h \
     camerainputcomponent.h \
-    combobox.h \
     component.h \
     constants.h \
     gltypes.h \
