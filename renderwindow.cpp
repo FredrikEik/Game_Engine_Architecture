@@ -289,8 +289,8 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
-    int entitySize = entities.size();
-    for(int i = 0; i < entitySize; i++){
+
+    for(int i = 0; i < entities.size(); i++){
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             RenderSys->draw(meshCompVec[i],
