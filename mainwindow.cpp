@@ -4,6 +4,7 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QMenu>
 
 #include "renderwindow.h"
 
@@ -14,30 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     init();
 
-//    QStringList commands = { "  ", "Triangle", "Circle", "Square", "Obj" };
-//    ui->comboBox->addItems(commands);
-//    connect(this->ui->comboBox, SIGNAL(currentIndexChanged(const Qstring&)),
-//            this, SLOT(commandChanged(const Qstring&)));
-
 }
-
-
-//void MainWindow::commandChanged(const QString &command_text)
-//{
-//    if(command_text=="Triangle")
-//    {
-//     mRenderWindow->makeTriangle = true;
-//    }else if(command_text=="Circle")
-//    {
-//      mRenderWindow->makeCircle = true;
-//    }else if(command_text=="Square")
-//    {
-//      mRenderWindow->makeSquare = true;
-//    }else if(command_text=="Obj")
-//    {
-//        mRenderWindow->makeObj = true;
-//    }
-//}
 
 MainWindow::~MainWindow()
 {
@@ -112,3 +90,32 @@ void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
 }
+
+void MainWindow::on_actionAdd_Triangle_triggered()
+{
+    mRenderWindow->makeTriangle = true;
+    mShapefactory->createShape("Triangle");
+}
+
+
+void MainWindow::on_actionAdd_Square_triggered()
+{
+     mRenderWindow->makeSquare = true;
+     mShapefactory->createShape("Square");
+}
+
+
+void MainWindow::on_actionAdd_Obj_triggered()
+{
+     mRenderWindow->makeObj = true;
+     mShapefactory->createShape("Obj");
+}
+
+
+void MainWindow::on_actionAdd_Circle_triggered()
+{
+     mRenderWindow->makeCircle = true;
+     mShapefactory->createShape("Circle");
+
+}
+

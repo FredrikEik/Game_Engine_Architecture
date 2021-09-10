@@ -3,6 +3,7 @@
 
 #include <QComboBox>
 #include <QMainWindow>
+#include "shapefactory.h"
 
 
 class QWidget;
@@ -19,17 +20,25 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-   // void commandChanged(const QString& command_text);
 
 
 private slots:
     void on_pushButton_toggled(bool checked);
+
+    void on_actionAdd_Triangle_triggered();
+
+    void on_actionAdd_Square_triggered();
+
+    void on_actionAdd_Obj_triggered();
+
+    void on_actionAdd_Circle_triggered();
 
 private:
     void init();
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer;
+    ShapeFactory *mShapefactory;
     RenderWindow *mRenderWindow;
 };
 

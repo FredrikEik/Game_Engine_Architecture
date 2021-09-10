@@ -64,6 +64,16 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuAdd_Objects">
+    <property name="title">
+     <string>Add Objects</string>
+    </property>
+    <addaction name="actionAdd_Triangle"/>
+    <addaction name="actionAdd_Square"/>
+    <addaction name="actionAdd_Obj"/>
+    <addaction name="actionAdd_Circle"/>
+   </widget>
+   <addaction name="menuAdd_Objects"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -74,6 +84,26 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAdd_Triangle">
+   <property name="text">
+    <string>Add Triangle</string>
+   </property>
+  </action>
+  <action name="actionAdd_Square">
+   <property name="text">
+    <string>Add Square</string>
+   </property>
+  </action>
+  <action name="actionAdd_Obj">
+   <property name="text">
+    <string>Add Obj</string>
+   </property>
+  </action>
+  <action name="actionAdd_Circle">
+   <property name="text">
+    <string>Add Circle</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

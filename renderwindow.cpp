@@ -131,7 +131,7 @@ void RenderWindow::init()
     //********************** create input **********************
     Camerainput = new CameraInputComponent();
     mInputComponent = new InputComponent();
-  //  mInputSystem = new InputSystem();
+    //  mInputSystem = new InputSystem();
     mPlayerInput = new PlayerInputComponent();
 
 
@@ -238,11 +238,44 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
+
         //draw the object
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+
+
+
+    }
+
+    glBindVertexArray( mVisualObjects[0]->mMesh->mVAO );
+    glDrawArrays(mVisualObjects[0]->mMesh->mDrawType, 0, mVisualObjects[0]->mMesh->mVertices.size());
+    glBindVertexArray(0);
+
+
+    if(makeObj == true)
+    {
+        glBindVertexArray( mVisualObjects[1]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[1]->mMesh->mDrawType, 0, mVisualObjects[1]->mMesh->mVertices.size());
         glBindVertexArray(0);
     }
+
+    if( makeTriangle == true)
+    {
+        glBindVertexArray( mVisualObjects[2]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[2]->mMesh->mDrawType, 0, mVisualObjects[2]->mMesh->mVertices.size());
+        glBindVertexArray(0);
+    }
+    if(makeCircle == true)
+    {
+        glBindVertexArray( mVisualObjects[3]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[3]->mMesh->mDrawType, 0, mVisualObjects[3]->mMesh->mVertices.size());
+        glBindVertexArray(0);
+    }
+    if(makeSquare == true)
+    {
+        glBindVertexArray( mVisualObjects[4]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[4]->mMesh->mDrawType, 0, mVisualObjects[4]->mMesh->mVertices.size());
+        glBindVertexArray(0);
+    }
+
 
 }
 
@@ -250,37 +283,37 @@ void RenderWindow::makeObject()
 void RenderWindow::render()
 {
     // HandleInput();
-     mPlayerInput->update(mPlayer,mInput);
-     Camerainput->update(mCurrentCamera, mInput);
-     mCurrentCamera->update();
+    mPlayerInput->update(mPlayer,mInput);
+    Camerainput->update(mCurrentCamera, mInput);
+    mCurrentCamera->update();
 
 
 
-     mTimeStart.restart(); //restart FPS clock
-     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+    mTimeStart.restart(); //restart FPS clock
+    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
-     initializeOpenGLFunctions();    //must call this every frame it seems...
+    initializeOpenGLFunctions();    //must call this every frame it seems...
 
-     //to clear the screen for each redraw
-     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //to clear the screen for each redraw
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-     makeObject();
+    makeObject();
 
-     //Moves the dog triangle - should be mada another way!!!!
-     //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    //Moves the dog triangle - should be mada another way!!!!
+    //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
-     //Calculate framerate before
-     // checkForGLerrors() because that takes a long time
-     // and before swapBuffers(), else it will show the vsync time
-     calculateFramerate();
+    //Calculate framerate before
+    // checkForGLerrors() because that takes a long time
+    // and before swapBuffers(), else it will show the vsync time
+    calculateFramerate();
 
-     //using our expanded OpenGL debugger to check if everything is OK.
-     checkForGLerrors();
+    //using our expanded OpenGL debugger to check if everything is OK.
+    checkForGLerrors();
 
-     //Qt require us to call this swapBuffers() -function.
-     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-     // and wait for vsync.
-     mContext->swapBuffers(this);
+    //Qt require us to call this swapBuffers() -function.
+    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
+    // and wait for vsync.
+    mContext->swapBuffers(this);
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
