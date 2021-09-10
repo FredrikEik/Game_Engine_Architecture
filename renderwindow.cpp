@@ -15,6 +15,7 @@
 #include "xyz.h"
 #include "triangle.h"
 #include "plane.h"
+#include "cube.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -138,6 +139,12 @@ void RenderWindow::init()
 
     temp= new Plane();
     temp->init();
+    temp->mMatrix.setPosition(-25.0,0.0,-25.0);
+    temp->mMatrix.scale(50.0,0.0,50.0);
+    mVisualObjects.push_back(temp);
+
+    temp= new Cube();
+    temp->init();
     mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
@@ -193,7 +200,11 @@ void RenderWindow::render()
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[2]->mMatrix.constData());
         mVisualObjects[2]->draw();
 
-
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[3]->mMatrix.constData());
+        mVisualObjects[3]->draw();
     }
 
     //Calculate framerate before

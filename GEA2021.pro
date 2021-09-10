@@ -7,6 +7,7 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
+    cube.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     plane.cpp \
@@ -24,6 +25,7 @@ SOURCES += main.cpp \
 HEADERS += \
     camera.h \
     constants.h \
+    cube.h \
     gltypes.h \
     input.h \
     math_constants.h \
