@@ -81,7 +81,7 @@ void MainWindow::init()
     mRenderWindowContainer->setFocus();
     ui->comboBox->addItem("Cube");
     ui->comboBox->addItem("Triangle");
-    //ui->comboBox->addItem("Goat");
+    ui->comboBox->addItem("Goat");
 }
 
 //Example of a slot called from the button on the top of the program.
