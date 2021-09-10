@@ -212,12 +212,12 @@ void RenderWindow::init()
     ///
 
 
-    entities.push_back(2);
-    MaterialComponent * matc1 = new MaterialComponent();
-    MeshComponent * mc1 = new MeshComponent();
-    TransformComponent * tc1 = new TransformComponent();
-    entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
-    RenderSys->init(mc1);
+    //entities.push_back(2);
+    //MaterialComponent * matc1 = new MaterialComponent();
+   // MeshComponent * mc1 = new MeshComponent();
+    //TransformComponent * tc1 = new TransformComponent();
+    //entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
+    //RenderSys->init(mc1);
 
     //dog triangle
     temp = new Triangle();
@@ -297,7 +297,7 @@ void RenderWindow::render()
     }
 
     int eSize = entities.size();
-    for(int i = 0; i < eSize-1; i++){
+    for(int i = 0; i < eSize; i++){
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             RenderSys->draw(meshCompVec[i],
