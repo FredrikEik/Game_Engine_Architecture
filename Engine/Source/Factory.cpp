@@ -34,12 +34,15 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 
 	return uint32();
 }
+
+// TODO: This is broken. "componentManagers->at(componentType)->removeComponent(entityID);" gets garbage values due to 
+// acting on Component base class. Could maybe solve using the size of the type?
 void Factory::removeComponent(uint32 entityID, std::type_index componentType, uint32 componentID)
 {
 	assert(componentManagers->find(componentType) != componentManagers->end());
 
 	auto manager{ componentManagers->at(componentType) };
-
+	std::cout << "Removing component "<<componentType.name()<<'\n';
 	// If the components in this managers are reusable, do this
 	if (manager->bIsReusable)
 	{

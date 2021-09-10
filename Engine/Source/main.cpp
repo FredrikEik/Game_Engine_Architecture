@@ -177,10 +177,10 @@ int main()
 		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
 
 
-		//if (ImGui::Button("Destroy entity 0"))
-		//{
-		//	ECS->destroyEntity(0);
-		//}
+		if (ImGui::Button("Destroy entity 0"))
+		{
+			ECS->destroyEntity(0);
+		}
 
 		ImGui::End();
 

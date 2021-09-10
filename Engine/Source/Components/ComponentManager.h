@@ -16,7 +16,8 @@ class ComponentManager
 	friend class Factory;
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
-		packedComponentArray{ (*new std::vector<T>) }
+		packedComponentArray{ (*new std::vector<T>) },
+		componentSize{sizeof(T)}
 	{
 		for (auto &it: sparseComponentArray)
 			it=core::MAX_ENTITIES+1;
@@ -46,6 +47,8 @@ private:
 	bool packedComponentDirty{ false };
 
 	bool bIsReusable{ false };
+
+	std::size_t componentSize{};
 };
 
 template<class T>
@@ -68,7 +71,9 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusa
 	// Constructing a new T and pushing it to the packed array
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
+	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray before push: " << packedComponentArray.size()<<'\n';
 	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
+	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray after push: " << packedComponentArray.size()<<"\n\n";
 
 	return packedComponentArray.back().ID;
 }
@@ -96,10 +101,20 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	// This works because the order in the packed array does not matter.
 	if (positionInPacked != packedComponentArray.size() - 1)
 	{
-		packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
+		//if (typeid(T).hash_code() != typeid(Component).hash_code())
+		//{
+			for (auto it : packedComponentArray)
+			{
+				std::cout << "Removing component "<<typeid(T).name() <<" from entityID " <<it.entityID << '\n';
+			}
+			//return;
+			assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
+			packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
-		uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
-		sparseComponentArray[swappedEntityID] = positionInPacked;
+			uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
+			sparseComponentArray[swappedEntityID] = positionInPacked;
+		//}
+		// Do stuff with the general case
 	}
 
 	// Remove the component and mark the vector dirty.
@@ -111,7 +126,7 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 template<class T>
 inline T& ComponentManager<T>::getComponent(uint32 entityID)
 {
-	assert(entityID >= 0 && sparseComponentArray[entityID]< packedComponentArray.size());
+	assert(entityID >= 0 && sparseComponentArray[entityID] < packedComponentArray.size());
 	return packedComponentArray[sparseComponentArray[entityID]];
 }
 

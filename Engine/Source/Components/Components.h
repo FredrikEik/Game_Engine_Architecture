@@ -8,6 +8,8 @@
 // TODO: screw the constructor in component. 
 // Consider that every component initialize their own ids
 
+
+
 struct Component 
 {
 public:
@@ -61,3 +63,9 @@ struct TransformComponent final : public Component
 
 	glm::mat4x4 transform{ glm::mat4(1.0f) };
 };
+
+namespace type
+{
+	//constexpr std::vector<std::pair<std::type_index, >>
+//#define TYPE()
+}
