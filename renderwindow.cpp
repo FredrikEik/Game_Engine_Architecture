@@ -184,13 +184,10 @@ void RenderWindow::render()
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
-            if(mVisualObjects[i]->mName == "XYZ")
+            mVisualObjects[i]->draw();
+            if (mVisualObjects[i]->mName == "triangle" || mVisualObjects[i]->mName == "Triangle")
             {
-                mVisualObjects[i]->drawLines();
-            }
-            else
-            {
-                mVisualObjects[i]->draw();
+                mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
             }
         }
         //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
