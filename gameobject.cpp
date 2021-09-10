@@ -46,7 +46,7 @@ void GameObject::init()
 void GameObject::draw()
 {
     glBindVertexArray( mMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, mMesh->mVertices.size());
+    glDrawArrays(mMesh->mDrawType, 0, mMesh->mVertices.size());
     glBindVertexArray(0);
 }
 
