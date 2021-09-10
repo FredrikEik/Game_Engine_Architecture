@@ -13,7 +13,7 @@
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-//class GameObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -34,7 +34,7 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    //GameObjectManager *gObjectManager;
+    //GameObjectManager *GOM;
 
 private slots:
     void render();

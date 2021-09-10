@@ -1,4 +1,4 @@
-#ifndef COMPONENTS_H
+﻿#ifndef COMPONENTS_H
 #define COMPONENTS_H
 
 #include "constants.h"
@@ -16,6 +16,8 @@ struct MeshComponent
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+    GLint mVertexCount{-1};
+    GLint mIndexCount{-1};
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
     GLenum mDrawType{GL_TRIANGLES};

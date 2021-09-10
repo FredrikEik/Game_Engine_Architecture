@@ -24,6 +24,13 @@ private:
     GameObjectManager(const GameObjectManager&){};  //Copy constructor
 
     //int readObj(std::string filename);
+    int makeAxis();
+    int makeTriangle();
+
+    void initMesh(MeshComponent & tempMeshComp);
+
+    //std::map<std::string, unsigned int> mMeshComponentMap;
+    std::vector<MeshComponent> mMeshComponents;
 
 };
 #endif // GAMEOBJECTMANAGER_H

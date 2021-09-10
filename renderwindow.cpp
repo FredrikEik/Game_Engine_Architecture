@@ -132,12 +132,12 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     //Create temp object -
-    string name = "ost";
+    string name = "first object";
     int id;
 
     //-Using GameObjectManager
-    GameObjectManager *GOM;
-    GameObject *temp = GOM->addObject(name, id, 1, 1, 1, 0);
+    GameObjectManager &GOM = GameObjectManager::getInstance();
+    GameObject temp = GOM.addObject(name, id, 1, 1, 1, 0);
 
     mGameObjects.push_back(temp);
 }

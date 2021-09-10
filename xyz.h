@@ -1,16 +1,16 @@
-#ifndef XYZ_H
+﻿#ifndef XYZ_H
 #define XYZ_H
 
-#include <QOpenGLFunctions_4_1_Core>
-#include "gameobject.h"
+//#include <QOpenGLFunctions_4_1_Core>
+//#include "gameobject.h"
 
-class XYZ : public GameObject
-{
-public:
-   XYZ();
-   ~XYZ() override;
+//class XYZ : public GameObject
+//{
+//public:
+//   XYZ();
+//   ~XYZ() override;
 
-   void init() override;
-};
+//   void init() override;
+//};
 
 #endif // XYZ_H
