@@ -8,6 +8,7 @@ TARGET      = GEA2021
 SOURCES += main.cpp \
     Components.cpp \
     GameObject.cpp \
+    ObjectManager.cpp \
     camera.cpp \
     cube.cpp \
     matrix3x3.cpp \
@@ -26,6 +27,7 @@ SOURCES += main.cpp \
 HEADERS += \
     Components.h \
     GameObject.h \
+    ObjectManager.h \
     camera.h \
     constants.h \
     cube.h \

@@ -85,6 +85,8 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
+    class ObjectManager *mObjectManager{nullptr};
+
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;

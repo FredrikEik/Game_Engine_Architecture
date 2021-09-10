@@ -20,6 +20,8 @@
 #include "Components.h"
 #include "Cube.h"
 #include "Sphere.h"
+#include "ObjectManager.h"
+#include "constants.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -128,7 +130,12 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    GameObject *temp = new XYZ();
+
+    //forsøk på å bruke objectmanager til å lage aksene
+//    mObjectManager = new class ObjectManager();
+//    GameObject *temp = mObjectManager->CreateObject("XYZ");
+
+    GameObject* temp = new XYZ();
     mGameObjects.push_back(temp);
     temp->init();
 

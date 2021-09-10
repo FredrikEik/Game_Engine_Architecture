@@ -17,10 +17,10 @@ namespace gsl  //Game School Lib
         PHONGSHADER
     };
 
-    enum Compoents
+    enum Components
         {
             NONE = 0,
-            TRANSFORM = 1,
+            TRANSFORM,
             MESH,
             MATERIAL
         };
@@ -29,4 +29,11 @@ namespace gsl  //Game School Lib
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
 }
+enum GameObjects
+{
+    CUBE = 0,
+    Ball,
+    TRIANGLE
+};
+
 #endif // CONSTANTS_H

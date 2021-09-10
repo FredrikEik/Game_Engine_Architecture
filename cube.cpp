@@ -62,30 +62,30 @@ void Cube::init()
 {
     initializeOpenGLFunctions();
 
-        glGenVertexArrays( 1, &mesh->mVAO );
-        glBindVertexArray( mesh->mVAO );
+    glGenVertexArrays( 1, &mesh->mVAO );
+    glBindVertexArray( mesh->mVAO );
 
-        glGenBuffers( 1, &mesh->mVBO );
-        glBindBuffer( GL_ARRAY_BUFFER, mesh->mVBO );
+    glGenBuffers( 1, &mesh->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, mesh->mVBO );
 
-        glBufferData( GL_ARRAY_BUFFER,      //what buffer type
-                      mesh->mVertices.size() * sizeof( Vertex ),   //how big buffer do we need
-                      mesh->mVertices.data(),             //the actual vertices
-                      GL_STATIC_DRAW        //should the buffer be updated on the GPU
-                      );
+    glBufferData( GL_ARRAY_BUFFER,      //what buffer type
+                  mesh->mVertices.size() * sizeof( Vertex ),   //how big buffer do we need
+                  mesh->mVertices.data(),             //the actual vertices
+                  GL_STATIC_DRAW        //should the buffer be updated on the GPU
+                  );
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh->mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->mVBO);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
-        glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
-        glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
-        glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(2);
 
-        glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void Cube::draw()
