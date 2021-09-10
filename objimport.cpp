@@ -13,12 +13,12 @@
 
 ObjImport::ObjImport(std::string filename) : GameObject()
 {
-    readFile(filename);
-    TransformComp->mMatrix.setToIdentity();
-
     MeshComp = new MeshComponent();
     TextureComp = new TextureComponent();
     TransformComp = new TransformComponent();
+
+    readFile(filename);
+    TransformComp->mMatrix.setToIdentity();
 }
 
 ObjImport::~ObjImport()
@@ -187,14 +187,17 @@ void ObjImport::readFile(std::string filename)
                 if (uv > -1)    //uv present!
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                    MeshComp->mVertices.push_back(tempVert);
+                    if(MeshComp)
+                        MeshComp->mVertices.push_back(tempVert);
                 }
                 else            //no uv in mesh data, use 0, 0 as uv
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                    MeshComp->mVertices.push_back(tempVert);
+                    if(MeshComp)
+                        MeshComp->mVertices.push_back(tempVert);
                 }
-                MeshComp->mIndices.push_back(temp_index++);
+                if(MeshComp)
+                    MeshComp->mIndices.push_back(temp_index++);
             }
             continue;
         }

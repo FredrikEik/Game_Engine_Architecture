@@ -24,7 +24,7 @@ void ObjectFactory::createObject(std::string objectName)
 
     else if (objectName == "Goat")
     {
-        willCreateObject = new ObjImport("../GEA2021/Assets/cube.obj");
+        willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
     }
     else
         return;
