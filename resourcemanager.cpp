@@ -14,6 +14,12 @@ ResourceManager::ResourceManager()
 {
 }
 
+ResourceManager &ResourceManager::getInstance()
+{
+    static ResourceManager *mInstance = new ResourceManager();
+    return *mInstance;
+}
+
 void ResourceManager::readObj(std::string &filename, MeshComponent *MeshComp)
 {
     //Open File

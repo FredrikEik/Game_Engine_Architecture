@@ -15,6 +15,8 @@ class MainWindow;
 class VisualObject;
 class Camera;
 class Texture;
+class GameObject;
+class ResourceManager;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -32,6 +34,8 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+
+//    GameObject* RenderWindow::addObject(std::string assetName);
 
 private slots:
     void render();
@@ -60,6 +64,8 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    class ResourceManager *mResourceManager{nullptr};
+
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
@@ -68,6 +74,7 @@ private:
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
+    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

@@ -16,6 +16,7 @@ class ResourceManager  : public QOpenGLFunctions_4_1_Core {
 public:
     ResourceManager();
 
+    ResourceManager &getInstance();
     class GameObject *CreateObject(std::string filepath);
     void readObj(std::string &filename, MeshComponent *MeshComp);
     void init(MeshComponent &MeshComp);

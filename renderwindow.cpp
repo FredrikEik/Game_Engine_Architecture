@@ -145,10 +145,11 @@ void RenderWindow::init()
     mVisualObjects.push_back(temp);
 
 // forsøk på å lage en resourcemanager.
-    ResourceManager *tempResourceManager = new ResourceManager;
 
-    tempResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    mResourceManager = new class ResourceManager();
+    GameObject* tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
 
+    mGameObjects.push_back(tempGameObject);
 
 
 //    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
@@ -211,14 +212,17 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
         }else if(mVisualObjects[i]->mMaterialComp->mShaderProgram == 1){
         //send data to shader
-        glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterialComp->mTextureUnit);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
+            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterialComp->mTextureUnit);
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
         }
+
+
         //draw the object
         glBindVertexArray( mVisualObjects[i]->mMeshComp->mVAO );
         glDrawArrays(mVisualObjects[i]->mMeshComp->mDrawType, 0, mVisualObjects[i]->mMeshComp->mVertices.size());
+
         glBindVertexArray(0);
 
         //Second object - triangle
@@ -232,6 +236,13 @@ void RenderWindow::render()
 //        mVisualObjects[1]->draw();
 //        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
+
+    glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+    glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->mTransformComp->mMatrix.constData());
+
+    glBindVertexArray( mGameObjects[0]->mMeshComp->mVAO );
+    glDrawArrays(mGameObjects[0]->mMeshComp->mDrawType, 0, mGameObjects[0]->mMeshComp->mVertices.size());
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -333,6 +344,11 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glEnable(GL_CULL_FACE);
     }
 }
+
+//GameObject* RenderWindow::RenderWindow::addObject(std::string assetName)
+//{
+//     GameObject *temp = ResourceManager::getInstance();
+//}
 
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
