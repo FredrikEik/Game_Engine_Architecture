@@ -41,13 +41,18 @@ private:
 	template <typename... Ts>
 	void swallow(Ts&&...);
 
-	/** Reads as std::pair<isActive, std::pair<type_index of component, componentID>>
+	/** Reads as std::pair<isActive, std::vector<std::pair<type_index of component, componentID>>>
 	* Iterating the entire array can be slow if entities are spread out, but that should not be necessary. 
 	*/
 	std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>& entities;
 	// Keeping record of available entity ids
 	std::vector<uint32> &availableEntityIDs;
 };
+template<typename T>
+inline ComponentManager<T>* ECSManager::getComponentManager()
+{
+	return factory.getComponentManager<T>();
+}
 
 template<typename... Types>
 inline void ECSManager::addComponents(uint32 entityID)
@@ -56,11 +61,6 @@ inline void ECSManager::addComponents(uint32 entityID)
 }
 
 
-template<typename T>
-inline ComponentManager<T>* ECSManager::getComponentManager()
-{
-	return factory.getComponentManager<T>();
-}
 
 // Don't mind this. Just unpacking variadic template arguments :))))
 template <typename... Ts>
