@@ -190,7 +190,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->TransformComp->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
+            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translate(0.01f,0.01f,-0.01f);
         }
     }
 
