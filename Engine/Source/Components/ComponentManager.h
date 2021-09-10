@@ -23,7 +23,7 @@ class ComponentManager
 	}
 	~ComponentManager();
 public:
-	T getComponent(uint32 entityID);
+	T& getComponent(uint32 entityID);
 
 	std::vector<T>& getComponentArray();
 
@@ -109,7 +109,7 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 }
 
 template<class T>
-inline T ComponentManager<T>::getComponent(uint32 entityID)
+inline T& ComponentManager<T>::getComponent(uint32 entityID)
 {
 	assert(entityID >= 0 && sparseComponentArray[entityID]< packedComponentArray.size());
 	return packedComponentArray[sparseComponentArray[entityID]];

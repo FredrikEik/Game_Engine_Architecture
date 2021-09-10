@@ -50,6 +50,26 @@ void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+float yaw{ -90.0f };
+float pitch{ 0.0f };
+
+float deltaTime{ 0.0f }; // Time between current frame and last frame
+float lastFrame{ 0.0f }; // Time of last frame
+
+//mouse
+float lastX{ 400 };
+float lastY{ 300 };
+bool firstMouse{ false };
+bool shouldCaptureMouse{ false };
+
+//fov
+float fov{ 45.0f };
+
 //template <typename... Ts>
 //void swallow(Ts&&...) {
 //}
@@ -97,7 +117,20 @@ int main()
 
 
 
-	Shader ourShader = Shader("basicShader.vert", "basicShader.frag");
+	glm::mat4 projection;
+	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+
+	//look at matrix
+	glm::mat4 view;
+	view = glm::lookAt(cameraPos, cameraTarget, up);
+
+
+	Shader* ourShader = new Shader("../Shaders/basicShader.vert", "../Shaders/basicShader.frag");
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -108,13 +141,28 @@ int main()
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
+
+	// ECS RENDER A CUBE
+	ECSManager* ECS = new ECSManager();
+	uint32 EntityID = ECS->newEntity();
+	
+	ECS->loadAsset(EntityID, asset_CUBE);
+	
+	ECS->addComponent<TransformComponent>(EntityID);
+	
+
+
+
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
-
+		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 
 		//// input
@@ -125,20 +173,22 @@ int main()
 		ImGui::NewFrame();
 
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		// possible bits we can set are:
-			// -GL_COLOR_BUFFER_BIT
-			// -GL_DEPTH_BUFFER_BIT
-			// -GL_STENCIL_BUFFER_BIT
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//WIREFRAME mode
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//// RENDER
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		// render your GUI
+
 		ImGui::Begin("Demo window");
 		ImGui::Button("Hello!");
 		ImGui::End();
+
+		MeshSystem::draw(ourShader, "u_model", ECS);
+		//ourShader.setMat4("u_model", model);
+		ourShader->setMat4("u_view", view);
+		ourShader->setMat4("u_projection", projection);
+
 
 		// Render dear imgui into screen
 		ImGui::Render();
@@ -166,15 +216,83 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
+	const float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		shouldCaptureMouse = true;
 
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			cameraPos += cameraSpeed * cameraFront;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			cameraPos -= cameraSpeed * cameraFront;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		{
+		}
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		{
+		}
+	}
+	else
+	{
+		shouldCaptureMouse = false;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	if (shouldCaptureMouse)
+	{
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos; // reversed: y ranges bottom to top
+		lastX = xpos;
+		lastY = ypos;
+
+		const float sensitivity = 0.1f;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		yaw += xoffset;
+		pitch += yoffset;
+
+		if (pitch > 89.0f)
+			pitch = 89.0f;
+		if (pitch < -89.0f)
+			pitch = -89.0f;
+
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		direction.y = sin(glm::radians(pitch));
+		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		cameraFront = glm::normalize(direction);
+		std::cout << xpos << '\n';
+		std::cout << ypos << '\n';
+	}
+	else
+	{
+		firstMouse = true;
+	}
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+	fov -= (float)yoffset;
+	if (fov < 1.0f)
+		fov = 1.0f;
+	if (fov > 45.0f)
+		fov = 45.0f;
 }
 
 

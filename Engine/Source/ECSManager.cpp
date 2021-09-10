@@ -1,5 +1,4 @@
 #include "ECSManager.h"
-#include "Factory.h"
 #include <iostream>
 ECSManager::ECSManager()
 	: entities{ (*new std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>) },

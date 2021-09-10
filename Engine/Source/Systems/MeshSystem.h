@@ -4,12 +4,16 @@
 #include <string>
 #include <filesystem>
 
+
 //class MeshComponent;
+
 class MeshSystem final : public BaseSystem
 {
 public:
 	static bool loadMesh(const std::filesystem::path& filePath, class MeshComponent& meshComponent);
     //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
+    static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager);
+    
 
 private:
 	static void initialize(class MeshComponent& meshComponent);

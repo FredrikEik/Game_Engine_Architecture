@@ -5,6 +5,8 @@
 #include <typeindex>
 #include <filesystem>
 #include "Components/ComponentManager.h"
+#include "Factory.h"
+
 class ECSManager
 {
 public:

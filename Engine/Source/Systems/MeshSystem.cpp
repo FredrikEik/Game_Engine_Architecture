@@ -7,6 +7,10 @@
 #include "../Components/Components.h"
 #include "glm/glm.hpp"
 #include "../Assets/DefaultAssets.h"
+#include "../Components/ComponentManager.h"
+#include "../Components/Components.h"
+#include "../ECSManager.h"
+#include "../Shader.h"
 
 
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
@@ -14,7 +18,32 @@ bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& 
     assert(readObj(filePath, meshComponent));
 
     initialize(meshComponent);
+    std::cout << meshComponent.m_indices.size();
 	return true;
+}
+
+void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager)
+{
+
+    ComponentManager<MeshComponent>& meshManager = manager->getManager<MeshComponent>();
+    ComponentManager<TransformComponent>& transManager = manager->getManager<TransformComponent>();
+    auto& meshArray = meshManager.getComponentArray();
+
+    for (auto& meshComp : meshArray)
+    {
+        auto& transComp = transManager.getComponent(meshComp.entityID);
+        transComp.transform = glm::mat4(1.0f);
+
+        //glm::translate(transComp.transform, glm::vec3(1.0f, 0.3f, 0.1f));
+        
+        glBindVertexArray(meshComp.m_VAO); 
+        glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+        glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transComp.transform));
+		glBindVertexArray(0);
+
+    }
+
+
 }
 
 void MeshSystem::initialize(MeshComponent& meshComponent)
