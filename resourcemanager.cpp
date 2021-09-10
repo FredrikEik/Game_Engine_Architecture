@@ -201,6 +201,8 @@ void ResourceManager::init(MeshComponent &MeshComp)
 
 GameObject* ResourceManager::CreateObject(std::string filepath)
 {
+
+
 //    if(!(filepath.find(".obj") != std::string::npos))
 //    {
         GameObject* temp = new GameObject();

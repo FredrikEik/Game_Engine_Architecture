@@ -148,7 +148,8 @@ void RenderWindow::init()
 
     mResourceManager = new class ResourceManager();
     GameObject* tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
-
+    mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Box.obj");
     mGameObjects.push_back(tempGameObject);
 
 
@@ -237,13 +238,16 @@ void RenderWindow::render()
 //        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
 
-    glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-    glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->mTransformComp->mMatrix.constData());
 
-    glBindVertexArray( mGameObjects[0]->mMeshComp->mVAO );
-    glDrawArrays(mGameObjects[0]->mMeshComp->mDrawType, 0, mGameObjects[0]->mMeshComp->mVertices.size());
+    for(int i{0}; i < mGameObjects.size(); i++)
+    {
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
 
+        glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO );
+        glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices.size());
+    }
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
