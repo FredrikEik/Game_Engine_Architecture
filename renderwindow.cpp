@@ -142,6 +142,8 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
+
+    //*********** entity unresolved external symbol c++ error, må fikses******************
     VisualObject *temp = new XYZ();
   //  Entity *temp = makeEntity("axis");
     temp->init();
