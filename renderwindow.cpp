@@ -190,7 +190,8 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->TransformComp->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translate(0.01f,0.01f,-0.01f);
+//            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translateX(0.01f);
+            ObjFactory->mGameObject[i]->TransformComp->mMatrix.rotateX();
         }
     }
 
@@ -265,7 +266,8 @@ void RenderWindow::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7) +
+                                                  "  |  Obj Count: " + QString::number(ObjFactory->mGameObject.size()));
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }
@@ -287,6 +289,13 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glEnable(GL_CULL_FACE);
     }
 }
+
+/*
+void RenderWindow::valueX(double arg1)
+{
+    ObjFactory->mGameObject[1]->TransformComp->mMatrix.rotateX(arg1);
+}
+*/
 
 void RenderWindow::ObjectButton(std::string object)
 {

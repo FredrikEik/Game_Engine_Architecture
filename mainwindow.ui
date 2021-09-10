@@ -18,6 +18,9 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
+       <widget class="QDoubleSpinBox" name="Value_x"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>Toggle Wireframe</string>

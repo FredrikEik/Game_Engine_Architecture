@@ -15,7 +15,7 @@ public:
 
     std::string mName;
 
-    TransformComponent* TransformComp;
+    TransformComponent* TransformComp = nullptr;
 };
 
 #endif // GAMEOBJECT_H

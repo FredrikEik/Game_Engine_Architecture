@@ -16,8 +16,8 @@ public:
 
 private:
 
-    MeshComponent* MeshComp;
-    TextureComponent* TextureComp;
+    MeshComponent* MeshComp = nullptr;
+    TextureComponent* TextureComp = nullptr;
 
 };
 

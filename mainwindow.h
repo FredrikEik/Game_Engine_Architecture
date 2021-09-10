@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QModelIndexList>
 
 class QWidget;
 class RenderWindow;
@@ -25,6 +26,8 @@ private slots:
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
+//    void on_Value_x_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -33,6 +36,8 @@ private:
     RenderWindow *mRenderWindow;
 
     std::string ObjectSpawn;
+
+//    float mRotation{1.f};
 };
 
 #endif // MAINWINDOW_H

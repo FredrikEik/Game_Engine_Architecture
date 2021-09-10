@@ -36,6 +36,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+//    void valueX(double arg1);
+
 
 private slots:
     void render();

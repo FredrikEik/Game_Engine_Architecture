@@ -1,6 +1,7 @@
 #include "objectfactory.h"
 #include "cube.h"
 #include "triangle.h"
+#include "xyz.h"
 #include "objimport.h"
 
 ObjectFactory::ObjectFactory()
@@ -26,6 +27,11 @@ void ObjectFactory::createObject(std::string objectName)
     {
         willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
     }
+
+//    else if (objectName == "xyz")
+//    {
+//        willCreateObject = new XYZ;
+//    }
     else
         return;
 
