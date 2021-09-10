@@ -37,6 +37,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toggleShapes(int shapeID);
     void setCameraSpeed(float value);
 
 private slots:
@@ -50,10 +51,8 @@ private:
     ShapeFactory mShapeFactory;
     Input mInput;
     Player* mPlayer;
-    bool circleExist = true;
-    bool squareExist = true;
-    bool triangleExist = true;
-
+    bool shapeExist[4];
+    int shapeID;
     void init();
     void initObject();
     void drawObject();

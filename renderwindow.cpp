@@ -142,9 +142,19 @@ void RenderWindow::initObject()
 {
     //********************** Making the object to be drawn **********************
     //Axis
+    mPlayer = new Player();
+    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->init();
+    mVisualObjects.push_back(mPlayer);
+
     VisualObject *temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
+    mVisualObjects.push_back(temp);
+
+    temp = mShapeFactory.createShape("Plain");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //texture shader
     mVisualObjects.push_back(temp);
 
     temp = mShapeFactory.createShape("Obj");
@@ -155,7 +165,7 @@ void RenderWindow::initObject()
     temp = mShapeFactory.createShape("Triangle");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //texture shader
-//    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
@@ -170,16 +180,6 @@ void RenderWindow::initObject()
     temp->mMaterial->mShaderProgram = 0;    //texture shader
     temp->mTransform->mMatrix.translate(-2.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
-
-    temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    mVisualObjects.push_back(temp);
-
-    mPlayer = new Player();
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mVisualObjects.push_back(mPlayer);
 }
 
 void RenderWindow::drawObject()
@@ -223,9 +223,15 @@ void RenderWindow::drawObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-        glBindVertexArray(0);
+        if(i<=2){
+            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i>2){
+            if(shapeExist[i-3]){
+                glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                glBindVertexArray(0);}}
 
     }
 }
@@ -249,7 +255,7 @@ void RenderWindow::render()
     drawObject();
 
     //Moves the obj - should be mada another way!!!!
-    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -351,6 +357,16 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glEnable(GL_CULL_FACE);
     }
 }
+
+void RenderWindow::toggleShapes(int shapeID)
+{
+    if(shapeExist[shapeID])
+        shapeExist[shapeID]=false;
+    else
+        shapeExist[shapeID]=true;
+}
+
+
 
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not

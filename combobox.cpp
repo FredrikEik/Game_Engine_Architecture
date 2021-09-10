@@ -22,6 +22,6 @@ void ComboBox::boxCurrentIndexChanged(int index)
     QAction * selectedAction = box->itemData(index, Qt::UserRole).value<QAction *>();
     if (selectedAction)
     {
-        selectedAction->trigger(); //do stuff with your action
+        selectedAction->isCheckable(); //do stuff with your action
     }
 }

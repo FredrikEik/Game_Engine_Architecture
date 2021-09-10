@@ -26,9 +26,6 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBox"/>
-    </item>
-    <item>
      <widget class="QLabel" name="label">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -61,6 +58,16 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuAdd_Object">
+    <property name="title">
+     <string>Toggle Object</string>
+    </property>
+    <addaction name="actionAdd_Triangle"/>
+    <addaction name="actionAdd_Circle"/>
+    <addaction name="actionAdd_Square"/>
+    <addaction name="actionAdd_Monkey"/>
+   </widget>
+   <addaction name="menuAdd_Object"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -71,6 +78,38 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAdd_Triangle">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Triangle</string>
+   </property>
+  </action>
+  <action name="actionAdd_Circle">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Circle</string>
+   </property>
+  </action>
+  <action name="actionAdd_Square">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Square</string>
+   </property>
+  </action>
+  <action name="actionAdd_Monkey">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Monkey</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
