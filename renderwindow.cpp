@@ -28,6 +28,7 @@
 
 #include "texture.h"
 #include "systems/ecs/Components.h"
+#include "systems/ecs/entity.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -142,9 +143,13 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
     VisualObject *temp = new XYZ();
+  //  Entity *temp = makeEntity("axis");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;
     mVisualObjects.push_back(temp);
+
+    // MÅ ENDRE FRA MVISUALOBJECTS TIL MENTITY
+    //mEntity.push_back(temp);
 
     //testing triangle class
 //       temp = new Triangle();
@@ -370,20 +375,21 @@ void RenderWindow::spawnObject(QString in)
 {
 //temporary solution
     VisualObject *temp;
+    //Entity *temp;
     if(in == "cube")
     {
         temp = new Cube();
         temp->mMaterial->mShaderProgram = 0;
         temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
     }
-    if(in == "triangle")
+    else if(in == "triangle")
     {
         temp = new Triangle();
         temp->mMaterial->mShaderProgram = 1;    //texture shader
         temp->mMaterial->mTextureUnit = 1;      //dog texture
         temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     }
-    if(in == "goat")
+   else  if(in == "goat")
     {
         temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
         temp->mMaterial->mShaderProgram = 1;    //texture shader

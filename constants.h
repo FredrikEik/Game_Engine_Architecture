@@ -17,6 +17,8 @@ namespace gsl  //Game School Lib
     const std::string TextureFilePath{AssetFilePath + "Textures/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
 
+    const int MAX_MESHCOMPONENTS = 1024;
+
     enum Shaders
     {
         COLORSHADER = 0,

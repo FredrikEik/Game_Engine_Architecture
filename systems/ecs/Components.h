@@ -20,6 +20,8 @@ struct MeshComponent{
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
 
+    GLint mVertexCount{-1};
+    GLint mIndexCount{-1};
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)

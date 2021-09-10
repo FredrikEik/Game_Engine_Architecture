@@ -8,6 +8,8 @@
 #include "objects/cube.h"
 #include "input.h"
 #include "constants.h"
+#include "systems/ecs/Components.h"
+#include "systems/ecs/entity.h"
 
 
 class QOpenGLContext;
@@ -16,6 +18,7 @@ class MainWindow;
 class VisualObject;
 class Camera;
 class Texture;
+class Entity;
 
 
 // This inherits from QWindow to get access to the Qt functionality and
@@ -40,11 +43,14 @@ public:
     void transformObjectZ(double in);
     void spawnObject(QString input);
 
+    Entity * makeEntity(std::string assetName, int shaderType = 0, int textureUnit = 0);
+
 private slots:
     void render();
 
 private:
-    void init();
+
+void init();
 
     void checkForGLerrors();
 
@@ -80,6 +86,8 @@ private:
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
+    std::vector<Entity*> mEntity;
+
 
     Cube *mycube;
 

@@ -1,26 +1,45 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
+
+#include <QOpenGLFunctions_4_1_Core>
+#include <string>
+#include <map>
+
+#include "Components.h"
 #include <vector>
 #include "systems/ecs/Components.h"
 #include "systems/ecs/entity.h"
 #include <unordered_map>
 
 //klasse som manager resurser og components
-class resourceManager
+class resourceManager : public QOpenGLFunctions_4_1_Core
 {
 public:
+
+    static resourceManager& getInstance();
+
+
+     class Entity * makeEntity(std::string meshName);
+    //Entity getEntety(size_t index) const{return entities[index];}
+
+    private:
     resourceManager();
-    Entity getEntety(size_t index) const{return entities[index];}
-    //lage en drop down ui der man kan spawne entities
-    MAX_ENTITIES_TYPE makeEntity(std::string meshName, TransformComponent transInput, std::string matName);
-    void setMat(MAX_ENTITIES_TYPE entityId, gsl::Matrix4x4 TransformMatrix);
-    void setTransform(MAX_ENTITIES_TYPE entityID, gsl::Matrix4x4 TMatrix);
-    void setMesh(MAX_ENTITIES_TYPE entityID, std::string meshName);
+    ~resourceManager();
+    void operator=(resourceManager&){};
+    resourceManager(const resourceManager&){};
+//    void setMat(MAX_ENTITIES_TYPE entityId, gsl::Matrix4x4 TransformMatrix);
+//    void setTransform(MAX_ENTITIES_TYPE entityID, gsl::Matrix4x4 TMatrix);
+//    void setMesh(MAX_ENTITIES_TYPE entityID, std::string meshName);
+    void initMesh(MeshComponent & tempMeshComp);
+    int readObj(std::string filename);
+    int makeAxis();
+    int makeTriangle();
 
 
-private:
-    std::vector<gsl::Components> components;
-    std::vector<Entity> entities;
+//    std::vector<gsl::Components> components;
+//    std::vector<Entity> entities;
+    std::map<std::string, unsigned int> mMeshComponentMap;
+    std::vector<MeshComponent> mMeshComponents;
 
 };
 
