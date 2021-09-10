@@ -166,6 +166,8 @@ void RenderWindow::init()
 
     TransformComponent * Susy = new TransformComponent();
     Susy->mMatrix.setToIdentity();
+    Susy->entity = 0;
+    Susy->mMatrix.translate(0.f, 0.f, .9f);
 
 
     transformCompVec.push_back(Susy);
@@ -179,11 +181,34 @@ void RenderWindow::init()
     SusyMat->mTextureUnit = 0;
     MaterialCompVec.push_back(SusyMat);
 
-    Susy->entity = 0;
-    Susy->mMatrix.translate(0.f, 0.f, .9f);
+
 
 
     RenderSys->init(meshCompVec[0]);
+    ///
+
+    ///PURE ECS TEST
+    entities.push_back(1);
+
+    TransformComponent * headTran = new TransformComponent();
+    headTran->mMatrix.setToIdentity();
+    headTran->entity = 1;
+    headTran->mMatrix.translate(0.f, 0.f, .11f);
+
+    transformCompVec.push_back(headTran);
+    MeshComponent * headMesh = new MeshComponent();
+    MeshSys->CreateMeshComponent("head.obj", headMesh);
+    headMesh->entity = 1;
+    meshCompVec.push_back(headMesh);
+
+    MaterialComponent * headMat = new MaterialComponent();
+    headMat->entity = 1;
+    headMat->mShaderProgram = 0;
+    headMat->mTextureUnit = 0;
+    MaterialCompVec.push_back(headMat);
+
+
+    RenderSys->init(meshCompVec[1]);
     ///
 
 
@@ -264,17 +289,21 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
-    if(entities[0] == meshCompVec[0]->entity && entities[0] == transformCompVec[0]->entity && entities[0] == MaterialCompVec[0]->entity){
-        glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
-        RenderSys->draw(meshCompVec[0],
-                MaterialCompVec[0],
-                transformCompVec[0],
-                vMatrixUniform,
-                pMatrixUniform,
-                mMatrixUniform,
-                mCurrentCamera);
+    int entitySize = entities.size();
+    for(int i = 0; i < entitySize; i++){
+        if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
+            glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
+            RenderSys->draw(meshCompVec[i],
+                    MaterialCompVec[i],
+                    transformCompVec[i],
+                    vMatrixUniform,
+                    pMatrixUniform,
+                    mMatrixUniform,
+                    mCurrentCamera);
 
+        }
     }
+
 
 
     //RENDER TRIANGLE
