@@ -13,7 +13,7 @@
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class GameObject;
+//class GameObject;
 class Camera;
 class Texture;
 

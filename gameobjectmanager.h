@@ -10,10 +10,20 @@
 
 using namespace std;
 
-class GameObjectManager
+class GameObjectManager : public QOpenGLFunctions_4_1_Core
 {
 public:
-    void manageObjects(/*Camera mCurrentCamera*/);
-    void addObject(std::string name = "DefaultGameObject", int id = 0, bool TransformID = 0, int MeshID = 0, int MaterialID = 0, bool GravityID = 0);
+    static GameObjectManager& getInstance();
+
+    void manageObjects();
+    GameObject addObject(std::string name = "DefaultGameObject", int id = 0, bool TransformID = 0, int MeshID = 0, int MaterialID = 0, bool GravityID = 0);
+
+private:
+    GameObjectManager();                            //singleton
+    void operator=(GameObjectManager&){};           //Assignment operator
+    GameObjectManager(const GameObjectManager&){};  //Copy constructor
+
+    //int readObj(std::string filename);
+
 };
 #endif // GAMEOBJECTMANAGER_H

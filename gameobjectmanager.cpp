@@ -1,5 +1,11 @@
 ﻿#include "gameobjectmanager.h"
 
+GameObjectManager &GameObjectManager::getInstance()
+{
+    static GameObjectManager *mInstance = new GameObjectManager();
+    return *mInstance;
+}
+
 void GameObjectManager::manageObjects(/*mCurrentCamera*/)
 {
 
@@ -9,9 +15,9 @@ void GameObjectManager::manageObjects(/*mCurrentCamera*/)
     //  temp->init();
     //  mVisualObjects.push_back(temp);
 
-    int id;
-    string temp = "ost";
-    addObject(temp, id, 1, 1, 1, 0);
+    //int id;
+    //string temp = "ost";
+    //addObject(temp, id, 1, 1, 1, 0);
 
     //Dag's dog triangle
     //  temp = new Triangle();
@@ -25,9 +31,9 @@ void GameObjectManager::manageObjects(/*mCurrentCamera*/)
     //mCurrentCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-void GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
+GameObject GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
 {
-    GameObject * CurrentGameObject;
+    GameObject *CurrentGameObject;
 
     CurrentGameObject->entitiyID = id;
     CurrentGameObject->mName = name;
@@ -59,4 +65,6 @@ void GameObjectManager::addObject(string name, int id, bool TransformID, int Mes
 
     //mGameObjects.push_back(CurrentGameObject);
     id++;
+
+    return CurrentGameObject;
 }

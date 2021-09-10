@@ -129,13 +129,17 @@ void RenderWindow::init()
 
     //Set up camera
     mCurrentCamera = new Camera();
-
-    //Camera mCurrentCamera;
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
-    // Made my own GameObjectManager
-    //gObjectManager->manageObjects(mCurrentCamera);
+    //Create temp object -
+    string name = "ost";
+    int id;
 
+    //-Using GameObjectManager
+    GameObjectManager *GOM;
+    GameObject *temp = GOM->addObject(name, id, 1, 1, 1, 0);
+
+    mGameObjects.push_back(temp);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
