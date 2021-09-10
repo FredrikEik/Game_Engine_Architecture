@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     camera.cpp \
     cameracomponent.cpp \
     components.cpp \
+    entitysystem.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     meshsystem.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     cameracomponent.h \
     components.h \
     constants.h \
+    entitysystem.h \
     gltypes.h \
     input.h \
     gsl/math_constants.h \

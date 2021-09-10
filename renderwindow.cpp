@@ -162,7 +162,7 @@ void RenderWindow::init()
 
 
     ///PURE ECS TEST
-    entities.push_back(0);
+    entities->push_back(0);
 
     TransformComponent * Susy = new TransformComponent();
     Susy->mMatrix.setToIdentity();
@@ -188,7 +188,7 @@ void RenderWindow::init()
     ///
 
     ///PURE ECS TEST
-    entities.push_back(1);
+    entities->push_back(1);
 
     TransformComponent * headTran = new TransformComponent();
     headTran->mMatrix.setToIdentity();
@@ -289,9 +289,9 @@ void RenderWindow::render()
         glBindVertexArray(0);
     }
 
-
-    for(int i = 0; i < entities.size(); i++){
-        if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
+    int morradi = entities->size();
+    for(int i = 0; i < morradi; i++){
+        if(entities->at(i) == meshCompVec[i]->entity && entities->at(i) == transformCompVec[i]->entity && entities->at(i) == MaterialCompVec[i]->entity){
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             RenderSys->draw(meshCompVec[i],
                     MaterialCompVec[i],
@@ -319,7 +319,7 @@ void RenderWindow::render()
                     mCurrentCamera );   //Camera
 
 
-    //for(auto i = entities.begin(); i < entities.end(); i++){
+    //for(auto i = entities->begin(); i < entities->end(); i++){
 
 
     // }

@@ -44,7 +44,7 @@ public:
     RenderSystem *RenderSys = new RenderSystem();
     meshsystem * MeshSys = new meshsystem();
 
-    std::vector<int> entities;
+    std::vector<int>* entities;
 
     std::vector<MeshComponent*> meshCompVec;
     std::vector<TransformComponent*> transformCompVec;
