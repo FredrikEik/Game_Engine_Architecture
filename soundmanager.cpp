@@ -1,5 +1,5 @@
 #include "soundmanager.h"
-#include "wavfilehandler.h"
+#include "soundhandler.h"
 #include <iostream>
 #include <QDebug>
 

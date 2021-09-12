@@ -1,5 +1,5 @@
-#ifndef FILEHANDLER_H
-#define FILEHANDLER_H
+#ifndef SOUNDHANDLER_H
+#define SOUNDHANDLER_H
 
 #include <cstdint>    //does not work well on mac
 //#include <stdint.h>     //using this on Mac instead of cstdint. not a totally clean solution
@@ -24,7 +24,7 @@ struct wave_t
 };
 
 /// Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
-class WavFileHandler
+class SoundHandler
 {
 public:
     /// Loads a given wave file, fills wave_t structure with wave data.

@@ -12,6 +12,9 @@ INCLUDEPATH += \
 
 macx {
     LIBS += -framework OpenAL
+
+    # QT not updated for Xcode 11.
+    CONFIG+=sdk_no_version_check
 }
 
 win32 {
@@ -24,17 +27,17 @@ SOURCES += main.cpp \
     components.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
-    ResourceManager/shader.cpp \
-    ResourceManager/wavfilehandler.cpp \
+    gsl/vector2d.cpp \
+    gsl/vector3d.cpp \
     ResourceManager/resourcemanager.cpp \
-    ResourceManager/texture.cpp \
+    ResourceManager/shaderhandler.cpp \
+    ResourceManager/soundhandler.cpp \
+    ResourceManager/texturehandler.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     triangle.cpp \
-    gsl/vector2d.cpp \
-    gsl/vector3d.cpp \
     vertex.cpp \
     gameobject.cpp \
     xyz.cpp
@@ -48,17 +51,17 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
-    ResourceManager/shader.h \
-    ResourceManager/wavfilehandler.h \
+    gsl/vector2d.h \
+    gsl/vector3d.h \
     ResourceManager/resourcemanager.h \
-    ResourceManager/texture.h \
+    ResourceManager/shaderhandler.h \
+    ResourceManager/soundhandler.h \
+    ResourceManager/texturehandler.h \
     renderwindow.h \
     mainwindow.h \
     soundmanager.h \
     soundsource.h \
     triangle.h \
-    gsl/vector2d.h \
-    gsl/vector3d.h \
     vertex.h \
     gameobject.h \
     xyz.h

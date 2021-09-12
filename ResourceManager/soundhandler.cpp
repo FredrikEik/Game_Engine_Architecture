@@ -1,7 +1,7 @@
-#include "wavfilehandler.h"
+#include "soundhandler.h"
 #include <iostream>
 
-bool WavFileHandler::loadWave(std::string filePath, wave_t* wavePtr)
+bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
 {
     std::cout << "Loading "+ filePath + " from disk\n";
     FILE* fp = NULL;
@@ -70,7 +70,7 @@ bool WavFileHandler::loadWave(std::string filePath, wave_t* wavePtr)
     return true;
 }
 
-bool WavFileHandler::endOnError(std::string errmsg)
+bool SoundHandler::endOnError(std::string errmsg)
 {
     std::cout << errmsg;
     return false;

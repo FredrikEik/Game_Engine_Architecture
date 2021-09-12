@@ -10,11 +10,11 @@
 #include "constants.h"
 
 class QOpenGLContext;
-class Shader;
+class ShaderHandler;
 class MainWindow;
 class GameObject;
 class Camera;
-class Texture;
+class TextureHandler;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -62,9 +62,9 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
-    class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
+    class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
-    class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
+    class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};

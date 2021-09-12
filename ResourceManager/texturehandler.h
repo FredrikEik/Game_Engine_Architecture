@@ -1,5 +1,5 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef TEXTUREHANDLER_H
+#define TEXTUREHANDLER_H
 
 #include <QOpenGLFunctions_4_1_Core>
 
@@ -8,11 +8,11 @@
     \author Dag Nylund
     \date 16/02/05
  */
-class Texture : protected QOpenGLFunctions_4_1_Core
+class TextureHandler : protected QOpenGLFunctions_4_1_Core
 {
 public:
-    Texture();  //basic texture from code
-    Texture(const std::string &filename, bool cubeMap = false);
+    TextureHandler();  //basic texture from code
+    TextureHandler(const std::string &filename, bool cubeMap = false);
     float getHeightFromIndex(int i);
     std::string mTextureFilename;
 

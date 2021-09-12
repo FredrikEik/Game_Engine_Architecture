@@ -1,5 +1,5 @@
 #include "soundsource.h"
-#include "wavfilehandler.h"
+#include "soundhandler.h"
 
 #include <sstream>
 #include <iostream>
@@ -46,7 +46,7 @@ bool SoundSource::loadWave(std::string filePath)
     ALuint frequency{};
     ALenum format{};
     wave_t* waveData = new wave_t();
-    if (!WavFileHandler::loadWave(filePath, waveData))
+    if (!SoundHandler::loadWave(filePath, waveData))
     {
         std::cout << "Error loading wave file!\n";
         return false; // error loading wave file data

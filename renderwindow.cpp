@@ -9,14 +9,14 @@
 
 #include <iostream>
 
-#include "shader.h"
+#include "shaderhandler.h"
 #include "mainwindow.h"
 #include "gameobject.h"
 #include "xyz.h"
 #include "triangle.h"
 #include "camera.h"
 #include "constants.h"
-#include "texture.h"
+#include "texturehandler.h"
 #include "components.h"
 #include "resourcemanager.h"
 #include "soundmanager.h"
@@ -89,8 +89,8 @@ void RenderWindow::init()
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
-    mTextures[0] = new Texture();
-    mTextures[1] = new Texture("hund.bmp");
+    mTextures[0] = new TextureHandler();
+    mTextures[1] = new TextureHandler("hund.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -115,11 +115,11 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
-    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 

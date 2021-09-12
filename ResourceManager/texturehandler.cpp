@@ -8,10 +8,10 @@
 #include <sstream>
 #include <string>
 
-#include "texture.h"
+#include "texturehandler.h"
 #include "constants.h"
 
-Texture::Texture()
+TextureHandler::TextureHandler()
 {
     initializeOpenGLFunctions();
     //small dummy texture
@@ -37,7 +37,7 @@ Texture::Texture()
     mTextureFilename = "Basic Texture";
 }
 
-Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_1_Core()
+TextureHandler::TextureHandler(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_1_Core()
 {
     mTextureFilename = filename;
     initializeOpenGLFunctions();
@@ -53,7 +53,7 @@ Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_
     }
 }
 
-float Texture::getHeightFromIndex(int i)
+float TextureHandler::getHeightFromIndex(int i)
 {
     if (i > mColumns * mRows || i < 0)
         return 0;
@@ -68,7 +68,7 @@ float Texture::getHeightFromIndex(int i)
 }
 
 //Read BMP into memory
-void Texture::readBitmap(const std::string &filename)
+void TextureHandler::readBitmap(const std::string &filename)
 {
     OBITMAPFILEHEADER bmFileHeader;
     OBITMAPINFOHEADER bmInfoHeader;
@@ -104,7 +104,7 @@ void Texture::readBitmap(const std::string &filename)
     }
 }
 
-void Texture::readCubeMap()
+void TextureHandler::readCubeMap()
 {
     std::string justName;
     std::stringstream sStream;
@@ -121,7 +121,7 @@ void Texture::readCubeMap()
 }
 
 //Set up texture for use in OpenGL
-void Texture::setTexture()
+void TextureHandler::setTexture()
 {
     glGenTextures(1, &mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mGLTextureID);
@@ -148,7 +148,7 @@ void Texture::setTexture()
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void Texture::setCubemapTexture()
+void TextureHandler::setCubemapTexture()
 {
     glGenTextures(1, &mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
