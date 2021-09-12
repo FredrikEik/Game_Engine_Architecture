@@ -63,6 +63,66 @@ int resourceManager::makeTriangle()
     return mMeshComponents.size()-1;    //returns index to last object
 
 }
+
+int resourceManager::makeCube()
+{
+    mMeshComponents.emplace_back(MeshComponent());
+    MeshComponent &tempMesh = mMeshComponents.back();
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 0, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 0, 1, 0));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+
+    tempMesh.mDrawType = GL_TRIANGLES;
+    initMesh(tempMesh);
+
+    return mMeshComponents.size()-1;
+
+}
 Entity* resourceManager::makeEntity(std::string meshName)
 {
 //    unsigned int i = entities.size();
@@ -88,6 +148,8 @@ Entity* resourceManager::makeEntity(std::string meshName)
             meshIndex = makeAxis();
         if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
+        if (meshName.find("cube") != std::string::npos)
+            meshIndex = makeCube();
 
 
         //safety - if nothing is made I just make a triangle

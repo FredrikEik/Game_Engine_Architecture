@@ -34,6 +34,7 @@ public:
     int readObj(std::string filename);
     int makeAxis();
     int makeTriangle();
+    int makeCube();
 
 
 //    std::vector<gsl::Components> components;

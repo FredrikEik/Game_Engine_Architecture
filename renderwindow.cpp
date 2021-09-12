@@ -153,6 +153,7 @@ void RenderWindow::init()
 
       Entity *temp = makeEntity("axis");
 
+      //temp = makeEntity("\\Textures\\goat.obj");
 
 
 
@@ -211,12 +212,12 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    for(int i{0}; i < mVisualObjects.size(); i++)
+    for(int i{0}; i < mEntity.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+        glUseProgram(mShaderPrograms[mEntity[i]->mMaterial->mShaderProgram]->getProgram() );
 
         /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
 
@@ -226,31 +227,31 @@ void RenderWindow::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        if (mEntity[i]->mMaterial->mShaderProgram == 0)
         {
             viewMatrix = vMatrixUniform;
             projectionMatrix = pMatrixUniform;
             modelMatrix = mMatrixUniform;
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        else if (mEntity[i]->mMaterial->mShaderProgram == 1)
         {
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
 
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform, mEntity[i]->mMaterial->mTextureUnit);
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mEntity[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        glBindVertexArray( mVisualObjects[i]->tempMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->tempMesh->mDrawType, 0, mVisualObjects[i]->tempMesh->mVertices.size());
+        glBindVertexArray( mEntity[i]->mMesh->mVAO );
+        glDrawArrays(mEntity[i]->mMesh->mDrawType, 0, mEntity[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
     }
 
@@ -365,41 +366,41 @@ void RenderWindow::transformObjectX(double in)
 {
         // mVisualObjects[1]->mTransform->mMatrix.setRotationToVector(in); //scaler
         //mVisualObjects[1]->mTransform->mMatrix.translate(in);
-     mVisualObjects[1]->mTransform->mMatrix.rotateX(in);
+     mEntity[1]->mTransform->mMatrix.rotateX(in);
 
 }
 
 void RenderWindow::transformObjectY(double in)
 {
-    mVisualObjects[1]->mTransform->mMatrix.rotateY(in);
+    mEntity[1]->mTransform->mMatrix.rotateY(in);
 }
 
 void RenderWindow::transformObjectZ(double in)
 {
-    mVisualObjects[1]->mTransform->mMatrix.rotateZ(in);
+    mEntity[1]->mTransform->mMatrix.rotateZ(in);
 }
 
 void RenderWindow::spawnObject(QString in)
 {
 //temporary solution
-    VisualObject *temp;
-    //Entity *temp;
+    //VisualObject *temp;
+    Entity *temp;
     if(in == "cube")
     {
-        temp = new Cube();
+        temp = makeEntity("cube");
         temp->mMaterial->mShaderProgram = 0;
         temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
     }
     else if(in == "triangle")
     {
-        temp = new Triangle();
+        temp = makeEntity("triangle");
         temp->mMaterial->mShaderProgram = 1;    //texture shader
         temp->mMaterial->mTextureUnit = 1;      //dog texture
         temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     }
    else  if(in == "goat")
     {
-        temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
+        temp = makeEntity("\\Textures\\goat.obj");
         temp->mMaterial->mShaderProgram = 1;    //texture shader
         temp->mMaterial->mTextureUnit = 2;      //dog texture
         temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
@@ -407,8 +408,8 @@ void RenderWindow::spawnObject(QString in)
     else
         qDebug() << "no matching file to create";
 
-    temp->init();
-    mVisualObjects.push_back(temp );
+   // temp->init();
+    mEntity.push_back(temp );
 
 }
 
