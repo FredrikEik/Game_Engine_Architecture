@@ -7,7 +7,8 @@ TARGET      = GEA2021
 
 INCLUDEPATH += \
     ./gsl \
-    ./Shaders
+    ./Shaders \
+    ./ResourceManager
 
 macx {
     LIBS += -framework OpenAL
@@ -23,19 +24,19 @@ SOURCES += main.cpp \
     components.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    ResourceManager/shader.cpp \
+    ResourceManager/wavfilehandler.cpp \
+    ResourceManager/resourcemanager.cpp \
+    ResourceManager/texture.cpp \
     renderwindow.cpp \
-    resourcemanager.cpp \
-    shader.cpp \
     mainwindow.cpp \
     soundmanager.cpp \
     soundsource.cpp \
-    texture.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     vertex.cpp \
     gameobject.cpp \
-    wavfilehandler.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -47,19 +48,19 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    ResourceManager/shader.h \
+    ResourceManager/wavfilehandler.h \
+    ResourceManager/resourcemanager.h \
+    ResourceManager/texture.h \
     renderwindow.h \
-    resourcemanager.h \
-    shader.h \
     mainwindow.h \
     soundmanager.h \
     soundsource.h \
-    texture.h \
     triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
     gameobject.h \
-    wavfilehandler.h \
     xyz.h
 
 FORMS += \
