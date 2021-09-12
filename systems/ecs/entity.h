@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "Components.h"
+class RenderWindow;
 
 class Entity : public QOpenGLFunctions_4_1_Core
 {

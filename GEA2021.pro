@@ -5,6 +5,10 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+win32 {
+#    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+#    LIBS *= $(OPENAL_HOME)\\OpenAL32.lib
+}
 SOURCES += main.cpp \
     camera.cpp \
     objects/cube.cpp \

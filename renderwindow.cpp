@@ -25,6 +25,7 @@
 #include "objects/objmesh.h"
 #include "objects/cube.h"
 #include "widget.h"
+#include "systems/ecs/resourcemanager.h"
 
 #include "texture.h"
 #include "systems/ecs/Components.h"
@@ -144,14 +145,19 @@ void RenderWindow::init()
     //********************** Making the object to be drawn **********************
 
     //*********** entity unresolved external symbol c++ error, må fikses******************
-    VisualObject *temp = new XYZ();
-  //  Entity *temp = makeEntity("axis");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;
-    mVisualObjects.push_back(temp);
+//    VisualObject *temp = new XYZ();
+
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;
+//    mVisualObjects.push_back(temp);
+
+      Entity *temp = makeEntity("axis");
+
+
+
 
     // MÅ ENDRE FRA MVISUALOBJECTS TIL MENTITY
-    //mEntity.push_back(temp);
+   // mEntity.push_back(temp);
 
     //testing triangle class
 //       temp = new Triangle();
@@ -404,6 +410,22 @@ void RenderWindow::spawnObject(QString in)
     temp->init();
     mVisualObjects.push_back(temp );
 
+}
+
+Entity *RenderWindow::makeEntity(std::string assetName, int shaderType, int textureUnit)
+{
+
+    Entity *temp = resourceManager::getInstance().makeEntity(assetName);
+    temp->mMaterial->mShaderProgram = shaderType;
+    temp->mMaterial->mTextureUnit = textureUnit;
+
+    //quick hackety-hack to move objects made
+    static float value = 0.f;
+
+    temp->mTransform->mMatrix.translate(value,value, value);
+    mEntity.push_back(temp);
+    value += 0.2f;
+    return temp;
 }
 
 //Uses QOpenGLDebugLogger if this is present
