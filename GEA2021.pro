@@ -9,6 +9,10 @@ INCLUDEPATH += \
     ./gsl \
     ./Shaders
 
+macx {
+    LIBS += -framework OpenAL
+}
+
 win32 {
     INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
     LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a

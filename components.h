@@ -6,6 +6,15 @@
 #include "vertex.h"
 #include "gltypes.h"
 
+#ifdef _WIN32
+#include <al.h>
+#include <alc.h>
+#endif
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#endif
+
 struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
@@ -27,6 +36,24 @@ struct MaterialComponent
 {
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
+};
+
+struct SoundListenerComponent
+{
+    gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
+    //should be fetced from other component?
+    gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
+    //should be fetced from other component?
+    gsl::Vector3D up{0.0f, 1.0f, 0.0f};
+};
+
+struct SoundSourceComponet
+{
+    ALuint mSource;             ///< The sound source.
+    ALuint mBuffer;
+    gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
+    bool looping;
+    float gain;
 };
 
 #endif // COMPONENTS_H
