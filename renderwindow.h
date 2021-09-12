@@ -37,6 +37,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toogleVisibility(bool buttonState);
 
     void transformObjectX(double in);
     void transformObjectY(double in);
@@ -62,8 +63,6 @@ void init();
 
     void handleInput();
 
-    void Minwidget();
-
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -76,20 +75,13 @@ void init();
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
-
-
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
-
-    std::vector<VisualObject*> mVisualObjects;
     std::vector<Entity*> mEntity;
-
-
-    Cube *mycube;
 
     Input mInput;
     float mCameraSpeed{0.05f};

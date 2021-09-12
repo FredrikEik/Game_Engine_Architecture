@@ -80,7 +80,7 @@ void MainWindow::init()
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
-    mRenderWindowContainer->setFocus();
+//    mRenderWindowContainer->setFocus();
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -89,9 +89,11 @@ void MainWindow::on_pushButton_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_2_clicked(bool checked)
 {
     //mRenderWindow->transformObject();
+    mRenderWindow->toogleVisibility(checked);
+
 }
 
 void MainWindow::on_comboBox_activated(int index)
@@ -117,18 +119,20 @@ void MainWindow::on_comboBox_activated(int index)
 
 void MainWindow::on_doubleSpinBox_valueChanged(double arg1)
 {
-    //x
-    mRenderWindow->transformObjectX(arg1);
+    //mEntity->transformX(arg1);
+   mRenderWindow->transformObjectX(arg1);
 }
 
 void MainWindow::on_doubleSpinBox_2_valueChanged(double arg1)
-{
-    //y
+{   
+    //mEntity->transformY(arg1);
     mRenderWindow->transformObjectY(arg1);
+
 }
 
 void MainWindow::on_doubleSpinBox_3_valueChanged(double arg1)
 {
-    //z
-    mRenderWindow->transformObjectZ(arg1);
+     //mEntity->transformZ(arg1);
+   mRenderWindow->transformObjectZ(arg1);
+
 }

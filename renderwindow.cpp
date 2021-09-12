@@ -249,14 +249,14 @@ void RenderWindow::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mEntity[i]->mTransform->mMatrix.constData());
 
+        if(!mEntity[i]->isHidden)
+        {
         //draw the object
         glBindVertexArray( mEntity[i]->mMesh->mVAO );
         glDrawArrays(mEntity[i]->mMesh->mDrawType, 0, mEntity[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
+        }
     }
-
-    //Moves the dog triangle - should be mada another way!!!!
-        //just to move the triangle each frame
 
 
     //Calculate framerate before
@@ -362,12 +362,23 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderWindow::toogleVisibility(bool buttonState)
+{
+    if (buttonState)
+    {
+        mEntity[1]->isHidden = true;
+    }
+    else
+    {
+        mEntity[1]->isHidden = false;
+    }
+
+}
+
 void RenderWindow::transformObjectX(double in)
 {
-        // mVisualObjects[1]->mTransform->mMatrix.setRotationToVector(in); //scaler
-        //mVisualObjects[1]->mTransform->mMatrix.translate(in);
-     mEntity[1]->mTransform->mMatrix.rotateX(in);
-
+     mEntity[1]->mTransform->mMatrix.rotateX(in *-1);
+     //mEntity[1]->move();
 }
 
 void RenderWindow::transformObjectY(double in)
@@ -382,8 +393,7 @@ void RenderWindow::transformObjectZ(double in)
 
 void RenderWindow::spawnObject(QString in)
 {
-//temporary solution
-    //VisualObject *temp;
+
     Entity *temp;
     if(in == "cube")
     {
@@ -408,7 +418,6 @@ void RenderWindow::spawnObject(QString in)
     else
         qDebug() << "no matching file to create";
 
-   // temp->init();
     mEntity.push_back(temp );
 
 }
@@ -478,29 +487,6 @@ void RenderWindow::setCameraSpeed(float value)
         mCameraSpeed = 0.01f;
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
-}
-void RenderWindow::Minwidget()
-{
-
-//    class MyWidget : public QWidget{
-//    public:
-//        MyWidget(QWidget *parent =NULL) : QWidget(parent){
-//            this->resize(400, 240);
-//            this->setWindowTitle("GUI, hvor du kan legge til objekt ved å trykke på en knapp");
-//            QPushButton* but1 = new QPushButton("circle");
-//            QPushButton* but2 = new QPushButton("triangel");
-//            QPushButton* but3 = new QPushButton("square");
-
-//            QHBoxLayout *layout = new QHBoxLayout;
-//            layout->addWidget(but1);
-//            layout->addWidget(but2);
-//            layout->addWidget(but3);
-//            this->setLayout(layout);
-//        }
-//    };
-
-//    MyWidget widget;
-//    widget.show();
 }
 
 void RenderWindow::handleInput()

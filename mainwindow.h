@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "widget.h"
+#include "systems/ecs/entity.h"
 
 class QWidget;
 class RenderWindow;
@@ -24,7 +25,7 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
-    void on_pushButton_2_clicked();
+    void on_pushButton_2_clicked(bool checked);
 
     void on_comboBox_activated(int index);
 
@@ -41,6 +42,7 @@ private:
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
+    Entity *mEntity;
 };
 void on_doubleSpinBox_valueChanged(double arg1);
 

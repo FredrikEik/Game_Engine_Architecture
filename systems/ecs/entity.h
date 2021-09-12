@@ -24,29 +24,34 @@ public:
     struct MeshComponent* mMesh{nullptr};
     struct MaterialComponent* mMaterial{nullptr};
 
-//    gsl::Vector3D mVelocity{0.f,0.f,0.f};
-//    gsl::Vector3D defaultPos{0.f,0.f,0.f};
+    gsl::Vector3D mVelocity{10.f,0.f,0.f};
+    gsl::Vector3D defaultPos{0.f,0.f,0.f};
 
-//    bool isHidden{false}; //if true - do not render
-//    bool isCollidable{false}; //if true - has collider
-//    bool isPicked{false}; //picked up by player
-//    bool isDead{false};
-//    int health;
+//    void transformX(double in){ this->mTransform->mMatrix.rotateX(in *-1);}
+//    void transformY(double in){ this->mTransform->mMatrix.rotateY(in);}
+//    void transformZ(double in){ this->mTransform->mMatrix.rotateZ(in);}
 
-//    void setHealth(int hpInput)
-//    {
-//        health += hpInput;
-//        if (health <= 0)
-//            isDead = true;
-//    }
-//    int getHealth()
-//    {
-//        return health;
-//    }
-//    void move()
-//    {
-//        mTransform->mMatrix.getPosition() += mVelocity;
-//    }
+    bool isHidden{false}; //if true - do not render
+    bool isCollidable{false}; //if true - has collider
+    bool isPicked{false}; //picked up by player
+    bool isDead{false};
+    int health;
+
+    void setHealth(int hpInput)
+    {
+        health += hpInput;
+        if (health <= 0)
+            isDead = true;
+    }
+    int getHealth()
+    {
+        return health;
+    }
+    void move()
+    {
+       // mTransform->mMatrix.getPosition() += mVelocity;
+        mTransform->mMatrix.setPosition(100.f, 10.f,0.f);
+    }
 
 };
 
