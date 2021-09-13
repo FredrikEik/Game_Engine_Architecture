@@ -1,5 +1,12 @@
 ﻿#include "gameobjectmanager.h"
 
+GameObjectManager::GameObjectManager()
+{
+    //This is a hack - to make sure my MeshComponens are not moved for now
+    //Please fix
+    //mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
+}
+
 GameObjectManager &GameObjectManager::getInstance()
 {
     static GameObjectManager *mInstance = new GameObjectManager();
@@ -8,7 +15,6 @@ GameObjectManager &GameObjectManager::getInstance()
 
 void GameObjectManager::manageObjects(/*mCurrentCamera*/)
 {
-
     //Axis
     //  GameObject *temp = new XYZ();
     //  temp->mMaterial->mShaderProgram = 0; //plain shader
