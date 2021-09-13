@@ -213,6 +213,10 @@ void ResourceManager::init(MeshComponent &MeshComp)
 
 GameObject* ResourceManager::CreateObject(std::string filepath)
 {
+    // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
+    // if it does not find it in the map, it will create a new object with a unique meshComp.
+
+    // TO DO, fix the hardcoded matirial stuff.
 
     for(auto obj : mObjectsMap)
     {
