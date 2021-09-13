@@ -16,14 +16,15 @@ class ResourceManager  : public QOpenGLFunctions_4_1_Core {
 public:
     ResourceManager();
 
+
     ResourceManager &getInstance();
     class GameObject *CreateObject(std::string filepath);
     void readObj(std::string &filename, MeshComponent *MeshComp);
     void init(MeshComponent &MeshComp);
 private:
-
-    std::vector<VisualObject*> mObjects;
-    //std::vector<std::pair<std::string, int>> mObjects;
+    GameObject* tempGO;
+    std::vector<GameObject*> mObjects;
+    std::unordered_map<std::string, GameObject> mObjectsMap;
 
 
 

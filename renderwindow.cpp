@@ -141,15 +141,25 @@ void RenderWindow::init()
     temp->init();
     temp->mMaterialComp->mShaderProgram = 1;
     temp->mMaterialComp->mTextureUnit = 1;
-    temp->mTransformComp->mMatrix.translate(0.f, 0.f, .5f);
+    temp->mTransformComp->mMatrix.translate(-1.f, .5f, 0.f);
     mVisualObjects.push_back(temp);
 
 // forsøk på å lage en resourcemanager.
 
+
     mResourceManager = new class ResourceManager();
     GameObject* tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
     mGameObjects.push_back(tempGameObject);
-    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Box.obj");
+
+    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(2,0,0);
+    mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(4,0,0);
+    mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\cube.obj");
     mGameObjects.push_back(tempGameObject);
 
 
