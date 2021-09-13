@@ -137,7 +137,7 @@ void RenderWindow::init()
 
     //-Using GameObjectManager
     GameObjectManager &GOM = GameObjectManager::getInstance();
-    GameObject temp = GOM.addObject(name, id, 1, 1, 1, 0);
+    GameObject *temp = GOM.addObject(name, id, 1, 1, 1, 0);
 
     mGameObjects.push_back(temp);
 }

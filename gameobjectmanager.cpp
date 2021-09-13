@@ -31,9 +31,9 @@ void GameObjectManager::manageObjects(/*mCurrentCamera*/)
     //mCurrentCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
-GameObject GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
+GameObject *GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
 {
-    GameObject *CurrentGameObject;
+    GameObject* CurrentGameObject = new GameObject();
 
     CurrentGameObject->entitiyID = id;
     CurrentGameObject->mName = name;
@@ -65,7 +65,7 @@ GameObject GameObjectManager::addObject(string name, int id, bool TransformID, i
 
     id++;
 
-    return *CurrentGameObject;
+    return CurrentGameObject;
 }
 
 int GameObjectManager::makeAxis()
