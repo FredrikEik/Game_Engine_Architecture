@@ -218,6 +218,9 @@ GameObject* ResourceManager::CreateObject(std::string filepath)
 
     // TO DO, fix the hardcoded matirial stuff.
 
+    // IMPORTANT Need to fix the map so it stores all of them, now it stores only the last one with same name.
+    // Change it to a vector maybe,
+
     for(auto obj : mObjectsMap)
     {
         if(obj.first.find(filepath) != std::string::npos) //if it found the filepath
@@ -231,7 +234,9 @@ GameObject* ResourceManager::CreateObject(std::string filepath)
             tempGO->mMaterialComp->mShaderProgram = 1;
             tempGO->mMaterialComp->mTextureUnit = 1;
 
+            objectIDcounter++;
             readObj(filepath, tempGO->mMeshComp);
+            filepath = filepath + std::to_string(objectIDcounter);
             ResourceManager::init(*tempGO->mMeshComp);
             mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
             return tempGO;
@@ -256,7 +261,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath)
 }
 
 
-
+int ResourceManager::objectIDcounter = 0;
 
 
 //VisualObject ResourceManager::MakeObject(MeshComponent &meshComp, MaterialComponent &material,

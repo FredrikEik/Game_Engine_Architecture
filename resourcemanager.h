@@ -26,12 +26,15 @@ private:
     std::vector<GameObject*> mObjects;
     std::unordered_map<std::string, GameObject> mObjectsMap;
 
+public:
+    static int objectIDcounter;
 
 
 //    VisualObject MakeObject(MeshComponent &meshComp, MaterialComponent &material,
 //                            TransformComponent &transComp);
 //    VisualObject MakeObject(bool mesh, bool material, bool transform);
 };
+
 
 
 

@@ -131,18 +131,18 @@ void RenderWindow::init()
 
 
     //--> De første to bruker fortsatt sin egen init(), men bruker egne components.
-    VisualObject *temp = new XYZ();
-    temp->mMaterialComp->mShaderProgram = 0;
-    temp->init();
-    mVisualObjects.push_back(temp);
+//    VisualObject *temp = new XYZ();
+//    temp->mMaterialComp->mShaderProgram = 0;
+//    temp->init();
+//    mVisualObjects.push_back(temp);
 
-    //testing triangle class
-    temp = new Triangle();
-    temp->init();
-    temp->mMaterialComp->mShaderProgram = 1;
-    temp->mMaterialComp->mTextureUnit = 1;
-    temp->mTransformComp->mMatrix.translate(-1.f, .5f, 0.f);
-    mVisualObjects.push_back(temp);
+//    //testing triangle class
+//    temp = new Triangle();
+//    temp->init();
+//    temp->mMaterialComp->mShaderProgram = 1;
+//    temp->mMaterialComp->mTextureUnit = 1;
+//    temp->mTransformComp->mMatrix.translate(-1.f, .5f, 0.f);
+//    mVisualObjects.push_back(temp);
 
 // forsøk på å lage en resourcemanager.
 
@@ -251,9 +251,21 @@ void RenderWindow::render()
 
     for(int i{0}; i < mGameObjects.size(); i++)
     {
+        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
+        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0)
+        {
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+        }
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
+        {
+        //send data to shader
+            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+        }
 
         glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO );
         glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices.size());
