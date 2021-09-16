@@ -6,6 +6,10 @@
 #include "matrix4x4.h"
 #include "gltypes.h"
 
+#include <al.h>
+#include <alc.h>
+
+
 class Copmonents
 {
 public:
@@ -39,6 +43,25 @@ public:
 //    MaterialComponent();
     GLuint mShaderProgram{};
     GLint mTextureUnit{};
+};
+
+class SoundListenerComponent
+{
+public:
+    //should be fetced from other component?
+    gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
+    gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
+    gsl::Vector3D up{0.0f, 1.0f, 0.0f};
+};
+
+class SoundSourceComponent
+{
+public:
+    ALuint mSource;             ///< The sound source.
+    ALuint mBuffer;
+    gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
+    bool looping;
+    float gain;
 };
 
 

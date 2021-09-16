@@ -20,6 +20,7 @@
 #include "objmesh.h"
 #include "gameobject.h"
 #include "resourcemanager.h"
+#include "soundmanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -190,6 +191,12 @@ void RenderWindow::init()
 //        mVisualObjects[i]->mShaderComp->pMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "pMatrix" );
 //        mVisualObjects[i]->mShaderComp->TextureUniform = glGetUniformLocation(mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "textureSampler");
 //    }
+
+    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
+                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                "..\\GEA2021\\Assets\\Sounds\\drum_stereo.wav", false, 1.0f);
+
+    mStereoSound->play();
 }
 
 // Called each frame - doing the rendering
@@ -208,8 +215,8 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //Draws the objects
-    //This should be in a loop!
+    // :::NOT IN USE ANYMORE:::
+    // For VisualObject
 
     for(int i{0}; i < mVisualObjects.size(); i++)
     {
@@ -229,26 +236,16 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransformComp->mMatrix.constData());
         }
 
-
         //draw the object
         glBindVertexArray( mVisualObjects[i]->mMeshComp->mVAO );
         glDrawArrays(mVisualObjects[i]->mMeshComp->mDrawType, 0, mVisualObjects[i]->mMeshComp->mVertices.size());
 
         glBindVertexArray(0);
-
-        //Second object - triangle
-        //what shader to use - texture shader
-//        glUseProgram(mShaderPrograms[1]->getProgram() );
-//        //what texture (slot) to use
-//        glUniform1i(mTextureUniform, 1);
-//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mTransformComp->mMatrix.constData());
-//        mVisualObjects[1]->draw();
-//        mVisualObjects[1]->mTransformComp->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }
+    //  ::: :::
 
 
+    // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
@@ -269,6 +266,7 @@ void RenderWindow::render()
 
         glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO );
         glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices.size());
+        glBindVertexArray(0);
     }
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

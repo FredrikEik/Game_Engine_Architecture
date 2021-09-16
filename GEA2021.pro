@@ -5,6 +5,11 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
+
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
@@ -16,6 +21,9 @@ SOURCES += main.cpp \
     resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
+    soundhandler.cpp \
+    soundmanager.cpp \
+    soundsource.cpp \
     texture.cpp \
     triangle.cpp \
     vector2d.cpp \
@@ -39,6 +47,9 @@ HEADERS += \
     resourcemanager.h \
     shader.h \
     mainwindow.h \
+    soundhandler.h \
+    soundmanager.h \
+    soundsource.h \
     texture.h \
     triangle.h \
     vector2d.h \
