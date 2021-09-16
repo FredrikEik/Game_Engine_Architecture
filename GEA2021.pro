@@ -7,7 +7,20 @@ TARGET      = GEA2021
 
 INCLUDEPATH += \
     ./gsl \
+    ./SoundCode/h \
+    ./SoundCode/scr \
     ./Shaders
+
+
+mac {
+    LIBS += -framework OpenAL
+}
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
+
 
 SOURCES += main.cpp \
     camera.cpp \
@@ -23,12 +36,17 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    SoundCode/scr/soundmanager.cpp \
+    SoundCode/scr/soundsource.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
+    SoundCode/scr/vector3.cpp \
     vertex.cpp \
+    SoundCode/scr/wavfilehandler.cpp \
     xyz.cpp \
     triangle.cpp
+
 
 HEADERS += \
     camera.h \
@@ -53,7 +71,11 @@ HEADERS += \
     gsl/vector3d.h \
     vertex.h \
     xyz.h \
-    triangle.h
+    triangle.h \
+    SoundCode/h/vector3.h \
+    SoundCode/h/wavfilehandler.h \
+    SoundCode/h/soundmanager.h \
+    SoundCode/h/soundsource.h
 
 FORMS += \
     mainwindow.ui

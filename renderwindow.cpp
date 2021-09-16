@@ -23,6 +23,9 @@
 #include "components.h"
 #include "factory.h"
 #include "objreader.h"
+#include "soundmanager.h"
+#include "soundsource.h"
+#include "vector3.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -171,7 +174,55 @@ void RenderWindow::init()
 
     setupPlainShader(0);
     setupTextureShader(1);
+
+
+
+    //********************** Sound set up **********************
+
+    //SoundSource* mMario{};
+    SoundSource* mVideoGameLand{};
+    SoundSource* mVideoGameLand2{};
+
+    SoundManager::getInstance()->init();
+    mClick = SoundManager::getInstance()->createSource(
+                "Click", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/click.wav", false, 1.0f);
+
+    /*mMario = SoundManager::getInstance()->createSource(
+                "Mario", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/mario.wav", false, 1.0f);*/
+    mVideoGameLand = SoundManager::getInstance()->createSource(
+                "VideoGameLand", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/videogameland.wav", false, 1.0f);
+    mVideoGameLand2 = SoundManager::getInstance()->createSource(
+                "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
+
+    mVideoGameLand->play();
+    //mVideoGameLand2->play();
+
+
+
+
+
+    //mMario->play(); //doesnt work
+    //mExplosionSound->play();
+    //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
+
+
+
+
+
+
+
+    //**********************************************************
+
 }
+
+
+
+
+
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
@@ -319,6 +370,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 void RenderWindow::buttonCreate(std::string objectName)
 {
+    mClick->play();
     if(objectName == "MarioCube"){
     factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
     }
@@ -406,6 +458,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
+        SoundManager::getInstance()->cleanUp();
         mMainWindow->close();
     }
 

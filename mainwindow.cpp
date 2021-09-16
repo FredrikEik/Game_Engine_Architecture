@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
 
+
 #include "renderwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :

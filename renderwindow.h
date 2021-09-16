@@ -9,6 +9,7 @@
 #include "factory.h"
 #include "input.h"
 #include "constants.h"
+#include "soundmanager.h"
 
 class QOpenGLContext;
 class Shader;
@@ -35,6 +36,10 @@ public:
     void toggleWireframe(bool buttonState);
 
     void buttonCreate(std::string objectName);
+
+
+    SoundSource* mClick{};
+
 
 private slots:
     void render();
