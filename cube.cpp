@@ -5,8 +5,8 @@ Cube::Cube()
 {
 <<<<<<< Updated upstream
     MeshComp = new MeshComponent();
-    TransformComp = new TransformComponent();
     TextureComp = new TextureComponent();
+    TransformComp = new TransformComponent();
 
 =======
 >>>>>>> Stashed changes

@@ -15,15 +15,7 @@ public:
 
     std::string mName;
 
-    TransformComponent* getTransformComponent(){return TransformComp;}
-    MeshComponent* getMeshComponent(){return MeshComp;}
-    TextureComponent* getMaterialComponent(){return TextureComp;}
-
-    //private:
-    TransformComponent* TransformComp;
-    MeshComponent* MeshComp;
-    TextureComponent* TextureComp;
-
+    TransformComponent* TransformComp = nullptr;
 };
 
 #endif // GAMEOBJECT_H

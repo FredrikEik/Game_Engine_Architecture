@@ -19,6 +19,7 @@
 #include "texture.h"
 
 #include "cube.h"
+#include "objimport.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -136,10 +137,11 @@ void RenderWindow::init()
 //    temp->mMatrix.translate(0.f, 0.f, .5f);
 //    mVisualObjects.push_back(temp);
 
-    ObjFactory->createObject("Cube");
-        ObjFactory->createObject("Cube");
-            ObjFactory->createObject("Cube");
-                ObjFactory->createObject("Cube");
+//    ObjFactory->createObject("Cube");
+//    ObjFactory->createObject("Triangle");
+
+      ///ObjImport kræsjer programmet :(
+//    ObjFactory->createObject("Goat");
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -165,7 +167,7 @@ void RenderWindow::render()
     //Draws the objects
     //This should be in a loop!
 //    {
-//        //First objekct - xyz
+//        //First object - xyz
 //        //what shader to use
 //        glUseProgram(mShaderPrograms[0]->getProgram() );
 
@@ -176,24 +178,10 @@ void RenderWindow::render()
 //        //draw the object
 //        mVisualObjects[0]->draw();
 
-//        //Second object - triangle
-//        //what shader to use - texture shader
-//        glUseProgram(mShaderPrograms[1]->getProgram() );
-//        //what texture (slot) to use
-//        glUniform1i(mTextureUniform, 1);
-//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-//        mVisualObjects[1]->draw();
-//        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-//    }
 
     if(ObjFactory->mGameObject.size() > 0)
     {
-        //First objekct - xyz
-        //what shader to use
         glUseProgram(mShaderPrograms[0]->getProgram() );
-
 
         for (unsigned int i=0; i<ObjFactory->mGameObject.size(); i++){
             //send data to shader
@@ -202,21 +190,15 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->TransformComp->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-            ObjFactory->mGameObject[1]->TransformComp->mMatrix.translate(0.001f,0.001f,-0.001f);
+//            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translateX(0.01f);
+            ObjFactory->mGameObject[i]->TransformComp->mMatrix.rotateX();
         }
     }
 
-    //Calculate framerate before
-    // checkForGLerrors() because that takes a long time
-    // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
 
-    //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
-    //Qt require us to call this swapBuffers() -function.
-    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-    // and wait for vsync.
     mContext->swapBuffers(this);
 }
 
@@ -284,7 +266,8 @@ void RenderWindow::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7) +
+                                                  "  |  Obj Count: " + QString::number(ObjFactory->mGameObject.size()));
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }
@@ -305,6 +288,18 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
     }
+}
+
+/*
+void RenderWindow::valueX(double arg1)
+{
+    ObjFactory->mGameObject[1]->TransformComp->mMatrix.rotateX(arg1);
+}
+*/
+
+void RenderWindow::ObjectButton(std::string object)
+{
+    ObjFactory->createObject(object);
 }
 
 //Uses QOpenGLDebugLogger if this is present

@@ -36,6 +36,9 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+//    void valueX(double arg1);
+
+
 private slots:
     void render();
 
@@ -98,6 +101,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+
+public:
+    void ObjectButton(std::string object);
 };
 
 #endif // RENDERWINDOW_H

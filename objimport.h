@@ -6,20 +6,20 @@
 class ObjImport : public GameObject
 {
 public:
-    ObjImport();
-//    ~ObjImport() override;
+    ObjImport(std::string filename);
+    ~ObjImport() override;
 
-//    virtual void draw() override;
-//    virtual void init() override;
+    virtual void draw() override;
+    virtual void init() override;
 
     std::string filename;
 
-    void readFile(std::string filename, std::vector<Vertex> *mVertices, std::vector<GLuint> *mIndices);
+    void readFile(std::string filename);
 
 private:
 
-    MeshComponent* MeshComp;
-    TextureComponent* TextureComp;
+    MeshComponent* MeshComp = nullptr;
+    TextureComponent* TextureComp = nullptr;
 
 };
 
