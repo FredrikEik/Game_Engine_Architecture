@@ -28,6 +28,12 @@ private slots:
 
 //    void on_Value_x_valueChanged(double arg1);
 
+    void on_PauseSound_clicked();
+
+    void on_PlaySound_clicked();
+
+    void on_StopSound_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

@@ -148,10 +148,10 @@ void RenderWindow::init()
 
     SoundManager::getInstance()->init();
 
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
+    mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
                                               gsl::SoundFilePath + "death.wav", false, 1.0f);
 
-    mStereoSound->play();
+//    mStereoSound->play();
 }
 
 // Called each frame - doing the rendering
@@ -294,6 +294,21 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
     }
+}
+
+void RenderWindow::playSound()
+{
+    mStereoSound->play();
+}
+
+void RenderWindow::pauseSound()
+{
+    mStereoSound->pause();
+}
+
+void RenderWindow::stopSound()
+{
+    mStereoSound->stop();
 }
 
 void RenderWindow::ObjectButton(std::string object)

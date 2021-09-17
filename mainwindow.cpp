@@ -7,6 +7,7 @@
 
 #include "renderwindow.h"
 #include "gameobject.h"
+#include "soundmanager.h"
 #include "objectfactory.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -108,3 +109,18 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
 
 //}
 
+
+void MainWindow::on_PauseSound_clicked()
+{
+    mRenderWindow->pauseSound();
+}
+
+void MainWindow::on_PlaySound_clicked()
+{
+    mRenderWindow->playSound();
+}
+
+void MainWindow::on_StopSound_clicked()
+{
+    mRenderWindow->stopSound();
+}

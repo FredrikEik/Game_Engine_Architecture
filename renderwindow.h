@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "objectfactory.h"
 #include "gameobject.h"
+#include "soundmanager.h"
 
 class QOpenGLContext;
 class Shader;
@@ -36,6 +37,9 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    void playSound();
+    void pauseSound();
+    void stopSound();
 //    void valueX(double arg1);
 
 
@@ -74,6 +78,7 @@ private:
     float mAspectratio{1.f};
 
     ObjectFactory* ObjFactory = new ObjectFactory;
+    SoundSource* mStereoSound;
 
 //    std::vector<VisualObject*> mVisualObjects;
 
