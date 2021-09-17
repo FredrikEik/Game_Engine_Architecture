@@ -128,6 +128,7 @@ void RenderWindow::init()
     //********************** Making the objects to be drawn **********************
 
     // Gaute's ObjectManager
+    mResource = new ResourceManager;
     mResource->manageObjects();
 
     //Set up camera
@@ -199,8 +200,11 @@ void RenderWindow::render()
     }
 
     //Moves the dog triangle - should be mada another way!!!!
-    mResource->mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
+    for(int i = 0; i < mResource->mVisualObjects.size(); i++)
+    {
+        mResource->mVisualObjects[i]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    }
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

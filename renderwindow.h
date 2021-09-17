@@ -69,7 +69,7 @@ private:
     float mAspectratio{1.f};
 
 //    std::vector<VisualObject*> mVisualObjects;
-    ResourceManager *mResource;
+    ResourceManager *mResource = nullptr;
 
     Input mInput;
     float mCameraSpeed{0.05f};

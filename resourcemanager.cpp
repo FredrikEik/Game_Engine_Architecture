@@ -15,7 +15,7 @@ void ResourceManager::manageObjects()
 //      temp->init();
 //      mVisualObjects.push_back(temp);
 
-    int id;
+    int id = 0;
     std::string name = "objName";
     addObject(name, id, 1, 1, 1, 0);
 
@@ -34,13 +34,17 @@ void ResourceManager::manageObjects()
 
 //    mCurrentCamera = new Camera();
 //    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    id++;
 }
 
 void ResourceManager::addObject(std::string name, int id,
                                 int TransformID, int MeshID, int MaterialID, int GravityID)
 {
 
-    VisualObject * CurrentVisualObject;
+    VisualObject * CurrentVisualObject = new Triangle();
+
+    mVisualObjects.push_back(CurrentVisualObject);
 
     CurrentVisualObject->entitiyID = id;
     CurrentVisualObject->mName = name;
@@ -69,5 +73,4 @@ void ResourceManager::addObject(std::string name, int id,
         //name->mGravity->mGravity = gravity;
     }
 
-    id++;
 }
