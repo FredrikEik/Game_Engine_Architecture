@@ -21,6 +21,7 @@
 #include "gameobject.h"
 #include "resourcemanager.h"
 #include "soundmanager.h"
+#include "gameengine.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -69,6 +70,8 @@ void RenderWindow::init()
 
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
+
+        GameEngine::getInstance()->Coreinit();
 
     //Print render version info (what GPU is used):
     //(Have to use cout to see text- qDebug just writes numbers...)
@@ -148,29 +151,29 @@ void RenderWindow::init()
 // forsøk på å lage en resourcemanager.
 
 
-    mResourceManager = new class ResourceManager();
-    GameObject* tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-    mGameObjects.push_back(tempGameObject);
+//    mResourceManager = new class ResourceManager();
+//    GameObject* tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
+//    mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(2,0,0);
-    mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(2,0,0);
+//    mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(4,0,0);
-    mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(4,0,0);
+//    mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-2,0,0);
-    mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(-2,0,0);
+//    mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
-    mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
+//    mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
-    mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
+//    mGameObjects.push_back(tempGameObject);
 
 
 

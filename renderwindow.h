@@ -35,6 +35,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    std::vector<GameObject*> mGameObjects;
+
 //    GameObject* RenderWindow::addObject(std::string assetName);
 
 private slots:
@@ -74,7 +76,6 @@ private:
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
-    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
