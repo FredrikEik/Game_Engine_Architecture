@@ -22,6 +22,8 @@ SoundSource::SoundSource(std::string name, bool loop, float gain) :
     alSourcefv(mSource, AL_POSITION, temp);
     ALfloat temp2[3] = {mVelocity.x, mVelocity.y, mVelocity.z};
     alSourcefv(mSource, AL_VELOCITY, temp2);
+    ALfloat temp3 = 1.0f; //temp3 changes pitch of the file played
+    alSourcef(mSource, AL_PITCH, temp3);
 
     alSourcei(mSource, AL_LOOPING, loop);
 }

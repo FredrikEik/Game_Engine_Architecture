@@ -151,6 +151,9 @@ void RenderWindow::init()
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
                                               gsl::SoundFilePath + "death.wav", false, 1.0f);
 
+    mPop = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
+                                                     gsl::SoundFilePath + "pop.wav", false, 1.0f);
+
 //    mStereoSound->play();
 }
 
@@ -314,6 +317,7 @@ void RenderWindow::stopSound()
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);
+    mPop->play();
 }
 
 //Uses QOpenGLDebugLogger if this is present

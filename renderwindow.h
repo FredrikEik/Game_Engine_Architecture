@@ -79,6 +79,7 @@ private:
 
     ObjectFactory* ObjFactory = new ObjectFactory;
     SoundSource* mStereoSound;
+    SoundSource* mPop;
 
 //    std::vector<VisualObject*> mVisualObjects;
 
