@@ -7,7 +7,17 @@ TARGET      = GEA2021
 
 INCLUDEPATH += \
     ./gsl \
-    ./Assets
+    ./Assets \
+    ./include
+
+mac {
+    LIBS += -framework OpenAL
+}
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
 
 SOURCES += main.cpp \
     camera.cpp \

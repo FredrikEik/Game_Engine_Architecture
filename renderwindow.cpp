@@ -139,8 +139,6 @@ void RenderWindow::init()
 
 //    ObjFactory->createObject("Cube");
 //    ObjFactory->createObject("Triangle");
-
-      ///ObjImport kræsjer programmet :(
 //    ObjFactory->createObject("Goat");
 
     //********************** Set up camera **********************
@@ -289,13 +287,6 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glEnable(GL_CULL_FACE);
     }
 }
-
-/*
-void RenderWindow::valueX(double arg1)
-{
-    ObjFactory->mGameObject[1]->TransformComp->mMatrix.rotateX(arg1);
-}
-*/
 
 void RenderWindow::ObjectButton(std::string object)
 {

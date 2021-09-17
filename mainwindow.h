@@ -36,8 +36,6 @@ private:
     RenderWindow *mRenderWindow;
 
     std::string ObjectSpawn;
-
-//    float mRotation{1.f};
 };
 
 #endif // MAINWINDOW_H

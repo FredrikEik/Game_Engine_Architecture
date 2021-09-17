@@ -102,12 +102,9 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
     ObjectSpawn = arg1.toStdString();
 }
 
-/*
-void MainWindow::on_Value_x_valueChanged(double arg1)
-{
-    mRotation = arg1;
-    TransformComponent().mMatrix.rotateX(arg1);
-//    TransformComponent().mMatrix.translateX(arg1);
-    mRenderWindow->valueX(arg1);
-}
-*/
+
+//void MainWindow::on_Value_x_valueChanged(double arg1)
+//{
+
+//}
+
