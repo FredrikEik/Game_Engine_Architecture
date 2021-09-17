@@ -3,10 +3,6 @@
 
 Triangle::Triangle()
 {
-    MeshComp = new MeshComponent();
-    TextureComp = new TextureComponent();
-    TransformComp = new TransformComponent();
-
     MeshComp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
     MeshComp->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
     MeshComp->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top

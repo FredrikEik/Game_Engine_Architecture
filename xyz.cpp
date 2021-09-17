@@ -5,15 +5,13 @@
 
 XYZ::XYZ()
 {
-    MeshComp = new MeshComponent();
-    TransformComp = new TransformComponent();
-
     MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     MeshComp->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
     MeshComp->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
     MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
     MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
     TransformComp->mMatrix.setToIdentity();
 }
 

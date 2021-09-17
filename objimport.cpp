@@ -13,10 +13,6 @@
 
 ObjImport::ObjImport(std::string filename) : GameObject()
 {
-    MeshComp = new MeshComponent();
-    TextureComp = new TextureComponent();
-    TransformComp = new TransformComponent();
-
     readFile(filename);
     TransformComp->mMatrix.setToIdentity();
 }

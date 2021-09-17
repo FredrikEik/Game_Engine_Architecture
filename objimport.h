@@ -16,11 +16,6 @@ public:
 
     void readFile(std::string filename);
 
-private:
-
-    MeshComponent* MeshComp = nullptr;
-    TextureComponent* TextureComp = nullptr;
-
 };
 
 #endif // OBJIMPORT_H

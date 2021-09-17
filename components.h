@@ -9,14 +9,12 @@
 
 struct TransformComponent
 {
-public:
     TransformComponent(){}
     gsl::Matrix4x4 mMatrix;
 };
 
 struct MeshComponent
 {
-public:
     MeshComponent(){}
 
     std::vector<Vertex> mVertices;
@@ -26,20 +24,19 @@ public:
     GLuint mVBO{0};
     GLuint mEAB{0};
 
+    GLenum mDrawType{GL_TRIANGLES};
     GLint mMatrixUniform{0};
 };
 
-//struct ShaderComponent
-//{
-
-//};
-
-struct TextureComponent
+struct MaterialComponent
 {
-    TextureComponent(){}
+    MaterialComponent(){}
 
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
+
+    // Texture shader uniforms
+    GLint mTextureUniform{-1};
 };
 
 //struct CollisionComponent

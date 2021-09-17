@@ -14,11 +14,6 @@ public:
     void draw() override;
     void init() override;
 
-private:
-
-    MeshComponent* MeshComp = nullptr;
-    TextureComponent* TextureComp = nullptr;
-
 };
 
 #endif // CUBE_H

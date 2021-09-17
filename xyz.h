@@ -14,8 +14,6 @@ public:
    void init() override;
    void draw() override;
 
-private:
-       MeshComponent* MeshComp = nullptr;
 };
 
 #endif // XYZ_H
