@@ -146,8 +146,10 @@ void RenderWindow::init()
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
+    SoundManager::getInstance()->init();
+
     SoundSource* mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                                              "../Sound/Assets/drum_stereo.wav", false, 1.0f);
+                                              gsl::SoundFilePath + "death.wav", false, 1.0f);
 
     mStereoSound->play();
 }
