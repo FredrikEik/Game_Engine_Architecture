@@ -149,19 +149,30 @@ void RenderWindow::init()
 
 
     mResourceManager = new class ResourceManager();
-    GameObject* tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    GameObject* tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
     mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
     tempGameObject->mTransformComp->mMatrix.translate(2,0,0);
     mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
     tempGameObject->mTransformComp->mMatrix.translate(4,0,0);
     mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject("..\\GEA2021\\Assets\\Meshes\\cube.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-2,0,0);
     mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
+    mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
+    mGameObjects.push_back(tempGameObject);
+
+
 
 
 //    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
@@ -192,9 +203,15 @@ void RenderWindow::init()
 //        mVisualObjects[i]->mShaderComp->TextureUniform = glGetUniformLocation(mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "textureSampler");
 //    }
 
+
+    // Sound test drum example
+//    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
+//                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+//                "..\\GEA2021\\Assets\\Sounds\\drum_stereo.wav", false, 1.0f);
+
     SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                "..\\GEA2021\\Assets\\Sounds\\drum_stereo.wav", false, 1.0f);
+                gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
 
     mStereoSound->play();
 }

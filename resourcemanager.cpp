@@ -26,6 +26,55 @@ ResourceManager::ResourceManager()
     mObjectsMap.insert(std::pair<std::string, GameObject>{"baseInvisible",*tempGO});
 }
 
+GameObject* ResourceManager::CreateObject(std::string filepath)
+{
+    // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
+    // if it does not find it in the map, it will create a new object with a unique meshComp.
+
+    // TO DO, fix the hardcoded matirial stuff.
+
+    // IMPORTANT Need to fix the map so it stores all of them, now it stores only the last one with same name.
+    // Change it to a vector maybe,
+
+    for(auto obj : mObjectsMap)
+    {
+        if(obj.first.find(filepath) != std::string::npos) //if it found the filepath
+        {
+            tempGO = new GameObject();
+            tempGO->mMeshComp = obj.second.mMeshComp;
+            tempGO->mTransformComp = new TransformComponent();
+            tempGO->mTransformComp->mMatrix.setToIdentity();
+            tempGO->mMaterialComp = new MaterialComponent();
+            //Burde ikke hardkode dette
+            tempGO->mMaterialComp->mShaderProgram = 1;
+            tempGO->mMaterialComp->mTextureUnit = 1;
+
+            objectIDcounter++;
+            readObj(filepath, tempGO->mMeshComp);
+            filepath = filepath + std::to_string(objectIDcounter);
+            ResourceManager::init(*tempGO->mMeshComp);
+            mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
+            return tempGO;
+        }
+    }
+        tempGO = new GameObject();
+        tempGO->mMeshComp = new MeshComponent();
+        tempGO->mTransformComp = new TransformComponent();
+        tempGO->mTransformComp->mMatrix.setToIdentity();
+        tempGO->mMaterialComp = new MaterialComponent();
+
+        //Burde ikke hardkode dette
+        tempGO->mMaterialComp->mShaderProgram = 1;
+        tempGO->mMaterialComp->mTextureUnit = 1;
+
+        readObj(filepath, tempGO->mMeshComp);
+        ResourceManager::init(*tempGO->mMeshComp);
+        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
+        qDebug() << "Number of objects in map:" << mObjectsMap.size();
+        return tempGO;
+
+}
+
 ResourceManager &ResourceManager::getInstance()
 {
     static ResourceManager *mInstance = new ResourceManager();
@@ -211,54 +260,6 @@ void ResourceManager::init(MeshComponent &MeshComp)
     glBindVertexArray(0);
 }
 
-GameObject* ResourceManager::CreateObject(std::string filepath)
-{
-    // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
-    // if it does not find it in the map, it will create a new object with a unique meshComp.
-
-    // TO DO, fix the hardcoded matirial stuff.
-
-    // IMPORTANT Need to fix the map so it stores all of them, now it stores only the last one with same name.
-    // Change it to a vector maybe,
-
-    for(auto obj : mObjectsMap)
-    {
-        if(obj.first.find(filepath) != std::string::npos) //if it found the filepath
-        {
-            tempGO = new GameObject();
-            tempGO->mMeshComp = obj.second.mMeshComp;
-            tempGO->mTransformComp = new TransformComponent();
-            tempGO->mTransformComp->mMatrix.setToIdentity();
-            tempGO->mMaterialComp = new MaterialComponent();
-            //Burde ikke hardkode dette
-            tempGO->mMaterialComp->mShaderProgram = 1;
-            tempGO->mMaterialComp->mTextureUnit = 1;
-
-            objectIDcounter++;
-            readObj(filepath, tempGO->mMeshComp);
-            filepath = filepath + std::to_string(objectIDcounter);
-            ResourceManager::init(*tempGO->mMeshComp);
-            mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
-            return tempGO;
-        }
-    }
-        tempGO = new GameObject();
-        tempGO->mMeshComp = new MeshComponent();
-        tempGO->mTransformComp = new TransformComponent();
-        tempGO->mTransformComp->mMatrix.setToIdentity();
-        tempGO->mMaterialComp = new MaterialComponent();
-
-        //Burde ikke hardkode dette
-        tempGO->mMaterialComp->mShaderProgram = 1;
-        tempGO->mMaterialComp->mTextureUnit = 1;
-
-        readObj(filepath, tempGO->mMeshComp);
-        ResourceManager::init(*tempGO->mMeshComp);
-        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
-        return tempGO;
-
-        qDebug() << "number of objects in map" << mObjectsMap.size();
-}
 
 
 int ResourceManager::objectIDcounter = 0;

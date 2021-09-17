@@ -13,6 +13,7 @@ win32 {
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
+    gameengine.cpp \
     gameobject.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    gameengine.h \
     gameobject.h \
     gltypes.h \
     input.h \

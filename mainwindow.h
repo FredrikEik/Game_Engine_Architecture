@@ -5,6 +5,7 @@
 
 class QWidget;
 class RenderWindow;
+class GameEngine;
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private:
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
+    GameEngine *mGameEngine;
 };
 
 #endif // MAINWINDOW_H
