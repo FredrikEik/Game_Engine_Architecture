@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#include <chrono>   //for sleep_for
-#include <thread>   //for sleep_for
 int main(int argc, char *argv[])
 {
     //Forces the usage of desktop OpenGL
