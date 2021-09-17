@@ -3,13 +3,10 @@
 
 Cube::Cube()
 {
-<<<<<<< Updated upstream
     MeshComp = new MeshComponent();
     TextureComp = new TextureComponent();
     TransformComp = new TransformComponent();
 
-=======
->>>>>>> Stashed changes
     // Positions             // Colors          // UV
     MeshComp->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
     MeshComp->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
