@@ -11,6 +11,7 @@ SOURCES += main.cpp \
     entitymanager.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
+    mathfunctions.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     phongshader.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     interactiveobject.h \
     lightsource.h \
     math_constants.h \
+    mathfunctions.h \
     matrix3x3.h \
     matrix4x4.h \
     phongshader.h \
