@@ -193,7 +193,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Sounds/mario.wav", false, 1.0f);*/
     mVideoGameLand = SoundManager::getInstance()->createSource(
                 "VideoGameLand", Vector3(10.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/Sounds/videogameland.wav", false, 1.0f);
+                "../GEA2021/Assets/Sounds/videogameland.wav", false, 0.2f);
     mVideoGameLand2 = SoundManager::getInstance()->createSource(
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
