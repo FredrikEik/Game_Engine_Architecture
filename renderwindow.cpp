@@ -20,6 +20,7 @@
 
 #include "cube.h"
 #include "objimport.h"
+#include "soundmanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -144,6 +145,11 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    SoundSource* mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
+                                              "../Sound/Assets/drum_stereo.wav", false, 1.0f);
+
+    mStereoSound->play();
 }
 
 // Called each frame - doing the rendering

@@ -30,12 +30,16 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    soundmanager.cpp \
+    soundsource.cpp \
     texture.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
+    vector3.cpp \
     vertex.cpp \
     visualobject.cpp \
+    wavfilehandler.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -54,12 +58,16 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    soundmanager.h \
+    soundsource.h \
     texture.h \
     triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
+    vector3.h \
     vertex.h \
     visualobject.h \
+    wavfilehandler.h \
     xyz.h
 
 FORMS += \
