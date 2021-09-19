@@ -38,9 +38,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
-
-    //Make the gameloop timer:
-    mRenderTimer = new QTimer(this);
 }
 
 RenderWindow::~RenderWindow()
@@ -50,9 +47,6 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-    //Connect the gameloop timer to the render function:
-    //This makes our render loop
-    connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
     //********************** General OpenGL stuff **********************
 
     //The OpenGL context has to be set.
@@ -116,25 +110,17 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
+    //Safe to do here because we know OpenGL is started
+    //Probably should be placed elsewhere
     CoreEngine::getInstance()->setUpScene();
 
     //********************** Set up camera **********************
-    //Done in CoreEngine
-    //mCurrentCamera = new Camera();
-    //mCurrentCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    //Done in CoreEngine->setUpScene
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-    //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
-    handleInput();
-
-    // Camera update - should be in a general game loop, not directly in the render loop
-    mCurrentCamera->update();
-
-    SoundSystem::getInstance()->update(this);
-
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -237,16 +223,6 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //Set viewport width and height
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
-
-    //If the window actually is exposed to the screen we start the main loop
-    //isExposed() is a function in QWindow
-    if (isExposed())
-    {
-        //This timer runs the actual MainLoop
-        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-        mRenderTimer->start(16);
-        mTimeStart.start();
-    }
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
@@ -355,40 +331,10 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-void RenderWindow::setCameraSpeed(float value)
-{
-    mCameraSpeed += value;
-
-    //Keep within some min and max values
-    if(mCameraSpeed < 0.01f)
-        mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
-}
-
-void RenderWindow::handleInput()
-{
-    //Camera
-    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
-    {
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
-    }
-}
-
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
+    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
         mMainWindow->close();
@@ -402,27 +348,27 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
-        mInput.W = true;
+        input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
-        mInput.S = true;
+        input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
-        mInput.D = true;
+        input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
-        mInput.A = true;
+        input.A = true;
     }
     if(event->key() == Qt::Key_Q)
     {
-        mInput.Q = true;
+        input.Q = true;
     }
     if(event->key() == Qt::Key_E)
     {
-        mInput.E = true;
+        input.E = true;
     }
     if(event->key() == Qt::Key_Z)
     {
@@ -432,19 +378,19 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Up)
     {
-        mInput.UP = true;
+        input.UP = true;
     }
     if(event->key() == Qt::Key_Down)
     {
-        mInput.DOWN = true;
+        input.DOWN = true;
     }
     if(event->key() == Qt::Key_Left)
     {
-        mInput.LEFT = true;
+        input.LEFT = true;
     }
     if(event->key() == Qt::Key_Right)
     {
-        mInput.RIGHT = true;
+        input.RIGHT = true;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -456,29 +402,31 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 {
+    Input &input = CoreEngine::getInstance()->mInput;
+
     if(event->key() == Qt::Key_W)
     {
-        mInput.W = false;
+        input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
-        mInput.S = false;
+        input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
-        mInput.D = false;
+        input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
-        mInput.A = false;
+        input.A = false;
     }
     if(event->key() == Qt::Key_Q)
     {
-        mInput.Q = false;
+        input.Q = false;
     }
     if(event->key() == Qt::Key_E)
     {
-        mInput.E = false;
+        input.E = false;
     }
     if(event->key() == Qt::Key_Z)
     {
@@ -488,19 +436,19 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Up)
     {
-        mInput.UP = false;
+        input.UP = false;
     }
     if(event->key() == Qt::Key_Down)
     {
-        mInput.DOWN = false;
+        input.DOWN = false;
     }
     if(event->key() == Qt::Key_Left)
     {
-        mInput.LEFT = false;
+        input.LEFT = false;
     }
     if(event->key() == Qt::Key_Right)
     {
-        mInput.RIGHT = false;
+        input.RIGHT = false;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -512,51 +460,59 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
+    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->button() == Qt::RightButton)
-        mInput.RMB = true;
+        input.RMB = true;
     if (event->button() == Qt::LeftButton)
-        mInput.LMB = true;
+        input.LMB = true;
     if (event->button() == Qt::MiddleButton)
-        mInput.MMB = true;
+        input.MMB = true;
 }
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->button() == Qt::RightButton)
-        mInput.RMB = false;
+        input.RMB = false;
     if (event->button() == Qt::LeftButton)
-        mInput.LMB = false;
+        input.LMB = false;
     if (event->button() == Qt::MiddleButton)
-        mInput.MMB = false;
+        input.MMB = false;
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
 
+    Input &input = CoreEngine::getInstance()->mInput;
+
     //if RMB, change the speed of the camera
-    if (mInput.RMB)
+    if (input.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            mCurrentCamera->setCameraSpeed(0.001f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            mCurrentCamera->setCameraSpeed(-0.001f);
     }
     event->accept();
 }
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB)
+    Input &input = CoreEngine::getInstance()->mInput;
+
+    if (input.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;
         mMouseYlast = event->pos().y() - mMouseYlast;
 
         if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
+            mCurrentCamera->yaw(mCurrentCamera->mCameraRotateSpeed * mMouseXlast);
         if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+            mCurrentCamera->pitch(mCurrentCamera->mCameraRotateSpeed * mMouseYlast);
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();

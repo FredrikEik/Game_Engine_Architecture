@@ -28,6 +28,8 @@ public:
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
 
+    void setCameraSpeed(float value);
+
 //    gsl::Vector3D position() const;
 //    gsl::Vector3D up() const;
 
@@ -36,6 +38,9 @@ public:
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
+
+    float mCameraSpeed{0.05f};
+    float mCameraRotateSpeed{0.1f};
 private:
     float mPitch{0.f};
     float mYaw{0.f};

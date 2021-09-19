@@ -40,7 +40,6 @@ public:
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
-private slots:
     void render();
 
 private:
@@ -51,10 +50,6 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
-
-    void setCameraSpeed(float value);
-
-    void handleInput();
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -73,16 +68,12 @@ private:
 
     float mAspectratio{1.f};
 
-    Input mInput;
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
-    QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar

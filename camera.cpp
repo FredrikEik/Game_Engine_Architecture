@@ -88,6 +88,17 @@ void Camera::moveRight(float delta)
     mPosition += right * delta;
 }
 
+void Camera::setCameraSpeed(float value)
+{
+    mCameraSpeed += value;
+
+    //Keep within some min and max values
+    if(mCameraSpeed < 0.01f)
+        mCameraSpeed = 0.01f;
+    if (mCameraSpeed > 0.3f)
+        mCameraSpeed = 0.3f;
+}
+
 //gsl::Vector3D Camera::position() const
 //{
 //    return mPosition;

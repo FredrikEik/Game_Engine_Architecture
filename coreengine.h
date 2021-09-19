@@ -1,15 +1,19 @@
 #ifndef COREENGINE_H
 #define COREENGINE_H
 
+#include <QObject>
+#include "input.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
 class RenderWindow;
-
 class Camera;
+class QTimer;
 
-class CoreEngine
+//Made from QObject to use a Qt slots...
+class CoreEngine : public QObject
 {
+    Q_OBJECT
 public:
     CoreEngine(RenderWindow *renderWindowIn);
 
@@ -20,14 +24,14 @@ public:
 
     //Handle input
 
-    //Handle GameLoop
-
     ///Not singleton now, but can use this function to get Engine instance
     static CoreEngine* getInstance();
 
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
+
+    void handleInput();
 
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
@@ -36,7 +40,14 @@ public:
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
 
-    bool isPlaying{false};  //is the game playing?
+    QTimer *mGameLoopTimer{nullptr};    //timer that drives the gameloop
+
+    bool isPlaying{false};              //is the game playing?
+
+    Input mInput;
+
+private slots:
+    void gameLoop();
 
 private:
     static CoreEngine* mInstance;   //Not singleton, but can use static getInstance()
