@@ -20,6 +20,7 @@ int MeshHandler::makeMesh(std::string meshName)
     auto result = mMeshMap.find(meshName);
     //if already made
     if (result != mMeshMap.end()) {        //found!!!
+        qDebug() << meshName.c_str() << "made already";
         meshIndex = result->second;
     }
     //not made, make new
@@ -34,7 +35,12 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
 
         //If nothing matches meshName - just make a triangle
-        //    return makeTriangle();
+        //Fix - this will make duplicate triangles
+        if(meshIndex == -1)
+            meshIndex = makeTriangle();
+
+        //update mMeshComponentMap with new asset
+        mMeshMap.emplace(meshName, meshIndex);
     }
 
     return meshIndex;
