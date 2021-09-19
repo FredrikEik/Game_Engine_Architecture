@@ -18,7 +18,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+public slots:
     void on_actionAdd_Triangle_triggered();
     void on_actionAdd_Suzanne_triggered();
 

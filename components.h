@@ -15,13 +15,9 @@ struct TransformComponent
 struct MeshComponent
 {
     GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0};
     GLint mVertexCount{-1};
     GLint mIndexCount{-1};
     GLenum mDrawType{GL_TRIANGLES};
-    std::vector<Vertex> mVertices;      //this should be moved out of component
-    std::vector<GLuint> mIndices;       //this should be moved out of component
 };
 
 struct MaterialComponent

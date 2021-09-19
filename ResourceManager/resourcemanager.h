@@ -9,6 +9,7 @@
 #include "components.h"
 #include "constants.h"
 #include "soundhandler.h"
+#include "meshhandler.h"
 
 class GameObject;   //forward declaration
 
@@ -25,21 +26,15 @@ private:
     void operator=(ResourceManager&){};           //Assignment operator
     ResourceManager(const ResourceManager&){};    //Copy constructor
 
-    int readObj(std::string filename);
-    int makeAxis();
-    int makeTriangle();
-
     gsl::AssetType findAssetType(std::string assetName);
-
-    void initMesh(MeshComponent & tempMeshComp);
 
     SoundComponet* makeSoundComponent(std::string assetName);
 
-    std::map<std::string, unsigned int> mMeshComponentMap;
-    std::vector<MeshComponent> mMeshComponents;
-
+    //Should these belong to other class - like in MeshHandler?
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
+
+    MeshHandler* mMeshHandler{nullptr};
 };
 
 #endif // RESOURCEMANAGER_H

@@ -219,14 +219,13 @@ void RenderWindow::render()
 
         //draw the object
         glBindVertexArray( mGameObjects[i]->mMesh->mVAO );
-        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertices.size());
+        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount);
         glBindVertexArray(0);
     }
 
-    //Moves the dog triangle - should be mada another way!!!!
+    //Moves the dog triangle - should be made another way!!!!
     if(isPlaying)
-        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-
+        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -338,7 +337,7 @@ GameObject* RenderWindow::addObject(std::string assetName, int shaderType, int t
     temp->mMaterial->mShaderProgram = shaderType;
     temp->mMaterial->mTextureUnit = textureUnit;
 
-    //quick hackety-hack to move objects made
+    //quick hackety-hack to move objects made so they don't end on top of eachother
     static float value = 0.f;
 
     temp->mTransform->mMatrix.translate(value,value, value);
@@ -428,6 +427,11 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
         mMainWindow->close();
+    }
+
+    if (event->key() == Qt::Key_R) //toggle play
+    {
+        mMainWindow->on_pb_togglePlay_toggled(!isPlaying);
     }
 
     //    You get the keyboard input like this

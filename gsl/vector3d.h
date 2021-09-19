@@ -18,6 +18,9 @@ public:
     Vector3D(const int v);
     Vector3D(const double v);
 
+    //Copy constructor
+    Vector3D(Vector3D const&vIN) : x{vIN.x}, y{vIN.y}, z{vIN.z}{};
+
     //Operators
     const Vector3D& operator=(const Vector3D &rhs);     // v = v
     Vector3D operator+(const Vector3D &rhs) const;      // v + v
@@ -26,7 +29,7 @@ public:
     Vector3D& operator-=(const Vector3D &rhs);          // v -= v
     Vector3D operator-() const;                     // -v
     Vector3D operator*(GLfloat rhs) const;          // v * f
-    //Vector3D operator*(Vector3D rhs) const;                                       //GLfloat operatoren funker ikke med denne???
+    //Vector3D operator*(Vector3D rhs) const;       //GLfloat operatoren funker ikke med denne???
     Vector3D operator/(GLfloat rhs) const;
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
     GLfloat operator*(const Vector3D& rhs) const;  // v * v
