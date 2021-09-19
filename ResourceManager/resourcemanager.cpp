@@ -12,7 +12,7 @@
 #include "vertex.h"
 #include "gameobject.h"
 #include "constants.h"
-#include "soundmanager.h"
+#include "soundsystem.h"
 #include "soundhandler.h"
 
 ResourceManager::ResourceManager()
@@ -21,7 +21,7 @@ ResourceManager::ResourceManager()
     //Please fix
     mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
 
-    SoundManager::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
+    SoundSystem::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
 }
 
 ResourceManager &ResourceManager::getInstance()

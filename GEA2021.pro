@@ -27,7 +27,6 @@ win32 {
 
 SOURCES += main.cpp \
     camera.cpp \
-    components.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector2d.cpp \
@@ -38,7 +37,7 @@ SOURCES += main.cpp \
     ResourceManager/texturehandler.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
-    soundmanager.cpp \
+    soundsystem.cpp \
     soundsource.cpp \
     triangle.cpp \
     vertex.cpp \
@@ -63,7 +62,7 @@ HEADERS += \
     ResourceManager/texturehandler.h \
     renderwindow.h \
     mainwindow.h \
-    soundmanager.h \
+    soundsystem.h \
     soundsource.h \
     triangle.h \
     vertex.h \

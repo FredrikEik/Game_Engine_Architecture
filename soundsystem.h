@@ -7,18 +7,18 @@
 #include "vector3d.h"
 #include "altypes.h"
 
-/// Class handling OpenAL setup and management of sound sources.
+/// Class handling OpenAL setup and plays sound sources.
 /**
-    Singleton class that creates and destroys sound sources.
+    Singleton class that plays soundsources, and updates listener.
 **/
-class SoundManager
+class SoundSystem
 {
 public:
-    static SoundManager* getInstance()          ///< Get pointer to singleton instance.
+    static SoundSystem* getInstance()          ///< Get pointer to singleton instance.
     {
         if (!mInstance)
         {
-            mInstance = new SoundManager();
+            mInstance = new SoundSystem();
             mInstance->init();
         }
         return mInstance;
@@ -37,13 +37,13 @@ public:
         \param Boolean to see if sound should loop or not.
     **/
 //    SoundSource* createSource(std::string name, gsl::Vector3D pos, std::string fileName = "", bool loop = false, float gain = 1.0);
-    void updateListener(gsl::Vector3D pos, gsl::Vector3D vel, gsl::Vector3D dir, gsl::Vector3D up);
+    void updateListener(gsl::Vector3D pos, gsl::Vector3D dir, gsl::Vector3D up);
 
 private:
-    SoundManager();                         ///< Private constructor.
-    SoundManager(SoundManager const&);      ///< Private copy constructor.
-    void operator=(SoundManager const&);    ///< Private class assignment operator.
-    static SoundManager* mInstance;         ///< Singleton instance pointer.
+    SoundSystem();                         ///< Private constructor.
+    SoundSystem(SoundSystem const&);      ///< Private copy constructor.
+    void operator=(SoundSystem const&);    ///< Private class assignment operator.
+    static SoundSystem* mInstance;         ///< Singleton instance pointer.
     /// Debug function.
     /**
         Checks for and outputs OpenAL errors.

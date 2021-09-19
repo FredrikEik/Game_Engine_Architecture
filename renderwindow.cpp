@@ -19,7 +19,7 @@
 #include "texturehandler.h"
 #include "components.h"
 #include "resourcemanager.h"
-#include "soundmanager.h"
+#include "soundsystem.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -137,7 +137,7 @@ void RenderWindow::init()
     temp = addObject("triangle", 1, 1);
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     //Adds sound to moving triangle:
-    ResourceManager::getInstance().addComponent("drum_stereo.wav", temp);
+    ResourceManager::getInstance().addComponent("caravan_mono.wav", temp);
 
     //Quick'n'dirty audio test:
     alSourcePlay(temp->mSoundComponent->mSource);
@@ -156,11 +156,7 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-
-
-    //Sound Manager test - should be turned into components and a system!
-
+    mCurrentCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -171,6 +167,9 @@ void RenderWindow::render()
 
     // Camera update - should be in a general game loop, not directly in the render loop
     mCurrentCamera->update();
+    SoundSystem::getInstance()->updateListener(mCurrentCamera->mPosition,
+                                               mCurrentCamera->mForward,
+                                               mCurrentCamera->mUp);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)

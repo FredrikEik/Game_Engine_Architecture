@@ -57,6 +57,9 @@ void Camera::update()
 
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
+
+//    mListener.dir = mForward;
+//    mListener.up = mUp;
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
@@ -84,12 +87,12 @@ void Camera::moveRight(float delta)
     mPosition += right * delta;
 }
 
-gsl::Vector3D Camera::position() const
-{
-    return mPosition;
-}
+//gsl::Vector3D Camera::position() const
+//{
+//    return mPosition;
+//}
 
-gsl::Vector3D Camera::up() const
-{
-    return mUp;
-}
+//gsl::Vector3D Camera::up() const
+//{
+//    return mUp;
+//}
