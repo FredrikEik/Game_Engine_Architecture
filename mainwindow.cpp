@@ -6,6 +6,7 @@
 #include <QScreen>  //for resizing the program at start
 
 #include "renderwindow.h"
+#include "soundsystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -81,12 +82,6 @@ void MainWindow::init()
     mRenderWindowContainer->setFocus();
 }
 
-//Example of a slot called from the button on the top of the program.
-void MainWindow::on_pushButton_toggled(bool checked)
-{
-    mRenderWindow->toggleWireframe(checked);
-}
-
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
     mRenderWindow->addObject("triangle");
@@ -96,5 +91,26 @@ void MainWindow::on_actionAdd_Triangle_triggered()
 void MainWindow::on_actionAdd_Suzanne_triggered()
 {
       mRenderWindow->addObject("suzanne.obj");
+}
+
+//Example of a slot called from the button on the top of the program.
+void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
+{
+    mRenderWindow->toggleWireframe(checked);
+    if(checked)
+        ui->pb_toggleWireframe->setText("Show Solid");
+    else
+        ui->pb_toggleWireframe->setText("Show Wireframe");
+}
+
+void MainWindow::on_pb_togglePlay_toggled(bool checked)
+{
+    mRenderWindow->isPlaying = checked;
+
+    SoundSystem::getInstance()->togglePlaySounds(checked);
+    if(checked)
+        ui->pb_togglePlay->setText("Stop");
+    else
+        ui->pb_togglePlay->setText("Play");
 }
 

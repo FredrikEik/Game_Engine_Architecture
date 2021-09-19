@@ -37,6 +37,8 @@ public:
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
+    bool isPlaying{false};  //is the game playing?
+
 private slots:
     void render();
 

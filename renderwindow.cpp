@@ -224,7 +224,8 @@ void RenderWindow::render()
     }
 
     //Moves the dog triangle - should be mada another way!!!!
-    mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    if(isPlaying)
+        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
 
 
     //Calculate framerate before

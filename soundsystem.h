@@ -41,6 +41,8 @@ public:
 //    SoundSource* createSource(std::string name, gsl::Vector3D pos, std::string fileName = "", bool loop = false, float gain = 1.0);
     void updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up);
 
+    void togglePlaySounds(bool shouldPlay);
+
 private:
     SoundSystem();                         ///< Private constructor.
     SoundSystem(SoundSystem const&);      ///< Private copy constructor.
@@ -54,6 +56,10 @@ private:
 
     ALCdevice* mDevice;                 ///< Pointer to the ALC Device.
     ALCcontext* mContext;               ///< Pointer to the ALC Context.
+
+    bool shouldPlaySounds{false};
+
+    class RenderWindow* mRenderWindow{nullptr};     //Should not be necessary
 };
 
 #endif

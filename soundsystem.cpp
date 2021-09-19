@@ -53,24 +53,32 @@ void SoundSystem::cleanUp()
 
 void SoundSystem::update(RenderWindow *renderWindowIn)
 {
-    alGetError();   //clears earlier errors
-    for (auto gob : renderWindowIn->mGameObjects)
-    {
-        if(gob->mSoundComponent)
-        {
-            if(gob->mSoundComponent->shouldPlay)
-            {
-                gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
-                ALfloat temp[3] = {pos.x, pos.y, pos.z};
-                alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
+    //Super hack - should only be set once!
+    mRenderWindow = renderWindowIn;
 
-                ALint value;
-                alGetSourcei(gob->mSoundComponent->mSource, AL_SOURCE_STATE, &value);
-                if (value != AL_PLAYING)    //could check !AL_PLAYING
-                    alSourcePlay(gob->mSoundComponent->mSource);
+    if(shouldPlaySounds)
+    {
+        alGetError();   //clears earlier errors
+        for (auto gob : renderWindowIn->mGameObjects)
+        {
+            if(gob->mSoundComponent)
+            {
+                if(gob->mSoundComponent->shouldPlay)
+                {
+                    //set positions
+                    gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
+                    ALfloat temp[3] = {pos.x, pos.y, pos.z};
+                    alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
+
+                    //Start playing if not
+                    ALint value;
+                    alGetSourcei(gob->mSoundComponent->mSource, AL_SOURCE_STATE, &value);
+                    if (value != AL_PLAYING)
+                        alSourcePlay(gob->mSoundComponent->mSource);
+                }
             }
+            checkError();
         }
-        checkError();
     }
 }
 
@@ -100,6 +108,26 @@ bool SoundSystem::checkError()
         break;
     }
     return true;
+}
+
+void SoundSystem::togglePlaySounds(bool shouldPlay)
+{
+    shouldPlaySounds = shouldPlay;
+
+    if(mRenderWindow && !shouldPlay)
+    {
+        for (auto gob : mRenderWindow->mGameObjects)
+        {
+            if(gob->mSoundComponent)
+            {
+                if(gob->mSoundComponent->shouldPlay)
+                {
+                    alSourcePause(gob->mSoundComponent->mSource);
+                }
+            }
+            checkError();
+        }
+    }
 }
 
 //SoundSource* SoundSystem::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
