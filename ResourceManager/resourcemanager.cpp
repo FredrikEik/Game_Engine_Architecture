@@ -15,11 +15,13 @@
 #include "soundsystem.h"
 #include "soundhandler.h"
 #include "meshhandler.h"
+#include "texturehandler.h"
 
 ResourceManager::ResourceManager()
 {
     SoundSystem::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
+    mTextureHandler = new TextureHandler();
 }
 
 ResourceManager &ResourceManager::getInstance()
@@ -123,4 +125,11 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
         tempSource->mSource = SoundHandler::makeALSource(mWaveBuffers.at(soundIndex).mALBuffer);
     }
     return tempSource;
+}
+
+void ResourceManager::setUpAllTextures()
+{
+    //should probably run thru all textures found in TextureFilePath
+    mTextureHandler->makeTexture();
+    mTextureHandler->makeTexture("hund.bmp");
 }

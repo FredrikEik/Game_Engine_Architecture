@@ -3,19 +3,8 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 
-/**
-    \brief Simple class for creating textures from a bitmap file.
-    \author Dag Nylund
-    \date 16/02/05
- */
-class TextureHandler : protected QOpenGLFunctions_4_1_Core
+struct Texture
 {
-public:
-    TextureHandler();  //basic texture from code
-    TextureHandler(const std::string &filename, bool cubeMap = false);
-    float getHeightFromIndex(int i);
-    std::string mTextureFilename;
-
     int mColumns{};
     int mRows{};
     unsigned char *mBitmap{nullptr};
@@ -24,14 +13,31 @@ public:
 
     GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called
 
-private:
     int mBytesPrPixel{};
     bool mAlphaUsed{false};
-    void readBitmap(const std::string &filename);
-    void readCubeMap();
-    void setTexture();
-    void setCubemapTexture();
+};
 
+class TextureHandler : protected QOpenGLFunctions_4_1_Core
+{
+public:
+    TextureHandler();
+
+    int makeTexture(const std::string &filename = "none", bool cubeMap = false);
+
+//    float getHeightFromIndex(int i);
+
+    std::map<std::string, unsigned int> mTextureMap;
+    std::vector<Texture> mTextures;
+
+private:
+    int makeDefault();
+    int makeBMP(const std::string &filename, bool cubeMap = false);
+    int readBitmap(const std::string &filename);
+    void setTexture(Texture &textureIn);
+//    int readCubeMap(const std::string &filename);
+//    void setCubemapTexture(Texture &textureIn);
+
+    /*************************************/
     //this is put inside this class to avoid spamming the main namespace
     //with stuff that only is used inside this class
 
@@ -42,25 +48,25 @@ private:
     typedef int OLONG;                   //should be 32 bit
 
     struct OBITMAPINFOHEADER {
-        ODWORD biSize;
-        OLONG  biWidth;
-        OLONG  biHeight;
-        OWORD  biPlanes;
-        OWORD  biBitCount;
-        ODWORD biCompression;
-        ODWORD biSizeImage;
-        OLONG  biXPelsPerMeter;
-        OLONG  biYPelsPerMeter;
-        ODWORD biClrUsed;
-        ODWORD biClrImportant;
+        ODWORD biSize{0};
+        OLONG  biWidth{0};
+        OLONG  biHeight{0};
+        OWORD  biPlanes{0};
+        OWORD  biBitCount{0};
+        ODWORD biCompression{0};
+        ODWORD biSizeImage{0};
+        OLONG  biXPelsPerMeter{0};
+        OLONG  biYPelsPerMeter{0};
+        ODWORD biClrUsed{0};
+        ODWORD biClrImportant{0};
     };
 
     struct OBITMAPFILEHEADER {
-        OWORD  bfType;
-        ODWORD bfSize;
-        OWORD  bfReserved1;
-        OWORD  bfReserved2;
-        ODWORD bfOffBits;
+        OWORD  bfType{0};
+        ODWORD bfSize{0};
+        OWORD  bfReserved1{0};
+        OWORD  bfReserved2{0};
+        ODWORD bfOffBits{0};
     };
 };
 

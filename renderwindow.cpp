@@ -87,18 +87,6 @@ void RenderWindow::init()
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
     std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
 
-    //**********************  Texture stuff: **********************
-    //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
-    //and returns the Texture ID that OpenGL uses from Texture::id()
-    mTextures[0] = new TextureHandler();
-    mTextures[1] = new TextureHandler("hund.bmp");
-
-    //Set the textures loaded to a texture unit
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-
 
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL

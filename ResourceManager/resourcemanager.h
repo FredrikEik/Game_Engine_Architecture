@@ -9,9 +9,11 @@
 #include "components.h"
 #include "constants.h"
 #include "soundhandler.h"
-#include "meshhandler.h"
 
-class GameObject;   //forward declaration
+//forward declaration
+class GameObject;
+class MeshHandler;
+class TextureHandler;
 
 class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
@@ -20,6 +22,8 @@ public:
 
     GameObject* addObject(std::string meshName);
     bool addComponent(std::string assetName, GameObject* ownerObject);
+
+    void setUpAllTextures();
 
 private:
     ResourceManager();  //singleton
@@ -35,6 +39,7 @@ private:
     std::vector<WaveRawData> mWaveBuffers;
 
     MeshHandler* mMeshHandler{nullptr};
+    TextureHandler *mTextureHandler{nullptr};
 };
 
 #endif // RESOURCEMANAGER_H

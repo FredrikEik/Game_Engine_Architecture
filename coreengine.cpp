@@ -39,7 +39,7 @@ void CoreEngine::setUpScene()
     //dog triangle
     temp = mResourceManager->addObject("triangle");
     temp->mMaterial->mShaderProgram = 1;
-    temp->mMaterial->mTextureUnit = 1;
+    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
 
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
     //Adds sound to moving triangle:
@@ -65,6 +65,7 @@ void CoreEngine::setUpScene()
     mGameCamera = new Camera();
     mGameCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderWindow->mCurrentCamera = mGameCamera;
-}
 
+    mResourceManager->setUpAllTextures();
+}
 
