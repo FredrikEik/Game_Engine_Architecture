@@ -9,6 +9,7 @@
 
 struct TransformComponent
 {
+    TransformComponent() {mMatrix.identity();};
     gsl::Matrix4x4 mMatrix;
 };
 

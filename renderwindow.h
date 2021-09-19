@@ -38,6 +38,7 @@ public:
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     bool isPlaying{false};  //is the game playing?
+    Camera *mCurrentCamera{nullptr};
 
 private slots:
     void render();
@@ -70,7 +71,6 @@ private:
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-    Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
     Input mInput;

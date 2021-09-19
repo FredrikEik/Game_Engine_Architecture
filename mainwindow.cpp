@@ -7,6 +7,7 @@
 
 #include "renderwindow.h"
 #include "soundsystem.h"
+#include "coreengine.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -73,9 +74,11 @@ void MainWindow::init()
     //Set the size of the program in % of the actual screen size
     QSize tempSize = QGuiApplication::primaryScreen()->size();
 
-    tempSize.rheight() *= 0.85;
+    tempSize.rheight() *= 0.75;
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
+
+    mCoreEngine = new CoreEngine(mRenderWindow);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus

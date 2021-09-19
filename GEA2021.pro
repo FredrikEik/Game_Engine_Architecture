@@ -27,6 +27,7 @@ win32 {
 
 SOURCES += main.cpp \
     camera.cpp \
+    coreengine.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector2d.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    coreengine.h \
     gltypes.h \
     input.h \
     gsl/math_constants.h \

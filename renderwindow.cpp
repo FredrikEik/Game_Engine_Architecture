@@ -20,6 +20,7 @@
 #include "components.h"
 #include "resourcemanager.h"
 #include "soundsystem.h"
+#include "coreengine.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -127,36 +128,12 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    // should be moved out to a scene or GameManager class
-
-
-    //Axis
-    GameObject *temp = addObject("axis");
-
-    //dog triangle
-    temp = addObject("triangle", 1, 1);
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    //Adds sound to moving triangle:
-    ResourceManager::getInstance().addComponent("caravan_mono.wav", temp);
-
-    //Hack to test sound system
-    temp->mSoundComponent->shouldPlay = true;
-
-    //Suzanne:
-    temp = addObject("suzanne.obj");
-    temp->mTransform->mMatrix.translate(1.f, 1.f, -.5f);
-    temp->mTransform->mMatrix.scale(0.5f);
-    mGameObjects.push_back(temp);
-
-    //Suzanne 2 to check if resource handelig is correct:
-    temp = addObject("suzanne.obj");
-    temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
-    temp->mTransform->mMatrix.scale(0.3f);
-    mGameObjects.push_back(temp);
+    CoreEngine::getInstance()->setUpScene();
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
-    mCurrentCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    //Done in CoreEngine
+    //mCurrentCamera = new Camera();
+    //mCurrentCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

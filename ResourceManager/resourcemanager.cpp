@@ -47,7 +47,6 @@ GameObject *ResourceManager::addObject(std::string meshName)
 
     tempObject->mMaterial = new MaterialComponent();
     tempObject->mTransform = new TransformComponent();
-    tempObject->mTransform->mMatrix.identity();
     return tempObject; //temporary to get to compile
 }
 
