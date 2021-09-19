@@ -4,12 +4,12 @@
 #include "soundsystem.h"
 
 #include "gameobject.h"
-#include "renderwindow.h"
+#include "rendersystem.h"
 #include "camera.h"
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
-CoreEngine::CoreEngine(RenderWindow *renderWindowIn) : mRenderWindow{renderWindowIn}
+CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSystemIn}
 {
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
@@ -28,7 +28,7 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 {
     isPlaying = shouldPlay;
     SoundSystem::getInstance()->togglePlaySounds(isPlaying);
-    mRenderWindow->isPlaying = isPlaying;
+    mRenderSystem->isPlaying = isPlaying;
 }
 
 void CoreEngine::setUpScene()
@@ -37,7 +37,7 @@ void CoreEngine::setUpScene()
 
     //Axis
     GameObject *temp = mResourceManager->addObject("axis");
-    mRenderWindow->mGameObjects.push_back(temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
     temp = mResourceManager->addObject("triangle");
@@ -51,23 +51,23 @@ void CoreEngine::setUpScene()
     //Hack to test sound system
     temp->mSoundComponent->shouldPlay = true;
 
-    mRenderWindow->mGameObjects.push_back(temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzanne:
     temp = mResourceManager->addObject("suzanne.obj");
     temp->mTransform->mMatrix.translate(1.f, 1.f, -.5f);
     temp->mTransform->mMatrix.scale(0.5f);
-    mRenderWindow->mGameObjects.push_back(temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzanne 2 to check if resource handelig is correct:
     temp = mResourceManager->addObject("suzanne.obj");
     temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
     temp->mTransform->mMatrix.scale(0.3f);
-    mRenderWindow->mGameObjects.push_back(temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
-    mRenderWindow->mCurrentCamera = mEditorCamera;
+    mRenderSystem->mCurrentCamera = mEditorCamera;
 
     mResourceManager->setUpAllTextures();
 
@@ -108,8 +108,8 @@ void CoreEngine::gameLoop()
     handleInput();
 
     mEditorCamera->update();
-    SoundSystem::getInstance()->update(mRenderWindow);
+    SoundSystem::getInstance()->update(mRenderSystem);
 
-    mRenderWindow->render();
+    mRenderSystem->render();
 }
 

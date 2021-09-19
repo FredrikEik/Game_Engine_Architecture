@@ -3,7 +3,7 @@
 #include <iostream>
 #include <QDebug>
 
-#include "renderwindow.h"   //should not be needed when update is fixed
+#include "rendersystem.h"   //should not be needed when update is fixed
 #include "gameobject.h"
 #include "components.h"
 
@@ -51,10 +51,10 @@ void SoundSystem::cleanUp()
     alcCloseDevice(mDevice);
 }
 
-void SoundSystem::update(RenderWindow *renderWindowIn)
+void SoundSystem::update(RenderSystem *renderWindowIn)
 {
     //Super hack - should only be set once!
-    mRenderWindow = renderWindowIn;
+    mRenderSystem = renderWindowIn;
 
     if(shouldPlaySounds)
     {
@@ -114,9 +114,9 @@ void SoundSystem::togglePlaySounds(bool shouldPlay)
 {
     shouldPlaySounds = shouldPlay;
 
-    if(mRenderWindow && !shouldPlay)
+    if(mRenderSystem && !shouldPlay)
     {
-        for (auto gob : mRenderWindow->mGameObjects)
+        for (auto gob : mRenderSystem->mGameObjects)
         {
             if(gob->mSoundComponent)
             {

@@ -6,7 +6,7 @@
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
-class RenderWindow;
+class RenderSystem;
 class Camera;
 class QTimer;
 
@@ -15,7 +15,7 @@ class CoreEngine : public QObject
 {
     Q_OBJECT
 public:
-    CoreEngine(RenderWindow *renderWindowIn);
+    CoreEngine(RenderSystem *renderSystemIn);
 
     //TODO:
     //Read and load all assets at start
@@ -35,7 +35,7 @@ public:
 
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
-    RenderWindow *mRenderWindow{nullptr};
+    RenderSystem *mRenderSystem{nullptr};
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

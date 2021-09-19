@@ -37,7 +37,7 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/meshhandler.cpp \
-    renderwindow.cpp \
+    rendersystem.cpp \
     mainwindow.cpp \
     soundsystem.cpp \
     soundsource.cpp \
@@ -64,7 +64,7 @@ HEADERS += \
     ResourceManager/soundhandler.h \
     ResourceManager/texturehandler.h \
     ResourceManager/meshhandler.h \
-    renderwindow.h \
+    rendersystem.h \
     mainwindow.h \
     soundsystem.h \
     soundsource.h \

@@ -1,4 +1,4 @@
-#include "renderwindow.h"
+#include "rendersystem.h"
 #include <QTimer>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -22,7 +22,7 @@
 #include "soundsystem.h"
 #include "coreengine.h"
 
-RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
+RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
 {
@@ -40,12 +40,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     }
 }
 
-RenderWindow::~RenderWindow()
+RenderSystem::~RenderSystem()
 {
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
-void RenderWindow::init()
+void RenderSystem::init()
 {
     //********************** General OpenGL stuff **********************
 
@@ -119,7 +119,7 @@ void RenderWindow::init()
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
-void RenderWindow::render()
+void RenderSystem::render()
 {
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -194,14 +194,14 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
-void RenderWindow::setupPlainShader(int shaderIndex)
+void RenderSystem::setupPlainShader(int shaderIndex)
 {
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
-void RenderWindow::setupTextureShader(int shaderIndex)
+void RenderSystem::setupTextureShader(int shaderIndex)
 {
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
@@ -212,7 +212,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
-void RenderWindow::exposeEvent(QExposeEvent *)
+void RenderSystem::exposeEvent(QExposeEvent *)
 {
     //if not already initialized - run init() function
     if (!mInitialized)
@@ -235,7 +235,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 // and check the time right after it is finished (done in the render function)
 //This will approximate what framerate we COULD have.
 //The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
-void RenderWindow::calculateFramerate()
+void RenderSystem::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
     static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
@@ -257,7 +257,7 @@ void RenderWindow::calculateFramerate()
 //Simple way to turn on/off wireframe mode
 //Not totally accurate, but draws the objects with
 //lines instead of filled polygons
-void RenderWindow::toggleWireframe(bool buttonState)
+void RenderSystem::toggleWireframe(bool buttonState)
 {
     if (buttonState)
     {
@@ -271,25 +271,9 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-GameObject* RenderWindow::addObject(std::string assetName, int shaderType, int textureUnit)
-{
-    //This function should not belong to RenderWindow - but for now the whole scene is kept here!
-    GameObject *temp = ResourceManager::getInstance().addObject(assetName);
-    temp->mMaterial->mShaderProgram = shaderType;
-    temp->mMaterial->mTextureUnit = textureUnit;
-
-    //quick hackety-hack to move objects made so they don't end on top of eachother
-    static float value = 0.f;
-
-    temp->mTransform->mMatrix.translate(value,value, value);
-    mGameObjects.push_back(temp);
-    value += 0.2f;
-    return temp;
-}
-
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
-void RenderWindow::checkForGLerrors()
+void RenderSystem::checkForGLerrors()
 {
     if(mOpenGLDebugLogger)
     {
@@ -312,7 +296,7 @@ void RenderWindow::checkForGLerrors()
 }
 
 //Tries to start the extended OpenGL debugger that comes with Qt
-void RenderWindow::startOpenGLDebugger()
+void RenderSystem::startOpenGLDebugger()
 {
     QOpenGLContext * temp = this->context();
     if (temp)
@@ -331,7 +315,7 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-void RenderWindow::keyPressEvent(QKeyEvent *event)
+void RenderSystem::keyPressEvent(QKeyEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
 
@@ -400,7 +384,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void RenderWindow::keyReleaseEvent(QKeyEvent *event)
+void RenderSystem::keyReleaseEvent(QKeyEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
 
@@ -458,7 +442,7 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-void RenderWindow::mousePressEvent(QMouseEvent *event)
+void RenderSystem::mousePressEvent(QMouseEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
 
@@ -470,7 +454,7 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         input.MMB = true;
 }
 
-void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
+void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
 
@@ -482,7 +466,7 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
         input.MMB = false;
 }
 
-void RenderWindow::wheelEvent(QWheelEvent *event)
+void RenderSystem::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
 
@@ -499,7 +483,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-void RenderWindow::mouseMoveEvent(QMouseEvent *event)
+void RenderSystem::mouseMoveEvent(QMouseEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
 

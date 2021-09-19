@@ -7,6 +7,9 @@
 #include "vector3d.h"
 #include "altypes.h"
 
+//Forward declaration
+class RenderSystem;
+
 /// Class handling OpenAL setup and plays sound sources.
 /**
     Singleton class that plays soundsources, and updates listener.
@@ -29,7 +32,7 @@ public:
     /// Cleans up and shuts down OpenAL.
     void cleanUp();
 
-    void update(class RenderWindow* renderWindowIn);
+    void update(RenderSystem *renderWindowIn);
 
     /// Creates a new SoundSource with the given parameters.
     /**
@@ -59,7 +62,7 @@ private:
 
     bool shouldPlaySounds{false};
 
-    class RenderWindow* mRenderWindow{nullptr};     //Should not be necessary
+    RenderSystem* mRenderSystem{nullptr};     //Should not be necessary
 };
 
 #endif
