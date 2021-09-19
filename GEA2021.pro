@@ -15,6 +15,7 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     renderwindow.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
     renderwindow.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
     texture.h \

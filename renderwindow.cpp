@@ -130,10 +130,10 @@ void RenderWindow::init()
     /***** should not use separate classes init() - function ****************/
 
     //Axis
-    VisualObject *temp = new XYZ();
-    temp->mMaterial->mShaderProgram = 0; //plain shader
-    temp->init();
-    mVisualObjects.push_back(temp);
+//    VisualObject *temp = new XYZ();
+//    temp->mMaterial->mShaderProgram = 0; //plain shader
+//    temp->init();
+//    mVisualObjects.push_back(temp);
 
     //dog triangle
     temp = new Triangle();
