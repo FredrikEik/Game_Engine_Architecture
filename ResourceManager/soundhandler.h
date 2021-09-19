@@ -5,6 +5,7 @@
 //#include <stdint.h>     //using this on Mac instead of cstdint. not a totally clean solution
 #include <string>
 #include <cstdio>
+#include "altypes.h"
 
 /// Structure to contain WAVE file data.
 struct WaveRawData
@@ -20,11 +21,15 @@ struct WaveRawData
     short bytesPerSample;       ///< Number of bytes per sample.
     short bitsPerSample;        ///< Number of bits per sample.
 
-    unsigned char* buffer{nullptr};      ///< Buffer to hold audio data.
-//    WaveRawData() : buffer(NULL) {}  ///< Structure Constructor. Initialises data buffer to NULL.
+    unsigned char* audioData{nullptr};      ///< Buffer to hold audio data.
+
+    //OpenAL buffer assign to this wav data
+    //Originally uses ALuint == unsigned int
+    ALuint mALBuffer{0};
 };
 
 /// Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
+/// Also set up ALBuffer and can connect ALBuffer to ALSource
 class SoundHandler
 {
 public:
@@ -33,7 +38,8 @@ public:
         \param File path relative to execution directory.
         \param Pointer to a wave_t structure to contain the wave data.
     **/
-    static bool loadWave(std::string fileName, WaveRawData* wavePtr);
+    static WaveRawData* loadWave(std::string fileName);
+    static int makeALSource(ALuint bufferIn);
 
 private:
     /// Error handling function.
@@ -43,7 +49,11 @@ private:
         Internally outputs error string to the command line.
         \param Error message to output.
     **/
-    static bool endOnError(std::string errmsg);
+    static bool endOnFileReadError(std::string errmsg);
+    static bool checkALError(std::string name);
+
+    static bool makeALBuffer(WaveRawData *waveData);
+
 };
 
 #endif

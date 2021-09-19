@@ -46,6 +46,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    altypes.h \
     camera.h \
     components.h \
     constants.h \

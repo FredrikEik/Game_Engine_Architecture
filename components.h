@@ -5,15 +5,7 @@
 #include "matrix4x4.h"
 #include "vertex.h"
 #include "gltypes.h"
-
-#ifdef _WIN32
-#include <al.h>
-#include <alc.h>
-#endif
-#ifdef __APPLE__
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#endif
+#include "altypes.h"
 
 struct TransformComponent
 {
@@ -47,10 +39,10 @@ struct SoundListenerComponent
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};
 };
 
-struct SoundSourceComponet
+struct SoundComponet
 {
-    ALuint mSource;             ///< The sound source.
-    ALuint mBuffer;
+    ALuint mSource;             ///< The sound source ID.
+    ALuint mBuffer;             ///< The buffer the source should play.
     gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
     bool looping;
     float gain;

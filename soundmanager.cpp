@@ -3,14 +3,9 @@
 #include <iostream>
 #include <QDebug>
 
-SoundManager* SoundManager::mInstance = NULL;
+SoundManager* SoundManager::mInstance = nullptr;    //static pointer to instance
 
-SoundManager::SoundManager() :
-    mDevice(NULL),
-    mContext(NULL)
-{
-
-}
+SoundManager::SoundManager() : mDevice{nullptr}, mContext{nullptr} {}
 
 bool SoundManager::init()
 {
@@ -32,13 +27,13 @@ bool SoundManager::init()
     else
         qDebug() << "OpenAL intialization complete!";
 
-    //Start listing of found sound devices:
+    /*Start listing of found sound devices:
     //Not jet implemented
     //ALDeviceList *pDeviceList = NULL;
     //ALCcontext *pContext = NULL;
     //ALCdevice *pDevice = NULL;
     //ALint i;	//will hold the number of the preferred device
-    //ALboolean bReturn = AL_FALSE;
+    //ALboolean bReturn = AL_FALSE;*/
 
     return true;
 }
@@ -78,14 +73,14 @@ bool SoundManager::checkError()
     return true;
 }
 
-SoundSource* SoundManager::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
-{
-    SoundSource* tempPtr = new SoundSource(name, loop, gain);
-    tempPtr->setPosition(pos);
-    if (fileName != "")
-        tempPtr->loadWave(fileName);
-    return tempPtr;
-}
+//SoundSource* SoundManager::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
+//{
+//    SoundSource* tempPtr = new SoundSource(name, loop, gain);
+//    tempPtr->setPosition(pos);
+//    if (fileName != "")
+//        tempPtr->loadWave(fileName);
+//    return tempPtr;
+//}
 
 void SoundManager::updateListener(gsl::Vector3D pos, gsl::Vector3D vel, gsl::Vector3D dir, gsl::Vector3D up)
 {

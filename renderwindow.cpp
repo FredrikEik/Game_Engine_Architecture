@@ -136,6 +136,11 @@ void RenderWindow::init()
     //dog triangle
     temp = addObject("triangle", 1, 1);
     temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    //Adds sound to moving triangle:
+    ResourceManager::getInstance().addComponent("drum_stereo.wav", temp);
+
+    //Quick'n'dirty audio test:
+    alSourcePlay(temp->mSoundComponent->mSource);
 
     //Suzanne:
     temp = addObject("suzanne.obj");
@@ -155,11 +160,7 @@ void RenderWindow::init()
 
 
     //Sound Manager test - should be turned into components and a system!
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
-                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                "drum_stereo.wav", false, 1.0f);
 
-    mStereoSound->play();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -334,7 +335,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 GameObject* RenderWindow::addObject(std::string assetName, int shaderType, int textureUnit)
 {
     //This function should not belong to RenderWindow - but for now the whole scene is kept here!
-    GameObject *temp = ResourceManager::getInstance().AddObject(assetName);
+    GameObject *temp = ResourceManager::getInstance().addObject(assetName);
     temp->mMaterial->mShaderProgram = shaderType;
     temp->mMaterial->mTextureUnit = textureUnit;
 

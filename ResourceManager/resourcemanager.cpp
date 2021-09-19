@@ -12,12 +12,16 @@
 #include "vertex.h"
 #include "gameobject.h"
 #include "constants.h"
+#include "soundmanager.h"
+#include "soundhandler.h"
 
 ResourceManager::ResourceManager()
 {
     //This is a hack - to make sure my MeshComponens are not moved for now
     //Please fix
     mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
+
+    SoundManager::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
 }
 
 ResourceManager &ResourceManager::getInstance()
@@ -26,12 +30,12 @@ ResourceManager &ResourceManager::getInstance()
     return *mInstance;
 }
 
-GameObject *ResourceManager::AddObject(std::string filename)
+GameObject *ResourceManager::addObject(std::string meshName)
 {
     int meshIndex{-1};
 
     //check if asset is made:
-    auto result = mMeshComponentMap.find(filename);
+    auto result = mMeshComponentMap.find(meshName);
     //if already made
     if (result != mMeshComponentMap.end()) {        //found!!!
         meshIndex = result->second;
@@ -39,11 +43,11 @@ GameObject *ResourceManager::AddObject(std::string filename)
     //not made, make new
     else {
         //Simple "factory" - making the meshobject said in the filename
-        if (filename.find(".obj") != std::string::npos)
-            meshIndex = readObj(gsl::MeshFilePath + filename);
-        if (filename.find("axis") != std::string::npos)
+        if (meshName.find(".obj") != std::string::npos)
+            meshIndex = readObj(gsl::MeshFilePath + meshName);
+        if (meshName.find("axis") != std::string::npos)
             meshIndex = makeAxis();
-        if (filename.find("triangle") != std::string::npos)
+        if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
 
         //safety - if nothing is made I just make a triangle
@@ -51,7 +55,7 @@ GameObject *ResourceManager::AddObject(std::string filename)
             meshIndex = makeTriangle();
 
         //update mMeshComponentMap with new asset
-        mMeshComponentMap.emplace(filename, meshIndex);
+        mMeshComponentMap.emplace(meshName, meshIndex);
     }
 
     GameObject* tempObject = new GameObject();
@@ -62,6 +66,35 @@ GameObject *ResourceManager::AddObject(std::string filename)
     tempObject->mTransform = new TransformComponent();
     tempObject->mTransform->mMatrix.identity();
     return tempObject; //temporary to get to compile
+}
+
+bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)
+{
+    if(!ownerObject)
+    {
+        qDebug() << "Trying to add Component to non-existing GameObject";
+        return false;
+    }
+
+    gsl::AssetType assetType = findAssetType(assetName);
+
+    switch (assetType) {
+    case  gsl::NOASSETTYPE:
+        return false;
+        break;
+    case gsl::OBJ:
+        break;
+    case gsl::FBX:
+
+        break;
+    case gsl::BMP:
+        break;
+    case gsl::WAV:
+        ownerObject->mSoundComponent = makeSoundComponent(assetName);
+        break;
+    }
+
+    return true;
 }
 
 
@@ -254,6 +287,20 @@ int ResourceManager::makeTriangle()
     return mMeshComponents.size()-1;    //returns index to last object
 }
 
+gsl::AssetType ResourceManager::findAssetType(std::string assetName)
+{
+    if (assetName.find(".obj") != std::string::npos)
+       return gsl::OBJ;
+    if (assetName.find(".fbx") != std::string::npos)
+       return gsl::FBX;
+    if (assetName.find(".bmp") != std::string::npos)
+       return gsl::BMP;
+    if (assetName.find(".wav") != std::string::npos)
+       return gsl::WAV;
+
+    return gsl::NOASSETTYPE;
+}
+
 
 void ResourceManager::initMesh(MeshComponent &tempMeshComp)
 {
@@ -293,4 +340,31 @@ void ResourceManager::initMesh(MeshComponent &tempMeshComp)
 
     tempMeshComp.mIndexCount = tempMeshComp.mIndices.size();
     tempMeshComp.mVertexCount = tempMeshComp.mVertices.size();
+}
+
+SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
+{
+    int soundIndex{-1};
+    WaveRawData* waveData{nullptr}; //will be instansiated inside loadWave
+
+    //check if asset is made:
+    auto result = mSoundBufferMap.find(assetName);
+    //if already made
+    if (result != mSoundBufferMap.end()) {        //found!!!
+        soundIndex = result->second;
+    }
+    //not made, make new
+    else {
+        waveData = SoundHandler::loadWave(assetName);
+        if (!waveData)
+        {
+            qDebug() << "Error loading wave file!";
+            return nullptr;
+        }
+    }
+    SoundComponet *tempSource = new SoundComponet();
+    if(waveData)
+        tempSource->mSource = SoundHandler::makeALSource(waveData->mALBuffer);
+
+    return tempSource;
 }
