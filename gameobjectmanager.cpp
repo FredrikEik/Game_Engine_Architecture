@@ -13,8 +13,8 @@ GameObjectManager &GameObjectManager::getInstance()
     return *mInstance;
 }
 
-void GameObjectManager::manageObjects(/*mCurrentCamera*/)
-{
+//void GameObjectManager::manageObjects(/*mCurrentCamera*/)
+//{
     //Axis
     //  GameObject *temp = new XYZ();
     //  temp->mMaterial->mShaderProgram = 0; //plain shader
@@ -35,7 +35,7 @@ void GameObjectManager::manageObjects(/*mCurrentCamera*/)
 
     //Set up camera position
     //mCurrentCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-}
+//}
 
 GameObject *GameObjectManager::addObject(string name, int id, bool TransformID, int MeshID, int MaterialID, bool GravityID)
 {
@@ -44,32 +44,42 @@ GameObject *GameObjectManager::addObject(string name, int id, bool TransformID, 
     CurrentGameObject->entitiyID = id;
     CurrentGameObject->mName = name;
 
-    //CurrentGameObject->init();
+    CurrentGameObject->init();
 
     if (TransformID == 1)
     {
         //new XYZ();
+        CurrentGameObject->mTransform = new TransformComponent();
         CurrentGameObject->mTransform->mMatrix.translate(0.0f, 0.0f, 0.5f);
     }
 
     if (MeshID != 0)
     {
-        CurrentGameObject->mMaterial->mTextureUnit = MeshID;        // 1 = dog texture
+        CurrentGameObject->mMesh = new MeshComponent();
+
+        if (MeshID == 1)        // 1 = dog texture
+            {
+                CurrentGameObject->mMesh = makeTriangle();
+            }
     }
 
     if (MaterialID != 0)
     {
-        CurrentGameObject->mMaterial->mShaderProgram = MaterialID;
-        //CurrentGameObject->mMaterial->mTextureUnit = MaterialID;
+        CurrentGameObject->mMaterial = new MaterialComponent();
+        //CurrentGameObject->mMaterial->mShaderProgram = MaterialID;
+        CurrentGameObject->mMaterial->mTextureUnit = MaterialID;
     }
 
     if (GravityID != 0)
     {
+        CurrentGameObject->mGravity = new GravityComponent();
         CurrentGameObject->mGravity->affectedByGravity = 1;
         CurrentGameObject->mGravity->gravitationalForce = 1^2;
     }
 
     id++;
+
+    //GameObject->push_back(CurrentGameObject);
 
     return CurrentGameObject;
 }

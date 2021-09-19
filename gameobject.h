@@ -7,7 +7,8 @@ class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
     GameObject();
     virtual ~GameObject();
-    //virtual void init() = 0;
+    virtual void init() = 0;
+    void draw();
 
     std::string mName;
     int entitiyID;

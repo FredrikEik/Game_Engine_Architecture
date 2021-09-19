@@ -131,9 +131,9 @@ void RenderWindow::init()
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
-    //Create temp object -
+    //Create temp object
     string name = "first object";
-    int id;
+    int id = 0;
 
     //-Using GameObjectManager
     GameObjectManager &GOM = GameObjectManager::getInstance();
