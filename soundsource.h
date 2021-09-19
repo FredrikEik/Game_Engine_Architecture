@@ -43,7 +43,7 @@ public:
         Calls the wave loader from the FileHandler class, parses the wave data and buffers it.
         \param The file path relative to execution directory.
     **/
-    bool loadWave(std::string filePath);
+    bool loadWave(std::string fileName);
 
     void setPosition(gsl::Vector3D newPos);             ///< Sets source position from Vector3.
     gsl::Vector3D getPosition() {return mPosition;}     ///< Returns source position as Vector3.

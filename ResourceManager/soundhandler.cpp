@@ -1,14 +1,16 @@
 #include "soundhandler.h"
 #include <iostream>
+#include <QDebug>
+#include "constants.h"
 
-bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
+bool SoundHandler::loadWave(std::string fileName, WaveRawData* wavePtr)
 {
-    std::cout << "Loading "+ filePath + " from disk\n";
+    qDebug() << "Loading " << fileName.c_str() << " from disk";
     FILE* fp = NULL;
-    fp = std::fopen(filePath.c_str(), "rb");
+    fp = std::fopen((gsl::SoundFilePath + fileName).c_str(), "rb");
     if (fp == NULL)
     {
-        return endOnError("FileHandler error: File not found.\n");
+        return endOnError("FileHandler error: File not found.");
     }
 
     char type[4];
@@ -16,20 +18,20 @@ bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
     std::fread(type, sizeof(char), 4, fp);
     if (type[0] != 'R' || type[1] != 'I' || type[2] != 'F' || type[3] != 'F')
     {
-        return endOnError("FileHandler error: RIFF header missing or invalid.\n");
+        return endOnError("FileHandler error: RIFF header missing or invalid.");
     }
 
     std::fread(&wavePtr->size, sizeof(uint32_t), 1, fp);
     std::fread(type, sizeof(char), 4, fp);
     if (type[0] != 'W' || type[1] != 'A' || type[2] != 'V' || type[3] != 'E')
     {
-        return endOnError("FileHandler error: WAVE header missing or invalid.\n");
+        return endOnError("FileHandler error: WAVE header missing or invalid.");
     }
 
     std::fread(type, sizeof(char), 4, fp);
     if (type[0] != 'f' || type[1] != 'm' || type[2] != 't' || type[3] != ' ')
     {
-        return endOnError("FileHandler error: fmt header missing or invalid.\n");
+        return endOnError("FileHandler error: fmt header missing or invalid.");
     }
 
     std::fread(&wavePtr->chunkSize,       sizeof(uint32_t), 1, fp);
@@ -43,7 +45,7 @@ bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
     std::fread(type, sizeof(char), 4, fp);
     if (type[0] != 'd' || type[1] != 'a' || type[2] != 't' || type[3] != 'a')
     {
-        return endOnError("FileHandler error: data header missing or invalid.\n");
+        return endOnError("FileHandler error: data header missing or invalid.");
     }
 
     std::fread(&wavePtr->dataSize, sizeof(uint32_t), 1, fp);
@@ -52,7 +54,7 @@ bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
     uint32_t result = std::fread(wavePtr->buffer, sizeof(char), wavePtr->dataSize, fp);
     if (result != wavePtr->dataSize)
     {
-        return endOnError("FileHandler error: fread result mismatch.\n");
+        return endOnError("FileHandler error: fread result mismatch.");
     }
 
     if (ferror(fp))
@@ -62,16 +64,16 @@ bool SoundHandler::loadWave(std::string filePath, wave_t* wavePtr)
 
     if (wavePtr->buffer == NULL)
     {
-        return endOnError("FileHandler error: Wave Data pointer is NULL.\n");
+        return endOnError("FileHandler error: Wave Data pointer is NULL.");
     }
 
     std::fclose(fp);
-    std::cout << "Loading complete!\n";
+    qDebug() << "Loading complete!";
     return true;
 }
 
 bool SoundHandler::endOnError(std::string errmsg)
 {
-    std::cout << errmsg;
+    qDebug() << errmsg.c_str();
     return false;
 }

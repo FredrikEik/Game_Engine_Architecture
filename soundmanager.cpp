@@ -14,7 +14,7 @@ SoundManager::SoundManager() :
 
 bool SoundManager::init()
 {
-    qDebug() << "Intializing OpenAL!\n";
+    qDebug() << "Intializing OpenAL!";
     mDevice = alcOpenDevice(NULL);
     if (mDevice)
     {
@@ -27,10 +27,10 @@ bool SoundManager::init()
 
     if (!mDevice)
     {
-        qDebug() << "Device not made!\n";
+        qDebug() << "Device not made!";
     }
     else
-        qDebug() << "Intialization complete!\n";
+        qDebug() << "OpenAL intialization complete!";
 
     //Start listing of found sound devices:
     //Not jet implemented
@@ -59,31 +59,31 @@ bool SoundManager::checkError()
     case AL_NO_ERROR:
         break;
     case AL_INVALID_NAME:
-        qDebug() << "Invalid name!\n";
+        qDebug() << "Invalid name!";
         return false;
     case AL_INVALID_ENUM:
-        qDebug() << "Invalid enum!\n";
+        qDebug() << "Invalid enum!";
         return false;
     case AL_INVALID_VALUE:
-        qDebug() << "Invalid value!\n";
+        qDebug() << "Invalid value!";
         return false;
     case AL_INVALID_OPERATION:
-        qDebug() << "Invalid operation!\n";
+        qDebug() << "Invalid operation!";
         return false;
     case AL_OUT_OF_MEMORY:
-        qDebug() << "Out of memory!\n";
+        qDebug() << "Out of memory!";
         return false;
     default: break;
     }
     return true;
 }
 
-SoundSource* SoundManager::createSource(std::string name, gsl::Vector3D pos, std::string filePath, bool loop, float gain)
+SoundSource* SoundManager::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
 {
     SoundSource* tempPtr = new SoundSource(name, loop, gain);
     tempPtr->setPosition(pos);
-    if (filePath != "")
-        tempPtr->loadWave(filePath);
+    if (fileName != "")
+        tempPtr->loadWave(fileName);
     return tempPtr;
 }
 

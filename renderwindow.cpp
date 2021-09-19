@@ -157,7 +157,7 @@ void RenderWindow::init()
     //Sound Manager test - should be turned into components and a system!
     SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                gsl::SoundFilePath + "drum_stereo.wav", false, 1.0f);
+                "drum_stereo.wav", false, 1.0f);
 
     mStereoSound->play();
 }

@@ -5,6 +5,9 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+            #stop std::fopen deprecation warning
+DEFINES     += _CRT_SECURE_NO_WARNINGS
+
 INCLUDEPATH += \
     ./gsl \
     ./Shaders \
