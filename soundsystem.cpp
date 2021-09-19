@@ -3,6 +3,10 @@
 #include <iostream>
 #include <QDebug>
 
+#include "renderwindow.h"   //should not be needed when update is fixed
+#include "gameobject.h"
+#include "components.h"
+
 SoundSystem* SoundSystem::mInstance = nullptr;    //static pointer to instance
 
 SoundSystem::SoundSystem() : mDevice{nullptr}, mContext{nullptr} {}
@@ -47,6 +51,29 @@ void SoundSystem::cleanUp()
     alcCloseDevice(mDevice);
 }
 
+void SoundSystem::update(RenderWindow *renderWindowIn)
+{
+    alGetError();   //clears earlier errors
+    for (auto gob : renderWindowIn->mGameObjects)
+    {
+        if(gob->mSoundComponent)
+        {
+            if(gob->mSoundComponent->shouldPlay)
+            {
+                gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
+                ALfloat temp[3] = {pos.x, pos.y, pos.z};
+                alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
+
+                ALint value;
+                alGetSourcei(gob->mSoundComponent->mSource, AL_SOURCE_STATE, &value);
+                if (value != AL_PLAYING)    //could check !AL_PLAYING
+                    alSourcePlay(gob->mSoundComponent->mSource);
+            }
+        }
+        checkError();
+    }
+}
+
 bool SoundSystem::checkError()
 {
     switch (alGetError())
@@ -68,7 +95,9 @@ bool SoundSystem::checkError()
     case AL_OUT_OF_MEMORY:
         qDebug() << "Out of memory!";
         return false;
-    default: break;
+    default:
+        qDebug() << "Some unknown OpenAL error in SoundSystem!";
+        break;
     }
     return true;
 }
@@ -82,7 +111,7 @@ bool SoundSystem::checkError()
 //    return tempPtr;
 //}
 
-void SoundSystem::updateListener(gsl::Vector3D pos, gsl::Vector3D dir, gsl::Vector3D up)
+void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up)
 {
     ALfloat posVec[3]{pos.x, pos.y, pos.z};
     alListenerfv(AL_POSITION, posVec);

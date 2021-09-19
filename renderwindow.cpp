@@ -139,8 +139,8 @@ void RenderWindow::init()
     //Adds sound to moving triangle:
     ResourceManager::getInstance().addComponent("caravan_mono.wav", temp);
 
-    //Quick'n'dirty audio test:
-    alSourcePlay(temp->mSoundComponent->mSource);
+    //Hack to test sound system
+    temp->mSoundComponent->shouldPlay = true;
 
     //Suzanne:
     temp = addObject("suzanne.obj");
@@ -167,9 +167,8 @@ void RenderWindow::render()
 
     // Camera update - should be in a general game loop, not directly in the render loop
     mCurrentCamera->update();
-    SoundSystem::getInstance()->updateListener(mCurrentCamera->mPosition,
-                                               mCurrentCamera->mForward,
-                                               mCurrentCamera->mUp);
+
+    SoundSystem::getInstance()->update(this);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)

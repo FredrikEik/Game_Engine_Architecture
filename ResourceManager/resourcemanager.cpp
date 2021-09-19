@@ -361,10 +361,16 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
             qDebug() << "Error loading wave file!";
             return nullptr;
         }
+        //update mMeshComponentMap with new asset
+        mWaveBuffers.emplace_back(*waveData);
+        soundIndex = mWaveBuffers.size()-1;
+        mSoundBufferMap.emplace(assetName, soundIndex);
     }
+
     SoundComponet *tempSource = new SoundComponet();
     if(waveData)
-        tempSource->mSource = SoundHandler::makeALSource(waveData->mALBuffer);
-
+    {
+        tempSource->mSource = SoundHandler::makeALSource(mWaveBuffers.at(soundIndex).mALBuffer);
+    }
     return tempSource;
 }

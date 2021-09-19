@@ -29,6 +29,8 @@ public:
     /// Cleans up and shuts down OpenAL.
     void cleanUp();
 
+    void update(class RenderWindow* renderWindowIn);
+
     /// Creates a new SoundSource with the given parameters.
     /**
         \param The name of the sound. (Not in use.)
@@ -37,7 +39,7 @@ public:
         \param Boolean to see if sound should loop or not.
     **/
 //    SoundSource* createSource(std::string name, gsl::Vector3D pos, std::string fileName = "", bool loop = false, float gain = 1.0);
-    void updateListener(gsl::Vector3D pos, gsl::Vector3D dir, gsl::Vector3D up);
+    void updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up);
 
 private:
     SoundSystem();                         ///< Private constructor.

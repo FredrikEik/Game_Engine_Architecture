@@ -1,6 +1,8 @@
 #include "camera.h"
 #include <QDebug>
 
+#include "soundsystem.h"
+
 Camera::Camera()
 {
     mViewMatrix.setToIdentity();
@@ -58,8 +60,7 @@ void Camera::update()
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
 
-//    mListener.dir = mForward;
-//    mListener.up = mUp;
+    SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)

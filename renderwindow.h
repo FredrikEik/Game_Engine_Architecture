@@ -35,6 +35,8 @@ public:
 
     GameObject* addObject(std::string assetName, int shaderType = 0, int textureUnit = 0);
 
+    std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
+
 private slots:
     void render();
 
@@ -68,8 +70,6 @@ private:
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
-
-    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
