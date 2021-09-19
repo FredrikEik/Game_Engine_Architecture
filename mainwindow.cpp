@@ -108,12 +108,11 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
 {
-    mRenderWindow->isPlaying = checked;
+    mCoreEngine->togglePlayMode(checked);
 
-    SoundSystem::getInstance()->togglePlaySounds(checked);
     if(checked)
-        ui->pb_togglePlay->setText("Stop");
+        ui->pb_togglePlay->setText("Stop (R)");
     else
-        ui->pb_togglePlay->setText("Play");
+        ui->pb_togglePlay->setText("Play (R)");
 }
 

@@ -21,6 +21,13 @@ CoreEngine *CoreEngine::getInstance()
     return mInstance;
 }
 
+void CoreEngine::togglePlayMode(bool shouldPlay)
+{
+    isPlaying = shouldPlay;
+    SoundSystem::getInstance()->togglePlaySounds(isPlaying);
+    mRenderWindow->isPlaying = isPlaying;
+}
+
 void CoreEngine::setUpScene()
 {
     //********************** Making the object to be drawn **********************
@@ -55,9 +62,9 @@ void CoreEngine::setUpScene()
     temp->mTransform->mMatrix.scale(0.3f);
     mRenderWindow->mGameObjects.push_back(temp);
 
-    mCamera = new Camera();
-    mCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
-    mRenderWindow->mCurrentCamera = mCamera;
+    mGameCamera = new Camera();
+    mGameCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    mRenderWindow->mCurrentCamera = mGameCamera;
 }
 
 
