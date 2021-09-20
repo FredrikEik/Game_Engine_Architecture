@@ -13,6 +13,8 @@ namespace gsl
     Vector3D::Vector3D(const double v) : x{static_cast<float>(v)}, y{static_cast<float>(v)}, z{static_cast<float>(v)}
     {    }
 
+    Vector3D::Vector3D(const Vector3D &vIN) : x{vIN.x}, y{vIN.y}, z{vIN.z}{}
+
     const Vector3D& Vector3D::operator=(const Vector3D &rhs)
     {
         x = rhs.getX();

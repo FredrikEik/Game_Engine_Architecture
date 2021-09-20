@@ -19,7 +19,7 @@ public:
     Vector3D(const double v);
 
     //Copy constructor
-    Vector3D(Vector3D const&vIN) : x{vIN.x}, y{vIN.y}, z{vIN.z}{};
+    Vector3D(Vector3D const&vIN);
 
     //Operators
     const Vector3D& operator=(const Vector3D &rhs);     // v = v
