@@ -39,9 +39,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
-
-    //Make the gameloop timer:
-    mRenderTimer = new QTimer(this);
 }
 
 RenderWindow::~RenderWindow()
@@ -51,9 +48,7 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-    //Connect the gameloop timer to the render function:
-    //This makes our render loop
-    connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
+    //connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
     //********************** General OpenGL stuff **********************
 
     //The OpenGL context has to be set.
@@ -71,7 +66,6 @@ void RenderWindow::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
-        GameEngine::getInstance()->Coreinit();
 
     //Print render version info (what GPU is used):
     //(Have to use cout to see text- qDebug just writes numbers...)
@@ -130,102 +124,29 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-
-    //********************** Making the object to be drawn **********************
-
-
-    //--> De første to bruker fortsatt sin egen init(), men bruker egne components.
-//    VisualObject *temp = new XYZ();
-//    temp->mMaterialComp->mShaderProgram = 0;
-//    temp->init();
-//    mVisualObjects.push_back(temp);
-
-//    //testing triangle class
-//    temp = new Triangle();
-//    temp->init();
-//    temp->mMaterialComp->mShaderProgram = 1;
-//    temp->mMaterialComp->mTextureUnit = 1;
-//    temp->mTransformComp->mMatrix.translate(-1.f, .5f, 0.f);
-//    mVisualObjects.push_back(temp);
-
-// forsøk på å lage en resourcemanager.
-
-
-//    mResourceManager = new class ResourceManager();
-//    GameObject* tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-//    mGameObjects.push_back(tempGameObject);
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(2,0,0);
-//    mGameObjects.push_back(tempGameObject);
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(4,0,0);
-//    mGameObjects.push_back(tempGameObject);
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-2,0,0);
-//    mGameObjects.push_back(tempGameObject);
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
-//    mGameObjects.push_back(tempGameObject);
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
-//    mGameObjects.push_back(tempGameObject);
+    GameEngine::getInstance()->SetUpScene();
 
 
 
-
-//    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\Suzanne.obj");
-//          temp ->init();
-//          temp->mMaterialComp->mShaderProgram = 0;    //texture shader
-//          temp->mTransformComp->mMatrix.translate(-3.f, 0.f, -3.f);
-//          mVisualObjects.push_back(temp );
-
-
-
-//    temp = new ObjMesh("..\\GEA2021\\Assets\\Meshes\\box.obj");
-//        temp ->init();
-//        temp->mMaterialComp->mShaderProgram = 0;    //texture shader
-//        temp->mTransformComp->mMatrix.translate(3.f, 0.f, -3.f);
-//        mVisualObjects.push_back(temp );
-
-
+    // Should move to GameEngie
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-
-
-//    for(int i{0}; i < mVisualObjects.size(); i++)
-//    {
-//        mVisualObjects[i]->mShaderComp->mMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "mMatrix" );
-//        mVisualObjects[i]->mShaderComp->vMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "vMatrix" );
-//        mVisualObjects[i]->mShaderComp->pMatrixUniform = glGetUniformLocation( mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "pMatrix" );
-//        mVisualObjects[i]->mShaderComp->TextureUniform = glGetUniformLocation(mShaderPrograms[mVisualObjects[i]->mMaterialComp->mShaderProgram]->getProgram(), "textureSampler");
-//    }
-
-
-    // Sound test drum example
-//    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
-//                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-//                "..\\GEA2021\\Assets\\Sounds\\drum_stereo.wav", false, 1.0f);
-
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
-                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
-
-    mStereoSound->play();
 }
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
+    // Shoudl be in GameEngine
     //Keyboard / mouse input
     handleInput();
 
     mCurrentCamera->update();
+
+
+
+
+
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -300,6 +221,8 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    glUseProgram(0);
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -334,13 +257,13 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //If the window actually is exposed to the screen we start the main loop
     //isExposed() is a function in QWindow
-    if (isExposed())
-    {
-        //This timer runs the actual MainLoop
-        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-        mRenderTimer->start(16);
-        mTimeStart.start();
-    }
+//    if (isExposed())
+//    {
+//        //This timer runs the actual MainLoop
+//        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
+////        mRenderTimer->start(16);
+//        mTimeStart.start();
+//    }
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();

@@ -39,8 +39,8 @@ public:
 
 //    GameObject* RenderWindow::addObject(std::string assetName);
 
-private slots:
     void render();
+private slots:
 
 private:
     void init();
@@ -86,7 +86,7 @@ private:
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
-    QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
+    //QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar

@@ -22,6 +22,8 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
+    void on_CreateObject_released();
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -29,6 +31,8 @@ private:
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
     GameEngine *mGameEngine;
+
+
 };
 
 #endif // MAINWINDOW_H

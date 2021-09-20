@@ -4,31 +4,36 @@
 #include <vector>
 
 #include "gameobject.h"
+class Camera;
+class RenderWindow;
+class ResourceManager;
+class QTimer;
 
-
-
-class GameEngine
+class GameEngine : public QObject
 {
 public:
     GameEngine();
-    void Coreinit();
+    void SetUpScene();
+    void HandleInput();
+    void GameLoop();
+    static GameEngine* getInstance();
 
-    static GameEngine* getInstance()
-    {
-        if(!mInstance)
-        {
-            mInstance = new GameEngine();
-        }
-        return mInstance;
-    }
-    void setRenderPointer(class RenderWindow* temp);
+    void setRenderPointer(RenderWindow* temp);
+
 
 private:
-    class ResourceManager *mResourceManager{nullptr};
+    //TODO InputHandler
+
+     ResourceManager *mResourceManager{nullptr};
     //std::vector<GameObject*> mGameObjects;
 
+    Camera *mGameCamera{nullptr};
+    Camera *mEditorCamera{nullptr};
+
     static GameEngine* mInstance;
-    class RenderWindow* mRenderwindow{nullptr};
+    RenderWindow* mRenderwindow{nullptr};
+
+    QTimer *mGameLoopRenderTimer{nullptr};
 };
 
 #endif // GAMEENGINE_H

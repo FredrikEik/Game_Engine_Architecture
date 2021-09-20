@@ -13,6 +13,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
+
+//    ui->comboBox->addItem("Cube");
+//    ui->comboBox->addItem("Sphere");
+//    ui->comboBox->addItem("Pyramid");
+//    ui->comboBox->addItem("Suzanne");
     init();
 }
 
@@ -77,6 +82,7 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
 
+
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
@@ -89,3 +95,9 @@ void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
 }
+
+void MainWindow::on_CreateObject_released()
+{
+
+}
+

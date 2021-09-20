@@ -16,14 +16,18 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Toggle Wireframe</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Toggle Wireframe</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QLabel" name="label">
@@ -55,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
