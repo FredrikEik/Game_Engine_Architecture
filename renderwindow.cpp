@@ -137,16 +137,20 @@ void RenderWindow::init()
     temp->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
-    temp= new Plane();
+    temp = new Plane();
     temp->init();
     temp->mMatrix.setPosition(-25.0,0.0,-25.0);
     temp->mMatrix.scale(50.0,0.0,50.0);
     mVisualObjects.push_back(temp);
 
-    temp= new Cube();
+    temp = new Cube();
     temp->init();
     mVisualObjects.push_back(temp);
 
+    temp = new Cube();
+    temp->init();
+    temp->mMatrix.setPosition(3.0,0.0,3.0);
+    mVisualObjects.push_back(temp);
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -205,6 +209,12 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[3]->mMatrix.constData());
         mVisualObjects[3]->draw();
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[4]->mMatrix.constData());
+        mVisualObjects[4]->draw();
     }
 
     //Calculate framerate before

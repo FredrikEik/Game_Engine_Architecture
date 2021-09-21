@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
+    beziercurve.cpp \
     camera.cpp \
     cube.cpp \
     matrix3x3.cpp \
@@ -23,6 +24,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    beziercurve.h \
     camera.h \
     constants.h \
     cube.h \
