@@ -11,15 +11,19 @@ class QTimer;
 
 class GameEngine : public QObject
 {
+    Q_OBJECT
+
 public:
     GameEngine();
     void SetUpScene();
     void HandleInput();
-    void GameLoop();
+
     static GameEngine* getInstance();
 
     void setRenderPointer(RenderWindow* temp);
 
+private slots:
+    void GameLoop();
 
 private:
     //TODO InputHandler

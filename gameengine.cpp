@@ -21,6 +21,9 @@ void GameEngine::SetUpScene()
     mInstance = this;
     mGameLoopRenderTimer = new QTimer(this);
 
+    mEditorCamera = new Camera();
+    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mRenderwindow->mCurrentCamera = mEditorCamera;
 
     GameObject* tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "Suzanne.obj");
     mRenderwindow->mGameObjects.push_back(tempGameObject);
@@ -56,7 +59,7 @@ void GameEngine::SetUpScene()
     //mStereoSound->play();
 
     //Gameloop
-    connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
+    connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     mGameLoopRenderTimer->start(16);
 }
 

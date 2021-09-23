@@ -130,23 +130,21 @@ void RenderWindow::init()
 
     // Should move to GameEngie
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+//    mCurrentCamera = new Camera();
+//    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
+    // TODO: move camera and inputhandler to the resource manager
+
+
     // Shoudl be in GameEngine
     //Keyboard / mouse input
     handleInput();
 
-    mCurrentCamera->update();
-
-
-
-
-
+//    mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -262,7 +260,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 //        //This timer runs the actual MainLoop
 //        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
 ////        mRenderTimer->start(16);
-//        mTimeStart.start();
+        mTimeStart.start();
 //    }
 
     //calculate aspect ration and set projection matrix

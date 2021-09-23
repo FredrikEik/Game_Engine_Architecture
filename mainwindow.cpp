@@ -82,12 +82,12 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
 
+    GameEngine::getInstance()->setRenderPointer(mRenderWindow);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 
-    GameEngine::getInstance()->setRenderPointer(mRenderWindow);
 }
 
 //Example of a slot called from the button on the top of the program.

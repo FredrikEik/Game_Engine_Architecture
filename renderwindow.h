@@ -40,6 +40,8 @@ public:
 //    GameObject* RenderWindow::addObject(std::string assetName);
 
     void render();
+
+    Camera *mCurrentCamera{nullptr};
 private slots:
 
 private:
@@ -72,7 +74,6 @@ private:
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-    Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
