@@ -7,14 +7,14 @@
 
 struct MeshData
 {
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0};
-    GLint mVertexCount{-1};
-    GLint mIndexCount{-1};
+    GLuint mVAO[3]{0};
+    GLuint mVBO[3]{0};
+    GLuint mEAB[3]{0};
+    GLint mVertexCount[3]{-1};
+    GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
+    std::vector<Vertex> mVertices[3];
+    std::vector<GLuint> mIndices[3];
 };
 
 //Because we need OpenGLFunctions, this class can not be static

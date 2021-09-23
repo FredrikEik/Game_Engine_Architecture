@@ -172,14 +172,14 @@ int MeshHandler::readObj(std::string filename)
                 if (uv > -1)    //uv present!
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                    temp.mVertices.push_back(tempVert);
+                    temp.mVertices[0].push_back(tempVert);
                 }
                 else            //no uv in mesh data, use 0, 0 as uv
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                    temp.mVertices.push_back(tempVert);
+                    temp.mVertices[0].push_back(tempVert);
                 }
-                temp.mIndices.push_back(temp_index++);
+                temp.mIndices[0].push_back(temp_index++);
             }
             continue;
         }
@@ -201,12 +201,12 @@ int MeshHandler::makeAxis()
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
 
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    temp.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+    temp.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    temp.mVertices[0].push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    temp.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    temp.mVertices[0].push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    temp.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    temp.mVertices[0].push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
     temp.mDrawType = GL_LINES;
 
@@ -220,9 +220,9 @@ int MeshHandler::makeTriangle()
     //should check if this object is new before this!
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
-    temp.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    temp.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    temp.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    temp.mVertices[0].push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+    temp.mVertices[0].push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    temp.mVertices[0].push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
     temp.mDrawType = GL_TRIANGLES;
     initMesh(temp);
@@ -236,15 +236,15 @@ void MeshHandler::initMesh(MeshData &tempMesh)
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &tempMesh.mVAO );
-    glBindVertexArray( tempMesh.mVAO );
+    glGenVertexArrays( 1, &tempMesh.mVAO[0] );
+    glBindVertexArray( tempMesh.mVAO[0] );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &tempMesh.mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, tempMesh.mVBO );
+    glGenBuffers( 1, &tempMesh.mVBO[0] );
+    glBindBuffer( GL_ARRAY_BUFFER, tempMesh.mVBO[0] );
 
-    glBufferData( GL_ARRAY_BUFFER, tempMesh.mVertices.size()*sizeof(Vertex),
-                  tempMesh.mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, tempMesh.mVertices[0].size()*sizeof(Vertex),
+                  tempMesh.mVertices[0].data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : position
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
@@ -259,15 +259,15 @@ void MeshHandler::initMesh(MeshData &tempMesh)
     glEnableVertexAttribArray(2);
 
     //Second buffer - holds the indices (Element Array Buffer - EAB):
-    if(tempMesh.mIndices.size() > 0) {
-        glGenBuffers(1, &tempMesh.mEAB);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mEAB);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mIndices.size() * sizeof(GLuint),
-                     tempMesh.mIndices.data(), GL_STATIC_DRAW);
+    if(tempMesh.mIndices[0].size() > 0) {
+        glGenBuffers(1, &tempMesh.mEAB[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mEAB[0]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mIndices[0].size() * sizeof(GLuint),
+                     tempMesh.mIndices[0].data(), GL_STATIC_DRAW);
     }
 
     glBindVertexArray(0);
 
-    tempMesh.mIndexCount = tempMesh.mIndices.size();
-    tempMesh.mVertexCount = tempMesh.mVertices.size();
+    tempMesh.mIndexCount[0] = tempMesh.mIndices[0].size();
+    tempMesh.mVertexCount[0] = tempMesh.mVertices[0].size();
 }

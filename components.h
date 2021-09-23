@@ -15,9 +15,9 @@ struct TransformComponent
 
 struct MeshComponent
 {
-    GLuint mVAO{0};
-    GLint mVertexCount{-1};
-    GLint mIndexCount{-1};
+    GLuint mVAO[3]{0};
+    GLint mVertexCount[3]{-1};
+    GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
 };
 

@@ -169,8 +169,8 @@ void RenderSystem::render()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        glBindVertexArray( mGameObjects[i]->mMesh->mVAO );
-        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount);
+        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
         glBindVertexArray(0);
     }
 
