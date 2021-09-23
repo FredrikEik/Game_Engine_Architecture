@@ -4,6 +4,8 @@
 #include "xyz.h"
 #include "objimport.h"
 
+#define EXISTS(x) storedMeshes.find(x), != storedMeshes.end()
+
 ObjectFactory::ObjectFactory()
 {
 
