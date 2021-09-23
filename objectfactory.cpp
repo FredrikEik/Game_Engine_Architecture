@@ -18,6 +18,10 @@ void ObjectFactory::createObject(std::string objectName)
     if(objectName == "Cube")
     {
         willCreateObject = new Cube;
+//        if (EXISTS("Cube"))
+//        {
+//            willCreateObject->getMeshComp(static_cast<MeshComponent*>(storedMeshes["Cube"]));
+//        }
     }
 
     else if (objectName == "Triangle")

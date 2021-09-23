@@ -5,12 +5,12 @@
 
 XYZ::XYZ()
 {
-    MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    MeshComp->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    MeshComp->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    MeshComp->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+    getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    getMeshComp()->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    getMeshComp()->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
     TransformComp->mMatrix.setToIdentity();
 }
@@ -24,17 +24,17 @@ void XYZ::init()
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &MeshComp->mVAO );
-    glBindVertexArray( MeshComp->mVAO );
+    glGenVertexArrays( 1, &getMeshComp()->mVAO );
+    glBindVertexArray( getMeshComp()->mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &MeshComp->mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, MeshComp->mVBO );
+    glGenBuffers( 1, &getMeshComp()->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, MeshComp->mVertices.size()*sizeof( Vertex ), MeshComp->mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, getMeshComp()->mVertices.size()*sizeof( Vertex ), getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, MeshComp->mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, getMeshComp()->mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
@@ -51,6 +51,6 @@ void XYZ::init()
 
 void XYZ::draw()
 {
-    glBindVertexArray( MeshComp->mVAO );
-    glDrawArrays(GL_LINES, 0, MeshComp->mVertices.size());
+    glBindVertexArray( getMeshComp()->mVAO );
+    glDrawArrays(GL_LINES, 0, getMeshComp()->mVertices.size());
 }
