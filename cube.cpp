@@ -52,7 +52,7 @@ Cube::Cube()
     getMeshComp()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
     getMeshComp()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
 
-    TransformComp->mMatrix.setToIdentity();
+    getTransformComp()->mMatrix.setToIdentity();
 }
 
 Cube::~Cube() {}

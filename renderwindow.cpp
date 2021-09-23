@@ -196,11 +196,12 @@ void RenderWindow::render()
             //send data to shader
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->TransformComp->mMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-//            ObjFactory->mGameObject[i]->TransformComp->mMatrix.translateX(0.01f);
-            ObjFactory->mGameObject[i]->TransformComp->mMatrix.rotateX();
+            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
+//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(5.f);
+//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateZ(5.f);
         }
     }
 

@@ -15,13 +15,19 @@ public:
 
     std::string mName;
 
-    TransformComponent* TransformComp = nullptr;
 //    MeshComponent* MeshComp = nullptr;
     MeshComponent* getMeshComp(){return MeshComp;}
-    MaterialComponent* MaterialComp = nullptr;
+//    MaterialComponent* MaterialComp = nullptr;
+    MaterialComponent* getMaterialComp(){return MaterialComp;}
+//    TransformComponent* TransformComp = nullptr;
+    TransformComponent* getTransformComp(){return TransformComp;}
+
+    void setMeshComponent(MeshComponent* newMeshComp){MeshComp = newMeshComp;}
 
 private:
     MeshComponent* MeshComp;
+    MaterialComponent* MaterialComp;
+    TransformComponent* TransformComp;
 };
 
 #endif // GAMEOBJECT_H

@@ -6,7 +6,7 @@ Triangle::Triangle()
     getMeshComp()->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
     getMeshComp()->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
     getMeshComp()->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
-    TransformComp->mMatrix.setToIdentity();
+    getTransformComp()->mMatrix.setToIdentity();
 }
 
 Triangle::~Triangle()

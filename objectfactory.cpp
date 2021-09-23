@@ -1,4 +1,4 @@
-#include "objectfactory.h"
+﻿#include "objectfactory.h"
 #include "cube.h"
 #include "triangle.h"
 #include "xyz.h"
@@ -18,10 +18,10 @@ void ObjectFactory::createObject(std::string objectName)
     if(objectName == "Cube")
     {
         willCreateObject = new Cube;
-//        if (EXISTS("Cube"))
-//        {
-//            willCreateObject->getMeshComp(static_cast<MeshComponent*>(storedMeshes["Cube"]));
-//        }
+//                if (EXISTS("Cube"))
+        //        {
+        //            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
+        //        }
     }
 
     else if (objectName == "Triangle")
@@ -34,14 +34,29 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
     }
 
-//    else if (objectName == "xyz")
-//    {
-//        willCreateObject = new XYZ;
-//    }
+    //    else if (objectName == "xyz")
+    //    {
+    //        willCreateObject = new XYZ;
+    //    }
     else
         return;
 
+    /*Trying to create each new object at an added position so
+     *  all objects is not in the same place. Needs some work..*/
+//    willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
     return;
 }
+
+//void ObjectFactory::saveMesh(std::string fileName, std::string nickName)
+//{
+// if(EXISTS(nickName)){
+//    qDebug() << storedMeshes.size();
+//    }
+//    else {
+//        ObjImport ObjImport;
+//        MeshComponent* newMesh = new MeshComponent();
+//        objImport.readFile(fileName, &newMesh->mVertices, &newMesh->mIndices);
+//        storedMeshes.insert(std::pair<std::string, MeshComponent*>{nickName, newMesh});
+//    }

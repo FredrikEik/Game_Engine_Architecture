@@ -14,7 +14,7 @@
 ObjImport::ObjImport(std::string filename) : GameObject()
 {
     readFile(filename);
-    TransformComp->mMatrix.setToIdentity();
+    getTransformComp()->mMatrix.setToIdentity();
 }
 
 ObjImport::~ObjImport()
