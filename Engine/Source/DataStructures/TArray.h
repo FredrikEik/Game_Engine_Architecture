@@ -16,7 +16,7 @@ public:
 	T& operator[](uint64 element);
 	size_t size();
 	T* begin();
-	T* end();
+	//T* end();
 private:
 	void resize(uint64 amountOfElements);
 	
@@ -104,11 +104,11 @@ inline T* TArray<T>::begin()
 	return array;
 }
 
-template<class T>
-inline T* TArray<T>::end()
-{
-	return array[end-1];
-}
+//template<class T>
+//inline T* TArray<T>::end()
+//{
+//	return array[end-1];
+//}
 
 template<class T>
 inline void TArray<T>::resize(uint64 amountOfElements)
