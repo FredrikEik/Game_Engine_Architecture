@@ -21,6 +21,7 @@
 #include "resourcemanager.h"
 #include "soundsystem.h"
 #include "coreengine.h"
+#include "math_constants.h"
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -121,7 +122,10 @@ void RenderSystem::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderSystem::render()
 {
-    mTimeStart.restart(); //restart FPS clock
+    mTimeStart.restart();   //restart FPS clock
+    mVerticesDrawn = 0;     //reset vertex counter
+    mObjectsDrawn = 0;      //reset object counter
+
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
@@ -133,7 +137,26 @@ void RenderSystem::render()
     //Draws the objects
     for(int i{0}; i < mGameObjects.size(); i++)
     {
-        //First objekct - xyz
+        /************** LOD and Frustum culling stuff ***********************/
+        gsl::Vector3D cameraPos = mCurrentCamera->mViewMatrix.getPosition();
+        gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+        gsl::Vector3D distanceVector = cameraPos - gobPos;
+
+//        //Frustum cull calculation - that does not work :-)
+        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+//        qDebug() << "angle:" << angle;
+
+//        //if angle between camera Forward, and camera->GameObject > FOV of camera
+        if(angle > mFOVangle)
+            continue;   //don't draw object
+
+        //LOD calculation
+        float length = distanceVector.length();
+//        qDebug() << "distance is" << length;
+        /*************************************/
+
+
+        //First object - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
@@ -169,35 +192,37 @@ void RenderSystem::render()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        //Quick hack LOD test:
+        //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
         {
-            gsl::Vector3D cameraPos = mCurrentCamera->mViewMatrix.getPosition();
-            gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
-            gsl::Vector3D distanceVector = cameraPos - gobPos;
-            float length = distanceVector.length();
-            qDebug() << "distance is" << length;
-
             if (length < 4)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                mObjectsDrawn++;
             }
             else if(length < 6)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+                mObjectsDrawn++;
             }
             else
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+                mObjectsDrawn++;
             }
         }
         else    //no LOD exists
         {
             glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+            mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+            mObjectsDrawn++;
         }
         glBindVertexArray(0);
     }
@@ -255,7 +280,7 @@ void RenderSystem::exposeEvent(QExposeEvent *)
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mCurrentCamera->mProjectionMatrix.perspective(mFOVangle, mAspectratio, 0.1f, 100.f);
     //    qDebug() << mCamera.mProjectionMatrix;
 }
 
@@ -276,7 +301,9 @@ void RenderSystem::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 4) +
+                                                  "  |  Objects drawn: " + QString::number(mObjectsDrawn) +
+                                                  "  |  Vertices drawn: " + QString::number(mVerticesDrawn));                    ;
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }

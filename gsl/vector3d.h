@@ -32,7 +32,7 @@ public:
     //Vector3D operator*(Vector3D rhs) const;       //GLfloat operatoren funker ikke med denne???
     Vector3D operator/(GLfloat rhs) const;
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
-    GLfloat operator*(const Vector3D& rhs) const;  // v * v
+    GLfloat operator*(const Vector3D& rhs) const;  // v * v  - dot product
 
     //Functions
     GLfloat length() const;

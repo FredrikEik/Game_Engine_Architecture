@@ -69,6 +69,11 @@ private:
     int mMouseXlast{0};
     int mMouseYlast{0};
 
+    int mVerticesDrawn{0};
+    int mObjectsDrawn{0};
+
+    float mFOVangle{45};
+
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
