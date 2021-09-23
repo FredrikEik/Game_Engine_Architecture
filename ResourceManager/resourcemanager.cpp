@@ -40,10 +40,15 @@ GameObject *ResourceManager::addObject(std::string meshName)
 
     //Add standard components to GameObject
     MeshComponent* tempMesh = new MeshComponent();
-    //Dangerous, because mMeshes vector can resize and will move pointers:
-    tempMesh->mVAO[0] = mMeshHandler->mMeshes.at(meshIndex).mVAO[0];
-    tempMesh->mVertexCount[0] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[0];
-    tempMesh->mIndexCount[0] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[0];
+
+    //run through all potential LOD levels:
+    for(int i{0}; i<3; i++)
+    {
+        //Dangerous, because mMeshes vector can resize and will move pointers:
+        tempMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[i];
+        tempMesh->mVertexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[i];
+        tempMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[i];
+    }
     tempMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
     tempObject->mMesh = tempMesh;
 

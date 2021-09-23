@@ -169,8 +169,36 @@ void RenderSystem::render()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
-        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+        //Quick hack LOD test:
+        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+        {
+            gsl::Vector3D cameraPos = mCurrentCamera->mViewMatrix.getPosition();
+            gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+            gsl::Vector3D distanceVector = cameraPos - gobPos;
+            float length = distanceVector.length();
+            qDebug() << "distance is" << length;
+
+            if (length < 4)
+            {
+                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+            }
+            else if(length < 6)
+            {
+                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+            }
+            else
+            {
+                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+            }
+        }
+        else    //no LOD exists
+        {
+            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+        }
         glBindVertexArray(0);
     }
 

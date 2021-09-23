@@ -32,7 +32,7 @@ private:
     int makeAxis();
     int makeTriangle();
 
-    void initMesh(MeshData &tempMesh);
+    void initMesh(MeshData &tempMesh, int lodLevel);
 };
 
 #endif // MESHHANDLER_H

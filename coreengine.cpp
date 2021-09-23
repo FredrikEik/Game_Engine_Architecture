@@ -60,10 +60,10 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzanne 2 to check if resource handelig is correct:
-    temp = mResourceManager->addObject("suzanne.obj");
-    temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
-    temp->mTransform->mMatrix.scale(0.3f);
-    mRenderSystem->mGameObjects.push_back(temp);
+//    temp = mResourceManager->addObject("suzanne.obj");
+//    temp->mTransform->mMatrix.translate(-1.f, 1.f, -.5f);
+//    temp->mTransform->mMatrix.scale(0.3f);
+//    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
