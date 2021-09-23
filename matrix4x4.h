@@ -2,6 +2,7 @@
 #define MATRIX4X4_H
 
 #include "vector3d.h"
+#include "vec4.h"
 #include "gltypes.h"
 #include <iostream>
 #include <iomanip>
@@ -72,6 +73,9 @@ public:
         return output;
     }
     GLfloat getFloat(int space);
+
+    vec4 getColVec(int c);
+
 private:
     GLfloat matrix[16];
 };

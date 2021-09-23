@@ -46,7 +46,9 @@ struct materialId
 struct collider
 {
     gsl::Colliders mType{gsl::NOCOLLIDER};
-
+    gsl::Vector3D mMinCenter{-.5f, -.5f, -.5f};     //xyzMin, xyzMax if box, center, radius if sphere
+    gsl::Vector3D mMaxRadius{.5f, .5f, .5f};
+    bool bIsDynamic{false}; //static or dynamic collider
 };
 
 
