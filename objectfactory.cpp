@@ -4,7 +4,7 @@
 #include "xyz.h"
 #include "objimport.h"
 
-#define EXISTS(x) storedMeshes.find(x), != storedMeshes.end()
+#define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
 
 ObjectFactory::ObjectFactory()
 {
@@ -18,21 +18,30 @@ void ObjectFactory::createObject(std::string objectName)
     if(objectName == "Cube")
     {
         willCreateObject = new Cube;
-//                if (EXISTS("Cube"))
-        //        {
-        //            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
-        //        }
+        if (EXISTS("Cube"))
+        {
+            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
+        }
     }
 
     else if (objectName == "Triangle")
     {
         willCreateObject = new Triangle;
+        if (EXISTS("Triangle"))
+        {
+            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Triangle"]));
+        }
     }
 
     else if (objectName == "Goat")
     {
         willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
+        if (EXISTS("Cube"))
+        {
+            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Goat"]));
+        }
     }
+
 
     //    else if (objectName == "xyz")
     //    {
@@ -43,7 +52,7 @@ void ObjectFactory::createObject(std::string objectName)
 
     /*Trying to create each new object at an added position so
      *  all objects is not in the same place. Needs some work..*/
-//    willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
+        willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
     return;
@@ -55,8 +64,9 @@ void ObjectFactory::createObject(std::string objectName)
 //    qDebug() << storedMeshes.size();
 //    }
 //    else {
-//        ObjImport ObjImport;
+//        ObjImport *objImport;
 //        MeshComponent* newMesh = new MeshComponent();
 //        objImport.readFile(fileName, &newMesh->mVertices, &newMesh->mIndices);
+//        objImport->readFile(fileName, )
 //        storedMeshes.insert(std::pair<std::string, MeshComponent*>{nickName, newMesh});
 //    }
