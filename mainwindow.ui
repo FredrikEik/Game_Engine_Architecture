@@ -70,8 +70,8 @@
     </property>
     <addaction name="actionAdd_Triangle"/>
     <addaction name="actionAdd_Square"/>
-    <addaction name="actionAdd_Obj"/>
     <addaction name="actionAdd_Circle"/>
+    <addaction name="actionAdd_Monkey"/>
    </widget>
    <addaction name="menuAdd_Objects"/>
   </widget>
@@ -94,14 +94,14 @@
     <string>Add Square</string>
    </property>
   </action>
-  <action name="actionAdd_Obj">
-   <property name="text">
-    <string>Add Obj</string>
-   </property>
-  </action>
   <action name="actionAdd_Circle">
    <property name="text">
     <string>Add Circle</string>
+   </property>
+  </action>
+  <action name="actionAdd_Monkey">
+   <property name="text">
+    <string>Add Monkey</string>
    </property>
   </action>
  </widget>

@@ -13,6 +13,11 @@
 #include "shapefactory.h"
 #include "obj.h"
 #include "playerinputcomponent.h"
+#include "soundsource.h"
+#include "soundmanager.h"
+#include <chrono>   //for sleep_for
+#include <thread>   //for sleep_for
+
 
 
 class QOpenGLContext;
@@ -39,14 +44,8 @@ public:
 
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
+    void toggleShapes(int shapeID);
 
-    bool makeCircle = false;
-
-    bool makeSquare = false;
-
-    bool makeTriangle = false;
-
-    bool makeObj = false;
 
 
 private slots:
@@ -58,7 +57,7 @@ private:
     InputSystem *mInputSystem;
     PlayerInputComponent *mPlayerInput;
     Player *mPlayer;
-
+    SoundSource* mLaserSound{};
     Input mInput;
     ShapeFactory mShapeFactory;
 
@@ -66,6 +65,10 @@ private:
     void initObjects();
     void makeObject();
     void HandleInput();
+    void SoundHandler();
+
+    bool shapeExist[4];
+    int shapeID;
 
     void init();
 

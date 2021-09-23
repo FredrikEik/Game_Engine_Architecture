@@ -29,9 +29,9 @@ private slots:
 
     void on_actionAdd_Square_triggered();
 
-    void on_actionAdd_Obj_triggered();
-
     void on_actionAdd_Circle_triggered();
+
+    void on_actionAdd_Monkey_triggered();
 
 private:
     void init();

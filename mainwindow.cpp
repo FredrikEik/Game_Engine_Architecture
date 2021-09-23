@@ -93,29 +93,23 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
-    mRenderWindow->makeTriangle = true;
-    mShapefactory->createShape("Triangle");
+    mRenderWindow->toggleShapes(1);
 }
-
-
-void MainWindow::on_actionAdd_Square_triggered()
-{
-     mRenderWindow->makeSquare = true;
-     mShapefactory->createShape("Square");
-}
-
-
-void MainWindow::on_actionAdd_Obj_triggered()
-{
-     mRenderWindow->makeObj = true;
-     mShapefactory->createShape("Obj");
-}
-
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-     mRenderWindow->makeCircle = true;
-     mShapefactory->createShape("Circle");
-
+    mRenderWindow->toggleShapes(2);
 }
+
+void MainWindow::on_actionAdd_Square_triggered()
+{
+    mRenderWindow->toggleShapes(3);
+}
+
+void MainWindow::on_actionAdd_Monkey_triggered()
+{
+    mRenderWindow->toggleShapes(0);
+}
+
+
 

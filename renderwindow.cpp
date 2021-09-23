@@ -136,6 +136,7 @@ void RenderWindow::init()
 
 
 
+    SoundHandler();
 
     initObjects();
 
@@ -145,11 +146,23 @@ void RenderWindow::init()
 void RenderWindow::initObjects()
 {
     //********************** Making the object to be drawn **********************
+    mPlayer = new Player;
+    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->init();
+    mVisualObjects.push_back(mPlayer);
+
     VisualObject *temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
 
+
+    //testing ShapeFactory - Plain
+    temp = mShapeFactory.createShape("Plain");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 1;    //texture shader
+    temp->mTransform->mMatrix.translate(2.5f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
 
     //testing OBJ
     temp = mShapeFactory.createShape("Obj");
@@ -184,22 +197,12 @@ void RenderWindow::initObjects()
     temp->mTransform->mMatrix.translate(4.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
-    //testing ShapeFactory - Plain
-    temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mTransform->mMatrix.translate(2.5f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-
-    mPlayer = new Player;
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mVisualObjects.push_back(mPlayer);
 
 }
 
 void RenderWindow::makeObject()
 {
+
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
     {
@@ -238,46 +241,20 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-
-        //draw the object
-
-
+        if(i<=2){
+            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i>2){
+            if(shapeExist[i-3]){
+                glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                glBindVertexArray(0);}}
 
     }
-
-    glBindVertexArray( mVisualObjects[0]->mMesh->mVAO );
-    glDrawArrays(mVisualObjects[0]->mMesh->mDrawType, 0, mVisualObjects[0]->mMesh->mVertices.size());
-    glBindVertexArray(0);
-
-
-    if(makeObj == true)
-    {
-        glBindVertexArray( mVisualObjects[1]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[1]->mMesh->mDrawType, 0, mVisualObjects[1]->mMesh->mVertices.size());
-        glBindVertexArray(0);
-    }
-
-    if( makeTriangle == true)
-    {
-        glBindVertexArray( mVisualObjects[2]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[2]->mMesh->mDrawType, 0, mVisualObjects[2]->mMesh->mVertices.size());
-        glBindVertexArray(0);
-    }
-    if(makeCircle == true)
-    {
-        glBindVertexArray( mVisualObjects[3]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[3]->mMesh->mDrawType, 0, mVisualObjects[3]->mMesh->mVertices.size());
-        glBindVertexArray(0);
-    }
-    if(makeSquare == true)
-    {
-        glBindVertexArray( mVisualObjects[4]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[4]->mMesh->mDrawType, 0, mVisualObjects[4]->mMesh->mVertices.size());
-        glBindVertexArray(0);
-    }
-
-
 }
+
+
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
@@ -286,8 +263,6 @@ void RenderWindow::render()
     mPlayerInput->update(mPlayer,mInput);
     Camerainput->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
-
-
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -314,6 +289,14 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+}
+
+void RenderWindow::toggleShapes(int shapeID)
+{
+    if(shapeExist[shapeID])
+        shapeExist[shapeID]=false;
+    else
+        shapeExist[shapeID]=true;
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -460,6 +443,19 @@ void RenderWindow::HandleInput()
         if(mInput.E == true)
             mCurrentCamera->updateHeigth (mInputComponent->mCameraSpeed);
     }
+}
+
+void RenderWindow::SoundHandler()
+{
+    SoundManager::getInstance()->init();
+
+    mLaserSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/laser.wav", true, 0.7f);
+
+    mLaserSound->play();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    mLaserSound->stop();
 }
 
 
