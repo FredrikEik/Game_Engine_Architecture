@@ -12,7 +12,7 @@ XYZ::XYZ()
     getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
     getMeshComp()->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
-    getTransformComp()->mMatrix.setToIdentity();
+//    getTransformComp()->mMatrix.setToIdentity();
 }
 
 XYZ::~XYZ()

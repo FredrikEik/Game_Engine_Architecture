@@ -15,7 +15,6 @@
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-//class VisualObject;
 class GameObject;
 class Camera;
 class Texture;
@@ -80,8 +79,6 @@ private:
     ObjectFactory* ObjFactory = new ObjectFactory;
     SoundSource* mStereoSound;
     SoundSource* mPop;
-
-//    std::vector<VisualObject*> mVisualObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

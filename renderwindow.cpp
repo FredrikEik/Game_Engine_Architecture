@@ -127,21 +127,6 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-//    //********************** Making the object to be drawn **********************
-//    VisualObject *temp = new XYZ();
-//    temp->init();
-//    mVisualObjects.push_back(temp);
-
-//    //testing triangle class
-//    temp = new Triangle();
-//    temp->init();
-//    temp->mMatrix.translate(0.f, 0.f, .5f);
-//    mVisualObjects.push_back(temp);
-
-//    ObjFactory->createObject("Cube");
-//    ObjFactory->createObject("Triangle");
-//    ObjFactory->createObject("Goat");
-
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
