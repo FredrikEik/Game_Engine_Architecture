@@ -1,5 +1,5 @@
-#ifndef COMPONENTS_H
-#define COMPONENTS_H
+#ifndef COMPONENTTYPES_H
+#define COMPONENTTYPES_H
 
 #include "gltypes.h"
 #include <vertex.h>
@@ -7,14 +7,14 @@
 
 
 
-struct TransformComponent
+struct Transform
 {
 public:
     gsl::Matrix4x4 mMatrix;
 
 };
 
-struct MeshComponent
+struct Mesh
 {
 public:
        GLuint mVAO{0};
@@ -27,17 +27,17 @@ public:
        std::vector<GLuint> mIndices;
 };
 
-struct MaterialComponent
+struct Material
 {
 public:
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
 };
 
-struct SoundComponent
+struct Sound
 {
 public:
 
 };
 
-#endif // COMPONENTS_H
+#endif // COMPONENTTYPES_H

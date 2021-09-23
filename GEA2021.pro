@@ -7,14 +7,17 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
-    components.cpp \
-    entity.cpp \
+    componentmanager.cpp \
+    componenttypes.cpp \
+    ecs.cpp \
     entitymanager.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    system.cpp \
+    systemmanager.cpp \
     texture.cpp \
     triangle.cpp \
     vector2d.cpp \
@@ -25,9 +28,10 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
-    components.h \
+    componentmanager.h \
+    componenttypes.h \
     constants.h \
-    entity.h \
+    ecs.h \
     entitymanager.h \
     gltypes.h \
     input.h \
@@ -37,6 +41,8 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    system.h \
+    systemmanager.h \
     texture.h \
     triangle.h \
     vector2d.h \
