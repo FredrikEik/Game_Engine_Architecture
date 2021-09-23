@@ -73,6 +73,6 @@ void Factory::removeComponent(uint32 entityID, std::type_index componentType, ui
 			}
 		}
 	}
-
+	
 	componentManagers->at(componentType)->removeComponent(entityID);
 }

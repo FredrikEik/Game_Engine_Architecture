@@ -4,7 +4,7 @@
 #include <vector>
 #include <assert.h>
 #include <algorithm>
-
+#include "../DataStructures/TArray.h"
 /* There should only ever exist one class per component type. Therefore, do NOT instantiate this directly. Go through Factory
 * The class exists as a way to manage all the components of a given type. 
 * The intention is to make lookups very fast and easy
@@ -17,7 +17,8 @@ class ComponentManager
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
 		packedComponentArray{ (*new std::vector<T>) },
-		componentSize{sizeof(T)}
+		componentSize{sizeof(T)},
+		testPacked{*new TArray<T>}
 	{
 		for (auto &it: sparseComponentArray)
 			it=core::MAX_ENTITIES+1;
@@ -44,6 +45,7 @@ private:
 	std::array<uint32, core::MAX_ENTITIES>& sparseComponentArray;
 	// This array contains all the components
 	std::vector<T>& packedComponentArray;
+	TArray<T>& testPacked;
 	bool packedComponentDirty{ false };
 
 	bool bIsReusable{ false };
@@ -56,6 +58,7 @@ inline ComponentManager<T>::~ComponentManager()
 {
 	delete &sparseComponentArray;
 	delete &packedComponentArray;
+	delete& testPacked;
 }
 
 template<class T>
@@ -72,9 +75,12 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusa
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
 	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray before push: " << packedComponentArray.size()<<'\n';
-	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
+	T element(entityID, sparseComponentArray[entityID], sizeof(T));
+	//packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID], sizeof(T)));
+	packedComponentArray.push_back(element);
+	testPacked.push_back(element);
 	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray after push: " << packedComponentArray.size()<<"\n\n";
-
+	std::cout << "Size of created component: " << sizeof(T) << '\n';
 	return packedComponentArray.back().ID;
 }
 
@@ -107,12 +113,19 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 			{
 				std::cout << "Removing component "<<typeid(T).name() <<" from entityID " <<it.entityID << '\n';
 			}
+			std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
 			//return;
-			assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
+			//assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
 			packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
+			//packedComponentArray.erase(packedComponentArray.begin() + positionInPacked, 
+			//	packedComponentArray.begin() + positionInPacked + (packedComponentArray[positionInPacked].size / sizeof(T)));
+
 			uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
-			sparseComponentArray[swappedEntityID] = positionInPacked;
+			testPacked;
+			////sparseComponentArray[swappedEntityID] = positionInPacked;
+			//std::cout<<"testPacked before erase: "<<
+			testPacked.erase(positionInPacked);
 		//}
 		// Do stuff with the general case
 	}

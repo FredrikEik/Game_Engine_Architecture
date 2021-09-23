@@ -13,10 +13,11 @@
 struct Component 
 {
 public:
-	Component(uint32 entity, uint32 componentID) : entityID{ entity }, ID{ componentID } {}
+	Component(uint32 entity, uint32 componentID, size_t inSize) : entityID{ entity }, ID{ componentID }, size{ inSize } {}
 	~Component(){}
 	uint32 ID;
 	uint32 entityID;
+	size_t size;
 };
 
 //struct UniqueComponent : public Component
@@ -30,7 +31,7 @@ public:
 struct testComponent : public Component
 {
 public:
-	testComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	testComponent(uint32 entity, uint32 componentID, size_t size) : Component(entity, componentID, size) {}
 	//testComponent(const testComponent& other) : Component(other) {}
 	~testComponent(){}
 	float pos[3]{};
@@ -39,7 +40,7 @@ public:
 struct MeshComponent final : public Component
 {
 public:
-	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	MeshComponent(uint32 entity, uint32 componentID, size_t size) : Component(entity, componentID, size) {}
 	std::size_t hash{};
 	GLuint m_VAO{};
 	GLuint m_VBO{};
@@ -51,7 +52,7 @@ public:
 
 struct CameraComponent final : public Component
 {
-	CameraComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	CameraComponent(uint32 entity, uint32 componentID, size_t size) : Component(entity, componentID, size) {}
 
 	glm::mat4x4 m_viewMatrix{};
 	glm::mat4x4 m_projectionMatrix{};
@@ -59,13 +60,7 @@ struct CameraComponent final : public Component
 
 struct TransformComponent final : public Component
 {
-	TransformComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	TransformComponent(uint32 entity, uint32 componentID, size_t size) : Component(entity, componentID, size) {}
 
 	glm::mat4x4 transform{ glm::mat4(1.0f) };
 };
-
-namespace type
-{
-	//constexpr std::vector<std::pair<std::type_index, >>
-//#define TYPE()
-}
