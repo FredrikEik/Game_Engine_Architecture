@@ -22,6 +22,7 @@
 #include "soundsystem.h"
 #include "coreengine.h"
 #include "math_constants.h"
+#include "meshhandler.h"    //to check linebox
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -191,6 +192,13 @@ void RenderSystem::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
+        //Quick hack test to check if linebox works:
+        if(i == 2)
+        {
+            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+            glBindVertexArray( lineBox.mVAO[0] );
+            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+        }
         //draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
@@ -301,7 +309,7 @@ void RenderSystem::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 4) +
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 5) +
                                                   "  |  Objects drawn: " + QString::number(mObjectsDrawn) +
                                                   "  |  Vertices drawn: " + QString::number(mVerticesDrawn));                    ;
             frameCount = 0;     //reset to show a new message in 60 frames

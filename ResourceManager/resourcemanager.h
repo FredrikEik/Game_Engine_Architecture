@@ -14,6 +14,7 @@
 class GameObject;
 class MeshHandler;
 class TextureHandler;
+struct MeshData;
 
 class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
@@ -24,6 +25,8 @@ public:
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
     void setUpAllTextures();
+
+    MeshData makeLineBox(std::string meshName);
 
 private:
     ResourceManager();  //singleton

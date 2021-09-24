@@ -138,3 +138,8 @@ void ResourceManager::setUpAllTextures()
     mTextureHandler->makeTexture();
     mTextureHandler->makeTexture("hund.bmp");
 }
+
+MeshData ResourceManager::makeLineBox(std::string meshName)
+{
+    return mMeshHandler->makeLineBox(meshName);
+}

@@ -54,12 +54,12 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes:
-    for(int i{0}; i < 100; i++)
+    for(int i{0}; i < 10; i++)
     {
-        for(int j{0}; j < 100; j++)
+        for(int j{0}; j < 10; j++)
         {
             temp = mResourceManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(1.f*i, 1.f, -.5f*j);
+            temp->mTransform->mMatrix.translate(2.f*i, -1.f, -2.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
             mRenderSystem->mGameObjects.push_back(temp);
         }

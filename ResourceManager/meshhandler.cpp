@@ -120,6 +120,10 @@ int MeshHandler::readObj(std::string filename)
                 //Vertex made - pushing it into vertex-vector
                 tempVertecies.push_back(tempVertex);
 
+                //make collider only for LOD 0 == original mesh
+                if(lod == 0)
+                    makeColliderCorners(temp, tempVertex);
+
                 continue;
             }
             if (oneWord == "vt")
@@ -243,6 +247,67 @@ int MeshHandler::makeTriangle()
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
+}
+
+MeshData MeshHandler::makeLineBox(std::string meshName)
+{
+    auto result = mMeshMap.find(meshName);
+    gsl::Vector3D &lowLeftBack = mMeshes[result->second].mLowLeftBackCorner;
+    gsl::Vector3D &upRightFront = mMeshes[result->second].mUpRightFrontCorner;
+    MeshData temp;
+    float xMinus{lowLeftBack.x};
+    float xPlus{upRightFront.x};
+    float yMinus{lowLeftBack.y};
+    float yPlus{upRightFront.y};
+    float zMinus{lowLeftBack.z};
+    float zPlus{upRightFront.z};
+
+    temp.mVertices[0].insert( temp.mVertices[0].end(),
+      {//Vertex data for front points       color                       uv
+       Vertex{xMinus, yMinus, zPlus,       1, 0.301, 0.933,          0.f, 0.f},     // 0
+       Vertex{xPlus,  yMinus, zPlus,       1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xPlus,  yPlus,  zPlus,       1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xMinus, yPlus,  zPlus,       1, 0.301, 0.933,          0.f, 0.f},
+       //Vertex data for back
+       Vertex{xMinus, yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f},    // 4
+       Vertex{xPlus,  yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xPlus,  yPlus,  zMinus,      1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xMinus, yPlus,  zMinus,      1, 0.301, 0.933,          0.f, 0.f},
+                      });
+
+    //One line at a time
+    temp.mIndices[0].insert( temp.mIndices[0].end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+      0, 4, 3, 7,                   //leftside lines
+      1, 5, 2, 6                    //rightside lines
+                     });
+
+    temp.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(temp, 0);
+
+    return temp;
+}
+
+void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
+{
+    //testing min
+    if(vertexIn.x < meshIn.mLowLeftBackCorner.x)
+        meshIn.mLowLeftBackCorner.x = vertexIn.x;
+    if(vertexIn.y < meshIn.mLowLeftBackCorner.y)
+        meshIn.mLowLeftBackCorner.y = vertexIn.y;
+    if(vertexIn.z < meshIn.mLowLeftBackCorner.z)
+        meshIn.mLowLeftBackCorner.z = vertexIn.z;
+
+    //testing max
+    if(vertexIn.x > meshIn.mUpRightFrontCorner.x)
+        meshIn.mUpRightFrontCorner.x = vertexIn.x;
+    if(vertexIn.y > meshIn.mUpRightFrontCorner.y)
+        meshIn.mUpRightFrontCorner.y = vertexIn.y;
+    if(vertexIn.z > meshIn.mUpRightFrontCorner.z)
+        meshIn.mUpRightFrontCorner.z = vertexIn.z;
 }
 
 void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
