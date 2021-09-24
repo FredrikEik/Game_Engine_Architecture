@@ -21,7 +21,7 @@ int MeshHandler::makeMesh(std::string meshName)
     auto result = mMeshMap.find(meshName);
     //if already made
     if (result != mMeshMap.end()) {        //found!!!
-        qDebug() << meshName.c_str() << "made already";
+//        qDebug() << meshName.c_str() << "made already";
         meshIndex = result->second;
     }
     //not made, make new
@@ -207,6 +207,12 @@ int MeshHandler::readObj(std::string filename)
 
         initMesh(temp, lod);
     }
+
+    //calculate ca radius for collider - TODO: this is not correct:
+    float a = temp.mLowLeftBackCorner.length();
+    float b = temp.mUpRightFrontCorner.length();
+    temp.mColliderRadius = (a>b) ? a : b;
+
     qDebug() << QString::fromStdString(filename) << "successfully loaded";
 
     return mMeshes.size()-1;    //returns index to last object

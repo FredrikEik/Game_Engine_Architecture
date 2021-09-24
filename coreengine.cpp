@@ -65,6 +65,11 @@ void CoreEngine::setUpScene()
         }
     }
 
+    temp = mResourceManager->addObject("suzanne.obj");
+    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
+    temp->mTransform->mMatrix.scale(0.5f);
+    mRenderSystem->mGameObjects.push_back(temp);
+
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderSystem->mCurrentCamera = mEditorCamera;

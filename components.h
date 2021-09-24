@@ -19,6 +19,7 @@ struct MeshComponent
     GLint mVertexCount[3]{-1};
     GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
+    float mColliderRadius{0.f};
 };
 
 struct MaterialComponent

@@ -50,6 +50,7 @@ GameObject *ResourceManager::addObject(std::string meshName)
         tempMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[i];
     }
     tempMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
+    tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     tempObject->mMesh = tempMesh;
 
     tempObject->mMaterial = new MaterialComponent();
@@ -142,4 +143,9 @@ void ResourceManager::setUpAllTextures()
 MeshData ResourceManager::makeLineBox(std::string meshName)
 {
     return mMeshHandler->makeLineBox(meshName);
+}
+
+MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
+{
+    return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }

@@ -18,6 +18,7 @@ struct MeshData
     //AABB Collider box: (the largest of these will be the radius for a Bounding sphere)
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
+    float mColliderRadius{0};
 };
 
 //Because we need OpenGLFunctions, this class can not be static

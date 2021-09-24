@@ -27,6 +27,7 @@ public:
     void setUpAllTextures();
 
     MeshData makeLineBox(std::string meshName);
+    MeshData makeCircleSphere(float radius, bool rgbColor);
 
     MeshHandler* mMeshHandler{nullptr};
 
