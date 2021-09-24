@@ -671,14 +671,31 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (mInput.RMB)
     {
+
+        setCursor(Qt::BlankCursor);
+        QPoint mousePos = mapFromGlobal(QCursor::pos());
+        auto origo = QPoint(width()/2, height()/2);
+        auto xOffset = mousePos.x()-origo.x();
+        auto yOffset = mousePos.y()-origo.y();
+        auto multiplier{0.1f};
+
+
+        //mCamera.yaw(-1*xOffset*multiplier);
+        //mCamera.pitch(-1*yOffset*multiplier);
+
+        QCursor::setPos(mapToGlobal(origo));
+
+
         //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mMouseXlast = event->pos().x() - mMouseXlast;
-        mMouseYlast = event->pos().y() - mMouseYlast;
+        //mMouseXlast = event->pos().x() - mMouseXlast;
+        //mMouseYlast = event->pos().y() - mMouseYlast;
 
         if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
+            mCurrentCamera->yaw(mCameraRotateSpeed * xOffset * multiplier/*mCameraRotateSpeed * mMouseXlast*/);
         if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+            mCurrentCamera->pitch(mCameraRotateSpeed * yOffset * multiplier);
+    }else{
+        setCursor(Qt::ArrowCursor);
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
