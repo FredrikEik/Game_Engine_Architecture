@@ -6,7 +6,8 @@
 #include <vector>
 #include <string>
 
-
+// I will soon rename this class to "ResourceManager" because
+// this name fits better when including audio and texture resources.
 class ObjectManager : public QOpenGLFunctions_4_1_Core
 {
 public:
@@ -14,6 +15,7 @@ public:
     GameObject* CreateObject(std::string filename);
     int readObj(std::string filename);
     void init(Mesh mesh);
+    ObjectManager& getInstance();
 
     int XYZ();
 

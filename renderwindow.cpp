@@ -132,18 +132,18 @@ void RenderWindow::init()
     //********************** Making the object to be drawn **********************
 
     //forsøk på å bruke objectmanager til å lage aksene
-//    mObjectManager = new class ObjectManager();
-//    GameObject *temp = mObjectManager->CreateObject("XYZ");
+    mObjectManager = new class ObjectManager();
+    GameObject *temp = mObjectManager->CreateObject("XYZ");
 
-    GameObject* temp = new XYZ();
-    mGameObjects.push_back(temp);
-    temp->init();
+//    GameObject* temp = new XYZ();
+//    mGameObjects.push_back(temp);
+//    temp->init();
 
-    mGameObjects.push_back(temp = new Triangle());
-    temp->init();
+//    mGameObjects.push_back(temp = new Triangle());
+//    temp->init();
 
-    mGameObjects.push_back(temp = new Cube());
-    temp->init();
+//    mGameObjects.push_back(temp = new Cube());
+//    temp->init();
 
 //    mGameObjects.push_back(temp = new Sphere(2));
 //    temp->init();

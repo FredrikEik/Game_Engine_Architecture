@@ -7,21 +7,21 @@ ObjectManager::ObjectManager()
 
 GameObject* ObjectManager::CreateObject(std::string filename)
 {
+
     int meshIndex = -1;
 
     auto result = mMeshIndexMap.find(filename);
 
-    if(result != mMeshIndexMap.find(filename))
+    if(result != mMeshIndexMap.end()){
         meshIndex = result->second;
+        qDebug() << "mesh is already made, use same meshIndex";
+    }
     else{
 
         if(filename.find("XYZ") != std::string::npos){
             meshIndex = XYZ();
 
         }
-//      if(){
-
-//      }
 
         mMeshIndexMap.emplace(filename, meshIndex);
     }
@@ -34,6 +34,8 @@ GameObject* ObjectManager::CreateObject(std::string filename)
     temp->material = new Material();
 
     return temp;
+
+
 }
 
 int ObjectManager::readObj(std::string filename) //Ole's code
@@ -229,9 +231,17 @@ void ObjectManager::init(Mesh mesh) // &mesh ?
     //    tempMeshComp.mVertexCount = tempMeshComp.mVertices.size();
 }
 
-int ObjectManager::XYZ()
+ObjectManager &ObjectManager::getInstance()
 {
-    //Ole's method
+    static ObjectManager* mInstance = new ObjectManager();
+    return *mInstance;
+}
+
+int ObjectManager::XYZ()
+{   
+    mesh = new Mesh();
+    material = new Material();
+    transform = new Transform();
 
     mMeshComponents.emplace_back(Mesh());
     Mesh &mesh = mMeshComponents.back();
