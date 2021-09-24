@@ -10,7 +10,7 @@ public:
     virtual void init() = 0;
     void draw();
 
-    std::string mName;
+    std::string mName{"DefaultName"};
     int entitiyID;
 
     struct TransformComponent* mTransform{nullptr};
