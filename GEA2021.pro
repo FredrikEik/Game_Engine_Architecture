@@ -5,41 +5,77 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+INCLUDEPATH += \
+    ./gsl \
+    ./SoundCode/h \
+    ./SoundCode/scr \
+    ./Shaders
+
+
+mac {
+    LIBS += -framework OpenAL
+}
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
+
+
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
-    matrix3x3.cpp \
-    matrix4x4.cpp \
+    cube.cpp \
+    factory.cpp \
+    gameobject.cpp \
+    gsl/matrix3x3.cpp \
+    gsl/matrix4x4.cpp \
+    mariocube.cpp \
+    objreader.cpp \
+    plane.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    SoundCode/scr/soundmanager.cpp \
+    SoundCode/scr/soundsource.cpp \
     texture.cpp \
-    triangle.cpp \
-    vector2d.cpp \
-    vector3d.cpp \
+    gsl/vector2d.cpp \
+    gsl/vector3d.cpp \
+    SoundCode/scr/vector3.cpp \
     vertex.cpp \
-    visualobject.cpp \
-    xyz.cpp
+    SoundCode/scr/wavfilehandler.cpp \
+    xyz.cpp \
+    triangle.cpp
+
 
 HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    cube.h \
+    factory.h \
+    gameobject.h \
     gltypes.h \
     input.h \
-    math_constants.h \
-    matrix3x3.h \
-    matrix4x4.h \
+    gsl/math_constants.h \
+    gsl/matrix3x3.h \
+    gsl/matrix4x4.h \
+    mariocube.h \
+    objreader.h \
+    plane.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
     texture.h \
-    triangle.h \
-    vector2d.h \
-    vector3d.h \
+    gsl/vector2d.h \
+    gsl/vector3d.h \
     vertex.h \
-    visualobject.h \
-    xyz.h
+    xyz.h \
+    triangle.h \
+    SoundCode/h/vector3.h \
+    SoundCode/h/wavfilehandler.h \
+    SoundCode/h/soundmanager.h \
+    SoundCode/h/soundsource.h
 
 FORMS += \
     mainwindow.ui
@@ -47,5 +83,5 @@ FORMS += \
 DISTFILES += \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
-    Shaders\plainfragment.frag \
-    Shaders\plainvertex.vert
+    Shaders/plainfragment.frag \
+    Shaders/plainvertex.vert

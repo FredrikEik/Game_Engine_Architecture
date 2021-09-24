@@ -1,6 +1,22 @@
 #include "components.h"
 
-components::components()
+//Components::Components()
+//{
+
+//}
+
+TransformComponent::TransformComponent()
 {
 
 }
+
+MeshComponent::MeshComponent()
+{
+
+}
+
+MaterialComponent::MaterialComponent()
+{
+
+}
+

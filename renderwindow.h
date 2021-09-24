@@ -5,14 +5,16 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-
+#include "gameobject.h"
+#include "factory.h"
 #include "input.h"
 #include "constants.h"
+#include "soundmanager.h"
 
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class VisualObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -33,6 +35,12 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    void buttonCreate(std::string objectName);
+
+
+    SoundSource* mClick{};
+
+
 private slots:
     void render();
 
@@ -49,15 +57,13 @@ private:
 
     void handleInput();
 
-    void setupPlainShader(int shaderIndex);
-    GLint mMatrixUniform{-1};
-    GLint vMatrixUniform{-1};
-    GLint pMatrixUniform{-1};
+    GLint mMatrixUniform[4];
+    GLint vMatrixUniform[4];
+    GLint pMatrixUniform[4];
 
+    void setupPlainShader(int shaderIndex);
     void setupTextureShader(int shaderIndex);
-    GLint mMatrixUniform1{-1};
-    GLint vMatrixUniform1{-1};
-    GLint pMatrixUniform1{-1};
+
     GLint mTextureUniform{-1};
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
@@ -67,7 +73,11 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    Factory* factory = new Factory;
+
+
+    //std::vector<VisualObject*> mVisualObjects;
+
 
     Input mInput;
     float mCameraSpeed{0.05f};

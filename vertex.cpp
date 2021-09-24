@@ -24,6 +24,13 @@ Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b , gsl::Vector2D c)
     mST = c;
 }
 
+Vertex::Vertex(QVector3D a, QVector3D b , QVector2D c)
+{
+    mXYZ = gsl::Vector3D(a.x(), a.y(), a.z());
+    mNormal = gsl::Vector3D(b.x(), b.y(), b.z());
+    mST = gsl::Vector2D(c.x(), c.y());
+}
+
 Vertex::~Vertex() { }
 
 void Vertex::set_xyz(GLfloat *xyz)

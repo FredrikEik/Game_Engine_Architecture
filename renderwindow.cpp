@@ -11,12 +11,22 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
+#include "gameobject.h"
 #include "xyz.h"
+#include "cube.h"
+#include "plane.h"
 #include "triangle.h"
+#include "mariocube.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "components.h"
+#include "factory.h"
+#include "objreader.h"
+#include "soundmanager.h"
+#include "soundsource.h"
+#include "vector3.h"
+
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -88,7 +98,7 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
-
+    //mTextures
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
@@ -124,20 +134,95 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
-    VisualObject *temp = new XYZ();
-    temp->init();
-    mVisualObjects.push_back(temp);
 
-    //testing triangle class
-    temp = new Triangle();
-    temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+    //factory->createObject("Plane");
+    //factory->createObject("Triangle");
+    //factory->createObject("Cube");
+    //factory->createObject("MarioCube");
+
+    /*
+    GameObject *marioCube = new MarioCube();
+    marioCube->init();
+    mGameObjects.push_back(marioCube);
+
+    GameObject *plane = new Plane();
+    plane->init();
+    mGameObjects.push_back(plane);
+
+    GameObject *cube = new Cube();
+    cube->init();
+    mGameObjects.push_back(cube);
+
+    GameObject *triangle = new Triangle();
+    triangle->init();
+    mGameObjects.push_back(triangle);
+    */
+
+
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
+
+    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+
+    setupPlainShader(0);
+    setupTextureShader(1);
+
+
+
+    //********************** Sound set up **********************
+
+    //SoundSource* mMario{};
+    SoundSource* mVideoGameLand{};
+    SoundSource* mVideoGameLand2{};
+
+    SoundManager::getInstance()->init();
+    mClick = SoundManager::getInstance()->createSource(
+                "Click", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/click.wav", false, 1.0f);
+
+    /*mMario = SoundManager::getInstance()->createSource(
+                "Mario", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/mario.wav", false, 1.0f);*/
+    mVideoGameLand = SoundManager::getInstance()->createSource(
+                "VideoGameLand", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/videogameland.wav", false, 0.2f);
+    mVideoGameLand2 = SoundManager::getInstance()->createSource(
+                "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
+
+    mVideoGameLand->play();
+    //mVideoGameLand2->play();
+
+
+
+
+
+    //mMario->play(); //doesnt work
+    //mExplosionSound->play();
+    //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
+
+
+
+
+
+
+
+    //**********************************************************
+
 }
+
+
+
+
+
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
@@ -154,31 +239,30 @@ void RenderWindow::render()
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    //This should be in a loop!
+    //This should be in a loop! <- Ja vi må loope dette :/
+    if(factory->mGameObjects.size() > 0)
     {
-        //First objekct - xyz
-        //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        for (unsigned int i=0; i<factory->mGameObjects.size(); i++)
+		{	
+            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
+			//send data to shader
+            if(shaderProgramIndex == 1)
+            {
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            }
+			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
-        //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-        //draw the object
-        mVisualObjects[0]->draw();
+            //draw the object
 
-        //Second object - triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+			factory->mGameObjects[i]->draw();
+            factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
+         }
     }
 
     //Calculate framerate before
@@ -193,20 +277,22 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
 void RenderWindow::setupTextureShader(int shaderIndex)
 {
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
@@ -282,6 +368,17 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderWindow::buttonCreate(std::string objectName)
+{
+    mClick->play();
+    if(objectName == "MarioCube"){
+    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
+    }
+    factory->createObject(objectName);
+
+}
+
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()
@@ -290,7 +387,10 @@ void RenderWindow::checkForGLerrors()
     {
         const QList<QOpenGLDebugMessage> messages = mOpenGLDebugLogger->loggedMessages();
         for (const QOpenGLDebugMessage &message : messages)
-            qDebug() << message;
+        {
+            if (!(message.type() == message.OtherType)) // got rid of "object ... will use VIDEO memory as the source for buffer object operations"
+                qDebug() << message;
+        }
     }
     else
     {
@@ -358,6 +458,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
+        SoundManager::getInstance()->cleanUp();
         mMainWindow->close();
     }
 

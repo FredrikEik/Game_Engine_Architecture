@@ -3,33 +3,17 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 #include <vector>
-#include "vertex.h"
-#include "matrix4x4.h"
-#include "shader.h"
-
-class RenderWindow;
+#include "components.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();
     virtual ~VisualObject();
-    virtual void init();
-    virtual void draw()=0;
-
-    gsl::Matrix4x4 mMatrix;
+    virtual void init() = 0;
+    virtual void draw() = 0;
 
     std::string mName;
-
-    RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
-
-protected:
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
-
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
-
+    std::vector<Components*> mComponents;
 };
 #endif // VISUALOBJECT_H
 

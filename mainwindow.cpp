@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
 
+
 #include "renderwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -79,10 +80,26 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+    ui->createDropDownBox->addItem("Cube");
+    ui->createDropDownBox->addItem("Plane");
+    ui->createDropDownBox->addItem("Triangle");
+    ui->createDropDownBox->addItem("MarioCube");
 }
 
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
+}
+
+
+
+void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
+{
+            itemToSpawn = arg1.toStdString();
+}
+
+void MainWindow::on_CreateObject_clicked()
+{
+        mRenderWindow->buttonCreate(itemToSpawn);
 }
