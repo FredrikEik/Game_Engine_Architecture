@@ -41,7 +41,8 @@ void ECSManager::destroyEntity(uint32 entityID)
 	std::vector<std::pair<std::type_index, uint32>> components = entities[entityID].second;
 	for (uint32 i{}; i < components.size(); ++i)
 	{
-		factory.removeComponent(entityID, components[i].first, components[i].second); 
+		//factory.removeComponent(entityID, components[i].first, components[i].second); 
+		removeComponentByRTTI(entityID, components[i].first);
 	}
 	entities[entityID].second.clear();
 	entities[entityID].first = false;
@@ -73,4 +74,27 @@ uint32 ECSManager::loadAsset(uint32 entityID, enum DefaultAsset defaultAsset)
 Factory::ReusableAsset ECSManager::getReusableAsset(std::size_t hash)
 {
 	return factory.getReusableAsset(hash);
+}
+
+void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componentType)
+{
+	if (componentType == std::type_index(typeid(TransformComponent)))
+		removeComponent<TransformComponent>(entityID);
+	else if (componentType == std::type_index(typeid(CameraComponent)))
+		removeComponent<CameraComponent>(entityID);
+	else if (componentType == std::type_index(typeid(MeshComponent)))
+		removeComponent<MeshComponent>(entityID);
+	else
+	{
+		std::string msg{ "You are trying to remove component " };
+		msg.append(componentType.name());
+		msg.append(", but you have not added it to ");
+		msg.append(__func__);
+		msg.append(" at ");
+		msg.append(__FILE__);
+
+		DEBUG_LOG(msg);
+
+		assert(false); // You need to add the component you are using above
+	}
 }

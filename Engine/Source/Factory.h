@@ -7,7 +7,7 @@
 #include <filesystem>
 #include "Systems/MeshSystem.h"
 #include <iostream>
-
+#include <algorithm>
 // There should only exist one factory, get it through the ECSManager
 class Factory
 {
@@ -46,7 +46,8 @@ private:
 	void removeComponent(uint32 entityID);
 
 	void removeComponent(uint32 entityID, std::type_index componentType, uint32 componentID);
-
+	template <typename T>
+	void removeReusableComponent(uint32 entityID);
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
 	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
 
@@ -90,8 +91,31 @@ inline void Factory::removeComponent(uint32 entityID)
 {
 	std::type_index classType = std::type_index(typeid(T));
 	assert(componentManagers->find(classType) != componentManagers->end());
+	ComponentManager<T>* manager = (ComponentManager<T>*)componentManagers->at(classType);
+	//if (manager->bIsReusable)
+	//{
+	//	removeReusableComponent<T>(entityID);
+	//	return;
+	//}
+	//(*(ComponentManager<T>*)componentManagers->at(classType)).removeComponent(entityID);
+	manager->removeComponent(entityID);
+}
 
-	(*(ComponentManager<T>*)componentManagers->at(classType)).removeComponent(entityID);
+template<typename T>
+inline void Factory::removeReusableComponent(uint32 entityID)
+{
+	ComponentManager<T>* manager = (ComponentManager<T>*)componentManagers->at(std::type_index(typeid(T)));
+	T* component = manager->getComponentChecked(entityID);
+	if (component && reusableAssetComponents.find(component->hash) != reusableAssetComponents.end())
+	{
+		std::vector<uint32>& entities = reusableAssetComponents.at(component->hash).entitiesUsingAsset;
+		auto iterator = std::lower_bound(entities.begin(), entities.end(), entityID);
+		entities.erase(iterator);
+		return;
+	}
+
+	
+
 }
 
 inline uint32 Factory::loadAsset(uint32 entityID, const std::filesystem::path& filePath)

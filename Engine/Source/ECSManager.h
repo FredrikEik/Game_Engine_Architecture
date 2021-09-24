@@ -23,6 +23,9 @@ public:
 	template<typename ... Types>
 	void removeComponents(uint32 entityID);
 
+	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
+
+
 	void destroyEntity(uint32 entityID);
 
 	uint32 newEntity();

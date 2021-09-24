@@ -17,8 +17,7 @@ class ComponentManager
 	ComponentManager() :
 		sparseComponentArray{ (*new std::array<uint32, core::MAX_ENTITIES>{}) },
 		packedComponentArray{ (*new std::vector<T>) },
-		componentSize{sizeof(T)},
-		testPacked{*new TArray<T>}
+		componentSize{sizeof(T)}
 	{
 		for (auto &it: sparseComponentArray)
 			it=core::MAX_ENTITIES+1;
@@ -26,7 +25,7 @@ class ComponentManager
 	~ComponentManager();
 public:
 	T& getComponent(uint32 entityID);
-
+	T* getComponentChecked(uint32 entityID);
 	std::vector<T>& getComponentArray();
 
 	// Shrink the packedComponentArray if it is dirty
@@ -45,7 +44,6 @@ private:
 	std::array<uint32, core::MAX_ENTITIES>& sparseComponentArray;
 	// This array contains all the components
 	std::vector<T>& packedComponentArray;
-	TArray<T>& testPacked;
 	bool packedComponentDirty{ false };
 
 	bool bIsReusable{ false };
@@ -58,7 +56,6 @@ inline ComponentManager<T>::~ComponentManager()
 {
 	delete &sparseComponentArray;
 	delete &packedComponentArray;
-	delete& testPacked;
 }
 
 template<class T>
@@ -75,10 +72,8 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusa
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
 	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray before push: " << packedComponentArray.size()<<'\n';
-	T element(entityID, sparseComponentArray[entityID], sizeof(T));
-	//packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID], sizeof(T)));
-	packedComponentArray.push_back(element);
-	testPacked.push_back(element);
+	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
+
 	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray after push: " << packedComponentArray.size()<<"\n\n";
 	std::cout << "Size of created component: " << sizeof(T) << '\n';
 	return packedComponentArray.back().ID;
@@ -113,7 +108,7 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 			{
 				std::cout << "Removing component "<<typeid(T).name() <<" from entityID " <<it.entityID << '\n';
 			}
-			std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
+			//std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
 			//return;
 			//assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
 			packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
@@ -122,10 +117,8 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 			//	packedComponentArray.begin() + positionInPacked + (packedComponentArray[positionInPacked].size / sizeof(T)));
 
 			uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
-			testPacked;
 			////sparseComponentArray[swappedEntityID] = positionInPacked;
 			//std::cout<<"testPacked before erase: "<<
-			testPacked.erase(positionInPacked);
 		//}
 		// Do stuff with the general case
 	}
@@ -141,6 +134,14 @@ inline T& ComponentManager<T>::getComponent(uint32 entityID)
 {
 	assert(entityID >= 0 && sparseComponentArray[entityID] < packedComponentArray.size());
 	return packedComponentArray[sparseComponentArray[entityID]];
+}
+
+template<class T>
+inline T* ComponentManager<T>::getComponentChecked(uint32 entityID)
+{
+	if(entityID >= 0 && sparseComponentArray[entityID] < packedComponentArray.size())
+		return &packedComponentArray[sparseComponentArray[entityID]];
+	return nullptr;
 }
 
 template<class T>

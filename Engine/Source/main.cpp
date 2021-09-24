@@ -135,18 +135,6 @@ int main()
 	//ECS->loadAsset(EntityID, asset_CUBE);
 	//
 	//ECS->addComponent<TransformComponent>(EntityID);
-	std::vector< TArray<Component>*> *arr = new std::vector <TArray<Component>*>;
-
-	TArray<TransformComponent> *compAr = new TArray<TransformComponent>;
-	arr->push_back((TArray<Component>*)compAr);
-
-	TArray<TransformComponent>* trArr = (TArray<TransformComponent>*)arr->at(0);
-	trArr->push_back(TransformComponent(0, 0, sizeof(TransformComponent)));
-	trArr->push_back(TransformComponent(0, 0, sizeof(TransformComponent)));
-	trArr->push_back(TransformComponent(0, 0, sizeof(TransformComponent)));
-
-	arr->at(0)->erase(1);
-	trArr->push_back(TransformComponent(0, 0, sizeof(TransformComponent)));
 
 	while (!glfwWindowShouldClose(window))
 	{
