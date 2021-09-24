@@ -98,13 +98,3 @@ void Camera::setCameraSpeed(float value)
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
 }
-
-//gsl::Vector3D Camera::position() const
-//{
-//    return mPosition;
-//}
-
-//gsl::Vector3D Camera::up() const
-//{
-//    return mUp;
-//}

@@ -138,17 +138,17 @@ void RenderSystem::render()
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
-        gsl::Vector3D cameraPos = mCurrentCamera->mViewMatrix.getPosition();
+        gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
         gsl::Vector3D distanceVector = cameraPos - gobPos;
 
 //        //Frustum cull calculation - that does not work :-)
-        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+//        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
 //        qDebug() << "angle:" << angle;
 
 //        //if angle between camera Forward, and camera->GameObject > FOV of camera
-        if(angle > mFOVangle)
-            continue;   //don't draw object
+//        if(angle > mFOVangle)
+//            continue;   //don't draw object
 
         //LOD calculation
         float length = distanceVector.length();
