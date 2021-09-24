@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "Components.h"
+#include <map>
 #include <vector>
 #include <string>
 
@@ -11,15 +12,25 @@
 class ObjectManager : public QOpenGLFunctions_4_1_Core
 {
 public:
-    ObjectManager();
-    GameObject* CreateObject(std::string filename);
-    int readObj(std::string filename);
-    void init(Mesh mesh);
-    ObjectManager& getInstance();
 
-    int XYZ();
+    class GameObject* CreateObject(std::string filename);
+
+    static ObjectManager& getInstance();
+
+
 
 private:
+    /** Functions */
+    ObjectManager();
+
+    void init(Mesh mesh);
+
+    int readObj(std::string filename);
+
+
+    //    int XYZ();
+
+    /** Variables */
     GameObject* object;
     std::vector<GameObject*> gameObjects;
 

@@ -8,7 +8,7 @@ ObjectManager::ObjectManager()
 GameObject* ObjectManager::CreateObject(std::string filename)
 {
 
-    int meshIndex = -1;
+    int meshIndex{-1};
 
     auto result = mMeshIndexMap.find(filename);
 
@@ -18,27 +18,28 @@ GameObject* ObjectManager::CreateObject(std::string filename)
     }
     else{
 
-        if(filename.find("XYZ") != std::string::npos){
-            meshIndex = XYZ();
+        if(filename.find(".obj") != std::string::npos)
+            meshIndex = readObj(gsl::MeshFilePath + filename);
 
-        }
 
         mMeshIndexMap.emplace(filename, meshIndex);
     }
 
-    GameObject* temp;
+    if(meshIndex == -1){
+        std::cout << "meshIndex is -1 (no mesh)";
+    }
+
+    GameObject* temp/* = new GameObject()*/;
 
     temp->mesh = &mMeshComponents.at(meshIndex); //This is a hack, please fix.. er ikke sikker på hvordan, fikser senere
     temp->transform = new Transform();
-    temp->transform->mMatrix.setToIdentity();
+    temp->transform->mMatrix.identity();
     temp->material = new Material();
 
     return temp;
-
-
 }
 
-int ObjectManager::readObj(std::string filename) //Ole's code
+int ObjectManager::readObj(std::string filename) //Ole's obj reader code
 {
     //should check if this object is new before this!
     mMeshComponents.emplace_back(Mesh());
@@ -237,21 +238,21 @@ ObjectManager &ObjectManager::getInstance()
     return *mInstance;
 }
 
-int ObjectManager::XYZ()
-{   
-    mesh = new Mesh();
-    material = new Material();
-    transform = new Transform();
+//int ObjectManager::XYZ()
+//{
+//    mesh = new Mesh();
+//    material = new Material();
+//    transform = new Transform();
 
-    mMeshComponents.emplace_back(Mesh());
-    Mesh &mesh = mMeshComponents.back();
+//    mMeshComponents.emplace_back(Mesh());
+//    Mesh &mesh = mMeshComponents.back();
 
-    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mesh.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    mesh.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    mesh.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+//    mesh.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+//    mesh.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
-    return mMeshComponents.size()-1;
-}
+//    return mMeshComponents.size()-1;
+//}

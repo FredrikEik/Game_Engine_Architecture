@@ -17,12 +17,12 @@ public:
     virtual void init();
     virtual void draw()=0;
 
-    std::string mName;
+    std::string mName{"null"};
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
 
-    Mesh* mesh;             //MeshComponent
-    Material* material;     //MaterialComponent
-    Transform* transform;   //TransformComponent
+    Mesh* mesh{nullptr};             //MeshComponent
+    Material* material{nullptr};     //MaterialComponent
+    Transform* transform{nullptr};   //TransformComponent
 
 };
 #endif // GAMEOBJECT_H

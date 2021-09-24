@@ -131,13 +131,26 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
-    //forsøk på å bruke objectmanager til å lage aksene
-    mObjectManager = new class ObjectManager();
-    GameObject *temp = mObjectManager->CreateObject("XYZ");
+    //forsøk på å bruke objectmanager til å lage Objekter
+    ObjectManager& mObjectManager = ObjectManager::getInstance();
+
+//    GameObject *temp = mObjectManager.CreateObject("suzanne.obj");
+//    mGameObjects.push_back(temp);
+
+//     GameObject *temp = mObjectManager.CreateObject("suzanne.obj");
+//        temp->material->mShaderProgram = 0; //plain shader
+//        temp->transform->mMatrix.translate(1.f, 1.f, -.5f);
+//        temp->transform->mMatrix.scale(0.5f);
+//        mGameObjects.push_back(temp);
 
 //    GameObject* temp = new XYZ();
 //    mGameObjects.push_back(temp);
 //    temp->init();
+
+//    GameObject* temp = new Cube();
+//    mGameObjects.push_back(temp);
+//    temp->init();
+
 
 //    mGameObjects.push_back(temp = new Triangle());
 //    temp->init();
@@ -166,36 +179,64 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
+
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(0);
 
     //Draws the objects
-    //This should be in a loop!
+    for( int i = 0; i < mGameObjects.size(); i++)
     {
-        //First object - xyz
-        //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram());
+        glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram() );
 
-        //send data to shader
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transform->mMatrix.constData());
-        //draw the object
-        mGameObjects[0]->draw();
-        mGameObjects[2]->draw();
+        if(mGameObjects[i]->material->mShaderProgram == 0) //PlainShader
+        {
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
+        }
+        else if(mGameObjects[i]->material->mShaderProgram == 1) //TextureShader
+        {
+            glUniform1i(mTextureUniform, mGameObjects[i]->material->mTextureUnit);
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
+        }
+
+        glBindVertexArray( mGameObjects[i]->mesh->mVAO );
+        glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices.size());
+        glBindVertexArray(0);
+    }
+
+
+
+    /** Old rendering stuff ( using draw(), no loop ) */
+//        //First object - xyz
+//        //what shader to use
+//        glUseProgram(mShaderPrograms[0]->getProgram());
+
+//        //send data to shader
+//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transform->mMatrix.constData());
+//        //draw the object
+//        mGameObjects[0]->draw();
+//        mGameObjects[2]->draw();
 //        mGameObjects[3]->draw();
 
-        //Second object - triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram());
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transform->mMatrix.constData());
-        mGameObjects[1]->draw();
-        mGameObjects[1]->transform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-    }
+//        //Second object - triangle
+//        //what shader to use - texture shader
+//        glUseProgram(mShaderPrograms[1]->getProgram());
+//        //what texture (slot) to use
+//        glUniform1i(mTextureUniform, 1);
+//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transform->mMatrix.constData());
+//        mGameObjects[1]->draw();
+//        mGameObjects[1]->transform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+
+
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -209,6 +250,8 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+
+    glUseProgram(0);
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
