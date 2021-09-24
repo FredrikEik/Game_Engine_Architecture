@@ -28,6 +28,8 @@ public:
 
     MeshData makeLineBox(std::string meshName);
 
+    MeshHandler* mMeshHandler{nullptr};
+
 private:
     ResourceManager();  //singleton
     void operator=(ResourceManager&){};           //Assignment operator
@@ -41,7 +43,6 @@ private:
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
 
-    MeshHandler* mMeshHandler{nullptr};
     TextureHandler *mTextureHandler{nullptr};
 };
 

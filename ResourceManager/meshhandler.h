@@ -28,7 +28,12 @@ public:
 
     int makeMesh(std::string meshName);
 
+    ///Makes an AABB box matching the size of the mesh given
     MeshData makeLineBox(std::string meshName);
+
+    ///Makes a sphere of 3 circles with given radius.
+    /// Color option for rgb or pink
+    MeshData makeCircleSphere(float radius = 1, bool rgbColor = true);
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
@@ -36,8 +41,10 @@ private:
     int readObj(std::string filename);
     int makeAxis();
     int makeTriangle();
+
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
 
+    ///Initializes the mesh with OpenGL buffers - VAO, VBO, EAB.
     void initMesh(MeshData &tempMesh, int lodLevel);
 };
 

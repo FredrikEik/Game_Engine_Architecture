@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "constants.h"
+#include "math_constants.h"
 
 MeshHandler::MeshHandler()
 {
@@ -238,7 +239,7 @@ int MeshHandler::makeTriangle()
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
     temp.mVertices[0].push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    temp.mVertices[0].push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    temp.mVertices[0].push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.f}); // Bottom Right
     temp.mVertices[0].push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
     temp.mDrawType = GL_TRIANGLES;
@@ -247,6 +248,94 @@ int MeshHandler::makeTriangle()
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
+}
+
+MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
+{
+    MeshData tempMesh;
+
+    float angle = gsl::deg2radf(90/6);
+
+    //X-axis circle
+    float zStart = radius;
+    float yStart = 0.f;
+
+    //pink
+    gsl::Vector3D color{1.f, 0.301f, 0.933f};
+
+    if (rgbColor)
+        color = gsl::Vector3D(1.f, 0.f, 0.f);
+
+    for (int i{0}; i < 24 ; i++)
+    {
+        float tempAngle = angle*i;
+        float zNew = zStart * cosf(tempAngle) - yStart * sinf(tempAngle);
+        float yNew = zStart * sinf(tempAngle) + yStart * cosf(tempAngle);
+
+        tempMesh.mVertices[0].push_back(Vertex{0.f, yNew, zNew,    color.x, color.y, color.z,   0.f, 0.f});
+    }
+
+    //Y-axis circle
+    zStart = radius;
+    float xStart = 0.f;
+    if (rgbColor)
+        color = gsl::Vector3D(0.f, 1.f, 0.f);
+
+    for (int i{0}; i < 24 ; i++)
+    {
+        float tempAngle = angle*i;
+        float zNew = zStart * cosf(tempAngle) - xStart * sinf(tempAngle);
+        float xNew = zStart * sinf(tempAngle) + xStart * cosf(tempAngle);
+
+        tempMesh.mVertices[0].push_back(Vertex{xNew, 0.f, zNew,      color.x, color.y, color.z,   0.f, 0.f});
+    }
+
+    //Z-axis circle
+    xStart = radius;
+    yStart = 0.f;
+    if (rgbColor)
+        color = gsl::Vector3D(0.f, 0.f, 1.f);
+
+    for (int i{0}; i < 24 ; i++)
+    {
+        float tempAngle = angle*i;
+        float xNew = xStart * cosf(tempAngle) - yStart * sinf(tempAngle);
+        float yNew = xStart * sinf(tempAngle) + yStart * cosf(tempAngle);
+
+        tempMesh.mVertices[0].push_back(Vertex{xNew, yNew, 0.f,      color.x, color.y, color.z,   0.f, 0.f});
+    }
+
+    //Making indices:
+    for (int i{0}; i < 23 ; i++)
+    {
+        tempMesh.mIndices[0].push_back(i);
+        tempMesh.mIndices[0].push_back(i+1);
+    }
+    tempMesh.mIndices[0].push_back(23);
+    tempMesh.mIndices[0].push_back(0);
+
+    for (int i{24}; i < 47 ; i++)
+    {
+        tempMesh.mIndices[0].push_back(i);
+        tempMesh.mIndices[0].push_back(i+1);
+    }
+    tempMesh.mIndices[0].push_back(47);
+    tempMesh.mIndices[0].push_back(24);
+
+    for (int i{48}; i < 71 ; i++)
+    {
+        tempMesh.mIndices[0].push_back(i);
+        tempMesh.mIndices[0].push_back(i+1);
+    }
+    tempMesh.mIndices[0].push_back(71);
+    tempMesh.mIndices[0].push_back(48);
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
 }
 
 MeshData MeshHandler::makeLineBox(std::string meshName)

@@ -192,13 +192,7 @@ void RenderSystem::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
-        //Quick hack test to check if linebox works:
-        if(i == 2)
-        {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }
+
         //draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
@@ -231,6 +225,16 @@ void RenderSystem::render()
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
+        }
+
+        //Quick hack test to check if linebox/circle works:
+        if(i == 2)
+        {
+//            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->mMeshHandler->makeCircleSphere(2.f, false);
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
+            glBindVertexArray( lineBox.mVAO[0] );
+            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         glBindVertexArray(0);
     }

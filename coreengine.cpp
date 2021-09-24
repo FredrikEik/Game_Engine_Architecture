@@ -44,7 +44,7 @@ void CoreEngine::setUpScene()
     temp->mMaterial->mShaderProgram = 1;
     temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
 
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to moving triangle:
     mResourceManager->addComponent("caravan_mono.wav", temp);
 
@@ -59,7 +59,7 @@ void CoreEngine::setUpScene()
         for(int j{0}; j < 10; j++)
         {
             temp = mResourceManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(2.f*i, -1.f, -2.f*j);
+            temp->mTransform->mMatrix.translate(2.f*i, -3.f, -2.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
             mRenderSystem->mGameObjects.push_back(temp);
         }

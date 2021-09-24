@@ -17,6 +17,7 @@ public:
     Matrix4x4(bool isIdentity = false);
     Matrix4x4(std::initializer_list<GLfloat> values);
 
+    ///returns Matrix set to identity matrix
     Matrix4x4 identity();
     void setToIdentity();
 
