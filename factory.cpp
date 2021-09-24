@@ -3,6 +3,7 @@
 #include "triangle.h"
 #include "cube.h"
 #include "factory.h"
+#include "bigplane.h"
 #include "objreader.h"
 #include <QDebug>
 
@@ -57,6 +58,16 @@ void Factory::createObject(std::string objectName)
         if(EXISTS("MarioCube")) //If MarioCube mesh exists
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["MarioCube"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+    }
+    else if(objectName == "BigPlane")
+    {
+        objectToCreate = new BigPlane;
+        if(EXISTS("BigPlane"))
+        {
+            objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["BigPlane"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;

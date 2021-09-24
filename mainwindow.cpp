@@ -84,6 +84,7 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("Plane");
     ui->createDropDownBox->addItem("Triangle");
     ui->createDropDownBox->addItem("MarioCube");
+    ui->createDropDownBox->addItem("BigPlane");
 }
 
 //Example of a slot called from the button on the top of the program.

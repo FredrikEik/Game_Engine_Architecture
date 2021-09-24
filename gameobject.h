@@ -19,6 +19,7 @@ public:
     MaterialComponent* getMaterialComponent(){return materialComp;}
 
     void setMeshComponent(MeshComponent* newMeshComp){meshComp=newMeshComp;}
+    void collisionWorldSpace();
 
 private:
     TransformComponent* transformComp;

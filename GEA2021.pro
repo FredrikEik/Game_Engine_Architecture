@@ -23,6 +23,7 @@ win32 {
 
 
 SOURCES += main.cpp \
+    bigplane.cpp \
     camera.cpp \
     components.cpp \
     cube.cpp \
@@ -49,6 +50,7 @@ SOURCES += main.cpp \
 
 
 HEADERS += \
+    bigplane.h \
     camera.h \
     components.h \
     constants.h \

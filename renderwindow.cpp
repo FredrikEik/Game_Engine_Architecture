@@ -158,6 +158,7 @@ void RenderWindow::init()
     mGameObjects.push_back(triangle);
     */
 
+    factory->createObject("BigPlane");
 
 
     //********************** Set up camera **********************
@@ -261,7 +262,8 @@ void RenderWindow::render()
             //draw the object
 
 			factory->mGameObjects[i]->draw();
-            factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
+            if(i != 0)
+            factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.0f,0.1f,-0.0f);
          }
     }
 

@@ -58,5 +58,20 @@ public:
     GLint mPhongTextureUniform{-1};
 
 };
+struct CollisionComponent
+{
+public:
+    CollisionComponent();
+    float cpxOne = 0;
+    float cpyOne = 0;
+    float cpxTwo = 0;
+    float cpyTwo = 0;
+
+    float cpxOneLocal = 0;
+    float cpyOneLocal = 0;
+    float cpxTwoLocal = 0;
+    float cpyTwoLocal = 0;
+    QMatrix4x4 mMatrix;
+};
 
 #endif // COMPONENTS_H
