@@ -219,6 +219,9 @@ void RenderWindow::init()
     //entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
     //RenderSys->init(mc1);
 
+    entitySys->construct(this, 2,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+
+
     //dog triangle
     temp = new Triangle();
     temp->init();
@@ -230,6 +233,7 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

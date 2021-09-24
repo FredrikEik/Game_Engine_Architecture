@@ -3,24 +3,25 @@
 #include "components.h"
 #include <QVector3D>
 #include "meshsystem.h"
+
 class EntitySystem
 {
 public:
     EntitySystem();
     ~EntitySystem();
-    void construct(int EntityId,
-                   TransformComponent* TransComp,
-                   MeshComponent* MeshComp,
-                   MaterialComponent* MatComp,
+    void construct(class RenderWindow * inRW,
+                   int EntityId,
                    std::string ObjReader,
-                   meshsystem * MeshSys,
-                   std::vector<MeshComponent*> meshVec,
-                   std::vector<TransformComponent*> transVec,
-                   std::vector<MaterialComponent*> MatVec,
                    QVector3D StartPos,
                    GLuint shader,
                    GLint texture
                    );
+
+    class RenderWindow * rw;
+    TransformComponent *TransComp;
+    MeshComponent *MeshComp;
+    MaterialComponent *MatComp;
+    meshsystem * MeshSys;
 };
 
 #endif // ENTITYSYSTEM_H
