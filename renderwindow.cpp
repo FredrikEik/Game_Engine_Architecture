@@ -224,11 +224,22 @@ void RenderWindow::render()
         float distanceToRightObject = ((vectorToObj * rightPlaneNormal) / rightPlaneNormal.length());
         float distanceToLeftObject = ((vectorToObj * leftPlaneNormal) / leftPlaneNormal.length());
 
+        gsl::Vector3D forwardPlaneNormal = mCurrentCamera->getFowrardVector();
+        float distanceToFrontObject = ((vectorToObj * forwardPlaneNormal) / forwardPlaneNormal.length());
+
         if(distanceToRightObject > 0)
         {
             continue;
         }
         if(distanceToLeftObject > 0)
+        {
+            continue;
+        }
+        if(distanceToFrontObject > 10)
+        {
+            continue;
+        }
+        if(distanceToFrontObject < 1)
         {
             continue;
         }
