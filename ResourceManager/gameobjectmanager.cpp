@@ -13,9 +13,9 @@
 #include "gameobject.h"
 #include "constants.h"
 #include "soundsystem.h"
-#include "soundhandler.h"
-#include "meshhandler.h"
-#include "texturehandler.h"
+#include "ResourceManager/soundhandler.h"
+#include "ResourceManager/meshhandler.h"
+#include "ResourceManager/texturehandler.h"
 
 GameObjectManager::GameObjectManager()
 {
@@ -65,6 +65,7 @@ bool GameObjectManager::addComponent(std::string assetName, GameObject *ownerObj
         qDebug() << "Trying to add Component to non-existing GameObject";
         return false;
     }
+
     gsl::AssetType assetType = findAssetType(assetName);
 
     switch(assetType)
@@ -106,6 +107,7 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
     WaveRawData *waveData{nullptr};
 
     auto result = mSoundBufferMap.find(assetName);
+
     if (result != mSoundBufferMap.end())
     {
         soundIndex = result->second;
