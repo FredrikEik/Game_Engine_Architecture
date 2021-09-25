@@ -18,6 +18,7 @@ public:
     std::vector<VisualObject*> mVisualObjects;
 private:
 int id;
+std::string name;
 };
 
 #endif // RESOURCEMANAGER_H
