@@ -155,7 +155,7 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    for(int i{0}; i < mResource->mVisualObjects.size(); i++)
+    for(unsigned int i{0}; i < mResource->mVisualObjects.size(); i++)
     {
         //First objekct - xyz
         //what shader to use
@@ -201,7 +201,7 @@ void RenderWindow::render()
 
     //Moves the dog triangle - should be mada another way!!!!
 
-    for(int i = 0; i < mResource->mVisualObjects.size(); i++)
+    for(unsigned int i = 0; i < mResource->mVisualObjects.size(); i++)
     {
         mResource->mVisualObjects[i]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
     }

@@ -3,7 +3,7 @@
 
 ResourceManager::ResourceManager()
 {
-
+id = 0;
 }
 
 void ResourceManager::manageObjects()
@@ -15,7 +15,6 @@ void ResourceManager::manageObjects()
 //      temp->init();
 //      mVisualObjects.push_back(temp);
 
-    int id = 0;
     std::string name = "objName";
     addObject(name, id, 1, 1, 1, 0);
 

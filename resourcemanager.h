@@ -17,7 +17,7 @@ public:
                    int TransformID = 0, int MeshID = 0, int MaterialID = 0, int GravityID = 0);
     std::vector<VisualObject*> mVisualObjects;
 private:
-
+int id;
 };
 
 #endif // RESOURCEMANAGER_H
