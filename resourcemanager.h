@@ -11,6 +11,7 @@ class ResourceManager
 {
 public:
     ResourceManager();
+    ~ResourceManager();
 
     void manageObjects(std::string objectName);
     void addObject(std::string name = "DefaultGameObject", int id = 0,

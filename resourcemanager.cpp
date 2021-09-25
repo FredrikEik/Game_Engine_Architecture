@@ -7,6 +7,11 @@ id = 0;
 std::string name = "objName";
 }
 
+ResourceManager::~ResourceManager()
+{
+
+}
+
 void ResourceManager::manageObjects(std::string objectName)
 {
 
