@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "shaderhandler.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -7,7 +7,7 @@
 
 //#include "GL/glew.h" - using QOpenGLFunctions instead
 
-Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
+ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath)
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
 
@@ -86,12 +86,12 @@ Shader::Shader(const GLchar *vertexPath, const GLchar *fragmentPath)
     glDeleteShader( fragment );
 }
 
-void Shader::use()
+void ShaderHandler::use()
 {
     glUseProgram( this->program );
 }
 
-GLuint Shader::getProgram() const
+GLuint ShaderHandler::getProgram() const
 {
     return program;
 }

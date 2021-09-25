@@ -18,6 +18,9 @@ public:
     Vector3D(const int v);
     Vector3D(const double v);
 
+    //Copy constructor
+    Vector3D(Vector3D const&vIN);
+
     //Operators
     const Vector3D& operator=(const Vector3D &rhs);     // v = v
     Vector3D operator+(const Vector3D &rhs) const;      // v + v

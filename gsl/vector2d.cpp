@@ -5,19 +5,15 @@
 namespace gsl
 {
     Vector2D::Vector2D(GLfloat x_in, GLfloat y_in) : x{x_in}, y{y_in}
-    {
-
-    }
+    {    }
 
     Vector2D::Vector2D(const int v) : x{static_cast<GLfloat>(v)}, y{static_cast<GLfloat>(v)}
-    {
-
-    }
+    {    }
 
     Vector2D::Vector2D(const double v) : x{static_cast<GLfloat>(v)}, y{static_cast<GLfloat>(v)}
-    {
+    {    }
 
-    }
+    Vector2D::Vector2D(const Vector2D &vIN) : x{vIN.x}, y{vIN.y} {}
 
     const Vector2D& Vector2D::operator=(const Vector2D &rhs)
     {

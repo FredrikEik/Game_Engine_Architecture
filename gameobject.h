@@ -3,20 +3,16 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 
+#include "components.h"
+
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
-    GameObject();
-    virtual ~GameObject();
-    virtual void init() = 0;
-    void draw();
-
     std::string mName{"DefaultName"};
-    int entitiyID;
 
-    struct TransformComponent* mTransform{nullptr};
-    struct MeshComponent* mMesh{nullptr};
-    struct MaterialComponent* mMaterial{nullptr};
-    struct GravityComponent* mGravity{nullptr};
+    TransformComponent* mTransform{nullptr};
+    MeshComponent* mMesh{nullptr};
+    MaterialComponent* mMaterial{nullptr};
+    SoundComponent* mSoundComponent{nullptr};
 };
 #endif // GAMEOBJECT_H
 

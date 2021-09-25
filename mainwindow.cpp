@@ -5,7 +5,10 @@
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
 
-#include "renderwindow.h"
+#include "rendersystem.h"
+#include "soundsystem.h"
+#include "ResourceManager/gameobjectmanager.h"
+#include "coreengine.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -17,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete mRenderWindow;
+    delete mRenderSystem;
     delete ui;
 }
 
@@ -53,36 +56,65 @@ void MainWindow::init()
     qDebug() << "Requesting surface format: " << format;
 
     //We have a format for the OpenGL window, so let's make it:
-    mRenderWindow = new RenderWindow(format, this);
+    mRenderSystem = new RenderSystem(format, this);
 
     //Check if renderwindow did initialize, else prints error and quit
-    if (!mRenderWindow->context()) {
+    if (!mRenderSystem->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindow;
+        delete mRenderSystem;
         return;
     }
 
     //The OpenGL RenderWindow got made, so continuing the setup:
     //We put the RenderWindow inside a QWidget so we can put in into a
     //layout that is made in the .ui-file
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
+    mRenderWindowContainer = QWidget::createWindowContainer(mRenderSystem);
     //OpenGLLayout is made in the .ui-file!
     ui->OpenGLLayout->addWidget(mRenderWindowContainer);
 
     //Set the size of the program in % of the actual screen size
     QSize tempSize = QGuiApplication::primaryScreen()->size();
 
-    tempSize.rheight() *= 0.85;
+    tempSize.rheight() *= 0.75;
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
+
+    mCoreEngine = new CoreEngine(mRenderSystem);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
 
-//Example of a slot called from the button on the top of the program.
-void MainWindow::on_pushButton_toggled(bool checked)
+void MainWindow::on_actionAdd_Triangle_triggered()
 {
-    mRenderWindow->toggleWireframe(checked);
+    GameObject *temp = GameObjectManager::getInstance().addObject("triangle");
+    mRenderSystem->mGameObjects.push_back(temp);
 }
+
+void MainWindow::on_actionAdd_Suzanne_triggered()
+{
+    GameObject *temp = GameObjectManager::getInstance().addObject("suzanne.obj");
+    mRenderSystem->mGameObjects.push_back(temp);
+}
+
+//Example of a slot called from the button on the top of the program.
+void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
+{
+    mRenderSystem->toggleWireframe(checked);
+    if(checked)
+        ui->pb_toggleWireframe->setText("Show Solid");
+    else
+        ui->pb_toggleWireframe->setText("Show Wireframe");
+}
+
+void MainWindow::on_pb_togglePlay_toggled(bool checked)
+{
+    mCoreEngine->togglePlayMode(checked);
+
+    if(checked)
+        ui->pb_togglePlay->setText("Stop (R)");
+    else
+        ui->pb_togglePlay->setText("Play (R)");
+}
+

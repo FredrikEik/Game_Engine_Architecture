@@ -5,6 +5,7 @@
 
 class QWidget;
 class RenderWindow;
+class CoreEngine;
 
 namespace Ui {
 class MainWindow;
@@ -18,15 +19,20 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void on_pushButton_toggled(bool checked);
+public slots:
+    void on_actionAdd_Triangle_triggered();
+    void on_actionAdd_Suzanne_triggered();
+
+    void on_pb_toggleWireframe_toggled(bool checked);
+    void on_pb_togglePlay_toggled(bool checked);
 
 private:
     void init();
     Ui::MainWindow *ui;
 
-    QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
+    QWidget *mRenderWindowContainer{nullptr};
+    RenderWindow *mRenderWindow{nullptr};
+    CoreEngine *mCoreEngine{nullptr};
 };
 
 #endif // MAINWINDOW_H

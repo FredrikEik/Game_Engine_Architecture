@@ -1,6 +1,8 @@
 ﻿#include "camera.h"
 #include <QDebug>
 
+#include "soundsystem.h"
+
 Camera::Camera()
 {
     mViewMatrix.setToIdentity();
@@ -57,6 +59,8 @@ void Camera::update()
 
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
+
+    SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
@@ -84,12 +88,13 @@ void Camera::moveRight(float delta)
     mPosition += right * delta;
 }
 
-gsl::Vector3D Camera::position() const
+void Camera::setCameraSpeed(float value)
 {
-    return mPosition;
-}
+    mCameraSpeed += value;
 
-gsl::Vector3D Camera::up() const
-{
-    return mUp;
+    //Keep within some min and max values
+    if(mCameraSpeed < 0.01f)
+        mCameraSpeed = 0.01f;
+    if (mCameraSpeed > 0.3f)
+        mCameraSpeed = 0.3f;
 }
