@@ -74,7 +74,6 @@ private:
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-    float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
 
@@ -93,6 +92,13 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+
+    float FOV{45.f};
+    float mAspectratio{1.f};
+    float mNearPlane{0.1f};
+    float mFarPlane{100.f};
+
+    int mObjectsDrawn{0};
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

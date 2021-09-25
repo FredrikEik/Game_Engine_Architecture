@@ -38,6 +38,25 @@ GameObject* ResourceManager::CreateObject(std::string filepath)
 
     for(auto obj : mObjectsMap)
     {
+        if(filepath == "xyz" || filepath == "XYZ")
+        {
+            tempGO = new GameObject();
+            tempGO->mMeshComp = new MeshComponent();
+            tempGO->mTransformComp = new TransformComponent();
+            tempGO->mTransformComp->mMatrix.setToIdentity();
+            tempGO->mMaterialComp = new MaterialComponent();
+
+            //Burde ikke hardkode dette
+            tempGO->mMaterialComp->mShaderProgram = 1;
+            tempGO->mMaterialComp->mTextureUnit = 1;
+
+            objectIDcounter++;
+            createXYZ(tempGO->mMeshComp);
+            filepath = filepath + std::to_string(objectIDcounter);
+            ResourceManager::init(*tempGO->mMeshComp);
+            mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
+            return tempGO;
+        }
         if(obj.first.find(filepath) != std::string::npos) //if it found the filepath
         {
             tempGO = new GameObject();
@@ -258,6 +277,16 @@ void ResourceManager::init(MeshComponent &MeshComp)
     }
 
     glBindVertexArray(0);
+}
+
+void ResourceManager::createXYZ(MeshComponent *MeshComp)
+{
+    MeshComp->mVertices.push_back(Vertex{0,0,0,1,0,0});
+    MeshComp->mVertices.push_back(Vertex{3,0,0,1,0,0});
+    MeshComp->mVertices.push_back(Vertex{0,0,0,0,1,0});
+    MeshComp->mVertices.push_back(Vertex{0,3,0,0,1,0});
+    MeshComp->mVertices.push_back(Vertex{0,0,0,0,0,1});
+    MeshComp->mVertices.push_back(Vertex{0,0,3,0,0,1});
 }
 
 

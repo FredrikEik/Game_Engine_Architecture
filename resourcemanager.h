@@ -25,7 +25,7 @@ private:
     GameObject* tempGO;
     std::vector<GameObject*> mObjects;
     std::unordered_map<std::string, GameObject> mObjectsMap;
-
+    void createXYZ(MeshComponent *MeshComp);
 public:
     static int objectIDcounter;
 

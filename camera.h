@@ -18,6 +18,9 @@ public:
     void updateForwardVector();
     void update();
 
+    gsl::Vector3D getFowrardVector();
+    gsl::Vector3D getRightVector();
+
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
 
@@ -31,7 +34,7 @@ public:
     gsl::Vector3D up() const;
 
 private:
-    gsl::Vector3D mForward{0.f, 0.f, -1.f};
+    gsl::Vector3D mForward{0.f, 0.f, 1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 

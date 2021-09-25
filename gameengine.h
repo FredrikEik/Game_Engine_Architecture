@@ -31,6 +31,8 @@ private:
      ResourceManager *mResourceManager{nullptr};
     //std::vector<GameObject*> mGameObjects;
 
+    GameObject* tempGameObject;
+
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
 

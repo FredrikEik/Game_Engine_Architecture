@@ -28,7 +28,10 @@ void Camera::updateRightVector()
 {
     mRight = mForward^mUp;
     mRight.normalize();
-//    qDebug() << "Right " << mRight;
+
+    // y should allways be 0
+    mRight.y = 0;
+    //qDebug() << "Right " << mRight;
 }
 
 void Camera::updateForwardVector()
@@ -38,8 +41,11 @@ void Camera::updateForwardVector()
     mRight.normalize();
     mUp = gsl::Vector3D(0.f, 1.f, 0.f);
     mUp.rotateX(mPitch);
+    mUp.rotateY(mYaw);
     mUp.normalize();
     mForward = mUp^mRight;
+
+
 
     updateRightVector();
 }
@@ -56,6 +62,16 @@ void Camera::update()
 
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
+}
+
+gsl::Vector3D Camera::getFowrardVector()
+{
+    return mForward;
+}
+
+gsl::Vector3D Camera::getRightVector()
+{
+    return mRight;
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
