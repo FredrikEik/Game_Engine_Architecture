@@ -129,7 +129,7 @@ void RenderWindow::init()
 
     // Gaute's ObjectManager
     mResource = new ResourceManager;
-    mResource->manageObjects();
+    mResource->manageObjects("dog");
 
     //Set up camera
     mCurrentCamera = new Camera();
