@@ -22,7 +22,7 @@ void ResourceManager::manageObjects(std::string objectName)
 //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, 1, 1, 1, 0);
+    addObject(name, id, 0, 0, 1, 1, 0);
 
     //Dag's dog triangle
 //      temp = new Triangle();
@@ -43,11 +43,15 @@ void ResourceManager::manageObjects(std::string objectName)
     id++;
 }
 
-void ResourceManager::addObject(std::string name, int id,
+void ResourceManager::addObject(std::string name, int id, int ObjectType,
                                 int TransformID, int MeshID, int MaterialID, int GravityID)
 {
+     VisualObject * CurrentVisualObject = 0;
 
-    VisualObject * CurrentVisualObject = new Cube();
+    if(ObjectType == 0) {
+        CurrentVisualObject = new Cube();
+    }
+
 
     mVisualObjects.push_back(CurrentVisualObject);
 
@@ -71,11 +75,6 @@ void ResourceManager::addObject(std::string name, int id,
     {
         CurrentVisualObject->mMaterial->mShaderProgram = MaterialID;
         CurrentVisualObject->mMaterial->mTextureUnit = MaterialID;
-    }
-
-    if (GravityID != 0)
-    {
-        //name->mGravity->mGravity = gravity;
     }
 
 }
