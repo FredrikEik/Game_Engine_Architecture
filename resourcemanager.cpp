@@ -12,7 +12,7 @@ ResourceManager::~ResourceManager()
 
 }
 
-void ResourceManager::manageObjects(std::string objectName)
+void ResourceManager::manageObjects(std::string objectName, int ObjectID)
 {
 
     //Axis
@@ -22,7 +22,7 @@ void ResourceManager::manageObjects(std::string objectName)
 //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, 1, 1, 1, 1, 0);
+    addObject(name, id, ObjectID, 1, 1, 1, 0);
 
     //Dag's dog triangle
 //      temp = new Triangle();
