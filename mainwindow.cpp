@@ -93,6 +93,7 @@ void MainWindow::on_pushButton_2_clicked(bool checked)
 {
     //mRenderWindow->transformObject();
     mRenderWindow->toogleVisibility(checked);
+    //mRenderWindow->toggleFrustum = true;
 
 }
 

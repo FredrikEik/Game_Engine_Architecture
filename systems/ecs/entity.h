@@ -35,6 +35,7 @@ public:
     bool isCollidable{false}; //if true - has collider
     bool isPicked{false}; //picked up by player
     bool isDead{false};
+    bool ignoreFrustum{false};
     int health;
 
     void setHealth(int hpInput)

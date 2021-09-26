@@ -39,6 +39,8 @@ public:
     void toggleWireframe(bool buttonState);
     void toogleVisibility(bool buttonState);
 
+    bool toggleFrustum{false};
+
     void transformObjectX(double in);
     void transformObjectY(double in);
     void transformObjectZ(double in);
@@ -56,6 +58,8 @@ void init();
     void checkForGLerrors();
 
     void calculateFramerate();
+
+    void checkRenderedObjects();
 
     void startOpenGLDebugger();
 
@@ -91,6 +95,8 @@ void init();
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
+
+     int mObjectsDrawn{0};
 
     QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS

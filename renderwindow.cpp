@@ -142,48 +142,6 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
-
-    //*********** entity unresolved external symbol c++ error, må fikses******************
-//    VisualObject *temp = new XYZ();
-
-//    temp->init();
-//    temp->mMaterial->mShaderProgram = 0;
-//    mVisualObjects.push_back(temp);
-
-      Entity *temp = makeEntity("axis");
-
-      //temp = makeEntity("\\Textures\\goat.obj");
-
-
-
-    // MÅ ENDRE FRA MVISUALOBJECTS TIL MENTITY
-   // mEntity.push_back(temp);
-
-    //testing triangle class
-//       temp = new Triangle();
-//       temp->init();
-//       temp->mMaterial->mShaderProgram = 1;    //texture shader
-//       temp->mMaterial->mTextureUnit = 1;      //dog texture
-//       temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-//       mVisualObjects.push_back(temp);
-
-//       temp  = new Cube();
-//       temp ->init();
-//       temp->mMaterial->mShaderProgram = 0;
-//       temp->mTransform->mMatrix.translate(-2.f, 0.f, -2.f);
-//       mVisualObjects.push_back(temp );
-
-
-////goat
-//      temp = new ObjMesh("..\\GEA2021\\Assets\\Textures\\goat.obj");
-//      temp ->init();
-//      temp->mMaterial->mShaderProgram = 1;    //texture shader
-//      temp->mMaterial->mTextureUnit = 2;      //dog texture
-//      temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
-//      mVisualObjects.push_back(temp );
-
-
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -196,6 +154,8 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
+
+    mObjectsDrawn = 0;
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
 
@@ -249,13 +209,29 @@ void RenderWindow::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mEntity[i]->mTransform->mMatrix.constData());
 
+
+        //buggy frustum atm..
+
+        if(toggleFrustum)
+        {
+            for(MAX_ENTITIES_TYPE i{1}; i < mEntity.size(); i++)
+            {
+                if(!mCurrentCamera->frustumCull(mEntity[i]->mTransform->position))
+                     mEntity[i]->isHidden = true;
+                else mEntity[i]->isHidden = false;
+            }
+
+        }
         if(!mEntity[i]->isHidden)
         {
         //draw the object
         glBindVertexArray( mEntity[i]->mMesh->mVAO );
         glDrawArrays(mEntity[i]->mMesh->mDrawType, 0, mEntity[i]->mMesh->mVertices.size());
         glBindVertexArray(0);
+
+        mObjectsDrawn++;
         }
+
     }
 
 
@@ -263,6 +239,7 @@ void RenderWindow::render()
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
+
 
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
@@ -340,11 +317,23 @@ void RenderWindow::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7) + " Rendered objects: " + QString::number(mObjectsDrawn));
             frameCount = 0;     //reset to show a new message in 60 frames
         }
+
     }
 }
+
+void RenderWindow::checkRenderedObjects()
+{
+    if(mMainWindow)
+    {
+        mMainWindow->statusBar()->showMessage("objects rendered: ");
+    }
+
+}
+
+
 
 //Simple way to turn on/off wireframe mode
 //Not totally accurate, but draws the objects with
@@ -365,14 +354,22 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 void RenderWindow::toogleVisibility(bool buttonState)
 {
-    if (buttonState)
-    {
-        mEntity[1]->isHidden = true;
-    }
-    else
-    {
-        mEntity[1]->isHidden = false;
-    }
+//    if (buttonState)
+//    {
+//        mEntity[1]->isHidden = true;
+//    }
+//    else
+//    {
+//        mEntity[1]->isHidden = false;
+//    }
+        if (buttonState)
+        {
+           toggleFrustum = true;
+        }
+       else
+        {
+            toggleFrustum = false;
+       }
 
 }
 
