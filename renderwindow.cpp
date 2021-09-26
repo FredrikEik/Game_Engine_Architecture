@@ -128,8 +128,9 @@ void RenderWindow::init()
     //********************** Making the objects to be drawn **********************
 
     // Gaute's ObjectManager
+
     mResource = new ResourceManager;
-    mResource->manageObjects("dog");
+    mResource->manageObjects("dog", 1); //0 is cube, 1 is triangle
 
     //Set up camera
     mCurrentCamera = new Camera();
@@ -306,6 +307,14 @@ void RenderWindow::toggleWireframe(bool buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
+    }
+}
+
+void RenderWindow::spawnObject(bool buttonState)
+{
+    if (buttonState)
+    {
+        mResource->manageObjects("cube", 0);
     }
 }
 
