@@ -7,6 +7,9 @@ class cube : public VisualObject
 {
 public:
     cube();
+    ~cube() override;
+    void init(GLint matrixUniform);
+    void draw();
 };
 
 #endif // CUBE_H

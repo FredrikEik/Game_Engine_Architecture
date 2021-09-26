@@ -2,6 +2,7 @@
 #define VISUALOBJECT_H
 
 #include <QOpenGLFunctions_4_1_Core>
+#include <components.h>
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
@@ -12,9 +13,8 @@ public:
     std::string mName;
     int entitiyID = 0;
 
-    struct TransformComponent* mTransform{nullptr};
-    struct MeshComponent* mMesh{nullptr};
-    struct MaterialComponent* mMaterial{nullptr};
-    struct GravityComponent* mGravity{nullptr};
+    TransformComponent* mTransform;
+    MeshComponent* mMesh;
+    MaterialComponent* mMaterial;
 };
 #endif // VISUALOBJECT_H
