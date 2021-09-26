@@ -11,13 +11,10 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
-#include "objmesh.h"
+#include "meshhandler.h"
 #include "gameobject.h"
 #include "resourcemanager.h"
 #include "soundmanager.h"
@@ -146,54 +143,6 @@ void RenderWindow::render()
     // TODO: move camera and inputhandler to the resource manager
 
 
-
-
-
-
-//    mCurrentCamera->position();
-//    qDebug() << "Camera Forward: " << mCurrentCamera->getFowrardVector();
-//    qDebug() << "Camera Pos: " << mCurrentCamera->position();
-//    qDebug() << "Camere forward * 100: " << mCurrentCamera->getFowrardVector() * 100;
-//    gsl::Vector3D rightRotatedVec = mCurrentCamera->getFowrardVector() * 100;
-//    rightRotatedVec.rotateY(-FOV);
-////    qDebug() << "Right Rotate Vector: " << rightRotatedVec;
-//    qDebug() << "Camera Right: " << mCurrentCamera->getRightVector();
-//    gsl::Vector3D rightNormal = mCurrentCamera->getRightVector();
-//    rightNormal.rotateY(45);
-//    qDebug() << "CameraNormal: " << rightNormal;
-
-    gsl::Vector3D testPoint(3,0,3);
-
-    //v
-    gsl::Vector3D rightPlaneNormal = (mCurrentCamera->getRightVector());
-    //qDebug() << "Right" << rightPlaneNormal;
-    //right is minus rotation
-    rightPlaneNormal.rotateY(-FOV);
-//    qDebug() << "rightNormal" << rightPlaneNormal;
-
-
-    //v
-    gsl::Vector3D leftPlaneNormal = -(mCurrentCamera->getRightVector());
-    //qDebug() << "Right" << rightPlaneNormal;
-    //right is minus rotation
-    leftPlaneNormal.rotateY(FOV);
-//    qDebug() << "leftNormal" << leftPlaneNormal;
-
-
-
-    //u
-    gsl::Vector3D vectorToObj = testPoint - mCurrentCamera->position();
-
-    float  distanceCamToObj = (testPoint - mCurrentCamera->position()).length();
-//    qDebug() << "Distacne cam to obj: " << distanceCamToObj;
-
-
-    float distanceToProjection = ((vectorToObj * rightPlaneNormal) / rightPlaneNormal.length());
-    //qDebug() << "distanceToProjection: " << distanceToProjection;
-
-
-
-
     //--->Shoudl be in GameEngine
     //Keyboard / mouse input
     handleInput();
@@ -216,8 +165,8 @@ void RenderWindow::render()
         //right is minus rotation
         rightPlaneNormal.rotateY(-FOV);
 
-        gsl::Vector3D LeftPlaneNormal = -(mCurrentCamera->getRightVector());
-        LeftPlaneNormal.rotateY(FOV);
+        gsl::Vector3D leftPlaneNormal = -(mCurrentCamera->getRightVector());
+        leftPlaneNormal.rotateY(FOV);
 
         gsl::Vector3D vectorToObj = objPos - mCurrentCamera->position();
 
@@ -235,17 +184,15 @@ void RenderWindow::render()
         {
             continue;
         }
-        if(distanceToFrontObject > 10)
+        if(distanceToFrontObject > mFarPlane)
         {
             continue;
         }
-        if(distanceToFrontObject < 1)
-        {
-            continue;
-        }
-
-
-
+        // Maybe not needed
+//        if(distanceToFrontObject < mNearPlane)
+//        {
+//            continue;
+//        }
 
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
         if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0)

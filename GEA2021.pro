@@ -17,7 +17,7 @@ SOURCES += main.cpp \
     gameobject.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
-    objmesh.cpp \
+    meshhandler.cpp \
     renderwindow.cpp \
     resourcemanager.cpp \
     shader.cpp \
@@ -26,12 +26,9 @@ SOURCES += main.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
-    triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
-    vertex.cpp \
-    visualobject.cpp \
-    xyz.cpp
+    vertex.cpp
 
 HEADERS += \
     camera.h \
@@ -44,7 +41,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    objmesh.h \
+    meshhandler.h \
     renderwindow.h \
     resourcemanager.h \
     shader.h \
@@ -53,12 +50,9 @@ HEADERS += \
     soundmanager.h \
     soundsource.h \
     texture.h \
-    triangle.h \
     vector2d.h \
     vector3d.h \
-    vertex.h \
-    visualobject.h \
-    xyz.h
+    vertex.h
 
 FORMS += \
     mainwindow.ui

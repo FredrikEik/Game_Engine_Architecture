@@ -4,12 +4,13 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 #include "components.h"
-#include "visualobject.h"
-#include "objmesh.h"
+#include "meshhandler.h"
 #include <typeindex>
 #include <unordered_map>
-#include "gameobject.h"
 //#include "string"
+
+class GameObject;
+class MeshHandler;
 
 class ResourceManager  : public QOpenGLFunctions_4_1_Core {
 
@@ -18,11 +19,13 @@ public:
 
 
     ResourceManager &getInstance();
-    class GameObject *CreateObject(std::string filepath);
-    void readObj(std::string &filename, MeshComponent *MeshComp);
-    void init(MeshComponent &MeshComp);
+    //class GameObject *CreateObject(std::string filepath);
+    GameObject *CreateObject(std::string filepath, bool bUsingLOD = false);
+    //void readObj(std::string &filename, MeshComponent *MeshComp);
+//    void init(MeshComponent &MeshComp);
 private:
     GameObject* tempGO;
+    MeshHandler* mMeshHandler;
     std::vector<GameObject*> mObjects;
     std::unordered_map<std::string, GameObject> mObjectsMap;
     void createXYZ(MeshComponent *MeshComp);
