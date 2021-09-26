@@ -11,6 +11,13 @@ Cube::Cube()
     // Positions            // Colors       //UV
 
     //front
+    mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
+    mMesh->mVertices.push_back(Vertex{1.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   1.0f,0.0f});
+    mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   1.0f,1.0f});
+    mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   1.0f,1.0f});
+    mMesh->mVertices.push_back(Vertex{0.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,1.0f});
+    mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
+    //left
     mMesh->mVertices.push_back(Vertex{0.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{0.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
@@ -25,20 +32,13 @@ Cube::Cube()
     mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{0.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     //right
-    mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    mMesh->mVertices.push_back(Vertex{1.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    mMesh->mVertices.push_back(Vertex{0.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    mMesh->mVertices.push_back(Vertex{0.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    //back
     mMesh->mVertices.push_back(Vertex{1.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,0.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,1.0f,1.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,1.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
-    //left
+    //back
     mMesh->mVertices.push_back(Vertex{0.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,0.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
     mMesh->mVertices.push_back(Vertex{1.0f,1.0f,0.0f,   0.0f,0.0f,0.0f,   0.0f,0.0f});
