@@ -3,13 +3,13 @@
 
 #include <visualobject.h>
 
-class cube : public VisualObject
+class Cube : public VisualObject
 {
 public:
-    cube();
-    ~cube() override;
-    void init(GLint matrixUniform);
-    void draw();
+    Cube();
+    ~Cube() override;
+
+    void init() override;
 };
 
 #endif // CUBE_H

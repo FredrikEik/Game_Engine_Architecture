@@ -47,7 +47,7 @@ void ResourceManager::addObject(std::string name, int id,
                                 int TransformID, int MeshID, int MaterialID, int GravityID)
 {
 
-    VisualObject * CurrentVisualObject = new Triangle();
+    VisualObject * CurrentVisualObject = new Cube();
 
     mVisualObjects.push_back(CurrentVisualObject);
 
