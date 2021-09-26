@@ -12,6 +12,7 @@ INCLUDEPATH += \
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
+    cube.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     renderwindow.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    cube.h \
     gltypes.h \
     input.h \
     gsl/math_constants.h \
