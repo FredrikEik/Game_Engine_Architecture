@@ -22,7 +22,7 @@ void ResourceManager::manageObjects(std::string objectName)
 //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, 0, 0, 1, 1, 0);
+    addObject(name, id, 1, 1, 1, 1, 0);
 
     //Dag's dog triangle
 //      temp = new Triangle();
@@ -50,6 +50,10 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
 
     if(ObjectType == 0) {
         CurrentVisualObject = new Cube();
+    }
+
+    else if(ObjectType == 1) {
+        CurrentVisualObject = new Triangle();
     }
 
 
