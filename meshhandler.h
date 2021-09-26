@@ -21,9 +21,9 @@ public:
     ~MeshHandler();
 
     void draw();
-    void init(MeshComponent &MeshComp);
+    void init(MeshComponent &MeshComp, int LODlvl);
 
-    void readFile(std::string filename, MeshComponent *MeshComp);
+    void readFile(std::string filename, MeshComponent *MeshComp, int LODlvl);
 
 private:
 

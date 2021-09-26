@@ -20,15 +20,18 @@ public:
 
     ResourceManager &getInstance();
     //class GameObject *CreateObject(std::string filepath);
-    GameObject *CreateObject(std::string filepath, bool bUsingLOD = false);
+    GameObject *CreateObject(std::string filepath, bool UsingLOD = false);
     //void readObj(std::string &filename, MeshComponent *MeshComp);
 //    void init(MeshComponent &MeshComp);
 private:
     GameObject* tempGO;
     MeshHandler* mMeshHandler;
     std::vector<GameObject*> mObjects;
-    std::unordered_map<std::string, GameObject> mObjectsMap;
+    std::map<std::string, GameObject> mObjectsMap;
+
+    bool checkIfAllreadyExist(std::string &filename, MeshComponent *tempMesh);
     void createXYZ(MeshComponent *MeshComp);
+
 public:
     static int objectIDcounter;
 

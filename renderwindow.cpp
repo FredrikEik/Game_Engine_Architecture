@@ -209,10 +209,34 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
         }
+        // need to fix [] for LOD
+        //qDebug() << "Distacne: " << distanceToFrontObject;
+        if(mGameObjects[i]->mMeshComp->bUsingLOD)
+        {
+            if(distanceToFrontObject < 5)
+            {
+                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+            }else if( distanceToFrontObject < 10)
+            {
+                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[1] );
+                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[1].size());
+            }else{
+                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[2] );
+                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[2].size());
+            }
+        }else
+        {
+            glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+            glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+        }
 
-        glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO );
-        glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices.size());
-        mObjectsDrawn++;
+
+
+
+
+
+//        mObjectsDrawn++;
         glBindVertexArray(0);
     }
     //Calculate framerate before

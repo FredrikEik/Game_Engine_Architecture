@@ -27,14 +27,15 @@ class MeshComponent
 {
 public:
 //    MeshComponent();
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
+    std::vector<Vertex> mVertices[3];
+    std::vector<GLuint> mIndices[3];
 
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0};
+    GLuint mVAO[3]{0};
+    GLuint mVBO[3]{0};
+    GLuint mEAB[3]{0};
 
     GLenum mDrawType{GL_TRIANGLES};
+    bool bUsingLOD{false};
 };
 
 class MaterialComponent
