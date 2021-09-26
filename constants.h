@@ -9,7 +9,7 @@ namespace gsl  //Game School Lib
     const std::string AssetFilePath{ProjectFolderName + "Assets/"};
     const std::string TextureFilePath{AssetFilePath + "Textures/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
-    const std::string MeshFilePath{ProjectFolderName + "Meshes/"};
+    const std::string MeshFilePath{AssetFilePath + "Meshes/"};
 
     enum Shaders
     {

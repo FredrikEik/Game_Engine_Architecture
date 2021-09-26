@@ -12,14 +12,10 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "GameObject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
 #include "Components.h"
-#include "Cube.h"
-#include "Sphere.h"
 #include "ObjectManager.h"
 #include "constants.h"
 
@@ -134,14 +130,12 @@ void RenderWindow::init()
     //forsøk på å bruke objectmanager til å lage Objekter
     ObjectManager& mObjectManager = ObjectManager::getInstance();
 
+
+    GameObject *temp = mObjectManager.CreateObject("Cube");
+    mGameObjects.push_back(temp);
+
 //    GameObject *temp = mObjectManager.CreateObject("suzanne.obj");
 //    mGameObjects.push_back(temp);
-
-//     GameObject *temp = mObjectManager.CreateObject("suzanne.obj");
-//        temp->material->mShaderProgram = 0; //plain shader
-//        temp->transform->mMatrix.translate(1.f, 1.f, -.5f);
-//        temp->transform->mMatrix.scale(0.5f);
-//        mGameObjects.push_back(temp);
 
 //    GameObject* temp = new XYZ();
 //    mGameObjects.push_back(temp);
@@ -189,13 +183,13 @@ void RenderWindow::render()
     {
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram() );
 
-        if(mGameObjects[i]->material->mShaderProgram == 0) //PlainShader
+        if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
         {
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
-        else if(mGameObjects[i]->material->mShaderProgram == 1) //TextureShader
+        else if(mGameObjects[i]->material->mShaderProgram == 1) /** TextureShader */
         {
             glUniform1i(mTextureUniform, mGameObjects[i]->material->mTextureUnit);
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());

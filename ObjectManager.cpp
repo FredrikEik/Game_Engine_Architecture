@@ -21,6 +21,8 @@ GameObject* ObjectManager::CreateObject(std::string filename)
         if(filename.find(".obj") != std::string::npos)
             meshIndex = readObj(gsl::MeshFilePath + filename);
 
+        else if(filename.find("Cube") != std::string::npos)
+            meshIndex = 0; // quick test line, should not be hardcoded like this
 
         mMeshIndexMap.emplace(filename, meshIndex);
     }
@@ -29,14 +31,17 @@ GameObject* ObjectManager::CreateObject(std::string filename)
         std::cout << "meshIndex is -1 (no mesh)";
     }
 
-    GameObject* temp/* = new GameObject()*/;
+    object = new GameObject();
 
-    temp->mesh = &mMeshComponents.at(meshIndex); //This is a hack, please fix.. er ikke sikker på hvordan, fikser senere
-    temp->transform = new Transform();
-    temp->transform->mMatrix.identity();
-    temp->material = new Material();
+    object->mesh = new Mesh();
+    object->transform = new Transform();
+    object->transform->mMatrix.setToIdentity();
+    object->material = new Material();
 
-    return temp;
+    Cube(object->mesh);
+    init(*object->mesh);
+
+    return object;
 }
 
 int ObjectManager::readObj(std::string filename) //Ole's obj reader code
@@ -193,7 +198,7 @@ int ObjectManager::readObj(std::string filename) //Ole's obj reader code
     return mMeshComponents.size()-1;    //returns index to last object
 }
 
-void ObjectManager::init(Mesh mesh) // &mesh ?
+void ObjectManager::init(Mesh &mesh) // &mesh ?
 {
     initializeOpenGLFunctions();
 
@@ -238,21 +243,57 @@ ObjectManager &ObjectManager::getInstance()
     return *mInstance;
 }
 
-//int ObjectManager::XYZ()
-//{
-//    mesh = new Mesh();
-//    material = new Material();
-//    transform = new Transform();
+int ObjectManager::Cube(Mesh* meshComp)
+{
 
-//    mMeshComponents.emplace_back(Mesh());
-//    Mesh &mesh = mMeshComponents.back();
+    // Front-1                 //Position           //RGB         //UV
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,         0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1,  0.1,     1,0,0,         1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1,  0.1,     1,0,0,         1,1});
+    // Front-2                    1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1,  0.1,     1,1,0,         0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     1,1,0,         1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1,  0.1,     1,1,0,         1,1});
+    // Back-1                     1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1, -0.1,     1,1,1,         0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1, -0.1,     1,1,1,         1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1, -0.1,     1,1,1,         1,1});
+    // Back-2                     1     1     1
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1, -0.1,     0,1,1,         0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     0,1,1,         1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1, -0.1,     0,1,1,         1,1});
+    // Right-1                    1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1,  0.1,     1,0,1,         0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1, -0.1,     1,0,1,         1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     1,0,1,         1,1});
+    // Right-2                    1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     1,0.5,0,       0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1,  0.1,     1,0.5,0,       1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1,  0.1,     1,0.5,0,       1,1});
+    // Left-1                     1     1     1
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1, -0.1,     1,0.5,1,       0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1,  0.1,     1,0.5,1,       1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     1,0.5,1,       1,1});
+    // Left-2                     1     1     1
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     0.5,0.5,0,     0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1, -0.1,     0.5,0.5,0,     1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1, -0.1,     0.5,0.5,0,     1,1});
+    // Bot-1                      1     1     1
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1,  0.1,     0.5,0.5,0.5,   0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1,  0.1,     0.5,0.5,0.5,   1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1, -0.1,     0.5,0.5,0.5,   1,1});
+    // Bot-2                      1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1, -0.1, -0.1,     0.5,0.5,1,     0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1, -0.1,     0.5,0.5,1,     1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1, -0.1,  0.1,     0.5,0.5,1,     1,1});
+    // Top-1                      1     1     1
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     0.5,0,0,       0,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1,  0.1,     0.5,0,0,       1,0});
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     0.5,0,0,       1,1});
+    // Top-2                      1     1     1
+    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     0,0.5,0,       0,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1, -0.1,     0,0.5,0,       1,0});
+    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     0,0.5,0,       1,1});
 
-//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-//    mesh.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-//    mesh.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-//    mesh.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
-
-//    return mMeshComponents.size()-1;
-//}
+    return mMeshComponents.size()-1;
+}

@@ -23,12 +23,11 @@ private:
     /** Functions */
     ObjectManager();
 
-    void init(Mesh mesh);
+    void init(Mesh &mesh);
 
     int readObj(std::string filename);
 
-
-    //    int XYZ();
+    int Cube(Mesh* mesh);
 
     /** Variables */
     GameObject* object;

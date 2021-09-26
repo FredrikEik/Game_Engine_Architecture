@@ -12,10 +12,10 @@ class RenderWindow;
 
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
-    GameObject();
-    virtual ~GameObject();
-    virtual void init();
-    virtual void draw()=0;
+//    GameObject();
+//    virtual ~GameObject();
+//    virtual void init();
+//    virtual void draw()=0;
 
     std::string mName{"null"};
     RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
