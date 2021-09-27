@@ -134,8 +134,11 @@ void RenderWindow::init()
     GameObject *temp = mObjectManager.CreateObject("Cube");
     mGameObjects.push_back(temp);
 
-//    GameObject *temp = mObjectManager.CreateObject("suzanne.obj");
-//    mGameObjects.push_back(temp);
+    temp = mObjectManager.CreateObject("suzanne.obj");
+    mGameObjects.push_back(temp);
+    temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
+
+
 
 //    GameObject* temp = new XYZ();
 //    mGameObjects.push_back(temp);
@@ -405,6 +408,11 @@ void RenderWindow::handleInput()
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
+}
+
+void RenderWindow::addToGameObjects(GameObject *obj)
+{
+    mGameObjects.push_back(obj);
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)

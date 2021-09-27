@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "renderwindow.h"
 
 // I will soon rename this class to "ResourceManager" because
 // this name fits better when including audio and texture resources.
@@ -16,8 +17,6 @@ public:
     class GameObject* CreateObject(std::string filename);
 
     static ObjectManager& getInstance();
-
-
 
 private:
     /** Functions */
