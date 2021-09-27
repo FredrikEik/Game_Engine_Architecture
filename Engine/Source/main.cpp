@@ -165,7 +165,7 @@ int main()
 		if (ImGui::Button("Spawn cube"))
 		{
 			uint32 entity = ECS->newEntity();
-			ECS->loadAsset(entity, asset_CUBE);
+			ECS->loadAsset(entity, DefaultAsset::CUBE);
 			ECS->addComponent<TransformComponent>(entity);
 			std::cout << "Adding entity "<<entity<<'\n';
 		}

@@ -8,6 +8,10 @@
 #include "Systems/MeshSystem.h"
 #include <iostream>
 #include <algorithm>
+
+enum class DefaultAsset : uint8;
+
+
 // There should only exist one factory, get it through the ECSManager
 class Factory
 {
@@ -20,11 +24,11 @@ public:
 	struct ReusableAsset
 	{
 		ReusableAsset(std::type_index type, uint32 compID, uint32 firstEntity)
-			:componentType{ type }, componentID{ compID }, entitiesUsingAsset{ firstEntity }
+			:componentType{ type }, componentID{ compID }/*, entitiesUsingAsset{ firstEntity }*/
 		{}
 		std::type_index componentType;
-		uint32 componentID;
-		std::vector<uint32> entitiesUsingAsset;
+		std::vector<uint32> componentID;
+		//std::vector<uint32> entitiesUsingAsset;
 	};
 
 	template <typename T>
@@ -45,19 +49,19 @@ private:
 	template <typename T>
 	void removeComponent(uint32 entityID);
 
-	void removeComponent(uint32 entityID, std::type_index componentType, uint32 componentID);
+	//void removeComponent(uint32 entityID, std::type_index componentType, uint32 componentID);
 	template <typename T>
 	void removeReusableComponent(uint32 entityID);
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
-	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
+	uint32 loadAsset(uint32 entityID, DefaultAsset defaultAsset);
 
 	uint32 loadMesh(const std::filesystem::path& filePath, uint32 entityID);
+	uint32 assignMesh(uint32 entityID, const std::filesystem::path& filePath);
 
 	bool assetExists(const std::filesystem::path& filePath);
 	uint32 assignAsset(uint32 entityID, const std::filesystem::path& filePath);
 
 	std::unordered_map<std::type_index, ComponentManager<Component>*>* componentManagers{};
-
 
 
 	/** Stores a pair based on the path
@@ -143,14 +147,23 @@ inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path&
 	ReusableAsset &reusableAsset = 
 		reusableAssetComponents.at(std::filesystem::hash_value(filePath));
 
-	componentManagers->at(reusableAsset.componentType)->
-		assignComponent(reusableAsset.componentID, entityID);
+	if (reusableAsset.componentType == std::type_index(typeid(MeshComponent)))
+	{
+		uint32 componentID = assignMesh(entityID, filePath);
+		reusableAsset.componentID.push_back(componentID);
 
-	reusableAsset.entitiesUsingAsset.push_back(entityID);
-	//TODO: Remove sort if position is not important
-	std::sort(reusableAsset.entitiesUsingAsset.begin(), reusableAsset.entitiesUsingAsset.end());
+		return componentID;
+	}
 
-	return reusableAsset.componentID;
+	//componentManagers->at(reusableAsset.componentType)->
+	//	assignComponent(reusableAsset.componentID, entityID);
+
+	//reusableAsset.entitiesUsingAsset.push_back(entityID);
+	////TODO: Remove sort if position is not important
+	//std::sort(reusableAsset.entitiesUsingAsset.begin(), reusableAsset.entitiesUsingAsset.end());
+
+	//return reusableAsset.componentID;
+	return core::MAX_ENTITIES + 1;
 }
 
 
@@ -179,3 +192,32 @@ inline uint32 Factory::loadMesh(const std::filesystem::path& filePath, uint32 en
 
 	return componentID;
 }
+
+inline uint32 Factory::assignMesh(uint32 entityID, const std::filesystem::path& filePath)
+{
+	ReusableAsset& reusableAsset =
+		reusableAssetComponents.at(std::filesystem::hash_value(filePath));
+
+	ComponentManager<MeshComponent>* manager = getComponentManager<MeshComponent>();
+
+	uint32 componentID = createComponent<MeshComponent>(entityID, true);
+	MeshComponent& newComponent = manager->getComponent(entityID);
+	MeshComponent* oldComponent{}; /*= manager->getComponentFromID(reusableAsset.componentID);*/
+
+	for (uint32 i{}; i < reusableAsset.componentID.size(); ++i)
+	{
+		oldComponent = manager->getComponentFromID(reusableAsset.componentID.at(i));
+		if (!oldComponent)
+		{
+			reusableAsset.componentID.erase(reusableAsset.componentID.begin()+i);
+			--i;
+		}
+	}
+
+	assert(oldComponent);
+	std::cout << "Before copy: newComponent indices: " << newComponent.m_indices.size() << " old comp: " << oldComponent->m_indices.size() << '\n';
+	MeshSystem::copyMesh(*oldComponent, newComponent);
+
+	return componentID;
+}
+

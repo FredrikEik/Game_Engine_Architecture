@@ -26,6 +26,12 @@ class ComponentManager
 public:
 	T& getComponent(uint32 entityID);
 	T* getComponentChecked(uint32 entityID);
+	/// <summary>
+	/// Returns a component based on componentID. Slow, so only use in situations where you don't know the entity.
+	/// </summary>
+	/// <param name="componentID"></param>
+	/// <returns>Pointer to the Component of the ComponentManagers component type</returns>
+	T* getComponentFromID(uint32 componentID);
 	std::vector<T>& getComponentArray();
 
 	// Shrink the packedComponentArray if it is dirty
@@ -104,21 +110,20 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	{
 		//if (typeid(T).hash_code() != typeid(Component).hash_code())
 		//{
-			for (auto it : packedComponentArray)
-			{
-				std::cout << "Removing component "<<typeid(T).name() <<" from entityID " <<it.entityID << '\n';
-			}
-			//std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
-			//return;
-			//assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
-			packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
-			//packedComponentArray.erase(packedComponentArray.begin() + positionInPacked, 
-			//	packedComponentArray.begin() + positionInPacked + (packedComponentArray[positionInPacked].size / sizeof(T)));
+		std::cout << "Removing component "<<typeid(T).name() <<" from entityID " << packedComponentArray[positionInPacked].entityID << '\n';
+			
+		//std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
+		//return;
+		//assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
+		packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
-			uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
-			////sparseComponentArray[swappedEntityID] = positionInPacked;
-			//std::cout<<"testPacked before erase: "<<
+		//packedComponentArray.erase(packedComponentArray.begin() + positionInPacked, 
+		//	packedComponentArray.begin() + positionInPacked + (packedComponentArray[positionInPacked].size / sizeof(T)));
+
+		uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
+		sparseComponentArray[swappedEntityID] = positionInPacked;
+		//std::cout<<"testPacked before erase: "<<
 		//}
 		// Do stuff with the general case
 	}
@@ -141,6 +146,18 @@ inline T* ComponentManager<T>::getComponentChecked(uint32 entityID)
 {
 	if(entityID >= 0 && sparseComponentArray[entityID] < packedComponentArray.size())
 		return &packedComponentArray[sparseComponentArray[entityID]];
+	return nullptr;
+}
+
+template<class T>
+inline T* ComponentManager<T>::getComponentFromID(uint32 componentID)
+{
+	for (auto& it : packedComponentArray)
+	{
+		if (it.ID == componentID)
+			return &it;
+	}
+
 	return nullptr;
 }
 

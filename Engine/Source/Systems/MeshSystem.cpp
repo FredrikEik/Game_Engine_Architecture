@@ -34,21 +34,33 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     shader->use();
     for (auto& meshComp : meshArray)
     {
-        std::vector<uint32> entitiesUsingMesh{ manager->getReusableAsset(meshComp.hash).entitiesUsingAsset };
+        //////std::vector<uint32> entitiesUsingMesh{ manager->getReusableAsset(meshComp.hash).entitiesUsingAsset };
 
-        for (uint32 i{}; i < entitiesUsingMesh.size(); ++i)
-        {
-            auto& transformComp = transManager->getComponent(entitiesUsingMesh[i]);
+        //for (uint32 i{}; i < entitiesUsingMesh.size(); ++i)
+        //{
+        //std::cout << "Drawing mesh on entity: " << meshComp.entityID <<". Indices.size is: " << meshComp.m_indices.size()<< '\n';
+
+        auto& transformComp = transManager->getComponent(meshComp.entityID);
         
-            glBindVertexArray(meshComp.m_VAO); 
-            glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
-            glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-		    glBindVertexArray(0);
-        }
-
+        glBindVertexArray(meshComp.m_VAO); 
+        glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+        glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
+		glBindVertexArray(0);
+        //}
     }
+}
 
+void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMesh)
+{
+    newMesh.hash = meshToCopy.hash;
+    newMesh.m_drawType = meshToCopy.m_drawType;
+    newMesh.m_EBO = meshToCopy.m_EBO;
+    newMesh.m_indices = meshToCopy.m_indices;
+    newMesh.m_VAO = meshToCopy.m_VAO;
+    newMesh.m_VBO = meshToCopy.m_VBO;
+    newMesh.m_vertices = meshToCopy.m_vertices;
 
+    std::cout << "Mesh copied. New mesh indiced.size: " << newMesh.m_indices.size() << ". Old mesh: " << meshToCopy.m_indices.size() << '\n';
 }
 
 void MeshSystem::initialize(MeshComponent& meshComponent)
@@ -214,7 +226,7 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
 //    case asset_CUBE:
 //        loadCube(meshComponent);
 //        break;
-//    case asset_SPHERE:
+//    case asset_SPHERE:s
 //        break;
 //    case asset_PLANE:
 //        break;
