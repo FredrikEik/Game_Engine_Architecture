@@ -41,7 +41,6 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
         if (EXISTS("Goat"))
         {
-            qDebug() << "HELLO";
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Goat"]));
         }
         willCreateObject->getTransformComp()->mMatrix.translateX(2.f);

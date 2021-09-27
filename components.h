@@ -6,6 +6,7 @@
 #include "matrix4x4.h"
 #include "gltypes.h"
 #include "vertex.h"
+#include "altypes.h"
 
 struct TransformComponent
 {
@@ -39,10 +40,24 @@ struct MaterialComponent
     GLint mTextureUniform{-1};
 };
 
-//struct CollisionComponent
-//{
+struct SoundListenerComponent
+{
+    gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
+    //should be fetced from other component?
+    gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
+    //should be fetced from other component?
+    gsl::Vector3D up{0.0f, 1.0f, 0.0f};
+};
 
-//};
-
+struct SoundComponent
+{
+    ALuint mSource;             ///< The sound source ID.
+//    ALuint mBuffer;             ///< The buffer the source should play.
+    gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
+    float gain{1.0f};
+    bool shouldPlay{false};
+//    bool isPlaying{false};
+    bool looping{false};
+};
 
 #endif // COMPONENTS_H

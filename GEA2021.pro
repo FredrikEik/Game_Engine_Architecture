@@ -8,6 +8,7 @@ TARGET      = GEA2021
 INCLUDEPATH += \
     ./gsl \
     ./Assets \
+    ./ResourceManager \
     ./include
 
 mac {
@@ -20,6 +21,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    ResourceManager/resourcemanager.cpp \
     camera.cpp \
     cube.cpp \
     gameobject.cpp \
@@ -43,6 +45,8 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    ResourceManager/resourcemanager.h \
+    altypes.h \
     camera.h \
     components.h \
     constants.h \

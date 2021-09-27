@@ -134,7 +134,7 @@ void RenderWindow::init()
     SoundManager::getInstance()->init();
 
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                                              gsl::SoundFilePath + "death.wav", false, 1.0f);
+                                              gsl::SoundFilePath + "Out_Here.wav", false, 1.0f);
 
     mPop = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
                                                      gsl::SoundFilePath + "pop.wav", false, 1.0f);
