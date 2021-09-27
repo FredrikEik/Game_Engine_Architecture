@@ -16,6 +16,7 @@
 #include "triangle.h"
 #include "plane.h"
 #include "cube.h"
+#include "beziercurve.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -151,6 +152,32 @@ void RenderWindow::init()
     temp->init();
     temp->mMatrix.setPosition(3.0,0.0,3.0);
     mVisualObjects.push_back(temp);
+    QVector2D Point0(3.0,3.0);
+
+    temp = new Cube();
+    temp->init();
+    temp->mMatrix.scale(0.25f);
+    temp->mMatrix.setPosition(-2.0,0.0,-1.5);
+    mVisualObjects.push_back(temp);
+    QVector2D Point1(-2.0,-1.5);
+
+    temp = new Cube();
+    temp->init();
+    temp->mMatrix.scale(0.25f);
+    temp->mMatrix.setPosition(2.0,0.0,-3.0);
+    mVisualObjects.push_back(temp);
+    QVector2D Point2(2.0,-3.0);
+
+    temp = new Cube();
+    temp->init();
+    temp->mMatrix.scale(0.25f);
+    temp->mMatrix.setPosition(-2.7,0.0,1.4);
+    mVisualObjects.push_back(temp);
+    QVector2D Point3(-2.7,1.4);
+
+    temp = new BezierCurve(Point0,Point1,Point2,Point3);
+    temp->init();
+    mVisualObjects.push_back(temp);
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -174,7 +201,7 @@ void RenderWindow::render()
 
     //Draws the objects
     //This should be in a loop!
-    for (auto it=mVisualObjects.begin(); it!=mVisualObjects.end(); it++)
+    //for (auto it=mVisualObjects.begin(); it!=mVisualObjects.end(); it++)
     {
         //First objekct - xyz
         //what shader to use
@@ -215,6 +242,36 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[4]->mMatrix.constData());
         mVisualObjects[4]->draw();
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[5]->mMatrix.constData());
+        mVisualObjects[5]->draw();
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[6]->mMatrix.constData());
+        mVisualObjects[6]->draw();
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[7]->mMatrix.constData());
+        mVisualObjects[7]->draw();
+
+        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[8]->mMatrix.constData());
+        mVisualObjects[8]->draw();
+
+//        glUseProgram(mShaderPrograms[0]->getProgram() );
+//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[9]->mMatrix.constData());
+//        mVisualObjects[9]->draw();
     }
 
     //Calculate framerate before
