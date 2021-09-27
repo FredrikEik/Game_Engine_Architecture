@@ -26,6 +26,15 @@ Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b , gsl::Vector2D c)
 
 Vertex::~Vertex() { }
 
+gsl::Vector3D Vertex::getXYZ()
+{
+    gsl::Vector3D xyz;
+    xyz.setX(mXYZ.x);
+    xyz.setY(mXYZ.y);
+    xyz.setZ(mXYZ.z);
+    return xyz;
+}
+
 void Vertex::set_xyz(GLfloat *xyz)
 {
     mXYZ.setX(xyz[0]);

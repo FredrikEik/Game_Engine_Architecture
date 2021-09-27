@@ -3,6 +3,9 @@
 
 #include "vector3d.h"
 #include "visualobject.h"
+#include "collisionsystem.h"
+#include "vertex.h"
+#include "shapefactory.h"
 
 class Player : public VisualObject
 {
@@ -10,10 +13,11 @@ public:
     Player();
     void move(float x, float y, float z);
 
+
 private:
     float mx, my,mz;
-
-
+    CollisionSystem *mCollision;
+    VisualObject *mShape;
 };
 
 #endif // PLAYER_H

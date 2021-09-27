@@ -23,8 +23,6 @@ Plain::Plain()
     mMesh->mDrawType = GL_TRIANGLES;
 
     mMaterial = new MaterialComponent();
-
-
 }
 
 Triangle::Triangle()

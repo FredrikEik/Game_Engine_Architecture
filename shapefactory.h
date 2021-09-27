@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include "collisionsystem.h"
 
 #include "visualobject.h"
 

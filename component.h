@@ -10,6 +10,8 @@
 struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
+    gsl::Matrix4x4 mPosition;
+
 };
 
 struct MeshComponent

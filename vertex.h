@@ -15,6 +15,7 @@ public:
     Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c);
     ~Vertex();
 
+    gsl::Vector3D getXYZ();
     //! Overloaded ostream operator which writes all vertex data on an open textfile stream
     friend std::ostream& operator<< (std::ostream&, const Vertex&);
 

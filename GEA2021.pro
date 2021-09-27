@@ -16,12 +16,14 @@ win32 {
 SOURCES += main.cpp \
     camera.cpp \
     camerainputcomponent.cpp \
+    collisionsystem.cpp \
     component.cpp \
-    gameobject.cpp \
+    enemy.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    mousepicking.cpp \
     player.cpp \
     playerinputcomponent.cpp \
     renderwindow.cpp \
@@ -41,9 +43,10 @@ SOURCES += main.cpp \
 HEADERS += \
     camera.h \
     camerainputcomponent.h \
+    collisionsystem.h \
     component.h \
     constants.h \
-    gameobject.h \
+    enemy.h \
     gltypes.h \
     input.h \
     inputcomponent.h \
@@ -51,6 +54,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    mousepicking.h \
     player.h \
     playerinputcomponent.h \
     renderwindow.h \

@@ -8,6 +8,8 @@ Player::Player()
     mMesh->mDrawType = GL_TRIANGLES;
     mMaterial = new MaterialComponent();
 
+    //mShape = new Square();
+
     mMesh->mVertices.push_back(Vertex{0,0,0, 1,0,0});
     mMesh->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
     mMesh->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
@@ -46,9 +48,14 @@ Player::Player()
     mMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
     mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
     mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
+
+
 }
 
 void Player::move(float dx, float dy, float dz)
 {
+    mTransform->mPosition.translate(dx, dy, dz);
     mTransform->mMatrix.translate(dx, dy, dz);
+    //mCollision->moveBoundingBox(dx,dy,dz);
+
 }
