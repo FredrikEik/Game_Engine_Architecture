@@ -3,6 +3,7 @@
 
 #include <QSurfaceFormat>
 #include <QDebug>
+#include <QStyleFactory>
 #include <QScreen>  //for resizing the program at start
 
 #include "renderwindow.h"
@@ -12,6 +13,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
+    qApp->setStyle(QStyleFactory::create("Fusion"));
+
+    QPalette darkPalette;
+    darkPalette.setColor(QPalette::Window, QColor(53,53,53));
+    darkPalette.setColor(QPalette::WindowText, Qt::white);
+    darkPalette.setColor(QPalette::Base, QColor(25,25,25));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(53,53,53));
+    darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
+    darkPalette.setColor(QPalette::ToolTipText, Qt::white);
+    darkPalette.setColor(QPalette::Text, Qt::white);
+    darkPalette.setColor(QPalette::Button, QColor(53,53,53));
+    darkPalette.setColor(QPalette::ButtonText, Qt::white);
+    darkPalette.setColor(QPalette::BrightText, Qt::red);
+    darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+
+    darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::HighlightedText, Qt::black);
+
+    qApp->setPalette(darkPalette);
+
+    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
     init();
 }
 
@@ -82,7 +104,18 @@ void MainWindow::init()
 }
 
 //Example of a slot called from the button on the top of the program.
-void MainWindow::on_pushButton_toggled(bool checked)
+void MainWindow::on_ToggleWireframe_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
 }
+
+void MainWindow::on_SpawnEntity_clicked()
+{
+
+}
+
+void MainWindow::on_SelectEntity_editTextChanged(const QString &arg1)
+{
+
+}
+

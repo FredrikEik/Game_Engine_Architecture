@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "ecs.h"
 
 class QOpenGLContext;
 class Shader;
@@ -67,7 +68,8 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    ECS myECS;
+    std::vector<gsl::Entity> mEntities{gsl::MAX_ENTITIES};
 
     Input mInput;
     float mCameraSpeed{0.05f};

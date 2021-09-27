@@ -7,6 +7,7 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
+    componentarray.cpp \
     componentmanager.cpp \
     componenttypes.cpp \
     ecs.cpp \
@@ -28,6 +29,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    componentarray.h \
     componentmanager.h \
     componenttypes.h \
     constants.h \

@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "componenttypes.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -123,16 +124,48 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
-    VisualObject *temp = new XYZ();
+    //Initializes the entity component system
+    myECS.init();
+
+    //Register components in the ECS
+    myECS.RegisterComponent<Transform>();
+    myECS.RegisterComponent<Mesh>();
+    myECS.RegisterComponent<Material>();
+    myECS.RegisterComponent<Sound>();
+
+    gsl::Signature signature;
+    signature.set(myECS.GetComponentType<Transform>());
+    signature.set(myECS.GetComponentType<Mesh>());
+    signature.set(myECS.GetComponentType<Material>());
+    signature.set(myECS.GetComponentType<Sound>());
+
+
+    gsl::Matrix4x4 mMatrix;
+    mMatrix.setToIdentity();
+
+    //Draw entities
+    for(auto &eachEntity: mEntities)
+    {
+        eachEntity = myECS.CreateEntity();
+
+        gsl::Matrix4x4 mMatrix;
+        mMatrix.setToIdentity();
+        myECS.AddComponent(eachEntity, Transform{mMatrix});
+        myECS.AddComponent(eachEntity, Mesh{});
+
+    }
+
+    /*VisualObject *temp = new XYZ();
     temp->init();
     mVisualObjects.push_back(temp);
-
+    */
     //testing triangle class
+    /*
     temp = new Triangle();
     temp->init();
     temp->mMatrix.translate(0.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
+    */
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();

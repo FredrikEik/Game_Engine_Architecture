@@ -19,7 +19,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_toggled(bool checked);
+    void on_ToggleWireframe_toggled(bool checked);
+
+    void on_SpawnEntity_clicked();
+
+    void on_SelectEntity_editTextChanged(const QString &arg1);
 
 private:
     void init();
