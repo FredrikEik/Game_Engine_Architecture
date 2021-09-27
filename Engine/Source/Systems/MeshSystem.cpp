@@ -26,27 +26,20 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 {
 
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
-    ComponentManager<TransformComponent>* transManager = manager->getComponentManager<TransformComponent>();
-    if (!meshManager || !transManager)
+    ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
+    if (!meshManager || !transformManager)
         return;
 
     auto& meshArray = meshManager->getComponentArray();
     shader->use();
     for (auto& meshComp : meshArray)
     {
-        //////std::vector<uint32> entitiesUsingMesh{ manager->getReusableAsset(meshComp.hash).entitiesUsingAsset };
-
-        //for (uint32 i{}; i < entitiesUsingMesh.size(); ++i)
-        //{
-        //std::cout << "Drawing mesh on entity: " << meshComp.entityID <<". Indices.size is: " << meshComp.m_indices.size()<< '\n';
-
-        auto& transformComp = transManager->getComponent(meshComp.entityID);
+        auto& transformComp = transformManager->getComponent(meshComp.entityID);
         
         glBindVertexArray(meshComp.m_VAO); 
         glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
         glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
 		glBindVertexArray(0);
-        //}
     }
 }
 
@@ -59,8 +52,6 @@ void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMes
     newMesh.m_VAO = meshToCopy.m_VAO;
     newMesh.m_VBO = meshToCopy.m_VBO;
     newMesh.m_vertices = meshToCopy.m_vertices;
-
-    std::cout << "Mesh copied. New mesh indiced.size: " << newMesh.m_indices.size() << ". Old mesh: " << meshToCopy.m_indices.size() << '\n';
 }
 
 void MeshSystem::initialize(MeshComponent& meshComponent)
@@ -217,27 +208,3 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
     inputFile.close();
     return true;
 }
-
-
-//bool MeshSystem::defaultMesh(DefaultAsset defaultAsset, MeshComponent& meshComponent)
-//{
-//    switch (defaultAsset)
-//    {
-//    case asset_CUBE:
-//        loadCube(meshComponent);
-//        break;
-//    case asset_SPHERE:s
-//        break;
-//    case asset_PLANE:
-//        break;
-//    default:
-//        assert(false); // Loading assets that don't exist, halt the program
-//        return false;
-//    }
-//    return true;
-//}
-//
-//void MeshSystem::loadCube(MeshComponent& meshComponent)
-//{
-//
-//}
