@@ -48,11 +48,7 @@ public:
     {
         return health;
     }
-    void move()
-    {
-       // mTransform->mMatrix.getPosition() += mVelocity;
-        mTransform->mMatrix.setPosition(100.f, 10.f,0.f);
-    }
+    void move(float x, float y, float z);
 
 };
 

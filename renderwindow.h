@@ -104,7 +104,7 @@ void init();
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
-
+    Entity *player;
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;

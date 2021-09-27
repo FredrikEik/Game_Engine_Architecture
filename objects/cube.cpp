@@ -100,6 +100,12 @@ void Cube::init()
     glBindVertexArray(0);
 }
 
+//void Cube::move(float x, float y, float z)
+//{
+//    mTransform.mMatrix.translate(x,y,z);
+//}
+
+
 //void Cube::draw()
 //{
 //    glBindVertexArray( tempMesh->mVAO );

@@ -91,10 +91,7 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_pushButton_2_clicked(bool checked)
 {
-    //mRenderWindow->transformObject();
     mRenderWindow->toogleVisibility(checked);
-    //mRenderWindow->toggleFrustum = true;
-
 }
 
 void MainWindow::on_comboBox_activated(int index)

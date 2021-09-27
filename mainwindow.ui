@@ -206,7 +206,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Toggle visibility</string>
+     <string>Toggle frustum</string>
     </property>
     <property name="checkable">
      <bool>true</bool>

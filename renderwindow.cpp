@@ -115,6 +115,15 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
+    Entity *temp;
+    temp = makeEntity("axis");
+    temp->mMaterial->mShaderProgram = 0;
+
+
+    player = makeEntity("cube");
+    player->mMaterial->mShaderProgram = 0;
+
+
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
     //Supported on most Windows machines
@@ -354,14 +363,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 void RenderWindow::toogleVisibility(bool buttonState)
 {
-//    if (buttonState)
-//    {
-//        mEntity[1]->isHidden = true;
-//    }
-//    else
-//    {
-//        mEntity[1]->isHidden = false;
-//    }
+
         if (buttonState)
         {
            toggleFrustum = true;
@@ -505,6 +507,41 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(-mCameraSpeed);
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
+    }
+
+    else
+    {
+        float playerSpeed = 0.05f;
+
+        if(mInput.W)
+        {
+            //player->move(1.f,0,0);
+            player->move(playerSpeed,0,0);
+
+        }
+
+
+        if(mInput.S)
+        {
+            //player->move(1.f,0,0);
+            player->move(-playerSpeed,0,0);
+
+        }
+        if(mInput.A)
+        {
+            //player->move(1.f,0,0);
+            player->move(0,-playerSpeed,0);
+
+        }
+
+
+        if(mInput.D)
+        {
+            //player->move(1.f,0,0);
+            player->move(0,playerSpeed,0);
+
+        }
+
     }
 }
 
