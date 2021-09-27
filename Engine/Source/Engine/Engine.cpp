@@ -1,25 +1,20 @@
-#include <imgui.h>
-#include "imgui/bindings/imgui_impl_glfw.h"
-#include "imgui/bindings/imgui_impl_opengl3.h"
+#include "Engine.h"
+#include <iostream>
 
+
+#include <imgui.h>
+#include "../imgui/bindings/imgui_impl_glfw.h"
+#include "../imgui/bindings/imgui_impl_opengl3.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include "Components/Components.h"
-#include "Components/ComponentManager.h"
-#include "Factory.h"
-#include "Systems/BaseSystem.h"
-#include "ECSManager.h"
-#include "Assets/DefaultAssets.h"
-#include "Systems/TransformSystem.h"
-#include <chrono>
-#include <typeindex>
-#include "Shader.h"
-#include "DataStructures/TArray.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-#include "Engine/Engine.h"
+#include "../Shader.h"
+#include "../ECSManager.h"
 
+#include "../Assets/DefaultAssets.h"
+#include "../Systems/TransformSystem.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -28,68 +23,37 @@
 #define GLCall(x) x
 #endif
 
-// glGetError is very slow, thus should only be used in debug builds
-static void GLClearError()
+Engine::Engine()
 {
-	// not equal 0
-	while (glGetError() != GL_NO_ERROR);
+	ECS = new ECSManager();
 }
 
-// glGetError is very slow, thus should only be used in debug builds
-static bool GLLogCall(const char* function, const char* file, int line)
+Engine::~Engine()
 {
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL Error] (0x" << std::hex << error << ")" << std::dec << function << " " << file << ", on line: " << line << '\n';
-		return false;
-	}
-	return true;
+	delete ECS;
+	delete ourShader;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
-
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-float yaw{ -90.0f };
-float pitch{ 0.0f };
-
-float deltaTime{ 0.0f }; // Time between current frame and last frame
-float lastFrame{ 0.0f }; // Time of last frame
-
-//mouse
-float lastX{ 400 };
-float lastY{ 300 };
-bool firstMouse{ false };
-bool shouldCaptureMouse{ false };
-
-//fov
-float fov{ 45.0f };
-
-
-int main()
+void Engine::start()
 {
-	Engine* engine = new Engine();
-	engine->start();
-	delete engine;
+	init();
+	loop();
+	terminate();
+}
 
-	return 0;
+void Engine::init()
+{
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -97,31 +61,30 @@ int main()
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
+		exit(EXIT_FAILURE);
 	}
 
 	//Note that processed coordinates in OpenGL are between - 1 and 1
 	//so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
 	glViewport(0, 0, 800, 600);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetFramebufferSizeCallback(window, Engine::framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, Engine::mouse_callback);
+	glfwSetScrollCallback(window, Engine::scroll_callback);
 
 
-	glm::mat4 projection;
-	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
-	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	cameraUp = glm::cross(cameraDirection, cameraRight);
 
 	//look at matrix
-	glm::mat4 view;
 	view = glm::lookAt(cameraPos, cameraTarget, up);
 
-	
-	Shader* ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
+	ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
+
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -132,10 +95,10 @@ int main()
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
+}
 
-	ECSManager* ECS = new ECSManager();
-
-
+void Engine::loop()
+{
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -167,9 +130,9 @@ int main()
 			uint32 entity = ECS->newEntity();
 			ECS->loadAsset(entity, DefaultAsset::CUBE);
 			ECS->addComponent<TransformComponent>(entity);
-			std::cout << "Adding entity "<<entity<<'\n';
+			std::cout << "Adding entity " << entity << '\n';
 		}
-		
+
 		//// TEMP UPDATE
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
 		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
@@ -195,21 +158,23 @@ int main()
 
 		glfwSwapBuffers(window);
 	}
+}
 
+void Engine::terminate()
+{
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
-	return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
+void Engine::processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
@@ -242,55 +207,71 @@ void processInput(GLFWwindow* window)
 	}
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (shouldCaptureMouse)
-	{
-		if (firstMouse)
-		{
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
+	//TODO: Put the input into a queue or whatever. 
 
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos; // reversed: y ranges bottom to top
-		lastX = xpos;
-		lastY = ypos;
+	//if (shouldCaptureMouse)
+	//{
+	//	if (firstMouse)
+	//	{
+	//		lastX = xpos;
+	//		lastY = ypos;
+	//		firstMouse = false;
+	//	}
 
-		const float sensitivity = 0.1f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
+	//	float xoffset = xpos - lastX;
+	//	float yoffset = lastY - ypos; // reversed: y ranges bottom to top
+	//	lastX = xpos;
+	//	lastY = ypos;
 
-		yaw += xoffset;
-		pitch += yoffset;
+	//	const float sensitivity = 0.1f;
+	//	xoffset *= sensitivity;
+	//	yoffset *= sensitivity;
 
-		if (pitch > 89.0f)
-			pitch = 89.0f;
-		if (pitch < -89.0f)
-			pitch = -89.0f;
+	//	yaw += xoffset;
+	//	pitch += yoffset;
 
-		glm::vec3 direction;
-		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(direction);
-		std::cout << xpos << '\n';
-		std::cout << ypos << '\n';
-	}
-	else
-	{
-		firstMouse = true;
-	}
+	//	if (pitch > 89.0f)
+	//		pitch = 89.0f;
+	//	if (pitch < -89.0f)
+	//		pitch = -89.0f;
+
+	//	glm::vec3 direction;
+	//	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//	direction.y = sin(glm::radians(pitch));
+	//	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//	cameraFront = glm::normalize(direction);
+	//	std::cout << xpos << '\n';
+	//	std::cout << ypos << '\n';
+	//}
+	//else
+	//{
+	//	firstMouse = true;
+	//}
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	fov -= (float)yoffset;
-	if (fov < 1.0f)
-		fov = 1.0f;
-	if (fov > 45.0f)
-		fov = 45.0f;
+	//fov -= (float)yoffset;
+	//if (fov < 1.0f)
+	//	fov = 1.0f;
+	//if (fov > 45.0f)
+	//	fov = 45.0f;
 }
 
+void Engine::GLClearError()
+{
+	// not equal 0
+	while (glGetError() != GL_NO_ERROR);
+}
 
+bool Engine::GLLogCall(const char* function, const char* file, int line)
+{
+	while (GLenum error = glGetError())
+	{
+		std::cout << "[OpenGL Error] (0x" << std::hex << error << ")" << std::dec << function << " " << file << ", on line: " << line << '\n';
+		return false;
+	}
+	return true;
+}
