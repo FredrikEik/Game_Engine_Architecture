@@ -18,6 +18,7 @@ SOURCES += main.cpp \
     plainshader.cpp \
     plane.cpp \
     renderwindow.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     plainshader.h \
     plane.h \
     renderwindow.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
     systembase.h \
