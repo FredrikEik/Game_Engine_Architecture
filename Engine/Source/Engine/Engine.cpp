@@ -16,6 +16,8 @@
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
 
+#include "../Input/Input.h"
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -176,6 +178,9 @@ void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height
 
 void Engine::processInput(GLFWwindow* window)
 {
+	Input::getInstance()->updateKeyState(window);
+	return;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
@@ -209,6 +214,8 @@ void Engine::processInput(GLFWwindow* window)
 
 void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	Input::getInstance()->setMousePosition(window, xpos, ypos);
+
 	//TODO: Put the input into a queue or whatever. 
 
 	//if (shouldCaptureMouse)
