@@ -251,7 +251,7 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
     }
     //beeing a nice boy and closing the file after use
     fileIn.close();
-    //makeCollisionBox(CollComp,CollLines);
+    makeCollisionBox(CollComp,CollLines);
     init(*MeshComp, LODlvl);
 }
 

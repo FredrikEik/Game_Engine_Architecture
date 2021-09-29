@@ -35,6 +35,11 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    void renderLOD(bool bIsToggleOn);
+
+    void toggleFrustumCulling(bool bIsToggleOn);
+
+
     std::vector<GameObject*> mGameObjects;
 
 //    GameObject* RenderWindow::addObject(std::string assetName);
@@ -99,6 +104,9 @@ private:
     float mFarPlane{100.f};
 
     int mObjectsDrawn{0};
+
+    bool bRenderingLOD{true};
+    bool bUsingFrustumCulling{true};
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

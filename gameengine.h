@@ -4,10 +4,14 @@
 #include <vector>
 
 #include "gameobject.h"
+#include "soundmanager.h"
+
+
 class Camera;
 class RenderWindow;
 class ResourceManager;
 class QTimer;
+class SoundSourceComponent;
 
 class GameEngine : public QObject
 {
@@ -22,6 +26,8 @@ public:
 
     void setRenderPointer(RenderWindow* temp);
 
+    void playMusic(bool bIsPlaying);
+
 private slots:
     void GameLoop();
 
@@ -35,6 +41,8 @@ private:
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
+
+    SoundSource* mStereoSound{nullptr};
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};

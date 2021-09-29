@@ -91,13 +91,46 @@ void MainWindow::init()
 }
 
 //Example of a slot called from the button on the top of the program.
-void MainWindow::on_pushButton_toggled(bool checked)
+
+
+
+void MainWindow::on_ToggleLOD_toggled(bool checked)
 {
-    mRenderWindow->toggleWireframe(checked);
+    mRenderWindow->renderLOD(checked);
+    if(checked)
+        ui->ToggleLOD->setText("LOD OFF");
+    else
+        ui->ToggleLOD->setText("LOD ON");
 }
 
-void MainWindow::on_CreateObject_released()
+
+void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 {
+    mRenderWindow->toggleWireframe(checked);
+    if(checked)
+        ui->pb_toggleWireframe->setText("Show Solid");
+    else
+        ui->pb_toggleWireframe->setText("Show Wireframe");
+}
+
+
+void MainWindow::on_ToggleFrustumCulling_toggled(bool checked)
+{
+    mRenderWindow->toggleFrustumCulling(checked);
+    if(checked)
+        ui->ToggleFrustumCulling->setText("Frustum Culling OFF");
+    else
+        ui->ToggleFrustumCulling->setText("Frustum Culling ON");
+}
+
+
+void MainWindow::on_PlayStop_toggled(bool checked)
+{
+        mGameEngine->getInstance()->playMusic(checked);
+        if(checked)
+            ui->PlayStop->setText("Stop");
+        else
+            ui->PlayStop->setText("Play");
 
 }
 

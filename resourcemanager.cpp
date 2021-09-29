@@ -79,7 +79,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
 
 
     mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
-    qDebug() << "Number of objects in map:" << mObjectsMap.size();
+    //qDebug() << "Number of objects in map:" << mObjectsMap.size();
     return tempGO;
 }
 

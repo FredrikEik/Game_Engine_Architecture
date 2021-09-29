@@ -176,17 +176,22 @@ void RenderWindow::render()
         gsl::Vector3D forwardPlaneNormal = mCurrentCamera->getFowrardVector();
         float distanceToFrontObject = ((vectorToObj * forwardPlaneNormal) / forwardPlaneNormal.length());
 
-        if(distanceToRightObject > 0)
+        float  distanceCamToObj = (objPos - mCurrentCamera->position()).length();
+
+        if(bUsingFrustumCulling)
         {
-            continue;
-        }
-        if(distanceToLeftObject > 0)
-        {
-            continue;
-        }
-        if(distanceToFrontObject > mFarPlane)
-        {
-            continue;
+            if(distanceToRightObject > 0)
+            {
+                continue;
+            }
+            if(distanceToLeftObject > 0)
+            {
+                continue;
+            }
+            if(distanceToFrontObject > mFarPlane)
+            {
+                continue;
+            }
         }
         // Maybe not needed
 //        if(distanceToFrontObject < mNearPlane)
@@ -211,13 +216,13 @@ void RenderWindow::render()
         }
         // need to fix [] for LOD
         //qDebug() << "Distacne: " << distanceToFrontObject;
-        if(mGameObjects[i]->mMeshComp->bUsingLOD)
+        if(mGameObjects[i]->mMeshComp->bUsingLOD && bRenderingLOD)
         {
-            if(distanceToFrontObject < 5)
+            if(distanceCamToObj < 10)
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
-            }else if( distanceToFrontObject < 10)
+            }else if( distanceCamToObj < 20)
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[1].size());
@@ -233,7 +238,7 @@ void RenderWindow::render()
 
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
-        if(false)
+        if( i > 99)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
@@ -274,6 +279,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
+
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
@@ -346,6 +352,24 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glEnable(GL_CULL_FACE);
     }
 }
+
+void RenderWindow::renderLOD(bool bIsToggleOn)
+{
+    if(bIsToggleOn)
+        bRenderingLOD = false;
+    else
+        bRenderingLOD = true;
+
+}
+
+void RenderWindow::toggleFrustumCulling(bool bIsToggleOn)
+{
+    if(bIsToggleOn)
+        bUsingFrustumCulling = false;
+    else
+        bUsingFrustumCulling = true;
+}
+
 
 //GameObject* RenderWindow::RenderWindow::addObject(std::string assetName)
 //{

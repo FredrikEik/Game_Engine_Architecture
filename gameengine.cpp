@@ -25,15 +25,15 @@ void GameEngine::SetUpScene()
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
-    for(int i{0}; i < 10; i++)
-    {
-        for(int j{0}; j < 10; j++)
-        {
-            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-            tempGameObject->mTransformComp->mMatrix.translate(2.f*i, -3.f, -2.f*j);
-            mRenderwindow->mGameObjects.push_back(tempGameObject);
-        }
-    }
+//    for(int i{0}; i < 10; i++)
+//    {
+//        for(int j{0}; j < 10; j++)
+//        {
+//            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+//            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i*2), -3.f, -2.f*(j*2));
+//            mRenderwindow->mGameObjects.push_back(tempGameObject);
+//        }
+//    }
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(3,0,-1);
@@ -86,7 +86,7 @@ void GameEngine::SetUpScene()
 
 
     // Sound startup stuff
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
+    mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                 gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
 
@@ -115,6 +115,16 @@ void GameEngine::setRenderPointer(RenderWindow *temp)
 {
     mRenderwindow = temp;
 }
+
+void GameEngine::playMusic(bool bIsPlaying)
+{
+    if(bIsPlaying)
+        mStereoSound->play();
+    else
+        mStereoSound->stop();
+}
+
+
 
 GameEngine * GameEngine::getInstance()
 {
