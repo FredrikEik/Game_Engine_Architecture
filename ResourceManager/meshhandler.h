@@ -43,7 +43,10 @@ private:
     int makeAxis();
     int makeTriangle();
 
-    void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
+    ///Function that takes in a vertex, and compare to existing MeshData values.
+    /// Makes numbers for bounding box and bounding sphere.
+    /// Has to be run for every vertex in the mesh.
+    void makeColliderData(MeshData &meshIn, gsl::Vector3D &vertexIn);
 
     ///Initializes the mesh with OpenGL buffers - VAO, VBO, EAB.
     void initMesh(MeshData &tempMesh, int lodLevel);

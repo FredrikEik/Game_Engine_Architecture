@@ -35,6 +35,8 @@ public:
     GLfloat operator*(const Vector3D& rhs) const;  // v * v  - dot product
 
     //Functions
+
+    ///Returns lenght of vector in float
     GLfloat length() const;
     GLfloat lengthNoSqrt() const;
     void normalize();

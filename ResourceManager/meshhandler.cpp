@@ -123,7 +123,7 @@ int MeshHandler::readObj(std::string filename)
 
                 //make collider only for LOD 0 == original mesh
                 if(lod == 0)
-                    makeColliderCorners(temp, tempVertex);
+                    makeColliderData(temp, tempVertex);
 
                 continue;
             }
@@ -207,11 +207,6 @@ int MeshHandler::readObj(std::string filename)
 
         initMesh(temp, lod);
     }
-
-    //calculate ca radius for collider - TODO: this is not correct:
-    float a = temp.mLowLeftBackCorner.length();
-    float b = temp.mUpRightFrontCorner.length();
-    temp.mColliderRadius = (a>b) ? a : b;
 
     qDebug() << QString::fromStdString(filename) << "successfully loaded";
 
@@ -386,7 +381,7 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
     return temp;
 }
 
-void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
+void MeshHandler::makeColliderData(MeshData &meshIn, gsl::Vector3D &vertexIn)
 {
     //testing min
     if(vertexIn.x < meshIn.mLowLeftBackCorner.x)
@@ -403,6 +398,11 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
         meshIn.mUpRightFrontCorner.y = vertexIn.y;
     if(vertexIn.z > meshIn.mUpRightFrontCorner.z)
         meshIn.mUpRightFrontCorner.z = vertexIn.z;
+
+    //making correct bounding sphere radius:
+    float length = vertexIn.length();
+    if(length > meshIn.mColliderRadius)
+        meshIn.mColliderRadius = length;
 }
 
 void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)

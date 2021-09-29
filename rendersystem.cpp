@@ -232,7 +232,7 @@ void RenderSystem::render()
         {
             MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
+                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
 //            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
             glBindVertexArray( lineBox.mVAO[0] );
             glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
