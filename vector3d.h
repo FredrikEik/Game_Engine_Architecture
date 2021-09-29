@@ -31,6 +31,10 @@ public:
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
     GLfloat operator*(const Vector3D& rhs) const;  // v * v
 
+    bool operator >=(const Vector3D &rhs) const; // v >= v
+    bool operator <=(const Vector3D &rhs) const; // v <= v
+    bool operator ==(const Vector3D &rhs) const; // v == v
+
     //Functions
     ///Get length of vector
     GLfloat length() const;

@@ -18,6 +18,7 @@ SOURCES += main.cpp \
     objects/objmesh.cpp \
     renderwindow.cpp \
     systems/ecs/entity.cpp \
+    systems/ecs/meshhandeler.cpp \
     systems/ecs/resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     objects/objmesh.h \
     renderwindow.h \
     systems/ecs/entity.h \
+    systems/ecs/meshhandeler.h \
     systems/ecs/resourcemanager.h \
     shader.h \
     mainwindow.h \

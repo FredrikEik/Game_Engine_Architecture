@@ -98,6 +98,21 @@ namespace gsl
             return {y * rhs.getZ() - z * rhs.getY(), z * rhs.getX() - x * rhs.getZ(), x * rhs.getY() - y * rhs.getX()};
     }
 
+    bool Vector3D::operator>=(const Vector3D &rhs) const
+    {
+        return x >= rhs.x && y >= rhs.y && z >= rhs.z;
+    }
+
+    bool Vector3D::operator<=(const Vector3D &rhs) const
+    {
+        return x <= rhs.x && y <= rhs.y && z <= rhs.z;
+    }
+
+    bool Vector3D::operator==(const Vector3D &rhs) const
+    {
+        return x == rhs.x && y == rhs.y && z == rhs.z;
+    }
+
 
     GLfloat Vector3D::length() const
     {

@@ -59,7 +59,7 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-
+       // resourceManager &resourceMgr = resourceManager::getInstance();
 
     auto start = std::chrono::high_resolution_clock::now();
     //Connect the gameloop timer to the render function:
@@ -115,13 +115,22 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
-    Entity *temp;
-    temp = makeEntity("axis");
-    temp->mMaterial->mShaderProgram = 0;
+    Entity *temp = mResourceManager->makeEntity("axis");
+   // mEntity.push_back(temp);
+   // temp->mMaterial->mShaderProgram = 0;
 
 
-    player = makeEntity("cube");
-    player->mMaterial->mShaderProgram = 0;
+//    player = makeEntity("cube");
+//    player->mMaterial->mShaderProgram = 0;
+
+//    testObject = makeEntity("cube");
+//    testObject->mMaterial->mShaderProgram = 0;
+//    testObject->mTransform->mMatrix.translate(3,0,0);
+
+//    resourceMgr.setOBBCollider(1, mEntity[1]->mTransform->position - mEntity[1]->mTransform->scale, mEntity[1]->mTransform->position + mEntity[1]->mTransform->scale);
+//    resourceMgr.setOBBCollider(2, mEntity[2]->mTransform->position - mEntity[2]->mTransform->scale, mEntity[2]->mTransform->position + mEntity[2]->mTransform->scale);
+
+
 
 
     //Start the Qt OpenGL debugger
@@ -235,13 +244,30 @@ void RenderWindow::render()
         {
         //draw the object
         glBindVertexArray( mEntity[i]->mMesh->mVAO );
-        glDrawArrays(mEntity[i]->mMesh->mDrawType, 0, mEntity[i]->mMesh->mVertices.size());
-        glBindVertexArray(0);
+        glDrawArrays(mEntity[i]->mMesh->mDrawType, 0, mEntity[i]->mMesh->mVertexCount);
+
 
         mObjectsDrawn++;
         }
+        //if(i == 2)
+        //{
+        //MeshData lineBox = mResourceManager->makeLineBox("goat.obj");
+        //MeshData circle = mResourceManager->makeCircleSphere(mEntity[i]->mMesh->mColliderRadius * 0.75, false);
+        //glBindVertexArray( lineBox.mVAO );
+        //glDrawElements(lineBox.mDrawType, lineBox.mIndexCount, GL_UNSIGNED_INT, nullptr);
+        //glBindVertexArray( circle.mVAO );
+        //glDrawElements(circle.mDrawType, circle.mIndexCount, GL_UNSIGNED_INT, nullptr);
+        //}
+
+        glBindVertexArray(0);
 
     }
+        //collision test
+//        for(MAX_ENTITIES_TYPE i{0}; i < mEntity.size(); i++)
+//        {
+//            if(resourceManager::getInstance().testCollision(player, testObject))
+//               qDebug() << "collided ! ! ! ! ! ! ";
+    //    }
 
 
     //Calculate framerate before
@@ -257,9 +283,10 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
-
+    checkCollision();
     glUseProgram(0);
 }
+
 
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
@@ -375,6 +402,24 @@ void RenderWindow::toogleVisibility(bool buttonState)
 
 }
 
+void RenderWindow::checkCollision()
+{
+    bool objectCollide = false;
+
+//    objectCollide = testObject->CheckCollide(player->BoundingBoxMin, player->BoundingBoxMax);
+
+//    if(objectCollide == true)
+//    {
+//        testObject->Collided();
+//        gsl::Vector3D SkyHighBoundsMin{100.f,100.f,100.f};
+//        gsl::Vector3D SkyHighBoundsMax{100.f,100.f,100.f};
+//        testObject->setBoundingBox(SkyHighBoundsMin, SkyHighBoundsMax);
+
+//        qDebug() << "collided ! ! ! ! ! ! ";
+//    }
+
+}
+
 void RenderWindow::transformObjectX(double in)
 {
      mEntity[1]->mTransform->mMatrix.rotateX(in *-1);
@@ -391,52 +436,52 @@ void RenderWindow::transformObjectZ(double in)
     mEntity[1]->mTransform->mMatrix.rotateZ(in);
 }
 
-void RenderWindow::spawnObject(QString in)
-{
+//void RenderWindow::spawnObject(QString in)
+//{
 
-    Entity *temp;
-    if(in == "cube")
-    {
-        temp = makeEntity("cube");
-        temp->mMaterial->mShaderProgram = 0;
-        temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
-    }
-    else if(in == "triangle")
-    {
-        temp = makeEntity("triangle");
-        temp->mMaterial->mShaderProgram = 1;    //texture shader
-        temp->mMaterial->mTextureUnit = 1;      //dog texture
-        temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    }
-   else  if(in == "goat")
-    {
-        temp = makeEntity("\\Textures\\goat.obj");
-        temp->mMaterial->mShaderProgram = 1;    //texture shader
-        temp->mMaterial->mTextureUnit = 2;      //dog texture
-        temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
-    }
-    else
-        qDebug() << "no matching file to create";
+//    Entity *temp;
+//    if(in == "cube")
+//    {
+//        temp = makeEntity("cube");
+//        temp->mMaterial->mShaderProgram = 0;
+//        temp->mTransform->mMatrix.translate(1.f, 0.f, -1.f);
+//    }
+//    else if(in == "triangle")
+//    {
+//        temp = makeEntity("triangle");
+//        temp->mMaterial->mShaderProgram = 1;    //texture shader
+//        temp->mMaterial->mTextureUnit = 1;      //dog texture
+//        temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+//    }
+//   else  if(in == "goat")
+//    {
+//        temp = makeEntity("\\Textures\\goat.obj");
+//        temp->mMaterial->mShaderProgram = 1;    //texture shader
+//        temp->mMaterial->mTextureUnit = 2;      //dog texture
+//        temp->mTransform->mMatrix.translate(-3.f, 0.f, -3.f);
+//    }
+//    else
+//        qDebug() << "no matching file to create";
 
-    mEntity.push_back(temp );
+//    mEntity.push_back(temp );
 
-}
+//}
 
-Entity *RenderWindow::makeEntity(std::string assetName, int shaderType, int textureUnit)
-{
+//Entity *RenderWindow::makeEntity(std::string assetName, int shaderType, int textureUnit)
+//{
 
-    Entity *temp = resourceManager::getInstance().makeEntity(assetName);
-    temp->mMaterial->mShaderProgram = shaderType;
-    temp->mMaterial->mTextureUnit = textureUnit;
+//    Entity *temp = resourceManager::getInstance().makeEntity(assetName);
+//    temp->mMaterial->mShaderProgram = shaderType;
+//    temp->mMaterial->mTextureUnit = textureUnit;
 
-    //quick hackety-hack to move objects made
-    static float value = 0.f;
+//    //quick hackety-hack to move objects made
+//    static float value = 0.f;
 
-    temp->mTransform->mMatrix.translate(value,value, value);
-    mEntity.push_back(temp);
-    value += 0.2f;
-    return temp;
-}
+//    temp->mTransform->mMatrix.translate(value,value, value);
+//    mEntity.push_back(temp);
+//    value += 0.2f;
+//    return temp;
+//}
 
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
@@ -530,15 +575,13 @@ void RenderWindow::handleInput()
         if(mInput.A)
         {
             //player->move(1.f,0,0);
-            player->move(0,-playerSpeed,0);
+            player->move(0,0,-playerSpeed);
 
         }
-
-
         if(mInput.D)
         {
             //player->move(1.f,0,0);
-            player->move(0,playerSpeed,0);
+            player->move(0,0,playerSpeed);
 
         }
 

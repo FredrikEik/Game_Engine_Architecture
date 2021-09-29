@@ -9,6 +9,7 @@
 #include "input.h"
 #include "constants.h"
 #include "systems/ecs/Components.h"
+#include "systems/ecs/resourcemanager.h"
 #include "systems/ecs/entity.h"
 
 
@@ -19,6 +20,7 @@ class VisualObject;
 class Camera;
 class Texture;
 class Entity;
+class resourceManager;
 
 
 // This inherits from QWindow to get access to the Qt functionality and
@@ -44,9 +46,13 @@ public:
     void transformObjectX(double in);
     void transformObjectY(double in);
     void transformObjectZ(double in);
-    void spawnObject(QString input);
+  //  void spawnObject(QString input);
 
-    Entity * makeEntity(std::string assetName, int shaderType = 0, int textureUnit = 0);
+    std::vector<Entity*> mEntity;
+
+    //resourceManager mManager;
+    resourceManager *mResourceManager{nullptr};
+   // Entity * makeEntity(std::string assetName, int shaderType = 0, int textureUnit = 0);
 
 private slots:
     void render();
@@ -67,6 +73,8 @@ void init();
 
     void handleInput();
 
+    void checkCollision();
+
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -85,7 +93,7 @@ void init();
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
-    std::vector<Entity*> mEntity;
+
 
     Input mInput;
     float mCameraSpeed{0.05f};
@@ -105,6 +113,7 @@ void init();
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
     Entity *player;
+    Entity* testObject;
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;

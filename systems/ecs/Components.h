@@ -27,7 +27,7 @@ struct MeshComponent{
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
-
+    float mColliderRadius{0.f};
      GLenum mDrawType{GL_TRIANGLES};
 
 };

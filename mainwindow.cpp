@@ -99,19 +99,19 @@ void MainWindow::on_comboBox_activated(int index)
     if(index == 1)
     {
         qDebug() << "cube";
-        mRenderWindow->spawnObject("cube");
+        //mRenderWindow->spawnObject("cube");
     }
 
     if(index == 2)
     {
         qDebug() << "goat";
-        mRenderWindow->spawnObject("goat");
+       // mRenderWindow->spawnObject("goat");
     }
 
     if(index == 3)
     {
         qDebug() << "triangle";
-        mRenderWindow->spawnObject("triangle");
+        //mRenderWindow->spawnObject("triangle");
     }
 }
 

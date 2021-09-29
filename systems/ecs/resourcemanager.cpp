@@ -14,6 +14,8 @@
 resourceManager::resourceManager()
 {
     mMeshComponents.reserve(gsl::MAX_MESHCOMPONENTS);
+    mMeshHandler = new MeshHandler();
+    //mTextureHandler = new TextureHandler();
 
 }
 
@@ -28,152 +30,192 @@ resourceManager &resourceManager::getInstance()
     return *mInstance;
 }
 
-int resourceManager::makeAxis()
+//int resourceManager::makeAxis()
+//{
+//    //should check if this object is new before this!
+//    mMeshComponents.emplace_back(MeshComponent());
+//    MeshComponent &temp = mMeshComponents.back();
+
+//    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+//    temp.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+//    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+//    temp.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+//    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+//    temp.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+//    temp.mDrawType = GL_LINES;
+
+//    initMesh(temp);
+
+//    return mMeshComponents.size()-1;    //returns index to last object
+//}
+
+//int resourceManager::makeTriangle()
+//{
+//    //should check if this object is new before this!
+//    mMeshComponents.emplace_back(MeshComponent());
+//    MeshComponent &temp = mMeshComponents.back();
+//    temp.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+//    temp.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+//    temp.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+
+//    temp.mDrawType = GL_TRIANGLES;
+//    initMesh(temp);
+
+//    return mMeshComponents.size()-1;    //returns index to last object
+
+//}
+
+//int resourceManager::makeCube()
+//{
+//    mMeshComponents.emplace_back(MeshComponent());
+//    MeshComponent &tempMesh = mMeshComponents.back();
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 0, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 0, 1, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+//    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+//    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+
+//    tempMesh.mDrawType = GL_TRIANGLES;
+//    initMesh(tempMesh);
+
+//    return mMeshComponents.size()-1;
+
+//}
+
+void resourceManager::makeOBB(gsl::Vector3D &vertexIn)
 {
-    //should check if this object is new before this!
-    mMeshComponents.emplace_back(MeshComponent());
-    MeshComponent &temp = mMeshComponents.back();
+    //testing min
+    if(vertexIn.x < mMinCenter.x)
+        mMinCenter.x = vertexIn.x;
+    if(vertexIn.y < mMinCenter.y)
+        mMinCenter.y = vertexIn.y;
+    if(vertexIn.z < mMinCenter.z)
+        mMinCenter.z = vertexIn.z;
 
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    temp.mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    temp.mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+    //testing max
+    if(vertexIn.x > mMaxRadius.x)
+        mMaxRadius.x = vertexIn.x;
+    if(vertexIn.y > mMaxRadius.y)
+        mMaxRadius.y = vertexIn.y;
+    if(vertexIn.z > mMaxRadius.z)
+        mMaxRadius.z = vertexIn.z;
 
-    temp.mDrawType = GL_LINES;
-
-    initMesh(temp);
-
-    return mMeshComponents.size()-1;    //returns index to last object
 }
 
-int resourceManager::makeTriangle()
+bool resourceManager::checkCollideRM(gsl::Vector3D Pmin, gsl::Vector3D Pmax)
 {
-    //should check if this object is new before this!
-    mMeshComponents.emplace_back(MeshComponent());
-    MeshComponent &temp = mMeshComponents.back();
-    temp.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    temp.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    temp.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    bool result;
 
-    temp.mDrawType = GL_TRIANGLES;
-    initMesh(temp);
+//    qDebug() << BoundingBoxMax;
+//    qDebug() << BoundingBoxMin;
 
-    return mMeshComponents.size()-1;    //returns index to last object
+    if(BoundingBoxMax.x >= Pmin.x &&
+       BoundingBoxMin.x <= Pmax.x &&
+       BoundingBoxMax.y >= Pmin.y &&
+       BoundingBoxMin.y <= Pmax.y &&
+       BoundingBoxMax.z <= Pmin.z &&
+       BoundingBoxMin.z >= Pmax.z)
+    {
+        result = true;
+    }
 
+    else
+    {
+        result = false;
+    }
+
+//    qDebug() << result;
+    return result;
 }
 
-int resourceManager::makeCube()
+void resourceManager::setBoundingBoxRM(gsl::Vector3D Min, gsl::Vector3D Max)
 {
-    mMeshComponents.emplace_back(MeshComponent());
-    MeshComponent &tempMesh = mMeshComponents.back();
+    BoundingBoxMin = Min;
+    BoundingBoxMax = Max;
+}
 
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+MeshData resourceManager::makeLineBox(std::string meshName)
+{
+    return mMeshHandler->makeLineBox(meshName);
+}
 
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
-
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
-
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 0, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 0, 1, 0));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
-
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,-0.5  , 1, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,0.5    , 1, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
-    tempMesh.mVertices.push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
-
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
-
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
-    tempMesh.mVertices.push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
-
-    tempMesh.mDrawType = GL_TRIANGLES;
-    initMesh(tempMesh);
-
-    return mMeshComponents.size()-1;
-
+MeshData resourceManager::makeCircleSphere(float radius, bool rgbColor)
+{
+    return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
 Entity* resourceManager::makeEntity(std::string meshName)
 {
-//    unsigned int i = entities.size();
-//    entities.push_back(Entity(i));
-//    entities[i].mName = meshName;
 
-//    return i;
-
-    int meshIndex{-1};
-
-    //check if asset is made:
-    auto result = mMeshComponentMap.find(meshName);
-    //if already made
-    if (result != mMeshComponentMap.end()) {        //found!!!
-        meshIndex = result->second;
-    }
-    //not made, make new
-    else {
-        //Simple "factory" - making the meshobject said in the filename
-        if (meshName.find(".obj") != std::string::npos)
-            meshIndex = readObj(gsl::AssetFilePath + meshName);
-        if (meshName.find("axis") != std::string::npos)
-            meshIndex = makeAxis();
-        if (meshName.find("triangle") != std::string::npos)
-            meshIndex = makeTriangle();
-        if (meshName.find("cube") != std::string::npos)
-            meshIndex = makeCube();
-
-
-        //safety - if nothing is made I just make a triangle
-
-        if (meshIndex == -1)
-            meshIndex = makeTriangle();
-
-        //update mMeshComponentMap with new asset
-        mMeshComponentMap.emplace(meshName, meshIndex);
-    }
+    int meshIndex = mMeshHandler->makeMesh(meshName);
 
     Entity* tempObject = new Entity();
 
-//    //Dangerous, because vector can resize and will move pointers:
-    tempObject->mMesh = &mMeshComponents.at(meshIndex);     //This is a hack, please fix
-    tempObject->mMaterial = new MaterialComponent();
-    tempObject->mTransform = new TransformComponent();
-    tempObject->mTransform->mMatrix.identity();
-    return tempObject; //temporary to get to compile
-   // return 0;
+    MeshComponent* tempMesh = new MeshComponent();
 
+   // tempMesh->mVAO = mMeshHandler->mMeshes.at(meshIndex).mVAO;
+    //tempMesh->mVertexCount = mMeshHandler->mMeshes.at(meshIndex).mVertexCount;
+  //  tempMesh->mIndexCount = mMeshHandler->mMeshes.at(meshIndex).mIndexCount;
+   //Dangerous, because vector can resize and will move pointers:
+
+
+   // tempMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
+  //  tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
+  //  tempObject->mMesh = tempMesh;
+
+  //  tempObject->mMaterial = new MaterialComponent();
+  //  tempObject->mTransform = new TransformComponent();
+
+    return tempObject;
+
+//return 0;
 
 }
 
+/*
 void resourceManager::initMesh(MeshComponent &tempMeshComp)
 {
     //must call this to use OpenGL functions
@@ -213,157 +255,199 @@ void resourceManager::initMesh(MeshComponent &tempMeshComp)
     tempMeshComp.mIndexCount= tempMeshComp.mIndices.size();
     tempMeshComp.mVertexCount = tempMeshComp.mVertices.size();
 }
+*/
+//int resourceManager::readObj(std::string filename)
+//{
+//    //should check if this object is new before this!
+//       mMeshComponents.emplace_back(MeshComponent());
+//       MeshComponent &temp = mMeshComponents.back();
 
-int resourceManager::readObj(std::string filename)
-{
-    //should check if this object is new before this!
-       mMeshComponents.emplace_back(MeshComponent());
-       MeshComponent &temp = mMeshComponents.back();
+//       std::ifstream fileIn;
+//       fileIn.open (filename, std::ifstream::in);
+//       if(!fileIn)
+//       {
+//           qDebug() << "ERROR: Could not open file for reading: " << QString::fromStdString(filename);
+//           qDebug() << "****** using arbitrary mesh as replacement!";
+//           return 0;    //hack - this will crash if no meshes are made yet
+//       }
+//       //One line at a time-variable
+//       std::string oneLine;
+//       //One word at a time-variable
+//       std::string oneWord;
 
-       std::ifstream fileIn;
-       fileIn.open (filename, std::ifstream::in);
-       if(!fileIn)
-       {
-           qDebug() << "ERROR: Could not open file for reading: " << QString::fromStdString(filename);
-           qDebug() << "****** using arbitrary mesh as replacement!";
-           return 0;    //hack - this will crash if no meshes are made yet
-       }
-       //One line at a time-variable
-       std::string oneLine;
-       //One word at a time-variable
-       std::string oneWord;
+//       std::vector<gsl::Vector3D> tempVertecies;
+//       std::vector<gsl::Vector3D> tempNormals;
+//       std::vector<gsl::Vector2D> tempUVs;
 
-       std::vector<gsl::Vector3D> tempVertecies;
-       std::vector<gsl::Vector3D> tempNormals;
-       std::vector<gsl::Vector2D> tempUVs;
+//       //    std::vector<Vertex> mVertices;    //made in VisualObject
+//       //    std::vector<GLushort> mIndices;   //made in VisualObject
 
-       //    std::vector<Vertex> mVertices;    //made in VisualObject
-       //    std::vector<GLushort> mIndices;   //made in VisualObject
+//       // Varible for constructing the indices vector
+//       unsigned int temp_index = 0;
 
-       // Varible for constructing the indices vector
-       unsigned int temp_index = 0;
+//       //Reading one line at a time from file to oneLine
+//       while(std::getline(fileIn, oneLine))
+//       {
+//           //Doing a trick to get one word at a time
+//           std::stringstream sStream;
+//           //Pushing line into stream
+//           sStream << oneLine;
+//           //Streaming one word out of line
+//           oneWord = ""; //resetting the value or else the last value might survive!
+//           sStream >> oneWord;
 
-       //Reading one line at a time from file to oneLine
-       while(std::getline(fileIn, oneLine))
-       {
-           //Doing a trick to get one word at a time
-           std::stringstream sStream;
-           //Pushing line into stream
-           sStream << oneLine;
-           //Streaming one word out of line
-           oneWord = ""; //resetting the value or else the last value might survive!
-           sStream >> oneWord;
+//           if (oneWord == "#")
+//           {
+//               //Ignore this line
+//               //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+//               continue;
+//           }
+//           if (oneWord == "")
+//           {
+//               //Ignore this line
+//               //            qDebug() << "Line is blank ";
+//               continue;
+//           }
+//           if (oneWord == "v")
+//           {
+//               //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+//               gsl::Vector3D tempVertex;
+//               sStream >> oneWord;
+//               tempVertex.x = std::stof(oneWord);
+//               sStream >> oneWord;
+//               tempVertex.y = std::stof(oneWord);
+//               sStream >> oneWord;
+//               tempVertex.z = std::stof(oneWord);
 
-           if (oneWord == "#")
-           {
-               //Ignore this line
-               //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
-               continue;
-           }
-           if (oneWord == "")
-           {
-               //Ignore this line
-               //            qDebug() << "Line is blank ";
-               continue;
-           }
-           if (oneWord == "v")
-           {
-               //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
-               gsl::Vector3D tempVertex;
-               sStream >> oneWord;
-               tempVertex.x = std::stof(oneWord);
-               sStream >> oneWord;
-               tempVertex.y = std::stof(oneWord);
-               sStream >> oneWord;
-               tempVertex.z = std::stof(oneWord);
+//               //Vertex made - pushing it into vertex-vector
+//               tempVertecies.push_back(tempVertex);
 
-               //Vertex made - pushing it into vertex-vector
-               tempVertecies.push_back(tempVertex);
+//               continue;
+//           }
+//           if (oneWord == "vt")
+//           {
+//               //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+//               gsl::Vector2D tempUV;
+//               sStream >> oneWord;
+//               tempUV.x = std::stof(oneWord);
+//               sStream >> oneWord;
+//               tempUV.y = std::stof(oneWord);
 
-               continue;
-           }
-           if (oneWord == "vt")
-           {
-               //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
-               gsl::Vector2D tempUV;
-               sStream >> oneWord;
-               tempUV.x = std::stof(oneWord);
-               sStream >> oneWord;
-               tempUV.y = std::stof(oneWord);
+//               //UV made - pushing it into UV-vector
+//               tempUVs.push_back(tempUV);
 
-               //UV made - pushing it into UV-vector
-               tempUVs.push_back(tempUV);
+//               continue;
+//           }
+//           if (oneWord == "vn")
+//           {
+//               //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+//               gsl::Vector3D tempNormal;
+//               sStream >> oneWord;
+//               tempNormal.x = std::stof(oneWord);
+//               sStream >> oneWord;
+//               tempNormal.y = std::stof(oneWord);
+//               sStream >> oneWord;
+//               tempNormal.z = std::stof(oneWord);
 
-               continue;
-           }
-           if (oneWord == "vn")
-           {
-               //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
-               gsl::Vector3D tempNormal;
-               sStream >> oneWord;
-               tempNormal.x = std::stof(oneWord);
-               sStream >> oneWord;
-               tempNormal.y = std::stof(oneWord);
-               sStream >> oneWord;
-               tempNormal.z = std::stof(oneWord);
+//               //Vertex made - pushing it into vertex-vector
+//               tempNormals.push_back(tempNormal);
+//               continue;
+//           }
+//           if (oneWord == "f")
+//           {
+//               //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+//               //int slash; //used to get the / from the v/t/n - format
+//               int index, normal, uv;
+//               for(int i = 0; i < 3; i++)
+//               {
+//                   sStream >> oneWord;     //one word read
+//                   std::stringstream tempWord(oneWord);    //to use getline on this one word
+//                   std::string segment;    //the numbers in the f-line
+//                   std::vector<std::string> segmentArray;  //temp array of the numbers
+//                   while(std::getline(tempWord, segment, '/')) //splitting word in segments
+//                   {
+//                       segmentArray.push_back(segment);
+//                   }
+//                   index = std::stoi(segmentArray[0]);     //first is vertex
+//                   if (segmentArray[1] != "")              //second is uv
+//                       uv = std::stoi(segmentArray[1]);
+//                   else
+//                   {
+//                       //qDebug() << "No uvs in mesh";       //uv not present
+//                       uv = 0;                             //this will become -1 in a couple of lines
+//                   }
+//                   normal = std::stoi(segmentArray[2]);    //third is normal
 
-               //Vertex made - pushing it into vertex-vector
-               tempNormals.push_back(tempNormal);
-               continue;
-           }
-           if (oneWord == "f")
-           {
-               //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
-               //int slash; //used to get the / from the v/t/n - format
-               int index, normal, uv;
-               for(int i = 0; i < 3; i++)
-               {
-                   sStream >> oneWord;     //one word read
-                   std::stringstream tempWord(oneWord);    //to use getline on this one word
-                   std::string segment;    //the numbers in the f-line
-                   std::vector<std::string> segmentArray;  //temp array of the numbers
-                   while(std::getline(tempWord, segment, '/')) //splitting word in segments
-                   {
-                       segmentArray.push_back(segment);
-                   }
-                   index = std::stoi(segmentArray[0]);     //first is vertex
-                   if (segmentArray[1] != "")              //second is uv
-                       uv = std::stoi(segmentArray[1]);
-                   else
-                   {
-                       //qDebug() << "No uvs in mesh";       //uv not present
-                       uv = 0;                             //this will become -1 in a couple of lines
-                   }
-                   normal = std::stoi(segmentArray[2]);    //third is normal
+//                   //Fixing the indexes
+//                   //because obj f-lines starts with 1, not 0
+//                   --index;
+//                   --uv;
+//                   --normal;
 
-                   //Fixing the indexes
-                   //because obj f-lines starts with 1, not 0
-                   --index;
-                   --uv;
-                   --normal;
+//                   if (uv > -1)    //uv present!
+//                   {
+//                       Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
+//                       temp.mVertices.push_back(tempVert);
+//                   }
+//                   else            //no uv in mesh data, use 0, 0 as uv
+//                   {
+//                       Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
+//                       temp.mVertices.push_back(tempVert);
+//                   }
+//                   temp.mIndices.push_back(temp_index++);
+//               }
+//               continue;
+//           }
+//       }
 
-                   if (uv > -1)    //uv present!
-                   {
-                       Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                       temp.mVertices.push_back(tempVert);
-                   }
-                   else            //no uv in mesh data, use 0, 0 as uv
-                   {
-                       Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                       temp.mVertices.push_back(tempVert);
-                   }
-                   temp.mIndices.push_back(temp_index++);
-               }
-               continue;
-           }
-       }
+//       //beeing a nice boy and closing the file after use
+//       fileIn.close();
 
-       //beeing a nice boy and closing the file after use
-       fileIn.close();
+//       initMesh(temp);
 
-       initMesh(temp);
+//       qDebug() << QString::fromStdString(filename) << "successfully loaded";
 
-       qDebug() << QString::fromStdString(filename) << "successfully loaded";
+//       return mMeshComponents.size()-1;    //returns index to last object
+//}
 
-       return mMeshComponents.size()-1;    //returns index to last object
-}
+
+
+
+//void resourceManager::setOBBCollider(MAX_ENTITIES_TYPE entityID, gsl::Vector3D min, gsl::Vector3D max)
+//{
+
+//     mRenderwindow->mEntity[entityID]->mCollider->mType = gsl::OBB;
+//     mRenderwindow->mEntity[entityID]->mCollider->mMinCenter = min;
+//     mRenderwindow->mEntity[entityID]->mCollider->mMaxRadius = max;
+//     mRenderwindow->mEntity[entityID]->isCollidable = true;
+
+//}
+
+//bool resourceManager::testCollision(Entity *a, Entity *b)
+//{
+//    if (a->mCollider->mType == gsl::OBB && b->mCollider->mType == gsl::OBB)
+//        {
+//            return a->mCollider->mMaxRadius >= b->mCollider->mMinCenter
+//                    && b->mCollider->mMaxRadius >= a->mCollider->mMinCenter;
+//        }
+
+//    else return false;
+// //   return false;
+//}
+//void resourceManager::updateColliders()
+//{
+//    for (MAX_ENTITIES_TYPE i{0}; i < mRenderwindow->mEntity.size(); i++)
+//    {
+//        if (mRenderwindow->mEntity[i]->isCollidable)
+//        {
+//             if (mRenderwindow->mEntity[i]->mCollider->mType == gsl::OBB)
+//                 setOBBCollider(i, mRenderwindow->mEntity[i]->mTransform->position
+//                  - mRenderwindow->mEntity[i]->mTransform->scale,
+//                    mRenderwindow->mEntity[i]->mTransform->position
+//                  + mRenderwindow->mEntity[i]->mTransform->scale
+//                 );
+//             //else if (mRenderwindow->mEntity[i]->mCollider->mType == gsl::SPHERE) setSphereCollider(i, 0, mRenderwindow->mEntity[i].mCollider.bIsDynamic);
+
+//        }
+//    }
+//}
