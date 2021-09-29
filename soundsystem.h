@@ -64,5 +64,4 @@ private:
 
     RenderSystem* mRenderSystem{nullptr};     //Should not be necessary
 };
-
 #endif

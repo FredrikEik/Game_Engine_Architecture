@@ -6,8 +6,8 @@
 #include <map>
 #include <vector>
 
-#include "gameobject.h"
 #include "components.h"
+#include "constants.h"
 #include "soundhandler.h"
 
 //forward declaration

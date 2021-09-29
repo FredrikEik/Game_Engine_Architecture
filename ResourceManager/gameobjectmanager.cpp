@@ -1,4 +1,4 @@
-﻿#include "ResourceManager/gameobjectmanager.h"
+﻿#include "gameobjectmanager.h"
 
 #include <sstream>
 #include <fstream>
@@ -13,9 +13,9 @@
 #include "gameobject.h"
 #include "constants.h"
 #include "soundsystem.h"
-#include "ResourceManager/soundhandler.h"
-#include "ResourceManager/meshhandler.h"
-#include "ResourceManager/texturehandler.h"
+#include "soundhandler.h"
+#include "meshhandler.h"
+#include "texturehandler.h"
 
 GameObjectManager::GameObjectManager()
 {
