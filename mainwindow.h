@@ -27,6 +27,9 @@ public slots:
     void on_pb_toggleWireframe_toggled(bool checked);
     void on_pb_togglePlay_toggled(bool checked);
 
+private slots:
+    void on_actionToggle_backside_culling_toggled(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

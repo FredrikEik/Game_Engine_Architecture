@@ -32,6 +32,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toggleBacksideCulling(bool state);
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 

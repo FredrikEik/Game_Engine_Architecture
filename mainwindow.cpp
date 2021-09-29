@@ -118,3 +118,9 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
         ui->pb_togglePlay->setText("Play (R)");
 }
 
+
+void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
+{
+    mRenderSystem->toggleBacksideCulling(checked);
+}
+

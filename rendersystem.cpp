@@ -93,7 +93,7 @@ void RenderSystem::init()
 
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders:
@@ -339,6 +339,11 @@ void RenderSystem::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
     }
+}
+
+void RenderSystem::toggleBacksideCulling(bool state)
+{
+    state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
 }
 
 //Uses QOpenGLDebugLogger if this is present
