@@ -68,6 +68,8 @@
      <string>Add Mesh</string>
     </property>
     <addaction name="actionCustom_OBJ"/>
+    <addaction name="actionSuzanne"/>
+    <addaction name="actionCube"/>
    </widget>
    <addaction name="menuHelp"/>
    <addaction name="menuAdd_Mesh"/>
@@ -84,6 +86,16 @@
   <action name="actionCustom_OBJ">
    <property name="text">
     <string>Custom OBJ</string>
+   </property>
+  </action>
+  <action name="actionSuzanne">
+   <property name="text">
+    <string>Suzanne</string>
+   </property>
+  </action>
+  <action name="actionCube">
+   <property name="text">
+    <string>Cube</string>
    </property>
   </action>
  </widget>

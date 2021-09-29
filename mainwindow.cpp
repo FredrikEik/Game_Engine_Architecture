@@ -93,3 +93,8 @@ void MainWindow::on_actionCustom_OBJ_triggered()
 {
     mRenderWindow->entitySys->constructCube(mRenderWindow);
 }
+
+void MainWindow::on_actionSuzanne_triggered()
+{
+
+}

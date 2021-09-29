@@ -23,6 +23,8 @@ private slots:
 
     void on_actionCustom_OBJ_triggered();
 
+    void on_actionSuzanne_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;
