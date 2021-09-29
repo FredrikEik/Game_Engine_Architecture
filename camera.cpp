@@ -123,6 +123,6 @@ void Camera::calculateFrustumVectors()
 
     //leftPlane vector = mRight rotated by FOV+180 around up
     tempVector = mRight;
-    tempVector.rotateY(mFrustum.mFOV);
+    tempVector.rotateY(mFrustum.mFOV + 180.f);
     mFrustum.mLeftPlane = tempVector;
 }

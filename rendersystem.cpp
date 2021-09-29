@@ -148,16 +148,8 @@ void RenderSystem::render()
             if(frustumCulling(i))
                 continue;
         }
-        gsl::Vector3D distanceVector = gobPos -cameraPos;
 
-//        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
-//        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
-//        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
-
-//        //if angle between camera Forward, and camera->GameObject > FOV of camera
-//        if(angle > mFOVangle)
-//            continue;   //don't draw object
-
+        gsl::Vector3D distanceVector = gobPos - cameraPos;
         //LOD calculation
         float length = distanceVector.length();
 //        qDebug() << "distance is" << length;
@@ -237,12 +229,12 @@ void RenderSystem::render()
         //Quick hack test to check if linebox/circle works:
         if(i == 2)
         {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+//            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
-//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+////            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
+//            glBindVertexArray( lineBox.mVAO[0] );
+//            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
@@ -409,6 +401,9 @@ bool RenderSystem::frustumCulling(int gobIndex)
 
     //radius of object sphere
     float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
+    //Mesh data is not scaled so have to calculate for that
+    //TODO: The system will break if scaling is not uniform...
+    gobRadius *= mGameObjects[gobIndex]->mTransform->mScale.x;
 
     //if radius is not set == very small
     if(gobRadius <= 0.000001f)
@@ -428,7 +423,7 @@ bool RenderSystem::frustumCulling(int gobIndex)
 
     //Left plane:
     tempDistance = frustum.mLeftPlane * vectorToObject;
-    if(tempDistance < gobRadius)
+    if(tempDistance > gobRadius)
         return true;
 
     //insert the rest of planes here

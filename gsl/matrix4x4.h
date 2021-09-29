@@ -72,7 +72,9 @@ public:
                   "{" << mIn.matrix[3] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[11] << "\t, " << mIn.matrix[15] << "}\n";
         return output;
     }
-    GLfloat getFloat(int space);
+
+    GLfloat getValueFromIndex(int index);
+
 private:
     GLfloat matrix[16];
 };

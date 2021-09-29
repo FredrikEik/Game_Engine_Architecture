@@ -188,6 +188,11 @@ namespace gsl
         return &z;
     }
 
+    void Vector3D::setAlltoSame(float valueIn)
+    {
+        x = valueIn; y = valueIn; z = valueIn;
+    }
+
     GLfloat Vector3D::getX() const
     {
         return x;

@@ -501,9 +501,9 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &other)
     };
 }
 
-GLfloat Matrix4x4::getFloat(int space)
+GLfloat Matrix4x4::getValueFromIndex(int index)
 {
-    return matrix[space];
+    return matrix[index];
 }
 
 } //namespace

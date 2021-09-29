@@ -9,8 +9,14 @@
 
 struct TransformComponent
 {
-    TransformComponent() {mMatrix.identity();};
+    TransformComponent()
+    {
+        mMatrix.identity();
+        mScale.setAlltoSame(1.f);
+    };
     gsl::Matrix4x4 mMatrix;
+    gsl::Vector3D mScale;
+    gsl::Vector3D mRotation;
 };
 
 struct MeshComponent

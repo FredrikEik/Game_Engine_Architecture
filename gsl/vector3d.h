@@ -62,6 +62,8 @@ public:
     GLfloat *yP();
     GLfloat *zP();
 
+    void setAlltoSame(float valueIn);
+
 
     //Friend functions
     friend std::ostream& operator<<(std::ostream &output, const Vector3D &rhs )
