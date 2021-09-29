@@ -30,6 +30,8 @@ public slots:
 private slots:
     void on_actionToggle_backside_culling_toggled(bool checked);
 
+    void on_actionFrustum_Culling_triggered(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

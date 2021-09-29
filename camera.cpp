@@ -14,6 +14,10 @@ Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
     mFrustum.mFOV = fovIn;
     mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
     mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
 }
 
 void Camera::pitch(float degrees)
@@ -28,6 +32,7 @@ void Camera::yaw(float degrees)
     // rotate around mUp
     mYaw -= degrees;
     updateForwardVector();
+    calculateFrustumVectors();
 }
 
 void Camera::updateRightVector()
@@ -106,4 +111,18 @@ void Camera::setCameraSpeed(float value)
         mCameraSpeed = 0.01f;
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
+}
+
+void Camera::calculateFrustumVectors()
+{
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around up
+    tempVector = mRight;
+    tempVector.rotateY(-mFrustum.mFOV);
+    mFrustum.mRightPlane = tempVector;
+
+    //leftPlane vector = mRight rotated by FOV+180 around up
+    tempVector = mRight;
+    tempVector.rotateY(mFrustum.mFOV);
+    mFrustum.mLeftPlane = tempVector;
 }

@@ -33,6 +33,7 @@ public:
 
     void toggleWireframe(bool buttonState);
     void toggleBacksideCulling(bool state);
+    void toggleFrustumCulling(bool state);
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
@@ -49,6 +50,8 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
+
+    bool frustumCulling(int gameObjectIndex);
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -74,6 +77,8 @@ private:
 
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
+
+    bool mUseFrustumCulling{true};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

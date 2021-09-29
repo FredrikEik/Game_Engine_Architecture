@@ -16,7 +16,8 @@ struct Frustum
     float mFOV{0.f};                //used to make projection matrix
     float mAspectratio{0.f};        //used to make projection matrix
 
-    //Normals for the side planes
+    //Normals for the side planes - for frustum culling
+    //Make sure these are stored normalized!
     gsl::Vector3D mRightPlane;
     gsl::Vector3D mLeftPlane;
     gsl::Vector3D mToptPlane;
@@ -61,6 +62,8 @@ public:
     Frustum mFrustum;
 
 private:
+
+    void calculateFrustumVectors();
     float mPitch{0.f};
     float mYaw{0.f};
 

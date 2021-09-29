@@ -110,6 +110,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionToggle_backside_culling"/>
+    <addaction name="actionFrustum_Culling"/>
    </widget>
    <addaction name="menuGameObject"/>
    <addaction name="menuOptions"/>
@@ -142,6 +143,17 @@
    </property>
    <property name="text">
     <string>Cull backsides of objects</string>
+   </property>
+  </action>
+  <action name="actionFrustum_Culling">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use Frustum Culling</string>
    </property>
   </action>
  </widget>

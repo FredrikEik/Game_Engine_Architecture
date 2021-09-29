@@ -59,19 +59,19 @@ void CoreEngine::setUpScene()
     //Suzannes:
     for(int i{0}; i < 10; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 1; j++)
         {
             temp = mResourceManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(2.f*i, -3.f, -2.f*j);
+            temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
 
-    temp = mResourceManager->addObject("suzanne.obj");
-    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
-    temp->mTransform->mMatrix.scale(0.5f);
-    mRenderSystem->mGameObjects.push_back(temp);
+//    temp = mResourceManager->addObject("suzanne.obj");
+//    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
+//    temp->mTransform->mMatrix.scale(0.5f);
+//    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderSystem->mCurrentCamera = mEditorCamera;

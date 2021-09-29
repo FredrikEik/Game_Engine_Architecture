@@ -124,3 +124,9 @@ void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
     mRenderSystem->toggleBacksideCulling(checked);
 }
 
+
+void MainWindow::on_actionFrustum_Culling_triggered(bool checked)
+{
+    mRenderSystem->toggleFrustumCulling(checked);
+}
+

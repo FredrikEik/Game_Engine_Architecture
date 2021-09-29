@@ -141,15 +141,22 @@ void RenderSystem::render()
         /************** LOD and Frustum culling stuff ***********************/
         gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+
+        if(mUseFrustumCulling)
+        {
+            //if frustum cull is true - object is outside of frustum == don't draw
+            if(frustumCulling(i))
+                continue;
+        }
         gsl::Vector3D distanceVector = gobPos -cameraPos;
 
 //        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
-        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+//        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
 //        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
 
 //        //if angle between camera Forward, and camera->GameObject > FOV of camera
-        if(angle > mFOVangle)
-            continue;   //don't draw object
+//        if(angle > mFOVangle)
+//            continue;   //don't draw object
 
         //LOD calculation
         float length = distanceVector.length();
@@ -345,6 +352,11 @@ void RenderSystem::toggleBacksideCulling(bool state)
     state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
 }
 
+void RenderSystem::toggleFrustumCulling(bool state)
+{
+    mUseFrustumCulling = state;
+}
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderSystem::checkForGLerrors()
@@ -387,6 +399,41 @@ void RenderSystem::startOpenGLDebugger()
                 qDebug() << "Started OpenGL debug logger!";
         }
     }
+}
+
+bool RenderSystem::frustumCulling(int gobIndex)
+{
+    //vector from position of cam to object;
+    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition()
+            - mCurrentCamera->mPosition;
+
+    //radius of object sphere
+    float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
+
+    //if radius is not set == very small
+    if(gobRadius <= 0.000001f)
+        return false;
+
+    //length of vectorToObject onto frustum normal
+    float tempDistance{0.f};
+
+    //shortcut to frustum
+    Frustum &frustum = mCurrentCamera->mFrustum;
+
+    //Project vector down to frustum normals:
+    //Right plane:
+    tempDistance = frustum.mRightPlane * vectorToObject;
+    if(tempDistance > gobRadius)
+        return true;
+
+    //Left plane:
+    tempDistance = frustum.mLeftPlane * vectorToObject;
+    if(tempDistance < gobRadius)
+        return true;
+
+    //insert the rest of planes here
+
+    return false;
 }
 
 void RenderSystem::keyPressEvent(QKeyEvent *event)
