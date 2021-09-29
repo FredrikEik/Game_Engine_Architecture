@@ -3,6 +3,7 @@
 #include "components.h"
 #include <QVector3D>
 #include "meshsystem.h"
+#include <vector>
 
 class EntitySystem
 {
@@ -10,11 +11,11 @@ public:
     EntitySystem();
     ~EntitySystem();
     void construct(class RenderWindow * inRW,
-                   int EntityId,
                    std::string ObjReader,
                    QVector3D StartPos,
                    GLuint shader,
-                   GLint texture
+                   GLint texture,
+                   int EntityId = -1
                    );
 
     class RenderWindow * rw;

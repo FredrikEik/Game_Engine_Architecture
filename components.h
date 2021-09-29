@@ -6,6 +6,14 @@
 #include "vertex.h"
 #include "gltypes.h"
 
+
+struct DetailsComponent{
+    int entity = 0;
+    std::string title;
+
+};
+
+
 struct TransformComponent
 {
     int entity = 0;

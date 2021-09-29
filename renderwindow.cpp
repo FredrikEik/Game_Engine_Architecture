@@ -219,7 +219,9 @@ void RenderWindow::init()
     //entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
     //RenderSys->init(mc1);
 
-    entitySys->construct(this, 2,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+    entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
 
 
     //dog triangle
@@ -314,8 +316,18 @@ void RenderWindow::render()
 
         }
     }
+    for(int i = 0; i < eSize; i++){
+        if(transformCompVec[i]->entity == 2){
+            transformCompVec[i]->mMatrix.translate(0.2f, 0.f,0.f);
+        }
+    }
 
-
+    /*
+    for(int i = 0; i < eSize; i++){
+        qDebug() << entities[i];
+    }
+    qDebug() << "\n";
+    */
 
     //RENDER TRIANGLE
     //GLUSEPROGRAM GETS THE CURRENT MATERIAL
