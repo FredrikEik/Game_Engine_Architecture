@@ -91,5 +91,5 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_actionCustom_OBJ_triggered()
 {
-
+    mRenderWindow->entitySys->constructCube(mRenderWindow);
 }

@@ -17,10 +17,10 @@ public:
                    GLint texture,
                    int EntityId = -1
                    );
-    void constructCube();
-    void constructSphere();
-    void constructPlane();
-    void constructSuzanne();
+    void constructCube(class RenderWindow * inRW);
+    void constructSphere(class RenderWindow * inRW);
+    void constructPlane(class RenderWindow * inRW);
+    void constructSuzanne(class RenderWindow * inRW);
 
 private:
     class RenderWindow * rw;
@@ -28,6 +28,8 @@ private:
     MeshComponent *MeshComp;
     MaterialComponent *MatComp;
     meshsystem * MeshSys;
+    QVector3D LastPos = QVector3D(0.0f, 0.0f, 0.0f);
+    void offsetLastPos();
 };
 
 #endif // ENTITYSYSTEM_H
