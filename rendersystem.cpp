@@ -226,6 +226,15 @@ void RenderSystem::render()
             mObjectsDrawn++;
         }
 
+
+        //Quick hack test to check if frustum line mesh is OK
+        if(i == 1)  //dog triangle
+        {
+            MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mCurrentCamera->mFrustum);
+            glBindVertexArray( frustum.mVAO[0] );
+            glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+        }
+
         //Quick hack test to check if linebox/circle works:
         if(i == 2)
         {
@@ -293,7 +302,7 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
-    mCurrentCamera->mFrustum.mAspectratio = mAspectratio;
+    mCurrentCamera->mFrustum.mAspectRatio = mAspectratio;
     mCurrentCamera->calculateProjectionMatrix();
 }
 

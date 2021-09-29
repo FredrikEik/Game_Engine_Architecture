@@ -26,8 +26,10 @@ public:
 
     void setUpAllTextures();
 
+    //TODO: These functions do nothing other than forward to MeshHandeler - maybe delete?
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
+    MeshData makeFrustum(const struct Frustum &frustumIn);
 
     MeshHandler* mMeshHandler{nullptr};
 

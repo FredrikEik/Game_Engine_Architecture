@@ -36,6 +36,8 @@ public:
     /// Color option for rgb or pink
     MeshData makeCircleSphere(float radius = 1, bool rgbColor = true);
 
+    MeshData makeFrustum(const struct Frustum &frustumIn);
+
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
 private:

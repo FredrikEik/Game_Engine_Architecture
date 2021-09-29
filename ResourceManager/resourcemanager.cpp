@@ -149,3 +149,8 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
 {
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
+
+MeshData ResourceManager::makeFrustum(const Frustum &frustumIn)
+{
+    return mMeshHandler->makeFrustum(frustumIn);
+}
