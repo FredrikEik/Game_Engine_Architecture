@@ -3,8 +3,7 @@
 
 #include "matrix4x4.h"
 #include "vector3d.h"
-#include "systems/ecs/Components.h"
-#include "vec4.h"
+#include "components.h"
 /**
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
@@ -24,44 +23,32 @@ public:
     gsl::Matrix4x4 mProjectionMatrix;
 
     void setPosition(const gsl::Vector3D &position);
-    void setRotation(const gsl::Vector3D &rotation);
+
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
 
-    gsl::Vector3D position() const;
-    gsl::Vector3D up() const;
+    void setCameraSpeed(float value);
 
-    void createFrustum(gsl::Matrix4x4 pMatrix, gsl::Matrix4x4 vMatrix);
-
-    /** Checks if a position is within the frustum
-       @param pt - position
-       @return - returns boolean
-     */
-    bool frustumCull(gsl::Vector3D pt);
-
-    /** Checks if a bounding box is within the frustum
-       @param OBB - bounding box
-       @param scale - scale of entity
-       @return - returns boolean
-     */
-    bool frustumCull(collider OBB, gsl::Vector3D scale);
-
-private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
+
+    float mCameraSpeed{0.05f};
+    float mCameraRotateSpeed{0.1f};
+
+private:
     float mPitch{0.f};
     float mYaw{0.f};
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;
 
-    gsl::vec4 mFrustum[6];
-
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
+
+    SoundListenerComponent mListener;
 };
 
 #endif // CAMERA_H
