@@ -4,20 +4,39 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 #include "components.h"
+
 /**
-  This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
-  the forward / backward is wrong, when steered with W and S.
+  Holds normals to the different planes of the frustum
+  and some other necessary data
  */
+struct Frustum
+{
+    float mFarPlaneDistance{0.f};   //used to make projection matrix
+    float mNearPlaneDistance{0.f};  //used to make projection matrix
+    float mFOV{0.f};                //used to make projection matrix
+    float mAspectratio{0.f};        //used to make projection matrix
+
+    //Normals for the side planes
+    gsl::Vector3D mRightPlane;
+    gsl::Vector3D mLeftPlane;
+    gsl::Vector3D mToptPlane;
+    gsl::Vector3D mBottomPlane;
+
+    //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
+};
+
+
 class Camera
 {
 public:
-    Camera();
+    Camera(float fovIn = 45, float nearPlaneDistanceIn = 0.1f, float farPlaneDistanceIn = 500.f);
 
     void pitch(float degrees);
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
     void update();
+    void calculateProjectionMatrix();
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
@@ -38,6 +57,8 @@ public:
 
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
+
+    Frustum mFrustum;
 
 private:
     float mPitch{0.f};

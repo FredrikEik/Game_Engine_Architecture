@@ -3,13 +3,17 @@
 
 #include "soundsystem.h"
 
-Camera::Camera()
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOV = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
 }
 
 void Camera::pitch(float degrees)
@@ -61,6 +65,11 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 
     SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);
+}
+
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectratio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)

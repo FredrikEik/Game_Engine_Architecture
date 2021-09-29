@@ -294,9 +294,8 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
-    //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(mFOVangle, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
+    mCurrentCamera->mFrustum.mAspectratio = mAspectratio;
+    mCurrentCamera->calculateProjectionMatrix();
 }
 
 //The way this is set up is that we start the clock before doing the draw call,

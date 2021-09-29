@@ -65,15 +65,15 @@ private:
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
+    //these can maybe be removed, because they are held in the camera
     float mAspectratio{1.f};
+    float mFOVangle{45};
 
     int mMouseXlast{0};
     int mMouseYlast{0};
 
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
-
-    float mFOVangle{45};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

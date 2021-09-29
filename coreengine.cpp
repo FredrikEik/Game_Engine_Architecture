@@ -17,6 +17,9 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSyste
 
     //Make the gameloop timer:
     mGameLoopTimer = new QTimer(this);
+
+    //Make EditorCamera:
+    mEditorCamera = new Camera(45.f, 0.1f, 200.f);
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -70,7 +73,6 @@ void CoreEngine::setUpScene()
     temp->mTransform->mMatrix.scale(0.5f);
     mRenderSystem->mGameObjects.push_back(temp);
 
-    mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
