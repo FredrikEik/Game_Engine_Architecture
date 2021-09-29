@@ -231,8 +231,11 @@ void RenderWindow::render()
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
         }
 
-
-
+        if(false)
+        {
+            glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
+            glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
+        }
 
 
 

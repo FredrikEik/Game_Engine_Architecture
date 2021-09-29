@@ -10,6 +10,8 @@ public:
     TransformComponent* mTransformComp{nullptr};
     MeshComponent* mMeshComp{nullptr};
     MaterialComponent* mMaterialComp{nullptr};
+    CollisionComponent* mCollisionComp{nullptr};
+    MeshComponent* mCollisionLines{nullptr};
 };
 
 #endif // GAMEOBJECT_H

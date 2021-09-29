@@ -55,6 +55,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mMeshComp->bUsingLOD = UsingLOD;
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
+    tempGO->mCollisionComp = new CollisionComponent();
+    tempGO->mCollisionLines = new MeshComponent();
 
     if(filepath == "xyz" || filepath == "XYZ")
     {
@@ -62,16 +64,19 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     }
 
     //Burde ikke hardkode dette
-    tempGO->mMaterialComp->mShaderProgram = 1;
-    tempGO->mMaterialComp->mTextureUnit = 1;
+    tempGO->mMaterialComp->mShaderProgram = 0;
+    tempGO->mMaterialComp->mTextureUnit = 0;
+
     if(UsingLOD)
     {
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0);
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 1);
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2);
+        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
+        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 1, tempGO->mCollisionComp,tempGO->mCollisionLines );
+        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2, tempGO->mCollisionComp,tempGO->mCollisionLines );
     }else{
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0);
+        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
     }
+
+
 
     mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
     qDebug() << "Number of objects in map:" << mObjectsMap.size();

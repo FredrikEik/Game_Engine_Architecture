@@ -25,9 +25,15 @@ void GameEngine::SetUpScene()
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(0,0,-2);
-    mRenderwindow->mGameObjects.push_back(tempGameObject);
+//    for(int i{0}; i < 10; i++)
+//    {
+//        for(int j{0}; j < 10; j++)
+//        {
+//            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+//            tempGameObject->mTransformComp->mMatrix.translate(2.f*i, -3.f, -2.f*j);
+//            mRenderwindow->mGameObjects.push_back(tempGameObject);
+//        }
+//    }
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(3,0,-1);

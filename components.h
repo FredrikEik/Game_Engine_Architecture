@@ -46,6 +46,22 @@ public:
     GLint mTextureUnit{};
 };
 
+class CollisionComponent
+{
+public:
+    float xMin{0};
+    float xMax{0};
+    float yMin{0};
+    float yMax{0};
+    float zMin{0};
+    float zMax{0};
+
+    GLuint mVAO{0};
+    GLuint mVBO{0};
+    GLuint mEAB{0};
+
+};
+
 class SoundListenerComponent
 {
 public:
