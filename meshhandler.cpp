@@ -109,7 +109,7 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
         tempFileName = filename + "_" + std::to_string(LODlvl);
         tempFileName = tempFileName + ".obj";
     }
-    qDebug() << "HERE filename: " << QString::fromStdString(tempFileName);
+    //qDebug() << "HERE filename: " << QString::fromStdString(tempFileName);
     std::ifstream fileIn;
     fileIn.open (tempFileName, std::ifstream::in);
     if(!fileIn)
@@ -251,7 +251,7 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
     }
     //beeing a nice boy and closing the file after use
     fileIn.close();
-    makeCollisionBox(CollComp,CollLines);
+    //makeCollisionBox(CollComp,CollLines);
     init(*MeshComp, LODlvl);
 }
 

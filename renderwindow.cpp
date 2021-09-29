@@ -231,6 +231,8 @@ void RenderWindow::render()
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
         }
 
+
+        // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
         if(false)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );

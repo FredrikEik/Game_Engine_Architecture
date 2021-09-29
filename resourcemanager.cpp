@@ -75,10 +75,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     }else{
         mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
     }
+    objectIDcounter++;
 
 
-
-    mObjectsMap.insert(std::pair<std::string, GameObject>{filepath,*tempGO});
+    mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     qDebug() << "Number of objects in map:" << mObjectsMap.size();
     return tempGO;
 }
