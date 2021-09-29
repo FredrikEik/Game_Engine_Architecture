@@ -16,7 +16,12 @@ public:
                    GLuint shader,
                    GLint texture
                    );
+    void constructCube();
+    void constructSphere();
+    void constructPlane();
+    void constructSuzanne();
 
+private:
     class RenderWindow * rw;
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
