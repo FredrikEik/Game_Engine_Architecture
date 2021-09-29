@@ -17,9 +17,12 @@
 #include "ResourceManager/meshhandler.h"
 #include "ResourceManager/texturehandler.h"
 
+////Forward declaration
+//class SoundSystem;
+
 GameObjectManager::GameObjectManager()
 {
-    SoundSystem::getInstance();                     //makes sure the SoundManager is made - needed before adding sounds
+    SoundSystem::getInstance(); //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
 }

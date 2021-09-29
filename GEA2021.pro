@@ -10,7 +10,7 @@ DEFINES     += _CRT_SECURE_NO_WARNINGS
 
 INCLUDEPATH += \
     ./gsl \
-    ./Shaders
+    ./Shaders \
     ./ResourceManager
 
 macx {
