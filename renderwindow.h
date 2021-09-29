@@ -34,10 +34,9 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
-
     void renderLOD(bool bIsToggleOn);
-
     void toggleFrustumCulling(bool bIsToggleOn);
+    void toggleShowCollsionBox(bool bIsToggleOn);
 
 
     std::vector<GameObject*> mGameObjects;
@@ -107,6 +106,7 @@ private:
 
     bool bRenderingLOD{true};
     bool bUsingFrustumCulling{true};
+    bool bShowAllCollisionBoxes{false};
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

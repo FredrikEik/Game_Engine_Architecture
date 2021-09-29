@@ -31,19 +31,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pb_toggleWireframe">
-        <property name="text">
-         <string>Toggle Wireframe</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="ToggleLOD">
         <property name="text">
-         <string>Toggle LOD</string>
+         <string>LOD ON</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -53,7 +43,27 @@
       <item>
        <widget class="QPushButton" name="ToggleFrustumCulling">
         <property name="text">
-         <string>Toggle Frustum Culling</string>
+         <string>Frustum Culling ON</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pb_toggleWireframe">
+        <property name="text">
+         <string>Show Wireframe</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pb_toggleCollisionBox">
+        <property name="text">
+         <string>Show All Collsion Boxes</string>
         </property>
         <property name="checkable">
          <bool>true</bool>

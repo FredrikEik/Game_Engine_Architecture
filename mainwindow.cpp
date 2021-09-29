@@ -78,8 +78,8 @@ void MainWindow::init()
     //Set the size of the program in % of the actual screen size
     QSize tempSize = QGuiApplication::primaryScreen()->size();
 
-    tempSize.rheight() *= 0.85;
-    tempSize.rwidth() *= 0.65;
+    tempSize.rheight() *= 0.90; //original value 0.85
+    tempSize.rwidth() *= 0.90; //original value 0.65
     resize(tempSize);
 
     GameEngine::getInstance()->setRenderPointer(mRenderWindow);
@@ -132,5 +132,15 @@ void MainWindow::on_PlayStop_toggled(bool checked)
         else
             ui->PlayStop->setText("Play");
 
+}
+
+
+void MainWindow::on_pb_toggleCollisionBox_toggled(bool checked)
+{
+    mRenderWindow->toggleShowCollsionBox(checked);
+    if(checked)
+        ui->pb_toggleCollisionBox->setText("Hide All Collision Boxes");
+    else
+        ui->pb_toggleCollisionBox->setText("Show All Collision Boxes");
 }
 

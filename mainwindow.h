@@ -29,6 +29,8 @@ private slots:
 
     void on_PlayStop_toggled(bool checked);
 
+    void on_pb_toggleCollisionBox_toggled(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

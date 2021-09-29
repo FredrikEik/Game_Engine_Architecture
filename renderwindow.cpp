@@ -238,7 +238,7 @@ void RenderWindow::render()
 
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
-        if( i > 99)
+        if( bShowAllCollisionBoxes )
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
@@ -368,6 +368,14 @@ void RenderWindow::toggleFrustumCulling(bool bIsToggleOn)
         bUsingFrustumCulling = false;
     else
         bUsingFrustumCulling = true;
+}
+
+void RenderWindow::toggleShowCollsionBox(bool bIsToggleOn)
+{
+    if(bIsToggleOn)
+        bShowAllCollisionBoxes = true;
+    else
+        bShowAllCollisionBoxes = false;
 }
 
 
@@ -594,9 +602,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            setCameraSpeed(0.01f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            setCameraSpeed(-0.01f);
     }
     event->accept();
 }
