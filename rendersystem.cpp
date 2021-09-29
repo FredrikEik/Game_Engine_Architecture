@@ -102,14 +102,13 @@ void RenderSystem::init()
     // (out of the build-folder) and then up into the project folder.
     mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
+    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->mProgram;
+    mShaderPrograms[0]->setupShader(false);
 
     mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-
-    setupPlainShader(0);
-    setupTextureShader(1);
+    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->mProgram;
+    mShaderPrograms[1]->setupShader(true);
 
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
@@ -139,6 +138,7 @@ void RenderSystem::render()
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
+        //Do this early to avoid unnecessary work if mesh is not to be drawn
         gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
@@ -149,19 +149,13 @@ void RenderSystem::render()
                 continue;
         }
 
-        gsl::Vector3D distanceVector = gobPos - cameraPos;
-        //LOD calculation
-        float length = distanceVector.length();
-//        qDebug() << "distance is" << length;
         /*************************************/
-
 
         //First object - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
-
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+        int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
+        glUseProgram(mShaderPrograms[shaderIndex]->mProgram );
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
@@ -169,33 +163,29 @@ void RenderSystem::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
-        {
-            viewMatrix = vMatrixUniform;
-            projectionMatrix = pMatrixUniform;
-            modelMatrix = mMatrixUniform;
-        }
-        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
-        {
-            viewMatrix = vMatrixUniform1;
-            projectionMatrix = pMatrixUniform1;
-            modelMatrix = mMatrixUniform1;
+        viewMatrix = mShaderPrograms[shaderIndex]->vMatrixUniform;
+        projectionMatrix = mShaderPrograms[shaderIndex]->pMatrixUniform;
+        modelMatrix = mShaderPrograms[shaderIndex]->mMatrixUniform;
 
+        if(mShaderPrograms[shaderIndex]->mTextureUniform > -1)
+        {
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mShaderPrograms[shaderIndex]->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
-
         //draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
         {
+            gsl::Vector3D distanceVector = gobPos - cameraPos;
+            //LOD calculation
+            float length = distanceVector.length();
+
             if (length < 4)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
@@ -225,7 +215,6 @@ void RenderSystem::render()
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
         }
-
 
         //Quick hack test to check if frustum line mesh is OK
         if(i == 1)  //dog triangle
@@ -268,21 +257,6 @@ void RenderSystem::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
-}
-
-void RenderSystem::setupPlainShader(int shaderIndex)
-{
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-}
-
-void RenderSystem::setupTextureShader(int shaderIndex)
-{
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 //This function is called from Qt when window is exposed (shown)

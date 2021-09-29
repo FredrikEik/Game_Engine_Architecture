@@ -53,17 +53,6 @@ private:
 
     bool frustumCulling(int gameObjectIndex);
 
-    void setupPlainShader(int shaderIndex);
-    GLint mMatrixUniform{-1};
-    GLint vMatrixUniform{-1};
-    GLint pMatrixUniform{-1};
-
-    void setupTextureShader(int shaderIndex);
-    GLint mMatrixUniform1{-1};
-    GLint vMatrixUniform1{-1};
-    GLint pMatrixUniform1{-1};
-    GLint mTextureUniform{-1};
-
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
@@ -75,6 +64,7 @@ private:
     int mMouseXlast{0};
     int mMouseYlast{0};
 
+    //for statistics in status bar
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
 

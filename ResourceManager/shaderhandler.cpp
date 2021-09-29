@@ -5,8 +5,6 @@
 #include <iostream>
 #include <QDebug>
 
-//#include "GL/glew.h" - using QOpenGLFunctions instead
-
 ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath)
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
@@ -65,15 +63,15 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
         std::cout << "ERROR SHADER FRAGMENT " << fragmentPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
     }
     // Shader Program
-    this->program = glCreateProgram( );
-    glAttachShader( this->program, vertex );
-    glAttachShader( this->program, fragment );
-    glLinkProgram( this->program );
+    this->mProgram = glCreateProgram( );
+    glAttachShader( this->mProgram, vertex );
+    glAttachShader( this->mProgram, fragment );
+    glLinkProgram( this->mProgram );
     // Print linking errors if any
-    glGetProgramiv( this->program, GL_LINK_STATUS, &success );
+    glGetProgramiv( this->mProgram, GL_LINK_STATUS, &success );
     if (!success)
     {
-        glGetProgramInfoLog( this->program, 512, nullptr, infoLog );
+        glGetProgramInfoLog( this->mProgram, 512, nullptr, infoLog );
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
                   << "  " << vertexPath <<  "\n   " << infoLog << std::endl;
     }
@@ -86,12 +84,11 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     glDeleteShader( fragment );
 }
 
-void ShaderHandler::use()
+void ShaderHandler::setupShader(bool useTexture)
 {
-    glUseProgram( this->program );
-}
-
-GLuint ShaderHandler::getProgram() const
-{
-    return program;
+    mMatrixUniform = glGetUniformLocation( mProgram, "mMatrix" );
+    vMatrixUniform = glGetUniformLocation( mProgram, "vMatrix" );
+    pMatrixUniform = glGetUniformLocation( mProgram, "pMatrix" );
+    if(useTexture)
+        mTextureUniform = glGetUniformLocation(mProgram, "textureSampler");
 }

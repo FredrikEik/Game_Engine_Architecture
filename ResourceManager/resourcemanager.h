@@ -1,7 +1,7 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include <QOpenGLFunctions_4_1_Core>
+//#include <QOpenGLFunctions_4_1_Core>
 #include <string>
 #include <map>
 #include <vector>
@@ -16,7 +16,7 @@ class MeshHandler;
 class TextureHandler;
 struct MeshData;
 
-class ResourceManager : public QOpenGLFunctions_4_1_Core
+class ResourceManager // : public QOpenGLFunctions_4_1_Core
 {
 public:
     static ResourceManager& getInstance();
