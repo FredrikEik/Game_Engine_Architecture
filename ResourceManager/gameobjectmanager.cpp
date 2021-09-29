@@ -1,4 +1,4 @@
-﻿#include "gameobjectmanager.h"
+﻿#include "ResourceManager/gameobjectmanager.h"
 
 #include <sstream>
 #include <fstream>
@@ -13,13 +13,13 @@
 #include "gameobject.h"
 #include "constants.h"
 #include "soundsystem.h"
-#include "soundhandler.h"
-#include "meshhandler.h"
-#include "texturehandler.h"
+#include "ResourceManager/soundhandler.h"
+#include "ResourceManager/meshhandler.h"
+#include "ResourceManager/texturehandler.h"
 
 GameObjectManager::GameObjectManager()
 {
-    SoundSystem::getInstance(); //makes sure the SoundManager is made - needed before adding sounds
+    SoundSystem::getInstance();                     //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
 }

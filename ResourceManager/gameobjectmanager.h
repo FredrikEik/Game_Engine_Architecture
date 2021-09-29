@@ -8,7 +8,7 @@
 
 #include "components.h"
 #include "constants.h"
-#include "soundhandler.h"
+#include "ResourceManager/soundhandler.h"
 
 //forward declaration
 class GameObject;

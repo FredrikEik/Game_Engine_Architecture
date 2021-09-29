@@ -5,7 +5,6 @@
 #include "vector3d.h"
 #include "vector2d.h"
 #include "gltypes.h"
-#include <iostream>
 #include <fstream>
 
 class Vertex {

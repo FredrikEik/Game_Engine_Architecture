@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 
-#include "texturehandler.h"
+#include "ResourceManager/texturehandler.h"
 #include "constants.h"
 
 TextureHandler::TextureHandler()
