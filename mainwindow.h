@@ -25,6 +25,12 @@ private slots:
 
     void on_actionSuzanne_triggered();
 
+    void on_actionCube_triggered();
+
+    void on_actionSphere_triggered();
+
+    void on_actionPlane_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;

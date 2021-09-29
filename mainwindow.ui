@@ -67,9 +67,10 @@
     <property name="title">
      <string>Add Mesh</string>
     </property>
-    <addaction name="actionCustom_OBJ"/>
     <addaction name="actionSuzanne"/>
     <addaction name="actionCube"/>
+    <addaction name="actionSphere"/>
+    <addaction name="actionPlane"/>
    </widget>
    <addaction name="menuHelp"/>
    <addaction name="menuAdd_Mesh"/>
@@ -83,11 +84,6 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionCustom_OBJ">
-   <property name="text">
-    <string>Custom OBJ</string>
-   </property>
-  </action>
   <action name="actionSuzanne">
    <property name="text">
     <string>Suzanne</string>
@@ -96,6 +92,16 @@
   <action name="actionCube">
    <property name="text">
     <string>Cube</string>
+   </property>
+  </action>
+  <action name="actionSphere">
+   <property name="text">
+    <string>Sphere</string>
+   </property>
+  </action>
+  <action name="actionPlane">
+   <property name="text">
+    <string>Plane</string>
    </property>
   </action>
  </widget>

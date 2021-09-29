@@ -91,10 +91,25 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_actionCustom_OBJ_triggered()
 {
-    mRenderWindow->entitySys->constructCube(mRenderWindow);
+
 }
 
 void MainWindow::on_actionSuzanne_triggered()
 {
+    mRenderWindow->entitySys->constructSuzanne(mRenderWindow);
+}
 
+void MainWindow::on_actionCube_triggered()
+{
+    mRenderWindow->entitySys->constructCube(mRenderWindow);
+}
+
+void MainWindow::on_actionSphere_triggered()
+{
+    mRenderWindow->entitySys->constructSphere(mRenderWindow);
+}
+
+void MainWindow::on_actionPlane_triggered()
+{
+    mRenderWindow->entitySys->constructPlane(mRenderWindow);
 }

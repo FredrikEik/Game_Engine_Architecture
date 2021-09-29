@@ -92,7 +92,7 @@ void EntitySystem::constructSuzanne(class RenderWindow * inRW)
 
 void EntitySystem::offsetLastPos()
 {
-    float d = 1.2f; //delta
+    float d = 1.5f; //delta
     LastPos.setX(LastPos.x() + d);
     //LastPos.setY(LastPos.y() + d);
     //LastPos.setZ(LastPos.z() + d);
