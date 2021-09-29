@@ -359,15 +359,15 @@ MeshData MeshHandler::makeFrustum(const Frustum &frustumIn)
 
     tempMesh.mVertices[0].insert( tempMesh.mVertices[0].end(),
       {         //Vertex data for front points                  color                       uv
-       Vertex{-cornerNear.x, -cornerNear.y, cornerNear.z,       1, 0.301, 0.933,          0.f, 0.f},     // 0
-       Vertex{cornerNear.x,  -cornerNear.y, cornerNear.z,       1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{cornerNear.x,  cornerNear.y,  cornerNear.z,       1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{-cornerNear.x, cornerNear.y,  cornerNear.z,       1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{-cornerNear.x, -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
+       Vertex{cornerNear.x,  -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerNear.x,  cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerNear.x, cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
        //Vertex data for back
-       Vertex{-cornerFar.x, -cornerFar.y, cornerFar.z,      1, 0.301, 0.933,          0.f, 0.f},    // 4
-       Vertex{cornerFar.x,  -cornerFar.y, cornerFar.z,      1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{cornerFar.x,  cornerFar.y,  cornerFar.z,      1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{-cornerFar.x, cornerFar.y,  cornerFar.z,      1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{-cornerFar.x, -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},    // 4
+       Vertex{cornerFar.x,  -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerFar.x,  cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerFar.x, cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
                       });
 
     //One line at a time
@@ -401,15 +401,15 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
 
     temp.mVertices[0].insert( temp.mVertices[0].end(),
       {//Vertex data for front points       color                       uv
-       Vertex{xMinus, yMinus, zPlus,       1, 0.301, 0.933,          0.f, 0.f},     // 0
-       Vertex{xPlus,  yMinus, zPlus,       1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{xPlus,  yPlus,  zPlus,       1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{xMinus, yPlus,  zPlus,       1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xMinus, yMinus, zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
+       Vertex{xPlus,  yMinus, zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{xPlus,  yPlus,  zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{xMinus, yPlus,  zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},
        //Vertex data for back
-       Vertex{xMinus, yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f},    // 4
-       Vertex{xPlus,  yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{xPlus,  yPlus,  zMinus,      1, 0.301, 0.933,          0.f, 0.f},
-       Vertex{xMinus, yPlus,  zMinus,      1, 0.301, 0.933,          0.f, 0.f},
+       Vertex{xMinus, yMinus, zMinus,      1.f, 0.301f, 0.933f,          0.f, 0.f},    // 4
+       Vertex{xPlus,  yMinus, zMinus,      1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{xPlus,  yPlus,  zMinus,      1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{xMinus, yPlus,  zMinus,      1.f, 0.301f, 0.933f,          0.f, 0.f},
                       });
 
     //One line at a time
