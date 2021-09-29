@@ -17,7 +17,12 @@ public:
                    GLint texture,
                    int EntityId = -1
                    );
+    void constructCube();
+    void constructSphere();
+    void constructPlane();
+    void constructSuzanne();
 
+private:
     class RenderWindow * rw;
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
