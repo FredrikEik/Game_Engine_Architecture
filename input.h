@@ -29,5 +29,4 @@ struct Input
     int MOUSEY{0};
 };
 
-
 #endif // INPUT_H
