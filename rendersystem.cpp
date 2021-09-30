@@ -228,7 +228,7 @@ void RenderSystem::render()
         }
 
         //Quick hack test to check if linebox/circle works:
-        if(i == 2)
+        if(i == 1)
         {
             MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->

@@ -40,9 +40,10 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
-    temp = mResourceManager->addObject("cube");
+    temp = mResourceManager->addObject("suzanne.obj");
     temp->mMaterial->mShaderProgram = 0;
     temp->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
+    temp->mTransform->mMatrix.rotateY(180.f);
 
     temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to moving triangle:
@@ -54,23 +55,26 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //lager test objekter
-    for(int i{0}; i < 10; i++)
+    for(int i{0}; i < 3; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 3; j++)
         {
-            temp = mResourceManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(2.f*i, -3.f, -2.f*j);
+              temp = mResourceManager->addObject("suzanne3.obj");
+              temp->mTransform->mMatrix.translate(-2, 1.f,2.f);
+              temp->mMaterial->mShaderProgram = 1;
+              temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
+              temp->mTransform->mMatrix.rotateY(180.f);
+                temp->mTransform->mMatrix.translate(-2.f*i, 1.f, 2.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
 
-    temp = mResourceManager->addObject("suzanne3.obj");
-    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
-    temp->mTransform->mMatrix.scale(0.5f);
-    temp->mMaterial->mShaderProgram = 1;
-    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
-    mRenderSystem->mGameObjects.push_back(temp);
+//    temp = mResourceManager->addObject("suzanne.obj");
+//    temp->mTransform->mMatrix.translate(0.f, 1.f, 0.f);
+//    temp->mTransform->mMatrix.scale(.5f);
+
+//    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
