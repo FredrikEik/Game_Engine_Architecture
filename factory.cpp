@@ -27,6 +27,8 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.5f,  0.5f);
+        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
     }
 
     else if(objectName == "Plane")
@@ -38,6 +40,8 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.0f,  0.5f);
+        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.0f, -0.5f);
     }
 
     else if(objectName == "Triangle")
@@ -49,6 +53,8 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.0f,  0.5f);
+        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.0f, -0.5f);
     }
 
     else if(objectName == "MarioCube")
@@ -60,6 +66,8 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.55f,  0.55f,  0.55f);
+        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.55f, -0.55f, -0.55f);
     }
     else{return;}
 

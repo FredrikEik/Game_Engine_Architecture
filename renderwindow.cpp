@@ -262,6 +262,40 @@ void RenderWindow::render()
 
 			factory->mGameObjects[i]->draw();
             factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
+            factory->mGameObjects[i]->getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
+            factory->mGameObjects[i]->getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
+
+            //MEGA TEMP COLLISION DEBUG TEST THINGY
+            /*
+            for (unsigned int y=0; y<factory->mGameObjects.size(); y++)
+            {
+               if(factory->mGameObjects[i] != factory->mGameObjects[y])
+               {
+                   bool test;
+                   test = isColliding(*factory->mGameObjects[i]->getBoxCollisionComponent(), *factory->mGameObjects[y]->getBoxCollisionComponent());
+                   qDebug() << "Box " << i << "colliding with box" << y << " = " << test;
+
+
+
+                   qDebug() << "Box 1 max pos:" << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getX()
+                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getY()
+                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getZ();
+
+                   qDebug() << "Box 1 min pos:" << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getX()
+                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getY()
+                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getZ();
+
+                   qDebug() << "Box 2 max pos:" << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getX()
+                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getY()
+                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getZ();
+
+                   qDebug() << "Box 2 min pos:" << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getX()
+                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getY()
+                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getZ();
+
+               }
+            }
+            */
          }
     }
 
@@ -420,6 +454,16 @@ void RenderWindow::startOpenGLDebugger()
                 qDebug() << "Started OpenGL debug logger!";
         }
     }
+}
+
+bool RenderWindow::isColliding(BoxCollisionComponent &Box1, BoxCollisionComponent &Box2)
+{
+    return ((Box1.max.getX() > Box2.min.getX()) &&
+            (Box1.min.getX() < Box2.max.getX()) &&
+            (Box1.max.getY() > Box2.min.getY()) &&
+            (Box1.min.getY() < Box2.max.getY()) &&
+            (Box1.max.getZ() > Box2.min.getZ()) &&
+            (Box1.min.getZ() < Box2.max.getZ()));
 }
 
 void RenderWindow::setCameraSpeed(float value)

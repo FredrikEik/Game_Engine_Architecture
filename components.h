@@ -59,4 +59,10 @@ public:
 
 };
 
+struct BoxCollisionComponent
+{
+public:
+    gsl::Vector3D min, max;
+};
+
 #endif // COMPONENTS_H

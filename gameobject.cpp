@@ -5,6 +5,7 @@ GameObject::GameObject()
     meshComp = new MeshComponent();
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
+    boxCollisionComp = new BoxCollisionComponent();
     transformComp->mMatrix.setToIdentity();
 }
 

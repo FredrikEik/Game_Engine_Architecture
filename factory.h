@@ -3,7 +3,6 @@
 
 #include "iostream"
 #include "gameobject.h"
-#include "objreader.h"
 #include <unordered_map>
 
 class Factory

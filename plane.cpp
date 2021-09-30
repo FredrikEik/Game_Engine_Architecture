@@ -3,7 +3,7 @@
 
 Plane::Plane()
 {
-    // Positions             // Colors          // UV
+                                                    // Positions             // Colors          // UV
     getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
     getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
     getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
