@@ -3,6 +3,7 @@
 
 #include "component.h"
 #include <QOpenGLFunctions_4_1_Core>
+#include "mousepicking.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:

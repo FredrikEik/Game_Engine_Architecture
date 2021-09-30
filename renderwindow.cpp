@@ -133,8 +133,7 @@ void RenderWindow::init()
     mInputComponent = new InputComponent();
     //  mInputSystem = new InputSystem();
     mPlayerInput = new PlayerInputComponent();
-
-
+    mMousepicking = new MousePicking();
 
     SoundHandler();
 
@@ -592,6 +591,12 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     }
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();
+
+    int mouseX = mInputComponent->mMouseXlast = event->pos().x();
+    int mouseY = mInputComponent->mMouseYlast = event->pos().y();
+    mMousepicking->MousePicker(mouseX,mouseY,static_cast<float>(width()),static_cast<float>(height()));
+
+
 }
 
 

@@ -17,6 +17,7 @@
 #include "soundmanager.h"
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
+#include "mousepicking.h"
 
 
 
@@ -57,6 +58,7 @@ private:
     InputSystem *mInputSystem;
     PlayerInputComponent *mPlayerInput;
     Player *mPlayer;
+    MousePicking *mMousepicking;
     SoundSource* mLaserSound{};
     Input mInput;
     ShapeFactory mShapeFactory;
