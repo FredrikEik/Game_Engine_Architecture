@@ -20,6 +20,7 @@ void CollisionSystem::construct(struct AxisAlignedBoxComponent& collisionCompone
 	if (mesh)
 		scaleToMesh(mesh, min, max);
 
+
 	glm::vec3 scale = glm::vec3(transform.transform[0][0],
 		transform.transform[1][1],
 		transform.transform[2][2]);
@@ -32,17 +33,75 @@ void CollisionSystem::construct(struct AxisAlignedBoxComponent& collisionCompone
 		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
 }
 
-bool CollisionSystem::isColliding(AxisAlignedBoxComponent& collisionComponent, 
-	AxisAlignedBoxComponent& otherCollisionComponent)
+// TODO: Test this function
+bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionComponent,
+	AxisAlignedBoxComponent& otherCollisionComponent, ECSManager* ECS)
 {
-	// TODO: Implement this
-	return false;
+	// Get the transform components for each entity
+	auto transformManager = ECS->getComponentManager<TransformComponent>();
+	const TransformComponent& firstTransform = transformManager->
+		getComponent(firstCollisionComponent.entityID);
+	const TransformComponent& otherTransform = transformManager->
+		getComponent(otherCollisionComponent.entityID);
+	// -----------------------------------------------------------------
+
+	// Calculate the positions of each collider
+	glm::vec3 firstPosition{ firstCollisionComponent.center + 
+		glm::vec3(firstTransform.transform[3]) };
+
+	glm::vec3 otherPosition{ otherCollisionComponent.center +
+		glm::vec3(otherTransform.transform[3])};
+	// -----------------------------------------------------------------
+
+	// Check if we collide along the x axis
+	if ((firstPosition.x + firstCollisionComponent.maxScaled.x) >= 
+		(otherPosition.x + otherCollisionComponent.minScaled.x) &&
+		(otherPosition.x + otherCollisionComponent.maxScaled.x) >= 
+		(firstPosition.x + otherCollisionComponent.minScaled.x))
+		;
+	else
+		return false;
+	// -----------------------------------------------------------------
+
+	// If we need collision in the Y axis, make sure this does not break the collision overall. 
+	// Check if we collide along the y axis
+	//if ((firstPosition.y + firstCollisionComponent.maxScaled.y) >=
+	//	(otherPosition.y + otherCollisionComponent.minScaled.y) &&
+	//	(otherPosition.y + otherCollisionComponent.maxScaled.y) >=
+	//	(firstPosition.y + otherCollisionComponent.minScaled.y))
+	//	;
+	//else
+	//	return false;
+	// -----------------------------------------------------------------
+
+	// Check if we collide along the z axis
+	if ((firstPosition.z + firstCollisionComponent.maxScaled.z) >=
+		(otherPosition.z + otherCollisionComponent.minScaled.z) &&
+		(otherPosition.z + otherCollisionComponent.maxScaled.z) >=
+		(firstPosition.z + otherCollisionComponent.minScaled.z))
+		;
+	else
+		return false;
+	// -----------------------------------------------------------------
+
+	return true;
 }
 
 void CollisionSystem::scaleToMesh(const MeshComponent* mesh, 
 	glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax)
 {
-	auto vertices = mesh->m_vertices;
+	const auto& vertices = mesh->m_vertices;
+
+	// Making sure that OUTscaledMin is within the mesh.
+	OUTscaledMin = glm::vec3(vertices[0].m_xyz[0],
+		vertices[0].m_xyz[1],
+		vertices[0].m_xyz[2]);
+
+	// Making sure that OUTscaledMax is within the mesh.
+	OUTscaledMax = glm::vec3(vertices[0].m_xyz[0],
+		vertices[0].m_xyz[1],
+		vertices[0].m_xyz[2]);
+
 	glm::vec3 tempPos{};
 	for (const auto& it : vertices)
 	{
