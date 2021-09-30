@@ -102,7 +102,9 @@ private:
     float mNearPlane{0.1f};
     float mFarPlane{100.f};
 
+    int mVerticesDrawn{0};
     int mObjectsDrawn{0};
+
 
     bool bRenderingLOD{true};
     bool bUsingFrustumCulling{true};

@@ -107,7 +107,7 @@ void RenderWindow::init()
 
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders:
@@ -146,6 +146,9 @@ void RenderWindow::render()
     //--->Shoudl be in GameEngine
     //Keyboard / mouse input
     handleInput();
+
+    mVerticesDrawn = 0;
+    mObjectsDrawn = 0;
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -222,18 +225,26 @@ void RenderWindow::render()
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mObjectsDrawn++;
             }else if( distanceCamToObj < 20)
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[1].size());
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mObjectsDrawn++;
             }else{
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[2] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[2].size());
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mObjectsDrawn++;
             }
         }else
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+            mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+            mObjectsDrawn++;
         }
 
 
@@ -330,7 +341,7 @@ void RenderWindow::calculateFramerate()
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7) /*+ " |  Nr of Objects: " + QString::number(mObjectsDrawn)*/);
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7) + " |  Objects Drawn: " + QString::number(mObjectsDrawn) + " | Vertices Drawn: " + QString::number(mVerticesDrawn)) ;
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }
