@@ -3,19 +3,21 @@
 
 #include <string>
 
-#define MAX_ENTITIES 65535
-#define MAX_ENTITIES_TYPE unsigned short    //have to hold MAX_ENTITIES !!!
-#define MAX_COMPONENTS 100                  //could be made dynamic by using std::vectors
-
-#define GL_TRIANGLES                      0x0004
-
-
 namespace gsl  //Game School Lib
 {
     const std::string ProjectFolderName{"../GEA2021/"};
     const std::string AssetFilePath{ProjectFolderName + "Assets/"};
     const std::string TextureFilePath{AssetFilePath + "Textures/"};
+    const std::string MeshFilePath{AssetFilePath + "Meshes/"};
+   // const std::string MeshFilePath{AssetFilePath + "C:/Users/fes22/Documents/GitHub/GEA2021/Assets/Meshes/"};
+    const std::string SoundFilePath{AssetFilePath + "Sounds/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
+
+    const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
+
+    const int NumberOfShaders{4};
+    const int NumberOfTextures{16};
+    const int NumberOfMaterials{10};
 
     enum Shaders
     {
@@ -24,26 +26,21 @@ namespace gsl  //Game School Lib
         PHONGSHADER
     };
 
-    const int NumberOfShaders{4};
-    const int NumberOfTextures{16};
-    const int NumberOfMaterials{10};
-
-    enum Components{
-
-        NONE = -1,
+    enum Components
+    {
+        NOCOMPONENTTYPE = -1,
         TRANSFORM = 0,
         MESH,
-        MATERIAL,
-        COLLIDER
+        MATERIAL
     };
 
-
-    enum Colliders
+    enum AssetType
     {
-        NOCOLLIDER = -1,
-        OBB,
-        SPHERE
+        NOASSETTYPE = 0,
+        OBJ = 1,
+        FBX = 2,
+        BMP = 3,
+        WAV = 4
     };
-
 }
 #endif // CONSTANTS_H

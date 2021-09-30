@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "widget.h"
 
+//Forward declarations
 class QWidget;
-class RenderWindow;
+class RenderSystem;
+class CoreEngine;
 
 namespace Ui {
 class MainWindow;
@@ -19,30 +20,20 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void on_actionAdd_Triangle_triggered();
+    void on_actionAdd_Suzanne_triggered();
 
-
-private slots:
-    void on_pushButton_toggled(bool checked);
-
-    void on_pushButton_2_clicked();
-
-    void on_comboBox_activated(int index);
-
-    void on_doubleSpinBox_valueChanged(double arg1);
-
-    void on_doubleSpinBox_2_valueChanged(double arg1);
-
-    void on_doubleSpinBox_3_valueChanged(double arg1);
+    void on_pb_toggleWireframe_toggled(bool checked);
+    void on_pb_togglePlay_toggled(bool checked);
 
 private:
     void init();
     Ui::MainWindow *ui;
-    std::string in;
 
-    QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
+    QWidget *mRenderWindowContainer{nullptr};
+    RenderSystem *mRenderSystem{nullptr};
+    CoreEngine *mCoreEngine{nullptr};
 };
-void on_doubleSpinBox_valueChanged(double arg1);
-
 
 #endif // MAINWINDOW_H

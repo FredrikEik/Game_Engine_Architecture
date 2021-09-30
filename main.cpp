@@ -1,8 +1,5 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <QLabel>
-#include <QWidget>
-#include <QtWidgets>
 
 int main(int argc, char *argv[])
 {
@@ -12,10 +9,6 @@ int main(int argc, char *argv[])
 
     //Makes an Qt application
     QApplication a(argc, argv);
-
-//    widget myWidget;
-//    myWidget.show();
-
 
     //Makes the Qt MainWindow and shows it.
     MainWindow w;
