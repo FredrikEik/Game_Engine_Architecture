@@ -25,8 +25,8 @@ private:
     void init();
     Ui::MainWindow *ui;
 
-    QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
+    QWidget *mRenderWindowContainer{nullptr};
+    RenderWindow *mRenderWindow{nullptr};
 };
 
 #endif // MAINWINDOW_H

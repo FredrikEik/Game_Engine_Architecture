@@ -18,6 +18,7 @@
 #include "Components.h"
 #include "ObjectManager.h"
 #include "constants.h"
+#include "soundmanager.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -131,12 +132,19 @@ void RenderWindow::init()
     ObjectManager& mObjectManager = ObjectManager::getInstance();
 
 
+    /** Lage en Engine klasse og gjør asset creation der */
     GameObject *temp = mObjectManager.CreateObject("Cube");
     mGameObjects.push_back(temp);
 
     temp = mObjectManager.CreateObject("suzanne.obj");
-    mGameObjects.push_back(temp);
     temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
+    mGameObjects.push_back(temp);
+
+/** Å rendre 2 av samme objekt funker ikke og gir en opengl error message */ // Array object is not active (1282) "HighSeverity"
+
+//    temp = mObjectManager.CreateObject("suzanne.obj");
+//    temp->transform->mMatrix.translate(0, 0, 0);
+//    mGameObjects.push_back(temp);
 
 
 
@@ -161,6 +169,13 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+
+    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
+                    "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                    "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
+
+    mStereoSound->play();
 }
 
 // Called each frame - doing the rendering

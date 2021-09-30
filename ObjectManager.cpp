@@ -36,7 +36,7 @@ GameObject* ObjectManager::CreateObject(std::string filename)
     }
 
     if(meshIndex == -1){
-        std::cout << "meshIndex is -1 (no mesh)";
+        std::cout << "Error: meshIndex is -1 (no mesh)";
     }
 
 
@@ -49,7 +49,11 @@ GameObject* ObjectManager::CreateObject(std::string filename)
     return object;
 }
 
-
+ObjectManager &ObjectManager::getInstance()
+{
+    static ObjectManager* mInstance = new ObjectManager();
+    return *mInstance;
+}
 
 void ObjectManager::init(Mesh &meshComp)
 {
@@ -233,13 +237,6 @@ int ObjectManager::readObj(std::string filename) //Ole's obj reader code
         init(*object->mesh);
 
         return mMeshComponents.size()-1;    //returns index to last object
-}
-
-
-ObjectManager &ObjectManager::getInstance()
-{
-    static ObjectManager* mInstance = new ObjectManager();
-    return *mInstance;
 }
 
 int ObjectManager::Cube(Mesh* meshComp)

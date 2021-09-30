@@ -5,7 +5,20 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+INCLUDEPATH += \
+   ./gsl \
+   ./Shaders
+
+win32 {
+   INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+   LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
+
 SOURCES += main.cpp \
+    soundsource.cpp \
+    soundsource.cpp \
+    wavfilehandler.cpp \
+    wavfilehandler.cpp \
     Components.cpp \
     GameObject.cpp \
     ObjectManager.cpp \
@@ -16,6 +29,7 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    soundmanager.cpp \
     sphere.cpp \
     texture.cpp \
     triangle.cpp \
@@ -25,6 +39,10 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    soundsource.h \
+    soundsource.h \
+    wavfilehandler.h \
+    wavfilehandler.h \
     Components.h \
     GameObject.h \
     ObjectManager.h \
@@ -39,6 +57,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    soundmanager.h \
     sphere.h \
     texture.h \
     triangle.h \
