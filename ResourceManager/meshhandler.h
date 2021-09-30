@@ -40,8 +40,10 @@ public:
     std::vector<MeshData> mMeshes;
 private:
     int readObj(std::string filename);
+    int readObj2(std::string filename);
     int makeAxis();
     int makeTriangle();
+    int makeCube();
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
 

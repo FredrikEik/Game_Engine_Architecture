@@ -42,6 +42,7 @@ SOURCES += main.cpp \
     ResourceManager/meshhandler.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
+    scene.cpp \
     soundsystem.cpp \
     soundsource.cpp \
     triangle.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
     ResourceManager/meshhandler.h \
     rendersystem.h \
     mainwindow.h \
+    scene.h \
     soundsystem.h \
     soundsource.h \
     triangle.h \

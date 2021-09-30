@@ -2,7 +2,7 @@
 
 #include <sstream>
 #include <fstream>
-
+#include "vertex.h"
 #include "constants.h"
 #include "math_constants.h"
 
@@ -34,6 +34,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeAxis();
         if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
+        if (meshName.find("cube") != std::string::npos)
+            meshIndex = makeCube();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -55,6 +57,11 @@ int MeshHandler::readObj(std::string filename)
     std::string tempName{0};
     filename.erase(filename.find(".obj"));  //deleting .obj ending to make LOD-level filenames
 
+    // testing stuff ///////
+
+
+    //tempName = gsl::MeshFilePath + tempName + ".obj";
+    //  ^^^^^¨¨^^^^^     /////////
     for (unsigned short lod{0}; lod < 3; lod++ )  //we test for 3 LOD levels
     {
         if (lod == 0)     //original mesh - not reduced size
@@ -216,7 +223,12 @@ int MeshHandler::readObj(std::string filename)
     qDebug() << QString::fromStdString(filename) << "successfully loaded";
 
     return mMeshes.size()-1;    //returns index to last object
+
+
+
+
 }
+
 
 int MeshHandler::makeAxis()
 {
@@ -254,6 +266,67 @@ int MeshHandler::makeTriangle()
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
+}
+
+int MeshHandler::makeCube()
+{
+    //should check if this object is new before this!
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
+
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,-0.5  , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,-0.5   , 0, 1, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,-0.5    , 0, 1, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,-0.5  , 0, 1, 0));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,-0.5   , 0, 1, 0));
+
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,-0.5   , 1, 0, 1));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,-0.5  , 1, 1, 0));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 1, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 1, 0));
+    temp.mVertices[0].push_back(Vertex(0.5,-0.5,-0.5   , 1, 1, 0));
+
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,-0.5   , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
+    temp.mVertices[0].push_back(Vertex(0.5,0.5,-0.5    , 1, 0, 0));
+    temp.mDrawType = GL_TRIANGLES;
+
+    //only LOD level 0
+    initMesh(temp, 0);
+
+    return mMeshes.size()-1;    //returns index to last object
+
 }
 
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)

@@ -40,14 +40,14 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
-    temp = mResourceManager->addObject("triangle");
-    temp->mMaterial->mShaderProgram = 1;
-    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
+    temp = mResourceManager->addObject("cube");
+    temp->mMaterial->mShaderProgram = 0;
+    temp->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
 
     temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to moving triangle:
-    mResourceManager->addComponent("caravan_mono.wav", temp);
-
+    //mResourceManager->addComponent("fin_sang_stereo.wav", temp);
+    mResourceManager->addComponent("techno_stereo.wav", temp);
     //Hack to test sound system
     temp->mSoundComponent->shouldPlay = true;
 
@@ -65,9 +65,11 @@ void CoreEngine::setUpScene()
         }
     }
 
-    temp = mResourceManager->addObject("house.obj");
+    temp = mResourceManager->addObject("suzanne3.obj");
     temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
     temp->mTransform->mMatrix.scale(0.5f);
+    temp->mMaterial->mShaderProgram = 1;
+    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
     mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
