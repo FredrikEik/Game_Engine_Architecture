@@ -10,7 +10,7 @@ public:
         const float& n1, const float& n2, const float& n3,
         const float& u = 0, const float& v = 0);
     Vertex::Vertex(const glm::vec3& position, const glm::vec3& normals, glm::vec2& UV);
-private:
+//private:
     float m_xyz[3];
     float m_normal[3];
     float m_uv[2];

@@ -5,9 +5,31 @@
 #include "../Vertex.h"
 #include "glm/glm.hpp"
 
-// TODO: screw the constructor in component. 
-// Consider that every component initialize their own ids
-
+/*     ATTENTION
+*
+*
+*
+*
+*
+*
+*
+*
+* Whenever you create a new component you need to add it
+* to the function removeComponentByRTTI in ECSManager.cpp
+* 
+* If the component is reusable, you need to add it 
+* to the function assignAsset in Factory.h
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*
+*/
 
 
 struct Component 
@@ -54,4 +76,12 @@ struct TransformComponent final : public Component
 	TransformComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 
 	glm::mat4x4 transform{ glm::mat4(1.0f) };
+};
+
+struct AxisAlignedBoxComponent final : public Component
+{
+	AxisAlignedBoxComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	glm::vec3 minScaled{};
+	glm::vec3 maxScaled{};
+	glm::vec3 center{};
 };

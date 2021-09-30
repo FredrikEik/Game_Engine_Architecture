@@ -108,24 +108,12 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	// This works because the order in the packed array does not matter.
 	if (positionInPacked != packedComponentArray.size() - 1)
 	{
-		//if (typeid(T).hash_code() != typeid(Component).hash_code())
-		//{
-
 		std::cout << "Removing component "<<typeid(T).name() <<" from entityID " << packedComponentArray[positionInPacked].entityID << '\n';
-			
-		//std::cout << "Size of T: " << sizeof(T) << "Size of comp in array: "<< packedComponentArray[positionInPacked].size <<"\n";
-		//return;
-		//assert(packedComponentArray[packedComponentArray.size() - 1].entityID < core::MAX_ENTITIES);
-		packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
-		//packedComponentArray.erase(packedComponentArray.begin() + positionInPacked, 
-		//	packedComponentArray.begin() + positionInPacked + (packedComponentArray[positionInPacked].size / sizeof(T)));
+		packedComponentArray[positionInPacked] = packedComponentArray[packedComponentArray.size() - 1];
 
 		uint32 swappedEntityID = packedComponentArray[packedComponentArray.size() - 1].entityID;
 		sparseComponentArray[swappedEntityID] = positionInPacked;
-		//std::cout<<"testPacked before erase: "<<
-		//}
-		// Do stuff with the general case
 	}
 
 	// Remove the component and mark the vector dirty.

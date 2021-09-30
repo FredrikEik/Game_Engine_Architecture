@@ -125,6 +125,8 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<CameraComponent>(entityID);
 	else if (componentType == std::type_index(typeid(MeshComponent)))
 		removeComponent<MeshComponent>(entityID);
+	else if (componentType == std::type_index(typeid(AxisAlignedBoxComponent)))
+		removeComponent<AxisAlignedBoxComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };
