@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "input.h"
+#include "gameobject.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
@@ -26,13 +27,12 @@ public:
 
     ///Not singleton now, but can use this function to get Engine instance
     static CoreEngine* getInstance();
-
+    GameObject * player;
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
 
     void handleInput();
-
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};

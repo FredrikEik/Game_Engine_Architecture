@@ -243,8 +243,8 @@ void RenderSystem::render()
     }
 
     //Moves the dog triangle - should be made another way!!!!
-    if(isPlaying)
-        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+//    if(isPlaying)
+//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -461,6 +461,7 @@ void RenderSystem::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         input.W = false;
+
     }
     if(event->key() == Qt::Key_S)
     {

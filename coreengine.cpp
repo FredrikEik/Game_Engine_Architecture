@@ -40,19 +40,19 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
-    temp = mResourceManager->addObject("suzanne.obj");
-    temp->mMaterial->mShaderProgram = 0;
-    temp->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
-    temp->mTransform->mMatrix.rotateY(180.f);
+    player = mResourceManager->addObject("suzanne.obj");
+    player->mMaterial->mShaderProgram = 0;
+    player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
+    player->mTransform->mMatrix.rotateY(180.f);
 
-    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
-    //Adds sound to moving triangle:
+    player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    //Adds sound to player:
     //mResourceManager->addComponent("fin_sang_stereo.wav", temp);
-    mResourceManager->addComponent("techno_stereo.wav", temp);
+    mResourceManager->addComponent("techno_stereo.wav", player);
     //Hack to test sound system
-    temp->mSoundComponent->shouldPlay = true;
+    player->mSoundComponent->shouldPlay = true;
 
-    mRenderSystem->mGameObjects.push_back(temp);
+    mRenderSystem->mGameObjects.push_back(player);
 
     //lager test objekter
     for(int i{0}; i < 3; i++)
@@ -64,9 +64,9 @@ void CoreEngine::setUpScene()
               temp->mMaterial->mShaderProgram = 1;
               temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
               temp->mTransform->mMatrix.rotateY(180.f);
-                temp->mTransform->mMatrix.translate(-2.f*i, 1.f, 2.f*j);
-            temp->mTransform->mMatrix.scale(0.5f);
-            mRenderSystem->mGameObjects.push_back(temp);
+              temp->mTransform->mMatrix.translate(-2.f*i, 1.f, 2.f*j);
+              temp->mTransform->mMatrix.scale(0.5f);
+              mRenderSystem->mGameObjects.push_back(temp);
         }
     }
 
@@ -93,7 +93,7 @@ void CoreEngine::setUpScene()
 void CoreEngine::handleInput()
 {
     //Camera
-
+    float speed = 0.05f;
     //TODO: Probably a cleaner way to do this!
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
@@ -111,6 +111,31 @@ void CoreEngine::handleInput()
         if(mInput.E)
             mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
     }
+    else if(mInput.W)
+    {
+
+         player->move(0,0 , speed);
+    }
+    else if(mInput.S)
+    {
+
+         player->move(0,0 , -speed);
+    }
+     else if(mInput.A)
+    {
+
+         player->move(speed, 0, 0);
+    }
+     else if(mInput.D)
+    {
+
+         player->move(-speed, 0, 0);
+    }
+    else if(mInput.Q)
+        player->move(0, speed, 0);
+    else if(mInput.E)
+        player->move(0, -speed, 0);
+
 }
 
 void CoreEngine::gameLoop()

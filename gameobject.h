@@ -13,6 +13,8 @@ public:
      MeshComponent* mMesh{nullptr};
      MaterialComponent* mMaterial{nullptr};
      SoundComponet* mSoundComponent{nullptr};
+
+     void move(float x, float y, float z);
 };
 #endif // VISUALOBJECT_H
 
