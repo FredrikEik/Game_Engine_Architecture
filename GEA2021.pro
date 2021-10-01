@@ -38,6 +38,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    sphere.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    sphere.h \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \

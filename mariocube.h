@@ -13,6 +13,12 @@ public:
 
     void draw() override;
     void init() override;
+    void move(float x, float y, float z) override;
+
+    BoxCollisionComponent* getBoxCollisionComponent() {return boxCollisionComp;}
+
+private:
+    BoxCollisionComponent* boxCollisionComp;
 
 };
 

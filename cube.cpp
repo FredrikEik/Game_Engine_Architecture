@@ -51,6 +51,8 @@ Cube::Cube()
     getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f, -0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
     getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
     getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
+
+    boxCollisionComp = new BoxCollisionComponent();
 }
 
 Cube::~Cube() {}
@@ -93,6 +95,13 @@ void Cube::init(/*GLint matrixUniform[4]*/)
        glEnableVertexAttribArray(2);
 
        glBindVertexArray(0);
+}
+
+void Cube::move(float x, float y, float z)
+{
+    getTransformComponent()->mMatrix.translate(x,y,z);
+    getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
+    getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
 }
 
 

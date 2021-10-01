@@ -8,7 +8,7 @@ MarioCube::MarioCube()
 
    // objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
 
-
+    boxCollisionComp = new BoxCollisionComponent();
 }
 
 MarioCube::~MarioCube() {}
@@ -55,7 +55,14 @@ void MarioCube::init(/*GLint matrixUniform[4]*/)
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mEAB);
        glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mIndices.size() * sizeof(GLuint), getMeshComponent()->mIndices.data(), GL_STATIC_DRAW);
 
-       glBindVertexArray(0);  
+       glBindVertexArray(0);
+}
+
+void MarioCube::move(float x, float y, float z)
+{
+    getTransformComponent()->mMatrix.translate(x,y,z);
+    getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
+    getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
 }
 
 

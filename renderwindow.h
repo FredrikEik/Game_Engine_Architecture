@@ -54,6 +54,7 @@ private:
     void startOpenGLDebugger();
 
     bool isColliding(BoxCollisionComponent &Box1, BoxCollisionComponent &Box2);
+    bool isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &Sphere);
 
     void setCameraSpeed(float value);
 

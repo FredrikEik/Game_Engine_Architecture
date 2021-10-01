@@ -63,6 +63,14 @@ struct BoxCollisionComponent
 {
 public:
     gsl::Vector3D min, max;
+
+};
+
+struct SphereCollisionComponent
+{
+public:
+    gsl::Vector3D center;
+    float radius;
 };
 
 #endif // COMPONENTS_H

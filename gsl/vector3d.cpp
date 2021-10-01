@@ -71,6 +71,33 @@ namespace gsl
     }
 
 
+    Vector3D V3Dmin(Vector3D a, Vector3D b)
+    {
+        if (a.sum() < b.sum()){
+            return a;
+        }
+        else
+        {
+            return b;
+        }
+    }
+    Vector3D V3Dmax(Vector3D a, Vector3D b)
+    {
+        if (b.sum() > a.sum()){
+            return b;
+        }
+        else
+        {
+            return a;
+        }
+    }
+
+    float Vector3D::sum()
+    {
+        return x+y+z;
+    }
+
+
 
     Vector3D Vector3D::operator-() const
     {
