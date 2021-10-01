@@ -65,4 +65,20 @@ public:
     gsl::Vector3D min, max;
 };
 
+struct FrustumCollisionComponent
+{
+public:
+    // near plane
+    gsl::Vector3D leftBottomNear;
+    gsl::Vector3D rightBottomNear;
+    gsl::Vector3D leftTopNear;
+    gsl::Vector3D rightTopNear;
+
+    // far plane
+    gsl::Vector3D leftBottomFar;
+    gsl::Vector3D rightBottomFar;
+    gsl::Vector3D leftTopFar;
+    gsl::Vector3D rightTopFar;
+};
+
 #endif // COMPONENTS_H

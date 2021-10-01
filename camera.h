@@ -3,6 +3,7 @@
 
 #include "matrix4x4.h"
 #include "vector3d.h"
+#include "components.h"
 /**
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
@@ -26,9 +27,15 @@ public:
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
+    void updateFrustumPos();
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
+
+    TransformComponent* getTransformComponent(){return transformComp;}
+    MeshComponent* getMeshComponent(){return meshComp;}
+    MaterialComponent* getMaterialComponent(){return materialComp;}
+    FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
 
 private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
@@ -43,6 +50,11 @@ private:
     gsl::Matrix4x4 mPitchMatrix;
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
+
+    TransformComponent* transformComp;
+    MeshComponent* meshComp;
+    MaterialComponent* materialComp;
+    FrustumCollisionComponent* frustumComp;
 };
 
 #endif // CAMERA_H

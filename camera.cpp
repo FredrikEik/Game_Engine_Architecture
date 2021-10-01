@@ -1,6 +1,7 @@
 #include "camera.h"
 #include <QDebug>
 
+
 Camera::Camera()
 {
     mViewMatrix.setToIdentity();
@@ -8,6 +9,13 @@ Camera::Camera()
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    meshComp = new MeshComponent();
+    transformComp = new TransformComponent();
+    materialComp = new MaterialComponent();
+    frustumComp = new FrustumCollisionComponent();
+    frustumComp->farPlaneLength = 1000.0f;
+    frustumComp->nearPlaneLenght = 100.0f;
 }
 
 void Camera::pitch(float degrees)
@@ -81,6 +89,12 @@ void Camera::moveRight(float delta)
     gsl::Vector3D right = mRight;
     right.y = 0.f;
     mPosition += right * delta;
+}
+
+void Camera::updateFrustumPos()
+{
+
+
 }
 
 gsl::Vector3D Camera::position() const
