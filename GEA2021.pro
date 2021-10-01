@@ -33,18 +33,14 @@ SOURCES += main.cpp \
     ResourceManager/gameobjectmanager.cpp \
     coreengine.cpp \
     rendersystem.cpp \
-    soundsource.cpp \
     soundsystem.cpp \
     camera.cpp \
-    gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     mainwindow.cpp \
-    triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
-    vertex.cpp \
-    xyz.cpp
+    vertex.cpp
 
 HEADERS += \
     ResourceManager/meshhandler.h \
@@ -55,7 +51,6 @@ HEADERS += \
     altypes.h \
     coreengine.h \
     rendersystem.h \
-    soundsource.h \
     soundsystem.h \
     camera.h \
     components.h \
@@ -67,11 +62,9 @@ HEADERS += \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
     mainwindow.h \
-    triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    vertex.h \
-    xyz.h
+    vertex.h
 
 FORMS += \
     mainwindow.ui
