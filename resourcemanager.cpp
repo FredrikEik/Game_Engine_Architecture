@@ -44,19 +44,32 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
 
     tempGO = new GameObject();
 
-    auto foundAtIndex = mObjectsMap.find(filepath);
-    if(foundAtIndex != mObjectsMap.end()){
-        tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
-    }else{
-        tempGO->mMeshComp = new MeshComponent();
-    }
+    //find the first version of the object, hence "1"vv
 
     tempGO->mMaterialComp = new MaterialComponent();
-    tempGO->mMeshComp->bUsingLOD = UsingLOD;
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
     tempGO->mCollisionComp = new CollisionComponent();
-    tempGO->mCollisionLines = new MeshComponent();
+
+
+    auto foundAtIndex = mObjectsMap.find(filepath+"0");
+    if(foundAtIndex != mObjectsMap.end()){
+        tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
+        tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
+    }else{
+        tempGO->mMeshComp = new MeshComponent();
+        tempGO->mMeshComp->bUsingLOD = UsingLOD;
+        tempGO->mCollisionLines = new MeshComponent();
+        if(UsingLOD)
+        {
+            mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
+            mMeshHandler->readFile(filepath, tempGO->mMeshComp, 1, tempGO->mCollisionComp,tempGO->mCollisionLines );
+            mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2, tempGO->mCollisionComp,tempGO->mCollisionLines );
+        }else{
+            mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
+        }
+        meshCompCounter++;
+    }
 
     if(filepath == "xyz" || filepath == "XYZ")
     {
@@ -67,19 +80,12 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mMaterialComp->mShaderProgram = 0;
     tempGO->mMaterialComp->mTextureUnit = 0;
 
-    if(UsingLOD)
-    {
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 1, tempGO->mCollisionComp,tempGO->mCollisionLines );
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2, tempGO->mCollisionComp,tempGO->mCollisionLines );
-    }else{
-        mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
-    }
-    objectIDcounter++;
 
 
     mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     //qDebug() << "Number of objects in map:" << mObjectsMap.size();
+    //qDebug() << "Number of unique meshcomps:" << meshCompCounter;
+    objectIDcounter++;
     return tempGO;
 }
 

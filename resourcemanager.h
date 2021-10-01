@@ -35,7 +35,7 @@ private:
 public:
     static int objectIDcounter;
 
-
+    int meshCompCounter{0};
 //    VisualObject MakeObject(MeshComponent &meshComp, MaterialComponent &material,
 //                            TransformComponent &transComp);
 //    VisualObject MakeObject(bool mesh, bool material, bool transform);

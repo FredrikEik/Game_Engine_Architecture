@@ -61,42 +61,6 @@ void MeshHandler::init(MeshComponent &MeshComp, int LODlvl)
         glBindVertexArray(0);
 }
 
-void MeshHandler::initCollisionBox(MeshComponent &MeshComp, int LODlvl)
-{
-        //must call this to use OpenGL functions
-        initializeOpenGLFunctions();
-
-        //Vertex Array Object - VAO
-        glGenVertexArrays( 1, &MeshComp.mVAO[LODlvl] );
-        glBindVertexArray( MeshComp.mVAO[LODlvl] );
-
-        //Vertex Buffer Object to hold vertices - VBO
-        glGenBuffers( 1, &MeshComp.mVBO[LODlvl] );
-        glBindBuffer( GL_ARRAY_BUFFER, MeshComp.mVBO[LODlvl] );
-
-        glBufferData( GL_ARRAY_BUFFER, MeshComp.mVertices[LODlvl].size()*sizeof(Vertex), MeshComp.mVertices[LODlvl].data(), GL_STATIC_DRAW );
-
-        // 1rst attribute buffer : position
-        glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-
-        // 2nd attribute buffer : normal
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
-        glEnableVertexAttribArray(1);
-
-        // 3rd attribute buffer : uvs
-        glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
-        glEnableVertexAttribArray(2);
-
-        //Second buffer - holds the indices (Element Array Buffer - EAB):
-        if(MeshComp.mIndices[LODlvl].size() > 0) {
-            glGenBuffers(1, &MeshComp.mEAB[LODlvl]);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MeshComp.mEAB[LODlvl]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, MeshComp.mIndices[LODlvl].size() * sizeof(GLuint), MeshComp.mIndices[LODlvl].data(), GL_STATIC_DRAW);
-        }
-
-        glBindVertexArray(0);
-}
 void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LODlvl, CollisionComponent *CollComp, MeshComponent *CollLines)
 {
     std::string tempFileName{0};
@@ -251,7 +215,10 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
     }
     //beeing a nice boy and closing the file after use
     fileIn.close();
-    makeCollisionBox(CollComp,CollLines);
+
+    if(LODlvl == 0)
+        makeCollisionBox(CollComp,CollLines);
+
     init(*MeshComp, LODlvl);
 }
 
