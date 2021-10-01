@@ -175,7 +175,7 @@
             <property name="title">
              <string>Transform</string>
             </property>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox">
+            <widget class="QDoubleSpinBox" name="TranslateXspinBox">
              <property name="geometry">
               <rect>
                <x>110</x>
@@ -184,8 +184,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+            <widget class="QDoubleSpinBox" name="TranslateYspinBox">
              <property name="geometry">
               <rect>
                <x>170</x>
@@ -194,8 +200,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+            <widget class="QDoubleSpinBox" name="TranslateZspinBox">
              <property name="geometry">
               <rect>
                <x>230</x>
@@ -204,8 +216,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
+            <widget class="QDoubleSpinBox" name="RotateYspinBox">
              <property name="geometry">
               <rect>
                <x>170</x>
@@ -214,8 +232,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_5">
+            <widget class="QDoubleSpinBox" name="RotateZspinBox">
              <property name="geometry">
               <rect>
                <x>230</x>
@@ -224,8 +248,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_6">
+            <widget class="QDoubleSpinBox" name="RotateXspinBox">
              <property name="geometry">
               <rect>
                <x>110</x>
@@ -234,8 +264,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_7">
+            <widget class="QDoubleSpinBox" name="ScaleYspinBox">
              <property name="geometry">
               <rect>
                <x>170</x>
@@ -244,8 +280,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_8">
+            <widget class="QDoubleSpinBox" name="ScaleZspinBox">
              <property name="geometry">
               <rect>
                <x>230</x>
@@ -254,8 +296,14 @@
                <height>22</height>
               </rect>
              </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
+             </property>
             </widget>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_9">
+            <widget class="QDoubleSpinBox" name="ScaleXspinBox">
              <property name="geometry">
               <rect>
                <x>110</x>
@@ -263,6 +311,12 @@
                <width>62</width>
                <height>22</height>
               </rect>
+             </property>
+             <property name="minimum">
+              <double>-999.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>999.000000000000000</double>
              </property>
             </widget>
             <widget class="QLabel" name="TranslateLabel">
@@ -275,7 +329,7 @@
               </rect>
              </property>
              <property name="text">
-              <string>Translate</string>
+              <string>Translation</string>
              </property>
             </widget>
             <widget class="QLabel" name="ScaleLabel">
@@ -301,7 +355,46 @@
               </rect>
              </property>
              <property name="text">
-              <string>Rotate</string>
+              <string>Rotation</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="xLabel">
+             <property name="geometry">
+              <rect>
+               <x>110</x>
+               <y>0</y>
+               <width>71</width>
+               <height>21</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="yLabel">
+             <property name="geometry">
+              <rect>
+               <x>170</x>
+               <y>0</y>
+               <width>71</width>
+               <height>21</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="zLabel">
+             <property name="geometry">
+              <rect>
+               <x>230</x>
+               <y>0</y>
+               <width>71</width>
+               <height>21</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Z</string>
              </property>
             </widget>
            </widget>

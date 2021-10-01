@@ -26,15 +26,38 @@ void GameEngine::SetUpScene()
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
-//    for(int i{0}; i < 100; i++)
-//    {
-//        for(int j{0}; j < 100; j++)
-//        {
-//            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-//            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
-//            mRenderwindow->mGameObjects.push_back(tempGameObject);
-//        }
-//    }
+    SetUpObjects();
+
+    //TODO SetupTextures
+
+
+    // Sound startup stuff
+    mStereoSound = SoundManager::getInstance()->createSource(
+                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
+
+    //mStereoSound->play();
+
+    //Gameloop
+    connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
+    mGameLoopRenderTimer->start(16);
+
+    mMainWindow->updateList();
+}
+
+void GameEngine::SetUpObjects()
+{
+
+    //    for(int i{0}; i < 100; i++)
+    //    {
+    //        for(int j{0}; j < 100; j++)
+    //        {
+    //            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    //            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
+    //            mRenderwindow->mGameObjects.push_back(tempGameObject);
+    //        }
+    //    }
+
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(3,0,-1);
@@ -82,22 +105,6 @@ void GameEngine::SetUpScene()
 //    tempGameObject->mMaterialComp->mShaderProgram = 0;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-
-    //TODO SetupTextures
-
-
-    // Sound startup stuff
-    mStereoSound = SoundManager::getInstance()->createSource(
-                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
-
-    //mStereoSound->play();
-
-    //Gameloop
-    connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
-    mGameLoopRenderTimer->start(16);
-
-    mMainWindow->updateList();
 }
 
 void GameEngine::HandleInput()
@@ -126,6 +133,11 @@ void GameEngine::playMusic(bool bIsPlaying)
         mStereoSound->play();
     else
         mStereoSound->stop();
+}
+
+void GameEngine::resetWorld()
+{
+    //hmmm?
 }
 
 

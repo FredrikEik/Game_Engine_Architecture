@@ -60,6 +60,7 @@ public:
     GLuint mVBO{0};
     GLuint mEAB{0};
 
+    bool bShowCollisionBox{false};
 };
 
 class SoundListenerComponent

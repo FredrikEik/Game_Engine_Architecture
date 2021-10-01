@@ -27,9 +27,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateList()
 {
-    QListWidget *listWidget = ui->listWidget;
-
-    std::vector<GameObject*> GameObjects;
+    listWidget = ui->listWidget;
     if(mRenderWindow)
     {
         GameObjects = mRenderWindow->getAllGameObject();
@@ -142,6 +140,7 @@ void MainWindow::on_ToggleFrustumCulling_toggled(bool checked)
 void MainWindow::on_PlayStop_toggled(bool checked)
 {
         mGameEngine->getInstance()->playMusic(checked);
+
         if(checked)
             ui->PlayStop->setText("Stop");
         else
@@ -157,5 +156,49 @@ void MainWindow::on_pb_toggleCollisionBox_toggled(bool checked)
         ui->pb_toggleCollisionBox->setText("Hide All Collision Boxes");
     else
         ui->pb_toggleCollisionBox->setText("Show All Collision Boxes");
+}
+
+void MainWindow::on_listWidget_currentRowChanged(int currentRow)
+{
+    ObjectListIndex = currentRow;
+    ui->TranslateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().x);
+    ui->TranslateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
+    ui->TranslateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+
+//    ui->RotateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.);
+//    ui->RotateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
+//    ui->RotateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+
+//    ui->ScaleXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().x);
+//    ui->ScaleYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
+//    ui->ScaleZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+
+
+    // --Visible Selection in 3D window--
+
+    // Turn off collision box of the last selected
+    GameObjects[lastIndex]->mCollisionComp->bShowCollisionBox = false;
+
+    GameObjects[ObjectListIndex]->mCollisionComp->bShowCollisionBox = true;
+    lastIndex = currentRow;
+}
+
+void MainWindow::on_TranslateXspinBox_valueChanged(double arg1)
+{
+    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(arg1,pos.y(),pos.z());
+}
+
+
+void MainWindow::on_TranslateYspinBox_valueChanged(double arg1)
+{
+    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),arg1,pos.z());
+}
+
+void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
+{
+    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),pos.y(),arg1);
 }
 

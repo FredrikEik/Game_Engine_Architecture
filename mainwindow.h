@@ -6,6 +6,8 @@
 class QWidget;
 class RenderWindow;
 class GameEngine;
+class QListWidget;
+class GameObject;
 
 namespace Ui {
 class MainWindow;
@@ -34,14 +36,30 @@ private slots:
     void on_pb_toggleCollisionBox_toggled(bool checked);
 
 
+    void on_listWidget_currentRowChanged(int currentRow);
+
+    void on_TranslateXspinBox_valueChanged(double arg1);
+
+
+    void on_TranslateYspinBox_valueChanged(double arg1);
+
+    void on_TranslateZspinBox_valueChanged(double arg1);
 
 private:
     void init();
     Ui::MainWindow *ui;
 
+    int ObjectListIndex;
+    int lastIndex{0};
+
+
     QWidget *mRenderWindowContainer{nullptr};
     RenderWindow *mRenderWindow{nullptr};
     GameEngine *mGameEngine{nullptr};
+
+    QListWidget *listWidget{nullptr};
+
+    std::vector<GameObject*> GameObjects{nullptr};
 
 
 };

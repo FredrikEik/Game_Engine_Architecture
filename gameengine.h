@@ -21,6 +21,7 @@ class GameEngine : public QObject
 public:
     GameEngine();
     void SetUpScene();
+    void SetUpObjects();
     void HandleInput();
 
     static GameEngine* getInstance();
@@ -28,6 +29,7 @@ public:
     void setRenderPointer(RenderWindow* temp, MainWindow *mainW);
 
     void playMusic(bool bIsPlaying);
+    void resetWorld();
 
 private slots:
     void GameLoop();
