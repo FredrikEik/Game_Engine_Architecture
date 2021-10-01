@@ -15,6 +15,7 @@
 
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
+#include "../Systems/CameraSystem.h"
 
 #include "../Input/Input.h"
 
@@ -138,7 +139,6 @@ void Engine::loop()
 		//// TEMP UPDATE
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
 		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
-
 
 		if (ImGui::Button("Destroy entity 0"))
 		{

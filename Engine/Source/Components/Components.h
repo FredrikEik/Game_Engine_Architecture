@@ -69,6 +69,8 @@ struct CameraComponent final : public Component
 
 	glm::mat4x4 m_viewMatrix{};
 	glm::mat4x4 m_projectionMatrix{};
+	float yaw{};
+	float pitch{};
 };
 
 struct TransformComponent final : public Component
