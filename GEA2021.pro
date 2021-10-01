@@ -71,7 +71,8 @@ HEADERS += \
     xyz.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    transform.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \
