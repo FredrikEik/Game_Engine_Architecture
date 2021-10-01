@@ -5,6 +5,7 @@
 #include <vector>
 #include <QString>
 #include <QDebug>
+#include <QList>
 
 #include "components.h"
 #include "vector3d.h"
@@ -16,6 +17,8 @@
 #include "ResourceManager/soundhandler.h"
 #include "ResourceManager/meshhandler.h"
 #include "ResourceManager/texturehandler.h"
+#include "mainwindow.h"
+
 
 ////Forward declaration
 //class SoundSystem;
@@ -25,8 +28,9 @@ GameObjectManager::GameObjectManager()
     SoundSystem::getInstance(); //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
-}
 
+    //QList<MainWindow*> GameObjectList;
+}
 GameObjectManager &GameObjectManager::getInstance()
 {
     static GameObjectManager *mInstance = new GameObjectManager();
@@ -57,6 +61,9 @@ GameObject *GameObjectManager::addObject(std::string meshName)
 
     currentGameObject->mMaterial = new MaterialComponent();
     currentGameObject->mTransform = new TransformComponent;
+
+    QList<QString> GameObjectList;
+    GameObjectList.insert(meshName);
 
     return currentGameObject;
 }

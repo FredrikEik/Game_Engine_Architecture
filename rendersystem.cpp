@@ -240,7 +240,7 @@ void RenderSystem::render()
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         glBindVertexArray(0);
-    }
+}
 
     //Moves the dog triangle - should be made another way!!!!
     if(isPlaying)

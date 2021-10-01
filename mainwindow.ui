@@ -14,7 +14,7 @@
    <string>OpenGL in Qt is great fun!</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>9</x>
@@ -123,7 +123,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="listWidget"/>
+        <widget class="QListView" name="GameObjectLIst"/>
        </item>
       </layout>
      </item>
