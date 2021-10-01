@@ -13,6 +13,8 @@
 #include "component.h"
 #include "shapefactory.h"
 #include "playerinputcomponent.h"
+#include "soundmanager.h"
+#include "soundsource.h"
 
 class QOpenGLContext;
 class Shader;
@@ -46,8 +48,10 @@ private slots:
 private:
     CameraInputComponent *mCamerainput;
     PlayerInputComponent* mPlayerinput;
+    SoundSource* mLaserSound{};
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
+    CollisionSystem* mCollisionSystem;
     ShapeFactory mShapeFactory;
     Input mInput;
     Player* mPlayer;

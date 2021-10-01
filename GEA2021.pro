@@ -3,11 +3,24 @@ QT          += core gui widgets opengl
 TEMPLATE    = app
 CONFIG      += c++17
 
+INCLUDEPATH += .
+INCLUDEPATH += ./include
+
 TARGET      = GEA2021
+
+mac {
+    LIBS += -framework OpenAL
+}
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
 
 SOURCES += main.cpp \
     camera.cpp \
     camerainputcomponent.cpp \
+    collisionsystem.cpp \
     component.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
@@ -19,16 +32,20 @@ SOURCES += main.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
+    soundmanager.cpp \
+    soundsource.cpp \
     texture.cpp \
     vector2d.cpp \
     vector3d.cpp \
     vertex.cpp \
     visualobject.cpp \
+    wavfilehandler.cpp \
     xyz.cpp
 
 HEADERS += \
     camera.h \
     camerainputcomponent.h \
+    collisionsystem.h \
     component.h \
     constants.h \
     gltypes.h \
@@ -44,11 +61,14 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     shapefactory.h \
+    soundmanager.h \
+    soundsource.h \
     texture.h \
     vector2d.h \
     vector3d.h \
     vertex.h \
     visualobject.h \
+    wavfilehandler.h \
     xyz.h
 
 FORMS += \

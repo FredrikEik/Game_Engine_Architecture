@@ -5,12 +5,15 @@
 #include "constants.h"
 #include "matrix4x4.h"
 #include "vertex.h"
+#include "vector3d.h"
 #include "gltypes.h"
 #include <QOpenGLFunctions_4_1_Core>
 
 struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
+    gsl::Vector3D mPosition;
+    float scale = 1;
 };
 
 struct MeshComponent

@@ -135,6 +135,9 @@ void RenderWindow::init()
     mPlayerinput = new PlayerInputComponent();
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
+    mCollisionSystem = new CollisionSystem();
+
+
 
 }
 
@@ -145,6 +148,7 @@ void RenderWindow::initObject()
     mPlayer = new Player();
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
+    mPlayer->move(0,1,0);
     mVisualObjects.push_back(mPlayer);
 
     VisualObject *temp = new XYZ();
@@ -154,32 +158,39 @@ void RenderWindow::initObject()
 
     temp = mShapeFactory.createShape("Plain");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mMaterial->mShaderProgram = 0;   //plain shader
     mVisualObjects.push_back(temp);
 
     temp = mShapeFactory.createShape("Obj");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
     mVisualObjects.push_back(temp);
 
     temp = mShapeFactory.createShape("Triangle");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
     //    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
+    temp->move(3.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     temp = mShapeFactory.createShape("Circle");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->mTransform->mMatrix.translate(2.f, 1.f, .5f);
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(2.f, 1.f, .5f);
     mVisualObjects.push_back(temp);
 
     temp = mShapeFactory.createShape("Square");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->mTransform->mMatrix.translate(-2.f, 0.f, .5f);
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-2.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
+
+    //makes the soundmanager
+    //it is a Singleton!!!
+    SoundManager::getInstance()->init();
+    mLaserSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/laser.wav", true, 0.7f);
 }
 
 void RenderWindow::drawObject()
@@ -243,6 +254,8 @@ void RenderWindow::render()
     mCamerainput->update(mCurrentCamera, mInput);
     mPlayerinput->update(mPlayer, mInput);
     mCurrentCamera->update();
+    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[5]->mCollision))
+        qDebug() <<"Collision detected";
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -349,13 +362,16 @@ void RenderWindow::toggleWireframe(bool buttonState)
     if (buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
-        glDisable(GL_CULL_FACE);
+        //glDisable(GL_CULL_FACE);
+        mLaserSound->play();
     }
     else
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
+        mLaserSound->stop();
     }
+
 }
 
 void RenderWindow::toggleShapes(int shapeID)
