@@ -165,13 +165,13 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
     ui->TranslateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
     ui->TranslateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
 
-//    ui->RotateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.);
-//    ui->RotateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
-//    ui->RotateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+    ui->RotateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.x);
+    ui->RotateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.y);
+    ui->RotateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.z);
 
-//    ui->ScaleXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().x);
-//    ui->ScaleYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
-//    ui->ScaleZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+//    ui->ScaleXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->scale.x);
+//    ui->ScaleYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->scale.y);
+//    ui->ScaleZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->scale.z);
 
 
     // --Visible Selection in 3D window--
@@ -200,5 +200,18 @@ void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
 {
     QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),pos.y(),arg1);
+}
+
+
+void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
+{
+    // for the text in the editor
+    GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.x = arg1;
+
+
+
+    //lastrot needs to be pr object
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX((arg1-lastXrot));
+    lastXrot = arg1;
 }
 

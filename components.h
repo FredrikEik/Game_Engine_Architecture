@@ -21,6 +21,8 @@ class TransformComponent
 public:
 //    TransformComponent();
     gsl::Matrix4x4 mMatrix;
+    gsl::Vector3D rotationDeg{0.f,0.f,0.f};
+    gsl::Vector3D scale{0.f,0.f,0.f};
 };
 
 class MeshComponent

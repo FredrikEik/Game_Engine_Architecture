@@ -256,6 +256,8 @@ void Matrix4x4::rotateZ(GLfloat degrees)
     *this = (*this)*temp;
 }
 
+
+
 // Rotate around a given vector
 //void Matrix4x4::rotate(GLfloat angle, Vector3D vector)
 //{

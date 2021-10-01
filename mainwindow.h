@@ -45,12 +45,16 @@ private slots:
 
     void on_TranslateZspinBox_valueChanged(double arg1);
 
+    void on_RotateXspinBox_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;
 
     int ObjectListIndex;
     int lastIndex{0};
+    int lastXrot{0};
+    int xcounter{0};
 
 
     QWidget *mRenderWindowContainer{nullptr};
