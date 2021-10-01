@@ -3,13 +3,9 @@
 #include <iostream>
 #include <QDebug>
 
-SoundManager* SoundManager::mInstance = NULL;
+SoundManager* SoundManager::mInstance = nullptr;
 
-SoundManager::SoundManager() :
-    mDevice(NULL),
-    mContext(NULL)
-{
-
+SoundManager::SoundManager() : mDevice{nullptr}, mContext{nullptr}{
 }
 
 bool SoundManager::init()

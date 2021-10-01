@@ -5,6 +5,7 @@
 
 class QWidget;
 class RenderWindow;
+class CoreEngine;
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private:
 
     QWidget *mRenderWindowContainer{nullptr};
     RenderWindow *mRenderWindow{nullptr};
+    CoreEngine *mCoreEngine{nullptr};
 };
 
 #endif // MAINWINDOW_H

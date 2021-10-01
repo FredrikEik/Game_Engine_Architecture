@@ -34,9 +34,14 @@ public:
     void toggleWireframe(bool buttonState);
 
     void addToGameObjects(GameObject *obj);
+    void setToCurrentCamera(Camera* cam);
 
-private slots:
+
     void render();
+
+    //idk
+
+    std::vector<GameObject*> mGameObjects;
 
 private:
     void init();
@@ -71,7 +76,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<GameObject*> mGameObjects;
+//    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};

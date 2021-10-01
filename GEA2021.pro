@@ -15,13 +15,14 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    ResourceManager.cpp \
+    coreengine.cpp \
     soundsource.cpp \
     soundsource.cpp \
     wavfilehandler.cpp \
     wavfilehandler.cpp \
     Components.cpp \
     GameObject.cpp \
-    ObjectManager.cpp \
     camera.cpp \
     cube.cpp \
     matrix3x3.cpp \
@@ -39,13 +40,14 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    ResourceManager.h \
+    coreengine.h \
     soundsource.h \
     soundsource.h \
     wavfilehandler.h \
     wavfilehandler.h \
     Components.h \
     GameObject.h \
-    ObjectManager.h \
     camera.h \
     constants.h \
     cube.h \

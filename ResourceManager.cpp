@@ -1,13 +1,13 @@
-#include "ObjectManager.h"
+#include "ResourceManager.h"
 
 #include "renderwindow.h"
 
-ObjectManager::ObjectManager()
+ResourceManager::ResourceManager()
 {
 
 }
 
-GameObject* ObjectManager::CreateObject(std::string filename)
+GameObject* ResourceManager::CreateObject(std::string filename)
 {
 
     int meshIndex{-1};
@@ -49,13 +49,13 @@ GameObject* ObjectManager::CreateObject(std::string filename)
     return object;
 }
 
-ObjectManager &ObjectManager::getInstance()
+ResourceManager &ResourceManager::getInstance()
 {
-    static ObjectManager* mInstance = new ObjectManager();
+    static ResourceManager* mInstance = new ResourceManager();
     return *mInstance;
 }
 
-void ObjectManager::init(Mesh &meshComp)
+void ResourceManager::init(Mesh &meshComp)
 {
     initializeOpenGLFunctions();
 
@@ -90,7 +90,7 @@ void ObjectManager::init(Mesh &meshComp)
 }
 
 
-int ObjectManager::readObj(std::string filename) //Ole's obj reader code
+int ResourceManager::readObj(std::string filename) //Ole's obj reader code
 {
     //should check if this object is new before this!
         mMeshComponents.emplace_back(Mesh());
@@ -239,7 +239,7 @@ int ObjectManager::readObj(std::string filename) //Ole's obj reader code
         return mMeshComponents.size()-1;    //returns index to last object
 }
 
-int ObjectManager::Cube(Mesh* meshComp)
+int ResourceManager::Cube(Mesh* meshComp)
 {
     mMeshComponents.emplace_back(Mesh());
     Mesh &temp = mMeshComponents.back();

@@ -1,5 +1,5 @@
-#ifndef OBJECTMANAGER_H
-#define OBJECTMANAGER_H
+#ifndef RESOURCEMANAGER_H
+#define RESOURCEMANAGER_H
 
 #include "GameObject.h"
 #include "Components.h"
@@ -10,17 +10,17 @@
 
 // I will soon rename this class to "ResourceManager" because
 // this name fits better when including audio and texture resources.
-class ObjectManager : public QOpenGLFunctions_4_1_Core
+class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
 public:
 
     class GameObject* CreateObject(std::string filename);
 
-    static ObjectManager& getInstance();
+    static ResourceManager& getInstance();
 
 private:
     /** Functions */
-    ObjectManager();
+    ResourceManager();
 
     void init(Mesh &mesh);
 
@@ -40,4 +40,4 @@ private:
     Material* material;
 };
 
-#endif // OBJECTMANAGER_H
+#endif // RESOURCEMANAGER_H

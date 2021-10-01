@@ -16,9 +16,10 @@
 #include "constants.h"
 #include "texture.h"
 #include "Components.h"
-#include "ObjectManager.h"
+#include "ResourceManager.h"
 #include "constants.h"
 #include "soundmanager.h"
+#include "coreengine.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -37,7 +38,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         qDebug() << "Context could not be made - quitting this application";
     }
 
-    //Make the gameloop timer:
+    //Make the gameloop timer: Can be removed once CoreEngine is done
     mRenderTimer = new QTimer(this);
 }
 
@@ -126,71 +127,25 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
-
-    //forsøk på å bruke objectmanager til å lage Objekter
-    ObjectManager& mObjectManager = ObjectManager::getInstance();
-
-
-    /** Lage en Engine klasse og gjør asset creation der */
-    GameObject *temp = mObjectManager.CreateObject("Cube");
-    mGameObjects.push_back(temp);
-
-    temp = mObjectManager.CreateObject("suzanne.obj");
-    temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
-    mGameObjects.push_back(temp);
-
-/** Å rendre 2 av samme objekt funker ikke og gir en opengl error message */ // Array object is not active (1282) "HighSeverity"
-
-//    temp = mObjectManager.CreateObject("suzanne.obj");
-//    temp->transform->mMatrix.translate(0, 0, 0);
-//    mGameObjects.push_back(temp);
-
-
-
-//    GameObject* temp = new XYZ();
-//    mGameObjects.push_back(temp);
-//    temp->init();
-
-//    GameObject* temp = new Cube();
-//    mGameObjects.push_back(temp);
-//    temp->init();
-
-
-//    mGameObjects.push_back(temp = new Triangle());
-//    temp->init();
-
-//    mGameObjects.push_back(temp = new Cube());
-//    temp->init();
-
-//    mGameObjects.push_back(temp = new Sphere(2));
-//    temp->init();
-
-    //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-
-
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource(
-                    "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                    "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
-
-    mStereoSound->play();
+    CoreEngine::getInstance()->SetUpScene();
 }
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
     //Keyboard / mouse input
-    handleInput();
 
-    mCurrentCamera->update();
+    /** should be removed when CoreEngine works */
+//    handleInput();
+    /** should be removed when CoreEngine works */
+//    mCurrentCamera->update();
+
+
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
-
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -199,7 +154,7 @@ void RenderWindow::render()
     //Draws the objects
     for( int i = 0; i < mGameObjects.size(); i++)
     {
-        glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram() );
+        glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
         {
@@ -219,35 +174,6 @@ void RenderWindow::render()
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices.size());
         glBindVertexArray(0);
     }
-
-
-
-    /** Old rendering stuff ( using draw(), no loop ) */
-//        //First object - xyz
-//        //what shader to use
-//        glUseProgram(mShaderPrograms[0]->getProgram());
-
-//        //send data to shader
-//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[0]->transform->mMatrix.constData());
-//        //draw the object
-//        mGameObjects[0]->draw();
-//        mGameObjects[2]->draw();
-//        mGameObjects[3]->draw();
-
-//        //Second object - triangle
-//        //what shader to use - texture shader
-//        glUseProgram(mShaderPrograms[1]->getProgram());
-//        //what texture (slot) to use
-//        glUniform1i(mTextureUniform, 1);
-//        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[1]->transform->mMatrix.constData());
-//        mGameObjects[1]->draw();
-//        mGameObjects[1]->transform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-
-
 
 
     //Calculate framerate before
@@ -295,16 +221,6 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //Set viewport width and height
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
-
-    //If the window actually is exposed to the screen we start the main loop
-    //isExposed() is a function in QWindow
-    if (isExposed())
-    {
-        //This timer runs the actual MainLoop
-        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-        mRenderTimer->start(16);
-        mTimeStart.start();
-    }
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
@@ -406,7 +322,7 @@ void RenderWindow::setCameraSpeed(float value)
 
 void RenderWindow::handleInput()
 {
-    //Camera
+   // Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
     {
@@ -430,8 +346,15 @@ void RenderWindow::addToGameObjects(GameObject *obj)
     mGameObjects.push_back(obj);
 }
 
+void RenderWindow::setToCurrentCamera(Camera *cam)
+{
+    mCurrentCamera = cam;
+}
+
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
+//    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
         mMainWindow->close();
@@ -494,6 +417,8 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 {
+//    Input &input = CoreEngine::getInstance()->mInput;
+
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
@@ -550,6 +475,8 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
+//    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->button() == Qt::RightButton)
         mInput.RMB = true;
     if (event->button() == Qt::LeftButton)
@@ -560,6 +487,8 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+//    Input &input = CoreEngine::getInstance()->mInput;
+
     if (event->button() == Qt::RightButton)
         mInput.RMB = false;
     if (event->button() == Qt::LeftButton)
@@ -569,8 +498,10 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
-{
+{   
     QPoint numDegrees = event->angleDelta() / 8;
+
+//    Input &input = CoreEngine::getInstance()->mInput;
 
     //if RMB, change the speed of the camera
     if (mInput.RMB)
@@ -585,6 +516,8 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
+//    Input &input = CoreEngine::getInstance()->mInput;
+
     if (mInput.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
