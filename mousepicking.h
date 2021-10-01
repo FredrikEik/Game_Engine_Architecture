@@ -5,10 +5,11 @@
 #include "vector2d.h"
 #include <QVector4D>
 #include "camera.h"
-#include "inputcomponent.h"
+#include "input.h"
 #include "matrix4x4.h"
 #include <math.h>
 
+#define null 0
 
 class MousePicking
 {
@@ -20,7 +21,10 @@ public:
     gsl::Matrix4x4 viewMatrix;
     void update();
     Camera *mCamera;
-    Inputco
+    Input *mInput;
+    gsl::Vector3D ray_nds;
+    QVector4D clipCoords;
+    QVector4D ray_eye;
 
 
 private:
@@ -28,6 +32,9 @@ private:
     gsl::Vector3D currentRay;
     gsl::Vector2D getNormalizedDeviceCoords(float mouseX, float mouseY);
     gsl::Vector3D calculateMouseRay();
+    QVector4D toEyeCoords(QVector4D clipCoords);
+    gsl::Vector3D toWorldCoords(QVector4D eyeCoords);
+    gsl::Vector3D getPointOnRay(gsl::Vector3D ray, float distance);
 
 
 };

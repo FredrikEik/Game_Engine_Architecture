@@ -62,8 +62,7 @@ class Obj : public VisualObject {
 public:
     Obj(std::string filename);
     ~Obj() {};
-private:
-    void readFile(std::string filename);
+
 };
 
 

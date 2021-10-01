@@ -10,8 +10,8 @@ MousePicking::MousePicking()
 void MousePicking::MousePicker()
 {
 
-    this->mCamera->mProjectionMatrix = projectionMatrix;
-    this->mCamera->mViewMatrix = viewMatrix;
+//    this->mCamera->mProjectionMatrix = projectionMatrix;
+//    this->mCamera->mViewMatrix = viewMatrix;
     //    // heavily influenced by: http://antongerdelan.net/opengl/raycasting.html
     //    // viewport coordinate system
     //    // normalized device coordinates
@@ -32,51 +32,51 @@ void MousePicking::MousePicker()
     //    ray_wor.normalize();
 }
 
-void MousePicking::update()
-{
-    viewMatrix = mCamera->mViewMatrix;
-    currentRay = calculateMouseRay();
-}
+//void MousePicking::update()
+//{
+//    viewMatrix = mCamera->mViewMatrix;
+//    currentRay = calculateMouseRay();
+//}
 
-gsl::Vector2D MousePicking::getNormalizedDeviceCoords(float mouseX, float mouseY)
-{
-    float width; // ??
-    float height; // ??
-    float x = (2.f*mouseX)/width - 1.0f;
-    float y = 1.0f - (2.f*mouseY)/height;
-    float z = 1.0f;
-    ray_nds = gsl::Vector3D(x,y,z);
-}
+//gsl::Vector2D MousePicking::getNormalizedDeviceCoords(int mouseX, int mouseY,int width,int height)
+//{
+//    float x = (2.f*mouseX)/width - 1.0f;
+//    float y = 1.0f - (2.f*mouseY)/height;
+//    float z = -1.0f;
+//    ray_nds = gsl::Vector3D(x,y,z);
+//}
 
-gsl::Vector3D MousePicking::calculateMouseRay()
-{
-    float mouseX = mInput->MOUSEX;
-    float mouseY = mInput->MOUSEY;
-    gsl::Vector2D normalizedCoords = getNormalizedDeviceCoords(mouseX,mouseY);
-    clipCoords = QVector4D(normalizedCoords.x,normalizedCoords.y,-1.f,1.f);
-    QVector4D eyeCoords = toEyeCoords(clipCoords);
-    gsl::Vector3D worldRay = toWorldCoords(eyeCoords);
-    return worldRay;
-}
+//gsl::Vector3D MousePicking::calculateMouseRay()
+//{
+//    float mouseX = mInput->MOUSEX;
+//    float mouseY = mInput->MOUSEY;
+//    gsl::Vector2D normalizedCoords = getNormalizedDeviceCoords(mouseX,mouseY);
+//    clipCoords = QVector4D(normalizedCoords.x,normalizedCoords.y,-1.f,1.f);
+//    QVector4D eyeCoords = toEyeCoords(clipCoords);
+//    gsl::Vector3D worldRay = toWorldCoords(eyeCoords);
+//    return worldRay;
+//}
 
-QVector4D MousePicking::toEyeCoords(QVector4D clipCoords)
-{
+//QVector4D MousePicking::toEyeCoords(QVector4D clipCoords)
+//{
 
-  ray_eye = (projectionMatrix.inverse()) * clipCoords;
-  ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.f, 0.f);
-}
+//  ray_eye = (mCamera->mProjectionMatrix.inverse()) * clipCoords;
+//  ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.f, 0.f);
+//  return QVector4D(ray_eye);
+//}
 
-gsl::Vector3D MousePicking::toWorldCoords(QVector4D eyeCoords)
-{
-    gsl::Vector3D ray_wor = (((viewMatrix.inverse()) * ray_eye).x(),((viewMatrix.inverse()) * ray_eye).y(),((viewMatrix.inverse()) * ray_eye).z());
-    gsl::Vector3D mouseRay = gsl::Vector3D(ray_wor.x, ray_wor.y, ray_wor.z);
-    mouseRay.normalize();
-}
+//gsl::Vector3D MousePicking::toWorldCoords(QVector4D eyeCoords)
+//{
+//    gsl::Vector3D ray_wor = (((mCamera->mViewMatrix.inverse()) * ray_eye).x(),((mCamera->mViewMatrix.inverse()) * ray_eye).y(),((mCamera->mViewMatrix.inverse()) * ray_eye).z());
+//    gsl::Vector3D mouseRay = gsl::Vector3D(ray_wor.x, ray_wor.y, ray_wor.z);
+//    mouseRay.normalize();
+//    return mouseRay;
+//}
 
-gsl::Vector3D MousePicking::getPointOnRay(gsl::Vector3D ray, float distance)
-{
-    gsl::Vector3D camPos = mCamera->position();
-    gsl::Vector3D start = gsl::Vector3D(camPos.x, camPos.y, camPos.z);
-    gsl::Vector3D scaledRay = gsl::Vector3D(ray.x * distance, ray.y * distance, ray.z * distance);
-    return 0;
-}
+//gsl::Vector3D MousePicking::getPointOnRay(gsl::Vector3D ray, float distance)
+//{
+//    gsl::Vector3D camPos = mCamera->position();
+//    gsl::Vector3D start = gsl::Vector3D(camPos.x, camPos.y, camPos.z);
+//    gsl::Vector3D scaledRay = gsl::Vector3D(ray.x * distance, ray.y * distance, ray.z * distance);
+//    return 0;
+//}

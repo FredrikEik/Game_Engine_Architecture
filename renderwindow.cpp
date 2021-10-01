@@ -145,9 +145,10 @@ void RenderWindow::init()
 void RenderWindow::initObjects()
 {
     //********************** Making the object to be drawn **********************
-    mPlayer = new Player;
+    mPlayer = new Player("../GEA2021/Assets/Pacman.obj");
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
+    mPlayer->move(0,1,0);
     mVisualObjects.push_back(mPlayer);
 
     VisualObject *temp = new XYZ();
@@ -376,12 +377,12 @@ void RenderWindow::toggleWireframe(bool buttonState)
     if (buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
-        glDisable(GL_CULL_FACE);
+        //glDisable(GL_CULL_FACE);
     }
     else
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
-        glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);
     }
 }
 
@@ -592,9 +593,9 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();
 
-    int mouseX = mInputComponent->mMouseXlast = event->pos().x();
-    int mouseY = mInputComponent->mMouseYlast = event->pos().y();
-    mMousepicking->MousePicker(mouseX,mouseY,static_cast<float>(width()),static_cast<float>(height()));
+//    int mouseX = event->pos().x();
+//    int mouseY = event->pos().y();
+//    mMousepicking->MousePicker(mouseX,mouseY,width(),height());
 
 
 }

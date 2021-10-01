@@ -10,8 +10,8 @@
 class Player : public VisualObject
 {
 public:
-    Player();
-    void move(float x, float y, float z);
+    Player(std::string filename);
+
 
 
 private:
