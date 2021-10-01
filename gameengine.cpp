@@ -5,6 +5,7 @@
 #include "renderwindow.h"
 #include "soundmanager.h"
 #include "camera.h"
+#include "mainwindow.h"
 
 
 // Make Singelton
@@ -25,15 +26,15 @@ void GameEngine::SetUpScene()
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
-    for(int i{0}; i < 100; i++)
-    {
-        for(int j{0}; j < 100; j++)
-        {
-            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
-            mRenderwindow->mGameObjects.push_back(tempGameObject);
-        }
-    }
+//    for(int i{0}; i < 100; i++)
+//    {
+//        for(int j{0}; j < 100; j++)
+//        {
+//            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+//            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
+//            mRenderwindow->mGameObjects.push_back(tempGameObject);
+//        }
+//    }
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(3,0,-1);
@@ -41,38 +42,38 @@ void GameEngine::SetUpScene()
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-//    tempGameObject->mTransformComp->mMatrix.translate(6,0,0);
-//    tempGameObject->mMaterialComp->mTextureUnit = 0;
-//    tempGameObject->mMaterialComp->mShaderProgram = 0;
-//    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    tempGameObject->mTransformComp->mMatrix.translate(6,0,0);
+    tempGameObject->mMaterialComp->mTextureUnit = 0;
+    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-3,0,-1);
-//    tempGameObject->mMaterialComp->mTextureUnit = 0;
-//    tempGameObject->mMaterialComp->mShaderProgram = 0;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-3,0,-1);
+    tempGameObject->mMaterialComp->mTextureUnit = 0;
+    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
-//    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
-//    tempGameObject->mMaterialComp->mTextureUnit = 0;
-//    tempGameObject->mMaterialComp->mShaderProgram = 0;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
+    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
+    tempGameObject->mMaterialComp->mTextureUnit = 0;
+    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
-//    tempGameObject->mMaterialComp->mTextureUnit = 0;
-//    tempGameObject->mMaterialComp->mShaderProgram = 0;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
+    tempGameObject->mMaterialComp->mTextureUnit = 0;
+    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(3,0,3);
-//    tempGameObject->mTransformComp->mMatrix.scale(0.1f);
-//    tempGameObject->mMaterialComp->mTextureUnit = 0;
-//    tempGameObject->mMaterialComp->mShaderProgram = 0;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(3,0,3);
+    tempGameObject->mTransformComp->mMatrix.scale(0.1f);
+    tempGameObject->mMaterialComp->mTextureUnit = 0;
+    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
 //    tempGameObject = mResourceManager->CreateObject("xyz");
@@ -95,6 +96,8 @@ void GameEngine::SetUpScene()
     //Gameloop
     connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     mGameLoopRenderTimer->start(16);
+
+    mMainWindow->updateList();
 }
 
 void GameEngine::HandleInput()
@@ -111,9 +114,10 @@ void GameEngine::GameLoop()
     mRenderwindow->render();
 }
 
-void GameEngine::setRenderPointer(RenderWindow *temp)
+void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)
 {
     mRenderwindow = temp;
+    mMainWindow = mainW;
 }
 
 void GameEngine::playMusic(bool bIsPlaying)

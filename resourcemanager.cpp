@@ -53,6 +53,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
 
 
     auto foundAtIndex = mObjectsMap.find(filepath+"0");
+
+
     if(foundAtIndex != mObjectsMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
@@ -81,8 +83,14 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mMaterialComp->mTextureUnit = 0;
 
 
-
     mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
+
+    std::string tempName = filepath;
+    tempName.erase(0,25);
+    tempName.erase(tempName.end()-4,tempName.end());
+    tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
+
+
     //qDebug() << "Number of objects in map:" << mObjectsMap.size();
     //qDebug() << "Number of unique meshcomps:" << meshCompCounter;
     objectIDcounter++;

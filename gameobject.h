@@ -6,6 +6,7 @@
 class GameObject
 {
 public:
+    std::string name{0};
 
     TransformComponent* mTransformComp{nullptr};
     MeshComponent* mMeshComp{nullptr};

@@ -12,6 +12,7 @@ class RenderWindow;
 class ResourceManager;
 class QTimer;
 class SoundSourceComponent;
+class MainWindow;
 
 class GameEngine : public QObject
 {
@@ -24,7 +25,7 @@ public:
 
     static GameEngine* getInstance();
 
-    void setRenderPointer(RenderWindow* temp);
+    void setRenderPointer(RenderWindow* temp, MainWindow *mainW);
 
     void playMusic(bool bIsPlaying);
 
@@ -46,6 +47,7 @@ private:
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};
+    MainWindow* mMainWindow{nullptr};
 
     QTimer *mGameLoopRenderTimer{nullptr};
 };

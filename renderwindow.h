@@ -33,10 +33,12 @@ public:
 
     void exposeEvent(QExposeEvent *) override;
 
+    // UI
     void toggleWireframe(bool buttonState);
     void renderLOD(bool bIsToggleOn);
     void toggleFrustumCulling(bool bIsToggleOn);
     void toggleShowCollsionBox(bool bIsToggleOn);
+    std::vector<GameObject*> getAllGameObject();
 
 
     std::vector<GameObject*> mGameObjects;

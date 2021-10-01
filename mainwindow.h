@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateList();
+
 private slots:
 
     void on_ToggleLOD_toggled(bool checked);
@@ -30,6 +32,8 @@ private slots:
     void on_PlayStop_toggled(bool checked);
 
     void on_pb_toggleCollisionBox_toggled(bool checked);
+
+
 
 private:
     void init();

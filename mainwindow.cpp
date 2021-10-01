@@ -4,6 +4,7 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QListWidget>
 
 #include "renderwindow.h"
 #include "gameengine.h"
@@ -14,10 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
 
-//    ui->comboBox->addItem("Cube");
-//    ui->comboBox->addItem("Sphere");
-//    ui->comboBox->addItem("Pyramid");
-//    ui->comboBox->addItem("Suzanne");
+
     init();
 }
 
@@ -25,6 +23,23 @@ MainWindow::~MainWindow()
 {
     delete mRenderWindow;
     delete ui;
+}
+
+void MainWindow::updateList()
+{
+    QListWidget *listWidget = ui->listWidget;
+
+    std::vector<GameObject*> GameObjects;
+    if(mRenderWindow)
+    {
+        GameObjects = mRenderWindow->getAllGameObject();
+        for(auto it : GameObjects)
+        {
+            std::string name = (*it).name;
+            new QListWidgetItem(tr(name.c_str()), listWidget);
+        }
+    }
+
 }
 
 void MainWindow::init()
@@ -82,7 +97,7 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.90; //original value 0.65
     resize(tempSize);
 
-    GameEngine::getInstance()->setRenderPointer(mRenderWindow);
+    GameEngine::getInstance()->setRenderPointer(mRenderWindow , this);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus

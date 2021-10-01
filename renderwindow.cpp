@@ -225,25 +225,25 @@ void RenderWindow::render()
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
-                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
                 mObjectsDrawn++;
             }else if( distanceCamToObj < 20)
             {
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[1].size());
-                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[1].size();
                 mObjectsDrawn++;
             }else{
                 glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[2] );
                 glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[2].size());
-                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+                mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[2].size();
                 mObjectsDrawn++;
             }
         }else
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
-            mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices->size();
+            mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
         }
 
@@ -387,6 +387,11 @@ void RenderWindow::toggleShowCollsionBox(bool bIsToggleOn)
         bShowAllCollisionBoxes = true;
     else
         bShowAllCollisionBoxes = false;
+}
+
+std::vector<GameObject*> RenderWindow::getAllGameObject()
+{
+    return mGameObjects;
 }
 
 
