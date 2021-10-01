@@ -303,6 +303,7 @@ void RenderWindow::stopSound()
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);
+    mMainWindow->addObjectToWorldList(object);
     mPop->play();
 }
 

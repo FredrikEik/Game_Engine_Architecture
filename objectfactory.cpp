@@ -50,6 +50,7 @@ void ObjectFactory::createObject(std::string objectName)
     willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
+
     return;
 }
 

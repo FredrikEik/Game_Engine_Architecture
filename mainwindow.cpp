@@ -87,6 +87,11 @@ void MainWindow::init()
     ui->comboBox->addItem("Goat");
 }
 
+void MainWindow::addObjectToWorldList(std::string name)
+{
+    ui->WorldObjects->addItem(name.c_str());
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {

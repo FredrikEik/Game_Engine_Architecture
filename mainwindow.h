@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void addObjectToWorldList(std::string name);
+
 private slots:
     void on_pushButton_toggled(bool checked);
 

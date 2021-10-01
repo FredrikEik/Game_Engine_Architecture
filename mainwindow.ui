@@ -21,7 +21,7 @@
        <enum>QLayout::SetMaximumSize</enum>
       </property>
       <item>
-       <widget class="QListView" name="listView"/>
+       <widget class="QListWidget" name="WorldObjects"/>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_3">
