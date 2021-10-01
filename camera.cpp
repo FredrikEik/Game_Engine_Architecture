@@ -15,7 +15,7 @@ Camera::Camera()
     materialComp = new MaterialComponent();
     frustumComp = new FrustumCollisionComponent();
     frustumComp->farPlaneLength = 1000.0f;
-    frustumComp->nearPlaneLenght = 100.0f;
+    frustumComp->nearPlaneLength = 100.0f;
 }
 
 void Camera::pitch(float degrees)
@@ -91,8 +91,26 @@ void Camera::moveRight(float delta)
     mPosition += right * delta;
 }
 
-void Camera::updateFrustumPos()
+void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 {
+    float farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength;
+    float farplaneY  = (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio;
+    float farplaneZ  = frustumComp->farPlaneLength;
+    float nearplaneX = tan(fieldOfView)*frustumComp->nearPlaneLength;
+    float nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
+    float nearplaneZ = frustumComp->nearPlaneLength;
+
+    frustumComp->rightTopFar     = gsl::Vector3D(farplaneX, farplaneY, farplaneZ);
+    frustumComp->rightBottomFar  = gsl::Vector3D(farplaneX, -farplaneY, farplaneZ);
+    frustumComp->leftTopFar      = gsl::Vector3D(-farplaneX, farplaneY, farplaneZ);
+    frustumComp->leftBottomFar   = gsl::Vector3D(-farplaneX, -farplaneY, farplaneZ);
+
+    frustumComp->rightTopNear    = gsl::Vector3D(nearplaneX, nearplaneY, nearplaneZ);
+    frustumComp->rightBottomNear = gsl::Vector3D(nearplaneX, -nearplaneY, nearplaneZ);
+    frustumComp->leftTopNear     = gsl::Vector3D(-nearplaneX, nearplaneY, nearplaneZ);
+    frustumComp->leftBottomNear  = gsl::Vector3D(-nearplaneX, -nearplaneY, nearplaneZ);
+
+
 
 
 

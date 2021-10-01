@@ -27,7 +27,7 @@ public:
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
-    void updateFrustumPos();
+    void updateFrustumPos(float fieldOfView, float aspectRatio);
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
