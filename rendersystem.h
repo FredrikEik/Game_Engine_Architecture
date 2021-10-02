@@ -46,7 +46,7 @@ public:
 
     void render();
 
-    bool mUseFrustumCulling{true};
+    bool mUseFrustumCulling{false};
     bool mGameCamAsFrustumCulling{false};
 
 private:
@@ -63,10 +63,7 @@ private:
     void mousePickingRay(QMouseEvent *event);
 
     //Just to test mousePickingRay
-    MeshData mDebugMousePickRay;
-    bool mDrawMousePickRay{false};
-    gsl::Vector3D mMousePickRay;
-
+    int indexToPickedObject{-1};
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs

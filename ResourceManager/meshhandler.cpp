@@ -272,7 +272,7 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &positionIn, int direction, float l
     return tempMesh;
 }
 
-MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D &endIn, float lenght, gsl::Vector3D colorIn)
+MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn)
 {
     MeshData tempMesh;
     endIn = endIn * lenght;
@@ -426,7 +426,7 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
     auto result = mMeshMap.find(meshName);
     gsl::Vector3D &lowLeftBack = mMeshes[result->second].mLowLeftBackCorner;
     gsl::Vector3D &upRightFront = mMeshes[result->second].mUpRightFrontCorner;
-    MeshData temp;
+    MeshData tempMesh;
     float xMinus{lowLeftBack.x};
     float xPlus{upRightFront.x};
     float yMinus{lowLeftBack.y};
@@ -434,7 +434,7 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
     float zMinus{lowLeftBack.z};
     float zPlus{upRightFront.z};
 
-    temp.mVertices[0].insert( temp.mVertices[0].end(),
+    tempMesh.mVertices[0].insert( tempMesh.mVertices[0].end(),
       {//Vertex data for front points       color                       uv
        Vertex{xMinus, yMinus, zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
        Vertex{xPlus,  yMinus, zPlus,       1.f, 0.301f, 0.933f,          0.f, 0.f},
@@ -448,19 +448,19 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
                       });
 
     //One line at a time
-    temp.mIndices[0].insert( temp.mIndices[0].end(),
+    tempMesh.mIndices[0].insert( tempMesh.mIndices[0].end(),
     { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
       4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
       0, 4, 3, 7,                   //leftside lines
       1, 5, 2, 6                    //rightside lines
                      });
 
-    temp.mDrawType = GL_LINES;
+    tempMesh.mDrawType = GL_LINES;
 
     //only LOD level 0
-    initMesh(temp, 0);
+    initMesh(tempMesh, 0);
 
-    return temp;
+    return tempMesh;
 }
 
 void MeshHandler::makeColliderData(MeshData &meshIn, gsl::Vector3D &vertexIn)

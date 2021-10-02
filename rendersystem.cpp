@@ -217,18 +217,21 @@ void RenderSystem::render()
             mObjectsDrawn++;
         }
 
-        /*Quick hack test to check if linebox/circle works:
-        if(i == 2)
+        //Quick hack test to check if linebox/circle works:
+        if(i == indexToPickedObject)
         {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+//            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
-            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            //Hackety hack - have to get rid of scale in the objects model matrix
+            gsl::Matrix4x4 temp(true);
+            temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
+            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//            glBindVertexArray( lineBox.mVAO[0] );
+//            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }*/
+        }
         glBindVertexArray(0);
     }
 
@@ -241,17 +244,17 @@ void RenderSystem::render()
         temp.rotateY(-mGameCamera->mYaw);
         temp.rotateX(mGameCamera->mPitch);
 
-        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glBindVertexArray( frustum.mVAO[0] );
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
         //Drawing forward vector of gameCam
-        gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+/*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
         MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
                 makeLine(mGameCamera->mPosition, tempEnd, 1.f);
         glBindVertexArray( forwardVector.mVAO[0] );
         temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
 
         //Drawing FOV vector of gameCam on right side
@@ -260,19 +263,22 @@ void RenderSystem::render()
                 makeLine(mGameCamera->mPosition, tempEnd, 1.f);
         glBindVertexArray( frustumCullRightVector.mVAO[0] );
         temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+        */
     }
 
 
     //debug mousePickingRay
-    if (mDrawMousePickRay)
-    {
-        gsl::Matrix4x4 temp(true);
-        glBindVertexArray( mDebugMousePickRay.mVAO[0] );
-        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
-    }
+//    if (mDrawMousePickRay)
+//    {
+//        gsl::Matrix4x4 temp(true);
+//        glBindVertexArray( mDebugMousePickRay.mVAO[0] );
+//        glUniformMatrix4fv( mShaderPrograms[0]->pMatrixUniform, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+//        glUniformMatrix4fv( mShaderPrograms[0]->vMatrixUniform, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//        glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
+//    }
 
     //QuickHack to get something to move when pressing play
     //Testing gameCam now
@@ -459,8 +465,9 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
 {
     int mouseXPixel = event->pos().x();
     int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
-    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
+//    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
 
+    //Since we are going to invert these, I make a copy
     gsl::Matrix4x4 projMatrix = mEditorCamera->mProjectionMatrix;
     gsl::Matrix4x4 viewMatrix = mEditorCamera->mViewMatrix;
 
@@ -475,7 +482,7 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
 
     //step 3
     projMatrix.inverse();
-    gsl::Vector4D ray_eye = (projMatrix) * ray_clip;
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
     ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
 
     //step 4
@@ -483,15 +490,48 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
     gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
     gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
     // don't forget to normalise the vector at some point
-//    ray_wor.normalize();
+    ray_wor.normalize();
 
-    //My code to see if it works
-    qDebug() << ray_wor;
 
-//    mMousePickRay = ray_wor;
+    /************************************************************************/
+    //Collision detection - in world space coordinates:
+    //Writing here as a quick test - probably should be in a CollisionSystem class
 
-    mDebugMousePickRay = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
-            makeLine(mEditorCamera->mPosition, ray_wor, 1.f);
+    //This is ray vs bounding sphere collision
+
+//    qDebug() << "Cam pos" << mEditorCamera->mPosition << "Ray" << ray_wor;
+
+    for(int i{0}; i < mGameObjects.size(); i++)
+    {
+        //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mGameObjects[i]->mTransform->mMatrix.getPosition() - mEditorCamera->mPosition;
+
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
+
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray:
+        float distance = camToObject * rayNormal;   //* gives the dot product
+
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
+
+        //if distance to ray < objects bounding sphere == we have a collision
+        if(distance < mGameObjects[i]->mMesh->mColliderRadius)
+        {
+            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+            indexToPickedObject = i;
+            break;  //breaking out of for loop - does not check if ray touch several objects
+
+//            qDebug() << "Collision!" << i <<  camToObject << rayNormal <<
+//            distance << "<" << mGameObjects[i]->mMesh->mColliderRadius;
+        }
+    }
 }
 
 void RenderSystem::keyPressEvent(QKeyEvent *event)
@@ -634,7 +674,6 @@ void RenderSystem::mousePressEvent(QMouseEvent *event)
 
     //This should be organized better - just getting it working for now
     mousePickingRay(event);
-    mDrawMousePickRay = true;
 }
 
 void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
@@ -648,7 +687,8 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::MiddleButton)
         input.MMB = false;
 
-    mDrawMousePickRay = false;
+    //testing MousePicking
+    indexToPickedObject = -1;
 }
 
 void RenderSystem::wheelEvent(QWheelEvent *event)

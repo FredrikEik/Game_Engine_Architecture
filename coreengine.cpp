@@ -66,6 +66,7 @@ void CoreEngine::setUpScene()
             temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
             //TODO: Scaling have to be made easier and more automatic than this!
             temp->mTransform->mMatrix.scale(0.3f);
+            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
             temp->mTransform->mScale.setAlltoSame(0.3f);
             mRenderSystem->mGameObjects.push_back(temp);
         }
