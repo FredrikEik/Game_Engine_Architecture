@@ -129,9 +129,10 @@ void RenderWindow::init()
 //    temp->init();
 //    mVisualObjects.push_back(temp);
 
-    mVisualObjects.push_back(source->addCube());
-    mVisualObjects.push_back(source->addTriangle());
-    mVisualObjects.push_back(source->addXYZ());
+//    mVisualObjects.push_back(source->addCube());
+//    mVisualObjects.push_back(source->addTriangle());
+//    mVisualObjects.push_back(source->addXYZ());
+    mVisualObjects.push_back(source->objectCreator("Triangle"));
 
     //testing triangle class
 //    temp = new TriangleTest();
