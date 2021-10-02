@@ -10,6 +10,7 @@
 struct DetailsComponent{
     int entity = 0;
     std::string title;
+    std::string description;
 
 };
 
