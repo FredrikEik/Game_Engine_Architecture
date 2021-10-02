@@ -32,7 +32,7 @@ public:
 private:
     std::vector<std::vector<Vertex>> meshContainer;
     //std::vector<std::vector<GLuint>> meshIndiceContainer;
-
+    float calculateLenght(QVector3D pos );
 };
 
 #endif // RESOURCESYSTEM_H

@@ -10,7 +10,7 @@
 #include "constants.h"
 #include "components.h"
 #include "rendersystem.h"
-#include "resroucesystem.h"
+#include "resourcesystem.h"
 #include "entitysystem.h"
 
 class QOpenGLContext;

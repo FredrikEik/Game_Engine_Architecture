@@ -69,6 +69,11 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
             //Vertex made - pushing it into vertex-vector
             tempVertecies.push_back(tempVertex);
 
+            //calculate radius of sphere
+            float tempRadius = calculateLenght(tempVertex);
+            if(mesh->collisionRadius < tempRadius)
+                mesh->collisionRadius = tempRadius;
+
             continue;
         }
         if (oneWord == "vt")
@@ -152,7 +157,13 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
     //beeing a nice boy and closing the file after use
     fileIn.close();
 
-
+     qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
     mesh->entity = 0;
     mesh->mDrawType = GL_TRIANGLES;
+}
+
+float resourceSystem::calculateLenght(QVector3D pos)
+{   //we assume that the center of the obj is at 0,0,0
+    //sqrt(x^2        +         y^2        +         z^2      ) = length
+    return sqrt((pos.x()*pos.x()) + (pos.y()* pos.y()) + (pos.z()*pos.z()));
 }
