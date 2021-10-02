@@ -29,10 +29,10 @@ struct MeshComponent
     GLuint mEAB{0};
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
-    //std::vector<std::vector<Vertex>> vectorOfVertexVectors;
-    //std::vector<std::vector<GLuint>> vectorOfIndiceVectors;
-    //int meshId; // use this to refer to what mesh this component is supposed to own.
-    // RESOURCE MANAGEMENT SUGGESTION
+
+
+    std::vector<Vertex> * mRVectices;
+    std::vector<GLuint> * mRIndices;
 
     GLenum mDrawType{GL_TRIANGLES};
 };

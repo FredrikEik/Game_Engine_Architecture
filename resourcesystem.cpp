@@ -7,7 +7,11 @@ resourceSystem::resourceSystem()
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
 {
+
     std::string filename = gsl::ModelFilePath + input;
+    std::vector<Vertex> tempMVertices;
+    std::vector<Vertex> tempMIndices;
+
 
     //Open File
     //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
@@ -155,4 +159,12 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
     mesh->entity = 0;
     mesh->mDrawType = GL_TRIANGLES;
+
+    /*    bool matchFound = false;
+    int VSize = meshContainer.size();
+    for(int i = 0; i < VSize; i++){
+        if(inVertices == meshContainer[i]){
+        }
+    }*/
 }
+
