@@ -12,9 +12,10 @@ GameObject* ResourceManager::CreateObject(std::string filename)
 
     int meshIndex{-1};
 
-
     object = new GameObject();
-
+    object->transform = new Transform();
+    object->transform->mMatrix.setToIdentity();
+    object->material = new Material();
     object->mesh = new Mesh();
 
 
@@ -22,7 +23,11 @@ GameObject* ResourceManager::CreateObject(std::string filename)
 
     if(result != mMeshIndexMap.end()){
         meshIndex = result->second;
-        qDebug() << "mesh is already made, use same meshIndex";
+        object->mesh->mVAO = mMeshComponents.at(meshIndex).mVAO;
+        //object->mesh->mIndices = mMeshComponents.at(meshIndex).mIndices;
+        object->mesh->mVertices = mMeshComponents.at(meshIndex).mVertices;
+
+        object->mesh->mDrawType = mMeshComponents.at(meshIndex).mDrawType;
     }
     else{
 
@@ -30,9 +35,10 @@ GameObject* ResourceManager::CreateObject(std::string filename)
             meshIndex = readObj(gsl::MeshFilePath + filename);
 
         else if(filename.find("Cube") != std::string::npos)
-            meshIndex = Cube(object->mesh); // quick test line, should not be hardcoded
+            meshIndex = Cube(object->mesh);
 
         mMeshIndexMap.emplace(filename, meshIndex);
+        mMeshComponents[meshIndex] = *object->mesh;
     }
 
     if(meshIndex == -1){
@@ -40,9 +46,7 @@ GameObject* ResourceManager::CreateObject(std::string filename)
     }
 
 
-    object->transform = new Transform();
-    object->transform->mMatrix.setToIdentity();
-    object->material = new Material();
+
 
 //    mRenderwindow->addToGameObjects(object);
 

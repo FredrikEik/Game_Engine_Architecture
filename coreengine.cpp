@@ -33,13 +33,22 @@ void CoreEngine::GameLoop()
 void CoreEngine::SetUpScene()
 {
 
-    /** Lage en Engine klasse og gjør asset creation der */
     GameObject *temp = mResourceManager->CreateObject("Cube");
     mRenderWindow->mGameObjects.push_back(temp);
 
-    temp = mResourceManager->CreateObject("suzanne.obj");
-    temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
-    mRenderWindow->mGameObjects.push_back(temp);
+    for(int i{0}; i < 40; i++)
+   {
+       for(int j{0}; j < 40; j++)
+       {
+           temp = mResourceManager->CreateObject("suzanne.obj");
+           temp->transform->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
+           mRenderWindow->mGameObjects.push_back(temp);
+       }
+   }
+
+//    temp = mResourceManager->CreateObject("suzanne.obj");
+//    temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
+//    mRenderWindow->mGameObjects.push_back(temp);
 
 /** Å rendre 2 av samme objekt funker ikke og gir en opengl error message */ // Array object is not active (1282) "HighSeverity"
 
@@ -65,7 +74,7 @@ void CoreEngine::SetUpScene()
     mGameLoopTimer->start(16);
 }
 
-void CoreEngine::HandleInput()
+void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngine
 {
     //mEditorCamera
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement

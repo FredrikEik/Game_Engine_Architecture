@@ -30,7 +30,6 @@ private:
 
     /** Variables */
     GameObject* object;
-    std::vector<GameObject*> gameObjects;
 
     std::map<std::string, unsigned int> mMeshIndexMap;
     std::vector<Mesh> mMeshComponents;

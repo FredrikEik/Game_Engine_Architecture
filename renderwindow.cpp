@@ -172,7 +172,7 @@ void RenderWindow::render()
 
         glBindVertexArray( mGameObjects[i]->mesh->mVAO );
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices.size());
-        glBindVertexArray(0);
+        glBindVertexArray(0);                                                                                       /** mVertices vao, vbo osv. blir ikke overført til neste gameObjecty*/
     }
 
 
