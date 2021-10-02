@@ -22,7 +22,7 @@ private:
     /** Functions */
     ResourceManager();
 
-    void init(Mesh &mesh);
+    void init(Mesh &mesh, int lod);
 
     int readObj(std::string filename);
 

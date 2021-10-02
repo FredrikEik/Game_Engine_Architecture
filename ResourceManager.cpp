@@ -9,33 +9,27 @@ ResourceManager::ResourceManager()
 
 GameObject* ResourceManager::CreateObject(std::string filename)
 {
-
-    int meshIndex{-1};
-
     object = new GameObject();
     object->transform = new Transform();
     object->transform->mMatrix.setToIdentity();
     object->material = new Material();
     object->mesh = new Mesh();
 
-
+    int meshIndex{-1};
     auto result = mMeshIndexMap.find(filename);
 
     if(result != mMeshIndexMap.end()){
         meshIndex = result->second;
-        object->mesh->mVAO = mMeshComponents.at(meshIndex).mVAO;
-        //object->mesh->mIndices = mMeshComponents.at(meshIndex).mIndices;
-        object->mesh->mVertices = mMeshComponents.at(meshIndex).mVertices;
 
-        object->mesh->mDrawType = mMeshComponents.at(meshIndex).mDrawType;
+      //Gives the current objects mesh the same values as the "duplicate" version. (Updates mVAO, drawType, etc.)
+        object->mesh = &mMeshComponents.at(meshIndex);
     }
     else{
 
         if(filename.find(".obj") != std::string::npos)
             meshIndex = readObj(gsl::MeshFilePath + filename);
-
-        else if(filename.find("Cube") != std::string::npos)
-            meshIndex = Cube(object->mesh);
+        else
+            qDebug() << "Entered else statement in ResourceManager::CreateObject"; //for testing
 
         mMeshIndexMap.emplace(filename, meshIndex);
         mMeshComponents[meshIndex] = *object->mesh;
@@ -44,9 +38,6 @@ GameObject* ResourceManager::CreateObject(std::string filename)
     if(meshIndex == -1){
         std::cout << "Error: meshIndex is -1 (no mesh)";
     }
-
-
-
 
 //    mRenderwindow->addToGameObjects(object);
 
@@ -59,20 +50,20 @@ ResourceManager &ResourceManager::getInstance()
     return *mInstance;
 }
 
-void ResourceManager::init(Mesh &meshComp)
+void ResourceManager::init(Mesh &meshComp, int lod)
 {
     initializeOpenGLFunctions();
 
-    glGenVertexArrays( 1, &meshComp.mVAO );
-    glBindVertexArray( meshComp.mVAO );
+    glGenVertexArrays( 1, &meshComp.mVAO[lod] );
+    glBindVertexArray( meshComp.mVAO[lod] );
 
-    glGenBuffers( 1, &meshComp.mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, meshComp.mVBO );
+    glGenBuffers( 1, &meshComp.mVBO[lod]);
+    glBindBuffer( GL_ARRAY_BUFFER, meshComp.mVBO[lod] );
 
-    glBufferData( GL_ARRAY_BUFFER, meshComp.mVertices.size()*sizeof( Vertex ), meshComp.mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, meshComp.mVertices[lod].size()*sizeof( Vertex ), meshComp.mVertices[lod].data(), GL_STATIC_DRAW );
 
     // 1st attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, meshComp.mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, meshComp.mVBO[lod]);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
@@ -84,10 +75,10 @@ void ResourceManager::init(Mesh &meshComp)
     glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(2);
 
-    if(meshComp.mIndices.size() > 0) {
-        glGenBuffers(1, &meshComp.mEAB);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComp.mEAB);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshComp.mIndices.size() * sizeof(GLuint), meshComp.mIndices.data(), GL_STATIC_DRAW);
+    if(meshComp.mIndices[lod].size() > 0) {
+        glGenBuffers(1, &meshComp.mEAB[lod]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshComp.mEAB[lod]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshComp.mIndices[lod].size() * sizeof(GLuint), meshComp.mIndices[lod].data(), GL_STATIC_DRAW);
     }
 
         glBindVertexArray(0);
@@ -100,152 +91,162 @@ int ResourceManager::readObj(std::string filename) //Ole's obj reader code
         mMeshComponents.emplace_back(Mesh());
         *object->mesh = mMeshComponents.back();
 
-        std::ifstream fileIn;
-        fileIn.open (filename, std::ifstream::in);
-        if(!fileIn)
-            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
-        //One line at a time-variable
-        std::string oneLine;
-        //One word at a time-variable
-        std::string oneWord;
+        std::string tempString = filename;
+        filename.erase(filename.find(".obj"));
 
-        std::vector<gsl::Vector3D> tempVertecies;
-        std::vector<gsl::Vector3D> tempNormals;
-        std::vector<gsl::Vector2D> tempUVs;
-
-        //    std::vector<Vertex> mVertices;    //made in VisualObject
-        //    std::vector<GLushort> mIndices;   //made in VisualObject
-
-        // Varible for constructing the indices vector
-        unsigned int temp_index = 0;
-
-        //Reading one line at a time from file to oneLine
-        while(std::getline(fileIn, oneLine))
+        for (unsigned short lod{0}; lod < 3; lod++ )
         {
-            //Doing a trick to get one word at a time
-            std::stringstream sStream;
-            //Pushing line into stream
-            sStream << oneLine;
-            //Streaming one word out of line
-            oneWord = ""; //resetting the value or else the last value might survive!
-            sStream >> oneWord;
+            if(lod != 0)
+                tempString = filename + std::to_string(lod) + ".obj";
 
-            if (oneWord == "#")
-            {
-                //Ignore this line
-                //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
-                continue;
-            }
-            if (oneWord == "")
-            {
-                //Ignore this line
-                //            qDebug() << "Line is blank ";
-                continue;
-            }
-            if (oneWord == "v")
-            {
-                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
-                gsl::Vector3D tempVertex;
-                sStream >> oneWord;
-                tempVertex.x = std::stof(oneWord);
-                sStream >> oneWord;
-                tempVertex.y = std::stof(oneWord);
-                sStream >> oneWord;
-                tempVertex.z = std::stof(oneWord);
+            std::ifstream fileIn;
+            fileIn.open (tempString, std::ifstream::in);
+            if(!fileIn)
+                qDebug() << "Could not open file for reading: " << QString::fromStdString(tempString);
 
-                //Vertex made - pushing it into vertex-vector
-                tempVertecies.push_back(tempVertex);
+            //One line at a time-variable
+            std::string oneLine;
+            //One word at a time-variable
+            std::string oneWord;
 
-                continue;
-            }
-            if (oneWord == "vt")
+            std::vector<gsl::Vector3D> tempVertecies;
+            std::vector<gsl::Vector3D> tempNormals;
+            std::vector<gsl::Vector2D> tempUVs;
+
+            //    std::vector<Vertex> mVertices;    //made in VisualObject
+            //    std::vector<GLushort> mIndices;   //made in VisualObject
+
+            // Varible for constructing the indices vector
+            unsigned int temp_index = 0;
+
+            //Reading one line at a time from file to oneLine
+            while(std::getline(fileIn, oneLine))
             {
-                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
-                gsl::Vector2D tempUV;
+                //Doing a trick to get one word at a time
+                std::stringstream sStream;
+                //Pushing line into stream
+                sStream << oneLine;
+                //Streaming one word out of line
+                oneWord = ""; //resetting the value or else the last value might survive!
                 sStream >> oneWord;
-                tempUV.x = std::stof(oneWord);
-                sStream >> oneWord;
-                tempUV.y = std::stof(oneWord);
 
-                //UV made - pushing it into UV-vector
-                tempUVs.push_back(tempUV);
-
-                continue;
-            }
-            if (oneWord == "vn")
-            {
-                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
-                gsl::Vector3D tempNormal;
-                sStream >> oneWord;
-                tempNormal.x = std::stof(oneWord);
-                sStream >> oneWord;
-                tempNormal.y = std::stof(oneWord);
-                sStream >> oneWord;
-                tempNormal.z = std::stof(oneWord);
-
-                //Vertex made - pushing it into vertex-vector
-                tempNormals.push_back(tempNormal);
-                continue;
-            }
-            if (oneWord == "f")
-            {
-                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
-                //int slash; //used to get the / from the v/t/n - format
-                int index, normal, uv;
-                for(int i = 0; i < 3; i++)
+                if (oneWord == "#")
                 {
-                    sStream >> oneWord;     //one word read
-                    std::stringstream tempWord(oneWord);    //to use getline on this one word
-                    std::string segment;    //the numbers in the f-line
-                    std::vector<std::string> segmentArray;  //temp array of the numbers
-                    while(std::getline(tempWord, segment, '/')) //splitting word in segments
-                    {
-                        segmentArray.push_back(segment);
-                    }
-                    index = std::stoi(segmentArray[0]);     //first is vertex
-                    if (segmentArray[1] != "")              //second is uv
-                        uv = std::stoi(segmentArray[1]);
-                    else
-                    {
-                        //qDebug() << "No uvs in mesh";       //uv not present
-                        uv = 0;                             //this will become -1 in a couple of lines
-                    }
-                    normal = std::stoi(segmentArray[2]);    //third is normal
-
-                    //Fixing the indexes
-                    //because obj f-lines starts with 1, not 0
-                    --index;
-                    --uv;
-                    --normal;
-
-                    if (uv > -1)    //uv present!
-                    {
-                        Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                        object->mesh->mVertices.push_back(tempVert);
-                    }
-                    else            //no uv in mesh data, use 0, 0 as uv
-                    {
-                        Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                        object->mesh->mVertices.push_back(tempVert);
-                    }
-                    object->mesh->mIndices.push_back(temp_index++);
+                    //Ignore this line
+                    //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+                    continue;
                 }
-                continue;
+                if (oneWord == "")
+                {
+                    //Ignore this line
+                    //            qDebug() << "Line is blank ";
+                    continue;
+                }
+                if (oneWord == "v")
+                {
+                    //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+                    gsl::Vector3D tempVertex;
+                    sStream >> oneWord;
+                    tempVertex.x = std::stof(oneWord);
+                    sStream >> oneWord;
+                    tempVertex.y = std::stof(oneWord);
+                    sStream >> oneWord;
+                    tempVertex.z = std::stof(oneWord);
+
+                    //Vertex made - pushing it into vertex-vector
+                    tempVertecies.push_back(tempVertex);
+
+                    continue;
+                }
+                if (oneWord == "vt")
+                {
+                    //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+                    gsl::Vector2D tempUV;
+                    sStream >> oneWord;
+                    tempUV.x = std::stof(oneWord);
+                    sStream >> oneWord;
+                    tempUV.y = std::stof(oneWord);
+
+                    //UV made - pushing it into UV-vector
+                    tempUVs.push_back(tempUV);
+
+                    continue;
+                }
+                if (oneWord == "vn")
+                {
+                    //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+                    gsl::Vector3D tempNormal;
+                    sStream >> oneWord;
+                    tempNormal.x = std::stof(oneWord);
+                    sStream >> oneWord;
+                    tempNormal.y = std::stof(oneWord);
+                    sStream >> oneWord;
+                    tempNormal.z = std::stof(oneWord);
+
+                    //Vertex made - pushing it into vertex-vector
+                    tempNormals.push_back(tempNormal);
+                    continue;
+                }
+                if (oneWord == "f")
+                {
+                    //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+                    //int slash; //used to get the / from the v/t/n - format
+                    int index, normal, uv;
+                    for(int i = 0; i < 3; i++)
+                    {
+                        sStream >> oneWord;     //one word read
+                        std::stringstream tempWord(oneWord);    //to use getline on this one word
+                        std::string segment;    //the numbers in the f-line
+                        std::vector<std::string> segmentArray;  //temp array of the numbers
+                        while(std::getline(tempWord, segment, '/')) //splitting word in segments
+                        {
+                            segmentArray.push_back(segment);
+                        }
+                        index = std::stoi(segmentArray[0]);     //first is vertex
+                        if (segmentArray[1] != "")              //second is uv
+                            uv = std::stoi(segmentArray[1]);
+                        else
+                        {
+                            //qDebug() << "No uvs in mesh";       //uv not present
+                            uv = 0;                             //this will become -1 in a couple of lines
+                        }
+                        normal = std::stoi(segmentArray[2]);    //third is normal
+
+                        //Fixing the indexes
+                        //because obj f-lines starts with 1, not 0
+                        --index;
+                        --uv;
+                        --normal;
+
+                        if (uv > -1)    //uv present!
+                        {
+                            Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
+                            object->mesh->mVertices[lod].push_back(tempVert);
+                        }
+                        else            //no uv in mesh data, use 0, 0 as uv
+                        {
+                            Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
+                            object->mesh->mVertices[lod].push_back(tempVert);
+                        }
+                        object->mesh->mIndices[lod].push_back(temp_index++);
+                    }
+                    continue;
+                }
             }
+            fileIn.close();
+
+            object->mesh->lodLevel = lod;
+
+            init(*object->mesh, lod);
         }
-
-        //beeing a nice boy and closing the file after use
-        fileIn.close();
-
-        init(*object->mesh);
 
         return mMeshComponents.size()-1;    //returns index to last object
 }
 
 int ResourceManager::Cube(Mesh* meshComp)
 {
-    mMeshComponents.emplace_back(Mesh());
+   /* mMeshComponents.emplace_back(Mesh());
     Mesh &temp = mMeshComponents.back();
 
     // Front-1                           //Position           //RGB    //UV
@@ -293,11 +294,11 @@ int ResourceManager::Cube(Mesh* meshComp)
     meshComp->mVertices.push_back(Vertex{ 0.1,  0.1,  0.1,     0,1,0,   1,0});
     meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     0,1,0,   1,1});
     // Top-2                      1     1     1
-    meshComp->mVertices.push_back(Vertex{ 0.1,  0.1, -0.1,     0,1,0,   0,0});
-    meshComp->mVertices.push_back(Vertex{-0.1,  0.1, -0.1,     0,1,0,   1,0});
-    meshComp->mVertices.push_back(Vertex{-0.1,  0.1,  0.1,     0,1,0,   1,1});
+    meshComp->mVertices.[0]push_back(Vertex{ 0.1,  0.1, -0.1,     0,1,0,   0,0});
+    meshComp->mVertices.[0]push_back(Vertex{-0.1,  0.1, -0.1,     0,1,0,   1,0});
+    meshComp->mVertices[0].push_back(Vertex{-0.1,  0.1,  0.1,     0,1,0,   1,1});
 
     init(*object->mesh);
-
+*/
     return mMeshComponents.size()-1;
 }

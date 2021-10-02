@@ -170,8 +170,10 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
 
-        glBindVertexArray( mGameObjects[i]->mesh->mVAO );
-        glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices.size());
+        int tempLod = mGameObjects[i]->mesh->lodLevel;
+
+        glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
+        glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
         glBindVertexArray(0);                                                                                       /** mVertices vao, vbo osv. blir ikke overført til neste gameObjecty*/
     }
 

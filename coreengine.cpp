@@ -33,7 +33,7 @@ void CoreEngine::GameLoop()
 void CoreEngine::SetUpScene()
 {
 
-    GameObject *temp = mResourceManager->CreateObject("Cube");
+    GameObject *temp = mResourceManager->CreateObject("suzanne.obj");
     mRenderWindow->mGameObjects.push_back(temp);
 
     for(int i{0}; i < 40; i++)
@@ -41,21 +41,10 @@ void CoreEngine::SetUpScene()
        for(int j{0}; j < 40; j++)
        {
            temp = mResourceManager->CreateObject("suzanne.obj");
-           temp->transform->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
+           temp->transform->mMatrix.translate(3.f*(i), -3.f, -3.f*(j));
            mRenderWindow->mGameObjects.push_back(temp);
        }
    }
-
-//    temp = mResourceManager->CreateObject("suzanne.obj");
-//    temp->transform->mMatrix.translate(2.0f, 0, -4.0f);
-//    mRenderWindow->mGameObjects.push_back(temp);
-
-/** Å rendre 2 av samme objekt funker ikke og gir en opengl error message */ // Array object is not active (1282) "HighSeverity"
-
-//    temp = mObjectManager.CreateObject("suzanne.obj");
-//    temp->transform->mMatrix.translate(0, 0, 0);
-//    mGameObjects.push_back(temp);
-
 
     //********************** Set up camera **********************
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -70,7 +59,7 @@ void CoreEngine::SetUpScene()
     //Connect the gameloop timer to the render function:
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     //This timer runs the actual MainLoop
-    //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
+    //16 means 16ms = 60 Frames pr second
     mGameLoopTimer->start(16);
 }
 
