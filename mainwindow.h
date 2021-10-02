@@ -32,6 +32,8 @@ private slots:
 
     void on_actionFrustum_Culling_triggered(bool checked);
 
+    void on_pb_togglefrustumcam_toggled(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

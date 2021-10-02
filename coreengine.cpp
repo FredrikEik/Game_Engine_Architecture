@@ -19,7 +19,8 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSyste
     mGameLoopTimer = new QTimer(this);
 
     //Make EditorCamera:
-    mEditorCamera = new Camera(45.f, 0.1f, 200.f);
+    mEditorCamera = new Camera(45.f, 0.1f, 1000.f);
+    mGameCamera = new Camera(45.f, 0.1f, 300.f);
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -75,8 +76,12 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-    mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
-    mRenderSystem->mCurrentCamera = mEditorCamera;
+    mEditorCamera->mPosition = gsl::Vector3D(30.f, 4.f, 4.f);
+    mEditorCamera->pitch(-20);
+    mRenderSystem->mEditorCamera = mEditorCamera;
+
+    mGameCamera->mPosition = gsl::Vector3D(30.f, 1.f, 0.f);
+    mRenderSystem->mGameCamera = mGameCamera;
 
     mResourceManager->setUpAllTextures();
 
@@ -117,7 +122,7 @@ void CoreEngine::gameLoop()
     handleInput();
 
     mEditorCamera->update();
-    SoundSystem::getInstance()->update(mRenderSystem);
+//    SoundSystem::getInstance()->update(mRenderSystem);
 
     mRenderSystem->render();
 }

@@ -23,14 +23,14 @@ Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 void Camera::pitch(float degrees)
 {
     //  rotate around mRight
-    mPitch -= degrees;
+    mPitch += degrees;
     updateForwardVector();
 }
 
 void Camera::yaw(float degrees)
 {
     // rotate around mUp
-    mYaw -= degrees;
+    mYaw += degrees;
     updateForwardVector();
     calculateFrustumVectors();
 }
@@ -75,6 +75,8 @@ void Camera::update()
 void Camera::calculateProjectionMatrix()
 {
     mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    calculateFrustumVectors();
+    qDebug() << "AspectRatio" << mFrustum.mAspectRatio;
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)

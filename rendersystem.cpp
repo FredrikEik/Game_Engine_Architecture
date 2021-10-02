@@ -139,7 +139,7 @@ void RenderSystem::render()
     {
         /************** LOD and Frustum culling stuff ***********************/
         //Do this early to avoid unnecessary work if mesh is not to be drawn
-        gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
+        gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
         if(mUseFrustumCulling)
@@ -174,8 +174,8 @@ void RenderSystem::render()
         }
 
         //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
@@ -216,33 +216,50 @@ void RenderSystem::render()
             mObjectsDrawn++;
         }
 
-        //Quick hack test to check if frustum line mesh is OK
-        if(i == 1)  //dog triangle
-        {
-            MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mCurrentCamera->mFrustum);
-            glBindVertexArray( frustum.mVAO[0] );
-            glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }
-
-        //Quick hack test to check if linebox/circle works:
+        /*Quick hack test to check if linebox/circle works:
         if(i == 2)
         {
-//            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
-////            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-//            glBindVertexArray( lineBox.mVAO[0] );
-//            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
+            glBindVertexArray( lineBox.mVAO[0] );
+            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }
+        }*/
         glBindVertexArray(0);
     }
 
-    //Moves the dog triangle - should be made another way!!!!
-    if(isPlaying)
-        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+    //Quick hack test to check if frustum line mesh is OK
+    if(true)
+    {
+        MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
+        gsl::Matrix4x4 temp(true);
+        temp.translate(mGameCamera->mPosition);
+        temp.rotateY(-mGameCamera->mYaw);
+        temp.rotateX(mGameCamera->mPitch);
 
+        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glBindVertexArray( frustum.mVAO[0] );
+        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+        gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+        MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( forwardVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+    }
+
+    //QuickHack to get something to move when pressing play
+    //Testing gameCam now
+    if(isPlaying)
+    {
+//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+        mGameCamera->yaw(0.07f);
+    }
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -276,8 +293,12 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
-    mCurrentCamera->mFrustum.mAspectRatio = mAspectratio;
-    mCurrentCamera->calculateProjectionMatrix();
+    mEditorCamera->mFrustum.mAspectRatio = mAspectratio;
+    mEditorCamera->calculateProjectionMatrix();
+
+    //To be able to see the frustum on GameCam, while in Editormode
+    mGameCamera->mFrustum.mAspectRatio = mAspectratio;
+    mGameCamera->calculateProjectionMatrix();
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -327,11 +348,6 @@ void RenderSystem::toggleBacksideCulling(bool state)
     state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
 }
 
-void RenderSystem::toggleFrustumCulling(bool state)
-{
-    mUseFrustumCulling = state;
-}
-
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderSystem::checkForGLerrors()
@@ -378,9 +394,12 @@ void RenderSystem::startOpenGLDebugger()
 
 bool RenderSystem::frustumCulling(int gobIndex)
 {
+    Camera *cullCamera{nullptr};
+    (mGameCamAsFrustumCulling) ? cullCamera = mEditorCamera : cullCamera = mGameCamera;
+
     //vector from position of cam to object;
     gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition()
-            - mCurrentCamera->mPosition;
+            - cullCamera->mPosition;
 
     //radius of object sphere
     float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
@@ -396,7 +415,7 @@ bool RenderSystem::frustumCulling(int gobIndex)
     float tempDistance{0.f};
 
     //shortcut to frustum
-    Frustum &frustum = mCurrentCamera->mFrustum;
+    Frustum &frustum = cullCamera->mFrustum;
 
     //Project vector down to frustum normals:
     //Right plane:
@@ -575,9 +594,9 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
     if (input.RMB)
     {
         if (numDegrees.y() < 1)
-            mCurrentCamera->setCameraSpeed(0.001f);
+            mEditorCamera->setCameraSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mCurrentCamera->setCameraSpeed(-0.001f);
+            mEditorCamera->setCameraSpeed(-0.001f);
     }
     event->accept();
 }
@@ -593,9 +612,9 @@ void RenderSystem::mouseMoveEvent(QMouseEvent *event)
         mMouseYlast = event->pos().y() - mMouseYlast;
 
         if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCurrentCamera->mCameraRotateSpeed * mMouseXlast);
+            mEditorCamera->yaw(-mEditorCamera->mCameraRotateSpeed * mMouseXlast);
         if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCurrentCamera->mCameraRotateSpeed * mMouseYlast);
+            mEditorCamera->pitch(-mEditorCamera->mCameraRotateSpeed * mMouseYlast);
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();

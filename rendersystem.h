@@ -33,14 +33,18 @@ public:
 
     void toggleWireframe(bool buttonState);
     void toggleBacksideCulling(bool state);
-    void toggleFrustumCulling(bool state);
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     bool isPlaying{false};  //is the game playing?
-    Camera *mCurrentCamera{nullptr};
+
+    Camera *mEditorCamera{nullptr};
+    Camera *mGameCamera{nullptr};
 
     void render();
+
+    bool mUseFrustumCulling{true};
+    bool mGameCamAsFrustumCulling{false};
 
 private:
     void init();
@@ -67,8 +71,6 @@ private:
     //for statistics in status bar
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
-
-    bool mUseFrustumCulling{true};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

@@ -19,6 +19,8 @@ public:
 
     ///returns Matrix set to identity matrix
     Matrix4x4 identity();
+
+    ///sets this matrix to identity matrix
     void setToIdentity();
 
     bool inverse();

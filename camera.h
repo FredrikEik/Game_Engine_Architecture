@@ -32,7 +32,9 @@ class Camera
 public:
     Camera(float fovIn = 45, float nearPlaneDistanceIn = 0.1f, float farPlaneDistanceIn = 500.f);
 
+    ///Tilts camera pitch. Positive number tilts upwards
     void pitch(float degrees);
+    ///Rotates camera. Positive number rotates with clock
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
@@ -61,11 +63,10 @@ public:
 
     Frustum mFrustum;
 
-private:
-
-    void calculateFrustumVectors();
     float mPitch{0.f};
     float mYaw{0.f};
+private:
+    void calculateFrustumVectors();
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;

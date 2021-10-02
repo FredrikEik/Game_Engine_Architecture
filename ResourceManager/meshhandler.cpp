@@ -252,6 +252,41 @@ int MeshHandler::makeTriangle()
     return mMeshes.size()-1;    //returns index to last object
 }
 
+MeshData MeshHandler::makeLine(gsl::Vector3D positionIn, int direction, float lenght, gsl::Vector3D colorIn)
+{
+    MeshData tempMesh;
+    tempMesh.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    if(direction == 1)  //X axis
+        tempMesh.mVertices[0].push_back(Vertex{1.f * lenght, 0.f, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    if(direction == 2)  //Y axis
+        tempMesh.mVertices[0].push_back(Vertex{0.f, 1.f * lenght, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    if(direction == 3)  //Z axis
+        tempMesh.mVertices[0].push_back(Vertex{0.f, 0.f, 1.f * lenght,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
+}
+
+MeshData MeshHandler::makeLine(gsl::Vector3D startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn)
+{
+    MeshData tempMesh;
+    endIn = endIn * lenght;
+    tempMesh.mVertices[0].push_back(Vertex{startIn.x, startIn.y, startIn.z,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    tempMesh.mVertices[0].push_back(Vertex{endIn.x, endIn.y, endIn.z,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
+}
+
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
     MeshData tempMesh;

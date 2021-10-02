@@ -118,15 +118,18 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
         ui->pb_togglePlay->setText("Play (R)");
 }
 
-
 void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
 {
     mRenderSystem->toggleBacksideCulling(checked);
 }
 
-
 void MainWindow::on_actionFrustum_Culling_triggered(bool checked)
 {
-    mRenderSystem->toggleFrustumCulling(checked);
+    mRenderSystem->mUseFrustumCulling = checked;
 }
 
+void MainWindow::on_pb_togglefrustumcam_toggled(bool checked)
+{
+    mRenderSystem->mGameCamAsFrustumCulling = checked;
+    (checked) ? ui->pb_togglefrustumcam->setText("Cull with GameCam") : ui->pb_togglefrustumcam->setText("Cull with EditorCam");
+}
