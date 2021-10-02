@@ -9,6 +9,9 @@
 #include "input.h"
 #include "constants.h"
 
+//Just to debug mousePickingRay
+#include "meshhandler.h"
+
 class QOpenGLContext;
 class ShaderHandler;
 class MainWindow;
@@ -56,6 +59,13 @@ private:
     void startOpenGLDebugger();
 
     bool frustumCulling(int gameObjectIndex);
+
+    void mousePickingRay(QMouseEvent *event);
+
+    //Just to test mousePickingRay
+    MeshData mDebugMousePickRay;
+    bool mDrawMousePickRay{false};
+    gsl::Vector3D mMousePickRay;
 
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 

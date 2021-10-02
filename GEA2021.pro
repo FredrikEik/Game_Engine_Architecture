@@ -52,6 +52,7 @@ SOURCES += main.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
+    gsl/vector4d.cpp \
     ResourceManager/resourcemanager.cpp \
     ResourceManager/shaderhandler.cpp \
     ResourceManager/soundhandler.cpp \
@@ -79,6 +80,7 @@ HEADERS += \
     gsl/matrix4x4.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
+    gsl/vector4d.h \
     ResourceManager/resourcemanager.h \
     ResourceManager/shaderhandler.h \
     ResourceManager/soundhandler.h \

@@ -23,6 +23,7 @@
 #include "coreengine.h"
 #include "math_constants.h"
 #include "meshhandler.h"    //to check linebox
+#include "vector4d.h"
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -232,7 +233,7 @@ void RenderSystem::render()
     }
 
     //Quick hack test to check if frustum line mesh is OK
-    if(true)
+    if(false)
     {
         MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
         gsl::Matrix4x4 temp(true);
@@ -261,6 +262,16 @@ void RenderSystem::render()
         temp.setToIdentity();
         glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+    }
+
+
+    //debug mousePickingRay
+    if (mDrawMousePickRay)
+    {
+        gsl::Matrix4x4 temp(true);
+        glBindVertexArray( mDebugMousePickRay.mVAO[0] );
+        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
     }
 
     //QuickHack to get something to move when pressing play
@@ -443,6 +454,46 @@ bool RenderSystem::frustumCulling(int gobIndex)
     return false;
 }
 
+//Directly based on https://antongerdelan.net/opengl/raycasting.html
+void RenderSystem::mousePickingRay(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
+
+    gsl::Matrix4x4 projMatrix = mEditorCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mEditorCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+    projMatrix.inverse();
+    gsl::Vector4D ray_eye = (projMatrix) * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
+    gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
+    // don't forget to normalise the vector at some point
+//    ray_wor.normalize();
+
+    //My code to see if it works
+    qDebug() << ray_wor;
+
+//    mMousePickRay = ray_wor;
+
+    mDebugMousePickRay = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+            makeLine(mEditorCamera->mPosition, ray_wor, 1.f);
+}
+
 void RenderSystem::keyPressEvent(QKeyEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
@@ -580,6 +631,10 @@ void RenderSystem::mousePressEvent(QMouseEvent *event)
         input.LMB = true;
     if (event->button() == Qt::MiddleButton)
         input.MMB = true;
+
+    //This should be organized better - just getting it working for now
+    mousePickingRay(event);
+    mDrawMousePickRay = true;
 }
 
 void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
@@ -592,6 +647,8 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
         input.LMB = false;
     if (event->button() == Qt::MiddleButton)
         input.MMB = false;
+
+    mDrawMousePickRay = false;
 }
 
 void RenderSystem::wheelEvent(QWheelEvent *event)

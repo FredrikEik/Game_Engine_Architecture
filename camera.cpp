@@ -66,7 +66,7 @@ void Camera::update()
 
     mPosition -= mForward * mSpeed;
 
-    mViewMatrix = mPitchMatrix* mYawMatrix;
+    mViewMatrix = mPitchMatrix * mYawMatrix;
     mViewMatrix.translate(-mPosition);
 
     SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);

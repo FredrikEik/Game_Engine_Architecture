@@ -77,7 +77,7 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera->mPosition = gsl::Vector3D(30.f, 4.f, 4.f);
-    mEditorCamera->pitch(-20);
+//    mEditorCamera->pitch(-20);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     mGameCamera->mPosition = gsl::Vector3D(30.f, 1.f, 0.f);

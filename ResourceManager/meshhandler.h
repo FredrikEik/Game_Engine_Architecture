@@ -40,10 +40,10 @@ public:
 
     ///Makes a line for debug drawing.
     /// positionIn is origin
-    MeshData makeLine(gsl::Vector3D positionIn, int direction = 1, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
+    MeshData makeLine(gsl::Vector3D &positionIn, int direction = 1, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
     ///Makes a line for debug drawing.
-    MeshData makeLine(gsl::Vector3D startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
+    MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D &endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;

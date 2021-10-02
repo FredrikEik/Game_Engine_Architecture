@@ -252,7 +252,7 @@ int MeshHandler::makeTriangle()
     return mMeshes.size()-1;    //returns index to last object
 }
 
-MeshData MeshHandler::makeLine(gsl::Vector3D positionIn, int direction, float lenght, gsl::Vector3D colorIn)
+MeshData MeshHandler::makeLine(gsl::Vector3D &positionIn, int direction, float lenght, gsl::Vector3D colorIn)
 {
     MeshData tempMesh;
     tempMesh.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
@@ -272,7 +272,7 @@ MeshData MeshHandler::makeLine(gsl::Vector3D positionIn, int direction, float le
     return tempMesh;
 }
 
-MeshData MeshHandler::makeLine(gsl::Vector3D startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn)
+MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D &endIn, float lenght, gsl::Vector3D colorIn)
 {
     MeshData tempMesh;
     endIn = endIn * lenght;
