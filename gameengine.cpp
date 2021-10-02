@@ -42,7 +42,7 @@ void GameEngine::SetUpScene()
     connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     mGameLoopRenderTimer->start(16);
 
-    mMainWindow->updateList();
+    mMainWindow->initList();
 }
 
 void GameEngine::SetUpObjects()
@@ -60,40 +60,32 @@ void GameEngine::SetUpObjects()
 
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(3,0,-1);
+    tempGameObject->mTransformComp->mMatrix.translate(4,0,-2);
     tempGameObject->mMaterialComp->mTextureUnit = 0;
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(6,0,0);
+    tempGameObject->mTransformComp->mMatrix.translate(2,0,-10);
     tempGameObject->mMaterialComp->mTextureUnit = 0;
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     // tempGameObject->mMeshComp->mDrawType=GL_LINES;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-3,0,-1);
+    tempGameObject->mTransformComp->mMatrix.translate(0,0,-6);
     tempGameObject->mMaterialComp->mTextureUnit = 0;
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(-6,0,0);
+    tempGameObject->mTransformComp->mMatrix.translate(3,0,-5);
     tempGameObject->mMaterialComp->mTextureUnit = 0;
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-9,0,0);
-    tempGameObject->mMaterialComp->mTextureUnit = 0;
-    tempGameObject->mMaterialComp->mShaderProgram = 0;
-    mRenderwindow->mGameObjects.push_back(tempGameObject);
-
-
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(3,0,3);
-    tempGameObject->mTransformComp->mMatrix.scale(0.1f);
+    tempGameObject->mTransformComp->mMatrix.translate(-3,0,-4);
     tempGameObject->mMaterialComp->mTextureUnit = 0;
     tempGameObject->mMaterialComp->mShaderProgram = 0;
     mRenderwindow->mGameObjects.push_back(tempGameObject);

@@ -456,6 +456,11 @@
     <string>Suzanne</string>
    </property>
   </action>
+  <action name="actiondeselect">
+   <property name="text">
+    <string>deselect</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

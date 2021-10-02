@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void initList();
     void updateList();
 
 private slots:
@@ -55,11 +56,13 @@ private slots:
 
     void on_actionSuzanne_triggered();
 
+    void on_actionCube_hovered();
+
 private:
     void init();
     Ui::MainWindow *ui;
 
-    int ObjectListIndex;
+    int ObjectListIndex{0};
     int lastIndex{0};
     int lastXrot{0};
     int xcounter{0};

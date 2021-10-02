@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
 
+    listWidget = ui->listWidget;
 
     init();
 }
@@ -25,10 +26,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::updateList()
+void MainWindow::initList()
 {
-    listWidget = ui->listWidget;
-    listWidget->clear();
     if(mRenderWindow)
     {
         GameObjects.clear();
@@ -39,6 +38,16 @@ void MainWindow::updateList()
         }
     }
 
+}
+
+void MainWindow::updateList()
+{
+    if(mRenderWindow)
+    {
+        GameObjects.clear();
+        GameObjects = mRenderWindow->getAllGameObject();
+        new QListWidgetItem(tr( GameObjects[GameObjects.size()-1]->name.c_str() ), listWidget);
+    }
 }
 
 void MainWindow::init()
@@ -220,7 +229,9 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 void MainWindow::on_actionCube_triggered()
 {
     mGameEngine->getInstance()->CreateCube();
+    //listWidget->currentRowChanged(GameObjects.size()-1);
     updateList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 
 
@@ -228,6 +239,7 @@ void MainWindow::on_actionPyramid_triggered()
 {
     mGameEngine->getInstance()->CreatePyramid();
     updateList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 
 
@@ -235,6 +247,7 @@ void MainWindow::on_actionSphere_triggered()
 {
     mGameEngine->getInstance()->CreateSphere();
     updateList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 
 
@@ -242,5 +255,12 @@ void MainWindow::on_actionSuzanne_triggered()
 {
     mGameEngine->getInstance()->CreateSuzanne();
     updateList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
+}
+
+
+void MainWindow::on_actionCube_hovered()
+{
+    //ObjectListIndex = 0;
 }
 
