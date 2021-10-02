@@ -244,6 +244,7 @@ void RenderSystem::render()
         glBindVertexArray( frustum.mVAO[0] );
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
+        //Drawing forward vector of gameCam
         gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
         MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
                 makeLine(mGameCamera->mPosition, tempEnd, 1.f);
@@ -251,6 +252,15 @@ void RenderSystem::render()
         temp.setToIdentity();
         glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+
+        //Drawing FOV vector of gameCam on right side
+        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+        MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( frustumCullRightVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[1]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
     }
 
     //QuickHack to get something to move when pressing play

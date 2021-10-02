@@ -39,12 +39,15 @@ public:
     ///Returns lenght of vector in float
     GLfloat length() const;
     GLfloat lengthNoSqrt() const;
+    ///normalize this vector
     void normalize();
+    ///returns a normalized version of this vector, without normalizing this vector itself
     Vector3D normalized();
     static Vector3D cross(const Vector3D &v1, const Vector3D &v2);
     static GLfloat dot(const Vector3D &v1, const Vector3D &v2);
 
     void rotateX(GLfloat angle);
+    ///rotate vector by angle degrees around world? Y axis
     void rotateY(GLfloat angle);
     void rotateZ(GLfloat angle);
 
