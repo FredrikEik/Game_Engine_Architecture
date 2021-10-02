@@ -140,6 +140,30 @@ void GameEngine::resetWorld()
     //hmmm?
 }
 
+void GameEngine::CreateCube()
+{
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+}
+
+void GameEngine::CreatePyramid()
+{
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+}
+
+void GameEngine::CreateSphere()
+{
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+}
+
+void GameEngine::CreateSuzanne()
+{
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+}
+
 
 
 GameEngine * GameEngine::getInstance()

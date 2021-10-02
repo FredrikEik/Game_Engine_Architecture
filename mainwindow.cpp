@@ -28,13 +28,14 @@ MainWindow::~MainWindow()
 void MainWindow::updateList()
 {
     listWidget = ui->listWidget;
+    listWidget->clear();
     if(mRenderWindow)
     {
+        GameObjects.clear();
         GameObjects = mRenderWindow->getAllGameObject();
         for(auto it : GameObjects)
         {
-            std::string name = (*it).name;
-            new QListWidgetItem(tr(name.c_str()), listWidget);
+            new QListWidgetItem(tr((*it).name.c_str()), listWidget);
         }
     }
 
@@ -213,5 +214,33 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
     //lastrot needs to be pr object
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX((arg1-lastXrot));
     lastXrot = arg1;
+}
+
+
+void MainWindow::on_actionCube_triggered()
+{
+    mGameEngine->getInstance()->CreateCube();
+    updateList();
+}
+
+
+void MainWindow::on_actionPyramid_triggered()
+{
+    mGameEngine->getInstance()->CreatePyramid();
+    updateList();
+}
+
+
+void MainWindow::on_actionSphere_triggered()
+{
+    mGameEngine->getInstance()->CreateSphere();
+    updateList();
+}
+
+
+void MainWindow::on_actionSuzanne_triggered()
+{
+    mGameEngine->getInstance()->CreateSuzanne();
+    updateList();
 }
 

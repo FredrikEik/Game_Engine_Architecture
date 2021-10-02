@@ -31,6 +31,13 @@ public:
     void playMusic(bool bIsPlaying);
     void resetWorld();
 
+    //could simplify the createObject function to include the pusback in the mGameObjects in renderwindow
+    //this way i dont need these functions and can only call the Createfunciton in resourcemanager.
+    void CreateCube();
+    void CreatePyramid();
+    void CreateSphere();
+    void CreateSuzanne();
+
 private slots:
     void GameLoop();
 

@@ -416,6 +416,16 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuAdd_Mesh">
+    <property name="title">
+     <string>Add Mesh</string>
+    </property>
+    <addaction name="actionCube"/>
+    <addaction name="actionPyramid"/>
+    <addaction name="actionSphere"/>
+    <addaction name="actionSuzanne"/>
+   </widget>
+   <addaction name="menuAdd_Mesh"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -426,6 +436,26 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionCube">
+   <property name="text">
+    <string>Cube</string>
+   </property>
+  </action>
+  <action name="actionPyramid">
+   <property name="text">
+    <string>Pyramid</string>
+   </property>
+  </action>
+  <action name="actionSphere">
+   <property name="text">
+    <string>Sphere</string>
+   </property>
+  </action>
+  <action name="actionSuzanne">
+   <property name="text">
+    <string>Suzanne</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

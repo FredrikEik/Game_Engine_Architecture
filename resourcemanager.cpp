@@ -73,6 +73,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
         meshCompCounter++;
     }
 
+
+    //Not working atm
     if(filepath == "xyz" || filepath == "XYZ")
     {
         createXYZ(tempGO->mMeshComp);
@@ -89,6 +91,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempName.erase(0,25);
     tempName.erase(tempName.end()-4,tempName.end());
     tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
+
+    tempGO->id = objectIDcounter;
 
 
     //qDebug() << "Number of objects in map:" << mObjectsMap.size();

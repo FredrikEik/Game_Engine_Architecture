@@ -47,6 +47,14 @@ private slots:
 
     void on_RotateXspinBox_valueChanged(double arg1);
 
+    void on_actionCube_triggered();
+
+    void on_actionPyramid_triggered();
+
+    void on_actionSphere_triggered();
+
+    void on_actionSuzanne_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;
