@@ -7,7 +7,11 @@ resourceSystem::resourceSystem()
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
 {
+
     std::string filename = gsl::ModelFilePath + input;
+    std::vector<Vertex> tempMVertices;
+    std::vector<Vertex> tempMIndices;
+
 
     //Open File
     //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
@@ -160,10 +164,19 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
      qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
     mesh->entity = 0;
     mesh->mDrawType = GL_TRIANGLES;
+
+    /*    bool matchFound = false;
+    int VSize = meshContainer.size();
+    for(int i = 0; i < VSize; i++){
+        if(inVertices == meshContainer[i]){
+        }
+    }*/
 }
+
 
 float resourceSystem::calculateLenght(QVector3D pos)
 {   //we assume that the center of the obj is at 0,0,0
     //sqrt(x^2        +         y^2        +         z^2      ) = length
     return sqrt((pos.x()*pos.x()) + (pos.y()* pos.y()) + (pos.z()*pos.z()));
 }
+

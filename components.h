@@ -35,6 +35,11 @@ struct MeshComponent
     //int meshId; // use this to refer to what mesh this component is supposed to own.
     // RESOURCE MANAGEMENT SUGGESTION
 
+
+    std::vector<Vertex> * mRVectices;
+    std::vector<GLuint> * mRIndices;
+
+
     GLenum mDrawType{GL_TRIANGLES};
 };
 

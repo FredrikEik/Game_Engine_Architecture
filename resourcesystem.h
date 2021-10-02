@@ -25,14 +25,14 @@ public:
     void CreateMeshComponent();
     void CreateMeshComponent(std::string input, MeshComponent * mesh);
 
-    //void CreateMeshComponent(std::string defaultMesh);
-    //MeshComponent OBJReader();
-    bool alreadyExists(std::vector<Vertex> inVertices);
-    void manageResources();
 private:
     std::vector<std::vector<Vertex>> meshContainer;
+
     //std::vector<std::vector<GLuint>> meshIndiceContainer;
     float calculateLenght(QVector3D pos );
+
+    std::vector<std::vector<GLuint>> meshIndiceContainer;
+
 };
 
 #endif // RESOURCESYSTEM_H
