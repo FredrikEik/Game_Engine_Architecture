@@ -1,11 +1,11 @@
-#include "meshsystem.h"
+#include "resourcesystem.h"
 
-meshsystem::meshsystem()
+resourceSystem::resourceSystem()
 {
 
 }
 
-void meshsystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
+void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
 {
     std::string filename = gsl::ModelFilePath + input;
 

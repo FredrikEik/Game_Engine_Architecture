@@ -10,7 +10,7 @@
 #include "constants.h"
 #include "components.h"
 #include "rendersystem.h"
-#include "meshsystem.h"
+#include "resroucesystem.h"
 #include "entitysystem.h"
 
 class QOpenGLContext;
@@ -43,7 +43,7 @@ public:
     TransformComponent *TriangleTransform;
 
     RenderSystem *RenderSys = new RenderSystem();
-    meshsystem * MeshSys = new meshsystem();
+    resourceSystem * MeshSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem();
 
     std::vector<int> entities;

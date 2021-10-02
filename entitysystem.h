@@ -2,7 +2,7 @@
 #define ENTITYSYSTEM_H
 #include "components.h"
 #include <QVector3D>
-#include "meshsystem.h"
+#include "resourcesystem.h"
 #include <vector>
 
 class EntitySystem
@@ -27,7 +27,7 @@ private:
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
     MaterialComponent *MatComp;
-    meshsystem * MeshSys;
+    resourceSystem * MeshSys;
     QVector3D LastPos = QVector3D(0.0f, 0.0f, 0.0f);
     void offsetLastPos();
 };

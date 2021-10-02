@@ -1,5 +1,7 @@
-#ifndef MESHSYSTEM_H
-#define MESHSYSTEM_H
+#ifndef RESOURCESYSTEM_H
+#define RESOURCESYSTEM_H
+
+#include <QDebug>
 
 #include <iostream>
 #include <fstream>
@@ -9,16 +11,17 @@
 #include <sstream>
 #include <vector>
 
+
 #include "components.h"
 #include "constants.h"
 #include "vertex.h"
 
 
 
-class meshsystem
+class resourceSystem
 {
 public:
-    meshsystem();
+    resourceSystem();
     void CreateMeshComponent();
     void CreateMeshComponent(std::string input, MeshComponent * mesh);
 
@@ -32,4 +35,4 @@ private:
 
 };
 
-#endif // MESHSYSTEM_H
+#endif // RESOURCESYSTEM_H

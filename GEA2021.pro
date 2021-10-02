@@ -16,9 +16,9 @@ SOURCES += main.cpp \
     entitysystem.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
-    meshsystem.cpp \
     rendersystem.cpp \
     renderwindow.cpp \
+    resourcesystem.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
@@ -40,9 +40,9 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
-    meshsystem.h \
     rendersystem.h \
     renderwindow.h \
+    resourcesystem.h \
     shader.h \
     mainwindow.h \
     texture.h \

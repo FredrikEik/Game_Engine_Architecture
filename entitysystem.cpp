@@ -4,7 +4,7 @@
 
 EntitySystem::EntitySystem()
 {
- MeshSys = new meshsystem();
+ MeshSys = new resourceSystem();
 }
 
 EntitySystem::~EntitySystem()
