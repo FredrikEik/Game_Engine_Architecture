@@ -4,12 +4,14 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
-#include <QMessageBox>
+#include <QMessageBox>  //For Help menu messages
+#include <QTreeWidgetItem> //Scene Outliner
 
 #include "rendersystem.h"
 #include "soundsystem.h"
 #include "resourcemanager.h"
 #include "coreengine.h"
+#include "gameobject.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -80,11 +82,30 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
 
-    mCoreEngine = new CoreEngine(mRenderSystem);
+    mCoreEngine = new CoreEngine(mRenderSystem, this);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+}
+
+void MainWindow::updateOutliner(const std::vector<GameObject*> &GameObjectData)
+{
+    //clear all current items
+    ui->twSceneOutliner->clear();
+
+    // Create the new tree root - since I use TreeWidget not listWidget
+    QTreeWidgetItem* root = new QTreeWidgetItem(ui->twSceneOutliner);
+    root->setText(0,  "Scene");//QString::fromStdString(mRenderWindow->mScene1->mSceneName));
+    ui->twSceneOutliner->addTopLevelItem(root);
+    ui->twSceneOutliner->expandAll();
+
+    for(auto gob : GameObjectData)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem(root);
+        item->setText(0, QString::fromStdString(gob->mName));
+//        item->setFlags(item->flags() | Qt::ItemIsEditable);
+    }
 }
 
 void MainWindow::on_actionAdd_Triangle_triggered()
@@ -149,15 +170,12 @@ void MainWindow::on_actionKudos_to_triggered()
                        "Some icons in this app are from https://icons8.com");
 }
 
-
 void MainWindow::on_actionAxis_triggered(bool checked)
 {
     //Toggle axis on/off
 }
 
-
 void MainWindow::on_actionGrid_triggered(bool checked)
 {
     //Toggle grid on/off
 }
-

@@ -9,13 +9,14 @@ class SoundSystem;
 class RenderSystem;
 class Camera;
 class QTimer;
+class MainWindow;
 
 //Made from QObject to use a Qt slots...
 class CoreEngine : public QObject
 {
     Q_OBJECT
 public:
-    CoreEngine(RenderSystem *renderSystemIn);
+    CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn);
 
     //TODO:
     //Read and load all assets at start
@@ -36,6 +37,8 @@ public:
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+
+    MainWindow *mMainWindow{nullptr};
 
     //Two separate cameras to be able to render the frustum, etc for the game camera while in editor modus
     Camera *mGameCamera{nullptr};

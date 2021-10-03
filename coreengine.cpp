@@ -6,10 +6,12 @@
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
+#include "mainwindow.h"
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
-CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSystemIn}
+CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
+    : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
@@ -41,10 +43,12 @@ void CoreEngine::setUpScene()
 
     //Axis
     GameObject *temp = mResourceManager->addObject("axis");
+    temp->mName = "Axis";
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
     temp = mResourceManager->addObject("triangle");
+    temp->mName = "DogTriangle";
     temp->mMaterial->mShaderProgram = 1;
     temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
 
@@ -68,6 +72,7 @@ void CoreEngine::setUpScene()
             temp->mTransform->mMatrix.scale(0.3f);
             temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
             temp->mTransform->mScale.setAlltoSame(0.3f);
+            temp->mName = "monkey " + std::to_string((i*10)+j+1);
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
@@ -85,6 +90,9 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameCamera = mGameCamera;
 
     mResourceManager->setUpAllTextures();
+
+    //update SceneOutliner to show all objects:
+    mMainWindow->updateOutliner(mRenderSystem->mGameObjects);
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop

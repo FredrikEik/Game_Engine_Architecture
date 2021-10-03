@@ -7,6 +7,7 @@
 class QWidget;
 class RenderSystem;
 class CoreEngine;
+class GameObject;
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void updateOutliner(const std::vector<GameObject *> &GameObjectData);
 
 public slots:
     void on_actionAdd_Triangle_triggered();
