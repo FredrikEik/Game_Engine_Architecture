@@ -48,6 +48,9 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
+
+
+
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
@@ -223,6 +226,23 @@ void RenderWindow::init()
     entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
 
+    SoundManager::getInstance()->init();
+
+    mExplosionSound = SoundManager::getInstance()->createSource(
+                "Explosion", Vector3(10.0f, 0.0f, 0.0f),
+                "../Sound/Assets/explosion.wav", false, 1.0f);
+    mLaserSound = SoundManager::getInstance()->createSource(
+                "Laser", Vector3(20.0f, 0.0f, 0.0f),
+                "../Sound/Assets/laser.wav", true, 0.7f);
+
+    mStereoSound = SoundManager::getInstance()->createSource(
+                "Stereo", Vector3(0.0f, 0.0f, 0.0f),
+                "../Sound/Assets/stereo.wav", false, 1.0f);
+
+    mSong = SoundManager::getInstance()->createSource(
+                "Caravan", Vector3(0.0f, 0.0f, 0.0f),
+                "../Sound/Assets/Caravan_mono.wav", false, 1.0f);
+
 
     //dog triangle
     temp = new Triangle();
@@ -236,6 +256,7 @@ void RenderWindow::init()
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
+    mSong->play();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -256,6 +277,8 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
+
+    SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), gsl::Vector3D(0,0,0), gsl::Vector3D(0,1,0));
 
 
     //Draws the objects
@@ -319,6 +342,8 @@ void RenderWindow::render()
     for(int i = 0; i < eSize; i++){
         if(transformCompVec[i]->entity == 2){
             transformCompVec[i]->mMatrix.translate(0.2f, 0.f,0.f);
+            mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+
         }
     }
 

@@ -13,6 +13,13 @@
 #include "resourcesystem.h"
 #include "entitysystem.h"
 
+
+#include "soundmanager.h"
+#include "soundsource.h"
+#include "vector3.h"
+#include <chrono>   //for sleep_for
+#include <thread>   //for sleep_for
+
 class QOpenGLContext;
 class Shader;
 class MainWindow;
@@ -52,6 +59,11 @@ public:
     std::vector<TransformComponent*> transformCompVec;
     std::vector<MaterialComponent*> MaterialCompVec;
 
+    //Some sounds...
+    SoundSource* mExplosionSound{};
+    SoundSource* mLaserSound{};
+    SoundSource* mStereoSound{};
+    SoundSource* mSong{};
 
 
 

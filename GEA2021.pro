@@ -7,7 +7,14 @@ TARGET      = GEA2021
 
 INCLUDEPATH += \
     ./gsl \
-    ./Shaders
+    ./Shaders \
+    ./openal
+
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\include\AL
+    LIBS *= $(OPENAL_HOME)\libs\Win64\libOpenAL32.dll.a
+}
 
 SOURCES += main.cpp \
     camera.cpp \
@@ -16,6 +23,10 @@ SOURCES += main.cpp \
     entitysystem.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    openal/soundmanager.cpp \
+    openal/soundsource.cpp \
+    openal/vector3.cpp \
+    openal/wavfilehandler.cpp \
     rendersystem.cpp \
     renderwindow.cpp \
     resourcesystem.cpp \
@@ -40,6 +51,10 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    openal/soundmanager.h \
+    openal/soundsource.h \
+    openal/vector3.h \
+    openal/wavfilehandler.h \
     rendersystem.h \
     renderwindow.h \
     resourcesystem.h \
