@@ -9,8 +9,9 @@
 #include "rendersystem.h"
 #include "components.h"
 
-WidgetTransform::WidgetTransform(QWidget *parent) :
-    QWidget(parent), ui(new Ui::WidgetTransform)
+WidgetTransform::WidgetTransform(QWidget *parent, float positionStep, float rotationStep, float scaleStep) :
+    QWidget{parent}, ui{new Ui::WidgetTransform},
+    mPositionStep{positionStep}, mRotationStep{rotationStep}, mScaleStep{scaleStep}
 {
     ui->setupUi(this);
     setStepRates();
@@ -20,6 +21,16 @@ WidgetTransform::WidgetTransform(QWidget *parent) :
 WidgetTransform::~WidgetTransform()
 {
     delete ui;
+}
+
+void WidgetTransform::init(RenderSystem *renderSystem, int index)
+{
+    mRenderSystem = renderSystem;
+    indexInSceneArray = index;
+    readPosition();
+    readRotation();
+    readScale();
+    clearFocus();
 }
 
 void WidgetTransform::readPosition()
@@ -67,6 +78,24 @@ void WidgetTransform::setStepRates()
     ui->doubleSpinBoxXRotation->setSingleStep(mRotationStep);
     ui->doubleSpinBoxYRotation->setSingleStep(mRotationStep);
     ui->doubleSpinBoxZRotation->setSingleStep(mRotationStep);
+}
+
+void WidgetTransform::setScaleStep(float newScaleStep)
+{
+    mScaleStep = newScaleStep;
+    setStepRates();
+}
+
+void WidgetTransform::setRotationStep(float newRotationStep)
+{
+    mRotationStep = newRotationStep;
+    setStepRates();
+}
+
+void WidgetTransform::setPositionStep(float newPositionStep)
+{
+    mPositionStep = newPositionStep;
+    setStepRates();
 }
 
 void WidgetTransform::on_doubleSpinBoxXPosition_valueChanged(double arg1)

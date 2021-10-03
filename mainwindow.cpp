@@ -90,6 +90,7 @@ void MainWindow::init()
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 
+    //read what is set in the GUI
     mPositionStep = (float)ui->positionStep->value();
     mRotationStep = (float)ui->rotationStep->value();
     mScaleStep = (float)ui->scaleStep->value();
@@ -227,22 +228,10 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
     mRenderSystem->setPickedObject(mCurrentEditItemIndex);
 
     //Transform widget:
-    mTransformWidget = new WidgetTransform(this);
-    mTransformWidget->setObjectName("TransformWidget");
-    ui->blDetailsContainer->addWidget(mTransformWidget);
-    mCurrentEditItemIndex = item->parent()->indexOfChild(item);
-//    qDebug() <<"Index" << mCurrentEditItemIndex;
-    mTransformWidget->indexInSceneArray = mCurrentEditItemIndex;
-    mTransformWidget->mRenderSystem = mRenderSystem;
-    //All of this should be triggered automatically!:
-    mTransformWidget->readPosition();
-    mTransformWidget->readRotation();
-    mTransformWidget->readScale();
-    mTransformWidget->mPositionStep = mPositionStep;
-    mTransformWidget->mRotationStep = mRotationStep;
-    mTransformWidget->mScaleStep = mScaleStep;
-    mTransformWidget->setStepRates();
-    mTransformWidget->clearFocus();
+    mTransformWidget = new WidgetTransform(this, mPositionStep, mRotationStep, mScaleStep);
+    mTransformWidget->setObjectName("TransformWidget"); //not sure if this is necessary
+    mTransformWidget->init(mRenderSystem, mCurrentEditItemIndex);
+    ui->blDetailsContainer->addWidget(mTransformWidget);    //add to details pane
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
@@ -262,8 +251,7 @@ void MainWindow::on_positionStep_valueChanged(double arg1)
     mPositionStep = arg1;
     if(mTransformWidget)
     {
-        mTransformWidget->mPositionStep = arg1;
-        mTransformWidget->setStepRates();
+        mTransformWidget->setPositionStep(arg1);
     }
 }
 
@@ -272,8 +260,7 @@ void MainWindow::on_rotationStep_valueChanged(double arg1)
     mRotationStep = arg1;
     if(mTransformWidget)
     {
-        mTransformWidget->mRotationStep = arg1;
-        mTransformWidget->setStepRates();
+        mTransformWidget->setRotationStep(arg1);
     }
 }
 
@@ -282,7 +269,6 @@ void MainWindow::on_scaleStep_valueChanged(double arg1)
     mScaleStep = arg1;
     if(mTransformWidget)
     {
-        mTransformWidget->mScaleStep = arg1;
-        mTransformWidget->setStepRates();
+        mTransformWidget->setScaleStep(arg1);
     }
 }

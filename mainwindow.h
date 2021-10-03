@@ -49,7 +49,6 @@ private slots:
 
     void on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column);
 
-
     void on_positionStep_valueChanged(double arg1);
 
     void on_rotationStep_valueChanged(double arg1);

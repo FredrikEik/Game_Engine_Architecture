@@ -5,6 +5,8 @@
 
 #include "vector3d.h"
 
+class RenderSystem;
+
 namespace Ui {
     class WidgetTransform;
 }
@@ -14,21 +16,32 @@ class WidgetTransform : public QWidget
     Q_OBJECT
 
 public:
-    explicit WidgetTransform(class QWidget *parent = nullptr);
+    explicit WidgetTransform(QWidget *parent = nullptr, float positionStep =1.f,
+                             float rotationStep = 1.f, float scaleStep = 1.f);
     ~WidgetTransform();
 
+    void init(RenderSystem* renderSystem, int index);
+
+    void setPositionStep(float newPositionStep);
+
+    void setRotationStep(float newRotationStep);
+
+    void setScaleStep(float newScaleStep);
+
+private:
     void readPosition();
     void readRotation();
     void readScale();
     void setPosition();
 
     void setStepRates();
-    int indexInSceneArray{-1};
-    class RenderSystem* mRenderSystem{nullptr};
-
+    Ui::WidgetTransform *ui;
     float mPositionStep{1.f};
     float mRotationStep{1.f};
     float mScaleStep{0.1f};
+
+    int indexInSceneArray{-1};
+    RenderSystem* mRenderSystem{nullptr};
 
 private slots:
     void on_doubleSpinBoxXPosition_valueChanged(double arg1);
@@ -48,10 +61,6 @@ private slots:
     void on_doubleSpinBoxYRotation_valueChanged(double arg1);
 
     void on_doubleSpinBoxZRotation_valueChanged(double arg1);
-
-private:
-    Ui::WidgetTransform *ui;
-
 };
 
 #endif // WIDGETTRANSFORM_H
