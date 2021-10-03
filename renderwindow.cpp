@@ -230,18 +230,18 @@ void RenderWindow::init()
 
     mExplosionSound = SoundManager::getInstance()->createSource(
                 "Explosion", Vector3(10.0f, 0.0f, 0.0f),
-                "../Sound/Assets/explosion.wav", false, 1.0f);
+                "../GEA2021/Assets/Audio/explosion.wav", false, 1.0f);
     mLaserSound = SoundManager::getInstance()->createSource(
                 "Laser", Vector3(20.0f, 0.0f, 0.0f),
-                "../Sound/Assets/laser.wav", true, 0.7f);
+                "../GEA2021/Assets/Audio/laser.wav", true, 0.7f);
 
     mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                "../Sound/Assets/stereo.wav", false, 1.0f);
+                "../GEA2021/Assets/Audio/stereo.wav", false, 1.0f);
 
     mSong = SoundManager::getInstance()->createSource(
                 "Caravan", Vector3(0.0f, 0.0f, 0.0f),
-                "../Sound/Assets/Caravan_mono.wav", false, 1.0f);
+                "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
 
 
     //dog triangle
