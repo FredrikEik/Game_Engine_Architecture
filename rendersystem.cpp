@@ -375,6 +375,16 @@ void RenderSystem::toggleBacksideCulling(bool state)
     state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
 }
 
+void RenderSystem::setPickedObject(int pickedID)
+{
+    indexToPickedObject = pickedID;
+}
+
+void RenderSystem::cancelPickedObject()
+{
+    indexToPickedObject = -1;
+}
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderSystem::checkForGLerrors()
@@ -523,6 +533,7 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
         {
             qDebug() << "Collision with object index" << i << distance << "meters away from ray";
             indexToPickedObject = i;
+            mMainWindow->selectObjetByIndex(indexToPickedObject);
             break;  //breaking out of for loop - does not check if ray touch several objects
         }
     }
@@ -680,9 +691,6 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
         input.LMB = false;
     if (event->button() == Qt::MiddleButton)
         input.MMB = false;
-
-    //testing MousePicking
-    indexToPickedObject = -1;
 }
 
 void RenderSystem::wheelEvent(QWheelEvent *event)

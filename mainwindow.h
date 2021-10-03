@@ -5,6 +5,8 @@
 
 //Forward declarations
 class QWidget;
+class QTreeWidgetItem;
+class QLayout;
 class RenderSystem;
 class CoreEngine;
 class GameObject;
@@ -22,6 +24,7 @@ public:
     ~MainWindow();
 
     void updateOutliner(const std::vector<GameObject *> &GameObjectData);
+    void selectObjetByIndex(int indexIn);
 
 public slots:
     void on_actionAdd_Triangle_triggered();
@@ -44,13 +47,22 @@ private slots:
 
     void on_actionGrid_triggered(bool checked);
 
+    void on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column);
+
+
 private:
     void init();
+
+    void clearLayout(QLayout *layout);
+
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     CoreEngine *mCoreEngine{nullptr};
+    QTreeWidgetItem *mCurrentEditItem{nullptr};
+    int mCurrentEditItemIndex{-1};  //index into selected GameObject
+    QTreeWidgetItem* mSceneOutlinerRoot{nullptr}; //pointer to root of sceneOutliner
 };
 
 #endif // MAINWINDOW_H

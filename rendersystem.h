@@ -37,6 +37,10 @@ public:
     void toggleWireframe(bool buttonState);
     void toggleBacksideCulling(bool state);
 
+    //Editor functions
+    void setPickedObject(int pickedID);
+    void cancelPickedObject();
+
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     bool isPlaying{false};  //is the game playing?

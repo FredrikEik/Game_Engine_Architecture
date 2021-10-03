@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete mRenderSystem;
+    delete mCoreEngine;
     delete ui;
 }
 
@@ -95,16 +96,28 @@ void MainWindow::updateOutliner(const std::vector<GameObject*> &GameObjectData)
     ui->twSceneOutliner->clear();
 
     // Create the new tree root - since I use TreeWidget not listWidget
-    QTreeWidgetItem* root = new QTreeWidgetItem(ui->twSceneOutliner);
-    root->setText(0,  "Scene");//QString::fromStdString(mRenderWindow->mScene1->mSceneName));
-    ui->twSceneOutliner->addTopLevelItem(root);
+    mSceneOutlinerRoot = new QTreeWidgetItem(ui->twSceneOutliner);
+    mSceneOutlinerRoot->setText(0,  "Scene");//QString::fromStdString(mRenderWindow->mScene1->mSceneName));
+    ui->twSceneOutliner->addTopLevelItem(mSceneOutlinerRoot);
     ui->twSceneOutliner->expandAll();
 
     for(auto gob : GameObjectData)
     {
-        QTreeWidgetItem* item = new QTreeWidgetItem(root);
+        QTreeWidgetItem* item = new QTreeWidgetItem(mSceneOutlinerRoot);
         item->setText(0, QString::fromStdString(gob->mName));
 //        item->setFlags(item->flags() | Qt::ItemIsEditable);
+    }
+}
+
+void MainWindow::selectObjetByIndex(int indexIn)
+{
+    if(mSceneOutlinerRoot)
+    {
+        if(mCurrentEditItem)
+            mCurrentEditItem->setSelected(false);
+        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+        mCurrentEditItem->setSelected(true);
+        on_twSceneOutliner_itemClicked(mCurrentEditItem, 0);
     }
 }
 
@@ -178,4 +191,46 @@ void MainWindow::on_actionAxis_triggered(bool checked)
 void MainWindow::on_actionGrid_triggered(bool checked)
 {
     //Toggle grid on/off
+}
+
+void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
+{
+    clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
+
+    //Top node selected or no selection:
+    if (!item || item->text(0) == "Scene") //mRenderSystem->mScene1->mSceneName.c_str())
+    {
+        mRenderSystem->cancelPickedObject();
+        ui->gobNameEdit->setText("no selection");
+        mCurrentEditItem = nullptr;
+        return;
+    }
+
+    mCurrentEditItem = item;
+    ui->gobNameEdit->setText(mCurrentEditItem->text(0));
+    item->setSelected(true);
+
+    //scroll to selected item
+    ui->twSceneOutliner->scrollToItem(mCurrentEditItem);
+
+    //getting the index of the selected item from the TreeWidget
+    // = parent of this selected item
+    mCurrentEditItemIndex = item->parent()->indexOfChild(item);
+    qDebug() <<"Index" << mCurrentEditItemIndex;
+
+
+    //tell RenderSystem to highlight selected object
+    mRenderSystem->setPickedObject(mCurrentEditItemIndex);
+}
+
+void MainWindow::clearLayout(QLayout *layout) {
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))) {
+        if (item->widget()) {   //probably not neccesary
+            delete item->widget();
+        }
+        delete item; //probably not neccesary - Qt should do it automatically
+    }
+//    mTransformWidget = nullptr;
+    ui->twSceneOutliner->clearSelection();
 }
