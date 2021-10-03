@@ -169,12 +169,20 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
+        gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
+        float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
+
+        if(distanceToObject > 15)
+            mGameObjects[i]->mesh->lodLevel = 2;
+        else if(distanceToObject > 8)
+            mGameObjects[i]->mesh->lodLevel = 1;
+        else
+            mGameObjects[i]->mesh->lodLevel = 0;
 
         int tempLod = mGameObjects[i]->mesh->lodLevel;
-
         glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
-        glBindVertexArray(0);                                                                                       /** mVertices vao, vbo osv. blir ikke overført til neste gameObjecty*/
+        glBindVertexArray(0);
     }
 
 
