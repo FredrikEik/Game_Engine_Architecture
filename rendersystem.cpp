@@ -218,7 +218,7 @@ void RenderSystem::render()
         }
 
         //Quick hack test to check if linebox/circle works:
-        if(i == indexToPickedObject)
+        if(i == mIndexToPickedObject)
         {
 //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
@@ -377,12 +377,12 @@ void RenderSystem::toggleBacksideCulling(bool state)
 
 void RenderSystem::setPickedObject(int pickedID)
 {
-    indexToPickedObject = pickedID;
+    mIndexToPickedObject = pickedID;
 }
 
 void RenderSystem::cancelPickedObject()
 {
-    indexToPickedObject = -1;
+    mIndexToPickedObject = -1;
 }
 
 //Uses QOpenGLDebugLogger if this is present
@@ -532,8 +532,8 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
         if(distance < mGameObjects[i]->mMesh->mColliderRadius)
         {
             qDebug() << "Collision with object index" << i << distance << "meters away from ray";
-            indexToPickedObject = i;
-            mMainWindow->selectObjetByIndex(indexToPickedObject);
+            mIndexToPickedObject = i;
+            mMainWindow->selectObjetByIndex(mIndexToPickedObject);
             break;  //breaking out of for loop - does not check if ray touch several objects
         }
     }
@@ -577,6 +577,10 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_E)
     {
         input.E = true;
+    }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = true;
     }
     if(event->key() == Qt::Key_Z)
     {
@@ -636,6 +640,10 @@ void RenderSystem::keyReleaseEvent(QKeyEvent *event)
     {
         input.E = false;
     }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = false;
+    }
     if(event->key() == Qt::Key_Z)
     {
     }
@@ -678,7 +686,8 @@ void RenderSystem::mousePressEvent(QMouseEvent *event)
         input.MMB = true;
 
     //This should be organized better - just getting it working for now
-    mousePickingRay(event);
+    if(event->button() == Qt::LeftButton)
+        mousePickingRay(event);
 }
 
 void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
@@ -712,6 +721,8 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
 
 void RenderSystem::mouseMoveEvent(QMouseEvent *event)
 {
+    this->requestActivate();    //should grab keyboard focus
+
     Input &input = CoreEngine::getInstance()->mInput;
 
     if (input.RMB)

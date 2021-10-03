@@ -108,6 +108,22 @@ void CoreEngine::handleInput()
 
     //TODO: Probably a cleaner way to do this!
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
+
+    //move camera to selected object
+    if(mInput.F && mRenderSystem->mIndexToPickedObject >-1)
+    {
+        int tempIndex = mRenderSystem->mIndexToPickedObject;
+        mEditorCamera->mPosition = mRenderSystem->mGameObjects.at(tempIndex)->mTransform->mMatrix.getPosition();
+        //dynamic distance to object
+        mEditorCamera->mPosition.z += (mRenderSystem->mGameObjects.at(tempIndex)->mMesh->mColliderRadius)*7;
+        //dynamic height placement
+        mEditorCamera->mPosition.y += (mRenderSystem->mGameObjects.at(tempIndex)->mMesh->mColliderRadius*4);
+        mEditorCamera->mPitch = -30.f;
+        mEditorCamera->mYaw = 0.f;
+        mEditorCamera->update();
+        mInput.F = false;
+    }
+
     if(mInput.RMB)
     {
         if(mInput.W)

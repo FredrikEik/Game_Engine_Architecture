@@ -228,6 +228,7 @@ int MeshHandler::makeAxis()
     temp.mVertices[0].push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
     temp.mDrawType = GL_LINES;
+    temp.mColliderRadius = 1.f; //Axis does not have a collider...
 
     //only LOD level 0
     initMesh(temp, 0);
@@ -245,6 +246,10 @@ int MeshHandler::makeTriangle()
     temp.mVertices[0].push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
     temp.mDrawType = GL_TRIANGLES;
+
+    //The 0, 0, 0 point of this triangle is not in center of visual triangle
+    //so this is a little bigger than it needs to
+    temp.mColliderRadius = 0.7071068f;  //sqrt(0.5);
 
     //only LOD level 0
     initMesh(temp, 0);

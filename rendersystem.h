@@ -40,6 +40,8 @@ public:
     //Editor functions
     void setPickedObject(int pickedID);
     void cancelPickedObject();
+    //Just to test mousePickingRay
+    int mIndexToPickedObject{-1};
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
@@ -66,8 +68,6 @@ private:
 
     void mousePickingRay(QMouseEvent *event);
 
-    //Just to test mousePickingRay
-    int indexToPickedObject{-1};
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
