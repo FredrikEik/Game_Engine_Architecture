@@ -169,7 +169,7 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
     return true;
 }
 
-int SoundHandler::makeALSource(ALuint bufferIn)
+int SoundHandler::makeALSource(ALuint bufferIn, float vol)
 {
     ALuint tempSource;
     alGetError();
@@ -179,8 +179,14 @@ int SoundHandler::makeALSource(ALuint bufferIn)
     alSourcei(tempSource, AL_BUFFER, bufferIn);
     if(!checkALError("alSourcei (makeALSource)"))
         return -1;
+    setVolume(tempSource, vol);
 
     return tempSource;
+}
+
+void SoundHandler::setVolume(ALuint temp, float vol)
+{
+    alSourcef(temp, AL_GAIN, vol);
 }
 
 bool SoundHandler::endOnFileReadError(std::string errmsg)

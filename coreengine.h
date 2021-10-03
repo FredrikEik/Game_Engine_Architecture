@@ -36,6 +36,7 @@ public:
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+    void playSound(std::string assetName);
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

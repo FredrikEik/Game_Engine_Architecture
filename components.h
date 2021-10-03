@@ -42,7 +42,13 @@ struct SoundComponet
     ALuint mSource;             ///< The sound source ID.
 //    ALuint mBuffer;             ///< The buffer the source should play.
     gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
-    float gain{1.0f};
+    float gain{1};
+    float setVolume(float vol)
+    {
+        gain = vol;
+
+        return gain;
+    };
     bool shouldPlay{false};
 //    bool isPlaying{false};
     bool looping{false};

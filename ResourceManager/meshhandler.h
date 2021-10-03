@@ -38,6 +38,10 @@ public:
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
+
+    void checkCollision();
+
+
 private:
     int readObj(std::string filename);
     int readObj2(std::string filename);

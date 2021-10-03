@@ -239,6 +239,17 @@ void RenderSystem::render()
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
+        if(i == 2)
+        {
+            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
+            MeshData circle = CoreEngine::getInstance()->mResourceManager->
+                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
+//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
+            glBindVertexArray( lineBox.mVAO[0] );
+            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray( circle.mVAO[0] );
+            glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+        }
         glBindVertexArray(0);
     }
 

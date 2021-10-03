@@ -38,8 +38,10 @@ public:
         \param File path relative to execution directory.
         \param Pointer to a wave_t structure to contain the wave data.
     **/
+     // set volume, currently global volume
     static WaveRawData* loadWave(std::string fileName);
-    static int makeALSource(ALuint bufferIn);
+    static int makeALSource(ALuint bufferIn, float vol = 0.1f);
+    static void setVolume(ALuint temp, float vol);
 
 private:
     /// Error handling function.

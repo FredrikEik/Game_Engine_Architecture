@@ -47,11 +47,12 @@ void CoreEngine::setUpScene()
 
     player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to player:
-    //mResourceManager->addComponent("fin_sang_stereo.wav", temp);
-    mResourceManager->addComponent("techno_stereo.wav", player);
+    //mResourceManager->addComponent("run_stereo.wav", temp);
+    //mResourceManager->addComponent("techno_stereo.wav", player);
+
+    playSound("techno_stereo.wav");
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
-
     mRenderSystem->mGameObjects.push_back(player);
 
     //lager test objekter
@@ -70,11 +71,6 @@ void CoreEngine::setUpScene()
         }
     }
 
-//    temp = mResourceManager->addObject("suzanne.obj");
-//    temp->mTransform->mMatrix.translate(0.f, 1.f, 0.f);
-//    temp->mTransform->mMatrix.scale(.5f);
-
-//    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
@@ -115,6 +111,7 @@ void CoreEngine::handleInput()
     {
 
          player->move(0,0 , speed);
+
     }
     else if(mInput.S)
     {
@@ -136,6 +133,11 @@ void CoreEngine::handleInput()
     else if(mInput.E)
         player->move(0, -speed, 0);
 
+}
+
+void CoreEngine::playSound(std::string assetName)
+{
+    mResourceManager->addComponent(assetName, player);
 }
 
 void CoreEngine::gameLoop()
