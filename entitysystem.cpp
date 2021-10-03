@@ -4,7 +4,7 @@
 
 EntitySystem::EntitySystem()
 {
- MeshSys = new resourceSystem();
+ ResourceSys = new resourceSystem();
 }
 
 EntitySystem::~EntitySystem()
@@ -50,7 +50,7 @@ void EntitySystem::construct(RenderWindow * inRW, std::string ObjReader, QVector
 
     rw->transformCompVec.push_back(TransComp);
 
-    MeshSys->CreateMeshComponent(ObjReader, MeshComp);
+    ResourceSys->CreateMeshComponent(ObjReader, MeshComp);
     MeshComp->entity = EntityId;
     rw->meshCompVec.push_back(MeshComp);
 

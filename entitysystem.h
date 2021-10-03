@@ -27,7 +27,8 @@ private:
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
     MaterialComponent *MatComp;
-    resourceSystem * MeshSys;
+    resourceSystem * ResourceSys;
+
     QVector3D LastPos = QVector3D(0.0f, 0.0f, 0.0f);
     void offsetLastPos();
 };

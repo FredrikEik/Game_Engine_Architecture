@@ -11,7 +11,6 @@
 #include <sstream>
 #include <vector>
 
-
 #include "components.h"
 #include "constants.h"
 #include "vertex.h"
@@ -25,13 +24,15 @@ public:
     void CreateMeshComponent();
     void CreateMeshComponent(std::string input, MeshComponent * mesh);
 
-private:
-    std::vector<std::vector<Vertex>> meshContainer;
 
-    //std::vector<std::vector<GLuint>> meshIndiceContainer;
+private:
+    std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;
+    std::vector < std::pair<std::string, std::vector<GLuint> > > meshIndiceContainer;
+
+
     float calculateLenght(QVector3D pos );
 
-    std::vector<std::vector<GLuint>> meshIndiceContainer;
+
 
 };
 
