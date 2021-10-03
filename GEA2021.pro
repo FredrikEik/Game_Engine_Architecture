@@ -67,6 +67,7 @@ SOURCES += main.cpp \
     triangle.cpp \
     vertex.cpp \
     gameobject.cpp \
+    widgettransform.cpp \
     xyz.cpp
 
 HEADERS += \
@@ -95,10 +96,12 @@ HEADERS += \
     triangle.h \
     vertex.h \
     gameobject.h \
+    widgettransform.h \
     xyz.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    widgettransform.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \

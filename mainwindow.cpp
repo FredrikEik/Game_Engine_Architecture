@@ -12,6 +12,7 @@
 #include "resourcemanager.h"
 #include "coreengine.h"
 #include "gameobject.h"
+#include "widgettransform.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -216,11 +217,25 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
     //getting the index of the selected item from the TreeWidget
     // = parent of this selected item
     mCurrentEditItemIndex = item->parent()->indexOfChild(item);
-    qDebug() <<"Index" << mCurrentEditItemIndex;
-
+//    qDebug() <<"Index" << mCurrentEditItemIndex;
 
     //tell RenderSystem to highlight selected object
     mRenderSystem->setPickedObject(mCurrentEditItemIndex);
+
+    //Transform widget:
+    mTransformWidget = new WidgetTransform(this);
+    mTransformWidget->setObjectName("TransformWidget");
+    ui->blDetailsContainer->addWidget(mTransformWidget);
+    mCurrentEditItemIndex = item->parent()->indexOfChild(item);
+//    qDebug() <<"Index" << mCurrentEditItemIndex;
+    mTransformWidget->indexInSceneArray = mCurrentEditItemIndex;
+    mTransformWidget->mRenderSystem = mRenderSystem;
+    //These should be triggered automatically!:
+    mTransformWidget->readPosition();
+    mTransformWidget->readRotation();
+    mTransformWidget->readScale();
+    mTransformWidget->clearFocus();
+
 }
 
 void MainWindow::clearLayout(QLayout *layout) {

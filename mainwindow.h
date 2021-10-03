@@ -63,6 +63,7 @@ private:
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr}; //pointer to root of sceneOutliner
+    class WidgetTransform* mTransformWidget{nullptr};
 };
 
 #endif // MAINWINDOW_H

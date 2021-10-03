@@ -531,7 +531,7 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
         //if distance to ray < objects bounding sphere == we have a collision
         if(distance < mGameObjects[i]->mMesh->mColliderRadius)
         {
-            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+//            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
             mIndexToPickedObject = i;
             mMainWindow->selectObjetByIndex(mIndexToPickedObject);
             break;  //breaking out of for loop - does not check if ray touch several objects
