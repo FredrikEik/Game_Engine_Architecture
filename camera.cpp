@@ -102,3 +102,8 @@ gsl::Vector3D Camera::up() const
 {
     return Cam.mUp;
 }
+
+gsl::Vector3D Camera::forward() const
+{
+    return Cam.mForward;
+}
