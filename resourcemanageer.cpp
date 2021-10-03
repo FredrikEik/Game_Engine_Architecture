@@ -21,32 +21,6 @@ GameObject *ResourceManageer::addObject(std::string objName, std::vector<Vertex>
     return tempObj;
 }
 
-GameObject *ResourceManageer::addCreatedObject(std::string objName)
-{
-    int meshIndex{-1};
-    auto result = meshComponentMap.find(objName);
-    if (result != meshComponentMap.end())
-    {
-        meshIndex = result->second;
-    }
-    else
-    {
-        if(objName == "triangle" || objName == "Triangle")
-        {
-            meshIndex = makeTriangle();
-        }
-    }
-
-    GameObject* tempObj = new GameObject();
-    tempObj->mMesh = &meshComponents.at(meshIndex);
-    tempObj->mTransform = new TransformComponent();
-    tempObj->mMaterial = new MaterialComponent();
-    tempObj->mTransform->mMatrix.setToIdentity();
-    tempObj->init();
-
-    return tempObj;
-}
-
 GameObject* readObj(std::string filename)
 {
     //should check if this object is new before this!
@@ -322,16 +296,96 @@ GameObject *ResourceManageer::addXYZ()
     return tempObj;
 }
 
-int ResourceManageer::makeTriangle()
+GameObject *ResourceManageer::objectCreator(std::string objName)
 {
-    meshComponents.emplace_back(MeshComponent());
-    MeshComponent &temp = meshComponents.back();
-    temp.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    temp.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    temp.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+    int index;
+    auto temp = meshComponentMap.find(objName);
+    if(temp == meshComponentMap.end())
+    {
+        if(objName == "Triangle" || "triangle")
+        {
+            index = standardTriangle();
+        }
+        else if(objName == "Cube" || "cube")
+        {
+            index = standardCube();
+        }
+    }
+    else{
+        if(temp->first == "Triangle" || "triangle")
+        {
+            index = temp->second;
+        }
+        else if(temp->first == "Cube" || "cube")
+        {
+            index = temp->second;
+        }
+    }
+    GameObject* tempObj = new GameObject();
+    tempObj->mName = objName;
+    tempObj->mTransform = new TransformComponent();
+    tempObj->mTransform->mMatrix.setToIdentity();
+    tempObj->mMaterial = new MaterialComponent();
+    tempObj->mMesh = meshComponents.at(index);
+    tempObj->init();
 
-    temp.mDrawType = GL_TRIANGLES;
+    return tempObj;
+}
 
-    return meshComponents.size() - 1;
+int ResourceManageer::standardTriangle()
+{
+    MeshComponent* temp = new MeshComponent;
+    temp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f});
+    temp->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f});
+    temp->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f});
+    temp->mDrawType = GL_TRIANGLES;
+    meshComponents.emplace_back(temp);
+    meshComponentMap.emplace("Triangle", meshComponentMap.size()-1);
+    return meshComponents.size()-1;
+}
+
+int ResourceManageer::standardCube()
+{
+    meshComponentMap.emplace("Triangle", 1); //hardkodet for å funke
+    MeshComponent* temp = new MeshComponent;
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 1,0,0});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5,  0.5, 1,0,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5,  0.5, 1,0,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5,  0.5, 1,1,0});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 1,1,0});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 1,1,0});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5, -0.5, 1,1,1});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5, -0.5, 1,1,1});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5, -0.5, 1,1,1});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5, -0.5, 0,1,1});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5, -0.5, 0,1,1});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5, -0.5, 0,1,1});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5,  0.5, 1,0,1});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5, -0.5, 1,0,1});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5, -0.5, 1,0,1});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5, -0.5, 1,0.5,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5,  0.5, 1,0.5,0});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5,  0.5, 1,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5, -0.5, 1,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 1,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 1,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 0.5,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5, -0.5, 0.5,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5, -0.5, 0.5,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 0.5,0.5,0.5});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5,  0.5, 0.5,0.5,0.5});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5, -0.5, 0.5,0.5,0.5});
+    temp->mVertices.push_back(Vertex{  0.5, -0.5, -0.5, 0.5,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5, -0.5, 0.5,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 0.5,0.5,1});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 0.5,0,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5,  0.5, 0.5,0,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5, -0.5, 0.5,0,0});
+    temp->mVertices.push_back(Vertex{  0.5,  0.5, -0.5, 0,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5, -0.5, 0,0.5,0});
+    temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 0,0.5,0});
+    temp->mDrawType = GL_TRIANGLES;
+    meshComponents.emplace_back(temp);
+    return meshComponents.size()-1;
 }
 

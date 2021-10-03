@@ -77,7 +77,7 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-    ResourceManageer* source;
+    ResourceManageer* source{nullptr};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

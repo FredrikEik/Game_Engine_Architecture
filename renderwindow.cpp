@@ -129,9 +129,12 @@ void RenderWindow::init()
 //    temp->init();
 //    mVisualObjects.push_back(temp);
 
-    mVisualObjects.push_back(source->addCube());
-    mVisualObjects.push_back(source->addTriangle());
-    mVisualObjects.push_back(source->addXYZ());
+    source = new ResourceManageer();
+
+//    mVisualObjects.push_back(source->addCube());
+//    mVisualObjects.push_back(source->addTriangle());
+//    mVisualObjects.push_back(source->addXYZ());
+    mVisualObjects.push_back(source->objectCreator("Triangle"));
 
     //testing triangle class
 //    temp = new TriangleTest();
@@ -185,7 +188,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
             mVisualObjects[i]->draw();
-            if (mVisualObjects[i]->mName == "triangle" || mVisualObjects[i]->mName == "Triangle") mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+            if (mVisualObjects[i]->mName == "triangle" || mVisualObjects[i]->mName == "Triangle") mVisualObjects[0]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
         }
     }
 
