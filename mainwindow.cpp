@@ -89,6 +89,10 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
+    mPositionStep = (float)ui->positionStep->value();
+    mRotationStep = (float)ui->rotationStep->value();
+    mScaleStep = (float)ui->scaleStep->value();
 }
 
 void MainWindow::updateOutliner(const std::vector<GameObject*> &GameObjectData)
@@ -230,12 +234,15 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
 //    qDebug() <<"Index" << mCurrentEditItemIndex;
     mTransformWidget->indexInSceneArray = mCurrentEditItemIndex;
     mTransformWidget->mRenderSystem = mRenderSystem;
-    //These should be triggered automatically!:
+    //All of this should be triggered automatically!:
     mTransformWidget->readPosition();
     mTransformWidget->readRotation();
     mTransformWidget->readScale();
+    mTransformWidget->mPositionStep = mPositionStep;
+    mTransformWidget->mRotationStep = mRotationStep;
+    mTransformWidget->mScaleStep = mScaleStep;
+    mTransformWidget->setStepRates();
     mTransformWidget->clearFocus();
-
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
@@ -248,4 +255,34 @@ void MainWindow::clearLayout(QLayout *layout) {
     }
 //    mTransformWidget = nullptr;
     ui->twSceneOutliner->clearSelection();
+}
+
+void MainWindow::on_positionStep_valueChanged(double arg1)
+{
+    mPositionStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->mPositionStep = arg1;
+        mTransformWidget->setStepRates();
+    }
+}
+
+void MainWindow::on_rotationStep_valueChanged(double arg1)
+{
+    mRotationStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->mRotationStep = arg1;
+        mTransformWidget->setStepRates();
+    }
+}
+
+void MainWindow::on_scaleStep_valueChanged(double arg1)
+{
+    mScaleStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->mScaleStep = arg1;
+        mTransformWidget->setStepRates();
+    }
 }

@@ -50,6 +50,12 @@ private slots:
     void on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column);
 
 
+    void on_positionStep_valueChanged(double arg1);
+
+    void on_rotationStep_valueChanged(double arg1);
+
+    void on_scaleStep_valueChanged(double arg1);
+
 private:
     void init();
 
@@ -64,6 +70,11 @@ private:
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr}; //pointer to root of sceneOutliner
     class WidgetTransform* mTransformWidget{nullptr};
+
+    //default steps when using transform widget
+    float mPositionStep{1.f};
+    float mRotationStep{1.f};
+    float mScaleStep{0.1f};
 };
 
 #endif // MAINWINDOW_H
