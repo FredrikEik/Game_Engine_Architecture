@@ -43,7 +43,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 RenderWindow::~RenderWindow()
 {
-    SoundManager::getInstance()->cleanUp();
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
@@ -279,7 +278,7 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
 
-    SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
+    SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), gsl::Vector3D(0,0,0), gsl::Vector3D(0,1,0));
 
 
     //Draws the objects
@@ -342,8 +341,9 @@ void RenderWindow::render()
     }
     for(int i = 0; i < eSize; i++){
         if(transformCompVec[i]->entity == 2){
-            transformCompVec[i]->mMatrix.translate(0.02f, 0.f,0.f);
+            transformCompVec[i]->mMatrix.translate(0.2f, 0.f,0.f);
             mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+
         }
     }
 
