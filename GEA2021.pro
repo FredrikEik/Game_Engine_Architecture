@@ -5,6 +5,8 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+RC_ICONS    = INNgine.ico
+
             #stop std::fopen deprecation warning
 DEFINES     += _CRT_SECURE_NO_WARNINGS
 
@@ -103,3 +105,6 @@ DISTFILES += \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert
+
+RESOURCES += \
+    AppIconResources.qrc

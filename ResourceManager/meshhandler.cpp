@@ -503,7 +503,7 @@ void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
     glBufferData( GL_ARRAY_BUFFER, tempMesh.mVertices[lodLevel].size()*sizeof(Vertex),
                   tempMesh.mVertices[lodLevel].data(), GL_STATIC_DRAW );
 
-    // 1rst attribute buffer : position
+    // 1st attribute buffer : position
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 

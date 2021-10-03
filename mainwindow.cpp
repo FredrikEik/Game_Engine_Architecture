@@ -4,6 +4,7 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QMessageBox>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
@@ -98,26 +99,6 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
     mRenderSystem->mGameObjects.push_back(temp);
 }
 
-//Example of a slot called from the button on the top of the program.
-void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
-{
-    mRenderSystem->toggleWireframe(checked);
-    if(checked)
-        ui->pb_toggleWireframe->setText("Show Solid");
-    else
-        ui->pb_toggleWireframe->setText("Show Wireframe");
-}
-
-void MainWindow::on_pb_togglePlay_toggled(bool checked)
-{
-    mCoreEngine->togglePlayMode(checked);
-
-    if(checked)
-        ui->pb_togglePlay->setText("Stop (R)");
-    else
-        ui->pb_togglePlay->setText("Play (R)");
-}
-
 void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
 {
     mRenderSystem->toggleBacksideCulling(checked);
@@ -128,8 +109,55 @@ void MainWindow::on_actionFrustum_Culling_triggered(bool checked)
     mRenderSystem->mUseFrustumCulling = checked;
 }
 
-void MainWindow::on_pb_togglefrustumcam_toggled(bool checked)
+//void MainWindow::on_pb_togglefrustumcam_toggled(bool checked)
+//{
+//    mRenderSystem->mGameCamAsFrustumCulling = checked;
+//    (checked) ? ui->pb_togglefrustumcam->setText("Cull with GameCam") : ui->pb_togglefrustumcam->setText("Cull with EditorCam");
+//}
+
+void MainWindow::on_actionBasic_Editor_Controls_triggered()
 {
-    mRenderSystem->mGameCamAsFrustumCulling = checked;
-    (checked) ? ui->pb_togglefrustumcam->setText("Cull with GameCam") : ui->pb_togglefrustumcam->setText("Cull with EditorCam");
+    QMessageBox::about(this, "Basic Controls",
+                       "Move and rotate camera by holding down right mouse button,"
+                       "\nand move with WASD and Q = down, E = up."
+                       "\nUse ScrollWheel to adjust speed."); // and Left Shift
+//                       "\nUse F to move camera to selected object.");
 }
+
+void MainWindow::on_actionWireframe_triggered(bool checked)
+{
+    mRenderSystem->toggleWireframe(checked);
+    if(checked)
+        ui->actionWireframe->setText("Show Solid");
+    else
+        ui->actionWireframe->setText("Show Wireframe");
+}
+
+void MainWindow::on_actionPlay_triggered(bool checked)
+{
+    mCoreEngine->togglePlayMode(checked);
+
+    if(checked)
+        ui->actionPlay->setText("Stop");
+    else
+        ui->actionPlay->setText("Play");
+}
+
+void MainWindow::on_actionKudos_to_triggered()
+{
+    QMessageBox::about(this, "Kutos to:",
+                       "Some icons in this app are from https://icons8.com");
+}
+
+
+void MainWindow::on_actionAxis_triggered(bool checked)
+{
+    //Toggle axis on/off
+}
+
+
+void MainWindow::on_actionGrid_triggered(bool checked)
+{
+    //Toggle grid on/off
+}
+

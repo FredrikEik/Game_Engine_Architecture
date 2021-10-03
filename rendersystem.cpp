@@ -465,7 +465,6 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
 {
     int mouseXPixel = event->pos().x();
     int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
-//    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
 
     //Since we are going to invert these, I make a copy
     gsl::Matrix4x4 projMatrix = mEditorCamera->mProjectionMatrix;
@@ -499,8 +498,6 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
 
     //This is ray vs bounding sphere collision
 
-//    qDebug() << "Cam pos" << mEditorCamera->mPosition << "Ray" << ray_wor;
-
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         //making the vector from camera to object we test against
@@ -515,7 +512,7 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
         rayNormal.normalize();
 
         //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray:
+        //getting distance from GameObject to ray using dot product:
         float distance = camToObject * rayNormal;   //* gives the dot product
 
         //we are interested in the absolute distance, so fixes any negative numbers
@@ -527,9 +524,6 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
             qDebug() << "Collision with object index" << i << distance << "meters away from ray";
             indexToPickedObject = i;
             break;  //breaking out of for loop - does not check if ray touch several objects
-
-//            qDebug() << "Collision!" << i <<  camToObject << rayNormal <<
-//            distance << "<" << mGameObjects[i]->mMesh->mColliderRadius;
         }
     }
 }
@@ -545,7 +539,7 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_R) //toggle play
     {
-        mMainWindow->on_pb_togglePlay_toggled(!isPlaying);
+        mMainWindow->on_actionPlay_triggered(!isPlaying);
     }
 
     //    You get the keyboard input like this

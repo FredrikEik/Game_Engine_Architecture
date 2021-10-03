@@ -8,3 +8,5 @@ Du skal lage en egen branch som du jobber i. Kall branchen din noe med ditt eget
 Du kan f.eks. legge inn det beste du har fra 3D-programmeringskurset som et utgangspunkt for dette kurset.
 
 I din egen branch kan du leke deg og gjøre forandringer av hjertens lyst (men ikke push noe til Main-branchen). Det eneste du ikke får lov til er å skifte navnet på mappen som repositoriet ligger i. Den må hete "GEA2021".
+
+ole_experiments - branchen bruker ikoner fra https://icons8.com/icons - så langt jeg skjønner så er dette lov om jeg refererer til denne siden.

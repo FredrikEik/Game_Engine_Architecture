@@ -16,89 +16,10 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="pb_toggleWireframe">
-        <property name="text">
-         <string>Show Wireframe</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_togglefrustumcam">
-        <property name="text">
-         <string>Cull with EditorCam</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_togglePlay">
-        <property name="text">
-         <string>Play (R)</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
      <layout class="QVBoxLayout" name="OpenGLLayout"/>
     </item>
     <item>
-     <widget class="QLabel" name="label">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed.</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout"/>
     </item>
    </layout>
   </widget>
@@ -124,9 +45,18 @@
     </property>
     <addaction name="actionToggle_backside_culling"/>
     <addaction name="actionFrustum_Culling"/>
+    <addaction name="actionCull_With_EditorCam"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionBasic_Editor_Controls"/>
+    <addaction name="actionKudos_to"/>
    </widget>
    <addaction name="menuGameObject"/>
    <addaction name="menuOptions"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -135,6 +65,12 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionWireframe"/>
+   <addaction name="actionAxis"/>
+   <addaction name="actionGrid"/>
+   <addaction name="separator"/>
+   <addaction name="actionPlay"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionAdd_Triangle">
@@ -169,8 +105,98 @@
     <string>Use Frustum Culling</string>
    </property>
   </action>
+  <action name="actionBasic_Editor_Controls">
+   <property name="text">
+    <string>Basic Editor Controls...</string>
+   </property>
+  </action>
+  <action name="actionWireframe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="AppIconResources.qrc">
+     <normaloff>:/Icons/AppIcons/icons8-diamond-100.png</normaloff>
+     <normalon>:/Icons/AppIcons/icons8-diamond-96.png</normalon>:/Icons/AppIcons/icons8-diamond-100.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Wireframe</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Wireframe</string>
+   </property>
+  </action>
+  <action name="actionPlay">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="AppIconResources.qrc">
+     <normaloff>:/Icons/AppIcons/icons8-play-100.png</normaloff>
+     <normalon>:/Icons/AppIcons/icons8-stop-64.png</normalon>:/Icons/AppIcons/icons8-play-100.png</iconset>
+   </property>
+   <property name="text">
+    <string>Play</string>
+   </property>
+   <property name="toolTip">
+    <string>Play/Stop - Ctrl+R</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionCull_With_EditorCam">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Cull With EditorCam</string>
+   </property>
+  </action>
+  <action name="actionKudos_to">
+   <property name="text">
+    <string>Kudos to...</string>
+   </property>
+  </action>
+  <action name="actionAxis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="AppIconResources.qrc">
+     <normaloff>:/Icons/AppIcons/coordinate-system.png</normaloff>
+     <normalon>:/Icons/AppIcons/coordinate-system-invert.png</normalon>:/Icons/AppIcons/coordinate-system.png</iconset>
+   </property>
+   <property name="text">
+    <string>Axis</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Axis</string>
+   </property>
+  </action>
+  <action name="actionGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="AppIconResources.qrc">
+     <normaloff>:/Icons/AppIcons/icons8-data-grid-100.png</normaloff>
+     <normalon>:/Icons/AppIcons/icons8-grid-80.png</normalon>:/Icons/AppIcons/icons8-data-grid-100.png</iconset>
+   </property>
+   <property name="text">
+    <string>Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle Grid on/off</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="AppIconResources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>AppIcons/icons8-diamond-96.png</file>
+        <file>AppIcons/icons8-diamond-100.png</file>
+        <file>AppIcons/icons8-play-96.png</file>
+        <file>AppIcons/icons8-stop-64.png</file>
+        <file>AppIcons/icons8-play-100.png</file>
+        <file>AppIcons/coordinate-system.png</file>
+        <file>AppIcons/coordinate-system-invert.png</file>
+        <file>AppIcons/icons8-data-grid-100.png</file>
+        <file>AppIcons/icons8-grid-80.png</file>
+    </qresource>
+    <qresource prefix="/AppGraphics">
+        <file>AppIcons/INNgine_splash.png</file>
+    </qresource>
+</RCC>

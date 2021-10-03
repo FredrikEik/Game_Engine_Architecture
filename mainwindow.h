@@ -24,15 +24,22 @@ public slots:
     void on_actionAdd_Triangle_triggered();
     void on_actionAdd_Suzanne_triggered();
 
-    void on_pb_toggleWireframe_toggled(bool checked);
-    void on_pb_togglePlay_toggled(bool checked);
+    void on_actionPlay_triggered(bool checked);
 
 private slots:
     void on_actionToggle_backside_culling_toggled(bool checked);
 
     void on_actionFrustum_Culling_triggered(bool checked);
 
-    void on_pb_togglefrustumcam_toggled(bool checked);
+    void on_actionBasic_Editor_Controls_triggered();
+
+    void on_actionWireframe_triggered(bool checked);
+
+    void on_actionKudos_to_triggered();
+
+    void on_actionAxis_triggered(bool checked);
+
+    void on_actionGrid_triggered(bool checked);
 
 private:
     void init();
