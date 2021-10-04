@@ -32,6 +32,8 @@ private:
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
 
+    int mCurrentEditItemIndex{-1};  //index into selected GameObject
+
     std::string itemToSpawn;
 };
 
