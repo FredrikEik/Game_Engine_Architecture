@@ -19,7 +19,7 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 	switch (defaultAsset)
 	{
 	case asset_CUBE:
-		return loadAsset(entityID, "../Assets/cube.obj"); // Hardcoding filepath. Could generate as well
+		return loadAsset(entityID, "Assets/cube.obj"); // Hardcoding filepath. Could generate as well
 		break;
 	case asset_SPHERE:
 		assert(false); // Implement it first, dummy

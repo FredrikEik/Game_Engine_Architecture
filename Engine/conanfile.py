@@ -23,7 +23,7 @@ class ConanPackage(ConanFile):
 		"glad:gl_version": 4.6, "glad:gles1_version": None, "glad:extensions":'', "glad:gles2_version": None, "glad:glsc2_version": None, "glad:glx_version": None,
 		"glad:no_loader": False, "glad:shared": False, "glad:spec": "gl", "glad:wgl_version": None, "glfw:vulkan_static": False, "glfw:shared": False
 	}
-#	exports_sources = "Source/*", "CMakeLists.txt"
+	exports_sources = ["CMakeList.txt"]
 
 	def configure_cmake(self):
 		cmake = CMake(self)
@@ -44,13 +44,14 @@ class ConanPackage(ConanFile):
 		cmake.build()
 		#cmake.test()
 
-#
-#	def package(self):
-#		cmake = self.configure_cmake()
-#		cmake.install()
-#
-#	def package_info(self):
-#		self.cpp_info.libs = ["GameInJin"]
+
+	def package(self):
+                
+		cmake = self.configure_cmake()
+		cmake.install()
+
+	def package_info(self):
+		self.cpp_info.libs = ["GameInJin"]
 
     	
     	

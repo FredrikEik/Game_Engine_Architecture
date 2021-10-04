@@ -117,7 +117,7 @@ int main()
 	view = glm::lookAt(cameraPos, cameraTarget, up);
 
 	
-	Shader* ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
+	Shader* ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
