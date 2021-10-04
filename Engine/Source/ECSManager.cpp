@@ -1,5 +1,6 @@
 #include "ECSManager.h"
 #include <iostream>
+#include "Assets/DefaultAssets.h"
 ECSManager::ECSManager()
 	: entities{ (*new std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>) },
 	factory{*new Factory},
@@ -15,9 +16,9 @@ ECSManager::ECSManager()
 
 ECSManager::~ECSManager()
 {
-	//delete& factory;
+	delete& factory;
 	delete& entities;
-	//delete& availableEntityIDs;
+	delete& availableEntityIDs;
 }
 
 
@@ -38,10 +39,14 @@ uint32 ECSManager::newEntity()
 
 void ECSManager::destroyEntity(uint32 entityID)
 {
+	if (!entities[entityID].first)
+		return;
+
 	std::vector<std::pair<std::type_index, uint32>> components = entities[entityID].second;
 	for (uint32 i{}; i < components.size(); ++i)
 	{
-		factory.removeComponent(entityID, components[i].first, components[i].second); 
+		//factory.removeComponent(entityID, components[i].first, components[i].second); 
+		removeComponentByRTTI(entityID, components[i].first);
 	}
 	entities[entityID].second.clear();
 	entities[entityID].first = false;
@@ -62,15 +67,77 @@ void ECSManager::printEntity(uint32 entityID)
 
 uint32 ECSManager::loadAsset(uint32 entityID, const std::filesystem::path& filePath)
 {
-	return factory.loadAsset(entityID, filePath);
+	// TODO: Add the component to the entity
+	//return factory.loadAsset(entityID, filePath);
+
+	uint32 componentID = factory.loadAsset(entityID, filePath);
+
+	std::pair<std::type_index, uint32> componentLocation(getAssetTypeIndex(filePath), componentID);
+
+	entities.at(entityID).second.push_back(componentLocation);
+
+	return componentID;
 }
 
-uint32 ECSManager::loadAsset(uint32 entityID, enum DefaultAsset defaultAsset)
+uint32 ECSManager::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 {
-	return factory.loadAsset(entityID, defaultAsset);
+	uint32 componentID = factory.loadAsset(entityID, defaultAsset);
+
+	std::pair<std::type_index, uint32> componentLocation(getAssetTypeIndex(defaultAsset), componentID);
+
+	entities.at(entityID).second.push_back(componentLocation);
+
+	return componentID;
 }
 
 Factory::ReusableAsset ECSManager::getReusableAsset(std::size_t hash)
 {
 	return factory.getReusableAsset(hash);
+}
+
+std::type_index ECSManager::getAssetTypeIndex(DefaultAsset defaultAsset)
+{
+	if (defaultAsset == DefaultAsset::CUBE)
+		return std::type_index(typeid(MeshComponent));
+	else
+		assert(false);
+
+	//INVALID
+	return std::type_index(typeid(ECSManager));
+}
+
+std::type_index ECSManager::getAssetTypeIndex(const std::filesystem::path& filePath)
+{
+	if (filePath.extension() == ".obj")
+		return std::type_index(typeid(MeshComponent));
+	else
+		assert(false);
+
+	//INVALID
+	return std::type_index(typeid(ECSManager));
+}
+
+void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componentType)
+{
+	if (componentType == std::type_index(typeid(TransformComponent)))
+		removeComponent<TransformComponent>(entityID);
+	else if (componentType == std::type_index(typeid(CameraComponent)))
+		removeComponent<CameraComponent>(entityID);
+	else if (componentType == std::type_index(typeid(MeshComponent)))
+		removeComponent<MeshComponent>(entityID);
+	else if (componentType == std::type_index(typeid(AxisAlignedBoxComponent)))
+		removeComponent<AxisAlignedBoxComponent>(entityID);
+	else
+	{
+		std::string msg{ "You are trying to remove component " };
+		msg.append(componentType.name());
+		msg.append(", but you have not added it to ");
+		msg.append(__func__);
+		msg.append(" at ");
+		msg.append(__FILE__);
+
+		DEBUG_LOG(msg);
+
+		assert(false); // You need to add the component you are using above
+	}
 }

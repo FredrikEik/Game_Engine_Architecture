@@ -1,8 +1,8 @@
 #pragma once
 
-enum DefaultAsset
+enum class DefaultAsset : uint8
 {
-	asset_CUBE,
-	asset_SPHERE,
-	asset_PLANE
+	CUBE,
+	SPHERE,
+	PLANE
 };

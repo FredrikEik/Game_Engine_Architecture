@@ -7,6 +7,8 @@
 #include "Components/ComponentManager.h"
 #include "Factory.h"
 
+enum class DefaultAsset : uint8;
+
 class ECSManager
 {
 public:
@@ -23,6 +25,9 @@ public:
 	template<typename ... Types>
 	void removeComponents(uint32 entityID);
 
+	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
+
+
 	void destroyEntity(uint32 entityID);
 
 	uint32 newEntity();
@@ -30,7 +35,7 @@ public:
 	void printEntity(uint32 entityID);
 
 	uint32 loadAsset(uint32 entityID, const std::filesystem::path& filePath);
-	uint32 loadAsset(uint32 entityID, enum DefaultAsset defaultAsset);
+	uint32 loadAsset(uint32 entityID, DefaultAsset defaultAsset);
 
 	Factory::ReusableAsset getReusableAsset(std::size_t hash);
 
@@ -47,6 +52,9 @@ private:
 	std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>& entities;
 	// Keeping record of available entity ids
 	std::vector<uint32> &availableEntityIDs;
+
+	std::type_index getAssetTypeIndex(DefaultAsset defaultAsset);
+	std::type_index getAssetTypeIndex(const std::filesystem::path& filePath);
 };
 template<typename T>
 inline ComponentManager<T>* ECSManager::getComponentManager()
