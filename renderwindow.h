@@ -74,6 +74,12 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    void setupMousPickingShader(int shaderIndex);
+    GLint mMatrixUniform2{-1};
+    GLint vMatrixUniform2{-1};
+    GLint pMatrixUniform2{-1};
+    GLint mPickingMatrixUniform{-1};
+
     class ResourceManager *mResourceManager{nullptr};
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures

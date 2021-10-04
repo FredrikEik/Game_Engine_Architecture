@@ -58,6 +58,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/mousepickingfragment.frag \
+    Shaders/mousepickingvertex.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

@@ -51,6 +51,7 @@ public:
 class CollisionComponent
 {
 public:
+
     float xMin{0};
     float xMax{0};
     float yMin{0};

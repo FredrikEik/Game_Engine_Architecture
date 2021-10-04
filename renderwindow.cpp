@@ -122,13 +122,15 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
+//    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "mousepickingvertex.vert").c_str(),
+//                                    (gsl::ShaderFilePath + "mousepickingfragment.frag").c_str());
+//    qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
+
     setupPlainShader(0);
     setupTextureShader(1);
+    //setupMousPickingShader(2);
 
     GameEngine::getInstance()->SetUpScene();
-
-    // Frustum stuff:
-        qDebug() << "pMatrix:" << mCurrentCamera->mProjectionMatrix.getPosition();
 
 
     // Should move to GameEngie
@@ -158,6 +160,24 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    for(int i{0}; i < mGameObjects.size(); i++)
+    {
+        int id = mGameObjects[i]->id;
+        int r = (id & 0x000000FF) >>  0;
+        int g = (id & 0x0000FF00) >>  8;
+        int b = (id & 0x00FF0000) >> 16;
+        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0)
+        {
+            glUniform4f(id, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+        }
+
+
+        glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+        glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+    }
     // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
     {
@@ -201,13 +221,20 @@ void RenderWindow::render()
 //        {
 //            continue;
 //        }
+        // Get a handle for our "pickingColorID" uniform
+        // Hardcoded to 2,
+
+        // This line says linking error
+        //GLuint pickingColorID = glGetUniformLocation(2, "PickingColor");
 
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
+
         if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0)
         {
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+            //glUniform4f(id, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
         }
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
@@ -265,6 +292,7 @@ void RenderWindow::render()
 //        mObjectsDrawn++;
         glBindVertexArray(0);
     }
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -293,9 +321,13 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mTextureUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
+void RenderWindow::setupMousPickingShader(int shaderIndex)
+{
+    mPickingMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "MVP" );
+}
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized

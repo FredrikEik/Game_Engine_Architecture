@@ -58,6 +58,8 @@ private slots:
 
     void on_actionCube_hovered();
 
+    void on_ScaleXspinBox_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

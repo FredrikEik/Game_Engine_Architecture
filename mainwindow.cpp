@@ -221,7 +221,7 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 
 
     //lastrot needs to be pr object
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX((arg1-lastXrot));
+   //S GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX((arg1-lastXrot));
     lastXrot = arg1;
 }
 
@@ -262,5 +262,12 @@ void MainWindow::on_actionSuzanne_triggered()
 void MainWindow::on_actionCube_hovered()
 {
     //ObjectListIndex = 0;
+}
+
+
+void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
+{
+//    QVector3D  scale = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(arg1));
+    //GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D{GLfloat(arg1),1,1});
 }
 

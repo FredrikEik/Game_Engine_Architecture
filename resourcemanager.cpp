@@ -88,8 +88,12 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
 
     std::string tempName = filepath;
-    tempName.erase(0,25);
-    tempName.erase(tempName.end()-4,tempName.end());
+    // Hardcoded filesize just to make "XYZ" work
+//    if(filepath.size() > 15)
+//    {
+        tempName.erase(0,25);
+        tempName.erase(tempName.end()-4,tempName.end());
+//    }
     tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
 
     tempGO->id = objectIDcounter;
