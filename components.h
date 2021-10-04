@@ -69,12 +69,14 @@ struct FrustumCollisionComponent
 {
 public:
     // near plane
+    float nearPlaneLength;
     gsl::Vector3D leftBottomNear;
     gsl::Vector3D rightBottomNear;
     gsl::Vector3D leftTopNear;
     gsl::Vector3D rightTopNear;
 
     // far plane
+    float farPlaneLength;
     gsl::Vector3D leftBottomFar;
     gsl::Vector3D rightBottomFar;
     gsl::Vector3D leftTopFar;

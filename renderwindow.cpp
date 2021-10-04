@@ -161,8 +161,9 @@ void RenderWindow::init()
 
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
+    mCurrentCamera = new Camera(30.0f, mAspectratio);
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mCurrentCamera->updateFrustumPos(45.0f, mAspectratio);
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
@@ -219,11 +220,6 @@ void RenderWindow::init()
 
 }
 
-
-
-
-
-
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
@@ -242,6 +238,7 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
+
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
@@ -254,12 +251,12 @@ void RenderWindow::render()
             {
                 glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
+            mCurrentCamera->draw();
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
             //draw the object
-
 			factory->mGameObjects[i]->draw();
             factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
             factory->mGameObjects[i]->getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);

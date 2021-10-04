@@ -3,21 +3,24 @@
 
 #include "matrix4x4.h"
 #include "vector3d.h"
+#include "gameobject.h"
 #include "components.h"
 /**
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
  */
-class Camera
+class Camera : public GameObject
 {
 public:
-    Camera();
+    Camera(float fieldOfView, float aspectRatio);
 
     void pitch(float degrees);
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
     void update();
+    void init() override;
+    void draw() override;
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
@@ -50,6 +53,14 @@ private:
     gsl::Matrix4x4 mPitchMatrix;
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
+
+    float farplaneX;
+    float farplaneY;
+    float farplaneZ;
+    float nearplaneX;
+    float nearplaneY;
+    float nearplaneZ;
+
 
     TransformComponent* transformComp;
     MeshComponent* meshComp;
