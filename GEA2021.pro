@@ -43,7 +43,6 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     SoundCode/scr/vector3.cpp \
-    transformwidget.cpp \
     vertex.cpp \
     SoundCode/scr/wavfilehandler.cpp \
     xyz.cpp \
@@ -72,7 +71,6 @@ HEADERS += \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    transformwidget.h \
     vertex.h \
     xyz.h \
     triangle.h \
@@ -83,8 +81,7 @@ HEADERS += \
 
 FORMS += \
     detailswidget.ui \
-    mainwindow.ui \
-    transformwidget.ui
+    mainwindow.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \
