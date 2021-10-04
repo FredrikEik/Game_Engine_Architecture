@@ -18,9 +18,9 @@ DetailsWidget::~DetailsWidget()
     delete ui;
 }
 
-void DetailsWidget::init(Renderwindow *renderWindow, int index)
+void DetailsWidget::init(GameObject *gameobject, int index)
 {
-    mRenderwindow = renderWindow;
+    mGameObject = gameobject;
     inSceneArrayIndex =index;
     readPosition();
     readRotation();
@@ -30,12 +30,15 @@ void DetailsWidget::init(Renderwindow *renderWindow, int index)
 
 void DetailsWidget::readPosition()
 {
-
+    gsl::Vector3D position = mGameObject[inSceneArrayIndex].getTransformComponent()->mMatrix.getPosition();
+    ui->DoubleSpinBoxXPosition->setValue(position.x);
+    ui->DoubleSpinBoxXPosition->setValue(position.y);
+    ui->DoubleSpinBoxXPosition->setValue(position.z);
 }
 
 void DetailsWidget::readRotation()
 {
-
+    //gsl::Vector3D rotation =mGameObject[inSceneArrayIndex].getTransformComponent()->
 }
 
 void DetailsWidget::readScale()
@@ -45,24 +48,27 @@ void DetailsWidget::readScale()
 
 void DetailsWidget::setPosition()
 {
-
+        gsl::Vector3D position;
+        position.x = ui->DoubleSpinBoxXPosition->value();
+        position.y = ui->DoubleSpinBoxYPosition->value();
+        position.z = ui->DoubleSpinBoxZPosition->value();
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)
 {
-
+    setPosition();
 }
 
 
 void DetailsWidget::on_DoubleSpinBoxYPosition_valueChanged(double arg1)
 {
-
+    setPosition();
 }
 
 
 void DetailsWidget::on_DoubleSpinBoxZPosition_valueChanged(double arg1)
 {
-
+    setPosition();
 }
 
 

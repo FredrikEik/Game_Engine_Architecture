@@ -5,7 +5,7 @@
 #include "vector3d.h"
 
 
-class Renderwindow;
+class GameObject;
 
 namespace Ui {
 class DetailsWidget;
@@ -19,7 +19,7 @@ public:
     explicit DetailsWidget(QWidget *parent = nullptr, float positionPace = 1.f, float rotationPace = 1.f, float scalePace = 1.f);
     ~DetailsWidget();
 
-    void init(Renderwindow* renderWindow, int index);
+    void init(GameObject* gameobject, int index);
 
 
 
@@ -55,7 +55,7 @@ private:
     float mScalePace {0.1};
 
     int inSceneArrayIndex{-1};
-    Renderwindow* mRenderwindow {nullptr};
+    GameObject* mGameObject {nullptr};
 
 
 };
