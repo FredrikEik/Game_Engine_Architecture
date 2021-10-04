@@ -74,18 +74,7 @@ void Engine::init()
 	glfwSetCursorPosCallback(window, Engine::mouse_callback);
 	glfwSetScrollCallback(window, Engine::scroll_callback);
 
-
-	//cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	//cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-	//up = glm::vec3(0.0f, 1.0f, 0.0f);
-	//cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-	//cameraUp = glm::cross(cameraDirection, cameraRight);
-
-	////look at matrix
-	//view = glm::lookAt(cameraPos, cameraTarget, up);
-
-	ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
+	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
 	CameraSystem::setPerspective(editorCameraEntity, ECS, 
@@ -100,7 +89,6 @@ void Engine::init()
 	ImGui_ImplOpenGL3_Init("#version 460 core");
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-
 }
 
 void Engine::loop()
@@ -110,10 +98,6 @@ void Engine::loop()
 		glfwPollEvents();
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
-
-		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
 
 		//// input
 		processInput(window);
@@ -181,87 +165,16 @@ void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height
 void Engine::processInput(GLFWwindow* window)
 {
 	Input::getInstance()->updateKeyState(window);
-	return;
-
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-
-	const float cameraSpeed = 200000000.5f * deltaTime; // adjust accordingly
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		shouldCaptureMouse = true;
-		//std::cout << "Holding rmb\n";
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cameraPos += cameraSpeed * cameraFront;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cameraPos -= cameraSpeed * cameraFront;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		{
-		}
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		{
-		}
-	}
-	else
-	{
-		shouldCaptureMouse = false;
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	}
 }
 
 void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	Input::getInstance()->setMousePosition(window, xpos, ypos);
-
-	//TODO: Put the input into a queue or whatever. 
-
-	//if (shouldCaptureMouse)
-	//{
-	//	if (firstMouse)
-	//	{
-	//		lastX = xpos;
-	//		lastY = ypos;
-	//		firstMouse = false;
-	//	}
-
-	//	float xoffset = xpos - lastX;
-	//	float yoffset = lastY - ypos; // reversed: y ranges bottom to top
-	//	lastX = xpos;
-	//	lastY = ypos;
-
-	//	const float sensitivity = 0.1f;
-	//	xoffset *= sensitivity;
-	//	yoffset *= sensitivity;
-
-	//	yaw += xoffset;
-	//	pitch += yoffset;
-
-	//	if (pitch > 89.0f)
-	//		pitch = 89.0f;
-	//	if (pitch < -89.0f)
-	//		pitch = -89.0f;
-
-	//	glm::vec3 direction;
-	//	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	//	direction.y = sin(glm::radians(pitch));
-	//	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	//	cameraFront = glm::normalize(direction);
-	//	std::cout << xpos << '\n';
-	//	std::cout << ypos << '\n';
-	//}
-	//else
-	//{
-	//	firstMouse = true;
-	//}
 }
 
 void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+	Input::getInstance()->setScrollState(xoffset, yoffset);
 	//fov -= (float)yoffset;
 	//if (fov < 1.0f)
 	//	fov = 1.0f;

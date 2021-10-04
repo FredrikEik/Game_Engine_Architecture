@@ -39,13 +39,13 @@ void Input::setMousePosition(GLFWwindow* window, double xpos, double ypos)
 {
     m_mousePosition.x = xpos;
     m_mousePosition.y = ypos;
-
 }
 
 void Input::updateKeyState(GLFWwindow* window)
 {
     updateMousePosition();
     updateMouseKeyState(window);
+    updateScrollState();
 	bool keyStateNew[m_keysToCapture];
     for(int i{}; i < m_keysToCapture; ++i)
     {
@@ -105,4 +105,19 @@ void Input::updateMouseKeyState(GLFWwindow* window)
         }
         m_mouseKeyStateCurrent[i].state = keyStateNew[i];
     }
+}
+
+void Input::updateScrollState()
+{
+    m_scrollState.deltaX = m_scrollState.x;
+    m_scrollState.deltaY = m_scrollState.y;
+
+    m_scrollState.x = 0;
+    m_scrollState.y = 0;
+}
+
+void Input::setScrollState(double xoffset, double yoffset)
+{
+    m_scrollState.x = xoffset;
+    m_scrollState.y = yoffset;
 }
