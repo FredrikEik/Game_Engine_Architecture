@@ -132,6 +132,9 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
+          <layout class="QVBoxLayout" name="blDetailsContainer_4"/>
+         </item>
+         <item>
           <spacer name="verticalSpacer_4">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -143,9 +146,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="blDetailsContainer_4"/>
          </item>
         </layout>
        </widget>
