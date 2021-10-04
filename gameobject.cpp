@@ -5,7 +5,6 @@ GameObject::GameObject()
     meshComp = new MeshComponent();
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
-    boxCollisionComp = new BoxCollisionComponent();
     transformComp->mMatrix.setToIdentity();
 }
 
@@ -15,5 +14,3 @@ GameObject::~GameObject()
    //glDeleteVertexArrays( 1, &mVAO );
     //glDeleteBuffers( 1, &mVBO );
 }
-
-

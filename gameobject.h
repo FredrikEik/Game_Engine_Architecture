@@ -11,14 +11,13 @@ public:
     virtual ~GameObject();
     virtual void init() = 0;
     virtual void draw() = 0;
+    virtual void move(float x, float y, float z) = 0;
 
-    std::string mName;
+    uint32_t ID;
 
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}
     MaterialComponent* getMaterialComponent(){return materialComp;}
-    BoxCollisionComponent* getBoxCollisionComponent() {return boxCollisionComp;}
-
 
     void setMeshComponent(MeshComponent* newMeshComp){meshComp=newMeshComp;}
 
@@ -26,7 +25,7 @@ private:
     TransformComponent* transformComp;
     MeshComponent* meshComp;
     MaterialComponent* materialComp;
-    BoxCollisionComponent* boxCollisionComp;
+
 };
 #endif // GAMEOBJECT_H
 

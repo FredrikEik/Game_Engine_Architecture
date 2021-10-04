@@ -10,6 +10,7 @@
 #include "input.h"
 #include "constants.h"
 #include "soundmanager.h"
+#include "quadtree.h"
 
 class QOpenGLContext;
 class Shader;
@@ -54,6 +55,7 @@ private:
     void startOpenGLDebugger();
 
     bool isColliding(BoxCollisionComponent &Box1, BoxCollisionComponent &Box2);
+	bool isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &Sphere);
     bool isInFrustum(FrustumCollisionComponent &);
 
     void setCameraSpeed(float value);
@@ -76,7 +78,8 @@ private:
     Camera* mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    Factory* factory = new Factory;
+    class Factory* factory = new Factory;
+    class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
 
 
     //std::vector<VisualObject*> mVisualObjects;

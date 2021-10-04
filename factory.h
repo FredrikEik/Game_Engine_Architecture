@@ -4,20 +4,21 @@
 #include "iostream"
 #include "gameobject.h"
 #include <unordered_map>
-
+#include <queue>
 class Factory
 {
 public:
     Factory();
-    std::vector<GameObject*> mGameObjects;
+    std::unordered_map<uint32_t, GameObject*> mGameObjects;
 
-    void createObject(std::string objectName);
+    GameObject* createObject(std::string objectName);
 
     void saveMesh(std::string fileName, std::string nickName);
 
 
 private:
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
+    std::queue<std::uint32_t> mAvailableIDs;
 
 
 protected:

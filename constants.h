@@ -20,6 +20,7 @@ namespace gsl  //Game School Lib
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
+    const std::uint32_t MAX_OBJECTS{5000};
 
     enum Components
     {

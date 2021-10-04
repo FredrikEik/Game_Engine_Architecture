@@ -31,6 +31,8 @@ public:
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
     GLfloat operator*(const Vector3D& rhs) const;  // v * v
 
+    float sum();
+
     //Functions
     GLfloat length() const;
     GLfloat lengthNoSqrt() const;
@@ -82,6 +84,9 @@ public:
     GLfloat y;
     GLfloat z;
 };
+
+Vector3D V3Dmin(Vector3D a, Vector3D b);
+Vector3D V3Dmax(Vector3D a, Vector3D b);
 
 } //namespace
 

@@ -3,18 +3,23 @@
 #include "triangle.h"
 #include "cube.h"
 #include "camera.h"
+#include "sphere.h"
 #include "factory.h"
 #include "objreader.h"
+#include "constants.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
 
 Factory::Factory()
 {
-
+    for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
+    {
+        mAvailableIDs.push(ID);
+    }
 }
 
-void Factory::createObject(std::string objectName)
+GameObject* Factory::createObject(std::string objectName)
 {
 
     GameObject* objectToCreate;
@@ -28,8 +33,8 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.5f,  0.5f);
-        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
+        static_cast<Cube*>(objectToCreate)->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.5f,  0.5f);
+        static_cast<Cube*>(objectToCreate)->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
     }
 
     else if(objectName == "Plane")
@@ -41,8 +46,6 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.0f,  0.5f);
-        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.0f, -0.5f);
     }
 
     else if(objectName == "Triangle")
@@ -54,8 +57,6 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.0f,  0.5f);
-        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.0f, -0.5f);
     }
 
     else if(objectName == "MarioCube")
@@ -67,8 +68,21 @@ void Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.55f,  0.55f,  0.55f);
-        objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.55f, -0.55f, -0.55f);
+        static_cast<MarioCube*>(objectToCreate)->getBoxCollisionComponent()->max = gsl::Vector3D( 0.55f,  0.55f,  0.55f);
+        static_cast<MarioCube*>(objectToCreate)->getBoxCollisionComponent()->min = gsl::Vector3D(-0.55f, -0.55f, -0.55f);
+    }
+
+    else if(objectName == "Sphere")
+    {
+        objectToCreate = new Sphere;
+        if(EXISTS("Sphere")) //If Sphere mesh exists
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->radius = 0.25;
     }
     else if(objectName == "Camera")
     {
@@ -77,12 +91,14 @@ void Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
     }
-    else{return;}
-
+    else{return nullptr;}
 
     objectToCreate->init();
-    mGameObjects.push_back(objectToCreate);
-    return;
+    objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
+    mAvailableIDs.pop();                        //Pop ID from queue of available IDs
+
+    mGameObjects.insert(std::pair<uint32_t, GameObject*>{objectToCreate->ID, objectToCreate});
+    return objectToCreate;
 }
 
     void Factory::saveMesh(std::string fileName, std::string nickName)

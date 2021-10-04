@@ -6,8 +6,9 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
-
+#include <math.h>
 #include <iostream>
+#include <algorithm>
 
 #include "shader.h"
 #include "mainwindow.h"
@@ -17,6 +18,7 @@
 #include "plane.h"
 #include "triangle.h"
 #include "mariocube.h"
+#include "sphere.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -26,7 +28,7 @@
 #include "soundmanager.h"
 #include "soundsource.h"
 #include "vector3.h"
-
+#include "quadtree.cpp"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -178,7 +180,9 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-
+    //********************** Set up quadtree *******************
+    gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
+    mQuadtree.init(nw, ne, sw, se);
 
     //********************** Sound set up **********************
 
@@ -246,52 +250,45 @@ void RenderWindow::render()
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
-        for (unsigned int i=0; i<factory->mGameObjects.size(); i++)
+        for(auto it = factory->mGameObjects.begin(); it != factory->mGameObjects.end(); it++)
 		{	
-            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+            unsigned int shaderProgramIndex = it->second->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform, it->second->getMaterialComponent()->mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
-            //draw the object
-			factory->mGameObjects[i]->draw();
-            factory->mGameObjects[i]->getTransformComponent()->mMatrix.translate(0.001f,0.001f,-0.001f);
-            factory->mGameObjects[i]->getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
-            factory->mGameObjects[i]->getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
 
-            //MEGA TEMP COLLISION DEBUG TEST THINGY
+            //draw the object
+
+            it->second->draw();
+            it->second->move(0.001f, 0.001f, -0.001f);
+
+            //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
             for (unsigned int y=0; y<factory->mGameObjects.size(); y++)
             {
                if(factory->mGameObjects[i] != factory->mGameObjects[y])
                {
-                   bool test;
-                   test = isColliding(*factory->mGameObjects[i]->getBoxCollisionComponent(), *factory->mGameObjects[y]->getBoxCollisionComponent());
-                   qDebug() << "Box " << i << "colliding with box" << y << " = " << test;
+                   //Check if both are cubes
+                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Cube*>(factory->mGameObjects[y]) != nullptr)
+                   {
+                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
+                                               *dynamic_cast<Cube*>(factory->mGameObjects[y])->getBoxCollisionComponent());
+                       qDebug() << "Box " << i << "colliding with box" << y << " = " << test;
+                   }
 
-
-
-                   qDebug() << "Box 1 max pos:" << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getX()
-                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getY()
-                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->max.getZ();
-
-                   qDebug() << "Box 1 min pos:" << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getX()
-                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getY()
-                                                << factory->mGameObjects[i]->getBoxCollisionComponent()->min.getZ();
-
-                   qDebug() << "Box 2 max pos:" << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getX()
-                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getY()
-                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->max.getZ();
-
-                   qDebug() << "Box 2 min pos:" << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getX()
-                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getY()
-                                                << factory->mGameObjects[y]->getBoxCollisionComponent()->min.getZ();
-
+                   //Check if one is sphere and one is cube
+                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Sphere*>(factory->mGameObjects[y]) != nullptr)
+                   {
+                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
+                                               *dynamic_cast<Sphere*>(factory->mGameObjects[y])->getSphereCollisionComponent());
+                       qDebug() << "Box " << i << "colliding with sphere" << y << " = " << test;
+                   }
                }
             }
             */
@@ -404,11 +401,17 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::buttonCreate(std::string objectName)
 {
     mClick->play();
-    if(objectName == "MarioCube"){
+    if(objectName == "MarioCube" || objectName == "Sphere")
+    {
     factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
     }
-    factory->createObject(objectName);
+    GameObject* newObject = factory->createObject(objectName);
 
+    gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
+    gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
+    uint32_t id = newObject->ID;
+
+    mQuadtree.insert(position2D, id, newObject);
 }
 
 
@@ -463,6 +466,16 @@ bool RenderWindow::isColliding(BoxCollisionComponent &Box1, BoxCollisionComponen
             (Box1.min.getY() < Box2.max.getY()) &&
             (Box1.max.getZ() > Box2.min.getZ()) &&
             (Box1.min.getZ() < Box2.max.getZ()));
+}
+
+bool RenderWindow::isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &Sphere)
+{
+    gsl::Vector3D closestPointInBox = gsl::V3Dmin(gsl::V3Dmax(Sphere.center, Box.min),Box.max);
+    gsl::Vector3D distanceVector = closestPointInBox - Sphere.center;
+
+    double distanceSquared = sqrt(pow(distanceVector.getX(), 2) + pow(distanceVector.getY(), 2) + pow(distanceVector.getZ(), 2));
+
+    return (distanceSquared < pow(Sphere.radius,2));
 }
 
 void RenderWindow::setCameraSpeed(float value)

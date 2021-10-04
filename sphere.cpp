@@ -1,21 +1,14 @@
-#include "plane.h"
-#include "components.h"
+#include "Sphere.h"
+#include "objreader.h"
 
-Plane::Plane()
+
+Sphere::Sphere()
 {
-                                                    // Positions             // Colors          // UV
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
+    sphereCollisionComp = new SphereCollisionComponent();
 }
+Sphere::~Sphere() {}
 
-Plane::~Plane() {}
-
-void Plane::init(/*GLint matrixUniform[4]*/)
+void Sphere::init(/*GLint matrixUniform[4]*/)
 {
     initializeOpenGLFunctions();
 
@@ -52,17 +45,25 @@ void Plane::init(/*GLint matrixUniform[4]*/)
        glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
        glEnableVertexAttribArray(2);
 
+       //Second buffer - holds the indices (Element Array Buffer - EAB):
+       glGenBuffers(1, &getMeshComponent()->mEAB);
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mEAB);
+       glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mIndices.size() * sizeof(GLuint), getMeshComponent()->mIndices.data(), GL_STATIC_DRAW);
+
        glBindVertexArray(0);
 }
 
-void Plane::move(float x, float y, float z)
+void Sphere::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
+    getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
 }
 
-void Plane::draw()
+
+void Sphere::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }

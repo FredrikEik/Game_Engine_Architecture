@@ -52,3 +52,8 @@ void Triangle::draw()
     glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
+
+void Triangle::move(float x, float y, float z)
+{
+    getTransformComponent()->mMatrix.translate(x,y,z);
+}

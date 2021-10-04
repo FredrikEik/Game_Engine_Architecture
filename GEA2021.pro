@@ -33,11 +33,13 @@ SOURCES += main.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
+    quadtree.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    sphere.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
@@ -63,9 +65,11 @@ HEADERS += \
     mariocube.h \
     objreader.h \
     plane.h \
+    quadtree.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    sphere.h \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
