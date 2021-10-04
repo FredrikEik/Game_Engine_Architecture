@@ -19,7 +19,6 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 	std::cout << "Loading asset\n";
 	switch (defaultAsset)
 	{
-<<<<<<< HEAD
 	case asset_CUBE:
 		return loadAsset(entityID, "Assets/cube.obj"); // Hardcoding filepath. Could generate as well
 		break;
