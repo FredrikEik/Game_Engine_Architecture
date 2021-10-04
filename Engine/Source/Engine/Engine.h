@@ -1,5 +1,6 @@
 #pragma once
 #include "glm/glm.hpp"
+#include "../CoreMinimal.h"
 
 class Engine
 {
@@ -40,7 +41,6 @@ private:
 	glm::vec3 cameraRight{};
 	glm::mat4 view{};
 
-
 	float yaw{ -90.0f };
 	float pitch{ 0.0f };
 
@@ -59,4 +59,6 @@ private:
 	//TODO: Move these into appropriate classes. 
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
+
+	uint32 editorCameraEntity{};
 };

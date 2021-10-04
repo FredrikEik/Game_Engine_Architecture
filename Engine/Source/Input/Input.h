@@ -4,11 +4,11 @@
 enum KEY_CODES
 {
     // https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
-    KEY_LMB = 0x01,
-    KEY_RMB = 0x02,
-    KEY_MMB = 0x04,
-    KEY_MBACK = 0x05,
-    KEY_MFORWARD = 0x06,
+    KEY_LMB = 0x00,
+    KEY_RMB = 0x01,
+    KEY_MMB = 0x02,
+    KEY_MBACK = 0x03,
+    KEY_MFORWARD = 0x04,
     KEY_A = 0x41,
     KEY_B = 0x42,
     KEY_C = 0x43,

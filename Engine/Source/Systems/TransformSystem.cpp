@@ -15,3 +15,9 @@ void TransformSystem::moveAll(class ComponentManager<TransformComponent>* compon
 		transformArray[i].transform = glm::translate(transformArray[i].transform, glm::vec3(.0010f, .003f, 0.001f));
 	}
 }
+
+void TransformSystem::move(uint32 entity, glm::vec3 deltaLocation, ECSManager* ECS)
+{
+	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	transform->transform[3] += glm::vec4(deltaLocation, 0);
+}

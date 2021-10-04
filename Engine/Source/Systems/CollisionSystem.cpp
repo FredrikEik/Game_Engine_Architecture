@@ -102,6 +102,8 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 		vertices[0].m_xyz[1],
 		vertices[0].m_xyz[2]);
 
+	// Looping through all vertices to find the outer bounds
+	// of the mesh.
 	glm::vec3 tempPos{};
 	for (const auto& it : vertices)
 	{
