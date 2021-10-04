@@ -75,18 +75,21 @@ void Engine::init()
 	glfwSetScrollCallback(window, Engine::scroll_callback);
 
 
-	cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	//cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	//cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
-	up = glm::vec3(0.0f, 1.0f, 0.0f);
-	cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-	cameraUp = glm::cross(cameraDirection, cameraRight);
+	//up = glm::vec3(0.0f, 1.0f, 0.0f);
+	//cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	//cameraUp = glm::cross(cameraDirection, cameraRight);
 
-	//look at matrix
-	view = glm::lookAt(cameraPos, cameraTarget, up);
+	////look at matrix
+	//view = glm::lookAt(cameraPos, cameraTarget, up);
 
 	ourShader = new Shader("../Shaders/BasicShader.vert", "../Shaders/BasicShader.frag");
-
+	editorCameraEntity = ECS->newEntity();
+	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
+	CameraSystem::setPerspective(editorCameraEntity, ECS, 
+		glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f));
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -119,8 +122,6 @@ void Engine::loop()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-
-
 		//// RENDER
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,7 +139,7 @@ void Engine::loop()
 
 		//// TEMP UPDATE
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
-		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
+		//TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
 
 		if (ImGui::Button("Destroy entity 0"))
 		{
@@ -146,11 +147,12 @@ void Engine::loop()
 		}
 
 		ImGui::End();
-
+		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
 		MeshSystem::draw(ourShader, "u_model", ECS);
+		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		//ourShader.setMat4("u_model", model);
-		ourShader->setMat4("u_view", view);
-		ourShader->setMat4("u_projection", projection);
+		//ourShader->setMat4("u_view", view);
+		//ourShader->setMat4("u_projection", projection);
 
 
 		// Render dear imgui into screen
