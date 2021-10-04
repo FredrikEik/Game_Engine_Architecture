@@ -28,8 +28,7 @@
 #include "soundmanager.h"
 #include "soundsource.h"
 #include "vector3.h"
-
-
+#include "quadtree.cpp"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -178,7 +177,9 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-
+    //********************** Set up quadtree *******************
+    gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
+    mQuadtree.init(nw, ne, sw, se);
 
     //********************** Sound set up **********************
 
@@ -248,23 +249,23 @@ void RenderWindow::render()
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
-        for (unsigned int i=0; i<factory->mGameObjects.size(); i++)
+        for(auto it = factory->mGameObjects.begin(); it != factory->mGameObjects.end(); it++)
 		{	
-            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+            unsigned int shaderProgramIndex = it->second->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform, it->second->getMaterialComponent()->mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
 
             //draw the object
 
-			factory->mGameObjects[i]->draw();
-            factory->mGameObjects[i]->move(0.001f, 0.001f, -0.001f);
+            it->second->draw();
+            it->second->move(0.001f, 0.001f, -0.001f);
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
@@ -403,8 +404,13 @@ void RenderWindow::buttonCreate(std::string objectName)
     {
     factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
     }
-    factory->createObject(objectName);
+    GameObject* newObject = factory->createObject(objectName);
 
+    gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
+    gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
+    uint32_t id = newObject->ID;
+
+    mQuadtree.insert(position2D, id, newObject);
 }
 
 

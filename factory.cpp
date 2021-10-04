@@ -5,16 +5,20 @@
 #include "sphere.h"
 #include "factory.h"
 #include "objreader.h"
+#include "constants.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
 
 Factory::Factory()
 {
-
+    for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
+    {
+        mAvailableIDs.push(ID);
+    }
 }
 
-void Factory::createObject(std::string objectName)
+GameObject* Factory::createObject(std::string objectName)
 {
 
     GameObject* objectToCreate;
@@ -79,12 +83,16 @@ void Factory::createObject(std::string objectName)
         static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->radius = 0.25;
     }
-    else{return;}
+    else{return nullptr;}
 
 
     objectToCreate->init();
-    mGameObjects.push_back(objectToCreate);
-    return;
+    objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
+    mAvailableIDs.pop();                        //Pop ID from queue of available IDs
+
+
+    mGameObjects.insert(std::pair<uint32_t, GameObject*>{objectToCreate->ID, objectToCreate});
+    return objectToCreate;
 }
 
     void Factory::saveMesh(std::string fileName, std::string nickName)

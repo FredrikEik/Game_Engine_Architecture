@@ -13,7 +13,7 @@ public:
     virtual void draw() = 0;
     virtual void move(float x, float y, float z) = 0;
 
-    std::string mName;
+    uint32_t ID;
 
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}
