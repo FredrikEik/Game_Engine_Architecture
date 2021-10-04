@@ -14,7 +14,7 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
     frustumComp = new FrustumCollisionComponent();
-    frustumComp->farPlaneLength = 100.0f;
+    frustumComp->farPlaneLength  = 50.0f;
     frustumComp->nearPlaneLength = 10.0f;
 
     farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength;
@@ -24,26 +24,71 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
     nearplaneZ = frustumComp->nearPlaneLength;
 
-    //Camerapos
-    getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  0.0f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    //NearPlane
-    //BottomRight
-    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, nearplaneZ,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    //TopRight
-    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, nearplaneZ,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    //TopLeft
-    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, nearplaneY, nearplaneZ,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    //BottomLeft
-    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, nearplaneZ,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
+    //Nearplane right triangle
+    getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    //Nearplane left triangle
+    getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    //Nearplane top triangle
+    getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    //Nearplane bottom trianlge
+    getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    //Nearplane end square
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     0.0f, 1.0f, 0.0f,    0.0f, 1.0f});
+
     //Farplane
-    //BottomLeft
-    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, farplaneZ,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    //TopLeft
-    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, farplaneZ,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    //TopRight
-    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, farplaneZ,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    //BottomRight
-    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, -farplaneY, farplaneZ,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
+    //Farplane right square
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, -farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+
+    //Farplane left square
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, -farplaneZ,      1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+
+    //Farplane top square
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, nearplaneY, -nearplaneZ,     1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+
+    //Farplane bottom square
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-nearplaneX, -nearplaneY, -nearplaneZ,   1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, -farplaneZ,      1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, -farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, -farplaneZ,      1.0f, 0.0f, 0.0f,    1.0f, 0.0f});
+
+    //Farplane end square
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, -farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, -farplaneZ,      1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, -farplaneY, -farplaneZ,      1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+    getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
+
 }
 
 
@@ -130,15 +175,15 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
     nearplaneZ = frustumComp->nearPlaneLength;
 
-    frustumComp->rightTopFar     = gsl::Vector3D(farplaneX, farplaneY, farplaneZ);
-    frustumComp->rightBottomFar  = gsl::Vector3D(farplaneX, -farplaneY, farplaneZ);
-    frustumComp->leftTopFar      = gsl::Vector3D(-farplaneX, farplaneY, farplaneZ);
-    frustumComp->leftBottomFar   = gsl::Vector3D(-farplaneX, -farplaneY, farplaneZ);
+    frustumComp->rightTopFar     = gsl::Vector3D(farplaneX, farplaneY, -farplaneZ);
+    frustumComp->rightBottomFar  = gsl::Vector3D(farplaneX, -farplaneY, -farplaneZ);
+    frustumComp->leftTopFar      = gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ);
+    frustumComp->leftBottomFar   = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
 
-    frustumComp->rightTopNear    = gsl::Vector3D(nearplaneX, nearplaneY, nearplaneZ);
-    frustumComp->rightBottomNear = gsl::Vector3D(nearplaneX, -nearplaneY, nearplaneZ);
-    frustumComp->leftTopNear     = gsl::Vector3D(-nearplaneX, nearplaneY, nearplaneZ);
-    frustumComp->leftBottomNear  = gsl::Vector3D(-nearplaneX, -nearplaneY, nearplaneZ);
+    frustumComp->rightTopNear    = gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ);
+    frustumComp->rightBottomNear = gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ);
+    frustumComp->leftTopNear     = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
+    frustumComp->leftBottomNear  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
 
 }
 
@@ -195,7 +240,7 @@ void Camera::init(/*GLint matrixUniform[4]*/)
 void Camera::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_LINE, 0, getMeshComponent()->mVertices.size());
+    glDrawArrays(GL_LINE_STRIP, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
 

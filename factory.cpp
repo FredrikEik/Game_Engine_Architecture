@@ -2,6 +2,7 @@
 #include "mariocube.h"
 #include "triangle.h"
 #include "cube.h"
+#include "camera.h"
 #include "factory.h"
 #include "objreader.h"
 #include <QDebug>
@@ -68,6 +69,13 @@ void Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getBoxCollisionComponent()->max = gsl::Vector3D( 0.55f,  0.55f,  0.55f);
         objectToCreate->getBoxCollisionComponent()->min = gsl::Vector3D(-0.55f, -0.55f, -0.55f);
+    }
+    else if(objectName == "Camera")
+    {
+        objectToCreate = new Camera(10, 5/4);
+        objectToCreate->getMeshComponent();
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
     }
     else{return;}
 
