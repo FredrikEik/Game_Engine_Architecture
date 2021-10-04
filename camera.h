@@ -21,6 +21,7 @@ public:
     void update();
     void init() override;
     void draw() override;
+    void move(float x, float y, float z) override;
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;

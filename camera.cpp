@@ -244,3 +244,8 @@ void Camera::draw()
     glBindVertexArray(0);
 }
 
+void Camera::move(float x, float y, float z)
+{
+    getTransformComponent()->mMatrix.translate(x,y,z);
+}
+
