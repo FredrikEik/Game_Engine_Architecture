@@ -301,6 +301,17 @@ void RenderWindow::render()
          }
     }
 
+        //debug mousePickingRay
+        /*if (mDrawMousePickRay)
+        {
+            gsl::Matrix4x4 temp(true);
+            glBindVertexArray( mDebugMousePickRay.mVAO[0] );
+            glUniformMatrix4fv( mShaderPrograms[0]->pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mShaderPrograms[0]->vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
+        }*/
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -404,7 +415,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::buttonCreate(std::string objectName)
+void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
     if(objectName == "MarioCube"){
@@ -541,7 +552,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         for(unsigned long long i{0}; i < factory->mGameObjects.size(); i++)
         {
             //making the vector from camera to object we test against
-            gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mEditorCamera->mPosition;
+            gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mCurrentCamera->position();
 
             //making the normal of the ray - in relation to the camToObject vector
             //this is the normal of the surface the camToObject and ray_wor makes:
@@ -568,6 +579,11 @@ void RenderWindow::mousePicking(QMouseEvent *event)
             }
         }
     }
+}
+
+void RenderWindow::cancelPickedObject()
+{
+    mIndexToPickedObject = -1;
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)

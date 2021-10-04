@@ -16,30 +16,6 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Toggle Wireframe</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="CreateObject">
-        <property name="text">
-         <string>Create Object</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="createDropDownBox"/>
-      </item>
-     </layout>
-    </item>
-    <item>
      <widget class="QLabel" name="label">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -59,7 +35,91 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="OpenGLLayout"/>
+     <layout class="QVBoxLayout" name="OpenGLLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Toggle Wireframe</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="CreateObject">
+          <property name="text">
+           <string>Create Object</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="createDropDownBox"/>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="twSceneOutliner">
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="gobNameEdit">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>15</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>198</width>
+             <height>198</height>
+            </rect>
+           </property>
+           <widget class="QWidget" name="layoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>20</y>
+              <width>171</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="blDetailsContainer"/>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
