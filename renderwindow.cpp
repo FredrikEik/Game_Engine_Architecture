@@ -235,8 +235,9 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
+    mCoreEngine = CoreEngine::getInstance();
+    mCoreEngine->initCameraProjectionMatrixes(mAspectratio);
+    //    qDebug() << mCurrentCamera.mProjectionMatrix;
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -269,8 +270,8 @@ void RenderWindow::toggleWireframe(bool buttonState)
 {
     if (buttonState)
     {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
-        glDisable(GL_CULL_FACE);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
+            glDisable(GL_CULL_FACE);
     }
     else
     {
@@ -360,6 +361,13 @@ void RenderWindow::setToCurrentCamera(Camera *cam)
 {
     mCurrentCamera = cam;
 }
+
+Camera *RenderWindow::getCurrentCamera()
+{
+    return mCurrentCamera;
+}
+
+
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {

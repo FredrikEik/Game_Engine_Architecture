@@ -29,7 +29,14 @@ public:
     void SetUpScene();
     void HandleInput();
 
+    void swapCurrentCamera();
+    void initCameraProjectionMatrixes(float AspectRatio);
+
+    void playStartGameSound();
+
     Input mInput;
+
+    bool isPlaying();
 
 private slots:
     void GameLoop();
@@ -37,15 +44,19 @@ private slots:
 
 private:
 
+    bool bUsingGameCamera{false}; //When true, GameCamera is used. When false, EditorCamera is used
+
     static CoreEngine* mInstance;
 
     QTimer *mGameLoopTimer{nullptr};
     SoundManager *mSoundManager{nullptr};
     ResourceManager* mResourceManager{nullptr};
     RenderWindow *mRenderWindow{nullptr};
+
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
 
+    SoundSource* mStereoSound{nullptr};
 
 
 };

@@ -14,6 +14,7 @@ CoreEngine::CoreEngine(RenderWindow *renderWindow)
 
     mGameLoopTimer = new QTimer(this);
     mEditorCamera = new Camera();
+    mGameCamera = new Camera();
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -25,7 +26,7 @@ void CoreEngine::GameLoop()
 {
     HandleInput();
 
-    mEditorCamera->update();
+    mRenderWindow->getCurrentCamera()->update();
 
     mRenderWindow->render();
 }
@@ -33,8 +34,8 @@ void CoreEngine::GameLoop()
 void CoreEngine::SetUpScene()
 {
 
-    GameObject *temp = mResourceManager->CreateObject("suzanne.obj");
-    mRenderWindow->mGameObjects.push_back(temp);
+    GameObject *temp;/* = mResourceManager->CreateObject("suzanne.obj");
+    mRenderWindow->mGameObjects.push_back(temp);*/
 
     for(int i{0}; i < 40; i++)
    {
@@ -46,15 +47,17 @@ void CoreEngine::SetUpScene()
        }
    }
 
-    //********************** Set up camera **********************
+    //********************** Set up cameras **********************
+    mGameCamera->setPosition(gsl::Vector3D(50.f, .5f, 4.f));
+
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
-    SoundSource* mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                                                             "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
-    mStereoSound->play();
 
+//    playStartGameSound();
 
     //Connect the gameloop timer to the render function:
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
@@ -66,20 +69,57 @@ void CoreEngine::SetUpScene()
 void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngine
 {
     //mEditorCamera
-    mEditorCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
-    {
-        if(mInput.W)
-            mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
-        if(mInput.S)
-            mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
-        if(mInput.D)
-            mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
-        if(mInput.A)
-            mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
-        if(mInput.Q)
-            mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
-        if(mInput.E)
-            mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+    if(mRenderWindow->getCurrentCamera() == mEditorCamera){
+        mEditorCamera->setSpeed(0.f);  //cancel last frame movement
+        if(mInput.RMB)
+        {
+            if(mInput.W)
+                mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
+            if(mInput.S)
+                mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
+            if(mInput.D)
+                mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
+            if(mInput.A)
+                mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
+            if(mInput.Q)
+                mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
+            if(mInput.E)
+                mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+        }
     }
+    else // currentCamera = mGameCamera
+    {
+
+    }
+}
+
+void CoreEngine::swapCurrentCamera()
+{
+    if(mRenderWindow->getCurrentCamera() == mEditorCamera)
+    {
+        mRenderWindow->toggleWireframe(false);
+        bUsingGameCamera = true;
+        mRenderWindow->setToCurrentCamera(mGameCamera);
+        playStartGameSound();
+    }
+    else{
+        bUsingGameCamera = false;
+        mRenderWindow->setToCurrentCamera(mEditorCamera);
+    }
+}
+
+void CoreEngine::initCameraProjectionMatrixes(float mAspectRatio)
+{
+    mEditorCamera->mProjectionMatrix.perspective(45.f, mAspectRatio, 0.1f, 100.f);
+    mGameCamera->mProjectionMatrix.perspective(45.f, mAspectRatio, 0.1f, 100.f);
+}
+
+void CoreEngine::playStartGameSound()
+{
+    mStereoSound->play();
+}
+
+bool CoreEngine::isPlaying()
+{
+    return bUsingGameCamera;
 }

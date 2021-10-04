@@ -89,5 +89,24 @@ void MainWindow::init()
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
-    mRenderWindow->toggleWireframe(checked);
+    if(!mCoreEngine->isPlaying()){
+        mRenderWindow->toggleWireframe(checked);
+        if(checked)
+            ui->pushButton->setText("Hide Wireframe");
+        else
+            ui->pushButton->setText("Show Wireframe");
+    }
+    else
+        ui->pushButton->setText("Wireframe is only available in editor mode");
+}
+
+void MainWindow::on_startGameButton_toggled(bool checked)
+{
+    mCoreEngine->swapCurrentCamera();
+    if(checked)
+        ui->startGameButton->setText("Stop Game / Open Editor");
+    else
+        ui->startGameButton->setText("Start Game");
+
+    ui->pushButton->setText("Show Wireframe");
 }

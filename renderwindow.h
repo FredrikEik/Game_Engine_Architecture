@@ -15,6 +15,7 @@ class MainWindow;
 class GameObject;
 class Camera;
 class Texture;
+class CoreEngine;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -31,11 +32,14 @@ public:
 
     void exposeEvent(QExposeEvent *) override;
 
+//    void initProjectionMatrix();
+
     void toggleWireframe(bool buttonState);
 
     void addToGameObjects(GameObject *obj);
-    void setToCurrentCamera(Camera* cam);
 
+    void setToCurrentCamera(Camera* cam);
+    Camera* getCurrentCamera();
 
     void render();
 
@@ -93,8 +97,8 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
-
     class ObjectManager *mObjectManager{nullptr};
+    class CoreEngine *mCoreEngine{nullptr};
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

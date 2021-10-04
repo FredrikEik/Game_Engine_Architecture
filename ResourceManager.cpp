@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 
 #include "renderwindow.h"
+#include <sstream>
 
 ResourceManager::ResourceManager()
 {
