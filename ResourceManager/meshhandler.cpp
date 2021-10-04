@@ -417,6 +417,7 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
     return tempMesh;
 }
 
+
 MeshData MeshHandler::makeLineBox(std::string meshName)
 {
     auto result = mMeshMap.find(meshName);

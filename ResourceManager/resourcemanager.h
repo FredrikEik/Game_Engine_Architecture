@@ -26,10 +26,13 @@ public:
 
     void setUpAllTextures();
 
+    bool Collided = false;
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
 
     MeshHandler* mMeshHandler{nullptr};
+    
+    bool checkCollision(MeshData &linebox1, MeshData &linebox2);
 
 private:
     ResourceManager();  //singleton

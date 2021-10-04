@@ -39,7 +39,7 @@ public:
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
 
-    void checkCollision();
+
 
 
 private:

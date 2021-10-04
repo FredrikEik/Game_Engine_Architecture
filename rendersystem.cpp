@@ -230,27 +230,29 @@ void RenderSystem::render()
         //Quick hack test to check if linebox/circle works:
         if(i == 1)
         {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+            linebox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
 //            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray( linebox.mVAO[0] );
+            glDrawElements(linebox.mDrawType, linebox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         if(i == 2)
         {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
+            linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
 //            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray( linebox2.mVAO[0] );
+            glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         glBindVertexArray(0);
+
+        CoreEngine::getInstance()->mResourceManager->checkCollision(linebox, linebox2);
     }
 
     //Moves the dog triangle - should be made another way!!!!

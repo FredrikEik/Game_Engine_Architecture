@@ -150,3 +150,16 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
 {
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
+
+bool ResourceManager::checkCollision(MeshData &linebox1, MeshData &linebox2)
+{
+    if(linebox1.mUpRightFrontCorner.getX() >= linebox2.mLowLeftBackCorner.getX())
+    {
+
+        qDebug() << "collided ! ! ! !! ";
+        Collided = true;
+    }
+    else
+        Collided = false;
+    return Collided;
+}

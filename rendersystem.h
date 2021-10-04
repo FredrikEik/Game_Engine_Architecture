@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "meshhandler.h"
 
 class QOpenGLContext;
 class ShaderHandler;
@@ -84,6 +85,11 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+
+    MeshData linebox;
+    MeshData linebox2;
+
+
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
