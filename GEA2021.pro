@@ -80,7 +80,8 @@ HEADERS += \
     SoundCode/h/soundsource.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    transformwidget.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \
