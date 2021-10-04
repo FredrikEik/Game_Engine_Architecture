@@ -59,6 +59,7 @@ private:
 
     void handleInput();
 
+
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];
     GLint pMatrixUniform[4];
@@ -77,6 +78,7 @@ private:
 
     Factory* factory = new Factory;
 
+    int mIndexToPickedObject{-1};
 
     //std::vector<VisualObject*> mVisualObjects;
 
@@ -105,6 +107,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePicking(QMouseEvent *event);
 };
 
 #endif // RENDERWINDOW_H
