@@ -288,14 +288,12 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::playSound()
+void RenderWindow::playSound(bool playState)
 {
-    mStereoSound->play();
-}
-
-void RenderWindow::pauseSound()
-{
-    mStereoSound->pause();
+    if (playState == true)
+        mStereoSound->play();
+    else
+        mStereoSound->pause();
 }
 
 void RenderWindow::stopSound()

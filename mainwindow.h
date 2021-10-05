@@ -26,9 +26,7 @@ private slots:
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
-    void on_PauseSound_clicked();
-
-    void on_PlaySound_clicked();
+    void on_PlaySound_clicked(bool playChecked);
 
     void on_StopSound_clicked();
 

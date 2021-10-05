@@ -36,8 +36,7 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void playSound();
-    void pauseSound();
+    void playSound(bool playState = false);
     void stopSound();
 //    void valueX(double arg1);
 

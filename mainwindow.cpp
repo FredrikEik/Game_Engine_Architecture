@@ -103,17 +103,13 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
     ObjectSpawn = arg1.toStdString();
 }
 
-void MainWindow::on_PauseSound_clicked()
-{
-    mRenderWindow->pauseSound();
-}
-
-void MainWindow::on_PlaySound_clicked()
-{
-    mRenderWindow->playSound();
-}
-
 void MainWindow::on_StopSound_clicked()
 {
     mRenderWindow->stopSound();
 }
+
+void MainWindow::on_PlaySound_clicked(bool playChecked)
+{
+    mRenderWindow->playSound(playChecked);
+}
+
