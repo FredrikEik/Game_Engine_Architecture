@@ -15,6 +15,7 @@ SOURCES += main.cpp \
     cube.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    objmesh.cpp \
     renderwindow.cpp \
     resourcemanager.cpp \
     shader.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    objmesh.h \
     renderwindow.h \
     resourcemanager.h \
     shader.h \
