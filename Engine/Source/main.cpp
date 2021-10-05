@@ -80,129 +80,129 @@ int main()
 
 
 	return 0;
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	//glfwInit();
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	//GLFWwindow* window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
+	//if (window == NULL)
+	//{
+	//	std::cout << "Failed to create GLFW window" << std::endl;
+	//	glfwTerminate();
+	//	return -1;
+	//}
+	//glfwMakeContextCurrent(window);
+	//glfwSwapInterval(1);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
+	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	//{
+	//	std::cout << "Failed to initialize GLAD" << std::endl;
+	//	return -1;
+	//}
 
-	//Note that processed coordinates in OpenGL are between - 1 and 1
-	//so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
-	glViewport(0, 0, 800, 600);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-
-
-	glm::mat4 projection;
-	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-
-	//look at matrix
-	glm::mat4 view;
-	view = glm::lookAt(cameraPos, cameraTarget, up);
-
-	
-	Shader* ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 460 core");
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
+	////Note that processed coordinates in OpenGL are between - 1 and 1
+	////so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
+	//glViewport(0, 0, 800, 600);
+	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	//glfwSetCursorPosCallback(window, mouse_callback);
+	//glfwSetScrollCallback(window, scroll_callback);
 
 
-	ECSManager* ECS = new ECSManager();
+	//glm::mat4 projection;
+	//glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	//glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+	//glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	//glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	//glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+
+	////look at matrix
+	//glm::mat4 view;
+	//view = glm::lookAt(cameraPos, cameraTarget, up);
+
+	//
+	//Shader* ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
+	//// Setup Dear ImGui context
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO();
+	//// Setup Platform/Renderer bindings
+	//ImGui_ImplGlfw_InitForOpenGL(window, true);
+	//ImGui_ImplOpenGL3_Init("#version 460 core");
+	//// Setup Dear ImGui style
+	//ImGui::StyleColorsDark();
 
 
-	while (!glfwWindowShouldClose(window))
-	{
-		glfwPollEvents();
-		// can be used to calc deltatime
-		float currentFrame = glfwGetTime();
-
-		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	//ECSManager* ECS = new ECSManager();
 
 
-		//// input
-		processInput(window);
-		// feed inputs to dear imgui, start new frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+	//while (!glfwWindowShouldClose(window))
+	//{
+	//	glfwPollEvents();
+	//	// can be used to calc deltatime
+	//	float currentFrame = glfwGetTime();
+
+	//	projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+	//	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+
+	//	//// input
+	//	processInput(window);
+	//	// feed inputs to dear imgui, start new frame
+	//	ImGui_ImplOpenGL3_NewFrame();
+	//	ImGui_ImplGlfw_NewFrame();
+	//	ImGui::NewFrame();
 
 
 
-		//// RENDER
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		// render your GUI
+	//	//// RENDER
+	//	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//	// render your GUI
 
-		ImGui::Begin("Demo window");
-		if (ImGui::Button("Spawn cube"))
-		{
-			uint32 entity = ECS->newEntity();
-			ECS->loadAsset(entity, DefaultAsset::CUBE);
-			ECS->addComponent<TransformComponent>(entity);
-			std::cout << "Adding entity "<<entity<<'\n';
-		}
-		
-		//// TEMP UPDATE
-		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
-		TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
-
-
-		if (ImGui::Button("Destroy entity 0"))
-		{
-			ECS->destroyEntity(0);
-		}
-
-		ImGui::End();
-
-		MeshSystem::draw(ourShader, "u_model", ECS);
-		//ourShader.setMat4("u_model", model);
-		ourShader->setMat4("u_view", view);
-		ourShader->setMat4("u_projection", projection);
+	//	ImGui::Begin("Demo window");
+	//	if (ImGui::Button("Spawn cube"))
+	//	{
+	//		uint32 entity = ECS->newEntity();
+	//		ECS->loadAsset(entity, DefaultAsset::CUBE);
+	//		ECS->addComponent<TransformComponent>(entity);
+	//		std::cout << "Adding entity "<<entity<<'\n';
+	//	}
+	//	
+	//	//// TEMP UPDATE
+	//	//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
+	//	TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
 
 
-		// Render dear imgui into screen
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//	if (ImGui::Button("Destroy entity 0"))
+	//	{
+	//		ECS->destroyEntity(0);
+	//	}
+
+	//	ImGui::End();
+
+	//	MeshSystem::draw(ourShader, "u_model", ECS);
+	//	//ourShader.setMat4("u_model", model);
+	//	ourShader->setMat4("u_view", view);
+	//	ourShader->setMat4("u_projection", projection);
 
 
-		glfwSwapBuffers(window);
-	}
+	//	// Render dear imgui into screen
+	//	ImGui::Render();
+	//	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
-	// delete all GLFW's resources that were allocated..
-	glfwTerminate();
-	return 0;
+
+	//	glfwSwapBuffers(window);
+	//}
+
+	//ImGui_ImplOpenGL3_Shutdown();
+	//ImGui_ImplGlfw_Shutdown();
+	//ImGui::DestroyContext();
+	//// delete all GLFW's resources that were allocated..
+	//glfwTerminate();
+	//return 0;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
