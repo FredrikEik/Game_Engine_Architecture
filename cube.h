@@ -15,10 +15,8 @@ public:
     void init() override;
     void move(float x, float y, float z) override;
 
-    BoxCollisionComponent* getBoxCollisionComponent() {return boxCollisionComp;}
 private:
 
-    BoxCollisionComponent* boxCollisionComp;
 };
 
 #endif // CUBE_H
