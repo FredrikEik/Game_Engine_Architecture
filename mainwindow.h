@@ -19,7 +19,8 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_toggled(bool checked);
+    void on_wireframe_toggled(bool checked);
+    void on_addObject_clicked();
 
 private:
     void init();

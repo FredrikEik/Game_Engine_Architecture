@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="wireframe">
       <property name="text">
        <string>Toggle Wireframe</string>
       </property>
@@ -26,7 +26,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="addObject">
       <property name="text">
        <string>Add Object</string>
       </property>

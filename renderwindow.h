@@ -36,6 +36,9 @@ public:
 
     void spawnObject(bool buttonState);
 
+    ResourceManager *resource() const;
+    void setResource(ResourceManager *newResource);
+
 private slots:
     void render();
 

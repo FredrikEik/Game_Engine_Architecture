@@ -238,6 +238,16 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
+ResourceManager *RenderWindow::resource() const
+{
+    return mResource;
+}
+
+void RenderWindow::setResource(ResourceManager *newResource)
+{
+    mResource = newResource;
+}
+
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
