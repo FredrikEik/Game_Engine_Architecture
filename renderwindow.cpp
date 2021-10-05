@@ -248,31 +248,28 @@ void RenderWindow::render()
 //        {
 //            continue;
 //        }
-        // Get a handle for our "pickingColorID" uniform
-         //Hardcoded to 2,
 
-//         This line says linking error
-//        GLuint pickingColorID = glGetUniformLocation(2, "PickingColor");
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
-        //glUseProgram(2);
+
+        // MousePicking_
         GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
+
         if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB)
         {
 
-            for(int i{0}; i < mGameObjects.size(); i++)
-            {
-                int id = mGameObjects[i]->id; // +50 for å se rød nyansen
-                int r = (id & 0x000000FF) >>  0;
-                int g = (id & 0x0000FF00) >>  8;
-                int b = (id & 0x00FF0000) >> 16;
-                glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
-                glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-                glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-                glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
 
-                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
-                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
-            }
+            int id = mGameObjects[i]->id; // +50 for å se rød nyansen
+            int r = (id & 0x000000FF) >>  0;
+            int g = (id & 0x0000FF00) >>  8;
+            int b = (id & 0x00FF0000) >> 16;
+            glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+            glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+
+            glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+            glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+
             //Mouspicking Stuff:
             glFlush();
             glFinish();
@@ -281,7 +278,7 @@ void RenderWindow::render()
 
 
             unsigned char data[4];
-            glReadPixels(xMousePos, 838 - yMousePos,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glReadPixels(xMousePos, height() - yMousePos,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
             //qDebug () << "MousePos x:" << xMousePos << ", y: " << 838-yMousePos;
             int pickedID =
@@ -289,9 +286,10 @@ void RenderWindow::render()
                     data[1] * 256 +
                     data[2] * 256*256;
 
-            qDebug() << "meshID: " << pickedID;
+            //qDebug() << "meshID: " << pickedID;
+            //qDebug() << height();
 
-            if(pickedID < 1000)
+            if(pickedID < 10000)
             {
                 mMainWindow->setID(pickedID);
             }
@@ -415,15 +413,6 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //Set viewport width and height
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
 
-    //If the window actually is exposed to the screen we start the main loop
-    //isExposed() is a function in QWindow
-//    if (isExposed())
-//    {
-//        //This timer runs the actual MainLoop
-//        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-////        mRenderTimer->start(16);
-//      mTimeStart.start();
-//    }
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();

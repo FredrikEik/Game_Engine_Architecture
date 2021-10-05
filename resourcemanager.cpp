@@ -52,16 +52,18 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mCollisionComp = new CollisionComponent();
 
 
-    auto foundAtIndex = mObjectsMap.find(filepath+"0");
+    auto foundAtIndex = mObjectsMap.find(filepath);
 
 
     if(foundAtIndex != mObjectsMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
+        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
+        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
@@ -85,7 +87,6 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mMaterialComp->mTextureUnit = 0;
 
 
-    mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
 
     std::string tempName = filepath;
     // Hardcoded filesize just to make "XYZ" work

@@ -52,7 +52,7 @@ void MainWindow::updateList()
 
 void MainWindow::setID(int ID)
 {
-    this->on_listWidget_currentRowChanged(ID);
+    listWidget->setCurrentRow(ID);
 }
 
 void MainWindow::init()
