@@ -16,6 +16,7 @@ class GameObject;
 class Camera;
 class Texture;
 class CoreEngine;
+class ResourceManager;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -30,22 +31,21 @@ public:
 
     QOpenGLContext *context() { return mContext; }
 
-    void exposeEvent(QExposeEvent *) override;
+    static RenderWindow& getInstance();
 
-//    void initProjectionMatrix();
+    void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
 
     void addToGameObjects(GameObject *obj);
+    std::vector<GameObject*> getGameObjects();
+
+    double getVertexCount();
 
     void setToCurrentCamera(Camera* cam);
     Camera* getCurrentCamera();
 
     void render();
-
-    //idk
-
-    std::vector<GameObject*> mGameObjects;
 
 private:
     void init();
@@ -59,8 +59,6 @@ private:
     void setCameraSpeed(float value);
 
     void handleInput();
-
-
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -80,7 +78,7 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-//    std::vector<GameObject*> mGameObjects;
+    std::vector<GameObject*> mGameObjects;
 
     Input mInput;
     float mCameraSpeed{0.05f};
@@ -97,7 +95,7 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
-    class ObjectManager *mObjectManager{nullptr};
+    class ResourceManager *mResourceManager{nullptr};
     class CoreEngine *mCoreEngine{nullptr};
 
 protected:

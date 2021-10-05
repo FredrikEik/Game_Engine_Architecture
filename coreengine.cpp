@@ -43,12 +43,12 @@ void CoreEngine::SetUpScene()
        {
            temp = mResourceManager->CreateObject("suzanne.obj");
            temp->transform->mMatrix.translate(3.f*(i), -3.f, -3.f*(j));
-           mRenderWindow->mGameObjects.push_back(temp);
+           mRenderWindow->addToGameObjects(temp);
        }
    }
 
     //********************** Set up cameras **********************
-    mGameCamera->setPosition(gsl::Vector3D(50.f, .5f, 4.f));
+    mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, -9.f));
 
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
@@ -97,10 +97,8 @@ void CoreEngine::swapCurrentCamera()
 {
     if(mRenderWindow->getCurrentCamera() == mEditorCamera)
     {
-        mRenderWindow->toggleWireframe(false);
         bUsingGameCamera = true;
         mRenderWindow->setToCurrentCamera(mGameCamera);
-        playStartGameSound();
     }
     else{
         bUsingGameCamera = false;

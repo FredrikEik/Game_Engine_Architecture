@@ -103,10 +103,14 @@ void MainWindow::on_pushButton_toggled(bool checked)
 void MainWindow::on_startGameButton_toggled(bool checked)
 {
     mCoreEngine->swapCurrentCamera();
-    if(checked)
+    if(checked){
         ui->startGameButton->setText("Stop Game / Open Editor");
-    else
+        mCoreEngine->playStartGameSound();
+        mRenderWindow->toggleWireframe(false);
+    }
+    else{
         ui->startGameButton->setText("Start Game");
+    }
 
     ui->pushButton->setText("Show Wireframe");
 }

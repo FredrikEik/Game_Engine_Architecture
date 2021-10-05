@@ -8,8 +8,8 @@
 #include <string>
 #include "renderwindow.h"
 
-// I will soon rename this class to "ResourceManager" because
-// this name fits better when including audio and texture resources.
+class RenderWindow;
+
 class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
 public:

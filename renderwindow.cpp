@@ -37,9 +37,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
-
-    //Make the gameloop timer: Can be removed once CoreEngine is done
-    mRenderTimer = new QTimer(this);
 }
 
 RenderWindow::~RenderWindow()
@@ -50,6 +47,8 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
+    mResourceManager = &ResourceManager::getInstance();
+
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
@@ -133,15 +132,6 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    //Keyboard / mouse input
-
-    /** should be removed when CoreEngine works */
-//    handleInput();
-    /** should be removed when CoreEngine works */
-//    mCurrentCamera->update();
-
-
-
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -172,19 +162,21 @@ void RenderWindow::render()
         gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
         float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
 
-        if(distanceToObject > 15)
+        if(distanceToObject > 15){
             mGameObjects[i]->mesh->lodLevel = 2;
-        else if(distanceToObject > 8)
+        }
+        else if(distanceToObject > 8){
             mGameObjects[i]->mesh->lodLevel = 1;
-        else
+        }
+        else{
             mGameObjects[i]->mesh->lodLevel = 0;
+        }
 
         int tempLod = mGameObjects[i]->mesh->lodLevel;
         glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
         glBindVertexArray(0);
     }
-
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -255,9 +247,12 @@ void RenderWindow::calculateFramerate()
         if (frameCount > 30)    //once pr 30 frames = update the message twice pr second (on a 60Hz monitor)
         {
             //showing some statistics in status bar
-            mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
-                                                  QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+            mMainWindow->statusBar()->showMessage(
+                    "Entities: " + QString::number(mGameObjects.size())+ "    |    " +
+                    "Vertices: " + QString::number(getVertexCount()) + "    |    " +
+                    " Time pr FrameDraw: " + QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms    |    " +
+                    "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7)
+            );
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }
@@ -355,6 +350,27 @@ void RenderWindow::handleInput()
 void RenderWindow::addToGameObjects(GameObject *obj)
 {
     mGameObjects.push_back(obj);
+}
+std::vector<GameObject*> RenderWindow::getGameObjects()
+{
+    return mGameObjects;
+}
+
+double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt riktig..
+{
+    int vertexCount = 0;
+    for( int i = 0; i < mGameObjects.size(); i++)
+    {
+        if(mGameObjects[i]->mesh->lodLevel == 0)
+            vertexCount += mGameObjects[i]->mesh->mVertices[0].size();
+
+        else if(mGameObjects[i]->mesh->lodLevel == 1)
+            vertexCount += mGameObjects[i]->mesh->mVertices[1].size();
+
+        else if(mGameObjects[i]->mesh->lodLevel == 2)
+            vertexCount += mGameObjects[i]->mesh->mVertices[2].size();
+    }
+    return vertexCount;
 }
 
 void RenderWindow::setToCurrentCamera(Camera *cam)

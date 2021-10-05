@@ -82,7 +82,7 @@ void ResourceManager::init(Mesh &meshComp, int lod)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshComp.mIndices[lod].size() * sizeof(GLuint), meshComp.mIndices[lod].data(), GL_STATIC_DRAW);
     }
 
-        glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 
