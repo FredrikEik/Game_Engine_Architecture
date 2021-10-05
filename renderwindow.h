@@ -66,6 +66,8 @@ private:
 
     void startOpenGLDebugger();
 
+    bool colliding(CollisionComponent &Box1, CollisionComponent &Box2);
+
     void setCameraSpeed(float value);
 
     void handleInput();

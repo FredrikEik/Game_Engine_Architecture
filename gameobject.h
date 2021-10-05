@@ -22,12 +22,15 @@ public:
 //    TransformComponent* TransformComp = nullptr;
     TransformComponent* getTransformComp(){return TransformComp;}
 
+    CollisionComponent* getCollisionComp(){return CollisionComp;}
+
     void setMeshComponent(MeshComponent* newMeshComp){MeshComp = newMeshComp;}
 
 private:
     MeshComponent* MeshComp;
     MaterialComponent* MaterialComp;
     TransformComponent* TransformComp;
+    CollisionComponent* CollisionComp;
 };
 
 #endif // GAMEOBJECT_H
