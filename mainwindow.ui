@@ -24,9 +24,9 @@
        <widget class="QListWidget" name="WorldObjects"/>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="deleteButton">
         <property name="text">
-         <string>PushButton</string>
+         <string>Delete</string>
         </property>
        </widget>
       </item>

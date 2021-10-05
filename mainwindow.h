@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QModelIndexList>
 
+
 class QWidget;
 class RenderWindow;
 
@@ -20,6 +21,7 @@ public:
     ~MainWindow();
 
     void addObjectToWorldList(std::string name);
+    void removeObjectFromWorldList();
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -35,6 +37,10 @@ private slots:
     void on_PlaySound_clicked();
 
     void on_StopSound_clicked();
+
+    void on_WorldObjects_currentRowChanged(int currentRow);
+
+    void on_deleteButton_clicked();
 
 private:
     void init();

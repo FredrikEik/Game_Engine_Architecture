@@ -9,7 +9,7 @@
 
 ObjectFactory::ObjectFactory()
 {
-
+    setOBJindex(-1);
 }
 
 void ObjectFactory::createObject(std::string objectName)

@@ -40,7 +40,8 @@ public:
     void pauseSound();
     void stopSound();
 //    void valueX(double arg1);
-
+    void setSelectionIndex(int index);
+    void deleteSelection();
 
 private slots:
     void render();

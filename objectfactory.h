@@ -15,9 +15,13 @@ public:
 
     void saveMesh(std::string fileName, std::string nickName);
 
+    void setOBJindex(int index) { OBJindex = index; }
+    int getOBJindex() { return OBJindex; }
 
     private:
         std::map<std::string, MeshComponent*> storedMeshes;
+
+        int OBJindex;
 
     protected:
 };

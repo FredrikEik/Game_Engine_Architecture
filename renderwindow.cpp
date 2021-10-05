@@ -300,6 +300,24 @@ void RenderWindow::stopSound()
     mStereoSound->stop();
 }
 
+void RenderWindow::setSelectionIndex(int index)
+{
+    ObjFactory->setOBJindex(index);
+    qDebug() << index;
+}
+
+void RenderWindow::deleteSelection()
+{
+    int index = ObjFactory->getOBJindex();
+    qDebug() << index;
+    if (index != -1)
+    {
+        ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin()+index);
+        mMainWindow->removeObjectFromWorldList();
+        ObjFactory->setOBJindex(-1);
+    }
+}
+
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);

@@ -92,6 +92,11 @@ void MainWindow::addObjectToWorldList(std::string name)
     ui->WorldObjects->addItem(name.c_str());
 }
 
+void MainWindow::removeObjectFromWorldList()
+{
+    delete ui->WorldObjects->takeItem(ui->WorldObjects->currentRow());
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
@@ -129,3 +134,17 @@ void MainWindow::on_StopSound_clicked()
 {
     mRenderWindow->stopSound();
 }
+
+void MainWindow::on_WorldObjects_currentRowChanged(int currentRow)
+{
+    qDebug() << "Set Index: " << currentRow;
+    mRenderWindow->setSelectionIndex(currentRow);
+}
+
+void MainWindow::on_deleteButton_clicked()
+{
+    qDebug() << "Delete Index: ";
+    mRenderWindow->deleteSelection();
+}
+
+
