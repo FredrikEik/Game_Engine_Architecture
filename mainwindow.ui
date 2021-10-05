@@ -26,9 +26,9 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="addObject">
+     <widget class="QPushButton" name="addCube">
       <property name="text">
-       <string>Add Object</string>
+       <string>Add Cube</string>
       </property>
      </widget>
     </item>

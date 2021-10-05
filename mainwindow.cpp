@@ -87,8 +87,8 @@ void MainWindow::on_wireframe_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
-void MainWindow::on_addObject_clicked()
+void MainWindow::on_addCube_clicked()
 {
-    mRenderWindow->resource()->manageObjects("dog", 0);
+    mRenderWindow->resource()->manageObjects("dog", 2);
 }
 

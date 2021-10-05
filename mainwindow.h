@@ -20,7 +20,7 @@ public:
 
 private slots:
     void on_wireframe_toggled(bool checked);
-    void on_addObject_clicked();
+    void on_addCube_clicked();
 
 private:
     void init();
