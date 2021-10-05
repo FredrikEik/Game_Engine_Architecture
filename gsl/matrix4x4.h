@@ -57,6 +57,8 @@ public:
 
     Matrix3x3 toMatrix3() const;
 
+    class Vector4D operator*(const Vector4D &v) const;
+
     GLfloat& operator()(const int &y, const int &x);
     GLfloat operator()(const int &y, const int &x) const;
 

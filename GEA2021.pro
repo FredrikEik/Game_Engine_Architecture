@@ -31,6 +31,7 @@ SOURCES += main.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    gsl/vector4d.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     factory.h \
     gameobject.h \
     gltypes.h \
+    gsl/vector4d.h \
     input.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \

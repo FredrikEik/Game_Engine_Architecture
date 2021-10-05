@@ -36,8 +36,9 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void buttonCreate(std::string objectName);
+    void createObjectbutton(std::string objectName);
 
+    void cancelPickedObject();
 
     SoundSource* mClick{};
 
@@ -62,6 +63,7 @@ private:
 
     void handleInput();
 
+
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];
     GLint pMatrixUniform[4];
@@ -81,6 +83,7 @@ private:
     class Factory* factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
 
+    int mIndexToPickedObject{-1};
 
     //std::vector<VisualObject*> mVisualObjects;
 
@@ -109,6 +112,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePicking(QMouseEvent *event);
 };
 
 #endif // RENDERWINDOW_H

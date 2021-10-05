@@ -4,7 +4,7 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
-
+#include <QTreeWidgetItem>
 
 #include "renderwindow.h"
 
@@ -103,5 +103,44 @@ void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_CreateObject_clicked()
 {
-        mRenderWindow->buttonCreate(itemToSpawn);
+        mRenderWindow->createObjectbutton(itemToSpawn);
+}
+
+void MainWindow::selectObjectByIndex(int indexIn)
+{
+   if(mSceneOutlinerRoot)
+    {
+        if(mCurrentEditItem)
+            mCurrentEditItem->setSelected(false);
+        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+        mCurrentEditItem->setSelected(true);
+        on_twSceneOutliner_itemClicked(mCurrentEditItem, 0);
+    }
+}
+
+void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
+{
+
+    clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
+
+    //Top node selected or no selection:
+    if (!item || item->text(0) == "Scene") //mRenderSystem->mScene1->mSceneName.c_str())
+    {
+        mRenderWindow->cancelPickedObject();
+        ui->gobNameEdit->setText("no selection");
+        mCurrentEditItem = nullptr;
+        return;
+    }
+}
+
+void MainWindow::clearLayout(QLayout *layout) {
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))) {
+        if (item->widget()) {   //probably not neccesary
+            delete item->widget();
+        }
+        delete item; //probably not neccesary - Qt should do it automatically
+    }
+//    mTransformWidget = nullptr;
+    ui->twSceneOutliner->clearSelection();
 }

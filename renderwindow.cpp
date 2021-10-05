@@ -29,6 +29,8 @@
 #include "soundsource.h"
 #include "vector3.h"
 #include "quadtree.cpp"
+#include "vector4d.h"
+#include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -295,6 +297,17 @@ void RenderWindow::render()
          }
     }
 
+        //debug mousePickingRay
+        /*if (mDrawMousePickRay)
+        {
+            gsl::Matrix4x4 temp(true);
+            glBindVertexArray( mDebugMousePickRay.mVAO[0] );
+            glUniformMatrix4fv( mShaderPrograms[0]->pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mShaderPrograms[0]->vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
+        }*/
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -398,7 +411,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::buttonCreate(std::string objectName)
+void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
     if(objectName == "MarioCube" || objectName == "Sphere")
@@ -508,6 +521,81 @@ void RenderWindow::handleInput()
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
+}
+
+void RenderWindow::mousePicking(QMouseEvent *event)
+{
+    {
+        int mouseXPixel = event->pos().x();
+        int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+
+        //Since we are going to invert these, I make a copy
+        gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+        gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+        //step 1
+        float x = (2.0f * mouseXPixel) / width() - 1.0f;
+        float y = 1.0f - (2.0f * mouseYPixel) / height();
+        float z = 1.0f;
+        gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+        //step 2
+        gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+        //step 3
+        projMatrix.inverse();
+        gsl::Vector4D ray_eye = projMatrix * ray_clip;
+        ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+        //step 4
+        viewMatrix.inverse();
+        gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
+        gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
+        // don't forget to normalise the vector at some point
+        ray_wor.normalize();
+
+
+        /************************************************************************/
+        //Collision detection - in world space coordinates:
+        //Writing here as a quick test - probably should be in a CollisionSystem class
+
+        //This is ray vs bounding sphere collision
+
+        for(unsigned long long i{0}; i < factory->mGameObjects.size(); i++)
+        {
+            //making the vector from camera to object we test against
+            gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mCurrentCamera->position();
+
+            //making the normal of the ray - in relation to the camToObject vector
+            //this is the normal of the surface the camToObject and ray_wor makes:
+            gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+            //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+            gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+            rayNormal.normalize();
+
+            //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+            //getting distance from GameObject to ray using dot product:
+            float distance = camToObject * rayNormal;   //* gives the dot product
+
+            //we are interested in the absolute distance, so fixes any negative numbers
+            distance = abs(distance);
+
+            //if distance to ray < objects bounding sphere == we have a collision
+            if(distance < 0.5f)
+            {
+    //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+                mIndexToPickedObject = i;
+                mMainWindow->selectObjectByIndex(mIndexToPickedObject);
+                break;  //breaking out of for loop - does not check if ray touch several objects
+            }
+        }
+    }
+}
+
+void RenderWindow::cancelPickedObject()
+{
+    mIndexToPickedObject = -1;
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
