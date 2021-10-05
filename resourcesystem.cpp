@@ -192,24 +192,30 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
     }//if the object already exists, we point the existing object to the new one
     else
     {
+        //we find the correct mesh to copy here
         for(auto it = meshContainer.begin(); it < meshContainer.end();it++)
         {
             if(input == it->first){
                 mesh->mVertices = it->second;
                 std::string name = it->first;
                 qDebug() << "REMADE OBJECT FUCKERS "  << " \n";
+                break;
             }
         }
+        //we find the correct indiceies
         for(auto it = meshIndiceContainer.begin(); it < meshIndiceContainer.end();it++)
         {
             if(input == it->first){
                 mesh->mIndices = it->second;
+                break;
             }
         }
+        //we find the correct collison radius.
         for(auto it = collisionRad.begin(); it < collisionRad.end();it++)
         {
             if(input == it->first){
                 mesh->collisionRadius = it->second;
+                break;
             }
         }
     }
