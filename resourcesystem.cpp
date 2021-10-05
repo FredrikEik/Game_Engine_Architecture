@@ -181,10 +181,13 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
         //beeing a nice boy and closing the file after use
         fileIn.close();
+        //copy the object for future use
+        copyOBJ obj;
+        obj.meshVert = tempMVertices;
+        obj.meshIndic = tempMIndices;
+        obj.collisionRadius = tempRadius;
+        OBJCOPYContainer.push_back(std::make_pair(input,obj));
 
-        meshContainer.push_back(std::make_pair(input,tempMVertices));
-        meshIndiceContainer.push_back(std::make_pair(input, tempMIndices));
-        collisionRad.push_back(std::make_pair(input,tempRadius));
         mesh->mVertices = tempMVertices;
         mesh->mIndices = tempMIndices;
         //mesh->mRVertices = &meshContainer.end()->second;
@@ -193,28 +196,13 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
     else
     {
         //we find the correct mesh to copy here
-        for(auto it = meshContainer.begin(); it < meshContainer.end();it++)
+        for(auto it = OBJCOPYContainer.begin(); it < OBJCOPYContainer.end();it++)
         {
             if(input == it->first){
-                mesh->mVertices = it->second;
-                std::string name = it->first;
+                mesh->mVertices = it->second.meshVert;
+                mesh->mIndices = it->second.meshIndic;
+                mesh->collisionRadius = it->second.collisionRadius;
                 qDebug() << "REMADE OBJECT FUCKERS "  << " \n";
-                break;
-            }
-        }
-        //we find the correct indiceies
-        for(auto it = meshIndiceContainer.begin(); it < meshIndiceContainer.end();it++)
-        {
-            if(input == it->first){
-                mesh->mIndices = it->second;
-                break;
-            }
-        }
-        //we find the correct collison radius.
-        for(auto it = collisionRad.begin(); it < collisionRad.end();it++)
-        {
-            if(input == it->first){
-                mesh->collisionRadius = it->second;
                 break;
             }
         }
@@ -222,7 +210,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
 
 
-     qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
+    qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
     mesh->entity = 0;
     mesh->mDrawType = GL_TRIANGLES;
 
