@@ -51,12 +51,24 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
      VisualObject * CurrentVisualObject = 0;
 
     if(ObjectType == 0) {
-        CurrentVisualObject = new Cube();
+        //Axis
+//              VisualObject *temp = new XYZ();
+//              temp->mMaterial->mShaderProgram = 0; //plain shader
+//              temp->init();
+//              mVisualObjects.push_back(temp);
+        CurrentVisualObject = new XYZ();
     }
 
     else if(ObjectType == 1) {
+        //Triangle
         CurrentVisualObject = new Triangle();
     }
+
+    else if(ObjectType == 2) {
+        //Cube
+        CurrentVisualObject = new Cube();
+    }
+
 
 
     mVisualObjects.push_back(CurrentVisualObject);
