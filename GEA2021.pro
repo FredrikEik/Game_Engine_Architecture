@@ -11,6 +11,7 @@ SOURCES += main.cpp \
     cube.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    noicegen.cpp \
     plane.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -24,6 +25,8 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    Interprate.h \
+    Vectortable.h \
     beziercurve.h \
     camera.h \
     constants.h \
@@ -33,6 +36,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    noicegen.h \
     plane.h \
     renderwindow.h \
     shader.h \

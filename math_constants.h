@@ -11,6 +11,8 @@ namespace gsl
     constexpr float E = 2.71828182845904523536f;
     constexpr float GRAVITY = 9.80665f; // Differs depending on where you are on the earth, ~9.81
 
+    constexpr double SQRT_2 = 1.4142135623730950488;
+    constexpr double SQRT_3 = 1.7320508075688772935;
     // Functions
     inline GLdouble rad2deg(GLdouble rad)
     {return rad * (180.0 / PI_D);}

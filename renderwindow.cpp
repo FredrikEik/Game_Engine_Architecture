@@ -266,12 +266,6 @@ void RenderWindow::render()
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[8]->mMatrix.constData());
         mVisualObjects[8]->draw();
-
-//        glUseProgram(mShaderPrograms[0]->getProgram() );
-//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[9]->mMatrix.constData());
-//        mVisualObjects[9]->draw();
     }
 
     //Calculate framerate before
