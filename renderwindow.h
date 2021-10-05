@@ -36,9 +36,10 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    void createObjectbutton(std::string objectName);
-
+    void setPickedObject(int pickedID);
     void cancelPickedObject();
+
+    void createObjectbutton(std::string objectName);
 
     SoundSource* mClick{};
 

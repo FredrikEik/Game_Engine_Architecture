@@ -108,6 +108,7 @@ void MainWindow::on_CreateObject_clicked()
 
 void MainWindow::selectObjectByIndex(int indexIn)
 {
+
    if(mSceneOutlinerRoot)
     {
         if(mCurrentEditItem)
@@ -120,7 +121,7 @@ void MainWindow::selectObjectByIndex(int indexIn)
 
 void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
 {
-/*
+
     clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
 
     //Top node selected or no selection:
@@ -130,8 +131,30 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
         ui->gobNameEdit->setText("no selection");
         mCurrentEditItem = nullptr;
         return;
-    }*/
-}
+    }
+
+    mCurrentEditItem = item;
+    ui->gobNameEdit->setText(mCurrentEditItem->text(0));
+    item->setSelected(true);
+
+    //scroll to selected item
+    //ui->twSceneOutliner->scrollToItem(mCurrentEditItem);
+
+    //getting the index of the selected item from the TreeWidget
+    // = parent of this selected item
+    mCurrentEditItemIndex = item->parent()->indexOfChild(item);
+ //    qDebug() <<"Index" << mCurrentEditItemIndex;
+
+    //tell RenderSystem to highlight selected object
+    mRenderWindow->setPickedObject(mCurrentEditItemIndex);
+
+    //Transform widget:
+       mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
+       mDetailsWidget->setObjectName("TransformWidget"); //not sure if this is necessary
+       mDetailsWidget->init(mGameObject, mCurrentEditItemIndex);
+       ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
+
+ }
 
 void MainWindow::clearLayout(QLayout *layout) {
     QLayoutItem *item;

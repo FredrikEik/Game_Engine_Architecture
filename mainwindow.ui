@@ -107,7 +107,7 @@
    <widget class="QWidget" name="dockWidgetContents_5">
     <layout class="QVBoxLayout" name="verticalLayout_8">
      <item>
-      <widget class="QLineEdit" name="nameEdit">
+      <widget class="QLineEdit" name="gobNameEdit">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -132,7 +132,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <layout class="QVBoxLayout" name="blDetailsContainer_4"/>
+          <layout class="QVBoxLayout" name="blDetailsContainer"/>
          </item>
          <item>
           <spacer name="verticalSpacer_4">

@@ -2,10 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <gameobject.h>
+#include <detailswidget.h>
 
 class QWidget;
 class RenderWindow;
 class QTreeWidgetItem;
+class GameObject;
+
 
 namespace Ui {
 class MainWindow;
@@ -35,6 +39,7 @@ private slots:
 private:
     void init();
     Ui::MainWindow *ui;
+    class DetailsWidget* mDetailsWidget{nullptr};
 
     void clearLayout(QLayout *layout);
 
@@ -43,8 +48,13 @@ private:
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
 
+    GameObject* mGameObject;
+
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
 
+    float mPositionStep{1.f};
+    float mRotationStep{1.f};
+    float mScaleStep{0.1f};
 
     std::string itemToSpawn;
 };

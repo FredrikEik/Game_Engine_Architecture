@@ -525,7 +525,6 @@ void RenderWindow::handleInput()
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
-    {
         int mouseXPixel = event->pos().x();
         int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
 
@@ -561,7 +560,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
 
         //This is ray vs bounding sphere collision
 
-        for(unsigned long long i{0}; i < factory->mGameObjects.size(); i++)
+        for(int i{0}; i < factory->mGameObjects.size(); i++)
         {
             //making the vector from camera to object we test against
             gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mCurrentCamera->position();
@@ -587,10 +586,18 @@ void RenderWindow::mousePicking(QMouseEvent *event)
     //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
+                factory->mGameObjects[i]->move(1000.f,0,0);
                 break;  //breaking out of for loop - does not check if ray touch several objects
+
+
             }
+
         }
-    }
+
+}
+void RenderWindow::setPickedObject(int pickedID)
+{
+    mIndexToPickedObject = pickedID;
 }
 
 void RenderWindow::cancelPickedObject()
@@ -725,6 +732,11 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.LMB = true;
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
+
+    if(event->button() == Qt::LeftButton)
+    {
+        mousePicking(event);
+    }
 }
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
