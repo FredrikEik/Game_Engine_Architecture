@@ -52,6 +52,9 @@ void EntitySystem::construct(RenderWindow * inRW, std::string ObjReader, QVector
 
     ResourceSys->CreateMeshComponent(ObjReader, MeshComp);
     MeshComp->entity = EntityId;
+    MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
+    MeshComp->centerOfMesh.setY(TransComp->mMatrix.getPosition().getY());
+    MeshComp->centerOfMesh.setZ(TransComp->mMatrix.getPosition().getZ());
     rw->meshCompVec.push_back(MeshComp);
 
     MatComp->entity = EntityId;
