@@ -67,6 +67,17 @@ struct MousePosition
     long y{};
 };
 
+struct ScrollState
+{
+    /// The change in X since the last frame only
+    float deltaX{};
+    /// The change in Y since the last frame only
+    float deltaY{};
+
+    float x{};
+    float y{};
+};
+
 /// Singleton 
 /// Only getters are publically exposed, thus the input cannot be changed outside of the Engine class, reducing coupling.
 class Input
@@ -84,9 +95,11 @@ private:
     Input();
 
     void setMousePosition(struct GLFWwindow* window, double xpos, double ypos);
+    void setScrollState(double xoffset, double yoffset);
     void updateKeyState(struct GLFWwindow* window);
     void updateMousePosition();
     void updateMouseKeyState(struct GLFWwindow* window);
+    void updateScrollState();
 
     static constexpr int m_keysToCapture{ 257 }; // 257 because escape is number 256
     static constexpr int m_mouseKeysToCapture{ 8 };
@@ -94,4 +107,5 @@ private:
     std::array<KeyState, m_keysToCapture> m_keyStateCurrent;
     std::array<MouseKeyState, m_mouseKeysToCapture> m_mouseKeyStateCurrent;
     MousePosition m_mousePosition;
+    ScrollState m_scrollState{};
 };

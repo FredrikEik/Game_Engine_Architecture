@@ -10,7 +10,7 @@
 #include <algorithm>
 
 enum class DefaultAsset : uint8;
-
+// TODO: Don't duplicate reusable assets. Make all use the same one.
 
 // There should only exist one factory, get it through the ECSManager
 class Factory

@@ -11,8 +11,8 @@ enum class DefaultAsset : uint8;
 
 class ECSManager
 {
+	friend class Engine;
 public:
-	ECSManager();
 	~ECSManager();
 
 	template<typename T>
@@ -24,9 +24,6 @@ public:
 	bool removeComponent(uint32 entityID);
 	template<typename ... Types>
 	void removeComponents(uint32 entityID);
-
-	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
-
 
 	void destroyEntity(uint32 entityID);
 
@@ -42,6 +39,9 @@ public:
 	template <typename T>
 	class ComponentManager<T>* getComponentManager();
 private:
+	ECSManager();
+
+	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
 	class Factory& factory;
 	template <typename... Ts>
 	void swallow(Ts&&...);
