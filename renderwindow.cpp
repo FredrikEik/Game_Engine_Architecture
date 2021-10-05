@@ -130,7 +130,7 @@ void RenderWindow::init()
     // Gaute's ObjectManager
 
     mResource = new ResourceManager;
-    mResource->manageObjects("dog", 1); //0 is cube, 1 is triangle
+    mResource->manageObjects("dog", 0); //0 is axis, 1 is triangle, 2 is cube
 
     //Set up camera
     mCurrentCamera = new Camera();

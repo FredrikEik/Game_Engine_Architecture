@@ -24,7 +24,7 @@ void ResourceManager::manageObjects(std::string objectName, int ObjectID)
     //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, ObjectID, 1, 1, 1);
+    addObject(name, id, ObjectID, 1, 1, 1); //name, ID, ObjectType, translate, mesh, material
 
     //Dag's dog triangle
 //      temp = new Triangle();
@@ -51,12 +51,24 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
      VisualObject * CurrentVisualObject = 0;
 
     if(ObjectType == 0) {
-        CurrentVisualObject = new Cube();
+        //Axis
+//              VisualObject *temp = new XYZ();
+//              temp->mMaterial->mShaderProgram = 0; //plain shader
+//              temp->init();
+//              mVisualObjects.push_back(temp);
+        CurrentVisualObject = new XYZ();
     }
 
     else if(ObjectType == 1) {
+        //Triangle
         CurrentVisualObject = new Triangle();
     }
+
+    else if(ObjectType == 2) {
+        //Cube
+        CurrentVisualObject = new Cube();
+    }
+
 
 
     mVisualObjects.push_back(CurrentVisualObject);
@@ -69,7 +81,7 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
     if (TransformID == 1)
     {
         new XYZ();
-        CurrentVisualObject->mTransform->mMatrix.translate(0.0f, 0.0f, 0.5f);
+        CurrentVisualObject->mTransform->mMatrix.translate(.001f, .001f, -.001f); //This only moves it for one frame! How do we make it happen every frame?
     }
 
     if (MeshID != 0)
