@@ -166,10 +166,17 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     glDisable(GL_CULL_FACE);
+    mTestFrustumCamera = new Camera(45.0f, 4/3);
+    mTestFrustumCamera->init();
+    mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mTestFrustumCamera->updateFrustumPos(45.0f, 4/3);
+
     mCurrentCamera = new Camera(45.0f, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mCurrentCamera->updateFrustumPos(45.0f, 4/3);
+
+
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
@@ -248,6 +255,7 @@ void RenderWindow::render()
     //Draws the objects
 
     //mCurrentCamera->draw();
+    //mTestFrustumCamera->draw();
 
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
@@ -267,14 +275,47 @@ void RenderWindow::render()
 
             //gsl::Vector3D gameObjectCollissionPosition = it->second->getSphereCollisionComponent()->center;
             //float rightPlaneHeight = Dot(mCurrentCamera->rightPlaneNormal,
+
+
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - it->second->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
-            qDebug() << rightPlaneHeightToObject;
-            if(rightPlaneHeightToObject <= 0){}
+            if(rightPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+            {
+                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - it->second->getSphereCollisionComponent()->center;
+                float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
+                if(leftPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                {
+                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - it->second->getSphereCollisionComponent()->center;
+                    float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
+                    if(nearPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                    {
+                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - it->second->getSphereCollisionComponent()->center;
+                        float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, mCurrentCamera->farPlaneNormal);
+                        if(farPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                        {
+                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - it->second->getSphereCollisionComponent()->center;
+                            float topPlaneHeightToObject = gsl::Vector3D::dot(topPlaneToObjectVector, mCurrentCamera->topPlaneNormal);
+                            if(topPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                            {
+                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - it->second->getSphereCollisionComponent()->center;
+                                float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
+                                if(bottomPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                                {
+                                    it->second->draw();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(dynamic_cast<Camera*>(it->second) != nullptr)
+            {
+                it->second->draw();
+            }
 
-            it->second->draw();
+            //it->second->draw();
             //it->second->move(-0.001f, -0.001f, -0.001f);
-            it->second->move(-0.001f, 0.f, 0.f);
+            it->second->move(0.5f, 0.0f, 0.0f);
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*

@@ -35,6 +35,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
+        objectToCreate->move(0.0f, 0.0f, -35.f);
     }
 
     else if(objectName == "Plane")
