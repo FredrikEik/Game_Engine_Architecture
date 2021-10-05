@@ -18,6 +18,9 @@ public:
     Vector3D(const int v);
     Vector3D(const double v);
 
+    //Copy constructor
+    Vector3D(Vector3D const&vIN);
+
     //Operators
     const Vector3D& operator=(const Vector3D &rhs);     // v = v
     Vector3D operator+(const Vector3D &rhs) const;      // v + v
@@ -26,20 +29,25 @@ public:
     Vector3D& operator-=(const Vector3D &rhs);          // v -= v
     Vector3D operator-() const;                     // -v
     Vector3D operator*(GLfloat rhs) const;          // v * f
-    //Vector3D operator*(Vector3D rhs) const;                                       //GLfloat operatoren funker ikke med denne???
+    //Vector3D operator*(Vector3D rhs) const;       //GLfloat operatoren funker ikke med denne???
     Vector3D operator/(GLfloat rhs) const;
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
-    GLfloat operator*(const Vector3D& rhs) const;  // v * v
+    GLfloat operator*(const Vector3D& rhs) const;  // v * v  - dot product
 
     //Functions
+
+    ///Returns lenght of vector in float
     GLfloat length() const;
     GLfloat lengthNoSqrt() const;
+    ///normalize this vector
     void normalize();
+    ///returns a normalized version of this vector, without normalizing this vector itself
     Vector3D normalized();
     static Vector3D cross(const Vector3D &v1, const Vector3D &v2);
     static GLfloat dot(const Vector3D &v1, const Vector3D &v2);
 
     void rotateX(GLfloat angle);
+    ///rotate vector by angle degrees around world? Y axis
     void rotateY(GLfloat angle);
     void rotateZ(GLfloat angle);
 
@@ -56,6 +64,8 @@ public:
     GLfloat *xP();
     GLfloat *yP();
     GLfloat *zP();
+
+    void setAlltoSame(float valueIn);
 
 
     //Friend functions
