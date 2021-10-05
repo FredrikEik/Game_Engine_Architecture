@@ -6,6 +6,7 @@
 class QWidget;
 class RenderWindow;
 class QTreeWidgetItem;
+class GameObject;
 
 namespace Ui {
 class MainWindow;
@@ -42,11 +43,17 @@ private:
     RenderWindow *mRenderWindow;
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
+    GameObject* mGameObject;
 
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
 
+    class DetailsWidget* mDetailsWidget{nullptr};
 
     std::string itemToSpawn;
+
+    float mPositionStep{1.f};
+    float mRotationStep{1.f};
+    float mScaleStep{0.1f};
 };
 
 #endif // MAINWINDOW_H

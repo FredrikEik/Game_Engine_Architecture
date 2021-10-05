@@ -133,11 +133,12 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
         return;
     }*/
 
-    //Transform widget:
-    mTransformWidget = new WidgetTransform(this, mPositionStep, mRotationStep, mScaleStep);
-    mTransformWidget->setObjectName("TransformWidget"); //not sure if this is necessary
-    mTransformWidget->init(mRenderSystem, mCurrentEditItemIndex);
-    ui->blDetailsContainer->addWidget(mTransformWidget);    //add to details pane
+    /* //Transform widget:
+     mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
+     mDetailsWidget->setObjectName("DetailsWidget"); //not sure if this is necessary
+     mDetailsWidget->init(mGameObject, mCurrentEditItemIndex);
+     ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
+     */
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
