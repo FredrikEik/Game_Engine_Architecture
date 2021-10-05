@@ -26,6 +26,7 @@ public slots:
     void on_pb_toggleWireframe_toggled(bool checked);
     void on_pb_togglePlay_toggled(bool checked);
 
+    //Ui::MainWindow *ui;
 private:
     void init();
     Ui::MainWindow *ui;

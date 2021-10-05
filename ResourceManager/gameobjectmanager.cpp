@@ -62,8 +62,11 @@ GameObject *GameObjectManager::addObject(std::string meshName)
     currentGameObject->mMaterial = new MaterialComponent();
     currentGameObject->mTransform = new TransformComponent;
 
-    QList<QString> GameObjectList;
-    GameObjectList.insert(meshName);
+//    MainWindow ui;
+//    MainWindow::ui.GameObjectList.addItem("meshName");
+
+    //    QList<QString> GameObjectList;
+    //    GameObjectList.append(meshName);
 
     return currentGameObject;
 }

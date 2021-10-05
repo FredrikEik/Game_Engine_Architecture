@@ -10,11 +10,11 @@
 #include "ResourceManager/gameobjectmanager.h"
 #include "coreengine.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
+    ui->GameObjectList->addItem("Cheese");
     init();
 }
 
@@ -117,4 +117,3 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
     else
         ui->pb_togglePlay->setText("Play (R)");
 }
-
