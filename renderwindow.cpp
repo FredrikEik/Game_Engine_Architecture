@@ -281,6 +281,47 @@ void RenderWindow::render()
 
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
+    //LOD SWITCHER - OLE PLS DONT HATE
+    //calc length between obj and camera.
+    //use length to switch LOD level
+    //use length and LOD level to switch only one time
+    gsl::Vector3D LODlength = transformCompVec[2]->mMatrix.getPosition() - mCurrentCamera->position();
+
+    if((LODlength.length() < 5.0f) && (meshCompVec[2]->LOD0 == false) && meshCompVec[2]->LODLevel != 0)
+    {
+        qDebug() << "LOD level 0";
+        //LOD LEVEL 0
+        meshCompVec[2]->LODLevel = 0;
+        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
+        RenderSys->init(meshCompVec[2]);
+        meshCompVec[2]->LOD0 = true;
+        meshCompVec[2]->LOD1 = false;
+        meshCompVec[2]->LOD2 = false;
+    }
+    else if((LODlength.length() >= 5.0f && LODlength.length() < 10.0f) && (meshCompVec[2]->LOD1 == false) && meshCompVec[2]->LODLevel != 1)
+    {
+        qDebug() << "LOD level 1";
+        //LOD LEVEL 1
+        meshCompVec[2]->LODLevel = 1;
+        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
+        RenderSys->init(meshCompVec[2]);
+        meshCompVec[2]->LOD0 = false;
+        meshCompVec[2]->LOD1 = true;
+        meshCompVec[2]->LOD2 = false;
+    }
+    else if((LODlength.length() >= 10.0f && LODlength.length() < 20.0f) && (meshCompVec[2]->LOD2 == false) && meshCompVec[2]->LODLevel != 2)
+    {
+        qDebug() << "LOD level 2";
+        //LOD LEVEL 2
+        meshCompVec[2]->LODLevel = 2;
+        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
+        RenderSys->init(meshCompVec[2]);
+        meshCompVec[2]->LOD0 = false;
+        meshCompVec[2]->LOD1 = false;
+        meshCompVec[2]->LOD2 = true;
+    }
+
+
 
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
@@ -358,6 +399,7 @@ void RenderWindow::render()
             mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
         }
     }
+
 
     /*
     for(int i = 0; i < eSize; i++){

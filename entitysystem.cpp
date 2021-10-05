@@ -93,6 +93,26 @@ void EntitySystem::constructSuzanne(class RenderWindow * inRW)
     if(inRW) construct(inRW,"Suzanne.obj", LastPos,0,0);
 }
 
+void EntitySystem::LODSuzanneSwithcer(MeshComponent *mesh)
+{
+    if(mesh->LODLevel == 0)
+    {
+        ResourceSys->CreateMeshComponent("Suzanne.obj", mesh);
+        mesh->entity = 2;
+
+    }
+    else if (mesh->LODLevel == 1)
+    {
+        ResourceSys->CreateMeshComponent("suzanne_L01.obj", mesh);
+        mesh->entity = 2;
+    }
+    else if(mesh->LODLevel == 2)
+    {
+        ResourceSys->CreateMeshComponent("suzanne_L02.obj", mesh);
+        mesh->entity = 2;
+    }
+
+}
 void EntitySystem::offsetLastPos()
 {
     float d = 1.5f; //delta

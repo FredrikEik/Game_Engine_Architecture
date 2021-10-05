@@ -39,6 +39,10 @@ struct MeshComponent
     bool isDrawable = true;
     std::vector<Vertex> * mRVertices;
     std::vector<GLuint> * mRIndices;
+    unsigned int LODLevel = 0;
+    bool LOD0 = false;
+    bool LOD1 = false;
+    bool LOD2 = false;
 
     GLenum mDrawType{GL_TRIANGLES};
 };

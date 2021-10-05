@@ -21,6 +21,7 @@ public:
     void constructSphere(class RenderWindow * inRW);
     void constructPlane(class RenderWindow * inRW);
     void constructSuzanne(class RenderWindow * inRW);
+    void LODSuzanneSwithcer(MeshComponent* mesh);
 
 private:
     class RenderWindow * rw;
