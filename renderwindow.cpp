@@ -208,6 +208,8 @@ void RenderWindow::render()
     // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
     {
+        // ----- Should be fixed in camera class ----
+        mCurrentCamera->mProjectionMatrix.perspective(FOV, mAspectratio, mNearPlane , mFarPlane);
 
         gsl::Vector3D objPos = mGameObjects[i]->mTransformComp->mMatrix.getPosition();
 
@@ -227,7 +229,7 @@ void RenderWindow::render()
         float distanceToFrontObject = ((vectorToObj * forwardPlaneNormal) / forwardPlaneNormal.length());
 
         float  distanceCamToObj = (objPos - mCurrentCamera->position()).length();
-
+        // ----- end -----
         if(bUsingFrustumCulling)
         {
             if(distanceToRightObject > 0)
@@ -567,6 +569,19 @@ void RenderWindow::handleInput()
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
+    if(/*isPlaying*/!mInput.RMB && bIsPlaying)
+    {
+        mCurrentCamera->setPosition(mGameObjects[0]->mTransformComp->mMatrix.getPosition());
+        if(mInput.W)
+            mGameObjects[0]->mTransformComp->mMatrix.translateZ(0.1f);
+        if(mInput.S)
+            mGameObjects[0]->mTransformComp->mMatrix.translateZ(-0.1f);
+        if(mInput.D)
+            mGameObjects[0]->mTransformComp->mMatrix.translateX(-0.1f);
+        if(mInput.A)
+            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
+    }
+
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
@@ -606,6 +621,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+    }
+    if(event->key() == Qt::Key_P)
+    {
+        mMainWindow->on_PlayStop_toggled(bIsPlaying);
     }
     if(event->key() == Qt::Key_Up)
     {

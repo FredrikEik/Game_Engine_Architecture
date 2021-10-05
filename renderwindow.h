@@ -48,6 +48,8 @@ public:
 
     void render();
 
+    bool bIsPlaying{false};
+
     Camera *mCurrentCamera{nullptr};
 private slots:
 
@@ -123,6 +125,7 @@ private:
 
     float xMousePos{0};
     float yMousePos{0};
+
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;

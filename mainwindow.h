@@ -25,6 +25,10 @@ public:
     void updateList();
     void setID(int ID);
 
+public slots:
+
+    void on_PlayStop_toggled(bool checked);
+
 private slots:
 
     void on_ToggleLOD_toggled(bool checked);
@@ -33,7 +37,6 @@ private slots:
 
     void on_ToggleFrustumCulling_toggled(bool checked);
 
-    void on_PlayStop_toggled(bool checked);
 
     void on_pb_toggleCollisionBox_toggled(bool checked);
 

@@ -25,6 +25,9 @@ void GameEngine::SetUpScene()
     mEditorCamera = new Camera();
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
+    mGameCamera = new Camera();
+    mGameCamera->setPosition(gsl::Vector3D(0,0,0));
+
 
 
     SetUpObjects();
@@ -46,9 +49,15 @@ void GameEngine::SetUpScene()
     mMainWindow->initList();
 }
 
+
+
 void GameEngine::SetUpObjects()
 {
 
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(0,0,0);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
     //    for(int i{0}; i < 100; i++)
     //    {
     //        for(int j{0}; j < 100; j++)
@@ -76,14 +85,15 @@ void GameEngine::SetUpObjects()
 //    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
-//    tempGameObject->mMaterialComp->mShaderProgram = 2;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
-//    tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
+    tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-1,0.5,-5);
@@ -106,6 +116,17 @@ void GameEngine::SetUpObjects()
 void GameEngine::HandleInput()
 {
 
+}
+
+void GameEngine::togglePlay(bool bInIsPlaying)
+{
+    playMusic(bInIsPlaying);
+    mRenderwindow->bIsPlaying = bInIsPlaying;
+    if(bInIsPlaying)
+    {
+        mRenderwindow->mCurrentCamera = mGameCamera;
+    }else
+         mRenderwindow->mCurrentCamera = mEditorCamera;
 }
 
 void GameEngine::GameLoop()

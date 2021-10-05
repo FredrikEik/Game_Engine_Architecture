@@ -17,6 +17,7 @@ struct Input
     bool RIGHT{false};
     bool Q{false};
     bool E{false};
+    bool P{false};
     bool C{false};
     bool LSHIFT{false};
     bool LCTRL{false};

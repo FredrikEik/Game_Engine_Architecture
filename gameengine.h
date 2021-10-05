@@ -23,6 +23,7 @@ public:
     void SetUpScene();
     void SetUpObjects();
     void HandleInput();
+    void togglePlay(bool bInIsPlaying);
 
     static GameEngine* getInstance();
 
@@ -53,6 +54,8 @@ private:
     Camera *mEditorCamera{nullptr};
 
     SoundSource* mStereoSound{nullptr};
+
+    bool isPlaying{false};
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};

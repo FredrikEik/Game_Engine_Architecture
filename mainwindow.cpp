@@ -154,7 +154,7 @@ void MainWindow::on_ToggleFrustumCulling_toggled(bool checked)
 
 void MainWindow::on_PlayStop_toggled(bool checked)
 {
-        mGameEngine->getInstance()->playMusic(checked);
+        mGameEngine->getInstance()->togglePlay(checked);
 
         if(checked)
             ui->PlayStop->setText("Stop");
