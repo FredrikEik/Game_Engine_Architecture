@@ -314,8 +314,42 @@ void RenderWindow::deleteSelection()
     {
         ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin()+index);
         mMainWindow->removeObjectFromWorldList();
-        ObjFactory->setOBJindex(mMainWindow->getCurrentRow());
+        index = mMainWindow->getCurrentRow();
+        ObjFactory->setOBJindex(index);
+        mMainWindow->displayCurrentTransform(index);
     }
+}
+
+gsl::Matrix4x4 RenderWindow::getTransform(int index)
+{
+     gsl::Matrix4x4 Matrix = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix;
+
+     return Matrix;
+}
+
+void RenderWindow::setPositionX(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(value,position.getY(),position.getZ());
+}
+void RenderWindow::setPositionY(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(position.getX(),value,position.getZ());
+}
+void RenderWindow::setPositionZ(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(position.getX(),position.getY(),value);
 }
 
 void RenderWindow::ObjectButton(std::string object)

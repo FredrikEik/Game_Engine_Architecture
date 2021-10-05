@@ -102,6 +102,27 @@ int MainWindow::getCurrentRow()
     return ui->WorldObjects->currentRow();
 }
 
+void MainWindow::displayCurrentTransform(int index)
+{
+    if (index == -1)
+        return;
+
+    gsl::Matrix4x4 matrix = mRenderWindow->getTransform(index);
+    gsl::Vector3D position = matrix.getPosition();
+
+    ui->transformX->setValue(position.getX());
+    ui->transformY->setValue(position.getY());
+    ui->transformZ->setValue(position.getZ());
+
+    ui->rotationX->setValue(0.0);
+    ui->rotationY->setValue(0.0);
+    ui->rotationZ->setValue(0.0);
+
+    ui->scaleX->setValue(0.0);
+    ui->scaleY->setValue(0.0);
+    ui->scaleZ->setValue(0.0);
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
@@ -118,12 +139,10 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &arg1)
     ObjectSpawn = arg1.toStdString();
 }
 
-
 //void MainWindow::on_Value_x_valueChanged(double arg1)
 //{
 
 //}
-
 
 void MainWindow::on_PauseSound_clicked()
 {
@@ -144,10 +163,27 @@ void MainWindow::on_WorldObjects_currentRowChanged(int currentRow)
 {
     qDebug() << "Set Index: " << currentRow;
     mRenderWindow->setSelectionIndex(currentRow);
+    displayCurrentTransform(currentRow);
 }
 
 void MainWindow::on_deleteButton_clicked()
 {
     qDebug() << "Delete Index: ";
     mRenderWindow->deleteSelection();
+}
+
+void MainWindow::on_transformX_valueChanged(double arg1)
+{
+    qDebug() << "Transform X: " << arg1;
+    mRenderWindow->setPositionX(arg1);
+}
+void MainWindow::on_transformY_valueChanged(double arg1)
+{
+    qDebug() << "Transform Y: " << arg1;
+    mRenderWindow->setPositionY(arg1);
+}
+void MainWindow::on_transformZ_valueChanged(double arg1)
+{
+    qDebug() << "Transform Z: " << arg1;
+    mRenderWindow->setPositionZ(arg1);
 }

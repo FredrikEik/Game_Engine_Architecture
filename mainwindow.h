@@ -22,8 +22,9 @@ public:
 
     void addObjectToWorldList(std::string name);
     void removeObjectFromWorldList();
-
     int getCurrentRow();
+
+    void displayCurrentTransform(int index);
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -43,6 +44,10 @@ private slots:
     void on_WorldObjects_currentRowChanged(int currentRow);
 
     void on_deleteButton_clicked();
+
+    void on_transformX_valueChanged(double arg1);
+    void on_transformY_valueChanged(double arg1);
+    void on_transformZ_valueChanged(double arg1);
 
 private:
     void init();

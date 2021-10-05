@@ -43,6 +43,12 @@ public:
     void setSelectionIndex(int index);
     void deleteSelection();
 
+    gsl::Matrix4x4 getTransform(int index);
+
+    void setPositionX(double value);
+    void setPositionY(double value);
+    void setPositionZ(double value);
+
 private slots:
     void render();
 
