@@ -78,17 +78,19 @@ void GameEngine::SetUpObjects()
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
-    tempGameObject->mMaterialComp->mTextureUnit = 0;
-    tempGameObject->mMaterialComp->mShaderProgram = 0;
+    tempGameObject->mMaterialComp->mTextureUnit = 2;
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 //    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
 //    tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-//    tempGameObject->mTransformComp->mMatrix.translate(-1,0.5,-5);
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-1,0.5,-5);
+    tempGameObject->mMaterialComp->mTextureUnit = 2;
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
 
