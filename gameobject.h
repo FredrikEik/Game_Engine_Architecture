@@ -10,27 +10,18 @@ class GameObject : public QOpenGLFunctions_4_1_Core
 public:
     GameObject();
     virtual ~GameObject();
-    virtual void init()=0;
-    virtual void draw()=0;
+    void init();
+    void draw();
 
     std::string mName;
 
-//    MeshComponent* MeshComp = nullptr;
-    MeshComponent* getMeshComp(){return MeshComp;}
-//    MaterialComponent* MaterialComp = nullptr;
-    MaterialComponent* getMaterialComp(){return MaterialComp;}
-//    TransformComponent* TransformComp = nullptr;
-    TransformComponent* getTransformComp(){return TransformComp;}
+    MeshComponent* mMesh{nullptr};
+    MaterialComponent* mMaterial{nullptr};
+    TransformComponent* mTransform{nullptr};
+    CollisionComponent* mCollision{nullptr};
+    SoundComponent* mSoundComponent{nullptr};
 
-    CollisionComponent* getCollisionComp(){return CollisionComp;}
-
-    void setMeshComponent(MeshComponent* newMeshComp){MeshComp = newMeshComp;}
-
-private:
-    MeshComponent* MeshComp;
-    MaterialComponent* MaterialComp;
-    TransformComponent* TransformComp;
-    CollisionComponent* CollisionComp;
+    void setMeshComponent(MeshComponent* newMeshComp){mMesh = newMeshComp;}
 };
 
 #endif // GAMEOBJECT_H

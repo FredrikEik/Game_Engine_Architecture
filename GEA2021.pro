@@ -8,7 +8,8 @@ TARGET      = GEA2021
 INCLUDEPATH += \
     ./gsl \
     ./Assets \
-    ./include
+    ./include \
+    ./ResourceManager
 
 mac {
     LIBS += -framework OpenAL
@@ -22,6 +23,11 @@ win32 {
 SOURCES += main.cpp \
     camera.cpp \
     cube.cpp \
+    ResourceManager/resourcemanager.cpp \
+    ResourceManager/shaderhandler.cpp \
+    ResourceManager/meshhandler.cpp \
+    ResourceManager/texturehandler.cpp \
+    ResourceManager/soundhandler.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
@@ -44,6 +50,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    altypes.h \
     camera.h \
     components.h \
     constants.h \
@@ -51,6 +58,11 @@ HEADERS += \
     gameobject.h \
     gltypes.h \
     input.h \
+    ResourceManager/resourcemanager.h \
+    ResourceManager/shaderhandler.h \
+    ResourceManager/meshhandler.h \
+    ResourceManager/texturehandler.h \
+    ResourceManager/soundhandler.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \

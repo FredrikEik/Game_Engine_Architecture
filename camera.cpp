@@ -1,27 +1,38 @@
 #include "camera.h"
 #include <QDebug>
 
-Camera::Camera()
+#include "soundmanager.h"
+
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOV = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
 }
 
 void Camera::pitch(float degrees)
 {
     //  rotate around mRight
-    mPitch -= degrees;
+    mPitch += degrees;
     updateForwardVector();
 }
 
 void Camera::yaw(float degrees)
 {
     // rotate around mUp
-    mYaw -= degrees;
+    mYaw += degrees;
     updateForwardVector();
+    calculateFrustumVectors();
 }
 
 void Camera::updateRightVector()
@@ -55,8 +66,17 @@ void Camera::update()
 
     mPosition -= mForward * mSpeed;
 
-    mViewMatrix = mPitchMatrix* mYawMatrix;
+    mViewMatrix = mPitchMatrix * mYawMatrix;
     mViewMatrix.translate(-mPosition);
+
+    SoundManager::getInstance()->updateListener(mPosition, mForward, mUp);
+}
+
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    calculateFrustumVectors();
+//    qDebug() << "AspectRatio" << mFrustum.mAspectRatio;
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
@@ -84,12 +104,30 @@ void Camera::moveRight(float delta)
     mPosition += right * delta;
 }
 
-gsl::Vector3D Camera::position() const
+void Camera::setCameraSpeed(float value)
 {
-    return mPosition;
+    mCameraSpeed += value;
+
+    //Keep within some min and max values
+    if(mCameraSpeed < 0.01f)
+        mCameraSpeed = 0.01f;
+    if (mCameraSpeed > 0.3f)
+        mCameraSpeed = 0.3f;
 }
 
-gsl::Vector3D Camera::up() const
+void Camera::calculateFrustumVectors()
 {
-    return mUp;
+    //Does not take into account the pitch of the camera!
+    //So it will not be accurate when camera is pitching
+
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around up
+    tempVector = mRight;
+    tempVector.rotateY(-mFrustum.mFOV);
+    mFrustum.mRightPlane = tempVector;
+
+    //leftPlane vector = mRight rotated by FOV+180 around up
+    tempVector = mRight;
+    tempVector.rotateY(mFrustum.mFOV + 180.f);
+    mFrustum.mLeftPlane = tempVector;
 }

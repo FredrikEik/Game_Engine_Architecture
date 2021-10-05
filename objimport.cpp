@@ -14,7 +14,7 @@
 ObjImport::ObjImport(std::string filename) : GameObject()
 {
     readFile(filename);
-    getTransformComp()->mMatrix.setToIdentity();
+    mTransform->mMatrix.setToIdentity();
 }
 
 ObjImport::~ObjImport()
@@ -28,14 +28,14 @@ void ObjImport::init()
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &getMeshComp()->mVAO );
-    glBindVertexArray( getMeshComp()->mVAO );
+    glGenVertexArrays( 1, &mMesh->mVAO[1] );
+    glBindVertexArray( mMesh->mVAO[1] );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &getMeshComp()->mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
+    glGenBuffers( 1, &mMesh->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, getMeshComp()->mVertices.size()*sizeof(Vertex), getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof(Vertex), mMesh->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
@@ -50,9 +50,9 @@ void ObjImport::init()
     glEnableVertexAttribArray(2);
 
     //Second buffer - holds the indices (Element Array Buffer - EAB):
-    glGenBuffers(1, &getMeshComp()->mEAB);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mEAB);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mIndices.size() * sizeof(GLuint), getMeshComp()->mIndices.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &mMesh->mEAB);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mMesh->mEAB);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mMesh->mIndices.size() * sizeof(GLuint), mMesh->mIndices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
@@ -183,17 +183,17 @@ void ObjImport::readFile(std::string filename)
                 if (uv > -1)    //uv present!
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-                    if(getMeshComp())
-                        getMeshComp()->mVertices.push_back(tempVert);
+                    if(mMesh)
+                        mMesh->mVertices.push_back(tempVert);
                 }
                 else            //no uv in mesh data, use 0, 0 as uv
                 {
                     Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-                    if(getMeshComp())
-                        getMeshComp()->mVertices.push_back(tempVert);
+                    if(mMesh)
+                        mMesh->mVertices.push_back(tempVert);
                 }
-                if(getMeshComp())
-                    getMeshComp()->mIndices.push_back(temp_index++);
+                if(mMesh)
+                    mMesh->mIndices.push_back(temp_index++);
             }
             continue;
         }
@@ -205,7 +205,7 @@ void ObjImport::readFile(std::string filename)
 
 void ObjImport::draw()
 {
-    glBindVertexArray( getMeshComp()->mVAO );
-    glDrawElements(GL_TRIANGLES, getMeshComp()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray( mMesh->mVAO[1] );
+    glDrawElements(GL_TRIANGLES, mMesh->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }

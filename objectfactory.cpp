@@ -23,8 +23,8 @@ void ObjectFactory::createObject(std::string objectName)
         if (EXISTS("Cube"))
         {
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
-            willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
-            willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
+            willCreateObject->mCollision->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
+            willCreateObject->mCollision->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
         }
     }
 
@@ -50,7 +50,7 @@ void ObjectFactory::createObject(std::string objectName)
 
     /*Trying to create each new object at an added position so
      *  all objects is not in the same place. Needs some work..*/
-    willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
+    willCreateObject->mTransform->mMatrix.translateX(+0.5f);
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
 

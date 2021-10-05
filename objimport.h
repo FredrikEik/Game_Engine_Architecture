@@ -9,8 +9,8 @@ public:
     ObjImport(std::string filename);
     ~ObjImport() override;
 
-    virtual void draw() override;
-    virtual void init() override;
+    virtual void draw();
+    virtual void init();
 
     std::string filename;
 

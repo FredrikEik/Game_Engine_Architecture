@@ -1,6 +1,11 @@
+//#include "wavfilehandler.h"
+//#include <iostream>
 #include "soundmanager.h"
-#include "wavfilehandler.h"
+#include "gameobject.h"
+#include "components.h"
+#include "soundhandler.h"
 #include <iostream>
+#include <QDebug>
 
 SoundManager* SoundManager::mInstance = NULL;
 
@@ -86,24 +91,19 @@ SoundSource* SoundManager::createSource(std::string name, Vector3 pos, std::stri
     return tempPtr;
 }
 
-void SoundManager::updateListener(Vector3 pos, Vector3 vel, Vector3 dir, Vector3 up)
+void SoundManager::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up)
 {
-    ALfloat posVec[3];
-    ALfloat velVec[3];
-    ALfloat headVec[6];
-    posVec[0] = pos.x;
-    posVec[1] = pos.y;
-    posVec[2] = pos.z;
-    velVec[0] = vel.x;
-    velVec[1] = vel.y;
-    velVec[2] = vel.z;
-    headVec[0] = dir.x;
-    headVec[1] = dir.y;
-    headVec[2] = dir.z;
-    headVec[3] = up.x;
-    headVec[4] = up.y;
-    headVec[5] = up.z;
+    ALfloat posVec[3]{pos.x, pos.y, pos.z};
     alListenerfv(AL_POSITION, posVec);
-    alListenerfv(AL_VELOCITY, velVec);
+
+    ALfloat headVec[6]{dir.x, dir.y, dir.z, up.x, up.y, up.z};
     alListenerfv(AL_ORIENTATION, headVec);
+
+    //    gsl::Vector3D vel
+    //    ALfloat velVec[3];,
+    //    velVec[0] = vel.x;
+    //    velVec[1] = vel.y;
+    //    velVec[2] = vel.z;
+    //    alListenerfv(AL_VELOCITY, velVec);
+
 }

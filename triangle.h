@@ -12,8 +12,8 @@ public:
     Triangle();
     ~Triangle() override;
 
-    void init() override;
-    void draw() override;
+    void init();
+    void draw();
 
 };
 

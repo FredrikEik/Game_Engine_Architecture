@@ -1,19 +1,19 @@
-#ifndef XYZ_H
-#define XYZ_H
+//#ifndef XYZ_H
+//#define XYZ_H
 
-#include <QOpenGLFunctions_4_1_Core>
-#include "visualobject.h"
-#include "gameobject.h"
+//#include <QOpenGLFunctions_4_1_Core>
+//#include "visualobject.h"
+//#include "gameobject.h"
 
-class XYZ : public GameObject
-{
-public:
-   XYZ();
-   ~XYZ() override;
+//class XYZ : public GameObject
+//{
+//public:
+//   XYZ();
+//   ~XYZ() override;
 
-   void init() override;
-   void draw() override;
+//   void init() override;
+//   void draw() override;
 
-};
+//};
 
-#endif // XYZ_H
+//#endif // XYZ_H

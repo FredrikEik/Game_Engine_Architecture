@@ -1,19 +1,12 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
-#ifdef _WIN32
-#include <al.h>
-#include <alc.h>
-#endif
-#ifdef __APPLE__
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-#endif
-
 #include <string>
 #include <vector>
 #include "soundsource.h"
 #include "vector3.h"
+#include "altypes.h"
+#include "components.h"
 
 /// Class handling OpenAL setup and management of sound sources.
 /**
@@ -62,7 +55,7 @@ public:
         \param Boolean to see if sound should loop or not.
     **/
     SoundSource* createSource(std::string name, Vector3 pos, std::string filePath = "", bool loop = false, float gain = 1.0);
-    void updateListener(Vector3 pos, Vector3 vel, Vector3 dir, Vector3 up);
+    void updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up);
 
 private:
     SoundManager();                         ///< Private constructor.

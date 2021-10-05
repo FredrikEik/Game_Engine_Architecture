@@ -3,20 +3,43 @@
 
 #include "matrix4x4.h"
 #include "vector3d.h"
+#include "components.h"
+
 /**
-  This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
-  the forward / backward is wrong, when steered with W and S.
+  Holds normals to the different planes of the frustum
+  and some other necessary data
  */
+struct Frustum
+{
+    float mFarPlaneDistance{0.f};   //used to make projection matrix
+    float mNearPlaneDistance{0.f};  //used to make projection matrix
+    float mFOV{0.f};                //used to make projection matrix
+    float mAspectRatio{0.f};        //used to make projection matrix
+
+    //Normals for the side planes - for frustum culling
+    //Make sure these are stored normalized!
+    gsl::Vector3D mRightPlane;
+    gsl::Vector3D mLeftPlane;
+    gsl::Vector3D mToptPlane;
+    gsl::Vector3D mBottomPlane;
+
+    //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
+};
+
+
 class Camera
 {
 public:
-    Camera();
+    Camera(float fovIn = 45, float nearPlaneDistanceIn = 0.1f, float farPlaneDistanceIn = 500.f);
 
+    ///Tilts camera pitch. Positive number tilts upwards
     void pitch(float degrees);
+    ///Rotates camera. Positive number rotates with clock
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
     void update();
+    void calculateProjectionMatrix();
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
@@ -27,22 +50,30 @@ public:
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
 
-    gsl::Vector3D position() const;
-    gsl::Vector3D up() const;
+    void setCameraSpeed(float value);
 
-private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
+
+    float mCameraSpeed{0.05f};
+    float mCameraRotateSpeed{0.1f};
+
+    Frustum mFrustum;
+
     float mPitch{0.f};
     float mYaw{0.f};
+private:
+    void calculateFrustumVectors();
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
+
+    SoundComponent mListener;
 };
 
 #endif // CAMERA_H

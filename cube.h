@@ -11,8 +11,8 @@ public:
     Cube();
     ~Cube();
 
-    void draw() override;
-    void init() override;
+    void draw();
+    void init();
 
 };
 
