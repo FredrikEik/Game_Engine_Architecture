@@ -5,6 +5,8 @@ ResourceManager::ResourceManager()
 {
 id = 0;
 std::string name = "objName";
+
+
 }
 
 ResourceManager::~ResourceManager()
@@ -16,10 +18,10 @@ void ResourceManager::manageObjects(std::string objectName, int ObjectID)
 {
 
     //Axis
-//      VisualObject *temp = new XYZ();
-//      temp->mMaterial->mShaderProgram = 0; //plain shader
-//      temp->init();
-//      mVisualObjects.push_back(temp);
+    //      VisualObject *temp = new XYZ();
+    //      temp->mMaterial->mShaderProgram = 0; //plain shader
+    //      temp->init();
+    //      mVisualObjects.push_back(temp);
 
     name = objectName;
     addObject(name, id, ObjectID, 1, 1, 1, 0);
@@ -44,7 +46,7 @@ void ResourceManager::manageObjects(std::string objectName, int ObjectID)
 }
 
 void ResourceManager::addObject(std::string name, int id, int ObjectType,
-                                int TransformID, int MeshID, int MaterialID, int GravityID)
+                                int TransformID, int MeshID, int MaterialID)
 {
      VisualObject * CurrentVisualObject = 0;
 
