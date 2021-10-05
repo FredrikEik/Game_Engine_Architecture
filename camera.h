@@ -7,16 +7,33 @@
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
  */
+
+struct Frustum
+{
+    //Used to make projection matrix
+    float mNearPlaneDistance{0.f};
+    float mFarPlaneDistance{0.f};
+    float mFOV{0.f};
+    float mAspectRatio{0.f};
+
+    //Normals for side planes used in frustum culling
+    gsl::Vector3D mRightPlane;
+    gsl::Vector3D mLeftPlane;
+    gsl::Vector3D mTopPlane;
+    gsl::Vector3D mBottomPlane;
+};
+
 class Camera
 {
 public:
-    Camera();
+    Camera(float fovIn = 45, float nearPlaneDistanceIn = 0.1f, float farPlaneDistanceIn = 500.f);
 
     void pitch(float degrees);
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
     void update();
+    void calculateProjectionMatrix();
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
@@ -30,14 +47,20 @@ public:
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
 
-private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
+
+    Frustum mFrustum;
+
     float mPitch{0.f};
     float mYaw{0.f};
+
+
+private:
+    void calculateFrustumVectors();
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;

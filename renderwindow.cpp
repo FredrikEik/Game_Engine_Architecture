@@ -129,7 +129,7 @@ void RenderWindow::init()
 //    temp->init();
 //    mVisualObjects.push_back(temp);
 
-    source = new ResourceManageer();
+    source = new ResourceManager();
 
 //    mVisualObjects.push_back(source->addCube());
 //    mVisualObjects.push_back(source->addTriangle());
@@ -143,8 +143,13 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera = new Camera();
+    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    mGameCamera = new Camera();
+    mGameCamera->setPosition(gsl::Vector3D(1.f, .4f, 4.f));
+
+    mCurrentCamera = mEditorCamera;
 }
 
 // Called each frame - doing the rendering
@@ -154,6 +159,10 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
+    if (mCurrentCamera==mEditorCamera)
+        mEditorCamera = mCurrentCamera;
+    if (mCurrentCamera==mGameCamera)
+        mGameCamera = mCurrentCamera;
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -246,7 +255,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
         mTimeStart.start();
     }
 
-    //calculate aspect ration and set projection matrix
+    //calculate aspect ratio and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
     mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
@@ -346,6 +355,15 @@ void RenderWindow::setCameraSpeed(float value)
 
 void RenderWindow::handleInput()
 {
+    //Switch between editor and game camera
+    if(mInput.C)
+    {
+        if(mCurrentCamera==mEditorCamera)
+            mCurrentCamera = mGameCamera;
+        else if(mCurrentCamera==mGameCamera)
+            mCurrentCamera = mEditorCamera;
+    }
+
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
@@ -425,6 +443,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_O)
     {
     }
+    if(event->key() == Qt::Key_C)
+    {
+        mInput.C = true;
+    }
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
@@ -480,6 +502,10 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_O)
     {
+    }
+    if(event->key() == Qt::Key_C)
+    {
+        mInput.C = false;
     }
 }
 

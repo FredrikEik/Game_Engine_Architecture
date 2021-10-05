@@ -5,44 +5,51 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+INCLUDEPATH += \
+    ./gsl \
+    ./Shaders \
+    ./ResourceManager
+
 SOURCES += main.cpp \
+    ResourceManager/resourcemanager.cpp \
     camera.cpp \
     components.cpp \
     gameobject.cpp \
-    matrix3x3.cpp \
-    matrix4x4.cpp \
+    gsl/matrix3x3.cpp \
+    gsl/matrix4x4.cpp \
+    gsl/vector2d.cpp \
+    gsl/vector3d.cpp \
+    gsl/vector4d.cpp \
     renderwindow.cpp \
-    resourcemanageer.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
     triangle.cpp \
     triangletest.cpp \
-    vector2d.cpp \
-    vector3d.cpp \
     vertex.cpp \
     visualobject.cpp \
     xyz.cpp
 
 HEADERS += \
+    ResourceManager/resourcemanager.h \
     camera.h \
     components.h \
     constants.h \
     gameobject.h \
     gltypes.h \
+    gsl/math_constants.h \
+    gsl/matrix3x3.h \
+    gsl/matrix4x4.h \
+    gsl/vector2d.h \
+    gsl/vector3d.h \
+    gsl/vector4d.h \
     input.h \
-    math_constants.h \
-    matrix3x3.h \
-    matrix4x4.h \
     renderwindow.h \
-    resourcemanageer.h \
     shader.h \
     mainwindow.h \
     texture.h \
     triangle.h \
     triangletest.h \
-    vector2d.h \
-    vector3d.h \
     vertex.h \
     visualobject.h \
     xyz.h

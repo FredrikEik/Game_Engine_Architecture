@@ -16,6 +16,9 @@ public:
     Vector2D(const int v);
     Vector2D(const double v);
 
+    //Copy constructor
+    Vector2D(Vector2D const&vIN);;
+
     //Operators
     Vector2D operator+(const Vector2D &rhs) const;      // v + v
     Vector2D operator-(const Vector2D &rhs) const;      // v - v

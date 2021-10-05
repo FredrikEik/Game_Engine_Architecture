@@ -1,11 +1,18 @@
-#include "resourcemanageer.h"
+#include "ResourceManager.h"
 
-ResourceManageer::ResourceManageer()
+#include <sstream>
+#include <fstream>
+
+#include "constants.h"
+#include "math_constants.h"
+#include "camera.h"
+
+ResourceManager::ResourceManager()
 {
 
 }
 
-GameObject *ResourceManageer::addObject(std::string objName, std::vector<Vertex> vertexes)
+GameObject *ResourceManager::addObject(std::string objName, std::vector<Vertex> vertexes)
 {
     GameObject* tempObj = new GameObject();
     tempObj->mName = objName;
@@ -183,7 +190,7 @@ GameObject* readObj(std::string filename)
     return tempObj;    //returns index to last object
 }
 
-GameObject* ResourceManageer::addTriangle()
+GameObject* ResourceManager::addTriangle()
 {
     GameObject* tempObj = new GameObject();
     tempObj->mName = "Triangle";
@@ -202,7 +209,7 @@ GameObject* ResourceManageer::addTriangle()
     return tempObj;
 }
 
-GameObject* ResourceManageer::addCube()
+GameObject* ResourceManager::addCube()
 {
     GameObject* tempObj = new GameObject();
     tempObj->mName = "Cube";
@@ -272,7 +279,7 @@ GameObject* ResourceManageer::addCube()
     return tempObj;
 }
 
-GameObject *ResourceManageer::addXYZ()
+GameObject *ResourceManager::addXYZ()
 {
     GameObject* tempObj = new GameObject();
     tempObj->mName = "XYZ";
@@ -296,7 +303,54 @@ GameObject *ResourceManageer::addXYZ()
     return tempObj;
 }
 
-GameObject *ResourceManageer::objectCreator(std::string objName)
+GameObject *ResourceManager::makeFrustum(const Frustum &frustumIn)
+{
+    float tanFOV = tanf(frustumIn.mFOV);
+    float widthNear = tanFOV * frustumIn.mNearPlaneDistance;
+    float widthFar = tanFOV * frustumIn.mFarPlaneDistance;
+    float heightNear = widthNear / frustumIn.mAspectRatio;
+    float heightFar = widthFar / frustumIn.mAspectRatio;
+
+    gsl::Vector3D cornerNear = gsl::Vector3D(widthNear, heightNear, -frustumIn.mNearPlaneDistance);
+    gsl::Vector3D cornerFar = gsl::Vector3D(widthFar, heightFar, -frustumIn.mFarPlaneDistance);
+
+    GameObject* tempMesh = new GameObject();
+    tempMesh->mName = "Frustum";
+    tempMesh->mTransform = new TransformComponent();
+    tempMesh->mTransform->mMatrix.setToIdentity();
+
+    tempMesh->mMesh = new MeshComponent;
+
+    tempMesh->mMesh->mVertices.insert( tempMesh->mMesh->mVertices.end(),
+      {         //Vertex data for front points                  color                       uv
+       Vertex{-cornerNear.x, -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
+       Vertex{cornerNear.x,  -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerNear.x,  cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerNear.x, cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       //Vertex data for back
+       Vertex{-cornerFar.x, -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},    // 4
+       Vertex{cornerFar.x,  -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerFar.x,  cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerFar.x, cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+                      });
+
+    //One line at a time
+    tempMesh->mMesh->mIndices.insert( tempMesh->mMesh->mIndices.end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+      0, 4, 3, 7,                   //leftside lines
+      1, 5, 2, 6                    //rightside lines
+                     });
+
+    tempMesh->mMesh->mDrawType = GL_LINES;
+
+    //only LOD level 0
+    tempMesh->init();
+
+    return tempMesh;
+}
+
+GameObject *ResourceManager::objectCreator(std::string objName)
 {
     int index;
     auto temp = meshComponentMap.find(objName);
@@ -332,7 +386,7 @@ GameObject *ResourceManageer::objectCreator(std::string objName)
     return tempObj;
 }
 
-int ResourceManageer::standardTriangle()
+int ResourceManager::standardTriangle()
 {
     MeshComponent* temp = new MeshComponent;
     temp->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f});
@@ -344,7 +398,7 @@ int ResourceManageer::standardTriangle()
     return meshComponents.size()-1;
 }
 
-int ResourceManageer::standardCube()
+int ResourceManager::standardCube()
 {
     meshComponentMap.emplace("Triangle", 1); //hardkodet for å funke
     MeshComponent* temp = new MeshComponent;

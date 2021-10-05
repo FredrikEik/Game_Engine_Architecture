@@ -10,7 +10,7 @@
 #include "constants.h"
 #include "gameobject.h"
 #include "triangletest.h"
-#include "resourcemanageer.h"
+#include "resourcemanager.h"
 
 class QOpenGLContext;
 class Shader;
@@ -68,6 +68,9 @@ private:
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
+    Camera *mGameCamera{nullptr};
+    Camera *mEditorCamera{nullptr};
+
     float mAspectratio{1.f};
 
     std::vector<GameObject*> mVisualObjects;
@@ -77,7 +80,7 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-    ResourceManageer* source{nullptr};
+    ResourceManager* source{nullptr};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

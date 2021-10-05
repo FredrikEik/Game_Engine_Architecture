@@ -1,19 +1,34 @@
 #include "camera.h"
 #include <QDebug>
 
-Camera::Camera()
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOV = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
 }
 
 void Camera::pitch(float degrees)
 {
     //  rotate around mRight
-    mPitch -= degrees;
+    if(mPitch>=-90 && mPitch<=90)   //checks if the camera is turning upside down and stops it
+        mPitch -= degrees;
+
+    else if (mPitch<-90)
+        mPitch = -90;
+    else if (mPitch>90)
+        mPitch = 90;
+
     updateForwardVector();
 }
 
@@ -22,6 +37,7 @@ void Camera::yaw(float degrees)
     // rotate around mUp
     mYaw -= degrees;
     updateForwardVector();
+    calculateFrustumVectors();
 }
 
 void Camera::updateRightVector()
@@ -88,7 +104,19 @@ gsl::Vector3D Camera::position() const
     return mPosition;
 }
 
-gsl::Vector3D Camera::up() const
+//gsl::Vector3D Camera::up() const
+//{
+//    return mUp;
+//}
+
+void Camera::calculateFrustumVectors()
 {
-    return mUp;
+    gsl::Vector3D tempVec;
+    tempVec = mRight;
+    tempVec.rotateY(-mFrustum.mFOV);
+    mFrustum.mLeftPlane = tempVec;
+
+    tempVec = mRight;
+    tempVec.rotateY(mFrustum.mFOV);
+    mFrustum.mLeftPlane = tempVec;
 }
