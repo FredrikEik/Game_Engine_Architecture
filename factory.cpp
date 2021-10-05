@@ -33,8 +33,8 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        static_cast<Cube*>(objectToCreate)->getBoxCollisionComponent()->max = gsl::Vector3D( 0.5f,  0.5f,  0.5f);
-        static_cast<Cube*>(objectToCreate)->getBoxCollisionComponent()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.5;
     }
 
     else if(objectName == "Plane")
@@ -81,8 +81,8 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
-        static_cast<Sphere*>(objectToCreate)->getSphereCollisionComponent()->radius = 0.25;
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.25;
     }
     else if(objectName == "Camera")
     {

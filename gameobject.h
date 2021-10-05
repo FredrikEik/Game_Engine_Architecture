@@ -21,10 +21,13 @@ public:
 
     void setMeshComponent(MeshComponent* newMeshComp){meshComp=newMeshComp;}
 
+    SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
+
 private:
     TransformComponent* transformComp;
     MeshComponent* meshComp;
     MaterialComponent* materialComp;
+    SphereCollisionComponent* sphereCollisionComp;
 
 };
 #endif // GAMEOBJECT_H

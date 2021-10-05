@@ -4,7 +4,7 @@
 
 Sphere::Sphere()
 {
-    sphereCollisionComp = new SphereCollisionComponent();
+
 }
 Sphere::~Sphere() {}
 

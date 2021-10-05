@@ -15,10 +15,10 @@ public:
     void init() override;
     void move(float x, float y, float z) override;
 
-    SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
+
 
 private:
-    SphereCollisionComponent* sphereCollisionComp;
+
 };
 
 #endif // SPHERE_H
