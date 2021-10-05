@@ -19,7 +19,7 @@ public:
     explicit DetailsWidget(QWidget *parent = nullptr, float positionPace = 1.f, float rotationPace = 1.f, float scalePace = 1.f);
     ~DetailsWidget();
 
-    void init(GameObject* gameobject, int index);
+    void init(GameObject* gameObject, int index);
 
 
 
