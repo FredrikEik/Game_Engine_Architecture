@@ -175,6 +175,7 @@ void Plain::makeVerticies(MeshComponent* dMesh)
 {
     dMesh->mDrawType = GL_TRIANGLES;
 
+    //24 x 18 fra -12 til +12 -9 til +9
     mTransform->scale = 3;
     float a = 4 * mTransform->scale;
     float b = 3 * mTransform->scale;
@@ -192,6 +193,7 @@ ObjMesh::ObjMesh(std::string filename)
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
 
     readFile(filename);
 
@@ -222,6 +224,12 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         return nullptr;}
 }
 
+VisualObject* ShapeFactory::createMonkeys(int i)
+{
+    myMonkeys[i] = new ObjMesh(monkeyString);
+    return myMonkeys[i];
+}
+
 void ShapeFactory::createCircle()
 {
     myShapes[0] = new Circle;
@@ -244,5 +252,5 @@ void ShapeFactory::createPlain()
 
 void ShapeFactory::createObj()
 {
-    myShapes[4] = new ObjMesh("../GEA2021/Assets/Monkey.obj");
+    myShapes[4] = new ObjMesh(monkeyString);
 }

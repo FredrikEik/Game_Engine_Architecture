@@ -39,6 +39,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void playMode(bool p);
     void toggleShapes(int shapeID);
     void setCameraSpeed(float value);
 
@@ -56,10 +57,12 @@ private:
     Input mInput;
     Player* mPlayer;
     bool shapeExist[4];
+    bool playM = false;
     int shapeID;
     void init();
     void initObject();
     void drawObject();
+
 
     void checkForGLerrors();
 
@@ -83,6 +86,8 @@ private:
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
+    Camera mEditorCamera;
+    Camera mPlayCamera;
     float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;

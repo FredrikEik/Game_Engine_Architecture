@@ -87,6 +87,15 @@ void MainWindow::on_pushButton_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
+void MainWindow::on_pushButton_2_toggled(bool checked)
+{
+    mRenderWindow->playMode(checked);
+    if(checked)
+        ui->pushButton_2->setText("Stop");
+    else
+        ui->pushButton_2->setText("Play");
+}
+
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
     mRenderWindow->toggleShapes(1);

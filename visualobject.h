@@ -14,7 +14,7 @@ public:
     void readFile(std::string filename);
 
     std::string mName;
-    CollisionComponent* mCollision;
+    CollisionComponent* mCollision{nullptr};
 
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};

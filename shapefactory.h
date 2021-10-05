@@ -17,13 +17,16 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
-    VisualObject* myShapes[5];
+    VisualObject* createMonkeys(int i);
 private:
     void createCircle();
     void createSquare();
     void createTriangle();
     void createPlain();
     void createObj();
+    VisualObject* myShapes[5];
+    VisualObject* myMonkeys[200];
+    string monkeyString = "../GEA2021/Assets/Monkey.obj";
 };
 
 class Circle : public VisualObject
