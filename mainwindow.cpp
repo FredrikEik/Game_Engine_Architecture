@@ -120,7 +120,7 @@ void MainWindow::selectObjectByIndex(int indexIn)
 
 void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
 {
-
+/*
     clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
 
     //Top node selected or no selection:
@@ -130,7 +130,7 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
         ui->gobNameEdit->setText("no selection");
         mCurrentEditItem = nullptr;
         return;
-    }
+    }*/
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
@@ -142,5 +142,5 @@ void MainWindow::clearLayout(QLayout *layout) {
         delete item; //probably not neccesary - Qt should do it automatically
     }
 //    mTransformWidget = nullptr;
-    ui->twSceneOutliner->clearSelection();
+  //  ui->twSceneOutliner->clearSelection();
 }
