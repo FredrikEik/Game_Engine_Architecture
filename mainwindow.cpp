@@ -97,6 +97,11 @@ void MainWindow::removeObjectFromWorldList()
     delete ui->WorldObjects->takeItem(ui->WorldObjects->currentRow());
 }
 
+int MainWindow::getCurrentRow()
+{
+    return ui->WorldObjects->currentRow();
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
@@ -146,5 +151,3 @@ void MainWindow::on_deleteButton_clicked()
     qDebug() << "Delete Index: ";
     mRenderWindow->deleteSelection();
 }
-
-

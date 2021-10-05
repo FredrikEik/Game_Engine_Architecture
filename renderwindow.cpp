@@ -314,7 +314,7 @@ void RenderWindow::deleteSelection()
     {
         ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin()+index);
         mMainWindow->removeObjectFromWorldList();
-        ObjFactory->setOBJindex(-1);
+        ObjFactory->setOBJindex(mMainWindow->getCurrentRow());
     }
 }
 

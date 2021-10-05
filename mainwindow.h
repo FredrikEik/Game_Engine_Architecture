@@ -23,6 +23,8 @@ public:
     void addObjectToWorldList(std::string name);
     void removeObjectFromWorldList();
 
+    int getCurrentRow();
+
 private slots:
     void on_pushButton_toggled(bool checked);
 
