@@ -265,8 +265,14 @@ void RenderWindow::render()
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
 
+            //gsl::Vector3D gameObjectCollissionPosition = it->second->getSphereCollisionComponent()->center;
+            //float rightPlaneHeight = Dot(mCurrentCamera->rightPlaneNormal,
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->rightPlanePointA - it->second->getSphereCollisionComponent()->center;
+            float rightPlaneHeightToObject = gsl::Vector3D::dot(mCurrentCamera->rightPlaneNormal, rightPlaneToObjectVector);
+            if(rightPlaneHeightToObject <= 0){qDebug() << rightPlaneHeightToObject << " is inside";}
+
             it->second->draw();
-            it->second->move(0.001f, 0.001f, -0.001f);
+            it->second->move(-0.001f, -0.001f, -0.001f);
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*

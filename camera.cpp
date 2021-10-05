@@ -24,6 +24,34 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
     nearplaneZ = frustumComp->nearPlaneLength;
 
+    rightPlanePointA  = gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ);
+    leftPlanePointA   = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
+    topPlanePointA    = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
+    bottomPlanePointA = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
+    nearPlanePointA   = gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ);
+    farPlanePointA    = gsl::Vector3D(farplaneX, farplaneY, -farplaneZ);
+
+    rightPlaneNormal   = gsl::Vector3D::cross(gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(farplaneX, farplaneY, -farplaneZ)
+                                             ,gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
+    leftPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
+                                             ,gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ));
+    topPlaneNormal     = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
+                                             ,gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ));
+    bottomPlaneNormal  = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ)
+                                             ,gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
+    nearPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ)
+                                             ,gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
+    farPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(farplaneX, farplaneY, -farplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
+                                             ,gsl::Vector3D(farplaneX, farplaneY, -farplaneZ) - gsl::Vector3D(farplaneX, -farplaneY, -farplaneZ));
+    rightPlaneNormal.normalize();
+    leftPlaneNormal.normalize();
+    topPlaneNormal.normalize();
+    bottomPlaneNormal.normalize();
+    nearPlaneNormal.normalize();
+    farPlaneNormal.normalize();
+
+    qDebug() << " Normal x: " << rightPlaneNormal.x << " Normal y: " << rightPlaneNormal.y << " Normal z: "<< rightPlaneNormal.z;
+
     //Nearplane right triangle
     getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});
     getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f});
