@@ -87,6 +87,11 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	return true;
 }
 
+void CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* ECS)
+{
+	assert(false); // Implement
+}
+
 void CollisionSystem::scaleToMesh(const MeshComponent* mesh, 
 	glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax)
 {

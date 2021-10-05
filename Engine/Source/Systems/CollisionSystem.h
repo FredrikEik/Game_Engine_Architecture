@@ -14,15 +14,8 @@ public:
 	static void construct(struct AxisAlignedBoxComponent& collisionComponent,
 		class ECSManager* ECS);
 
-	/// <summary>
-	/// Checks if two colliders are colliding
-	/// </summary>
-	/// <param name="firstCollisionComponent"></param>
-	/// <param name="otherCollisionComponent"></param>
-	/// <param name="ECS"></param>
-	/// <returns>true if there is a collision</returns>
-	static bool isColliding(struct AxisAlignedBoxComponent& firstCollisionComponent,
-		struct AxisAlignedBoxComponent& otherCollisionComponent, class ECSManager* ECS);
+
+	static void testCollision(uint32 entityA, uint32 entityB, class ECSManager* ECS);
 
 private:
 	/// <summary>
@@ -33,4 +26,15 @@ private:
 	/// <param name="OUTscaledMax">The highest position of the mesh</param>
 	static void scaleToMesh(const struct MeshComponent* mesh,
 		glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax);
+
+	/// <summary>
+	/// Checks if two colliders are colliding
+	/// </summary>
+	/// <param name="firstCollisionComponent"></param>
+	/// <param name="otherCollisionComponent"></param>
+	/// <param name="ECS"></param>
+	/// <returns>true if there is a collision</returns>
+	static bool isColliding(struct AxisAlignedBoxComponent& firstCollisionComponent,
+		struct AxisAlignedBoxComponent& otherCollisionComponent, class ECSManager* ECS);
+
 };
