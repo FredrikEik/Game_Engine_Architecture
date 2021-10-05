@@ -223,9 +223,23 @@ void RenderWindow::init()
 
 
 
-
     //**********************************************************
 
+    //megatemp
+
+
+
+//GameObject *temp=nullptr;
+//        for(int i{0}; i < 10; i++)
+//        {
+//            for(int j{0}; j < 10; j++)
+//            {
+//            temp = factory->createObject("Cube");
+//                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,-2.f*j);
+//                //TODO: Scaling have to be made easier and more automatic than this!
+//            }
+//        }
+        mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 // Called each frame - doing the rendering
@@ -252,6 +266,7 @@ void RenderWindow::render()
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
+
         for(auto it = factory->mGameObjects.begin(); it != factory->mGameObjects.end(); it++)
 		{	
             unsigned int shaderProgramIndex = it->second->getMaterialComponent()->mShaderProgram;
@@ -266,7 +281,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
 
             it->second->draw();
-            it->second->move(0.001f, 0.001f, -0.001f);
+            //it->second->move(0.001f, 0.001f, -0.001f);
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
@@ -293,7 +308,9 @@ void RenderWindow::render()
             }
             */
          }
+
     }
+
 
         //debug mousePickingRay
         /*if (mDrawMousePickRay)
@@ -318,6 +335,7 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+       mMainWindow->updateOutliner(factory->mGameObjects);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
@@ -584,7 +602,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
     //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
-                factory->mGameObjects[i]->move(1000.f,0,0);
+                //factory->mGameObjects[i]->move(1000.f,0,0);
                 break;  //breaking out of for loop - does not check if ray touch several objects
 
 

@@ -2,13 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <gameobject.h>
-#include <detailswidget.h>
+#include "gameobject.h"
 
 class QWidget;
 class RenderWindow;
 class QTreeWidgetItem;
 class GameObject;
+class Factory;
 
 
 namespace Ui {
@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateOutliner(std::unordered_map<uint32_t, GameObject *> &GameObjectData);
 
     void selectObjectByIndex(int indexIn);
 
@@ -34,7 +35,11 @@ private slots:
     void on_CreateObject_clicked();
 
 
+
     void on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column);
+
+
+    void on_outliner_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     void init();
@@ -47,8 +52,9 @@ private:
     RenderWindow *mRenderWindow;
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
+    Factory *mFactory;
 
-    GameObject* mGameObject;
+    GameObject *mGameObject;
 
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
 

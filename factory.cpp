@@ -35,6 +35,9 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
+        cubecounter++;
+        objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
+
     }
 
     else if(objectName == "Plane")

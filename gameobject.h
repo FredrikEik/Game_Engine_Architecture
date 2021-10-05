@@ -14,6 +14,7 @@ public:
     virtual void move(float x, float y, float z) = 0;
 
     uint32_t ID;
+    std::string mObjectName{"NoName"};  //temp
 
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}
