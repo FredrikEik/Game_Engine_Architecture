@@ -2,11 +2,9 @@
 #define MATRIX4X4_H
 
 #include "vector3d.h"
-//#include "vector4d.h"
 #include "gltypes.h"
 #include <iostream>
 #include <iomanip>
-#include <QDebug>
 
 namespace gsl
 {
@@ -19,10 +17,7 @@ public:
     Matrix4x4(bool isIdentity = false);
     Matrix4x4(std::initializer_list<GLfloat> values);
 
-    ///returns Matrix set to identity matrix
     Matrix4x4 identity();
-
-    ///sets this matrix to identity matrix
     void setToIdentity();
 
     bool inverse();
@@ -65,9 +60,7 @@ public:
     GLfloat& operator()(const int &y, const int &x);
     GLfloat operator()(const int &y, const int &x) const;
 
-    Matrix4x4 operator*(const Matrix4x4 &other) const;
-
-    class Vector4D operator*(const Vector4D &v) const;
+    Matrix4x4 operator*(const Matrix4x4 &other);
 
     friend std::ostream& operator<<(std::ostream &output, const Matrix4x4 &mIn)
     {
@@ -78,19 +71,7 @@ public:
                   "{" << mIn.matrix[3] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[11] << "\t, " << mIn.matrix[15] << "}\n";
         return output;
     }
-
-    friend QDebug operator<<(QDebug output, const Matrix4x4 &mIn)
-    {
-        output <<
-                  " {" << mIn.matrix[0] << "\t, " << mIn.matrix[4] << "\t, " << mIn.matrix[8] << "\t, " << mIn.matrix[12] << "}\n" <<
-                  "{" << mIn.matrix[1] << "\t, " << mIn.matrix[5] << "\t, " << mIn.matrix[9] << "\t, " << mIn.matrix[13] << "}\n" <<
-                  "{" << mIn.matrix[2] << "\t, " << mIn.matrix[6] << "\t, " << mIn.matrix[10] << "\t, " << mIn.matrix[14] << "}\n" <<
-                  "{" << mIn.matrix[3] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[11] << "\t, " << mIn.matrix[15] << "}\n";
-        return output;
-    }
-
-    GLfloat getValueFromIndex(int index);
-
+    GLfloat getFloat(int space);
 private:
     GLfloat matrix[16];
 };
