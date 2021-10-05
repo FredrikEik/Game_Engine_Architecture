@@ -95,7 +95,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGameObject">
@@ -104,6 +104,8 @@
     </property>
     <addaction name="actionAdd_Triangle"/>
     <addaction name="actionAdd_Suzanne"/>
+    <addaction name="actionAdd_Goat"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuGameObject"/>
   </widget>
@@ -124,6 +126,11 @@
   <action name="actionAdd_Suzanne">
    <property name="text">
     <string>Add Suzanne</string>
+   </property>
+  </action>
+  <action name="actionAdd_Goat">
+   <property name="text">
+    <string>Add Goat</string>
    </property>
   </action>
  </widget>

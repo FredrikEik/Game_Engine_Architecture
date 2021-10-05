@@ -197,14 +197,14 @@ void RenderSystem::render()
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
         {
-            if (length < 4)
+            if (length < 8)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-            else if(length < 6)
+            else if(length < 12)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
@@ -230,34 +230,23 @@ void RenderSystem::render()
         //Quick hack test to check if linebox/circle works:
         if(i == 1)
         {
-            linebox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( linebox.mVAO[0] );
-            glDrawElements(linebox.mDrawType, linebox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         if(i == 2)
         {
             linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
-            MeshData circle = CoreEngine::getInstance()->mResourceManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
             glBindVertexArray( linebox2.mVAO[0] );
             glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-            glBindVertexArray( circle.mVAO[0] );
-            glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
         }
         glBindVertexArray(0);
 
         CoreEngine::getInstance()->mResourceManager->checkCollision(linebox, linebox2);
     }
 
-    //Moves the dog triangle - should be made another way!!!!
-//    if(isPlaying)
-//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

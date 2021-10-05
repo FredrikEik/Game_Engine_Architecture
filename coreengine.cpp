@@ -56,9 +56,9 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(player);
 
     //lager test objekter
-    for(int i{0}; i < 3; i++)
+    for(int i{0}; i < 15; i++)
     {
-        for(int j{0}; j < 3; j++)
+        for(int j{0}; j < 15; j++)
         {
               temp = mResourceManager->addObject("suzanne3.obj");
               temp->mTransform->mMatrix.translate(-2, 1.f,2.f);

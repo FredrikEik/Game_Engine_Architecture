@@ -98,6 +98,14 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
     mRenderSystem->mGameObjects.push_back(temp);
 }
 
+void MainWindow::on_actionAdd_Goat_triggered()
+{
+    GameObject *temp = ResourceManager::getInstance().addObject("suzanne3.obj");
+    mRenderSystem->mGameObjects.push_back(temp);
+    temp->mMaterial->mShaderProgram = 1;
+    temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 {
