@@ -37,11 +37,40 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         auto& transformComp = transformManager->getComponent(meshComp.entityID);
         
         glBindVertexArray(meshComp.m_VAO); 
+		glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
         glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
-        glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-		glBindVertexArray(0);
+        glBindVertexArray(0);
     }
 }
+
+void MeshSystem::drawSelectable(Shader* shader, const std::string& uniformName, class ECSManager* manager)
+{
+
+	ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
+	ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
+	if (!meshManager || !transformManager)
+		return;
+
+	auto& meshArray = meshManager->getComponentArray();
+	shader->use();
+	for (auto& meshComp : meshArray)
+	{
+		auto& transformComp = transformManager->getComponent(meshComp.entityID);
+		int r = (meshComp.entityID & 0x000000FF) >> 0;
+		int g = (meshComp.entityID & 0x0000FF00) >> 8;
+		int b = (meshComp.entityID & 0x00FF0000) >> 16;
+		
+
+		glBindVertexArray(meshComp.m_VAO);
+		glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
+		glUniform4f(glGetUniformLocation(shader->getShaderID(), "u_pickingColor"), r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+		glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+		
+
+        glBindVertexArray(0);
+	}
+}
+
 
 void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMesh)
 {

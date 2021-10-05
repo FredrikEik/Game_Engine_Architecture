@@ -13,6 +13,8 @@ public:
 	static bool loadMesh(const std::filesystem::path& filePath, struct MeshComponent& meshComponent);
     //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
     static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager);
+
+    static void drawSelectable(Shader* shader, const std::string& uniformName, ECSManager* manager);
     
     static void copyMesh(const struct MeshComponent& meshToCopy, struct MeshComponent& newMesh);
 
