@@ -26,6 +26,7 @@ SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
     cube.cpp \
+    detailswidget.cpp \
     factory.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     components.h \
     constants.h \
     cube.h \
+    detailswidget.h \
     factory.h \
     gameobject.h \
     gltypes.h \
@@ -82,6 +84,7 @@ HEADERS += \
     SoundCode/h/soundsource.h
 
 FORMS += \
+    detailswidget.ui \
     mainwindow.ui
 
 DISTFILES += \
