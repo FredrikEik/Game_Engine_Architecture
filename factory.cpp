@@ -68,8 +68,6 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        static_cast<MarioCube*>(objectToCreate)->getBoxCollisionComponent()->max = gsl::Vector3D( 0.55f,  0.55f,  0.55f);
-        static_cast<MarioCube*>(objectToCreate)->getBoxCollisionComponent()->min = gsl::Vector3D(-0.55f, -0.55f, -0.55f);
     }
 
     else if(objectName == "Sphere")
