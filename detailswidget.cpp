@@ -38,7 +38,7 @@ void DetailsWidget::readPosition()
 
 void DetailsWidget::readRotation()
 {
-    //gsl::Vector3D rotation =mGameObject[inSceneArrayIndex].getTransformComponent()->
+    gsl::Vector3D rotation; //=mGameObject[inSceneArrayIndex].getTransformComponent()->
 }
 
 void DetailsWidget::readScale()
