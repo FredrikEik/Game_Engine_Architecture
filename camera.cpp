@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "math.h"
 #include <QDebug>
 
 
@@ -24,25 +25,30 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
     nearplaneZ = frustumComp->nearPlaneLength;
 
-    rightPlanePointA  = gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ);
-    leftPlanePointA   = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
-    topPlanePointA    = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
-    bottomPlanePointA = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
-    nearPlanePointA   = gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ);
-    farPlanePointA    = gsl::Vector3D(farplaneX, farplaneY, -farplaneZ);
+    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
+    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ);
 
-    rightPlaneNormal   = gsl::Vector3D::cross(gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(farplaneX, farplaneY, -farplaneZ)
-                                             ,gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
-    leftPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
-                                             ,gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ));
-    topPlaneNormal     = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
-                                             ,gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ));
-    bottomPlaneNormal  = gsl::Vector3D::cross(gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) - gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ)
-                                             ,gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
-    nearPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ)
-                                             ,gsl::Vector3D(nearplaneX, nearplaneY, -nearplaneZ) - gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ));
-    farPlaneNormal    = gsl::Vector3D::cross(gsl::Vector3D(farplaneX, farplaneY, -farplaneZ) - gsl::Vector3D(-farplaneX, farplaneY, -farplaneZ)
-                                             ,gsl::Vector3D(farplaneX, farplaneY, -farplaneZ) - gsl::Vector3D(farplaneX, -farplaneY, -farplaneZ));
+    farPlaneTopRight    = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
+    farPlaneTopLeft     = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
+    farPlaneBottomLeft  = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
+    farPlaneBottomRight = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
+
+
+
+    rightPlaneNormal   = gsl::Vector3D::cross(nearPlaneBottomRight - farPlaneBottomRight
+                                             ,nearPlaneBottomRight - nearPlaneTopRight);
+    leftPlaneNormal    = gsl::Vector3D::cross(nearPlaneTopLeft - farPlaneTopLeft
+                                             ,nearPlaneTopLeft - nearPlaneBottomLeft);
+    topPlaneNormal     = gsl::Vector3D::cross(nearPlaneTopRight - farPlaneTopRight
+                                             ,nearPlaneTopRight - nearPlaneTopLeft);
+    bottomPlaneNormal  = gsl::Vector3D::cross(nearPlaneBottomLeft - farPlaneBottomLeft
+                                             ,nearPlaneBottomLeft - nearPlaneBottomRight);
+    nearPlaneNormal    = gsl::Vector3D::cross(nearPlaneBottomRight - nearPlaneTopRight
+                                             ,nearPlaneBottomRight - nearPlaneBottomLeft);
+    farPlaneNormal     = gsl::Vector3D::cross(farPlaneBottomLeft - farPlaneTopLeft
+                                             ,farPlaneBottomLeft - farPlaneBottomRight);
     rightPlaneNormal.normalize();
     leftPlaneNormal.normalize();
     topPlaneNormal.normalize();

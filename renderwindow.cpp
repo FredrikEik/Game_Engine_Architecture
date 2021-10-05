@@ -267,12 +267,14 @@ void RenderWindow::render()
 
             //gsl::Vector3D gameObjectCollissionPosition = it->second->getSphereCollisionComponent()->center;
             //float rightPlaneHeight = Dot(mCurrentCamera->rightPlaneNormal,
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->rightPlanePointA - it->second->getSphereCollisionComponent()->center;
-            float rightPlaneHeightToObject = gsl::Vector3D::dot(mCurrentCamera->rightPlaneNormal, rightPlaneToObjectVector);
-            if(rightPlaneHeightToObject <= 0){qDebug() << rightPlaneHeightToObject << " is inside";}
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - it->second->getSphereCollisionComponent()->center;
+            float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
+            qDebug() << rightPlaneHeightToObject;
+            if(rightPlaneHeightToObject <= 0){}
 
             it->second->draw();
-            it->second->move(-0.001f, -0.001f, -0.001f);
+            //it->second->move(-0.001f, -0.001f, -0.001f);
+            it->second->move(-0.001f, 0.f, 0.f);
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*

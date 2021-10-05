@@ -49,12 +49,15 @@ public:
     float nearplaneZ;
 
 
-    gsl::Vector3D rightPlanePointA;
-    gsl::Vector3D leftPlanePointA;
-    gsl::Vector3D bottomPlanePointA;
-    gsl::Vector3D topPlanePointA;
-    gsl::Vector3D nearPlanePointA;
-    gsl::Vector3D farPlanePointA;
+    gsl::Vector3D nearPlaneTopRight;
+    gsl::Vector3D nearPlaneTopLeft;
+    gsl::Vector3D nearPlaneBottomLeft;
+    gsl::Vector3D nearPlaneBottomRight;
+
+    gsl::Vector3D farPlaneTopRight;
+    gsl::Vector3D farPlaneTopLeft;
+    gsl::Vector3D farPlaneBottomLeft;
+    gsl::Vector3D farPlaneBottomRight;
 
     gsl::Vector3D rightPlaneNormal;
     gsl::Vector3D leftPlaneNormal;
