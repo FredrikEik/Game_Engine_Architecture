@@ -58,6 +58,11 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 }
 
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+}
+
 void Camera::setPosition(const gsl::Vector3D &position)
 {
     mPosition = position;
@@ -91,4 +96,33 @@ gsl::Vector3D Camera::position() const
 gsl::Vector3D Camera::up() const
 {
     return mUp;
+}
+
+gsl::Vector3D Camera::right() const
+{
+    return mRight;
+}
+
+
+void Camera::calculateFrustumVectors()
+{
+    //Does not take into account the pitch of the camera!
+    //So it will not be accurate when camera is pitching
+
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around up
+    tempVector = mRight;
+    tempVector.rotateY(-mFrustum.mFOV);
+    mFrustum.mRightPlane = tempVector;
+
+    //leftPlane vector = mRight rotated by FOV+180 around up
+    tempVector = mRight;
+    tempVector.rotateY(mFrustum.mFOV + 180.f);
+    mFrustum.mLeftPlane = tempVector;
+
+    //nearplane =
+    tempVector.setX(tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance);
+    tempVector.setY((tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance)/mFrustum.mAspectRatio);
+    tempVector.setZ(mFrustum.mFarPlaneDistance);
+
 }

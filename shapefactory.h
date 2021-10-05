@@ -1,15 +1,13 @@
 #ifndef SHAPEFACTORY_H
 #define SHAPEFACTORY_H
-
 #include <iostream>
-#include "vertex.h"
-#include "shader.h"
-#include <vector>
-#include "gltypes.h"
 #include <sstream>
 #include <fstream>
 #include <string>
-#include "collisionsystem.h"
+#include <vector>
+#include "vertex.h"
+#include "shader.h"
+#include "gltypes.h"
 
 #include "visualobject.h"
 
@@ -19,6 +17,7 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
+    VisualObject* createMonkeys(int i);
 private:
     void createCircle();
     void createSquare();
@@ -26,44 +25,54 @@ private:
     void createPlain();
     void createObj();
     VisualObject* myShapes[5];
+    VisualObject* myMonkeys[200];
+    string monkeyString = "../GEA2021/Assets/Monkey.obj";
 };
 
-class Circle : public VisualObject {
+class Circle : public VisualObject
+{
 public:
     Circle();
+    void makeVerticies();
     ~Circle(){}
 private:
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
-    void circleUnit();
+    void circleUnit(CollisionComponent* dCollision);
     void makeTriangle(const gsl::Vector3D& v1, const gsl::Vector3D& v2, const gsl::Vector3D& v3);
     int m_rekursjoner;
     int m_index;
+
 };
 
-class Square : public VisualObject {
+class Square : public VisualObject
+{
 public:
     Square();
+    void makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision);
     ~Square() {}
 };
 
-class Triangle : public VisualObject {
+class Triangle : public VisualObject
+{
 public:
     Triangle();
+    void makeVerticies();
     ~Triangle() {};
 };
 
-class Plain : public VisualObject {
+class Plain : public VisualObject
+{
 public:
     Plain();
-    ~Plain() {};
+    void makeVerticies(MeshComponent* dMesh);
+    ~Plain(){};
 };
 
-class Obj : public VisualObject {
+class ObjMesh : public VisualObject
+{
 public:
-    Obj(std::string filename);
-    ~Obj() {};
-
+    ObjMesh(std::string filename);
+    ~ObjMesh(){};
 };
 
-
-#endif //  SHAPEFACTORY_H
+#endif // SHAPEFACTORY_H

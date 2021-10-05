@@ -3,21 +3,18 @@
 
 #include "vector3d.h"
 #include "visualobject.h"
-#include "collisionsystem.h"
-#include "vertex.h"
 #include "shapefactory.h"
 
 class Player : public VisualObject
 {
 public:
-    Player(std::string filename);
-
+    Player();
+    ~Player();
+    virtual void move(float dx, float dy, float dz) override;
 
 
 private:
-    float mx, my,mz;
-    CollisionSystem *mCollision;
-    VisualObject *mShape;
+    float mx, my, mz; // posisjon
 };
 
 #endif // PLAYER_H

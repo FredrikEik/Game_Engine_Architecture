@@ -123,29 +123,34 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
+
+    initObjects();
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mPlayCamera.setPosition(gsl::Vector3D(1.f, 18.f, 7.5));
+    mPlayCamera.pitch(70);
+
+    mCurrentCamera = &mEditorCamera;
 
 
     //********************** create input **********************
     Camerainput = new CameraInputComponent();
-    mInputComponent = new InputComponent();
-    //  mInputSystem = new InputSystem();
     mPlayerInput = new PlayerInputComponent();
-    mMousepicking = new MousePicking();
+    mInputComponent = new InputComponent();
+    mInputSystem = new InputSystem();
+    mCollisionSystem = new CollisionSystem();
 
     SoundHandler();
 
-    initObjects();
 
 
 }
 
+
 void RenderWindow::initObjects()
 {
     //********************** Making the object to be drawn **********************
-    mPlayer = new Player("../GEA2021/Assets/Pacman.obj");
+    mPlayer = new Player();
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
     mPlayer->move(0,1,0);
@@ -161,14 +166,14 @@ void RenderWindow::initObjects()
     temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mTransform->mMatrix.translate(2.5f, 0.f, .5f);
+    temp->move(2.5f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
     //testing OBJ
     temp = mShapeFactory.createShape("Obj");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->mTransform->mMatrix.translate(-1.f, .5f, .5f);
+    temp->move(-1.f, .5f, .5f);
     mVisualObjects.push_back(temp);
 
 
@@ -176,7 +181,7 @@ void RenderWindow::initObjects()
     temp = mShapeFactory.createShape("Triangle");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->mTransform->mMatrix.translate(1.5f, 0.f, .5f);
+    temp->move(1.5f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
 
@@ -185,7 +190,7 @@ void RenderWindow::initObjects()
     temp = mShapeFactory.createShape("Circle");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->mTransform->mMatrix.translate(2.7f, 1.f, .5f);
+    temp->move(2.7f, 1.f, .5f);
     mVisualObjects.push_back(temp);
 
 
@@ -194,8 +199,39 @@ void RenderWindow::initObjects()
     temp->init();
     temp->mMaterial->mShaderProgram = 1;    //texture shader
     temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->mTransform->mMatrix.translate(4.f, 0.f, .5f);
+    temp->move(4.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
+
+    //    int xPos=-12; int zPos=-9;
+//    for(int i=0; i<200; i++){
+//        temp = mShapeFactory.createMonkeys(i);
+//        temp->init();
+//        if(i<20)
+//            temp->move((i-12) ,0.5, -9);
+//        else if(i<40)
+//            temp->move((i-32), 0.5, -7);
+//        else if(i<60)
+//            temp->move((i-52), 0.5, -5);
+//        else if(i<80)
+//            temp->move((i-72), 0.5, -3);
+//        else if(i<100)
+//            temp->move((i-92), 0.5, -1);
+//        else if(i<120)
+//            temp->move((i-112), 0.5, 1);
+//        else if(i<140)
+//            temp->move((i-132), 0.5, 3);
+//        else if(i<160)
+//            temp->move((i-152), 0.5, 5);
+//        else if(i<180)
+//            temp->move((i-172), 0.5, 7);
+//        else if(i<200)
+//            temp->move((i-192), 0.5, 9);
+//        temp->mMaterial->mShaderProgram = 0;    //plain shader
+//        mVisualObjects.push_back(temp);
+//        //        xPos+=0.5; zPos+=0.5;
+//    }
+//    //    for(int row=-12; row<12; row++)
+    //        for(int col=-9; col<9; col++)
 
 
 }
@@ -245,11 +281,18 @@ void RenderWindow::makeObject()
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
             glBindVertexArray(0);}
-        else if(i>2){
+        else if(i>2 && i<8){
             if(shapeExist[i-3]){
                 glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
                 glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
                 glBindVertexArray(0);}}
+        else if(i>=8){
+            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+        glBindVertexArray(0);
 
     }
 }
@@ -263,6 +306,8 @@ void RenderWindow::render()
     mPlayerInput->update(mPlayer,mInput);
     Camerainput->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
+    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[5]->mCollision))
+        qDebug() <<"Collision detected";
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -274,8 +319,13 @@ void RenderWindow::render()
 
     makeObject();
 
-    //Moves the dog triangle - should be mada another way!!!!
-    //mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+    if (mDrawMousePickRay)
+    {
+        gsl::Matrix4x4 temp(true);
+        glBindVertexArray( mDebugMousePickRay.mVAO );
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertices.size());
+    }
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -289,6 +339,23 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+}
+
+
+void RenderWindow::playMode(bool p)
+{
+    if(p)
+    {
+        mCurrentCamera = &mPlayCamera;
+        mLaserSound->play();
+        playM = true;
+    }
+    else
+    {
+        mCurrentCamera = &mEditorCamera;
+        mLaserSound->stop();
+        playM = false;
+    }
 }
 
 void RenderWindow::toggleShapes(int shapeID)
@@ -340,9 +407,13 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
 
     //calculate aspect ration and set projection matrix
-    mAspectratio = static_cast<float>(width()) / height();
+    mCurrentCamera->mFrustum.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mPlayCamera.calculateProjectionMatrix();
+    mEditorCamera.calculateProjectionMatrix();
+    //mPlayCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    //    qDebug() << mCamera.mProjectionMatrix;
+    //mEditorCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     //    qDebug() << mCamera.mProjectionMatrix;
 }
 
@@ -425,6 +496,7 @@ void RenderWindow::startOpenGLDebugger()
         }
     }
 }
+
 void RenderWindow::HandleInput()
 {
     mCurrentCamera->setSpeed(0.f);
@@ -557,12 +629,56 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 }
 
+
+
+void RenderWindow::mousePickingRay(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
+
+    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+     projMatrix.inverse();
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye;
+    ray_wor = {temp.x, temp.y, temp.z};
+    ray_wor.normalize();
+
+
+    qDebug() << ray_wor;
+    mMousePickRay = ray_wor;
+
+    //    mDebugMousePickRay = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+    //            makeLine(mEditorCamera->mPosition, ray_wor, 1.f);
+}
+
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
-        mInput.RMB = true;
+        if(playM == false)
+            mInput.RMB = true;
     if (event->button() == Qt::LeftButton)
+    {
         mInput.LMB = true;
+        mousePickingRay(event);
+    }
+
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
 }
@@ -586,17 +702,13 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
 
         if (mInputComponent->mMouseXlast != 0)
-            mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
+            mEditorCamera.yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
         if (mInputComponent->mMouseYlast != 0)
-            mCurrentCamera->pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+            mEditorCamera.pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
     }
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();
-
-//    int mouseX = event->pos().x();
-//    int mouseY = event->pos().y();
-//    mMousepicking->MousePicker(mouseX,mouseY,width(),height());
-
+    mDrawMousePickRay = true;
 
 }
 

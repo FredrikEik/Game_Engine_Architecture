@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
-    mousepicking.cpp \
     player.cpp \
     playerinputcomponent.cpp \
     renderwindow.cpp \
@@ -35,6 +34,7 @@ SOURCES += main.cpp \
     texture.cpp \
     vector2d.cpp \
     vector3d.cpp \
+    vector4d.cpp \
     vertex.cpp \
     visualobject.cpp \
     wavfilehandler.cpp \
@@ -54,7 +54,6 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    mousepicking.h \
     player.h \
     playerinputcomponent.h \
     renderwindow.h \
@@ -66,6 +65,7 @@ HEADERS += \
     texture.h \
     vector2d.h \
     vector3d.h \
+    vector4d.h \
     vertex.h \
     visualobject.h \
     wavfilehandler.h \

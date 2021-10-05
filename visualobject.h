@@ -4,7 +4,6 @@
 #include "collisionsystem.h"
 #include "component.h"
 #include <QOpenGLFunctions_4_1_Core>
-#include "mousepicking.h"
 #include <sstream>
 
 
@@ -15,7 +14,7 @@ public:
     virtual void init();
 
     std::string mName;
-    CollisionSystem *mCollision;
+    CollisionComponent *mCollision;
     virtual void move(float dx, float dy, float dz);
     void readFile(std::string filename);
 

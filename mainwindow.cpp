@@ -91,6 +91,16 @@ void MainWindow::on_pushButton_toggled(bool checked)
     mRenderWindow->toggleWireframe(checked);
 }
 
+
+void MainWindow::on_pushButton_2_toggled(bool checked)
+{
+    mRenderWindow->playMode(checked);
+    if(checked)
+        ui->pushButton_2->setText("Stop");
+    else
+        ui->pushButton_2->setText("Play");
+}
+
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
     mRenderWindow->toggleShapes(1);
@@ -109,6 +119,36 @@ void MainWindow::on_actionAdd_Square_triggered()
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
     mRenderWindow->toggleShapes(0);
+}
+
+void MainWindow::on_doubleSpinBoxX(double x,VisualObject *mVisualObject)
+{
+
+    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
+    ui->doubleSpinBoxX->setValue(getObjectT.x);
+
+    gsl::Vector3D ChangeObjectT;
+    ChangeObjectT.x = ui->doubleSpinBoxX->value();
+}
+
+void MainWindow::on_doubleSpinBoxY(double y, VisualObject *mVisualObject)
+{
+    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
+    ui->doubleSpinBoxY->setValue(getObjectT.y);
+
+    gsl::Vector3D ChangeObjectT;
+    ChangeObjectT.y = ui->doubleSpinBoxY->value();
+
+}
+
+void MainWindow::on_doubleSpinBoxZ(double z, VisualObject *mVisualObject)
+{
+
+    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
+    ui->doubleSpinBoxZ->setValue(getObjectT.z);
+
+    gsl::Vector3D ChangeObjectT;
+    ChangeObjectT.z = ui->doubleSpinBoxZ->value();
 }
 
 

@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QComboBox>
@@ -25,6 +25,8 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
 
+    void on_pushButton_2_toggled(bool checked);
+
     void on_actionAdd_Triangle_triggered();
 
     void on_actionAdd_Square_triggered();
@@ -33,13 +35,19 @@ private slots:
 
     void on_actionAdd_Monkey_triggered();
 
+    void on_doubleSpinBoxX(double x,VisualObject *mVisualObject);
+    void on_doubleSpinBoxY(double y, VisualObject *mVisualObject);
+    void on_doubleSpinBoxZ(double z, VisualObject *mVisualObject);
+
 private:
     void init();
     Ui::MainWindow *ui;
 
+
     QWidget *mRenderWindowContainer;
     ShapeFactory *mShapefactory;
     RenderWindow *mRenderWindow;
+
 };
 
 #endif // MAINWINDOW_H

@@ -17,7 +17,11 @@
 #include "soundmanager.h"
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
-#include "mousepicking.h"
+#include "vector4d.h"
+#include "matrix4x4.h"
+#include "collisionsystem.h"
+#include <math.h>       /* sqrt */
+
 
 
 
@@ -46,6 +50,8 @@ public:
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
     void toggleShapes(int shapeID);
+    void playMode(bool p);
+
 
 
 
@@ -58,11 +64,16 @@ private:
     InputSystem *mInputSystem;
     PlayerInputComponent *mPlayerInput;
     Player *mPlayer;
-    MousePicking *mMousepicking;
     SoundSource* mLaserSound{};
     Input mInput;
+    CollisionSystem* mCollisionSystem;
     ShapeFactory mShapeFactory;
+    void CheckMousePickCollision(gsl::Vector3D point,CollisionComponent *mCollision);
 
+    MeshComponent mDebugMousePickRay;
+    void mousePickingRay(QMouseEvent *event);
+    bool mDrawMousePickRay{false};
+    gsl::Vector3D mMousePickRay;
 
     void initObjects();
     void makeObject();
@@ -70,6 +81,7 @@ private:
     void SoundHandler();
 
     bool shapeExist[4];
+    bool playM = false;
     int shapeID;
 
     void init();
@@ -97,8 +109,10 @@ private:
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
+    Camera mEditorCamera;
+    Camera mPlayCamera;
     float mAspectratio{1.f};
-
+    gsl::Vector3D ray_wor;
 
     std::vector<VisualObject*> mVisualObjects;
 

@@ -1,115 +1,20 @@
 #include "shapefactory.h"
-#include "component.h"
-#include <cmath>
-#include <math.h>
-#include "gltypes.h"
 
-
-Plain::Plain()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-
-    mMesh = new MeshComponent();
-
-
-    mMesh->mVertices.push_back(Vertex{-4.0, 0.0,-3.0,  0,0,1,0,0});
-    mMesh->mVertices.push_back(Vertex{-4.0, 0.0, 3.0,  0,0,1,0,0}); //floor
-    mMesh->mVertices.push_back(Vertex{4.0,  0.0,-3.0,  0,0,1,0,0});
-    mMesh->mVertices.push_back(Vertex{4.0,  0.0, 3.0,  0,0,1,0,0});
-    mMesh->mVertices.push_back(Vertex{-4.0, 0.0, 3.0,  0,0,1,0,0});
-    mMesh->mVertices.push_back(Vertex{4.0,  0.0,-3.0,  0,0,1,0,0});
-
-    mMesh->mDrawType = GL_TRIANGLES;
-
-    mMaterial = new MaterialComponent();
-}
-
-Triangle::Triangle()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    mMesh->mDrawType = GL_TRIANGLES;
-    mMaterial = new MaterialComponent();
-
-    // Positions // Color //UV
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
-
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
-
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 0.0,0.0,1.0});
-
-
-}
-
-Square::Square()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    mMesh->mDrawType = GL_TRIANGLES;
-    mMaterial = new MaterialComponent();
-
-    mMesh->mVertices.push_back(Vertex{0,0,0, 1,0,0});
-    mMesh->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
-    mMesh->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
-
-    mMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,0});
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,0});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
-
-    mMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});       // right surface
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-
-    mMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,0,1});
-
-    mMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,1,0});       // top surface
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
-    mMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-    mMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,1,0});
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
-
-    mMesh->mVertices.push_back(Vertex{0,0,0.5,  1,0,0});
-    mMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});       //left surface
-    mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
-
-    mMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
-
-    mMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});   // back surface
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
-
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-    mMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
-}
-//--------------------------Sphere-----------------------------------
 Circle::Circle()
 {
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent();
-    mMesh->mDrawType = GL_TRIANGLES;
+    makeVerticies();
     mMaterial = new MaterialComponent();
+}
+
+void Circle::makeVerticies()
+{
+    mMesh->mDrawType = GL_TRIANGLES;
     mMesh->mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
-    circleUnit();
+    mCollision = new CollisionComponent;
+    circleUnit(mCollision);
 }
 
 void Circle::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n)
@@ -128,14 +33,15 @@ void Circle::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl
     }
 }
 
-void Circle::circleUnit()
+void Circle::circleUnit(CollisionComponent* dCollision)
 {
-    gsl::Vector3D v0{0, 0, 1};
-    gsl::Vector3D v1{1, 0, 0};
-    gsl::Vector3D v2{0, 1, 0};
-    gsl::Vector3D v3{-1, 0, 0};
-    gsl::Vector3D v4{0, -1, 0};
-    gsl::Vector3D v5{0, 0, -1};
+    float a = 1;
+    gsl::Vector3D v0{0, 0, a};
+    gsl::Vector3D v1{a, 0, 0};
+    gsl::Vector3D v2{0, a, 0};
+    gsl::Vector3D v3{-a, 0, 0};
+    gsl::Vector3D v4{0, -a, 0};
+    gsl::Vector3D v5{0, 0, -a};
 
     subDivide(v0, v1, v2, m_rekursjoner);
     subDivide(v0, v2, v3, m_rekursjoner);
@@ -145,6 +51,8 @@ void Circle::circleUnit()
     subDivide(v5, v3, v2, m_rekursjoner);
     subDivide(v5, v4, v3, m_rekursjoner);
     subDivide(v5, v1, v4, m_rekursjoner);
+
+    dCollision->setBoundingSphere(a/2, mTransform->mPosition);
 }
 
 void Circle::makeTriangle(const gsl::Vector3D &v1, const gsl::Vector3D &v2, const gsl::Vector3D &v3)
@@ -155,156 +63,144 @@ void Circle::makeTriangle(const gsl::Vector3D &v1, const gsl::Vector3D &v2, cons
     mMesh->mVertices.push_back(v);
     v = Vertex{v3.x, v3.y, v3.z, v3.x, v3.y, v3.z};
     mMesh->mVertices.push_back(v);
-
 }
 
-//--------------------------OBJ-----------------------------------
-
-Obj::Obj(std::string filename)
+Triangle::Triangle()
 {
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
-
     mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
+    makeVerticies();
+    mMaterial = new MaterialComponent();
+}
+
+void Triangle::makeVerticies()
+{
+    mMesh->mDrawType = GL_TRIANGLES;
+
+    // Positions            // Colors       //UV
+    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+
+    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+
+    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 0.0,1.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+
+    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
+    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 0.0,0.0,1.0});
+
+    gsl::Vector3D min(-0.9, 0,0);
+    gsl::Vector3D max(-0.1,0.6532, 0.6532);
+
+    mCollision->setBoundingBox(min, max);
+}
+
+Square::Square()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
+    makeVerticies(mMesh, mCollision);
+    mMaterial = new MaterialComponent();
+}
+
+void Square::makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision)
+{
+    dMesh->mDrawType = GL_TRIANGLES;
+
+    dMesh->mVertices.push_back(Vertex{0,0,0, 1,0,0});
+    dMesh->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
+    dMesh->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
+
+    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,0});
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,0});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
+
+    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});       // right surface
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+
+    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,0,1});
+
+    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,1,0});       // top surface
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
+
+    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
+    dMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,1,0});
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
+
+    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,0,0});
+    dMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});       //left surface
+    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
+
+    dMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
+
+    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});   // back surface
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
+
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
+
+    gsl::Vector3D min(0,0,0);
+    gsl::Vector3D max(0.5, 0.5, 0.5);
+
+    dCollision->setBoundingBox(min, max);
+}
+
+Plain::Plain()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMesh = new MeshComponent();
+    makeVerticies(mMesh);
+    mMaterial = new MaterialComponent();
+}
+
+void Plain::makeVerticies(MeshComponent* dMesh)
+{
+    dMesh->mDrawType = GL_TRIANGLES;
+
+    //24 x 18 fra -12 til +12 -9 til +9
+    mTransform->scale = 3;
+    float a = 4 * mTransform->scale;
+    float b = 3 * mTransform->scale;
+    dMesh->mVertices.push_back(Vertex{-a, 0.0,-b,  0.0, 0.3, 0.2});
+    dMesh->mVertices.push_back(Vertex{-a, 0.0, b,  0.0, 0.3, 0.2});
+    dMesh->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
+
+    dMesh->mVertices.push_back(Vertex{a,  0.0, b,  0.0, 0.3, 0.2});
+    dMesh->mVertices.push_back(Vertex{-a, 0.0, b, 0.0, 0.3, 0.2});
+    dMesh->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
+}
+
+ObjMesh::ObjMesh(std::string filename)
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
 
     readFile(filename);
 
     mMesh->mDrawType = GL_TRIANGLES;
-
     mMaterial = new MaterialComponent();
 
 }
-
-//void Obj::readFile(std::string filename)
-//{
-//    //Open File
-//    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
-//    std::ifstream fileIn;
-//    fileIn.open (filename, std::ifstream::in);
-//    if(!fileIn)
-//        qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
-
-//    //One line at a time-variable
-//    std::string oneLine;
-//    //One word at a time-variable
-//    std::string oneWord;
-
-//    std::vector <gsl::Vector3D> tempVertecies;
-//    std::vector <gsl::Vector3D> tempNormals;
-//    std::vector <gsl::Vector2D> tempUVs;
-
-//    // Varible for constructing the indices vector
-//    unsigned int temp_index = 0;
-
-//    //Reading one line at a time from file to oneLine
-//    while(std::getline(fileIn, oneLine))
-//    {
-//        //Doing a trick to get one word at a time
-//        std::stringstream sStream;
-//        //Pushing line into stream
-//        sStream << oneLine;
-//        //Streaming one word out of line
-//        oneWord = ""; //resetting the value or else the last value might survive!
-//        sStream >> oneWord;
-
-//        if (oneWord == "#")
-//        {
-//            continue;
-//        }
-//        if (oneWord == "")
-//        {
-//            continue;
-//        }
-//        if (oneWord == "v")
-//        {
-//            gsl::Vector3D tempVertex;
-//            sStream >> oneWord;
-//            tempVertex.setX (std::stof(oneWord));
-//            sStream >> oneWord;
-//            tempVertex.setY(std::stof(oneWord));
-//            sStream >> oneWord;
-//            tempVertex.setZ  (std::stof(oneWord));
-
-//            tempVertecies.push_back(tempVertex);
-
-//            continue;
-//        }
-//        if (oneWord == "vt")
-//        {
-//            gsl::Vector2D tempUV;
-//            sStream >> oneWord;
-//            tempUV.setX  (std::stof(oneWord));
-//            sStream >> oneWord;
-//            tempUV.setY  (std::stof(oneWord));
-
-//            //UV made - pushing it into UV-vector
-//            tempUVs.push_back(tempUV);
-
-//            continue;
-//        }
-//        if (oneWord == "vn")
-//        {
-
-//            gsl::Vector3D tempNormal;
-//            sStream >> oneWord;
-//            tempNormal.setX (std::stof(oneWord));
-//            sStream >> oneWord;
-//            tempNormal.setY  (std::stof(oneWord));
-//            sStream >> oneWord;
-//            tempNormal.setZ (std::stof(oneWord));
-
-//            //Vertex made - pushing it into vertex-vector
-//            tempNormals.push_back(tempNormal);
-//            continue;
-//        }
-//        if (oneWord == "f")
-//        {
-//            int index, normal, uv;
-//            for(int i = 0; i < 3; i++)
-//            {
-//                sStream >> oneWord;     //one word read
-//                std::stringstream tempWord(oneWord);    //to use getline on this one word
-//                std::string segment;    //the numbers in the f-line
-//                std::vector<std::string> segmentArray;  //temp array of the numbers
-//                while(std::getline(tempWord, segment, '/')) //splitting word in segments
-//                {
-//                    segmentArray.push_back(segment);
-//                }
-//                index = std::stoi(segmentArray[0]);     //first is vertex
-//                if (segmentArray[1] != "")              //second is uv
-//                    uv = std::stoi(segmentArray[1]);
-//                else
-//                {
-//                    //qDebug() << "No uvs in mesh";       //uv not present
-//                    uv = 0;                             //this will become -1 in a couple of lines
-//                }
-//                normal = std::stoi(segmentArray[2]);    //third is normal
-
-//                //Fixing the indexes
-//                //because obj f-lines starts with 1, not 0
-//                --index;
-//                --uv;
-//                --normal;
-
-//                if (uv > -1)    //uv present!
-//                {
-//                    Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
-//                    mMesh->mVertices.push_back(tempVert);
-//                }
-//                else            //no uv in mesh data, use 0, 0 as uv
-//                {
-//                    Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
-//                    mMesh->mVertices.push_back(tempVert);
-//                }
-//                mMesh->mIndices.push_back(temp_index++);
-//            }
-//            continue;
-//        }
-//    }
-//    fileIn.close();
-//}
-
-
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
@@ -326,6 +222,12 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     else{
         std::cout << "invalid string" << std::endl;
         return nullptr;}
+}
+
+VisualObject* ShapeFactory::createMonkeys(int i)
+{
+    myMonkeys[i] = new ObjMesh(monkeyString);
+    return myMonkeys[i];
 }
 
 void ShapeFactory::createCircle()
@@ -350,8 +252,5 @@ void ShapeFactory::createPlain()
 
 void ShapeFactory::createObj()
 {
-    myShapes[4] = new Obj("../GEA2021/Assets/Monkey.obj");
+    myShapes[4] = new ObjMesh(monkeyString);
 }
-
-
-
