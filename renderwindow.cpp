@@ -338,6 +338,7 @@ void RenderWindow::render()
                     pMatrixUniform,
                     mMatrixUniform,
                     mCurrentCamera);
+            //----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
             if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2){
@@ -348,6 +349,7 @@ void RenderWindow::render()
                         meshCompVec[i]->isDrawable = false;
                 }
             }
+            //------------------------------------------------------
         }
     }
     for(int i = 0; i < eSize; i++){
