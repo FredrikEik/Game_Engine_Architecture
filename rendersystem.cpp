@@ -88,28 +88,30 @@ void RenderSystem::draw(MeshComponent* mMesh)
 
 void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,TransformComponent* mTrasform, GLint viewMatrix, GLint projectionMatrix, GLint modelMatrix,Camera* camera )
 {
+    if(mMesh->isDrawable)
+    {
+        initializeOpenGLFunctions();    //must call this every frame it seems...
 
-     initializeOpenGLFunctions();    //must call this every frame it seems...
+       int viewMatrix1{-1};
+       int projectionMatrix1{-1};
+       int modelMatrix1{-1};
 
-    int viewMatrix1{-1};
-    int projectionMatrix1{-1};
-    int modelMatrix1{-1};
+       viewMatrix1 = viewMatrix;
+       projectionMatrix1 = projectionMatrix;
+       modelMatrix1 = modelMatrix;
 
-    viewMatrix1 = viewMatrix;
-    projectionMatrix1 = projectionMatrix;
-    modelMatrix1 = modelMatrix;
-
-    //Now mMaterial component holds texture slot directly - probably should be changed
+       //Now mMaterial component holds texture slot directly - probably should be changed
 
 
-    glUniformMatrix4fv( viewMatrix1, 1, GL_TRUE, camera->Cam.mViewMatrix.constData());
-    glUniformMatrix4fv( projectionMatrix1, 1, GL_TRUE, camera->Cam.mProjectionMatrix.constData());
-    glUniformMatrix4fv( modelMatrix1, 1, GL_TRUE,mTrasform->mMatrix.constData());
+       glUniformMatrix4fv( viewMatrix1, 1, GL_TRUE, camera->Cam.mViewMatrix.constData());
+       glUniformMatrix4fv( projectionMatrix1, 1, GL_TRUE, camera->Cam.mProjectionMatrix.constData());
+       glUniformMatrix4fv( modelMatrix1, 1, GL_TRUE,mTrasform->mMatrix.constData());
 
-    //draw the object
-    glBindVertexArray( mMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, mMesh->mVertices.size());
-    glBindVertexArray(0);
+       //draw the object
+       glBindVertexArray( mMesh->mVAO );
+       glDrawArrays(GL_TRIANGLES, 0, mMesh->mVertices.size());
+       glBindVertexArray(0);
+    }
 
 /*
     initializeOpenGLFunctions();    //must call this every frame it seems...

@@ -329,6 +329,7 @@ void RenderWindow::render()
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++){
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
+
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             RenderSys->draw(meshCompVec[i],
                     MaterialCompVec[i],
@@ -337,12 +338,21 @@ void RenderWindow::render()
                     pMatrixUniform,
                     mMatrixUniform,
                     mCurrentCamera);
-
+            //HARDCODED COLLIDER BABY
+            //monkey thats moving is entity id 2
+            if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2){
+                if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[i],transformCompVec[i]))
+                {
+                    //run collision code
+                    if(meshCompVec[i]->entity != 2)
+                        meshCompVec[i]->isDrawable = false;
+                }
+            }
         }
     }
     for(int i = 0; i < eSize; i++){
         if(transformCompVec[i]->entity == 2){
-            transformCompVec[i]->mMatrix.translate(0.02f, 0.f,0.f);
+            transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
             mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
         }
     }
@@ -554,6 +564,7 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
 }
+
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {

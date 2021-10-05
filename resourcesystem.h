@@ -28,7 +28,7 @@ public:
 private:
     std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;
     std::vector < std::pair<std::string, std::vector<GLuint> > > meshIndiceContainer;
-
+    std::vector < std::pair<std::string, float>> collisionRad;
 
     float calculateLenght(QVector3D pos );
 

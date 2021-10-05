@@ -29,7 +29,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
         std::string filename = gsl::ModelFilePath + input;
         std::vector<Vertex> tempMVertices;
         std::vector<GLuint> tempMIndices;
-
+        float tempRadius = 0;
         //Open File
         //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
         std::ifstream fileIn;
@@ -91,7 +91,8 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                 tempVertecies.push_back(tempVertex);
 
                 //calculate radius of sphere
-                float tempRadius = calculateLenght(tempVertex);
+                tempRadius = calculateLenght(tempVertex);
+                //if last radius is less than new radius, apply new radius
                 if(mesh->collisionRadius < tempRadius)
                     mesh->collisionRadius = tempRadius;
 
@@ -183,7 +184,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
         meshContainer.push_back(std::make_pair(input,tempMVertices));
         meshIndiceContainer.push_back(std::make_pair(input, tempMIndices));
-
+        collisionRad.push_back(std::make_pair(input,tempRadius));
         mesh->mVertices = tempMVertices;
         mesh->mIndices = tempMIndices;
         //mesh->mRVertices = &meshContainer.end()->second;
@@ -203,6 +204,12 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
         {
             if(input == it->first){
                 mesh->mIndices = it->second;
+            }
+        }
+        for(auto it = collisionRad.begin(); it < collisionRad.end();it++)
+        {
+            if(input == it->first){
+                mesh->collisionRadius = it->second;
             }
         }
     }

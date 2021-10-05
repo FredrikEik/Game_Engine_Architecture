@@ -19,6 +19,7 @@ win32 {
 SOURCES += main.cpp \
     camera.cpp \
     cameracomponent.cpp \
+    collisionsystem.cpp \
     components.cpp \
     entitysystem.cpp \
     gsl/matrix3x3.cpp \
@@ -43,6 +44,7 @@ SOURCES += main.cpp \
 HEADERS += \
     camera.h \
     cameracomponent.h \
+    collisionsystem.h \
     components.h \
     constants.h \
     entitysystem.h \

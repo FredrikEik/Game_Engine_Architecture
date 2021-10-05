@@ -12,7 +12,7 @@
 #include "rendersystem.h"
 #include "resourcesystem.h"
 #include "entitysystem.h"
-
+#include "collisionsystem.h"
 
 #include "soundmanager.h"
 #include "soundsource.h"
@@ -52,6 +52,7 @@ public:
     RenderSystem *RenderSys = new RenderSystem();
     resourceSystem * MeshSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem();
+    collisionSystem* collisionSys = new collisionSystem();
 
     std::vector<int> entities;
 
