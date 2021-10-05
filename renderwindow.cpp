@@ -240,7 +240,10 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mCurrentCamera->mProjectionMatrix.perspective(mCurrentCamera->mFieldOfView, mCurrentCamera->mAspectRatio,
+                                                  mCurrentCamera->mNearPlane, mCurrentCamera->mFarPlane);
+    //    qDebug() << mCamera.mProjectionMatrix;
+    //    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     //    qDebug() << mCamera.mProjectionMatrix;
 }
 

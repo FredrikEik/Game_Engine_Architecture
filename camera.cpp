@@ -93,3 +93,17 @@ gsl::Vector3D Camera::up() const
 {
     return mUp;
 }
+
+void Camera::calculateFrustum()
+{
+    float tanFOV = tanf(mFieldOfView);          // expensive calculation - save answer
+    float widthNear = tanFOV * mNearPlane;      // oposite side
+    float widthFar = tanFOV * mFarPlane;        // oposite side
+
+    float heightNear = widthNear / mAspectRatio;
+    float heightFar = widthFar / mAspectRatio;
+
+    // camera looks down -Z so near and far-plane are negative when drawn
+    mFrustumCornerNear = gsl::Vector3D(widthNear, heightNear, -mNearPlane);
+    mFrustumCornerFar = gsl::Vector3D(widthFar, heightFar, -mFarPlane);
+}
