@@ -190,6 +190,14 @@ void RenderWindow::render()
             ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
             ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
 
+            for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
+            {
+                if(ObjFactory->mGameObject[i] != ObjFactory->mGameObject[y])
+                {
+                    bool test;
+                    test = colliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp());
+                    qDebug() << "Box " << i << " colliding with box " << y << " = " << test;                }
+            }
         }
     }
 
@@ -400,6 +408,17 @@ void RenderWindow::startOpenGLDebugger()
                 qDebug() << "Started OpenGL debug logger!";
         }
     }
+}
+
+bool RenderWindow::colliding(CollisionComponent &Box1, CollisionComponent &Box2)
+{
+    return ((Box1.max.getX() > Box2.min.getX()) &&
+            (Box1.min.getX() < Box2.max.getX()) &&
+            (Box1.max.getY() > Box2.min.getY()) &&
+            (Box1.min.getY() < Box2.max.getY()) &&
+            (Box1.max.getZ() > Box2.min.getZ()) &&
+            (Box1.min.getZ() < Box2.max.getZ()));
+
 }
 
 void RenderWindow::setCameraSpeed(float value)
