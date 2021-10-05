@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <QPoint>
 
 #include <iostream>
 
@@ -134,6 +135,8 @@ void RenderSystem::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
+
+
 
     //Draws the objects
     for(int i{0}; i < mGameObjects.size(); i++)
@@ -276,6 +279,51 @@ void RenderSystem::setupTextureShader(int shaderIndex)
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
+
+void RenderSystem::mousePicking()
+{
+    mContext->makeCurrent(this);
+    initializeOpenGLFunctions();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //depth test
+    glEnable(GL_DEPTH_TEST);
+    //accepts if closer to the camera than the former
+    glDepthFunc(GL_LESS);
+    //cull triangle which normal is not towards the camera
+    glEnable(GL_CULL_FACE);
+
+    //configure how glReadPixels will behave with reespect to memory alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glFlush(); //force send gl commands
+    glFinish(); // force gl to finish rendering
+
+    //read the color of the pixel
+    //slow even for 1 pixel, because framebuffer is on the gpu
+    unsigned char data[4];
+
+    //global mouse position conversion to local
+    QPoint cursorPosition = this->mapFromGlobal(this->cursor().pos());
+
+    glReadPixels(cursorPosition.x(), (height()-cursorPosition.y()), 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    int pickedID = data[0] +
+                   data[1] * 256 +
+                   data[2] * 256*256;
+    pickedID = pickedID/20;
+
+    if(pickedID < 10000)
+    {
+        qDebug() << "mesh ID" << pickedID;
+//             mGameObjects[pickedID]->mName;
+
+    }
+    else
+        qDebug() << "Nothing Selected";
+
+}
+
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized

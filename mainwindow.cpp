@@ -4,6 +4,9 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+#include <QOpenGLDebugLogger>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
@@ -85,6 +88,8 @@ void MainWindow::init()
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
+
+
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {

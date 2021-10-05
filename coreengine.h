@@ -10,7 +10,7 @@ class SoundSystem;
 class RenderSystem;
 class Camera;
 class QTimer;
-
+//coreengine
 //Made from QObject to use a Qt slots...
 class CoreEngine : public QObject
 {

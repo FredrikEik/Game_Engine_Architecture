@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QOpenGLFunctions_4_1_Core>
 
 //Forward declarations
 class QWidget;
 class RenderSystem;
 class CoreEngine;
+
 
 namespace Ui {
 class MainWindow;
@@ -30,6 +32,7 @@ public slots:
 private:
     void init();
     Ui::MainWindow *ui;
+
 
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};

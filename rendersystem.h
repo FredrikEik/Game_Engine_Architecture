@@ -38,6 +38,8 @@ public:
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
+    void mousePicking();
+
     void render();
 
 
@@ -75,6 +77,7 @@ private:
     int mObjectsDrawn{0};
 
     float mFOVangle{45};
+
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
