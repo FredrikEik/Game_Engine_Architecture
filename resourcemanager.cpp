@@ -50,14 +50,17 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
 {
      VisualObject * CurrentVisualObject = 0;
 
-    if(ObjectType == 0) {
-        //Axis
-//              VisualObject *temp = new XYZ();
-//              temp->mMaterial->mShaderProgram = 0; //plain shader
-//              temp->init();
-//              mVisualObjects.push_back(temp);
-        CurrentVisualObject = new XYZ();
+     if(ObjectType == 0) {
+        if(axisMemory->mVAO == 0) { //if theres nothing in the memory, create a new thing
+         CurrentVisualObject = new XYZ(); //making the new thing
+         axisMemory = CurrentVisualObject->mMesh; //setting the memory to equal the thing
+        }
+
+        else { //if memory exists
+        CurrentVisualObject->mMesh = axisMemory; //set the mesh to the memory of the thing
+        }
     }
+
 
     else if(ObjectType == 1) {
         //Triangle
