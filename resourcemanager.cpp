@@ -24,7 +24,7 @@ void ResourceManager::manageObjects(std::string objectName, int ObjectID)
     //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, ObjectID, 1, 1, 1);
+    addObject(name, id, ObjectID, 1, 1, 1); //name, ID, ObjectType, translate, mesh, material
 
     //Dag's dog triangle
 //      temp = new Triangle();
@@ -81,7 +81,7 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
     if (TransformID == 1)
     {
         new XYZ();
-        CurrentVisualObject->mTransform->mMatrix.translate(0.0f, 0.0f, 0.5f);
+        CurrentVisualObject->mTransform->mMatrix.translate(.001f, .001f, -.001f); //This only moves it for one frame! How do we make it happen every frame?
     }
 
     if (MeshID != 0)
