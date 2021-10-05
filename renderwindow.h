@@ -44,10 +44,15 @@ public:
     void deleteSelection();
 
     gsl::Matrix4x4 getTransform(int index);
+    gsl::Vector3D getRotation(int index);
 
     void setPositionX(double value);
     void setPositionY(double value);
     void setPositionZ(double value);
+
+    void setRotationX(double value);
+    void setRotationY(double value);
+    void setRotationZ(double value);
 
 private slots:
     void render();

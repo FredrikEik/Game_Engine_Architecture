@@ -49,6 +49,10 @@ private slots:
     void on_transformY_valueChanged(double arg1);
     void on_transformZ_valueChanged(double arg1);
 
+    void on_rotationX_valueChanged(double arg1);
+    void on_rotationY_valueChanged(double arg1);
+    void on_rotationZ_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

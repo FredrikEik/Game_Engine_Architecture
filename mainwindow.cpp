@@ -109,14 +109,15 @@ void MainWindow::displayCurrentTransform(int index)
 
     gsl::Matrix4x4 matrix = mRenderWindow->getTransform(index);
     gsl::Vector3D position = matrix.getPosition();
+    gsl::Vector3D rotation = mRenderWindow->getRotation(index);
 
     ui->transformX->setValue(position.getX());
     ui->transformY->setValue(position.getY());
     ui->transformZ->setValue(position.getZ());
 
-    ui->rotationX->setValue(0.0);
-    ui->rotationY->setValue(0.0);
-    ui->rotationZ->setValue(0.0);
+    ui->rotationX->setValue(rotation.getX());
+    ui->rotationY->setValue(rotation.getY());
+    ui->rotationZ->setValue(rotation.getZ());
 
     ui->scaleX->setValue(0.0);
     ui->scaleY->setValue(0.0);
@@ -186,4 +187,20 @@ void MainWindow::on_transformZ_valueChanged(double arg1)
 {
     qDebug() << "Transform Z: " << arg1;
     mRenderWindow->setPositionZ(arg1);
+}
+
+void MainWindow::on_rotationX_valueChanged(double arg1)
+{
+    qDebug() << "Rotation X: " << arg1;
+    mRenderWindow->setRotationX(arg1);
+}
+void MainWindow::on_rotationY_valueChanged(double arg1)
+{
+    qDebug() << "Rotation Y: " << arg1;
+    mRenderWindow->setRotationY(arg1);
+}
+void MainWindow::on_rotationZ_valueChanged(double arg1)
+{
+    qDebug() << "Rotation Z: " << arg1;
+    mRenderWindow->setRotationZ(arg1);
 }

@@ -184,8 +184,8 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
             ObjFactory->mGameObject[i]->draw();
-            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
-//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(5.f);
+//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
+//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateZ(5.f);
         }
     }
@@ -326,6 +326,12 @@ gsl::Matrix4x4 RenderWindow::getTransform(int index)
 
      return Matrix;
 }
+gsl::Vector3D RenderWindow::getRotation(int index)
+{
+    gsl::Vector3D Rotation = ObjFactory->mGameObject[index]->getTransformComp()->Rot;
+
+    return Rotation;
+}
 
 void RenderWindow::setPositionX(double value)
 {
@@ -350,6 +356,34 @@ void RenderWindow::setPositionZ(double value)
         return;
     gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
     ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(position.getX(),position.getY(),value);
+}
+
+void RenderWindow::setRotationX(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    float x = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getX();
+    ObjFactory->mGameObject[index]->getTransformComp()->Rot.setX(x+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getX());
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateX(x);
+}
+void RenderWindow::setRotationY(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    float y = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getY();
+    ObjFactory->mGameObject[index]->getTransformComp()->Rot.setY(y+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getY());
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateY(y);
+}
+void RenderWindow::setRotationZ(double value)
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    float z = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getZ();
+    ObjFactory->mGameObject[index]->getTransformComp()->Rot.setZ(z+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getZ());
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateZ(z);
 }
 
 void RenderWindow::ObjectButton(std::string object)
