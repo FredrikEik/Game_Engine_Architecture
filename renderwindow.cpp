@@ -166,10 +166,10 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     glDisable(GL_CULL_FACE);
-    mCurrentCamera = new Camera(10.0f, 4/3);
+    mCurrentCamera = new Camera(45.0f, 4/3);
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    mCurrentCamera->updateFrustumPos(10.0f, 4/3);
+    mCurrentCamera->updateFrustumPos(45.0f, 4/3);
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
@@ -247,7 +247,7 @@ void RenderWindow::render()
 
     //Draws the objects
 
-    mCurrentCamera->draw();
+    //mCurrentCamera->draw();
 
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
@@ -264,8 +264,6 @@ void RenderWindow::render()
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
-
-            //draw the object
 
             it->second->draw();
             it->second->move(0.001f, 0.001f, -0.001f);

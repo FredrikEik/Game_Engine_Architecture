@@ -86,7 +86,7 @@ GameObject* Factory::createObject(std::string objectName)
     }
     else if(objectName == "Camera")
     {
-        objectToCreate = new Camera(10, 5/4);
+        objectToCreate = new Camera(45, 4/3);
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
