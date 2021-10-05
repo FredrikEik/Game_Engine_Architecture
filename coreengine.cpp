@@ -34,8 +34,10 @@ void CoreEngine::GameLoop()
 void CoreEngine::SetUpScene()
 {
 
-    GameObject *temp;/* = mResourceManager->CreateObject("suzanne.obj");
-    mRenderWindow->mGameObjects.push_back(temp);*/
+    GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
+    temp->transform->mMatrix.scale(0.2f);
+    mRenderWindow->addToGameObjects(temp);
+
 
     for(int i{0}; i < 40; i++)
    {
@@ -48,7 +50,8 @@ void CoreEngine::SetUpScene()
    }
 
     //********************** Set up cameras **********************
-    mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, -9.f));
+    mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));
+    mGameCamera->pitch(20); //tilt the camera down
 
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
@@ -120,4 +123,9 @@ void CoreEngine::playStartGameSound()
 bool CoreEngine::isPlaying()
 {
     return bUsingGameCamera;
+}
+
+Camera *CoreEngine::getGameCamera()
+{
+    return mGameCamera;
 }

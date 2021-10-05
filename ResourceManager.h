@@ -7,13 +7,15 @@
 #include <vector>
 #include <string>
 #include "renderwindow.h"
+#include "coreengine.h"
 
-class RenderWindow;
+class CoreEngine;
 
 class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
 public:
 
+    class GameObject* CreateMainCharacter(std::string filename);
     class GameObject* CreateObject(std::string filename);
 
     static ResourceManager& getInstance();
@@ -37,6 +39,8 @@ private:
     Mesh* mesh;
     Transform* transform;
     Material* material;
+
+    CoreEngine* mCoreEngine{nullptr};
 };
 
 #endif // RESOURCEMANAGER_H

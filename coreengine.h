@@ -38,6 +38,8 @@ public:
 
     bool isPlaying();
 
+    Camera* getGameCamera();
+
 private slots:
     void GameLoop();
 

@@ -162,10 +162,10 @@ void RenderWindow::render()
         gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
         float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
 
-        if(distanceToObject > 15){
+        if(distanceToObject > 70){
             mGameObjects[i]->mesh->lodLevel = 2;
         }
-        else if(distanceToObject > 8){
+        else if(distanceToObject > 35){
             mGameObjects[i]->mesh->lodLevel = 1;
         }
         else{
@@ -176,6 +176,8 @@ void RenderWindow::render()
         glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
         glBindVertexArray(0);
+
+        checkForCollisions(mGameObjects[i]);
     }
 
     //Calculate framerate before
@@ -291,6 +293,15 @@ void RenderWindow::checkForGLerrors()
         while((err = glGetError()) != GL_NO_ERROR)
         {
             qDebug() << "glGetError returns " << err;
+        }
+    }
+}
+
+void RenderWindow::checkForCollisions(GameObject* player) //Checks all other objects. (not ideal) should use frustum and QuadTree
+{
+    for( int i = 0; i < mGameObjects.size(); i++){
+        if(mGameObjects[i] != player){
+
         }
     }
 }

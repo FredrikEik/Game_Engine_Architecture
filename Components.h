@@ -42,6 +42,12 @@ struct Mesh
     GLenum mDrawType{GL_TRIANGLES};
 };
 
+struct CollisionComp
+{
+    float sphereRadius{0};
+    gsl::Vector3D middlePoint{0,0,0};
+};
+
 struct SoundListener
 {
     //should be fetced from other component?

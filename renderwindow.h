@@ -52,6 +52,8 @@ private:
 
     void checkForGLerrors();
 
+    void checkForCollisions(GameObject* player);
+
     void calculateFramerate();
 
     void startOpenGLDebugger();

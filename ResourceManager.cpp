@@ -5,9 +5,17 @@
 
 ResourceManager::ResourceManager()
 {
-
+    mCoreEngine = CoreEngine::getInstance();
 }
+GameObject* ResourceManager::CreateMainCharacter(std::string filename)
+{
+    //makeMainCharacter
+    object = CreateObject(filename);
+    object->transform->mMatrix.translate(57.f, -1.f, 6.f);
 
+
+    return object;
+}
 GameObject* ResourceManager::CreateObject(std::string filename)
 {
     object = new GameObject();
@@ -40,10 +48,10 @@ GameObject* ResourceManager::CreateObject(std::string filename)
         std::cout << "Error: meshIndex is -1 (no mesh)";
     }
 
-//    mRenderwindow->addToGameObjects(object);
-
     return object;
 }
+
+
 
 ResourceManager &ResourceManager::getInstance()
 {
