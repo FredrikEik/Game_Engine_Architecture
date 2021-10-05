@@ -39,10 +39,10 @@ struct MaterialComponent
     GLint mTextureUniform{-1};
 };
 
-//struct CollisionComponent
-//{
-
-//};
+struct CollisionComponent
+{
+    gsl::Vector3D min, max;
+};
 
 
 #endif // COMPONENTS_H

@@ -187,6 +187,9 @@ void RenderWindow::render()
             ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(5.f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateZ(5.f);
+            ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
+            ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
+
         }
     }
 

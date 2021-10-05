@@ -19,9 +19,12 @@ void ObjectFactory::createObject(std::string objectName)
     if(objectName == "Cube")
     {
         willCreateObject = new Cube;
+
         if (EXISTS("Cube"))
         {
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
+            willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
+            willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
         }
     }
 
