@@ -76,11 +76,10 @@ void GameEngine::SetUpObjects()
 //    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
-    tempGameObject->mMaterialComp->mTextureUnit = 2;
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
-    mRenderwindow->mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
+//    tempGameObject->mMaterialComp->mShaderProgram = 2;
+//    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 //    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
 //    tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
@@ -88,7 +87,6 @@ void GameEngine::SetUpObjects()
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-1,0.5,-5);
-    tempGameObject->mMaterialComp->mTextureUnit = 2;
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
@@ -138,27 +136,32 @@ void GameEngine::resetWorld()
     //hmmm?
 }
 
+// For the four funcitons under: temporary set the shader to 2 for mouspicking testing
 void GameEngine::CreateCube()
 {
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::CreatePyramid()
 {
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::CreateSphere()
 {
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::CreateSuzanne()
 {
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 

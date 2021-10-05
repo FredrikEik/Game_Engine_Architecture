@@ -43,6 +43,7 @@ public:
 
     std::vector<GameObject*> mGameObjects;
 
+
 //    GameObject* RenderWindow::addObject(std::string assetName);
 
     void render();
@@ -118,6 +119,10 @@ private:
     bool bUsingFrustumCulling{true};
     bool bShowAllCollisionBoxes{false};
 
+    bool wasLeftMouseButtonPressedLastFrame{false};
+
+    float xMousePos{0};
+    float yMousePos{0};
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;

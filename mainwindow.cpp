@@ -50,6 +50,11 @@ void MainWindow::updateList()
     }
 }
 
+void MainWindow::setID(int ID)
+{
+    this->on_listWidget_currentRowChanged(ID);
+}
+
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into

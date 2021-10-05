@@ -23,6 +23,7 @@ public:
 
     void initList();
     void updateList();
+    void setID(int ID);
 
 private slots:
 

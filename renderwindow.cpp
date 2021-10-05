@@ -160,27 +160,48 @@ void RenderWindow::render()
 //    //to clear the screen for each redraw
 //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-//    for(int i{0}; i < mGameObjects.size(); i++)
+//    if(mInput.LMB)
 //    {
-//        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
-//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+//        for(int i{0}; i < mGameObjects.size(); i++)
+//        {
+//            glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
+//            //glUseProgram(2);
+//            GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
+//            if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB)
+//            {
+//                int id = mGameObjects[i]->id; // +50 for å se rød nyansen
+//                int r = (id & 0x000000FF) >>  0;
+//                int g = (id & 0x0000FF00) >>  8;
+//                int b = (id & 0x00FF0000) >> 16;
+//                glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+//                glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//                glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//                glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+
+//                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+//                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
 
 
-//        int id = mGameObjects[i]->id;
-//        int r = (id & 0x000000FF) >>  0;
-//        int g = (id & 0x0000FF00) >>  8;
-//        int b = (id & 0x00FF0000) >> 16;
+//            }
+//        }
+//        //Mouspicking Stuff:
+//        glFlush();
+//        glFinish();
 
+//        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-////        glUniform4f(0, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+//        unsigned char data[4];
+//        glReadPixels(1024/2, 768/2,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
+//        mObjectsDrawn++;
+//        glBindVertexArray(0);
 
+//        int pickedID =
+//                data[0] +
+//                data[1] * 256 +
+//                data[2] * 256*256;
 
-//        glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
-//        glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+//        qDebug() << "meshID: " << pickedID;
 //    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -232,21 +253,60 @@ void RenderWindow::render()
 
 //         This line says linking error
 //        GLuint pickingColorID = glGetUniformLocation(2, "PickingColor");
-
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
         //glUseProgram(2);
         GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
-
-        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2)
+        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB)
         {
-                    int id = mGameObjects[i]->id+50;
-                    int r = (id & 0x000000FF) >>  0;
-                    int g = (id & 0x0000FF00) >>  8;
-                    int b = (id & 0x00FF0000) >> 16;
-            glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
-            glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+
+            for(int i{0}; i < mGameObjects.size(); i++)
+            {
+                int id = mGameObjects[i]->id; // +50 for å se rød nyansen
+                int r = (id & 0x000000FF) >>  0;
+                int g = (id & 0x0000FF00) >>  8;
+                int b = (id & 0x00FF0000) >> 16;
+                glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
+                glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+                glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+
+                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
+            }
+            //Mouspicking Stuff:
+            glFlush();
+            glFinish();
+
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+
+            unsigned char data[4];
+            glReadPixels(xMousePos, 838 - yMousePos,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+            //qDebug () << "MousePos x:" << xMousePos << ", y: " << 838-yMousePos;
+            int pickedID =
+                    data[0] +
+                    data[1] * 256 +
+                    data[2] * 256*256;
+
+            qDebug() << "meshID: " << pickedID;
+
+            if(pickedID < 1000)
+            {
+                mMainWindow->setID(pickedID);
+            }
+            mObjectsDrawn++;
+            glBindVertexArray(0);
+            continue;
+
+        }
+
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB != true)
+        {
+            glUseProgram(mShaderPrograms[0]->getProgram() );
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
         }
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
@@ -300,9 +360,6 @@ void RenderWindow::render()
         }
 
 
-
-        mObjectsDrawn++;
-        glBindVertexArray(0);
     }
 
     //Calculate framerate before
@@ -649,6 +706,16 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.LMB = true;
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
+    if(mInput.LMB)
+    {
+        //Using mMouseXYlast as deltaXY so we don't need extra variables
+        xMousePos = event->pos().x();
+        yMousePos = event->pos().y();
+    }
+    //qDebug() << "Mouse position" << xMousePos << "," << yMousePos;
+
+    mMouseXlast = event->pos().x();
+    mMouseYlast = event->pos().y();
 }
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -659,6 +726,7 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
         mInput.LMB = false;
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = false;
+
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
@@ -676,6 +744,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
+
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (mInput.RMB)
@@ -689,6 +758,7 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         if (mMouseYlast != 0)
             mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
     }
+
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
 }
