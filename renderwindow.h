@@ -104,8 +104,8 @@ private:
     std::vector<VisualObject*> mVisualObjects;
 
     Input mInput;
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
+    float mCameraSpeed{0.15f};
+    float mCameraRotateSpeed{0.25f};
     int mMouseXlast{0};
     int mMouseYlast{0};
 
