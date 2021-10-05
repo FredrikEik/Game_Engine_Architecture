@@ -7,6 +7,7 @@
 #include <QTreeWidgetItem>
 
 #include "renderwindow.h"
+#include "detailswidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -131,6 +132,12 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
         mCurrentEditItem = nullptr;
         return;
     }*/
+
+    //Transform widget:
+    mTransformWidget = new WidgetTransform(this, mPositionStep, mRotationStep, mScaleStep);
+    mTransformWidget->setObjectName("TransformWidget"); //not sure if this is necessary
+    mTransformWidget->init(mRenderSystem, mCurrentEditItemIndex);
+    ui->blDetailsContainer->addWidget(mTransformWidget);    //add to details pane
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
