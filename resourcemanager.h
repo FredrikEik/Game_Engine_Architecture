@@ -21,6 +21,9 @@ public:
 private:
 int id;
 std::string name;
+MeshComponent cubeMemory;
+MeshComponent triangleMemory;
+MeshComponent axisMemory;
 };
 
 #endif // RESOURCEMANAGER_H
