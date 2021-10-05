@@ -110,6 +110,7 @@ void MainWindow::displayCurrentTransform(int index)
     gsl::Matrix4x4 matrix = mRenderWindow->getTransform(index);
     gsl::Vector3D position = matrix.getPosition();
     gsl::Vector3D rotation = mRenderWindow->getRotation(index);
+    gsl::Vector3D scale = mRenderWindow->getScale(index);
 
     ui->transformX->setValue(position.getX());
     ui->transformY->setValue(position.getY());
@@ -119,9 +120,9 @@ void MainWindow::displayCurrentTransform(int index)
     ui->rotationY->setValue(rotation.getY());
     ui->rotationZ->setValue(rotation.getZ());
 
-    ui->scaleX->setValue(0.0);
-    ui->scaleY->setValue(0.0);
-    ui->scaleZ->setValue(0.0);
+    ui->scaleX->setValue(scale.getX());
+    ui->scaleY->setValue(scale.getY());
+    ui->scaleZ->setValue(scale.getZ());
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -203,4 +204,17 @@ void MainWindow::on_rotationZ_valueChanged(double arg1)
 {
     qDebug() << "Rotation Z: " << arg1;
     mRenderWindow->setRotationZ(arg1);
+}
+
+void MainWindow::on_scaleX_valueChanged(double arg1)
+{
+    mRenderWindow->setScaleX(arg1);
+}
+void MainWindow::on_scaleY_valueChanged(double arg1)
+{
+    mRenderWindow->setScaleY(arg1);
+}
+void MainWindow::on_scaleZ_valueChanged(double arg1)
+{
+    mRenderWindow->setScaleZ(arg1);
 }

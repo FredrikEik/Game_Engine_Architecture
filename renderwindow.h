@@ -45,6 +45,7 @@ public:
 
     gsl::Matrix4x4 getTransform(int index);
     gsl::Vector3D getRotation(int index);
+    gsl::Vector3D getScale(int index);
 
     void setPositionX(double value);
     void setPositionY(double value);
@@ -53,6 +54,10 @@ public:
     void setRotationX(double value);
     void setRotationY(double value);
     void setRotationZ(double value);
+
+    void setScaleX(double value);
+    void setScaleY(double value);
+    void setScaleZ(double value);
 
 private slots:
     void render();
