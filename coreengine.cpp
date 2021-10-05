@@ -92,7 +92,29 @@ void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngin
     }
     else // currentCamera = mGameCamera
     {
+        if(mRenderWindow->getInput().W || mRenderWindow->getInput().A || mRenderWindow->getInput().S || mRenderWindow->getInput().D){
+            for( int i = 0; i < mRenderWindow->getGameObjects().size(); i++){ //probably not a good way to do this
 
+                if(mRenderWindow->getGameObjects()[i]->mName == "cube.obj"){
+                    if(mRenderWindow->getInput().W){
+                        mRenderWindow->getGameObjects()[i]->move(0, 0, -0.7);
+                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, -0.14f));
+                    }
+                    if(mRenderWindow->getInput().A){
+                        mRenderWindow->getGameObjects()[i]->move(-0.5f, 0, 0);
+                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(-0.1f, 0, 0));
+                    }
+                    if(mRenderWindow->getInput().S){
+                        mRenderWindow->getGameObjects()[i]->move(0, 0, 0.7);
+                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, 0.14f));
+                    }
+                    if(mRenderWindow->getInput().D){
+                        mRenderWindow->getGameObjects()[i]->move(0.5f, 0, 0);
+                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0.1f, 0, 0));
+                    }
+                }
+            }
+        }
     }
 }
 

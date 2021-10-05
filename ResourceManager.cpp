@@ -13,7 +13,6 @@ GameObject* ResourceManager::CreateMainCharacter(std::string filename)
     object = CreateObject(filename);
     object->transform->mMatrix.translate(57.f, -1.f, 6.f);
 
-
     return object;
 }
 GameObject* ResourceManager::CreateObject(std::string filename)
@@ -23,6 +22,8 @@ GameObject* ResourceManager::CreateObject(std::string filename)
     object->transform->mMatrix.setToIdentity();
     object->material = new Material();
     object->mesh = new Mesh();
+
+    object->mName = filename;
 
     int meshIndex{-1};
     auto result = mMeshIndexMap.find(filename);
@@ -91,6 +92,14 @@ void ResourceManager::init(Mesh &meshComp, int lod)
     }
 
     glBindVertexArray(0);
+}
+
+void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
+{
+    //making correct bounding sphere radius:
+    float length = vertexIn.length();
+    if(length > meshIn->sphereRadius)
+        meshIn->sphereRadius = length;
 }
 
 
@@ -165,6 +174,9 @@ int ResourceManager::readObj(std::string filename) //Ole's obj reader code
 
                     //Vertex made - pushing it into vertex-vector
                     tempVertecies.push_back(tempVertex);
+
+                    if(lod == 0)
+                        makeSphereRadius(object->mesh, tempVertex);
 
                     continue;
                 }

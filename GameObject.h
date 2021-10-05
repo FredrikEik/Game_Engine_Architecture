@@ -20,6 +20,8 @@ public:
     Material* material{nullptr};     //MaterialComponent
     Transform* transform{nullptr};   //TransformComponent
 
+    void move(float dx, float dy, float dz);
+
 };
 #endif // GAMEOBJECT_H
 

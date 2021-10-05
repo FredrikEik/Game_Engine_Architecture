@@ -37,15 +37,12 @@ struct Mesh
     GLuint mVBO[3]{0};
     GLuint mEAB[3]{0};
 
+    float sphereRadius{0};
+    gsl::Vector3D middlePoint{0,0,0};
+
     int lodLevel{0};
 
     GLenum mDrawType{GL_TRIANGLES};
-};
-
-struct CollisionComp
-{
-    float sphereRadius{0};
-    gsl::Vector3D middlePoint{0,0,0};
 };
 
 struct SoundListener

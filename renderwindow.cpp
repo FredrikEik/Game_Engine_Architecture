@@ -177,7 +177,9 @@ void RenderWindow::render()
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
         glBindVertexArray(0);
 
-        checkForCollisions(mGameObjects[i]);
+        if(mGameObjects[i]->mName == "cube.obj"){
+            checkForCollisions(mGameObjects[i]);
+        }
     }
 
     //Calculate framerate before
@@ -277,6 +279,11 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+Input RenderWindow::getInput()
+{
+    return mInput;
+}
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderWindow::checkForGLerrors()
@@ -297,11 +304,19 @@ void RenderWindow::checkForGLerrors()
     }
 }
 
-void RenderWindow::checkForCollisions(GameObject* player) //Checks all other objects. (not ideal) should use frustum and QuadTree
+void RenderWindow::checkForCollisions(GameObject* player) //Checks all other objects..
 {
-    for( int i = 0; i < mGameObjects.size(); i++){
-        if(mGameObjects[i] != player){
 
+    gsl::Vector3D objToPlayer{0,0,0};
+    for( int i = 0; i < mGameObjects.size(); i++){
+        if(mGameObjects[i] != player)
+        {
+            objToPlayer = mGameObjects[i]->transform->mMatrix.getPosition() - player->transform->mMatrix.getPosition();
+
+            if( objToPlayer.length() <= (player->mesh->sphereRadius + mGameObjects[i]->mesh->sphereRadius) )
+            { //Objects are colliding
+                qDebug() << "Cube COLLIDING!";
+            }
         }
     }
 }
@@ -340,22 +355,22 @@ void RenderWindow::setCameraSpeed(float value)
 void RenderWindow::handleInput()
 {
    // Camera
-    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
-    {
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
-    }
+//    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
+//    if(mInput.RMB)
+//    {
+//        if(mInput.W)
+//            mCurrentCamera->setSpeed(-mCameraSpeed);
+//        if(mInput.S)
+//            mCurrentCamera->setSpeed(mCameraSpeed);
+//        if(mInput.D)
+//            mCurrentCamera->moveRight(mCameraSpeed);
+//        if(mInput.A)
+//            mCurrentCamera->moveRight(-mCameraSpeed);
+//        if(mInput.Q)
+//            mCurrentCamera->updateHeigth(-mCameraSpeed);
+//        if(mInput.E)
+//            mCurrentCamera->updateHeigth(mCameraSpeed);
+//    }
 }
 
 void RenderWindow::addToGameObjects(GameObject *obj)

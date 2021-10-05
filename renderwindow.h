@@ -37,6 +37,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    Input getInput();
+
     void addToGameObjects(GameObject *obj);
     std::vector<GameObject*> getGameObjects();
 

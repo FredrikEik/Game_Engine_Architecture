@@ -25,6 +25,7 @@ private:
     ResourceManager();
 
     void init(Mesh &mesh, int lod);
+    void makeSphereRadius(Mesh* meshIn, gsl::Vector3D &vertexIn);
 
     int readObj(std::string filename);
 
