@@ -68,7 +68,7 @@ private:
     Input mInput;
     CollisionSystem* mCollisionSystem;
     ShapeFactory mShapeFactory;
-    void CheckMousePickCollision(gsl::Vector3D point,CollisionComponent *mCollision);
+    FrustumSystem* mFrustumSystem;
 
     MeshComponent mDebugMousePickRay;
     void mousePickingRay(QMouseEvent *event);

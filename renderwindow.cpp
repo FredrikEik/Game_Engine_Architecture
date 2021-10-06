@@ -126,7 +126,7 @@ void RenderWindow::init()
 
     initObjects();
     //********************** Set up camera **********************
-    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    //mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mPlayCamera.setPosition(gsl::Vector3D(1.f, 18.f, 7.5));
     mPlayCamera.pitch(70);
 
@@ -161,13 +161,18 @@ void RenderWindow::initObjects()
     temp->init();
     mVisualObjects.push_back(temp);
 
-
     //testing ShapeFactory - Plain
     temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->move(2.5f, 0.f, .5f);
+    temp->move(2.5f, -0.5f, .5f);
     mVisualObjects.push_back(temp);
+
+    //testing frustum
+    mFrustumSystem = new FrustumSystem();
+    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
+    mFrustumSystem->init();
+    mVisualObjects.push_back(mFrustumSystem);
 
     //testing OBJ
     temp = mShapeFactory.createShape("Obj");
@@ -202,36 +207,36 @@ void RenderWindow::initObjects()
     temp->move(4.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
 
-    //    int xPos=-12; int zPos=-9;
-//    for(int i=0; i<200; i++){
-//        temp = mShapeFactory.createMonkeys(i);
-//        temp->init();
-//        if(i<20)
-//            temp->move((i-12) ,0.5, -9);
-//        else if(i<40)
-//            temp->move((i-32), 0.5, -7);
-//        else if(i<60)
-//            temp->move((i-52), 0.5, -5);
-//        else if(i<80)
-//            temp->move((i-72), 0.5, -3);
-//        else if(i<100)
-//            temp->move((i-92), 0.5, -1);
-//        else if(i<120)
-//            temp->move((i-112), 0.5, 1);
-//        else if(i<140)
-//            temp->move((i-132), 0.5, 3);
-//        else if(i<160)
-//            temp->move((i-152), 0.5, 5);
-//        else if(i<180)
-//            temp->move((i-172), 0.5, 7);
-//        else if(i<200)
-//            temp->move((i-192), 0.5, 9);
-//        temp->mMaterial->mShaderProgram = 0;    //plain shader
-//        mVisualObjects.push_back(temp);
-//        //        xPos+=0.5; zPos+=0.5;
-//    }
-//    //    for(int row=-12; row<12; row++)
-    //        for(int col=-9; col<9; col++)
+        //Drawing 200 monkeys
+
+        int xPos=-12; int zPos=-9;
+    for(int i=0; i<200; i++){
+        temp = mShapeFactory.createMonkeys(i);
+        temp->init();
+        if(i<20)
+            temp->move((i-12) ,0.5, -9);
+        else if(i<40)
+            temp->move((i-32), 0.5, -7);
+        else if(i<60)
+            temp->move((i-52), 0.5, -5);
+        else if(i<80)
+            temp->move((i-72), 0.5, -3);
+        else if(i<100)
+            temp->move((i-92), 0.5, -1);
+        else if(i<120)
+            temp->move((i-112), 0.5, 1);
+        else if(i<140)
+            temp->move((i-132), 0.5, 3);
+        else if(i<160)
+            temp->move((i-152), 0.5, 5);
+        else if(i<180)
+            temp->move((i-172), 0.5, 7);
+        else if(i<200)
+            temp->move((i-192), 0.5, 9);
+        temp->mMaterial->mShaderProgram = 0;    //plain shader
+        mVisualObjects.push_back(temp);
+    }
+
 
 
 }
@@ -281,18 +286,19 @@ void RenderWindow::makeObject()
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
             glBindVertexArray(0);}
-        else if(i>2 && i<8){
-            if(shapeExist[i-3]){
+        else if(i==3 && playM==false){
+            glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+            glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i>3 && i<9){
+            if(shapeExist[i-4]){
                 glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
                 glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
                 glBindVertexArray(0);}}
-        else if(i>=8){
+        else if(i>=9){
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
             glBindVertexArray(0);}
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-        glBindVertexArray(0);
 
     }
 }
@@ -407,7 +413,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
 
     //calculate aspect ration and set projection matrix
-    mCurrentCamera->mFrustum.mAspectRatio = static_cast<float>(width()) / height();
+    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
     mPlayCamera.calculateProjectionMatrix();
     mEditorCamera.calculateProjectionMatrix();
@@ -650,7 +656,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
 
     //step 3
-     projMatrix.inverse();
+    // projMatrix.inverse();
     gsl::Vector4D ray_eye = projMatrix * ray_clip;
     ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
 
@@ -660,7 +666,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     ray_wor = {temp.x, temp.y, temp.z};
     ray_wor.normalize();
 
-
+    //den gir ikke rikgi
     qDebug() << ray_wor;
     mMousePickRay = ray_wor;
 
