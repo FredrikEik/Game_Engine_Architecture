@@ -111,7 +111,7 @@ void MainWindow::on_CreateObject_clicked()
     mRenderWindow->createObjectbutton(itemToSpawn);
 }
 
-void MainWindow::updateOutliner(std::unordered_map<uint32_t, GameObject *> &GameObjectData)
+void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
 {
   qDebug() << "Heroin";
     //clear all current items
@@ -126,7 +126,7 @@ void MainWindow::updateOutliner(std::unordered_map<uint32_t, GameObject *> &Game
     for(auto gob : GameObjectData)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(mSceneOutlinerRoot);
-        item->setText(0,QString::fromStdString(gob.second->mObjectName));
+        item->setText(0,QString::fromStdString(gob->mObjectName));
 //        item->setFlags(item->flags() | Qt::ItemIsEditable);
     }
 }
@@ -136,21 +136,16 @@ void MainWindow::selectObjectByIndex(int indexIn)
      qDebug() << "Heroin";
    if(mSceneOutlinerRoot)
     {
-        if(mCurrentEditItem)
-            mCurrentEditItem->setSelected(false);
+        if(mCurrentEditItem) mCurrentEditItem->setSelected(false);
 
-           mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
-      //  mCurrentEditItem->setSelected(true);
+        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+        mCurrentEditItem->setSelected(true);
+
         on_outliner_itemClicked(mCurrentEditItem, 0);
     }
 
 }
 
-void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
-{
-
-
- }
 
 void MainWindow::clearLayout(QLayout *layout) {
     QLayoutItem *item;
@@ -160,14 +155,12 @@ void MainWindow::clearLayout(QLayout *layout) {
         }
         delete item; //probably not neccesary - Qt should do it automatically
     }
-//    mTransformWidget = nullptr;
-  //  ui->twSceneOutliner->clearSelection();
+
+  //  ui->outliner->clearSelection();
 }
 
 void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
 {
-
-
     clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
 
     //Top node selected or no selection:
@@ -197,7 +190,7 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
     //Transform widget:
        mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
        mDetailsWidget->setObjectName("DetailsWidget"); //not sure if this is necessary
-       mDetailsWidget->init(mGameObject, mCurrentEditItemIndex);
+       mDetailsWidget->init(mRenderWindow->getFactory(), mCurrentEditItemIndex);
        ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
 }
 

@@ -43,6 +43,8 @@ public:
     void playPausebutton();
     bool bPause = true;
 
+    Factory *getFactory(){return factory;};
+
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
 
@@ -86,6 +88,7 @@ private:
 
     class Factory* factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
+
 
     int mIndexToPickedObject{-1};
 

@@ -229,17 +229,18 @@ void RenderWindow::init()
 
 
 
-//GameObject *temp=nullptr;
-//        for(int i{0}; i < 10; i++)
-//        {
-//            for(int j{0}; j < 10; j++)
-//            {
-//            temp = factory->createObject("Cube");
-//                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,-2.f*j);
-//                //TODO: Scaling have to be made easier and more automatic than this!
-//            }
-//        }
-        mMainWindow->updateOutliner(factory->mGameObjects);
+GameObject *temp=nullptr;
+        for(int i{0}; i < 10; i++)
+        {
+            for(int j{0}; j < 10; j++)
+            {
+            temp = factory->createObject("Cube");
+                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+                //TODO: Scaling have to be made easier and more automatic than this!
+                mMainWindow->updateOutliner(factory->mGameObjects);
+            }
+        }
+
 }
 
 // Called each frame - doing the rendering
@@ -267,24 +268,28 @@ void RenderWindow::render()
     if(factory->mGameObjects.size() > 0)
     {
 
-        for(auto it = factory->mGameObjects.begin(); it != factory->mGameObjects.end(); it++)
+        for(int i{0}; i < factory->mGameObjects.size(); i++)
+
 		{	
-            unsigned int shaderProgramIndex = it->second->getMaterialComponent()->mShaderProgram;
+            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, it->second->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
-
-            it->second->draw();
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
+            factory->mGameObjects[i]->draw();
             if(!bPause)
             {
-                it->second->move(0.001f, 0.001f, -0.001f);
+                factory->mGameObjects[i]->move(0.001f, 0.001f, -0.001f);
             }
+
+
+            //it->second->move(0.001f, 0.001f, -0.001f);
+
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
@@ -338,7 +343,6 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
-       mMainWindow->updateOutliner(factory->mGameObjects);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
@@ -445,6 +449,7 @@ void RenderWindow::createObjectbutton(std::string objectName)
     uint32_t id = newObject->ID;
 
     mQuadtree.insert(position2D, id, newObject);
+      mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 void RenderWindow::playPausebutton()

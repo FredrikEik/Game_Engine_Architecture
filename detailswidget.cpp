@@ -11,6 +11,7 @@ DetailsWidget::DetailsWidget(QWidget *parent, float positionPace, float rotation
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);
+    mfactory = new Factory();
 }
 
 DetailsWidget::~DetailsWidget()
@@ -18,22 +19,22 @@ DetailsWidget::~DetailsWidget()
     delete ui;
 }
 
-void DetailsWidget::init(GameObject *gameobject, int index)
+void DetailsWidget::init(Factory *factory, int index)
 {
-    mGameObject = gameobject;
-    inSceneArrayIndex =index;
+    mfactory = factory;
+    inSceneArrayIndex = index;
     readPosition();
-    readRotation();
-    readScale();
+    //readRotation();
+    //readScale();
     clearFocus();
 }
 
 void DetailsWidget::readPosition()
 {
-    gsl::Vector3D position = mGameObject[inSceneArrayIndex].getTransformComponent()->mMatrix.getPosition();
+    gsl::Vector3D position = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
     ui->DoubleSpinBoxXPosition->setValue(position.x);
-    ui->DoubleSpinBoxXPosition->setValue(position.y);
-    ui->DoubleSpinBoxXPosition->setValue(position.z);
+    ui->DoubleSpinBoxYPosition->setValue(position.y);
+    ui->DoubleSpinBoxZPosition->setValue(position.z);
 }
 
 void DetailsWidget::readRotation()
@@ -52,6 +53,7 @@ void DetailsWidget::setPosition()
         position.x = ui->DoubleSpinBoxXPosition->value();
         position.y = ui->DoubleSpinBoxYPosition->value();
         position.z = ui->DoubleSpinBoxZPosition->value();
+        mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)

@@ -39,7 +39,11 @@
       <number>1</number>
      </property>
      <item row="2" column="2">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXScale"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXScale">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="0" column="3">
       <widget class="QLabel" name="PositionYLabel">
@@ -58,10 +62,18 @@
       </widget>
      </item>
      <item row="0" column="6">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZPosition"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZPosition">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXPosition"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXPosition">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="ScaleLabel">
@@ -71,10 +83,21 @@
       </widget>
      </item>
      <item row="0" column="4">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYPosition"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYPosition">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXRotation"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxXRotation">
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="PositionXLabel">
@@ -133,10 +156,21 @@
       </widget>
      </item>
      <item row="2" column="4">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYScale"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYScale">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="1" column="4">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYRotation"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxYRotation">
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="ScaleXLabel">
@@ -149,10 +183,21 @@
       </widget>
      </item>
      <item row="1" column="6">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZRotation"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZRotation">
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="2" column="6">
-      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZScale"/>
+      <widget class="QDoubleSpinBox" name="DoubleSpinBoxZScale">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="RotationLabel">
