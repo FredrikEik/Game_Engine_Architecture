@@ -37,6 +37,7 @@ SOURCES += main.cpp \
     texture.cpp \
     vector2d.cpp \
     vector3d.cpp \
+    vector4d.cpp \
     vertex.cpp \
     visualobject.cpp \
     wavfilehandler.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     texture.h \
     vector2d.h \
     vector3d.h \
+    vector4d.h \
     vertex.h \
     visualobject.h \
     wavfilehandler.h \

@@ -11,7 +11,6 @@ public:
     ~Player();
     virtual void move(float dx, float dy, float dz) override;
 private:
-    Triangle* trianglePtr;
     float mx, my, mz; // posisjon
 };
 

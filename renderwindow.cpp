@@ -127,9 +127,10 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
 
-    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    mPlayCamera.setPosition(gsl::Vector3D(1.f, 18.f, 7.5));
+    //mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mPlayCamera.setPosition(gsl::Vector3D(1.f, 20.f, 9.f));
     mPlayCamera.pitch(70);
+
 
     mCurrentCamera = &mEditorCamera;
 
@@ -140,15 +141,12 @@ void RenderWindow::init()
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
-
-
-
 }
 
 void RenderWindow::initObject()
 {
     //********************** Making the object to be drawn **********************
-    //Axis
+
     mPlayer = new Player();
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
@@ -164,6 +162,11 @@ void RenderWindow::initObject()
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
     mVisualObjects.push_back(temp);
+
+    mFrustumSystem = new FrustumSystem();
+    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
+    mFrustumSystem->init();
+    mVisualObjects.push_back(mFrustumSystem);
 
     temp = mShapeFactory.createShape("Obj");
     temp->init();
@@ -216,10 +219,7 @@ void RenderWindow::initObject()
             temp->move((i-192), 0.5, 9);
         temp->mMaterial->mShaderProgram = 0;    //plain shader
         mVisualObjects.push_back(temp);
-        //        xPos+=0.5; zPos+=0.5;
     }
-    //    for(int row=-12; row<12; row++)
-    //        for(int col=-9; col<9; col++)
 
     //makes the soundmanager
     //it is a Singleton!!!
@@ -274,18 +274,19 @@ void RenderWindow::drawObject()
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
             glBindVertexArray(0);}
-        else if(i>2 && i<8){
-            if(shapeExist[i-3]){
+        else if(i==3 && playM==false){
+            glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+            glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i>3 && i<9){
+            if(shapeExist[i-4]){
                 glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
                 glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
                 glBindVertexArray(0);}}
-        else if(i>=8){
+        else if(i>=9){
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
             glBindVertexArray(0);}
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-        glBindVertexArray(0);
 
     }
 }
@@ -297,8 +298,9 @@ void RenderWindow::render()
     mCamerainput->update(mCurrentCamera, mInput);
     mPlayerinput->update(mPlayer, mInput);
     mCurrentCamera->update();
+    //mFrustumSystem->updateFrustumPos(&mEditorCamera);
     if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[5]->mCollision))
-        qDebug() <<"Collision detected";
+        qDebug() <<"Collision detected"; //testing collision
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -367,13 +369,12 @@ void RenderWindow::exposeEvent(QExposeEvent *)
         mTimeStart.start();
     }
 
+    //mEditorCamera.calculateFrustumVectors();
     //calculate aspect ration and set projection matrix
-    mAspectratio = static_cast<float>(width()) / height();
+    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mPlayCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
-    mEditorCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
+    mPlayCamera.calculateProjectionMatrix();
+    mEditorCamera.calculateProjectionMatrix();
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -582,6 +583,43 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 }
 
+void RenderWindow::mousePickingRay(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+    qDebug() << "Mouse position" << mouseXPixel << "," << mouseYPixel;
+
+    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+    // projMatrix.inverse();
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye;
+    gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
+    ray_wor.normalize();
+
+
+    qDebug() << ray_wor;
+    mMousePickRay = ray_wor;
+
+    //    mDebugMousePickRay = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+    //            makeLine(mEditorCamera->mPosition, ray_wor, 1.f);
+}
+
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
@@ -612,9 +650,9 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
 
         if (mInputComponent->mMouseXlast != 0)
-            mEditorCamera.yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
+            mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
         if (mInputComponent->mMouseYlast != 0)
-            mEditorCamera.pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+            mCurrentCamera->pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
     }
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();

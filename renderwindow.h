@@ -53,12 +53,19 @@ private:
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
     CollisionSystem* mCollisionSystem;
+    FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
     Input mInput;
     Player* mPlayer;
     bool shapeExist[4];
     bool playM = false;
     int shapeID;
+
+    MeshComponent mDebugMousePickRay;
+    void mousePickingRay(QMouseEvent *event);
+    bool mDrawMousePickRay{false};
+    gsl::Vector3D mMousePickRay;
+
     void init();
     void initObject();
     void drawObject();
@@ -88,7 +95,6 @@ private:
     Camera *mCurrentCamera{nullptr};
     Camera mEditorCamera;
     Camera mPlayCamera;
-    float mAspectratio{1.f};
 
     std::vector<VisualObject*> mVisualObjects;
 
