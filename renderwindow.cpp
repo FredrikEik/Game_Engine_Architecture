@@ -237,12 +237,13 @@ void RenderWindow::init()
 
 
 GameObject *temp=nullptr;
-        for(int i{0}; i < 10; i++)
+        for(int i{0}; i < 50; i++)
         {
             for(int j{0}; j < 10; j++)
             {
-            temp = factory->createObject("Cube");
+                temp = factory->createObject("Cube");
                 temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+                temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
                 mMainWindow->updateOutliner(factory->mGameObjects);
             }
