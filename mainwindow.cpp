@@ -135,10 +135,11 @@ void MainWindow::selectObjectByIndex(int indexIn)
      qDebug() << "Heroin";
    if(mSceneOutlinerRoot)
     {
-        if(mCurrentEditItem)
-            mCurrentEditItem->setSelected(false);
-           mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+        if(mCurrentEditItem) mCurrentEditItem->setSelected(false);
+
+        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
         mCurrentEditItem->setSelected(true);
+
         on_outliner_itemClicked(mCurrentEditItem, 0);
     }
 
@@ -159,8 +160,6 @@ void MainWindow::clearLayout(QLayout *layout) {
 
 void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
 {
-
-
     clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
 
     //Top node selected or no selection:
@@ -190,7 +189,7 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
     //Transform widget:
        mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
        mDetailsWidget->setObjectName("DetailsWidget"); //not sure if this is necessary
-       mDetailsWidget->init(mFactory, mCurrentEditItemIndex);
+       mDetailsWidget->init(mRenderWindow->getFactory(), mCurrentEditItemIndex);
        ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
 }
 

@@ -47,9 +47,8 @@ private:
     RenderWindow *mRenderWindow;
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
-    Factory *mFactory;
 
-    GameObject *mGameObject;
+    //GameObject *mGameObject;
 
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
 

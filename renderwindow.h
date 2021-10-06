@@ -41,6 +41,8 @@ public:
 
     void createObjectbutton(std::string objectName);
 
+    Factory *getFactory(){return factory;};
+
     SoundSource* mClick{};
 
 

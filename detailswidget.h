@@ -56,7 +56,7 @@ private:
     double mScalePace {0.1};
 
     int inSceneArrayIndex{-1};
-       Factory *mfactory{nullptr};
+    Factory *mfactory{nullptr};
 
 
 };

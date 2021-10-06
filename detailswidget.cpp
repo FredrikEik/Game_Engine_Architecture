@@ -11,6 +11,7 @@ DetailsWidget::DetailsWidget(QWidget *parent, float positionPace, float rotation
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::NoFocus);
+    mfactory = new Factory();
 }
 
 DetailsWidget::~DetailsWidget()
@@ -21,7 +22,7 @@ DetailsWidget::~DetailsWidget()
 void DetailsWidget::init(Factory *factory, int index)
 {
     mfactory = factory;
-    inSceneArrayIndex =index;
+    inSceneArrayIndex = index;
     readPosition();
     //readRotation();
     //readScale();
