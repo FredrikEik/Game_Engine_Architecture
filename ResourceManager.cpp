@@ -53,7 +53,6 @@ GameObject* ResourceManager::CreateObject(std::string filename)
 }
 
 
-
 ResourceManager &ResourceManager::getInstance()
 {
     static ResourceManager* mInstance = new ResourceManager();

@@ -134,6 +134,14 @@ void CoreEngine::EditorCameraInput()
     }
 }
 
+void CoreEngine::CreateObjectButton(std::string objName)
+{
+    GameObject *temp = mResourceManager->CreateObject(objName);
+    temp->transform->mMatrix.scale(2);
+    temp->transform->mMatrix.setPosition(0, 0, -10.f);
+    mRenderWindow->addToGameObjects(temp);
+}
+
 void CoreEngine::swapCurrentCamera()
 {
     if(mRenderWindow->getCurrentCamera() == mEditorCamera)

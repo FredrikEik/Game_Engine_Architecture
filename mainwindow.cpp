@@ -125,3 +125,13 @@ void MainWindow::on_LODButton_toggled(bool checked)
     }
 
 }
+
+void MainWindow::on_CreateObjectButton_clicked()
+{
+    mCoreEngine->CreateObjectButton(spawnObject);
+}
+
+void MainWindow::on_objectDropdown_currentTextChanged(const QString &arg1)
+{
+    spawnObject = arg1.toStdString() + ".obj";
+}
