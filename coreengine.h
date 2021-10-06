@@ -9,13 +9,14 @@ class SoundSystem;
 class RenderSystem;
 class Camera;
 class QTimer;
+class MainWindow;
 
 //Made from QObject to use a Qt slots...
 class CoreEngine : public QObject
 {
     Q_OBJECT
 public:
-    CoreEngine(RenderSystem *renderSystemIn);
+    CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowsIn);
 
     //TODO:
     //Read and load all assets at start
@@ -36,6 +37,8 @@ public:
     GameObjectManager *mGameObjectManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+
+    MainWindow *mMainWindow{nullptr};
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

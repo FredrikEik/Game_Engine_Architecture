@@ -4,17 +4,19 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
+#include <QListWidget>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
 #include "ResourceManager/gameobjectmanager.h"
 #include "coreengine.h"
+#include "gameobject.h"
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
-    ui->GameObjectList->addItem("Cheese");
+    //ui->GameObjectList->addItem("Cheese");
     init();
 }
 
@@ -79,7 +81,7 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
 
-    mCoreEngine = new CoreEngine(mRenderSystem);
+    mCoreEngine = new CoreEngine(mRenderSystem, this);
 
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
@@ -96,6 +98,30 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
 {
     GameObject *temp = GameObjectManager::getInstance().addObject("suzanne.obj");
     mRenderSystem->mGameObjects.push_back(temp);
+}
+
+void MainWindow::updateHierarchy(const std::vector<GameObject *> &GameObjectData)
+{
+    ui->GameObjectList->clear();
+    ui->GameObjectList->addItem("Ost");
+
+//    QListWidgetItem *newItem = new QListWidgetItem;
+//    newItem->setText("ost");
+//    listWidget->insertItem(0, newItem);
+
+//    mSceneHierarchyRoot = new QListWidget(ui->GameObjectList);
+//    QListWidgetItem *newItem = new QListWidgetItem;
+
+//    newItem->setText("Scene");
+//    mSceneHierarchyRoot->insertItem(1, newItem);
+//    ui->GameObjectList->insertItem(0, mSceneHierarchyRoot, "label");
+//    ui->GameObjectList->expandAll();
+
+//    for(auto gob : GameObjectData)
+//    {
+//        QListWidget* item = new QListWidget(mSceneHierarchyRoot);
+//        item->setText(0, QString::fromStdString(gob->mName));
+//    }
 }
 
 //Example of a slot called from the button on the top of the program.

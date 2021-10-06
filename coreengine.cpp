@@ -6,10 +6,12 @@
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
+#include "mainwindow.h"
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
-CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSystemIn}
+CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
+                    : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
     mGameObjectManager = &GameObjectManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
@@ -75,6 +77,8 @@ void CoreEngine::setUpScene()
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
     mGameObjectManager->setUpAllTextures();
+
+    mMainWindow->updateHierarchy(mRenderSystem->mGameObjects);
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop
