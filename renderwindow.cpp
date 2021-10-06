@@ -189,7 +189,7 @@ void RenderWindow::init()
     //********************** Sound set up **********************
 
     //SoundSource* mMario{};
-    SoundSource* mVideoGameLand{};
+    //SoundSource* mVideoGameLand{};
     SoundSource* mVideoGameLand2{};
 
     SoundManager::getInstance()->init();
@@ -207,7 +207,7 @@ void RenderWindow::init()
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
 
-    mVideoGameLand->play();
+    //mVideoGameLand->play();
     //mVideoGameLand2->play();
 
 
@@ -281,7 +281,10 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, it->second->getTransformComponent()->mMatrix.constData());
 
             it->second->draw();
-            //it->second->move(0.001f, 0.001f, -0.001f);
+            if(!bPause)
+            {
+                it->second->move(0.001f, 0.001f, -0.001f);
+            }
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
@@ -415,6 +418,7 @@ void RenderWindow::calculateFramerate()
 //lines instead of filled polygons
 void RenderWindow::toggleWireframe(bool buttonState)
 {
+    mClick->play();
     if (buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
@@ -441,6 +445,22 @@ void RenderWindow::createObjectbutton(std::string objectName)
     uint32_t id = newObject->ID;
 
     mQuadtree.insert(position2D, id, newObject);
+}
+
+void RenderWindow::playPausebutton()
+{
+    bPause = !bPause;
+
+    mClick->play();
+
+    if(bPause)
+    {
+        mVideoGameLand->stop();
+    }
+    else
+    {
+        mVideoGameLand->play();
+    }
 }
 
 

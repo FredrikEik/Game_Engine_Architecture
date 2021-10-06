@@ -40,8 +40,11 @@ public:
     void cancelPickedObject();
 
     void createObjectbutton(std::string objectName);
+    void playPausebutton();
+    bool bPause = true;
 
     SoundSource* mClick{};
+    SoundSource* mVideoGameLand{};
 
 
 private slots:

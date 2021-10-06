@@ -88,6 +88,7 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("MarioCube");
     ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
+    ui->PlayPause->setText("Play");
 
 
 }
@@ -200,3 +201,15 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
        ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
 }
 
+void MainWindow::on_PlayPause_clicked(bool checked)
+{
+    if(checked)
+    {
+        ui->PlayPause->setText("Pause");
+    }
+    else if (!checked)
+    {
+        ui->PlayPause->setText("Play");
+    }
+    mRenderWindow->playPausebutton();
+}
