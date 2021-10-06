@@ -235,11 +235,12 @@ GameObject *temp=nullptr;
             for(int j{0}; j < 10; j++)
             {
             temp = factory->createObject("Cube");
-                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,-2.f*j);
+                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
+                mMainWindow->updateOutliner(factory->mGameObjects);
             }
         }
-        mMainWindow->updateOutliner(factory->mGameObjects);
+
 }
 
 // Called each frame - doing the rendering

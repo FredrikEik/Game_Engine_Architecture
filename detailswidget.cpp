@@ -26,15 +26,15 @@ void DetailsWidget::init(Factory *factory, int index)
     readPosition();
     //readRotation();
     //readScale();
-    //clearFocus();
+    clearFocus();
 }
 
 void DetailsWidget::readPosition()
 {
     gsl::Vector3D position = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
     ui->DoubleSpinBoxXPosition->setValue(position.x);
-    ui->DoubleSpinBoxXPosition->setValue(position.y);
-    ui->DoubleSpinBoxXPosition->setValue(position.z);
+    ui->DoubleSpinBoxYPosition->setValue(position.y);
+    ui->DoubleSpinBoxZPosition->setValue(position.z);
 }
 
 void DetailsWidget::readRotation()
@@ -53,6 +53,7 @@ void DetailsWidget::setPosition()
         position.x = ui->DoubleSpinBoxXPosition->value();
         position.y = ui->DoubleSpinBoxYPosition->value();
         position.z = ui->DoubleSpinBoxZPosition->value();
+        mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)
