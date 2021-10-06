@@ -84,6 +84,7 @@ private:
     class Factory* factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
 
+
     int mIndexToPickedObject{-1};
 
     //std::vector<VisualObject*> mVisualObjects;

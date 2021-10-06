@@ -49,6 +49,8 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        planecounter++;
+        objectToCreate->mObjectName = "Plane " + std::to_string(planecounter);
     }
 
     else if(objectName == "Triangle")
@@ -60,6 +62,8 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        trianglecounter++;
+        objectToCreate->mObjectName = "Triangle " + std::to_string(trianglecounter);
     }
 
     else if(objectName == "MarioCube")
@@ -73,6 +77,8 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
+        mariocounter++;
+        objectToCreate->mObjectName = "MarioCube " + std::to_string(mariocounter);
     }
 
     else if(objectName == "Sphere")
@@ -86,6 +92,8 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.25;
+        spherecounter++;
+        objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
     }
     else if(objectName == "Camera")
     {
@@ -100,7 +108,7 @@ GameObject* Factory::createObject(std::string objectName)
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
     mAvailableIDs.pop();                        //Pop ID from queue of available IDs
 
-    mGameObjects.insert(std::pair<uint32_t, GameObject*>{objectToCreate->ID, objectToCreate});
+    mGameObjects.push_back(objectToCreate);
     return objectToCreate;
 }
 
@@ -115,4 +123,6 @@ GameObject* Factory::createObject(std::string objectName)
             objReader.readFile(fileName, &newMesh->mVertices, &newMesh->mIndices);
             storedMeshes.insert(std::pair<std::string, MeshComponent*>{nickName, newMesh});
         }
+
+
 }

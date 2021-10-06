@@ -18,19 +18,19 @@ DetailsWidget::~DetailsWidget()
     delete ui;
 }
 
-void DetailsWidget::init(GameObject *gameobject, int index)
+void DetailsWidget::init(Factory *factory, int index)
 {
-    mGameObject = gameobject;
+    mfactory = factory;
     inSceneArrayIndex =index;
     readPosition();
-    readRotation();
-    readScale();
-    clearFocus();
+    //readRotation();
+    //readScale();
+    //clearFocus();
 }
 
 void DetailsWidget::readPosition()
 {
-    gsl::Vector3D position = mGameObject[inSceneArrayIndex].getTransformComponent()->mMatrix.getPosition();
+    gsl::Vector3D position = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
     ui->DoubleSpinBoxXPosition->setValue(position.x);
     ui->DoubleSpinBoxXPosition->setValue(position.y);
     ui->DoubleSpinBoxXPosition->setValue(position.z);

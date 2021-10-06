@@ -23,7 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void updateOutliner(std::unordered_map<uint32_t, GameObject *> &GameObjectData);
+    void updateOutliner(std::vector <GameObject *> &GameObjectData);
 
     void selectObjectByIndex(int indexIn);
 
@@ -33,11 +33,6 @@ private slots:
     void on_createDropDownBox_currentTextChanged(const QString &arg1);
 
     void on_CreateObject_clicked();
-
-
-
-    void on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column);
-
 
     void on_outliner_itemClicked(QTreeWidgetItem *item, int column);
 

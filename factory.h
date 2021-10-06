@@ -9,7 +9,7 @@ class Factory
 {
 public:
     Factory();
-    std::unordered_map<uint32_t, GameObject*> mGameObjects;
+    std::vector<GameObject*> mGameObjects;
 
     int cubecounter=0;
     int mariocounter=0;

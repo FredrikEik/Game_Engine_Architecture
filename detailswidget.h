@@ -5,7 +5,7 @@
 #include "vector3d.h"
 
 
-class GameObject;
+class Factory;
 
 namespace Ui {
 class DetailsWidget;
@@ -19,7 +19,8 @@ public:
     explicit DetailsWidget(QWidget *parent = nullptr, float positionPace = 1.f, float rotationPace = 1.f, float scalePace = 1.f);
     ~DetailsWidget();
 
-    void init(GameObject* gameObject, int index);
+    void init(Factory *factory, int index);
+
 
 
 
@@ -52,10 +53,10 @@ private:
 
     float mPositionPace{1.f};
     float mRotationPace{1.f};
-    float mScalePace {0.1};
+    double mScalePace {0.1};
 
     int inSceneArrayIndex{-1};
-    GameObject* mGameObject {nullptr};
+       Factory *mfactory{nullptr};
 
 
 };
