@@ -30,7 +30,7 @@ public:
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
 
-    float mCameraSpeed{0.05f};
+    float mCameraSpeed{0.2f};
     float mCameraRotateSpeed{0.1f};
 
 private:

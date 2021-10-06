@@ -23,6 +23,7 @@ public:
 private slots:
     void on_pushButton_toggled(bool checked);
     void on_startGameButton_toggled(bool checked);
+    void on_LODButton_toggled(bool checked);
 
 private:
     void init();

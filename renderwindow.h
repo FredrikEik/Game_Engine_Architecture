@@ -37,6 +37,8 @@ public:
 
     void toggleWireframe(bool buttonState);
 
+    void toggleLOD();
+
     Input getInput();
 
     void addToGameObjects(GameObject *obj);
@@ -48,6 +50,8 @@ public:
     Camera* getCurrentCamera();
 
     void render();
+
+    bool bPlayerColliding{false};
 
 private:
     void init();
@@ -61,8 +65,6 @@ private:
     void startOpenGLDebugger();
 
     void setCameraSpeed(float value);
-
-    void handleInput();
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -83,6 +85,8 @@ private:
     float mAspectratio{1.f};
 
     std::vector<GameObject*> mGameObjects;
+
+    bool bLODEnabled{true};
 
     Input mInput;
     float mCameraSpeed{0.05f};

@@ -162,15 +162,17 @@ void RenderWindow::render()
         gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
         float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
 
-        if(distanceToObject > 70){
-            mGameObjects[i]->mesh->lodLevel = 2;
+        if(bLODEnabled){
+            if(distanceToObject > 50)
+                mGameObjects[i]->mesh->lodLevel = 2;  
+            else if(distanceToObject > 20)
+                mGameObjects[i]->mesh->lodLevel = 1;
+            else
+                mGameObjects[i]->mesh->lodLevel = 0;    
         }
-        else if(distanceToObject > 35){
-            mGameObjects[i]->mesh->lodLevel = 1;
-        }
-        else{
+        else
             mGameObjects[i]->mesh->lodLevel = 0;
-        }
+
 
         int tempLod = mGameObjects[i]->mesh->lodLevel;
         glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
@@ -254,6 +256,7 @@ void RenderWindow::calculateFramerate()
             mMainWindow->statusBar()->showMessage(
                     "Entities: " + QString::number(mGameObjects.size())+ "    |    " +
                     "Vertices: " + QString::number(getVertexCount()) + "    |    " +
+                    "Player Colliding: " + QString::number(bPlayerColliding) + "    |    " +
                     " Time pr FrameDraw: " + QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms    |    " +
                     "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7)
             );
@@ -277,6 +280,14 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         glEnable(GL_CULL_FACE);
     }
+}
+
+void RenderWindow::toggleLOD()
+{
+    if(bLODEnabled)
+        bLODEnabled = false;
+    else
+        bLODEnabled = true;
 }
 
 Input RenderWindow::getInput()
@@ -306,6 +317,7 @@ void RenderWindow::checkForGLerrors()
 
 void RenderWindow::checkForCollisions(GameObject* player) //Checks all other objects..
 {
+    bPlayerColliding = false;
 
     gsl::Vector3D objToPlayer{0,0,0};
     for( int i = 0; i < mGameObjects.size(); i++){
@@ -315,7 +327,7 @@ void RenderWindow::checkForCollisions(GameObject* player) //Checks all other obj
 
             if( objToPlayer.length() <= (player->mesh->sphereRadius + mGameObjects[i]->mesh->sphereRadius) )
             { //Objects are colliding
-                qDebug() << "Cube COLLIDING!";
+                bPlayerColliding = true;
             }
         }
     }
@@ -350,27 +362,6 @@ void RenderWindow::setCameraSpeed(float value)
         mCameraSpeed = 0.01f;
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
-}
-
-void RenderWindow::handleInput()
-{
-   // Camera
-//    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-//    if(mInput.RMB)
-//    {
-//        if(mInput.W)
-//            mCurrentCamera->setSpeed(-mCameraSpeed);
-//        if(mInput.S)
-//            mCurrentCamera->setSpeed(mCameraSpeed);
-//        if(mInput.D)
-//            mCurrentCamera->moveRight(mCameraSpeed);
-//        if(mInput.A)
-//            mCurrentCamera->moveRight(-mCameraSpeed);
-//        if(mInput.Q)
-//            mCurrentCamera->updateHeigth(-mCameraSpeed);
-//        if(mInput.E)
-//            mCurrentCamera->updateHeigth(mCameraSpeed);
-//    }
 }
 
 void RenderWindow::addToGameObjects(GameObject *obj)
@@ -576,9 +567,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-//    Input &input = CoreEngine::getInstance()->mInput;
-
-    if (mInput.RMB)
+    if (mInput.RMB && mCurrentCamera != mCoreEngine->getGameCamera()) // != because i didn't want to make a getEditorCamera Function.
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;
@@ -588,6 +577,9 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
             mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
         if (mMouseYlast != 0)
             mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+
+        mMouseXlast = event->pos().x();
+        mMouseYlast = event->pos().y();
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();

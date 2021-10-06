@@ -27,7 +27,10 @@ public:
     static CoreEngine *getInstance();
 
     void SetUpScene();
+
     void HandleInput();
+    void PlayerInput();
+    void EditorCameraInput();
 
     void swapCurrentCamera();
     void initCameraProjectionMatrixes(float AspectRatio);

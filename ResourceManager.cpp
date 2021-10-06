@@ -99,7 +99,7 @@ void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
     //making correct bounding sphere radius:
     float length = vertexIn.length();
     if(length > meshIn->sphereRadius)
-        meshIn->sphereRadius = length;
+        meshIn->sphereRadius = length/1.75; //temporary... i get better results like this
 }
 
 
@@ -256,8 +256,6 @@ int ResourceManager::readObj(std::string filename) //Ole's obj reader code
                 }
             }
             fileIn.close();
-
-            object->mesh->lodLevel = lod;
 
             init(*object->mesh, lod);
         }

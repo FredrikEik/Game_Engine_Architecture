@@ -114,3 +114,14 @@ void MainWindow::on_startGameButton_toggled(bool checked)
 
     ui->pushButton->setText("Show Wireframe");
 }
+
+void MainWindow::on_LODButton_toggled(bool checked)
+{
+    mRenderWindow->toggleLOD();
+    if(checked)
+        ui->LODButton->setText("Enable LOD");
+    else{
+        ui->LODButton->setText("Disable LOD");
+    }
+
+}

@@ -38,13 +38,17 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.scale(0.2f);
     mRenderWindow->addToGameObjects(temp);
 
+    temp = mResourceManager->CreateObject("suzanne.obj");
+    temp->transform->mMatrix.translate(gsl::Vector3D(57.f, -1.f, 0.f));
+    mRenderWindow->addToGameObjects(temp);
+
 
     for(int i{0}; i < 40; i++)
    {
        for(int j{0}; j < 40; j++)
        {
            temp = mResourceManager->CreateObject("suzanne.obj");
-           temp->transform->mMatrix.translate(3.f*(i), -3.f, -3.f*(j));
+           temp->transform->mMatrix.translate(3.f*(i), -5.f, -3.f*(j));
            mRenderWindow->addToGameObjects(temp);
        }
    }
@@ -71,50 +75,62 @@ void CoreEngine::SetUpScene()
 
 void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngine
 {
-    //mEditorCamera
-    if(mRenderWindow->getCurrentCamera() == mEditorCamera){
-        mEditorCamera->setSpeed(0.f);  //cancel last frame movement
-        if(mInput.RMB)
-        {
-            if(mInput.W)
-                mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
-            if(mInput.S)
-                mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
-            if(mInput.D)
-                mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
-            if(mInput.A)
-                mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
-            if(mInput.Q)
-                mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
-            if(mInput.E)
-                mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
-        }
-    }
-    else // currentCamera = mGameCamera
+    // currentCamera = mGameCamera
+    if(isPlaying())
     {
-        if(mRenderWindow->getInput().W || mRenderWindow->getInput().A || mRenderWindow->getInput().S || mRenderWindow->getInput().D){
-            for( int i = 0; i < mRenderWindow->getGameObjects().size(); i++){ //probably not a good way to do this
+        PlayerInput();
+    }
+    else // currentCamera = mEditorCamera
+    {
+        EditorCameraInput();
+    }
+}
 
-                if(mRenderWindow->getGameObjects()[i]->mName == "cube.obj"){
-                    if(mRenderWindow->getInput().W){
-                        mRenderWindow->getGameObjects()[i]->move(0, 0, -0.7);
-                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, -0.14f));
-                    }
-                    if(mRenderWindow->getInput().A){
-                        mRenderWindow->getGameObjects()[i]->move(-0.5f, 0, 0);
-                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(-0.1f, 0, 0));
-                    }
-                    if(mRenderWindow->getInput().S){
-                        mRenderWindow->getGameObjects()[i]->move(0, 0, 0.7);
-                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, 0.14f));
-                    }
-                    if(mRenderWindow->getInput().D){
-                        mRenderWindow->getGameObjects()[i]->move(0.5f, 0, 0);
-                        mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0.1f, 0, 0));
-                    }
+void CoreEngine::PlayerInput()
+{
+    if(mRenderWindow->getInput().W || mRenderWindow->getInput().A || mRenderWindow->getInput().S || mRenderWindow->getInput().D){
+        for( int i = 0; i < mRenderWindow->getGameObjects().size(); i++){ //probably not a good way to do this
+
+            if(mRenderWindow->getGameObjects()[i]->mName == "cube.obj"){
+                if(mRenderWindow->getInput().W){
+                    mRenderWindow->getGameObjects()[i]->move(0, 0, -0.7);
+                    mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, -0.14f));
+                }
+                if(mRenderWindow->getInput().A){
+                    mRenderWindow->getGameObjects()[i]->move(-0.5f, 0, 0);
+                    mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(-0.1f, 0, 0));
+                }
+                if(mRenderWindow->getInput().S){
+                    mRenderWindow->getGameObjects()[i]->move(0, 0, 0.7);
+                    mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0, 0, 0.14f));
+                }
+                if(mRenderWindow->getInput().D){
+                    mRenderWindow->getGameObjects()[i]->move(0.5f, 0, 0);
+                    mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(0.1f, 0, 0));
                 }
             }
         }
+    }
+}
+
+void CoreEngine::EditorCameraInput()
+{
+    mEditorCamera->setSpeed(0.f);  //cancel last frame movement
+    if(mRenderWindow->getInput().RMB)
+    {
+        if(mRenderWindow->getInput().W)
+            mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
+        if(mRenderWindow->getInput().S)
+            mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
+        if(mRenderWindow->getInput().D)
+            mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
+        if(mRenderWindow->getInput().A)
+            mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
+        if(mRenderWindow->getInput().Q)
+            mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
+        if(mRenderWindow->getInput().E)
+            mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+
     }
 }
 
