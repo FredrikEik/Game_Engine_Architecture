@@ -666,7 +666,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     ray_wor = {temp.x, temp.y, temp.z};
     ray_wor.normalize();
 
-    //den gir ikke rikgi
+    //gir ikke riktig tall så må jobbes mere med
     qDebug() << ray_wor;
     mMousePickRay = ray_wor;
 
