@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "triangle.h"
 #include "cube.h"
+#include "objmesh.h"
 #include "components.h"
 #include "visualobject.h"
 #include <sstream>

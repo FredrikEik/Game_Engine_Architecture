@@ -24,7 +24,7 @@ void ResourceManager::manageObjects(std::string objectName, int ObjectID)
     //      mVisualObjects.push_back(temp);
 
     name = objectName;
-    addObject(name, id, ObjectID, 1, 1, 1); //name, ID, ObjectType, translate, mesh, material
+    addObject(name, id, ObjectID, 1, 0, 1); //name, ID, ObjectType, translate, mesh, material
 
     //Dag's dog triangle
 //      temp = new Triangle();
@@ -50,6 +50,8 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
 {
      VisualObject * CurrentVisualObject = 0;
 
+
+
     if(ObjectType == 0) {
         //Axis
 //              VisualObject *temp = new XYZ();
@@ -69,7 +71,10 @@ void ResourceManager::addObject(std::string name, int id, int ObjectType,
         CurrentVisualObject = new Cube();
     }
 
-
+    else if(ObjectType == 3) {
+        //obj
+        CurrentVisualObject = new ObjMesh(name);
+    }
 
     mVisualObjects.push_back(CurrentVisualObject);
 

@@ -127,10 +127,10 @@ void RenderWindow::init()
 
     //********************** Making the objects to be drawn **********************
 
-    // Gaute's ObjectManager
+    // Gaute's ObjectManager (or remnants of it)
 
     mResource = new ResourceManager;
-    mResource->manageObjects("dog", 0); //0 is axis, 1 is triangle, 2 is cube
+    mResource->manageObjects("Assets/Suzanne.obj", 3); //0 is axis, 1 is triangle, 2 is cube, 3 is obj
 
     //Set up camera
     mCurrentCamera = new Camera();
