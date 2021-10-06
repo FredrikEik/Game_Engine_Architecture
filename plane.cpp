@@ -58,7 +58,7 @@ void Plane::init(/*GLint matrixUniform[4]*/)
 void Plane::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
-    getSphereCollisionComponent()->center += gsl::Vector3D(0.001f,0.001f, -0.001f);
+    getSphereCollisionComponent()->center += gsl::Vector3D(x, y, z);
 }
 
 void Plane::draw()

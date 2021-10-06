@@ -289,37 +289,37 @@ void RenderWindow::render()
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
-            factory->mGameObjects[i]->draw();
+            //factory->mGameObjects[i]->draw();
             if(!bPause)
             {
-                factory->mGameObjects[i]->move(0.001f, 0.001f, -0.001f);
+                factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
             }
 
-			if(doFrustumCulling)
+            if(toggleFrustumCulling)
 			{
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - it->second->getSphereCollisionComponent()->center;
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
-            if(rightPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+            if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
             {
-                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - it->second->getSphereCollisionComponent()->center;
+                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
-                if(leftPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                 {
-                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - it->second->getSphereCollisionComponent()->center;
+                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
-                    if(nearPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                    if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                     {
-                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - it->second->getSphereCollisionComponent()->center;
+                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                         float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, mCurrentCamera->farPlaneNormal);
-                        if(farPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                        if(farPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                         {
-                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - it->second->getSphereCollisionComponent()->center;
+                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                             float topPlaneHeightToObject = gsl::Vector3D::dot(topPlaneToObjectVector, mCurrentCamera->topPlaneNormal);
-                            if(topPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                            if(topPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                             {
-                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - it->second->getSphereCollisionComponent()->center;
+                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
-                                if(bottomPlaneHeightToObject + it->second->getSphereCollisionComponent()->radius >= 0)
+                                if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                                 {
                                     factory->mGameObjects[i]->draw();
                                 }
@@ -328,11 +328,14 @@ void RenderWindow::render()
                     }
                 }
             }
-			if(dynamic_cast<Camera*>(it->second) != nullptr)
+            if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
             {
-                it->second->draw();
+                factory->mGameObjects[i]->draw();
             }
 			}
+            else{
+                factory->mGameObjects[i]->draw();
+            }
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*

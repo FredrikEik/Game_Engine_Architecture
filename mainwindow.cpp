@@ -206,3 +206,9 @@ void MainWindow::on_PlayPause_clicked(bool checked)
     }
     mRenderWindow->playPausebutton();
 }
+
+void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
+{
+    mRenderWindow->toggleFrustumCulling = checked;
+}
+

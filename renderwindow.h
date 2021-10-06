@@ -35,6 +35,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    bool toggleFrustumCulling {false};
 
     void setPickedObject(int pickedID);
     void cancelPickedObject();
@@ -85,6 +86,7 @@ private:
 
     Camera* mCurrentCamera{nullptr};
     Camera* mTestFrustumCamera{nullptr};
+
 
     float mAspectratio{1.f};
 

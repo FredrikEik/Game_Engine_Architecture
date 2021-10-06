@@ -38,6 +38,8 @@ private slots:
 
     void on_PlayPause_clicked(bool checked);
 
+    void on_toggleFrustumCulling_clicked(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

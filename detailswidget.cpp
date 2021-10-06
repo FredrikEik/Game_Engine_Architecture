@@ -54,6 +54,7 @@ void DetailsWidget::setPosition()
         position.y = ui->DoubleSpinBoxYPosition->value();
         position.z = ui->DoubleSpinBoxZPosition->value();
         mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
+        mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)

@@ -41,6 +41,19 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="toggleFrustumCulling">
+        <property name="text">
+         <string>Toggle Frustum Culling</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="CreateObject">
         <property name="text">
          <string>Create Object</string>
