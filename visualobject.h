@@ -13,8 +13,8 @@ public:
     std::string mName;
     int entitiyID = 0;
 
-    TransformComponent* mTransform;
-    MeshComponent* mMesh;
-    MaterialComponent* mMaterial;
+    TransformComponent* mTransform{nullptr};
+    MeshComponent* mMesh{nullptr};
+    MaterialComponent* mMaterial{nullptr};
 };
 #endif // VISUALOBJECT_H
