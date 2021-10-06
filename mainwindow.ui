@@ -100,6 +100,21 @@
          <string>cube</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>sphere</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>pyramid</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string/>
+        </property>
+       </item>
       </widget>
      </widget>
     </item>
