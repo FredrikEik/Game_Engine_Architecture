@@ -74,6 +74,13 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 }
 
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    calculateFrustumVectors();
+    qDebug() << "AspectRatio" << mFrustum.mAspectRatio;
+}
+
 void Camera::setPosition(const gsl::Vector3D &position)
 {
     mPosition = position;

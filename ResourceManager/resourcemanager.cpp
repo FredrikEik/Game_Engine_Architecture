@@ -303,6 +303,8 @@ GameObject *ResourceManager::addXYZ()
     return tempObj;
 }
 
+
+//This frustum code is mostly copied from Ole Flaten's code
 GameObject *ResourceManager::makeFrustum(const Frustum &frustumIn)
 {
     float tanFOV = tanf(frustumIn.mFOV);
@@ -344,6 +346,7 @@ GameObject *ResourceManager::makeFrustum(const Frustum &frustumIn)
 
     tempMesh->mMesh->mDrawType = GL_LINES;
 
+    tempMesh->mMaterial = new MaterialComponent;
     //only LOD level 0
     tempMesh->init();
 

@@ -136,6 +136,8 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(source->addXYZ());
     mVisualObjects.push_back(source->objectCreator("Triangle"));
 
+
+
     //testing triangle class
 //    temp = new TriangleTest();
 //    temp->init();
@@ -143,13 +145,18 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
-    mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+//    mEditorCamera = new Camera();
+//    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     mGameCamera = new Camera();
     mGameCamera->setPosition(gsl::Vector3D(1.f, .4f, 4.f));
 
-    mCurrentCamera = mEditorCamera;
+    mCurrentCamera = new Camera();
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    //Drawing Frustum, not sure which one is correct yet
+    mVisualObjects.push_back(source->makeFrustum(mGameCamera->mFrustum));
+//    source->makeFrustum(mGameCamera->mFrustum);
 }
 
 // Called each frame - doing the rendering
@@ -159,10 +166,10 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
-    if (mCurrentCamera==mEditorCamera)
-        mEditorCamera = mCurrentCamera;
-    if (mCurrentCamera==mGameCamera)
-        mGameCamera = mCurrentCamera;
+//    if (mCurrentCamera==mEditorCamera)
+//        mEditorCamera = mCurrentCamera;
+//    if (mCurrentCamera==mGameCamera)
+//        mGameCamera = mCurrentCamera;
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -257,9 +264,12 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //calculate aspect ratio and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
-    //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
+    mCurrentCamera->mFrustum.mAspectRatio = mAspectratio;
+    mCurrentCamera->calculateProjectionMatrix();
+
+    //To be able to see the frustum on GameCam, while in Editormode
+    mGameCamera->mFrustum.mAspectRatio = mAspectratio;
+    mGameCamera->calculateProjectionMatrix();
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -355,14 +365,14 @@ void RenderWindow::setCameraSpeed(float value)
 
 void RenderWindow::handleInput()
 {
-    //Switch between editor and game camera
-    if(mInput.C)
-    {
-        if(mCurrentCamera==mEditorCamera)
-            mCurrentCamera = mGameCamera;
-        else if(mCurrentCamera==mGameCamera)
-            mCurrentCamera = mEditorCamera;
-    }
+//    //Switch between editor and game camera
+//    if(mInput.C)
+//    {
+//        if(mCurrentCamera==mEditorCamera)
+//            mCurrentCamera = mGameCamera;
+//        else if(mCurrentCamera==mGameCamera)
+//            mCurrentCamera = mEditorCamera;
+//    }
 
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement

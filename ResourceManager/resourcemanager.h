@@ -20,7 +20,7 @@ public:
     GameObject* addTriangle();
     GameObject* addCube();
     GameObject* addXYZ();
-    GameObject* makeFrustum(const Frustum &frustumIn);
+    GameObject* makeFrustum(const struct Frustum &frustumIn);
 
     GameObject* objectCreator(std::string objName);
     int standardTriangle();
