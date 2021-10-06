@@ -63,9 +63,6 @@ void CoreEngine::SetUpScene()
 
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                                                             "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
-
-//    playStartGameSound();
-
     //Connect the gameloop timer to the render function:
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     //This timer runs the actual MainLoop

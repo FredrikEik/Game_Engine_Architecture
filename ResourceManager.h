@@ -29,8 +29,6 @@ private:
 
     int readObj(std::string filename);
 
-    int Cube(Mesh* mesh);
-
     /** Variables */
     GameObject* object;
 

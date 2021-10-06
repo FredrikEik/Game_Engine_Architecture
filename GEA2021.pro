@@ -21,36 +21,30 @@ SOURCES += main.cpp \
     soundsource.cpp \
     wavfilehandler.cpp \
     wavfilehandler.cpp \
-    Components.cpp \
     GameObject.cpp \
     camera.cpp \
-    cube.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
     soundmanager.cpp \
-    sphere.cpp \
     texture.cpp \
-    triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
-    vertex.cpp \
-    xyz.cpp
+    vertex.cpp
 
 HEADERS += \
+    Components.h \
     ResourceManager.h \
     coreengine.h \
     soundsource.h \
     soundsource.h \
     wavfilehandler.h \
     wavfilehandler.h \
-    Components.h \
     GameObject.h \
     camera.h \
     constants.h \
-    cube.h \
     gltypes.h \
     input.h \
     math_constants.h \
@@ -60,13 +54,10 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     soundmanager.h \
-    sphere.h \
     texture.h \
-    triangle.h \
     vector2d.h \
     vector3d.h \
-    vertex.h \
-    xyz.h
+    vertex.h
 
 FORMS += \
     mainwindow.ui
