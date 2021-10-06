@@ -13,7 +13,6 @@ public:
     virtual ~GameObject();
     virtual void init();
     virtual void draw();
-    virtual void drawLines();
 
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};

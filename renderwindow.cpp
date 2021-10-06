@@ -134,6 +134,7 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(source->addXYZ());
     source = new ResourceManageer();
     mVisualObjects.push_back(source->objectCreator("Triangle"));
+    mVisualObjects.push_back(source->objectCreator("Triangle"));
     mVisualObjects.push_back(source->objectCreator("Cube"));
 
     //testing triangle class

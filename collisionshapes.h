@@ -18,6 +18,15 @@ struct CollisionSphere : CollisionShape
 {
     Vertex m_cPoint;
     float m_radius;
+
+    void setPoint(float sx, float sy, float sz)
+    {
+        m_cPoint.set_xyz(sx, sy, sz);
+    }
+    void setRadius(float r)
+    {
+        m_radius = r;
+    }
 };
 
 class CollisionShapes
@@ -25,6 +34,7 @@ class CollisionShapes
 public:
     CollisionShapes();
     void createCollisionSphere(GameObject& obj);
+    gsl::Vector3D createCentroid(GameObject& obj);
 
 private:
     std::string m_cName; // Name
