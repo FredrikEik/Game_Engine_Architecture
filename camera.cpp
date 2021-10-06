@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "math.h"
 #include <QDebug>
 
 
@@ -23,6 +24,39 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearplaneX = tan(fieldOfView)*frustumComp->nearPlaneLength;
     nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
     nearplaneZ = frustumComp->nearPlaneLength;
+
+    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
+    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ);
+
+    farPlaneTopRight    = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
+    farPlaneTopLeft     = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
+    farPlaneBottomLeft  = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
+    farPlaneBottomRight = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
+
+
+
+    rightPlaneNormal   = gsl::Vector3D::cross(nearPlaneBottomRight - farPlaneBottomRight
+                                             ,nearPlaneBottomRight - nearPlaneTopRight);
+    leftPlaneNormal    = gsl::Vector3D::cross(nearPlaneTopLeft - farPlaneTopLeft
+                                             ,nearPlaneTopLeft - nearPlaneBottomLeft);
+    topPlaneNormal     = gsl::Vector3D::cross(nearPlaneTopRight - farPlaneTopRight
+                                             ,nearPlaneTopRight - nearPlaneTopLeft);
+    bottomPlaneNormal  = gsl::Vector3D::cross(nearPlaneBottomLeft - farPlaneBottomLeft
+                                             ,nearPlaneBottomLeft - nearPlaneBottomRight);
+    nearPlaneNormal    = gsl::Vector3D::cross(nearPlaneBottomRight - nearPlaneTopRight
+                                             ,nearPlaneBottomRight - nearPlaneBottomLeft);
+    farPlaneNormal     = gsl::Vector3D::cross(farPlaneBottomLeft - farPlaneTopLeft
+                                             ,farPlaneBottomLeft - farPlaneBottomRight);
+    rightPlaneNormal.normalize();
+    leftPlaneNormal.normalize();
+    topPlaneNormal.normalize();
+    bottomPlaneNormal.normalize();
+    nearPlaneNormal.normalize();
+    farPlaneNormal.normalize();
+
+    qDebug() << " Normal x: " << rightPlaneNormal.x << " Normal y: " << rightPlaneNormal.y << " Normal z: "<< rightPlaneNormal.z;
 
     //Nearplane right triangle
     getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});

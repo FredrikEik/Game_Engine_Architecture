@@ -41,6 +41,31 @@ public:
     MaterialComponent* getMaterialComponent(){return materialComp;}
     FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
 
+    float farplaneX;
+    float farplaneY;
+    float farplaneZ;
+    float nearplaneX;
+    float nearplaneY;
+    float nearplaneZ;
+
+
+    gsl::Vector3D nearPlaneTopRight;
+    gsl::Vector3D nearPlaneTopLeft;
+    gsl::Vector3D nearPlaneBottomLeft;
+    gsl::Vector3D nearPlaneBottomRight;
+
+    gsl::Vector3D farPlaneTopRight;
+    gsl::Vector3D farPlaneTopLeft;
+    gsl::Vector3D farPlaneBottomLeft;
+    gsl::Vector3D farPlaneBottomRight;
+
+    gsl::Vector3D rightPlaneNormal;
+    gsl::Vector3D leftPlaneNormal;
+    gsl::Vector3D bottomPlaneNormal;
+    gsl::Vector3D topPlaneNormal;
+    gsl::Vector3D nearPlaneNormal;
+    gsl::Vector3D farPlaneNormal;
+
 private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
@@ -55,12 +80,7 @@ private:
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
 
-    float farplaneX;
-    float farplaneY;
-    float farplaneZ;
-    float nearplaneX;
-    float nearplaneY;
-    float nearplaneZ;
+
 
 
     TransformComponent* transformComp;

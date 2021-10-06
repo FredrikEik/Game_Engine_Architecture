@@ -100,7 +100,7 @@ void Cube::init(/*GLint matrixUniform[4]*/)
 void Cube::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
-    getSphereCollisionComponent()->center += gsl::Vector3D(0.001f,0.001f, -0.001f);
+    getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
     //getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
     //getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
 }

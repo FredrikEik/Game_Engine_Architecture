@@ -84,6 +84,8 @@ private:
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera* mCurrentCamera{nullptr};
+    Camera* mTestFrustumCamera{nullptr};
+
     float mAspectratio{1.f};
 
     class Factory* factory = new Factory;

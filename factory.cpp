@@ -37,7 +37,6 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         cubecounter++;
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
-
     }
 
     else if(objectName == "Plane")
