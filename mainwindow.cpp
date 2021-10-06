@@ -103,25 +103,11 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
 void MainWindow::updateHierarchy(const std::vector<GameObject *> &GameObjectData)
 {
     ui->GameObjectList->clear();
-    ui->GameObjectList->addItem("Ost");
 
-//    QListWidgetItem *newItem = new QListWidgetItem;
-//    newItem->setText("ost");
-//    listWidget->insertItem(0, newItem);
-
-//    mSceneHierarchyRoot = new QListWidget(ui->GameObjectList);
-//    QListWidgetItem *newItem = new QListWidgetItem;
-
-//    newItem->setText("Scene");
-//    mSceneHierarchyRoot->insertItem(1, newItem);
-//    ui->GameObjectList->insertItem(0, mSceneHierarchyRoot, "label");
-//    ui->GameObjectList->expandAll();
-
-//    for(auto gob : GameObjectData)
-//    {
-//        QListWidget* item = new QListWidget(mSceneHierarchyRoot);
-//        item->setText(0, QString::fromStdString(gob->mName));
-//    }
+    for (auto god : GameObjectData)
+    {
+        ui->GameObjectList->addItem(QString::fromStdString(god->mName));
+    }
 }
 
 //Example of a slot called from the button on the top of the program.

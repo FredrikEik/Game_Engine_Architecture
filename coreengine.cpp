@@ -63,6 +63,7 @@ void CoreEngine::setUpScene()
             temp = mGameObjectManager->addObject("suzanne.obj");
             temp->mTransform->mMatrix.translate(2.f*i, -3.f, -2.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
+            temp->mName = "Monkey " + std::to_string((i*10)+j+1);
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
@@ -78,6 +79,7 @@ void CoreEngine::setUpScene()
 
     mGameObjectManager->setUpAllTextures();
 
+    //Updates the hierarchy to show objects in it:
     mMainWindow->updateHierarchy(mRenderSystem->mGameObjects);
 
     //Connect the gameloop timer to the render function:
