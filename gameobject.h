@@ -18,5 +18,6 @@ public:
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};
     struct MaterialComponent* mMaterial{nullptr};
+
 };
 #endif // VISUALOBJECT_H

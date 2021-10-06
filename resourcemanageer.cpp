@@ -296,7 +296,7 @@ GameObject *ResourceManageer::addXYZ()
     return tempObj;
 }
 
-GameObject *ResourceManageer::objectCreator(std::string objName)
+GameObject *ResourceManageer::objectCreator(std::string objName) // Kan ikke lage flere objekter av samme type og kuben får navnet "triangle".. hmm
 {
     int index;
     auto temp = meshComponentMap.find(objName);
@@ -306,12 +306,12 @@ GameObject *ResourceManageer::objectCreator(std::string objName)
         {
             index = standardTriangle();
         }
-        else if(objName == "Cube" || "cube")
+        if(objName == "Cube" || "cube")
         {
             index = standardCube();
         }
     }
-    else{
+    else{ // Hva er feil???
         if(temp->first == "Triangle" || "triangle")
         {
             index = temp->second;
@@ -346,7 +346,6 @@ int ResourceManageer::standardTriangle()
 
 int ResourceManageer::standardCube()
 {
-    meshComponentMap.emplace("Triangle");
     MeshComponent* temp = new MeshComponent;
     temp->mVertices.push_back(Vertex{ -0.5, -0.5,  0.5, 1,0,0});
     temp->mVertices.push_back(Vertex{  0.5, -0.5,  0.5, 1,0,0});
@@ -386,6 +385,7 @@ int ResourceManageer::standardCube()
     temp->mVertices.push_back(Vertex{ -0.5,  0.5,  0.5, 0,0.5,0});
     temp->mDrawType = GL_TRIANGLES;
     meshComponents.emplace_back(temp);
+    meshComponentMap.emplace("Cube", meshComponentMap.size()-1);
     return meshComponents.size()-1;
 }
 

@@ -11,7 +11,7 @@
 class Vertex {
 public:
     Vertex();
-    Vertex(float x, float y, float z, float r, float g, float b, float s = 0.f, float t = 0.f);
+    Vertex(float x, float y, float z, float r, float g = 0.f, float b = 0.f, float s = 0.f, float t = 0.f);
     Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c);
     ~Vertex();
 
@@ -32,6 +32,8 @@ public:
     void set_st(GLfloat *st);
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
+
+    gsl::Vector3D get_xyz();
 
 private:
     gsl::Vector3D mXYZ;

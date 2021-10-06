@@ -93,6 +93,11 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
+gsl::Vector3D Vertex::get_xyz()
+{
+    return mXYZ;
+}
+
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
