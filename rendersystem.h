@@ -39,6 +39,7 @@ public:
     Camera *mCurrentCamera{nullptr};
 
     void mousePicking();
+    void mousePickingRay();
 
     void render();
 

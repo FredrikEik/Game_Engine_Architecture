@@ -325,6 +325,56 @@ void RenderSystem::mousePicking()
 }
 
 
+void RenderSystem::mousePickingRay()
+{
+
+
+//    bool TestRayOBBIntersection(
+//        gsl::Vector3D ray_origin,        // Ray origin, in world space
+//        gsl::Vector3D ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
+//        gsl::Vector3D aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
+//        gsl::Vector3D aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
+//        gsl::Vector3D ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
+//        float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
+//    ){
+
+
+
+
+
+//    float tMin =0.0f;
+//    float tMax =100000.f;
+
+//    gsl::Vector3D OBBpostion_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
+//    gsl::Vector3D delta = OBBpostion_worldspace - ray_origin;
+//    gsl::Vector3D xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
+//    float e = gsl::Vector3D::dot(xaxis, delta);
+//    float f = gsl::Vector3D::dot(ray_direction, xaxis);
+
+//    float t1 = (e+aabb_min.x)/f;
+//    float t2 = (e+aabb_max.x)/f;
+
+//    if (t1>t2){ // if wrong order
+//        float w=t1;t1=t2;t2=w; // swap t1 and t2
+//    }
+//    // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
+//    if ( t2 < tMax ) tMax = t2;
+//    // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
+//    if ( t1 > tMin ) tMin = t1;
+
+//    if (tMax < tMin )
+//        return;
+
+//    for(int i=0; i<100; i++ ){
+//        float intersection_distance;
+//        gsl::Vector3D aabb_min(-1.0f, -1.0f, -1.0f);
+//        gsl::Vector3D aabb_max( 1.0f,  1.0f,  1.0f);
+
+//        if( TestRayOOBIntersection)
+//    }
+}
+
+
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
