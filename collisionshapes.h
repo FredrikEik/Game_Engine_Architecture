@@ -6,6 +6,7 @@
 #include "gameobject.h"
 #include "components.h"
 #include "vector3d.h"
+#include "math.h"
 #include <vector>
 #include <string>
 
@@ -35,6 +36,8 @@ public:
     CollisionShapes();
     void createCollisionSphere(GameObject& obj);
     gsl::Vector3D createCentroid(GameObject& obj);
+    float findRadian(GameObject &obj, gsl::Vector3D centroid);
+    CollisionSphere createSphere(float r, gsl::Vector3D centroid);
 
 private:
     std::string m_cName; // Name
