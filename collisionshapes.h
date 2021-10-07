@@ -19,6 +19,7 @@ struct CollisionSphere : CollisionShape
 {
     Vertex m_cPoint;
     float m_radius;
+    std::vector<Vertex> m_vertices;
 
     void setPoint(float sx, float sy, float sz)
     {
