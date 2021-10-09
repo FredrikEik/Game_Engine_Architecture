@@ -67,7 +67,7 @@ void Plane::draw()
 
 float Plane::getHeight(QVector3D position)
 {
-    float height{};
+    //float height{};
     QVector2D p, q, r;
     QVector3D baryCentricCoords{};
     QVector3D p1, q1, r1;

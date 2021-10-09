@@ -26,9 +26,8 @@
 #include "lightsource.h"
 #include "plane.h"
 #include "ECScoordinator.h"
-//#include "skybox.h"
-//#include "player.h"
-//#include "octahedronball.h"
+
+
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 

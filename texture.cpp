@@ -119,9 +119,9 @@ void Texture::readBitmap(const std::string &filename)
 //Set up texture for use in OpenGL
 void Texture::setTexture()
 {
-    glGenTextures(1, &m_id);
-    glBindTexture(GL_TEXTURE_2D, m_id);
-    qDebug() << "Texture" << textureFilename.c_str() << "successfully read | id = " << m_id << "| bytes pr pixel:" << m_bytesPrPixel << "| using alpha:" << m_alphaUsed;
+    glGenTextures(1, &m_GLTextureId);
+    glBindTexture(GL_TEXTURE_2D, m_GLTextureId);
+    qDebug() << "Texture" << textureFilename.c_str() << "successfully read | id = " << m_GLTextureId << "| bytes pr pixel:" << m_bytesPrPixel << "| using alpha:" << m_alphaUsed;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

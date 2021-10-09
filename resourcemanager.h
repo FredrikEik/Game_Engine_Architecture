@@ -9,6 +9,7 @@ public:
     ResourceManager();
 
     void readObj();
+    void requestObj(std::string object);
 
 private:
     std::unordered_map<std::string, class Texture*> m_textureMap;

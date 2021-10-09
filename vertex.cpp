@@ -1,119 +1,73 @@
 #include "vertex.h"
-#include <iostream>
+#include "qvector3d.h"
+#include "qvector2d.h"
 
-Vertex::Vertex() { }
 
-Vertex::Vertex(float x, float y, float z, float r, float g, float b, float s, float t)
+Vertex::Vertex()
 {
-    mXYZ.setX(x);
-    mXYZ.setY(y);
-    mXYZ.setZ(z);
 
-    mNormal.setX(r);
-    mNormal.setY(g);
-    mNormal.setZ(b);
-
-    mST.setX(s);
-    mST.setY(t);
 }
 
-Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b , gsl::Vector2D c)
+Vertex::Vertex(float x, float y, float z, float r, float g, float b)
 {
-    mXYZ = a;
-    mNormal = b;
-    mST = c;
+    m_xyz[0] = x;
+    m_xyz[1] = y;
+    m_xyz[2] = z;
+
+    m_normal[0] = r;
+    m_normal[1] = g;
+    m_normal[2] = b;
+
 }
 
-Vertex::~Vertex() { }
-
-void Vertex::set_xyz(GLfloat *xyz)
+Vertex::Vertex(float x, float y, float z, float r, float g, float b, float u, float v)
 {
-    mXYZ.setX(xyz[0]);
-    mXYZ.setY(xyz[1]);
-    mXYZ.setZ(xyz[2]);
+    m_xyz[0] = x;
+    m_xyz[1] = y;
+    m_xyz[2] = z;
+
+    m_normal[0] = r;
+    m_normal[1] = g;
+    m_normal[2] = b;
+
+    m_uv[0] = u;
+    m_uv[1] = v;
 }
 
-void Vertex::set_xyz(GLfloat x, GLfloat y, GLfloat z)
+Vertex::Vertex(QVector3D posVec, QVector3D normalVec, QVector2D UVvec)
 {
-    mXYZ.setX(x);
-    mXYZ.setY(y);
-    mXYZ.setZ(z);
+    m_xyz[0] = posVec.x();
+    m_xyz[1] = posVec.y();
+    m_xyz[2] = posVec.z();
+
+    m_normal[0] = normalVec.x();
+    m_normal[1] = normalVec.y();
+    m_normal[2] = normalVec.z();
+
+    m_uv[0] = UVvec.x();
+    m_uv[1] = UVvec.y();
 }
 
-void Vertex::set_xyz(gsl::Vector3D xyz_in)
+QVector3D Vertex::getPosition()
 {
-    mXYZ = xyz_in;
+    return QVector3D(m_xyz[0], m_xyz[1], m_xyz[2]);
 }
-
-void Vertex::set_rgb(GLfloat *rgb)
-{
-    mNormal.setX(rgb[0]);
-    mNormal.setY(rgb[1]);
-    mNormal.setZ(rgb[2]);
-}
-
-void Vertex::set_rgb(GLfloat r, GLfloat g, GLfloat b)
-{
-    mNormal.setX(r);
-    mNormal.setY(g);
-    mNormal.setZ(b);
-}
-
-void Vertex::set_normal(GLfloat *normal)
-{
-    mNormal.setX(normal[0]);
-    mNormal.setY(normal[1]);
-    mNormal.setZ(normal[2]);
-}
-
-void Vertex::set_normal(GLfloat x, GLfloat y, GLfloat z)
-{
-    mNormal.setX(x); mNormal.setY(y); mNormal.setZ(z);
-}
-
-void Vertex::set_normal(gsl::Vector3D normal_in)
-{
-    mNormal = normal_in;
-}
-
-void Vertex::set_st(GLfloat *st)
-{
-    mST.setX(st[0]);
-    mST.setY(st[1]);
-}
-
-void Vertex::set_st(GLfloat s, GLfloat t)
-{
-    mST.setX(s); mST.setY(t);
-}
-
-void Vertex::set_uv(GLfloat u, GLfloat v)
-{
-    mST.setX(u);
-    mST.setY(v);
-}
-
-//std::ostream& operator<<(std::ostream& os, const Vertex& v)
-//{
-//   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
-//   os << "(" << v.mNormal.getX() << ", " << v.mNormal.getY() << ", " << v.mNormal.getZ() << ") ";
-
-//   return os;
-//}
 
 std::ostream& operator<< (std::ostream& os, const Vertex& v) {
-    os << std::fixed;
-    os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
-    os << "(" << v.mNormal.getX() << ", " << v.mNormal.getY() << ", " << v.mNormal.getZ() << ") ";
-    os << "(" << v.mST.getX() << ", " << v.mST.getY() << ") ";
-    return os;
+  os << std::fixed;
+  os << "(" << v.m_xyz[0] << ", " << v.m_xyz[1] << ", " << v.m_xyz[2] << ") ";
+  os << "(" << v.m_normal[0] << ", " << v.m_normal[1] << ", " << v.m_normal[2] << ") ";
+  os << "(" << v.m_uv[0] << ", " << v.m_uv[1] << ") ";
+
+  return os;
 }
 
 std::istream& operator>> (std::istream& is, Vertex& v) {
-    // needs 4 temps to get commas and parenthesis
-    char temp, temp2, temp3, temp4;
-    is >> temp >> v.mXYZ.x >> temp2 >> v.mXYZ.y >> temp3 >> v.mXYZ.z >> temp4;
-    is >> temp >> v.mNormal.x >> temp2 >> v.mNormal.y >> temp3 >> v.mNormal.z >> temp4;
-    is >> temp >> v.mST.x >> temp2 >> v.mST.y >> temp3;
-    return is;
+// Trenger fire temporære variabler som kun skal lese inn parenteser og komma
+  char dum, dum2, dum3, dum4;
+  is >> dum >> v.m_xyz[0] >> dum2 >> v.m_xyz[1] >> dum3 >> v.m_xyz[2] >> dum4;
+  is >> dum >> v.m_normal[0] >> dum2 >> v.m_normal[1] >> dum3 >> v.m_normal[2] >> dum4;
+  is >> dum >> v.m_uv[0] >> dum2 >> v.m_uv[1] >> dum3;
+
+  return is;
 }

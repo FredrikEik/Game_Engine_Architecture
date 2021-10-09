@@ -23,7 +23,6 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     texture.cpp \
     textureshader.cpp \
-    triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
     vertex.cpp \
@@ -58,7 +57,6 @@ HEADERS += \
     systemmanager.h \
     texture.h \
     textureshader.h \
-    triangle.h \
     vector2d.h \
     vector3d.h \
     vertex.h \

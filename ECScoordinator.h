@@ -7,6 +7,7 @@
 #include "entitymanager.h"
 #include "compmanager.h"
 #include "systemmanager.h"
+#include "resourcemanager.h"
 
 class ECScoordinator
 {
@@ -17,6 +18,7 @@ public:
         m_ComponentManager = std::make_unique<ComponentManager>();
         m_EntityManager = std::make_unique<EntityManager>();
         m_SystemManager = std::make_unique<SystemManager>();
+        m_ResourceManager = std::make_unique<ResourceManager>();
     }
 
     //Entity functionality:
@@ -92,6 +94,7 @@ private:
     std::unique_ptr<ComponentManager> m_ComponentManager;
     std::unique_ptr<EntityManager> m_EntityManager;
     std::unique_ptr<SystemManager> m_SystemManager;
+    std::unique_ptr<ResourceManager> m_ResourceManager;
 
     //Factory goes here!
     //std::unique_ptr<Factory> m_Factory;

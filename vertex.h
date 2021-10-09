@@ -2,41 +2,26 @@
 #define VERTEX_H
 
 #include <iostream>
-#include "vector3d.h"
-#include "vector2d.h"
-#include "gltypes.h"
-#include <iostream>
 #include <fstream>
 
-class Vertex {
+class Vertex
+{
+
+friend std::ostream& operator<< (std::ostream&, const Vertex&);
+
+//! Overloaded ostream operator which reads all vertex data from an open textfile stream
+friend std::istream& operator>> (std::istream&, Vertex&);
+
 public:
     Vertex();
-    Vertex(float x, float y, float z, float r, float g, float b, float s = 0.f, float t = 0.f);
-    Vertex(gsl::Vector3D a, gsl::Vector3D b, gsl::Vector2D c);
-    ~Vertex();
-
-    //! Overloaded ostream operator which writes all vertex data on an open textfile stream
-    friend std::ostream& operator<< (std::ostream&, const Vertex&);
-
-    //! Overloaded ostream operator which reads all vertex data from an open textfile stream
-    friend std::istream& operator>> (std::istream&, Vertex&);
-
-    void set_xyz(GLfloat *xyz);
-    void set_xyz(GLfloat x, GLfloat y, GLfloat z);
-    void set_xyz(gsl::Vector3D xyz_in);
-    void set_rgb(GLfloat *rgb);
-    void set_rgb(GLfloat r, GLfloat g, GLfloat b);
-    void set_normal(GLfloat *normal);
-    void set_normal(GLfloat x, GLfloat y, GLfloat z);
-    void set_normal(gsl::Vector3D normal_in);
-    void set_st(GLfloat *st);
-    void set_st(GLfloat s, GLfloat t);
-    void set_uv(GLfloat u, GLfloat v);
-
+    Vertex(float x, float y, float z, float r, float g, float b);
+    Vertex(float x, float y, float z, float r, float g, float b, float u, float v);
+    Vertex(class QVector3D posVec, class QVector3D normalVec, class QVector2D UVvec);
+    QVector3D getPosition();
 private:
-    gsl::Vector3D mXYZ;
-    gsl::Vector3D mNormal;
-    gsl::Vector2D mST;
+    float m_xyz[3];
+    float m_normal[3];
+    float m_uv[2];
 };
 
 #endif // VERTEX_H
