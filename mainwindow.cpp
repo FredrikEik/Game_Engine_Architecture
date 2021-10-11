@@ -84,6 +84,7 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -131,7 +132,7 @@ void MainWindow::on_CreateObjectButton_clicked()
     mCoreEngine->CreateObjectButton(spawnObject);
 }
 
-void MainWindow::on_objectDropdown_currentTextChanged(const QString &arg1)
+void MainWindow::on_ObjectDropdown_currentTextChanged(const QString &arg1)
 {
     spawnObject = arg1.toStdString() + ".obj";
 }

@@ -8,6 +8,13 @@ Camera::Camera()
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+          //.setX(tan(FOV)*farplane/AspectR
+    farPlane.setX(tan(45.f)*100.f);
+    farPlane.setY(tan(45.f)* (100.f /1.3333));
+    farPlane.setZ(100.f);
+    nearPlane.setX(tan(45.f)*0.1f);
+    nearPlane.setY(tan(45.f)* (0.1f /1.3333));
+    nearPlane.setZ(0.1f);
 }
 
 void Camera::pitch(float degrees)
@@ -28,6 +35,7 @@ void Camera::updateRightVector()
 {
     mRight = mForward^mUp;
     mRight.normalize();
+
 //    qDebug() << "Right " << mRight;
 }
 
@@ -91,4 +99,14 @@ gsl::Vector3D Camera::position() const
 gsl::Vector3D Camera::up() const
 {
     return mUp;
+}
+
+gsl::Vector3D Camera::getmForward() const
+{
+    return mForward;
+}
+
+gsl::Vector3D Camera::getmRight() const
+{
+    return mRight;
 }

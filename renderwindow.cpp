@@ -132,6 +132,10 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
+/** FRUSTUM */
+
+/** */
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -144,6 +148,24 @@ void RenderWindow::render()
     //Draws the objects
     for( int i = 0; i < mGameObjects.size(); i++)
     {
+    /** FRUSTUM */
+        gsl::Vector3D rightPlaneNormal = (mCurrentCamera->getmRight());
+        rightPlaneNormal.rotateY(-45.f);
+
+        gsl::Vector3D leftPlaneNormal = -(mCurrentCamera->getmRight());
+        rightPlaneNormal.rotateY(45.f);
+
+        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+        gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+
+        float distanceToRightObject = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
+        float distanceToLeftObject = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
+
+        if(distanceToRightObject > 50)
+            continue;
+        if(distanceToLeftObject > 50)
+            continue;
+    /** */
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
