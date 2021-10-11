@@ -16,9 +16,11 @@
 #include "soundhandler.h"
 #include "meshhandler.h"
 #include "texturehandler.h"
+#include "logger.h"
 
 ResourceManager::ResourceManager()
 {
+    mLogger = Logger::getInstance();    //Have to do this, else program will crash
     SoundSystem::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
@@ -62,7 +64,7 @@ bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObjec
 {
     if(!ownerObject)
     {
-        qDebug() << "Trying to add Component to non-existing GameObject";
+        mLogger->logText("Trying to add Component to non-existing GameObject", LColor::DAMNERROR);
         return false;
     }
 
@@ -116,7 +118,7 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
         waveData = SoundHandler::loadWave(assetName);
         if (!waveData)
         {
-            qDebug() << "Error loading wave file!";
+            mLogger->logText("Error loading wave file!", LColor::DAMNERROR);
             return nullptr;
         }
         //update mMeshComponentMap with new asset

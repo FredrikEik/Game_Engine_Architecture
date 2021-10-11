@@ -47,6 +47,8 @@ private:
     std::vector<WaveRawData> mWaveBuffers;
 
     TextureHandler *mTextureHandler{nullptr};
+
+    class Logger* mLogger{nullptr};
 };
 
 #endif // RESOURCEMANAGER_H

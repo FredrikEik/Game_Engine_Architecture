@@ -91,6 +91,7 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+    class Logger *mLogger{nullptr};
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

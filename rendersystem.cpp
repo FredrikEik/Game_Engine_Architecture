@@ -6,6 +6,7 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <string>
 
 #include <iostream>
 
@@ -24,6 +25,7 @@
 #include "math_constants.h"
 #include "meshhandler.h"    //to check linebox
 #include "vector4d.h"
+#include "logger.h"
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -39,6 +41,7 @@ RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     if (!mContext->create()) {
         delete mContext;
         mContext = nullptr;
+        //using qDebug() because program will quit
         qDebug() << "Context could not be made - quitting this application";
     }
 }
@@ -55,9 +58,10 @@ void RenderSystem::init()
     //The OpenGL context has to be set.
     //The context belongs to the instanse of this class!
     if (!mContext->makeCurrent(this)) {
-        qDebug() << "makeCurrent() failed";
+        mLogger->logText("makeCurrent() failed", LColor::DAMNERROR);
         return;
     }
+
 
     //just to make sure we don't init several times
     //used in exposeEvent()
@@ -67,23 +71,30 @@ void RenderSystem::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
+    mLogger = Logger::getInstance();    //Have to do this, else program will crash
+
     //Print render version info (what GPU is used):
-    //(Have to use cout to see text- qDebug just writes numbers...)
     //Nice to see if you use the Intel GPU or the dedicated GPU on your laptop
     // - can be deleted
-    std::cout << "The active GPU and API: \n";
-    std::cout << "  Vendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "  Renderer: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "  Version: " << glGetString(GL_VERSION) << std::endl;
+
+    mLogger->logText("The active GPU and API:", LColor::HIGHLIGHT);
+
+    std::string tempString;
+
+    tempString += std::string("  Vendor: ") + std::string((char*)glGetString(GL_VENDOR)) + "\n" +
+            std::string("  Renderer: ") + std::string((char*)glGetString(GL_RENDERER)) + "\n" +
+            std::string("  Version: ") + std::string((char*)glGetString(GL_VERSION));
+    mLogger->logText(tempString);
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
     int textureUnits;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
-    std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
+    tempString.clear();
+    tempString += "  This GPU has " + std::to_string(textureUnits) + " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
-    std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
-
+    tempString += "and supports " + std::to_string(mTextureUnits) + " texture units pr shader";
+    mLogger->logText(tempString);
 
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
@@ -103,12 +114,16 @@ void RenderSystem::init()
     // (out of the build-folder) and then up into the project folder.
     mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->mProgram;
+    tempString.clear();
+    tempString += "Plain shader program id: " + std::to_string(mShaderPrograms[0]->mProgram);
+    mLogger->logText(tempString);
     mShaderPrograms[0]->setupShader(false);
 
     mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->mProgram;
+    tempString.clear();
+    tempString += "Texture shader program id: " + std::to_string(mShaderPrograms[1]->mProgram);
+    mLogger->logText(tempString);
     mShaderPrograms[1]->setupShader(true);
 
     //********************** Making the object to be drawn **********************
@@ -396,7 +411,7 @@ void RenderSystem::checkForGLerrors()
         {
             if (!(message.type() == message.OtherType)) // got rid of "object ...
                                                         //will use VIDEO memory as the source for buffer object operations"
-                qDebug() << message;
+                mLogger->logText(message.message().toStdString(), LColor::DAMNERROR);
         }
     }
     else
@@ -404,7 +419,7 @@ void RenderSystem::checkForGLerrors()
         GLenum err = GL_NO_ERROR;
         while((err = glGetError()) != GL_NO_ERROR)
         {
-            qDebug() << "glGetError returns " << err;
+            mLogger->logText("glGetError returns " + std::to_string(err), LColor::DAMNERROR);
         }
     }
 }
@@ -417,14 +432,14 @@ void RenderSystem::startOpenGLDebugger()
     {
         QSurfaceFormat format = temp->format();
         if (! format.testOption(QSurfaceFormat::DebugContext))
-            qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
+            mLogger->logText("This system can not use QOpenGLDebugLogger, so we revert to glGetError()");
 
         if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
         {
-            qDebug() << "System can log OpenGL errors!";
+            mLogger->logText("System can log OpenGL errors!");
             mOpenGLDebugLogger = new QOpenGLDebugLogger(this);
             if (mOpenGLDebugLogger->initialize()) // initializes in the current context
-                qDebug() << "Started OpenGL debug logger!";
+                mLogger->logText("Started OpenGL debug logger!");
         }
     }
 }

@@ -19,6 +19,9 @@ public:
 
     ///OpenGL program ID for this shader
     GLuint mProgram;
+
+private:
+    class Logger* mLogger{nullptr};
 };
 
 #endif

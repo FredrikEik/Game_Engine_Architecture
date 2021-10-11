@@ -6,14 +6,18 @@
 #include "rendersystem.h"   //should not be needed when update is fixed
 #include "gameobject.h"
 #include "components.h"
+#include "logger.h"
 
 SoundSystem* SoundSystem::mInstance = nullptr;    //static pointer to instance
 
-SoundSystem::SoundSystem() : mDevice{nullptr}, mContext{nullptr} {}
+SoundSystem::SoundSystem() : mDevice{nullptr}, mContext{nullptr}
+{
+    mLogger = Logger::getInstance();
+}
 
 bool SoundSystem::init()
 {
-    qDebug() << "Intializing OpenAL!";
+    mLogger->logText("Intializing OpenAL!", LColor::HIGHLIGHT);
     mDevice = alcOpenDevice(NULL);
     if (mDevice)
     {
@@ -26,10 +30,20 @@ bool SoundSystem::init()
 
     if (!mDevice)
     {
-        qDebug() << "Device not made!";
+        mLogger->logText("Device not made!");
+        return false;
     }
     else
-        qDebug() << "OpenAL intialization complete!";
+        mLogger->logText("  OpenAL intialization complete!");
+
+    const ALCchar *defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+    std::string temp = defaultDeviceName;
+    mLogger->logText("  Device name: " + temp);
+
+    //this prints out the same on my PC at least...
+//    const ALCchar *actualDeviceName = alcGetString(mDevice, ALC_DEVICE_SPECIFIER);
+//    temp = actualDeviceName;
+//    mLogger->logText("  " + temp);
 
     /*Start listing of found sound devices:
     //Not jet implemented
@@ -89,22 +103,22 @@ bool SoundSystem::checkError()
     case AL_NO_ERROR:
         break;
     case AL_INVALID_NAME:
-        qDebug() << "Invalid name!";
+        mLogger->logText("Invalid name!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_ENUM:
-        qDebug() << "Invalid enum!";
+        mLogger->logText("Invalid enum!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_VALUE:
-        qDebug() << "Invalid value!";
+        mLogger->logText("Invalid value!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_OPERATION:
-        qDebug() << "Invalid operation!";
+        mLogger->logText("Invalid operation!", LColor::DAMNERROR);
         return false;
     case AL_OUT_OF_MEMORY:
-        qDebug() << "Out of memory!";
+        mLogger->logText("Out of memory!", LColor::DAMNERROR);
         return false;
     default:
-        qDebug() << "Some unknown OpenAL error in SoundSystem!";
+        mLogger->logText("Some unknown OpenAL error in SoundSystem!", LColor::DAMNERROR);
         break;
     }
     return true;

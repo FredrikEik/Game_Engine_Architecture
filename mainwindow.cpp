@@ -58,14 +58,20 @@ void MainWindow::init()
 
     //Just prints out what OpenGL format we try to get
     // - this can be deleted
-    qDebug() << "Requesting surface format: " << format;
+    4qDebug() << "Requesting surface format: " << format;
+
+    //Log same to ui:
+    //QString tempString;
+    //QDebug tempDebug(&tempString);
+    //tempDebug << format;
+    //ui->outputLog->appendPlainText("Program startup...\n Requesting surface format: " + tempString);
 
     //We have a format for the OpenGL window, so let's make it:
     mRenderSystem = new RenderSystem(format, this);
 
     //Check if renderwindow did initialize, else prints error and quit
     if (!mRenderSystem->context()) {
-        qDebug() << "Failed to create context. Can not continue. Quits application!";
+        qDebug() << "Failed to create context. Can not continue. Closing application!";
         delete mRenderSystem;
         return;
     }

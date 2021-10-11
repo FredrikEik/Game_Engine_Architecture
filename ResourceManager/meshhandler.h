@@ -59,6 +59,8 @@ private:
 
     ///Initializes the mesh with OpenGL buffers - VAO, VBO, EAB.
     void initMesh(MeshData &tempMesh, int lodLevel);
+
+    class Logger* mLogger{nullptr};
 };
 
 #endif // MESHHANDLER_H

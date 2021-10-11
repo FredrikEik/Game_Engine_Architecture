@@ -6,12 +6,14 @@
 #include "constants.h"
 #include "math_constants.h"
 #include "camera.h"
+#include "logger.h"
 
 MeshHandler::MeshHandler()
 {
     //This is a hack - to make sure my MeshComponens are not moved for now
     //Please fix
     mMeshes.reserve(gsl::MAX_MESHCOMPONENTS);
+    mLogger = Logger::getInstance();    //Have to do this, else program will crash
 }
 
 int MeshHandler::makeMesh(std::string meshName)
@@ -64,13 +66,13 @@ int MeshHandler::readObj(std::string filename)
             tempName = filename + "_L0" + std::to_string(lod);
 
         tempName = gsl::MeshFilePath + tempName + ".obj";
-        qDebug() << "Reading " << tempName.c_str();
+        mLogger->logText("Reading " + tempName);
         std::ifstream fileIn;
         fileIn.open (tempName, std::ifstream::in);
         if(!fileIn)
         {
-            qDebug() << "ERROR: Could not open file for reading: " << QString::fromStdString(filename);
-            qDebug() << "****** using arbitrary mesh as replacement!";
+            mLogger->logText("ERROR: Could not open file for reading: " + filename, LColor::DAMNERROR);
+            mLogger->logText("****** using arbitrary mesh as replacement!", LColor::DAMNERROR);
             return makeTriangle();    //returns triangle instead
         }
         //One line at a time-variable
@@ -209,7 +211,7 @@ int MeshHandler::readObj(std::string filename)
         initMesh(temp, lod);
     }
 
-    qDebug() << QString::fromStdString(filename) << "successfully loaded";
+    mLogger->logText(filename + " successfully loaded");
 
     return mMeshes.size()-1;    //returns index to last object
 }

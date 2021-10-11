@@ -60,6 +60,7 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/meshhandler.cpp \
+    logger.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     soundsystem.cpp \
@@ -89,6 +90,7 @@ HEADERS += \
     ResourceManager/soundhandler.h \
     ResourceManager/texturehandler.h \
     ResourceManager/meshhandler.h \
+    logger.h \
     rendersystem.h \
     mainwindow.h \
     soundsystem.h \

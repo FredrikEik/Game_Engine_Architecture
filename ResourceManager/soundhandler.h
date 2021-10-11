@@ -33,6 +33,8 @@ struct WaveRawData
 class SoundHandler
 {
 public:
+    //TODO: should this be converted to be a singleton?
+    SoundHandler();
     /// Loads a given wave file, fills WaveRawData structure with wave data.
     /**
         \param File path relative to execution directory.
@@ -53,6 +55,8 @@ private:
     static bool checkALError(std::string name);
 
     static bool makeALBuffer(WaveRawData *waveData);
+
+    //class Logger* mLogger{nullptr};   static used functions can not use this pointer
 
 };
 

@@ -4,10 +4,13 @@
 #include <sstream>
 #include <iostream>
 #include <QDebug>
+#include "logger.h"
 
 ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath)
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
+
+    mLogger = Logger::getInstance();    //Have to do this, else program will crash
 
     // 1. Retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
@@ -18,10 +21,10 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     // Open files and check for errors
     vShaderFile.open( vertexPath );
     if(!vShaderFile)
-        std::cout << "ERROR SHADER FILE " << vertexPath << " NOT SUCCESFULLY READ" << std::endl;
+        mLogger->logText("ERROR SHADER FILE " + std::string(vertexPath) + " NOT SUCCESFULLY READ", LColor::DAMNERROR);
     fShaderFile.open( fragmentPath );
     if(!fShaderFile)
-        std::cout << "ERROR SHADER FILE " << fragmentPath << " NOT SUCCESFULLY READ" << std::endl;
+        mLogger->logText("ERROR SHADER FILE " + std::string(fragmentPath) + " NOT SUCCESFULLY READ", LColor::DAMNERROR);
     std::stringstream vShaderStream, fShaderStream;
     // Read file's buffer contents into streams
     vShaderStream << vShaderFile.rdbuf( );
@@ -49,7 +52,8 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     if ( !success )
     {
         glGetShaderInfoLog( vertex, 512, nullptr, infoLog );
-        std::cout << "ERROR SHADER VERTEX " << vertexPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
+        mLogger->logText("ERROR SHADER VERTEX " + std::string(vertexPath) +
+                         " COMPILATION_FAILED\n" + infoLog, LColor::DAMNERROR);
     }
     // Fragment Shader
     fragment = glCreateShader( GL_FRAGMENT_SHADER );
@@ -60,7 +64,8 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     if ( !success )
     {
         glGetShaderInfoLog( fragment, 512, nullptr, infoLog );
-        std::cout << "ERROR SHADER FRAGMENT " << fragmentPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
+        mLogger->logText("ERROR SHADER FRAGMENT " + std::string(fragmentPath) +
+                         " COMPILATION_FAILED\n" + infoLog, LColor::DAMNERROR);
     }
     // Shader Program
     this->mProgram = glCreateProgram( );
@@ -72,12 +77,12 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     if (!success)
     {
         glGetProgramInfoLog( this->mProgram, 512, nullptr, infoLog );
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                  << "  " << vertexPath <<  "\n   " << infoLog << std::endl;
+        mLogger->logText("ERROR::SHADER::PROGRAM::LINKING_FAILED\n" +
+                          std::string(vertexPath) +  "\n   " + infoLog, LColor::DAMNERROR);
     }
     else
     {
-        qDebug() << vertexPath << "shader was successfully compiled!";
+        mLogger->logText(std::string(vertexPath) + " shader was successfully compiled!");
     }
     // Delete the shaders as they're linked into our program now and no longer needed
     glDeleteShader( vertex );

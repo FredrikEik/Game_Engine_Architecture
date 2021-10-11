@@ -37,6 +37,8 @@ private:
 //    int readCubeMap(const std::string &filename);
 //    void setCubemapTexture(Texture &textureIn);
 
+    class Logger* mLogger{nullptr};
+
     /*************************************/
     //this is put inside this class to avoid spamming the main namespace
     //with stuff that only is used inside this class

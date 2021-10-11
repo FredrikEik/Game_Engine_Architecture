@@ -60,7 +60,7 @@ private:
 
     void clearLayout(QLayout *layout);
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui{nullptr};
 
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
@@ -74,6 +74,9 @@ private:
     float mPositionStep{1.f};
     float mRotationStep{1.f};
     float mScaleStep{0.1f};
+
+    //Logger uses private ui pointer
+    friend class Logger;
 };
 
 #endif // MAINWINDOW_H

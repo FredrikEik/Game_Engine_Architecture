@@ -7,12 +7,25 @@
 #include "rendersystem.h"
 #include "camera.h"
 #include "mainwindow.h"
+#include "logger.h"
+
+#include <ctime>
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
     : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
+    //Make logger
+    mLogger = Logger::getInstance();
+    //feed in MainWindow - have to be done, else logger will crash program
+    mLogger->setMainWindow(mMainWindow);
+    // current date/time based on current system
+    time_t now = time(0);
+    // convert now to string form
+    char* dt = ctime(&now);
+    mLogger->logText("Logger started " + std::string(dt), LColor::HIGHLIGHT);
+
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
     mInstance = this;
@@ -57,7 +70,8 @@ void CoreEngine::setUpScene()
     mResourceManager->addComponent("caravan_mono.wav", temp);
 
     //Hack to test sound system
-    temp->mSoundComponent->shouldPlay = true;
+    if(temp->mSoundComponent)
+        temp->mSoundComponent->shouldPlay = true;
 
     mRenderSystem->mGameObjects.push_back(temp);
 
