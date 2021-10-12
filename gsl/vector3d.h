@@ -14,8 +14,10 @@ class Vector3D
 {
 public:
     //Constructors
-    Vector3D(GLfloat x_in = 0.f, GLfloat y_in = 0.f, GLfloat z_in = 0.f);
+    Vector3D();
+    Vector3D(GLfloat x_in, GLfloat y_in, GLfloat z_in);
     Vector3D(const int v);
+    Vector3D(const float v);
     Vector3D(const double v);
 
     //Copy constructor

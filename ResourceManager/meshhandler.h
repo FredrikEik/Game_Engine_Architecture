@@ -7,11 +7,14 @@
 
 struct MeshData
 {
-    GLuint mVAO[3]{0};
-    GLuint mVBO[3]{0};
-    GLuint mEAB[3]{0};
-    GLint mVertexCount[3]{-1};
-    GLint mIndexCount[3]{-1};
+    //according to https://www.learncpp.com/cpp-tutorial/arrays-part-ii/
+    //an empty {} should initialize all elements to 0
+    GLuint mVAO[3]{};
+    GLuint mVBO[3]{};
+    GLuint mEAB[3]{};
+    //want all these to be at -1 so I do it explicitly
+    GLint mVertexCount[3]{-1, -1, -1};
+    GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];

@@ -63,7 +63,7 @@ int MeshHandler::readObj(std::string filename)
         if (lod == 0)     //original mesh - not reduced size
             tempName = filename;
         else
-            tempName = filename + "_L0" + std::to_string(lod);
+            tempName = filename + gsl::LODLevelPrefix + std::to_string(lod);
 
         tempName = gsl::MeshFilePath + tempName + ".obj";
         mLogger->logText("Reading " + tempName);

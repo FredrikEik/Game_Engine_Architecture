@@ -4,14 +4,20 @@
 
 namespace gsl
 {
+    Vector3D::Vector3D() : x{0.f}, y{0.f}, z{0.f}
+    {   }
+
     Vector3D::Vector3D(GLfloat x_in, GLfloat y_in, GLfloat z_in) : x{x_in}, y{y_in}, z{z_in}
-    {    }
+    {   }
 
     Vector3D::Vector3D(const int v) : x{static_cast<float>(v)}, y{static_cast<float>(v)}, z{static_cast<float>(v)}
-    {    }
+    {   }
+
+    Vector3D::Vector3D(const float v) : x{v}, y{v}, z{v}
+    {   }
 
     Vector3D::Vector3D(const double v) : x{static_cast<float>(v)}, y{static_cast<float>(v)}, z{static_cast<float>(v)}
-    {    }
+    {   }
 
     Vector3D::Vector3D(const Vector3D &vIN) : x{vIN.x}, y{vIN.y}, z{vIN.z}{}
 

@@ -7,6 +7,8 @@
 #include "gltypes.h"
 #include "altypes.h"
 
+//Components try to hold only runtime relevant data, and as small as possible
+
 struct TransformComponent
 {
     TransformComponent()
@@ -21,11 +23,11 @@ struct TransformComponent
 
 struct MeshComponent
 {
-    GLuint mVAO[3]{0};
-    GLint mVertexCount[3]{-1};
-    GLint mIndexCount[3]{-1};
+    GLuint mVAO[3]{};
+    GLint mVertexCount[3]{-1, -1, -1};
+    GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
-    float mColliderRadius{0.f};
+    float mColliderRadius{0.f}; //used for frustum culling, so it is relevant for rendering
 };
 
 struct MaterialComponent

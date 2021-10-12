@@ -109,7 +109,7 @@ int TextureHandler::readBitmap(const std::string &filename)
         temp.mBitmap = new unsigned char[temp.mColumns * temp.mRows * temp.mBytesPrPixel];
         file.read((char *) temp.mBitmap, temp.mColumns * temp.mRows * temp.mBytesPrPixel);
         file.close();
-        mLogger->logText("Texture: " + fileWithPath +" read from file");
+        mLogger->logText("  Texture: " + fileWithPath +" read from file");
     }
     else
     {
@@ -126,7 +126,7 @@ void TextureHandler::setTexture(Texture &textureIn)
 {
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, textureIn.mGLTextureID);
-    mLogger->logText("Texture successfully read | id = " + std::to_string(textureIn.mGLTextureID) +
+    mLogger->logText("  Texture successfully read | id = " + std::to_string(textureIn.mGLTextureID) +
                 " | bytes pr pixel: " + std::to_string(textureIn.mBytesPrPixel) + "| using alpha: " +
                      std::to_string(textureIn.mAlphaUsed) +
                 " | w:" + std::to_string(textureIn.mColumns) + " |h: " +  std::to_string(textureIn.mRows));

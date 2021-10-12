@@ -52,6 +52,11 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 
 void CoreEngine::setUpScene()
 {
+    //ask resource manager to set up all assets
+    mResourceManager->setUpAllTextures();
+    mResourceManager->setUpAllSounds();
+    mResourceManager->setUpAllMeshes();
+
     //********************** Making the object to be drawn **********************
 
     //Axis
@@ -102,8 +107,6 @@ void CoreEngine::setUpScene()
 
     mGameCamera->mPosition = gsl::Vector3D(30.f, 1.f, 0.f);
     mRenderSystem->mGameCamera = mGameCamera;
-
-    mResourceManager->setUpAllTextures();
 
     //update SceneOutliner to show all objects:
     mMainWindow->updateOutliner(mRenderSystem->mGameObjects);

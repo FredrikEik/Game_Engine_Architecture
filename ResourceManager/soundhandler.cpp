@@ -118,7 +118,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
 
 bool SoundHandler::makeALBuffer(WaveRawData *waveData)
 {
-    std::string tempText("Making ALBuffer | ");
+    std::string tempText("  Making ALBuffer | ");
     alGetError();   //empty error buffer before we use it
     alGenBuffers(1, &waveData->mALBuffer);
     if(!checkALError("alGenBuffers"))
@@ -173,7 +173,7 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
 //    alSourcei(mSource, AL_BUFFER, waveData->mALBuffer);
 //    checkALError("alSourcei (loadWave)");
 
-    Logger::getInstance()->logText("Making ALBuffer complete!");
+    Logger::getInstance()->logText("  Making ALBuffer complete!");
 
     //Should we delete the raw data from RAM?
 //    if (waveData->audioData)

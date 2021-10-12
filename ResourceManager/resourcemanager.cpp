@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <QString>
-#include <QDebug>
+#include <QDir>
 
 #include "components.h"
 #include "vector3d.h"
@@ -43,14 +43,12 @@ GameObject *ResourceManager::addObject(std::string meshName)
     //Add standard components to GameObject
     MeshComponent* tempMesh = new MeshComponent();
 
-    //run through all potential LOD levels:
-    for(int i{0}; i<3; i++)
-    {
-        //Dangerous, because mMeshes vector can resize and will move pointers:
-        tempMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[i];
-        tempMesh->mVertexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[i];
-        tempMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[i];
-    }
+    //copy all potential LOD levels:
+    //std::copy faster than for loop and safer and ca as fast as memcpy
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVAO, mMeshHandler->mMeshes.at(meshIndex).mVAO+3, tempMesh->mVAO);
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVertexCount, mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, tempMesh->mVertexCount);
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mIndexCount, mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, tempMesh->mIndexCount);
+
     tempMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
     tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     tempObject->mMesh = tempMesh;
@@ -128,7 +126,7 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
     }
 
     SoundComponet *tempSource = new SoundComponet();
-    if(waveData)
+    if(soundIndex > -1)
     {
         tempSource->mSource = SoundHandler::makeALSource(mWaveBuffers.at(soundIndex).mALBuffer);
     }
@@ -136,10 +134,96 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
 }
 
 void ResourceManager::setUpAllTextures()
-{
-    //should probably run thru all textures found in TextureFilePath
+{   
+    //Making default texture
     mTextureHandler->makeTexture();
-    mTextureHandler->makeTexture("hund.bmp");
+
+    //Regular .bmp textures read from file
+    QDir tempDir((gsl::TextureFilePath).c_str());
+    if(tempDir.exists())
+    {
+        QStringList filters;
+        filters << "*.bmp";
+        tempDir.setNameFilters(filters);
+        mLogger->logText( std::to_string(tempDir.entryInfoList().size()) + " - .bmp textures will be read from " + gsl::TextureFilePath);
+
+
+        if(gsl::NumberOfTextures < tempDir.entryInfoList().size())
+            mLogger->logText("More textures in directory than gsl::NumberOfTextures !!!", LColor::WARNING);
+
+        //read all regular textures
+        for(QFileInfo &var : tempDir.entryInfoList())
+        {
+            mLogger->logText("Texture name: " + var.fileName().toStdString());
+            mTextureHandler->makeTexture(var.fileName().toStdString());
+        }
+    }
+    else
+    {
+        mLogger->logText("*** ERROR reading textures *** : Asset-folder " + gsl::TextureFilePath + " does not exist!", LColor::DAMNERROR);
+    }
+}
+
+void ResourceManager::setUpAllSounds()
+{
+    int soundIndex{-1};
+    WaveRawData* waveData{nullptr}; //will be instansiated inside loadWave
+
+    QDir tempDir((gsl::SoundFilePath).c_str());
+    if(tempDir.exists())
+    {
+        QStringList filters;
+        filters << "*.wav";
+        tempDir.setNameFilters(filters);
+        mLogger->logText( std::to_string(tempDir.entryInfoList().size()) + " - .wav files will be read from " + gsl::SoundFilePath);
+
+        //read all wav files
+        for(QFileInfo &var : tempDir.entryInfoList())
+        {
+            mLogger->logText("Sound name: " + var.fileName().toStdString());
+            waveData = SoundHandler::loadWave(var.fileName().toStdString());
+            if (!waveData)
+            {
+                mLogger->logText("Error loading wave file!", LColor::DAMNERROR);
+            }
+            //update mWaveBuffers with new asset
+            mWaveBuffers.emplace_back(*waveData);
+            soundIndex = mWaveBuffers.size()-1;
+            mSoundBufferMap.emplace(var.fileName().toStdString(), soundIndex);
+        }
+    }
+    else
+    {
+        mLogger->logText("*** ERROR reading sounds *** : Asset-folder " + gsl::SoundFilePath + " does not exist!", LColor::DAMNERROR);
+    }
+}
+
+void ResourceManager::setUpAllMeshes()
+{
+    QDir tempDir((gsl::MeshFilePath).c_str());
+     if(tempDir.exists())
+     {
+         QStringList filters;
+         filters << "*.obj";
+         tempDir.setNameFilters(filters);
+         mLogger->logText( std::to_string(tempDir.entryInfoList().size()) + " - .obj files located in " + gsl::MeshFilePath);
+
+         //read all wav files
+         for(QFileInfo &var : tempDir.entryInfoList())
+         {
+             //filtering out LODS
+             auto isLOD  = var.fileName().toStdString().find(gsl::LODLevelPrefix);
+             if(isLOD != std::string::npos)
+                 continue;
+
+             mLogger->logText("Mesh name: " + var.fileName().toStdString());
+             mMeshHandler->makeMesh(var.fileName().toStdString());
+         }
+     }
+     else
+     {
+         mLogger->logText("*** ERROR reading meshes *** : Asset-folder " + gsl::MeshFilePath + " does not exist!", LColor::DAMNERROR);
+     }
 }
 
 MeshData ResourceManager::makeLineBox(std::string meshName)

@@ -25,6 +25,8 @@ public:
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
     void setUpAllTextures();
+    void setUpAllSounds();
+    void setUpAllMeshes();
 
     //TODO: These functions do nothing other than forward to MeshHandeler - maybe delete?
     MeshData makeLineBox(std::string meshName);

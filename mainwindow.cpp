@@ -58,7 +58,7 @@ void MainWindow::init()
 
     //Just prints out what OpenGL format we try to get
     // - this can be deleted
-    4qDebug() << "Requesting surface format: " << format;
+    qDebug() << "Requesting surface format: " << format;
 
     //Log same to ui:
     //QString tempString;
