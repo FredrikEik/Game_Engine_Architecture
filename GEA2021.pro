@@ -109,7 +109,8 @@ DISTFILES += \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert
+    Shaders/plainvertex.vert \
+    Assets/materials.json
 
 RESOURCES += \
     AppIconResources.qrc

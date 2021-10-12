@@ -55,6 +55,8 @@ private:
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
 
+    std::map<std::string, unsigned int> mShaderMap;
+
     std::map<std::string, unsigned int> mMaterialMap;
     std::vector<MaterialComponent> mMaterials;
 
