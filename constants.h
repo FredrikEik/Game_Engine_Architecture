@@ -16,9 +16,9 @@ namespace gsl  //Game School Lib
 
     const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
 
-    const int NumberOfShaders{4};
-    const int NumberOfTextures{16};
-    const int NumberOfMaterials{10};
+    //const int NumberOfShaders{4};
+    //const int NumberOfTextures{16};
+    //const int NumberOfMaterials{10};
 
     enum Shaders
     {

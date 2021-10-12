@@ -16,6 +16,7 @@
 #include "soundhandler.h"
 #include "meshhandler.h"
 #include "texturehandler.h"
+#include "shaderhandler.h"
 #include "logger.h"
 
 ResourceManager::ResourceManager()
@@ -53,7 +54,8 @@ GameObject *ResourceManager::addObject(std::string meshName)
     tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     tempObject->mMesh = tempMesh;
 
-    tempObject->mMaterial = new MaterialComponent();
+
+    tempObject->mMaterial = getMaterial("Default");
     tempObject->mTransform = new TransformComponent();
     return tempObject; //temporary to get to compile
 }
@@ -148,9 +150,6 @@ void ResourceManager::setUpAllTextures()
         mLogger->logText( std::to_string(tempDir.entryInfoList().size()) + " - .bmp textures will be read from " + gsl::TextureFilePath);
 
 
-        if(gsl::NumberOfTextures < tempDir.entryInfoList().size())
-            mLogger->logText("More textures in directory than gsl::NumberOfTextures !!!", LColor::WARNING);
-
         //read all regular textures
         for(QFileInfo &var : tempDir.entryInfoList())
         {
@@ -194,7 +193,8 @@ void ResourceManager::setUpAllSounds()
     }
     else
     {
-        mLogger->logText("*** ERROR reading sounds *** : Asset-folder " + gsl::SoundFilePath + " does not exist!", LColor::DAMNERROR);
+        mLogger->logText("*** ERROR reading sounds *** : Asset-folder " + gsl::SoundFilePath +
+                         " does not exist!", LColor::DAMNERROR);
     }
 }
 
@@ -222,8 +222,48 @@ void ResourceManager::setUpAllMeshes()
      }
      else
      {
-         mLogger->logText("*** ERROR reading meshes *** : Asset-folder " + gsl::MeshFilePath + " does not exist!", LColor::DAMNERROR);
+         mLogger->logText("*** ERROR reading meshes *** : Asset-folder " +
+                          gsl::MeshFilePath + " does not exist!", LColor::DAMNERROR);
      }
+}
+
+void ResourceManager::setUpAllMaterials()
+{
+    MaterialComponent temp;
+    temp.mShaderProgram = 0;
+
+    mMaterials.push_back(temp); //this should performe a copy...
+    mMaterialMap.emplace("Default", 0);
+
+    temp.mShaderProgram = 1;
+    temp.mTextureUnit = 1;
+    mMaterials.push_back(temp); //this should performe a copy...
+    mMaterialMap.emplace("Texture", 1);
+}
+
+void ResourceManager::setUpAllShaders()
+{
+    //Compile shaders:
+    //NB: hardcoded path to files! You have to change this if you change directories for the project.
+    //Qt makes a build-folder besides the project folder. That is why we go down one directory
+    // (out of the build-folder) and then up into the project folder.
+    ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+            (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+
+    mShaders.push_back(tempShader);
+    std::string tempString;
+    tempString += "Plain shader program id: " + std::to_string(mShaders[0]->mProgram);
+    mLogger->logText(tempString);
+    mShaders.back()->setupShader(false);
+
+
+    tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+    mShaders.push_back(tempShader);
+    tempString.clear();
+    tempString += "Texture shader program id: " + std::to_string(mShaders[1]->mProgram);
+    mLogger->logText(tempString);
+    mShaders[1]->setupShader(true);
 }
 
 MeshData ResourceManager::makeLineBox(std::string meshName)
@@ -239,4 +279,19 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
 MeshData ResourceManager::makeFrustum(const Frustum &frustumIn)
 {
     return mMeshHandler->makeFrustum(frustumIn);
+}
+
+MaterialComponent *ResourceManager::getMaterial(std::string materialName)
+{
+    int index{-1};
+    auto result = mMaterialMap.find(materialName);
+    if (result != mMaterialMap.end()) {        //found!!!
+        index = result->second;
+        return &mMaterials[index];
+    }
+    else
+    {
+        mLogger->logText("Material \"" + materialName + "\" not found. Using default.", LColor::WARNING);
+        return &mMaterials[0];
+    }
 }

@@ -15,6 +15,7 @@ class GameObject;
 class MeshHandler;
 class TextureHandler;
 struct MeshData;
+class ShaderHandler;
 
 class ResourceManager // : public QOpenGLFunctions_4_1_Core
 {
@@ -28,12 +29,18 @@ public:
     void setUpAllSounds();
     void setUpAllMeshes();
 
+    void setUpAllMaterials();
+    void setUpAllShaders();
+
     //TODO: These functions do nothing other than forward to MeshHandeler - maybe delete?
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
     MeshHandler* mMeshHandler{nullptr};
+    std::vector<ShaderHandler*> mShaders;
+
+    MaterialComponent* getMaterial(std::string materialName);
 
 private:
     ResourceManager();  //singleton
@@ -47,6 +54,9 @@ private:
     //Should these belong to other class - like in MeshHandler?
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
+
+    std::map<std::string, unsigned int> mMaterialMap;
+    std::vector<MaterialComponent> mMaterials;
 
     TextureHandler *mTextureHandler{nullptr};
 

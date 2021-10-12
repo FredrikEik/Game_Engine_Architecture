@@ -28,6 +28,7 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
 
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
+
     mInstance = this;
 
     //Make the gameloop timer:
@@ -53,9 +54,11 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 void CoreEngine::setUpScene()
 {
     //ask resource manager to set up all assets
-    mResourceManager->setUpAllTextures();
     mResourceManager->setUpAllSounds();
     mResourceManager->setUpAllMeshes();
+    mResourceManager->setUpAllTextures();
+    mResourceManager->setUpAllShaders();
+    mResourceManager->setUpAllMaterials();  //materials uses textures and shaders!
 
     //********************** Making the object to be drawn **********************
 
@@ -67,8 +70,7 @@ void CoreEngine::setUpScene()
     //dog triangle
     temp = mResourceManager->addObject("triangle");
     temp->mName = "DogTriangle";
-    temp->mMaterial->mShaderProgram = 1;
-    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
+    temp->mMaterial = mResourceManager->getMaterial("Texture");
 
     temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to moving triangle:
@@ -80,7 +82,7 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mGameObjects.push_back(temp);
 
-    //Suzannes:
+    //Suzannes - using default material:
     for(int i{0}; i < 100; i++)
     {
         for(int j{0}; j < 10; j++)

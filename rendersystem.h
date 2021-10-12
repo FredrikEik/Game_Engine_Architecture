@@ -18,6 +18,7 @@ class MainWindow;
 class GameObject;
 class Camera;
 class TextureHandler;
+class ResourceManager;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -50,6 +51,8 @@ public:
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
 
+    ResourceManager *mResourceManager{nullptr};
+
     void render();
 
     bool mUseFrustumCulling{false};
@@ -68,14 +71,6 @@ private:
 
     void mousePickingRay(QMouseEvent *event);
 
-    class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
-
-    class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
-
-    //these can maybe be removed, because they are held in the camera
-    float mAspectratio{1.f};
-    float mFOVangle{45};
-
     int mMouseXlast{0};
     int mMouseYlast{0};
 
@@ -84,7 +79,7 @@ private:
     int mObjectsDrawn{0};
 
     QOpenGLContext *mContext{nullptr};
-    bool mInitialized;
+    bool mInitialized{false};
 
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
 

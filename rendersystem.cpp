@@ -108,28 +108,13 @@ void RenderSystem::init()
     glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-    //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    tempString.clear();
-    tempString += "Plain shader program id: " + std::to_string(mShaderPrograms[0]->mProgram);
-    mLogger->logText(tempString);
-    mShaderPrograms[0]->setupShader(false);
-
-    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    tempString.clear();
-    tempString += "Texture shader program id: " + std::to_string(mShaderPrograms[1]->mProgram);
-    mLogger->logText(tempString);
-    mShaderPrograms[1]->setupShader(true);
-
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
     //Probably should be placed elsewhere
     CoreEngine::getInstance()->setUpScene();
+
+    //Getting pointer to ResourceManager
+    mResourceManager = &ResourceManager::getInstance();
 
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
@@ -171,7 +156,8 @@ void RenderSystem::render()
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
         int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
-        glUseProgram(mShaderPrograms[shaderIndex]->mProgram );
+        ShaderHandler *tempShader = mResourceManager->mShaders[shaderIndex];
+        glUseProgram(tempShader->mProgram);
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
@@ -179,14 +165,14 @@ void RenderSystem::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        viewMatrix = mShaderPrograms[shaderIndex]->vMatrixUniform;
-        projectionMatrix = mShaderPrograms[shaderIndex]->pMatrixUniform;
-        modelMatrix = mShaderPrograms[shaderIndex]->mMatrixUniform;
+        viewMatrix = tempShader->vMatrixUniform;
+        projectionMatrix = tempShader->pMatrixUniform;
+        modelMatrix = tempShader->mMatrixUniform;
 
-        if(mShaderPrograms[shaderIndex]->mTextureUniform > -1)
+        if(tempShader->mTextureUniform > -1)
         {
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mShaderPrograms[shaderIndex]->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
 
         //send data to shader
@@ -235,13 +221,14 @@ void RenderSystem::render()
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)
         {
+            tempShader = mResourceManager->mShaders[0];
 //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
             //Hackety hack - have to get rid of scale in the objects model matrix
             gsl::Matrix4x4 temp(true);
             temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
-            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
 //            glBindVertexArray( lineBox.mVAO[0] );
 //            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
@@ -253,13 +240,14 @@ void RenderSystem::render()
     //Quick hack test to check if frustum line mesh is OK
     if(false)
     {
+        ShaderHandler* tempShader = mResourceManager->mShaders[0];
         MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
         gsl::Matrix4x4 temp(true);
         temp.translate(mGameCamera->mPosition);
         temp.rotateY(-mGameCamera->mYaw);
         temp.rotateX(mGameCamera->mPitch);
 
-        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
         glBindVertexArray( frustum.mVAO[0] );
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
@@ -334,12 +322,12 @@ void RenderSystem::exposeEvent(QExposeEvent *)
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
 
     //calculate aspect ration and set projection matrix
-    mAspectratio = static_cast<float>(width()) / height();
-    mEditorCamera->mFrustum.mAspectRatio = mAspectratio;
+    float aspectRatio = static_cast<float>(width()) / height();
+    mEditorCamera->mFrustum.mAspectRatio = aspectRatio;
     mEditorCamera->calculateProjectionMatrix();
 
     //To be able to see the frustum on GameCam, while in Editormode
-    mGameCamera->mFrustum.mAspectRatio = mAspectratio;
+    mGameCamera->mFrustum.mAspectRatio = aspectRatio;
     mGameCamera->calculateProjectionMatrix();
 }
 

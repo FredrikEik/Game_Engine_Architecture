@@ -30,7 +30,7 @@ void Logger::logText(std::string input, LColor colorIn)
         textColor = Qt::darkGreen;
         break;
     case LColor::WARNING :
-        textColor = Qt::darkYellow;
+        textColor = Qt::blue;
         break;
     case LColor::DAMNERROR :
         textColor = Qt::red;

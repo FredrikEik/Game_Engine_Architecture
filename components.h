@@ -33,7 +33,8 @@ struct MeshComponent
 struct MaterialComponent
 {
     GLuint mShaderProgram{0};
-    GLint mTextureUnit{0};
+    GLint mTextureUnit{0};  //this holds standard texture
+    gsl::Vector3D mColor{0.4f};
 };
 
 struct SoundListenerComponent
