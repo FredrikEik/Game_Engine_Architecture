@@ -149,18 +149,30 @@ void RenderWindow::render()
         gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
         rightPlaneNormal.rotateY(-45.f);
 
-        gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
-        rightPlaneNormal.rotateY(45.f);
+        gsl::Vector3D topPlaneNormal = -mCurrentCamera->getmForward();
+        topPlaneNormal.rotateX(-45.f);
+
+        gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
+        bottomPlaneNormal.rotateX(45.f);
+
+        gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight(); //SNART DER
+        leftPlaneNormal.rotateY(45.f);
 
         gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
         gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
         float distanceToRightObject = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
         float distanceToLeftObject = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
+        float distanceToTopObject = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
+        float distanceToBottomObject = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
 
-        if(distanceToLeftObject > 75)
+        if(distanceToLeftObject > 0)
             continue;
-        if(distanceToRightObject > 75)
+        if(distanceToRightObject > 0)
+            continue;
+        if(distanceToTopObject > 0)
+            continue;
+        if(distanceToBottomObject > 0)
             continue;
 
     /** */

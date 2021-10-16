@@ -32,7 +32,7 @@ struct Mesh
     GLuint mEAB[3]{0};
 
     float sphereRadius{0};
-    gsl::Vector3D middlePoint{0,0,0};
+//    gsl::Vector3D middlePoint{0,0,0};
 
     int lodLevel{0};
 
