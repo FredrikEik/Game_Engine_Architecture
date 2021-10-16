@@ -8,6 +8,7 @@ Camera::Camera()
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
           //.setX(tan(FOV)*farplane/AspectR
     farPlane.setX(tan(45.f)*100.f);
     farPlane.setY(tan(45.f)* (100.f /1.3333));
@@ -36,7 +37,7 @@ void Camera::updateRightVector()
     mRight = mForward^mUp;
     mRight.normalize();
 
-//    qDebug() << "Right " << mRight;
+    mRight.y = 0;
 }
 
 void Camera::updateForwardVector()
@@ -46,6 +47,7 @@ void Camera::updateForwardVector()
     mRight.normalize();
     mUp = gsl::Vector3D(0.f, 1.f, 0.f);
     mUp.rotateX(mPitch);
+    mUp.rotateY(mYaw);
     mUp.normalize();
     mForward = mUp^mRight;
 
