@@ -12,7 +12,10 @@
 
 struct CollisionShape
 {
-
+    virtual void setPoint(float sx, float sy, float sz)=0;
+    virtual void setRadius(float r)=0;
+    virtual Vertex getPoint()=0;
+    virtual float getRadius()=0;
 };
 
 struct CollisionSphere : CollisionShape
@@ -21,13 +24,21 @@ struct CollisionSphere : CollisionShape
     float m_radius;
     std::vector<Vertex> m_vertices;
 
-    void setPoint(float sx, float sy, float sz)
+    void setPoint(float sx, float sy, float sz) override
     {
         m_cPoint.set_xyz(sx, sy, sz);
     }
-    void setRadius(float r)
+    void setRadius(float r) override
     {
         m_radius = r;
+    }
+    Vertex getPoint() override
+    {
+        return m_cPoint;
+    }
+    float getRadius() override
+    {
+        return m_radius;
     }
 };
 
@@ -38,12 +49,13 @@ public:
     void createCollisionSphere(GameObject& obj);
     gsl::Vector3D createCentroid(GameObject& obj);
     float findRadian(GameObject &obj, gsl::Vector3D centroid);
-    CollisionSphere createSphere(float r, gsl::Vector3D centroid);
+    CollisionSphere* createSphere(float fl_r, gsl::Vector3D vec_centroid);
+    CollisionShape* getGeometricForm();
 
 private:
     std::string m_cName; // Name
 
-    std::vector<CollisionShape> m_cGeometricForm; // Geometric Form
+    CollisionShape* m_cGeometricForm; // Geometric Form
     gsl::Matrix4x4 m_cTransform; // Transform
 };
 

@@ -11,6 +11,7 @@
 #include "gameobject.h"
 #include "triangletest.h"
 #include "resourcemanageer.h"
+#include "collisionsystem.h"
 
 class QOpenGLContext;
 class Shader;
@@ -78,6 +79,7 @@ private:
     int mMouseXlast{0};
     int mMouseYlast{0};
     ResourceManageer* source;
+    CollisionSystem* collision_sys;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

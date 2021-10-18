@@ -7,16 +7,16 @@ CollisionShapes::CollisionShapes()
 
 void CollisionShapes::createCollisionSphere(GameObject& obj)
 {
-    CollisionSphere tempShape;
+    CollisionSphere* tempShape = new CollisionSphere;
     // Find the center point
     gsl::Vector3D tempVec;
     tempVec = createCentroid(obj);
-    tempShape.m_cPoint.set_xyz(tempVec);
+    tempShape->m_cPoint.set_xyz(tempVec);
     // Find the radius from the center point
     float r = findRadian(obj, tempVec);
-    tempShape.setRadius(r);
+    tempShape->setRadius(r);
     // populate the shape into the vector
-    m_cGeometricForm.push_back(tempShape);
+    m_cGeometricForm = tempShape;
 }
 
 gsl::Vector3D CollisionShapes::createCentroid(GameObject &obj)
@@ -41,6 +41,7 @@ gsl::Vector3D CollisionShapes::createCentroid(GameObject &obj)
     return tempVec;
 }
 
+//Find the radian from centroid to furthest coordinate
 float CollisionShapes::findRadian(GameObject &obj, gsl::Vector3D centroid)
 {
     std::vector<Vertex> points = obj.mMesh->mVertices;
@@ -57,7 +58,16 @@ float CollisionShapes::findRadian(GameObject &obj, gsl::Vector3D centroid)
     return r;
 }
 
-CollisionSphere CollisionShapes::createSphere(float r, gsl::Vector3D centroid)
+// Dont really need it? Maybe for transforms?
+CollisionSphere* CollisionShapes::createSphere(float fl_r, gsl::Vector3D vec_centroid)
 {
-
+    return nullptr;
 }
+
+CollisionShape* CollisionShapes::getGeometricForm()
+{
+    return m_cGeometricForm;
+}
+
+
+
