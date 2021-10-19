@@ -248,6 +248,59 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
+void RenderWindow::mousePicking(QMouseEvent *event)
+{
+//Currently using (almost) the same solution as Ole. from Anton Gerdelan. https://antongerdelan.net/opengl/raycasting.html
+
+    int mousePixelX = event->pos().x();
+    int mousePixelY = event->pos().y();
+
+    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+    float x = (2.0f * mousePixelX) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mousePixelY) / height();
+
+    gsl::Vector4D ray_clip{x, y, -1.0, 1.0};
+
+    projMatrix.inverse();
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye;
+    gsl::Vector3D ray_wor{temp.x, temp.y, temp.z};
+    ray_wor.normalize();
+
+//    qDebug() << ray_wor;
+
+    for(int i{0}; i < mGameObjects.size(); i++)
+    {
+        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+        gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+
+        gsl::Vector3D planeNormal = gsl::Vector3D::cross(ray_wor, CameraToObject); //Cross-product
+        gsl::Vector3D rayNormal = gsl::Vector3D::cross(planeNormal, ray_wor);      //Cross-product
+        rayNormal.normalize();
+
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray:
+        float distance = gsl::Vector3D::dot(CameraToObject, rayNormal);
+
+        //we are interested in the absolute distance, no negative numbers
+        distance = abs(distance);
+
+        //if distance to ray < objects bounding sphere == we have a collision
+        if(distance < mGameObjects[i]->mesh->sphereRadius)
+        {
+            qDebug() << "Collision with" << QString::fromStdString(mGameObjects[i]->mName) << "at index:" << i;
+            indexToPickedObject = i;
+            break;  //breaking out of for loop - does not check if the ray is touching several objects
+        }
+    }
+
+}
+
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
@@ -571,8 +624,10 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::RightButton)
         mInput.RMB = true;
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton){
         mInput.LMB = true;
+        mousePicking(event);
+    }
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
 }

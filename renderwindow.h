@@ -9,6 +9,7 @@
 #include "input.h"
 #include "constants.h"
 
+class QVector3D;
 class QOpenGLContext;
 class Shader;
 class MainWindow;
@@ -16,7 +17,6 @@ class GameObject;
 class Camera;
 class Texture;
 class CoreEngine;
-class ResourceManager;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -96,6 +96,8 @@ private:
     int mMouseXlast{0};
     int mMouseYlast{0};
 
+    int indexToPickedObject{-1};
+
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
@@ -107,6 +109,8 @@ private:
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
     class ResourceManager *mResourceManager{nullptr};
     class CoreEngine *mCoreEngine{nullptr};
+
+    void mousePicking(QMouseEvent *event);
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

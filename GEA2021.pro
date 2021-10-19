@@ -19,6 +19,7 @@ SOURCES += main.cpp \
     coreengine.cpp \
     soundsource.cpp \
     soundsource.cpp \
+    vector4d.cpp \
     wavfilehandler.cpp \
     wavfilehandler.cpp \
     GameObject.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     coreengine.h \
     soundsource.h \
     soundsource.h \
+    vector4d.h \
     wavfilehandler.h \
     wavfilehandler.h \
     GameObject.h \

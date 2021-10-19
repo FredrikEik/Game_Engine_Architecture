@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 
     //Makes the Qt MainWindow and shows it.
     MainWindow w;
+    w.move(0, 0);
     w.show();
 
     return a.exec();
