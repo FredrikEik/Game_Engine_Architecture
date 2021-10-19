@@ -2,6 +2,8 @@
 #include <QDebug>
 
 #include "soundsystem.h"
+#include "math_constants.h"
+#include "logger.h"
 
 Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
@@ -11,7 +13,7 @@ Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
-    mFrustum.mFOV = fovIn;
+    mFrustum.mFOVvertical = fovIn;
     mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
     mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
 
@@ -70,13 +72,14 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 
     SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);
+//    Logger::getInstance()->logText("CameraVector:" + mPosition.getAsString());
 }
 
 void Camera::calculateProjectionMatrix()
 {
-    mProjectionMatrix.perspective(mFrustum.mFOV, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    mProjectionMatrix.perspective(mFrustum.mFOVvertical, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
     calculateFrustumVectors();
-//    qDebug() << "AspectRatio" << mFrustum.mAspectRatio;
+    Logger::getInstance()->logText("AspectRatio " + std::to_string(mFrustum.mAspectRatio));
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
@@ -121,13 +124,26 @@ void Camera::calculateFrustumVectors()
     //So it will not be accurate when camera is pitching
 
     gsl::Vector3D tempVector;
+
+    //calculate horisontal FOV:
+
+    //not to scale, since I use aspectratio with height 1
+    //the 0.5 is height / 2
+    float forwardVectorLenght = abs(0.5f/tan(mFrustum.mFOVvertical/2));
+    float horisontalFOV = gsl::rad2degf(atan(mFrustum.mAspectRatio/forwardVectorLenght));
+    horisontalFOV *= 2;      // it seems to look to narrow...
+
     //rightplane vector = mRight rotated by FOV around up
     tempVector = mRight;
-    tempVector.rotateY(-mFrustum.mFOV);
-    mFrustum.mRightPlane = tempVector;
+    tempVector.rotateY(-horisontalFOV);
+    mFrustum.mRightPlane = tempVector;    
 
     //leftPlane vector = mRight rotated by FOV+180 around up
     tempVector = mRight;
-    tempVector.rotateY(mFrustum.mFOV + 180.f);
+    tempVector.rotateY(horisontalFOV + 180.f);
     mFrustum.mLeftPlane = tempVector;
+
+    Logger::getInstance()->logText("Camera horisontal FOV: " + std::to_string(horisontalFOV) + " Right vector: " + mFrustum.mRightPlane.getAsString());
+
+
 }

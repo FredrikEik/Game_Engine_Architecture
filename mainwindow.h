@@ -37,6 +37,8 @@ private slots:
 
     void on_actionFrustum_Culling_triggered(bool checked);
 
+    void on_actionCull_With_EditorCam_toggled(bool checked);
+
     void on_actionBasic_Editor_Controls_triggered();
 
     void on_actionWireframe_triggered(bool checked);

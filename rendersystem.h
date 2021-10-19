@@ -55,7 +55,7 @@ public:
 
     void render();
 
-    bool mUseFrustumCulling{false};
+    bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 
 private:

@@ -386,7 +386,7 @@ MeshData MeshHandler::makeFrustum(const Frustum &frustumIn)
 {
     //calculate corners of frustum:
     //Math shown here: https://docs.google.com/document/d/18tszRZWk5UhXuFieCzKJ4vT1eU7Vpk0fPFutnsuo9IY/edit?usp=sharing
-    float tanFOV = tanf(frustumIn.mFOV);          // expensive calculation - save answer
+    float tanFOV = tanf(frustumIn.mFOVvertical);          // expensive calculation - save answer
     float widthNear = tanFOV * frustumIn.mNearPlaneDistance;      // oposite side
     float widthFar = tanFOV * frustumIn.mFarPlaneDistance;        // oposite side
 

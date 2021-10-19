@@ -344,7 +344,7 @@ void Matrix4x4::frustum(float left, float right, float bottom, float top, float 
     };
 }
 
-void Matrix4x4::perspective(GLfloat fieldOfView, GLfloat aspectRatio, GLfloat nearPlane, GLfloat farPlane)
+void Matrix4x4::perspective(GLfloat fieldOfViewVertical, GLfloat aspectRatio, GLfloat nearPlane, GLfloat farPlane)
 {
     /* General form of the Projection Matrix
     //
@@ -357,8 +357,8 @@ void Matrix4x4::perspective(GLfloat fieldOfView, GLfloat aspectRatio, GLfloat ne
     //    0         0    -fn/(f-n)  0 */
 
     //Checking numbers for no division on zero:
-    if (fieldOfView <= 0.f)
-        fieldOfView = 30.f;
+    if (fieldOfViewVertical <= 0.f)
+        fieldOfViewVertical = 30.f;
     if (aspectRatio <= 0.f)
         aspectRatio = 1.3f;
     if (farPlane - nearPlane <= 0.f)
@@ -367,7 +367,7 @@ void Matrix4x4::perspective(GLfloat fieldOfView, GLfloat aspectRatio, GLfloat ne
         farPlane = 100.f;
     }
 
-    GLfloat uh = static_cast<float>(1/std::tan(gsl::deg2rad(static_cast<double>(fieldOfView)/2)));
+    GLfloat uh = 1/std::tan(gsl::deg2radf(fieldOfViewVertical)/2);
     GLfloat uw = (1/aspectRatio) * uh;
 
     *this =

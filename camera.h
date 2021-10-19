@@ -13,8 +13,8 @@ struct Frustum
 {
     float mFarPlaneDistance{0.f};   //used to make projection matrix
     float mNearPlaneDistance{0.f};  //used to make projection matrix
-    float mFOV{0.f};                //used to make projection matrix
-    float mAspectRatio{0.f};        //used to make projection matrix
+    float mFOVvertical{0.f};                //used to make projection matrix
+    float mAspectRatio{1.7777778f};        //used to make projection matrix - set to 16/9 as default
 
     //Normals for the side planes - for frustum culling
     //Make sure these are stored normalized!

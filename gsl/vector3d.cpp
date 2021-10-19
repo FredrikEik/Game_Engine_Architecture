@@ -228,4 +228,9 @@ namespace gsl
     {
         z = value;
     }
+
+    std::string Vector3D::getAsString() const
+    {
+        return std::string(" x: " + std::to_string(x) + ", y: " + std::to_string(y) + ", z: " + std::to_string(z));
+    }
 } //namespace

@@ -238,7 +238,7 @@ void RenderSystem::render()
     }
 
     //Quick hack test to check if frustum line mesh is OK
-    if(false)
+    if(true)
     {
         ShaderHandler* tempShader = mResourceManager->mShaders[0];
         MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
@@ -435,7 +435,7 @@ void RenderSystem::startOpenGLDebugger()
 bool RenderSystem::frustumCulling(int gobIndex)
 {
     Camera *cullCamera{nullptr};
-    (mGameCamAsFrustumCulling) ? cullCamera = mEditorCamera : cullCamera = mGameCamera;
+    (mGameCamAsFrustumCulling) ? cullCamera = mGameCamera : cullCamera = mEditorCamera;
 
     //vector from position of cam to object;
     gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition()
@@ -459,13 +459,13 @@ bool RenderSystem::frustumCulling(int gobIndex)
 
     //Project vector down to frustum normals:
     //Right plane:
-    tempDistance = frustum.mRightPlane * vectorToObject;
-    if(tempDistance > gobRadius)
+    tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > 0)  //gobRadius)
         return true;
 
     //Left plane:
-    tempDistance = frustum.mLeftPlane * vectorToObject;
-    if(tempDistance > gobRadius)
+    tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > 0) //gobRadius)
         return true;
 
     //insert the rest of planes here

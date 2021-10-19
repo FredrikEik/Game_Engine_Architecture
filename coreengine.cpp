@@ -35,8 +35,8 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
     mGameLoopTimer = new QTimer(this);
 
     //Make EditorCamera:
-    mEditorCamera = new Camera(45.f, 0.1f, 1000.f);
-    mGameCamera = new Camera(45.f, 0.1f, 300.f);
+    mEditorCamera = new Camera(50.f, 0.1f, 1000.f);
+    mGameCamera = new Camera(50.f, 0.1f, 300.f);
 }
 
 CoreEngine *CoreEngine::getInstance()

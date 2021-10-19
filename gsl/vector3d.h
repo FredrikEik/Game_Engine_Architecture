@@ -63,6 +63,8 @@ public:
     GLfloat getZ() const;
     void setZ(const GLfloat &value);
 
+    std::string getAsString() const;
+
     GLfloat *xP();
     GLfloat *yP();
     GLfloat *zP();

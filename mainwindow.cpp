@@ -155,6 +155,11 @@ void MainWindow::on_actionFrustum_Culling_triggered(bool checked)
     mRenderSystem->mUseFrustumCulling = checked;
 }
 
+void MainWindow::on_actionCull_With_EditorCam_toggled(bool checked)
+{
+    mRenderSystem->mGameCamAsFrustumCulling = !checked;
+}
+
 //void MainWindow::on_pb_togglefrustumcam_toggled(bool checked)
 //{
 //    mRenderSystem->mGameCamAsFrustumCulling = checked;
@@ -278,3 +283,5 @@ void MainWindow::on_scaleStep_valueChanged(double arg1)
         mTransformWidget->setScaleStep(arg1);
     }
 }
+
+
