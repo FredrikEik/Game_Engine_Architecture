@@ -127,6 +127,16 @@ void MainWindow::on_LODButton_toggled(bool checked)
 
 }
 
+void MainWindow::on_FrustumToggle_toggled(bool checked)
+{
+    mRenderWindow->toggleFrustum();
+    if(checked)
+        ui->FrustumToggle->setText("Enable FRUSTUM");
+    else{
+        ui->FrustumToggle->setText("Disable FRUSTUM");
+    }
+}
+
 void MainWindow::on_CreateObjectButton_clicked()
 {
     mCoreEngine->CreateObjectButton(spawnObject);

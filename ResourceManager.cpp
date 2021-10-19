@@ -49,6 +49,11 @@ GameObject* ResourceManager::CreateObject(std::string filename)
         std::cout << "Error: meshIndex is -1 (no mesh)";
     }
 
+    if(object->mesh->mVertices[1].size() == 0) //If this is true, the object has no LOD variants
+        object->mesh->bLodEnabled = false;
+
+
+
     return object;
 }
 

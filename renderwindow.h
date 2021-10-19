@@ -38,6 +38,7 @@ public:
     void toggleWireframe(bool buttonState);
 
     void toggleLOD();
+    void toggleFrustum();
 
     Input getInput();
 
@@ -86,7 +87,8 @@ private:
 
     std::vector<GameObject*> mGameObjects;
 
-    bool bLODEnabled{true};
+    bool bLODToggleEnabled{true};
+    bool bFrustumEnabled{true};
 
     Input mInput;
     float mCameraSpeed{0.05f};

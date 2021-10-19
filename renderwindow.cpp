@@ -146,6 +146,7 @@ void RenderWindow::render()
     for( int i = 0; i < mGameObjects.size(); i++)
     {
     /** FRUSTUM */
+    if(bFrustumEnabled){
         gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
         rightPlaneNormal.rotateY(-45.f);
 
@@ -155,27 +156,27 @@ void RenderWindow::render()
         gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
         bottomPlaneNormal.rotateX(45.f);
 
-        gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight(); //SNART DER
+        gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
         leftPlaneNormal.rotateY(45.f);
 
         gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
         gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
-        float distanceToRightObject = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
-        float distanceToLeftObject = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
-        float distanceToTopObject = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
-        float distanceToBottomObject = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
+        float ObjDistanceFromRightPlane = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
+        float ObjDistanceFromLeftPlane = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
+        float ObjDistanceFromTopPlane = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
+        float ObjDistanceFromBottomPlane = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
 
-        if(distanceToLeftObject > 0)
+        if(ObjDistanceFromLeftPlane > 0)
             continue;
-        if(distanceToRightObject > 0)
+        if(ObjDistanceFromRightPlane > 0)
             continue;
-        if(distanceToTopObject > 0)
+        if(ObjDistanceFromTopPlane > 0)
             continue;
-        if(distanceToBottomObject > 0)
+        if(ObjDistanceFromBottomPlane > 0)
             continue;
-
-    /** */
+    }
+    /**  */
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
@@ -194,7 +195,7 @@ void RenderWindow::render()
         gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
         float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
 
-        if(bLODEnabled){
+        if(mGameObjects[i]->mesh->bLodEnabled && bLODToggleEnabled){ //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
             if(distanceToObject > 50)
                 mGameObjects[i]->mesh->lodLevel = 2;  
             else if(distanceToObject > 20)
@@ -316,10 +317,18 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 void RenderWindow::toggleLOD()
 {
-    if(bLODEnabled)
-        bLODEnabled = false;
+    if(bLODToggleEnabled)
+        bLODToggleEnabled = false;
     else
-        bLODEnabled = true;
+        bLODToggleEnabled = true;
+}
+
+void RenderWindow::toggleFrustum()
+{
+    if(bFrustumEnabled)
+        bFrustumEnabled = false;
+    else
+        bFrustumEnabled = true;
 }
 
 Input RenderWindow::getInput()

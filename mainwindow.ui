@@ -63,6 +63,45 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="3">
+     <widget class="QWidget" name="ObjectWidget" native="true"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="pushButton">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Show Wireframe</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="FrustumToggle">
+      <property name="text">
+       <string>Disable FRUSTUM</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="4">
+     <layout class="QVBoxLayout" name="OpenGLLayout"/>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="CreateObjectButton">
+      <property name="text">
+       <string>Create Object</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="2">
      <widget class="QComboBox" name="ObjectDropdown">
       <property name="mouseTracking">
@@ -100,45 +139,6 @@
        </property>
       </item>
      </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QWidget" name="ObjectWidget" native="true"/>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="CreateObjectButton">
-      <property name="text">
-       <string>Create Object</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="pushButton">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Show Wireframe</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0" colspan="4">
-     <layout class="QVBoxLayout" name="OpenGLLayout"/>
     </item>
    </layout>
   </widget>

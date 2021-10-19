@@ -25,6 +25,7 @@ private slots:
     void on_pushButton_toggled(bool checked);
     void on_startGameButton_toggled(bool checked);
     void on_LODButton_toggled(bool checked);
+    void on_FrustumToggle_toggled(bool checked);
     void on_CreateObjectButton_clicked();
     void on_ObjectDropdown_currentTextChanged(const QString &arg1);
 
