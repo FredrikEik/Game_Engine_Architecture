@@ -37,7 +37,6 @@ SOURCES += main.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
-    trianglesurface.cpp \
     vertex.cpp \
     visualobject.cpp \
     xyz.cpp
@@ -67,7 +66,6 @@ HEADERS += \
     triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    trianglesurface.h \
     vertex.h \
     visualobject.h \
     xyz.h

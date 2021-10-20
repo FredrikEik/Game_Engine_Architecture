@@ -164,7 +164,6 @@ void RenderWindow::init()
     ////*************************************start**////////////
 
 
-
     ///PURE ECS TEST
     entities.push_back(0);
 
