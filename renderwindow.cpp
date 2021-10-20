@@ -224,7 +224,7 @@ void RenderWindow::init()
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,100.0f,0.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -378,6 +378,7 @@ void RenderWindow::render()
                     pMatrixUniform,
                     mMatrixUniform,
                     mCurrentCamera);
+
             //----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
@@ -397,6 +398,14 @@ void RenderWindow::render()
             transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
             mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
         }
+        //----------------------------FALL------------------------
+        if(transformCompVec[i]->entity == 4 )
+        {
+            float g = -9.81f;
+            transformCompVec[i]->Velocity =transformCompVec[i]->Velocity + gsl::Vector3D(0.0f, 0.0005f*g,0.f);
+            transformCompVec[i]->mMatrix.translate(0.0f, transformCompVec[i]->Velocity.getY(),0.f);
+        }
+        //----------------------------FALL------------------------
     }
 
 
@@ -500,6 +509,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
+
     static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
 
     if (mMainWindow)            //if no mainWindow, something is really wrong...
