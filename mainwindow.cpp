@@ -150,13 +150,17 @@ void MainWindow::on_treeWidget_viewportEntered()
     QTWI->setExpanded(true);
     for(unsigned long i = 0; i < mRenderWindow->entities.size(); i++){
         QTreeWidgetItem * item = new QTreeWidgetItem(QTWI);
-            /*if(mRenderWindow->DeetsVector[i]->entity==mRenderWindow->entities[i]){
-                QString temp;
 
-                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[i]->title));
-            }else{*/
+        for(unsigned long j = 0; j < mRenderWindow->DeetsVector.size(); j++){
+            if(mRenderWindow->DeetsVector[j]->entity==mRenderWindow->entities[i]){
+                QString temp;
+                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[j]->title));
+                break;
+            }
+            else{
                 item->setText(0, "Unknown");
-            /*}*/
+            }
+        }
     }
 }
 
