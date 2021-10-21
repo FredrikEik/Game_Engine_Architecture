@@ -67,6 +67,9 @@ public:
     SoundSource* mSong{};
 
 
+    bool isPaused = false;
+
+
 
 private slots:
     void render();

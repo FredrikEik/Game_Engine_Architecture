@@ -31,6 +31,8 @@ private slots:
 
     void on_actionPlane_triggered();
 
+    void on_pushButton_2_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

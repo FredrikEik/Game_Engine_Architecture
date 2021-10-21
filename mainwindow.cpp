@@ -113,3 +113,17 @@ void MainWindow::on_actionPlane_triggered()
 {
     mRenderWindow->entitySys->constructPlane(mRenderWindow);
 }
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    if(mRenderWindow->isPaused){
+        ui->pushButton_2->setText("Pause");
+        mRenderWindow->isPaused = false;
+        mRenderWindow->mSong->play();
+
+    }else{
+        ui->pushButton_2->setText("Play");
+        mRenderWindow->isPaused = true;
+        mRenderWindow->mSong->pause();
+    }
+}
