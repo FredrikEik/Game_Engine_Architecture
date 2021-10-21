@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void updateViewPort();
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -32,6 +33,11 @@ private slots:
     void on_actionPlane_triggered();
 
     void on_pushButton_2_clicked();
+
+    void on_treeWidget_activated(const QModelIndex &index);
+
+    void on_treeWidget_viewportEntered();
+
 
 
 private:

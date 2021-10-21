@@ -6,6 +6,9 @@
 #include <QScreen>  //for resizing the program at start
 #include <QFile>
 #include <QFileDialog>
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
+#include <QTreeWidgetItemIterator>
 
 #include "renderwindow.h"
 
@@ -96,22 +99,26 @@ void MainWindow::on_actionCustom_OBJ_triggered()
 
 void MainWindow::on_actionSuzanne_triggered()
 {
-    mRenderWindow->entitySys->constructSuzanne(mRenderWindow);
+    mRenderWindow->entitySys->constructSuzanne();
+    updateViewPort();
 }
 
 void MainWindow::on_actionCube_triggered()
 {
-    mRenderWindow->entitySys->constructCube(mRenderWindow);
+    mRenderWindow->entitySys->constructCube();
+    updateViewPort();
 }
 
 void MainWindow::on_actionSphere_triggered()
 {
-    mRenderWindow->entitySys->constructSphere(mRenderWindow);
+    mRenderWindow->entitySys->constructSphere();
+    updateViewPort();
 }
 
 void MainWindow::on_actionPlane_triggered()
 {
-    mRenderWindow->entitySys->constructPlane(mRenderWindow);
+    mRenderWindow->entitySys->constructPlane();
+    updateViewPort();
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -126,4 +133,34 @@ void MainWindow::on_pushButton_2_clicked()
         mRenderWindow->isPaused = true;
         mRenderWindow->mSong->pause();
     }
+}
+
+
+void MainWindow::on_treeWidget_activated(const QModelIndex &index)
+{
+
+}
+
+void MainWindow::on_treeWidget_viewportEntered()
+{
+    ui->treeWidget->clear();
+    QTreeWidgetItem * QTWI = new QTreeWidgetItem(ui->treeWidget);
+    ui->treeWidget->addTopLevelItem(QTWI);
+    QTWI->setText(0, "Objects");
+    QTWI->setExpanded(true);
+    for(unsigned long i = 0; i < mRenderWindow->entities.size(); i++){
+        QTreeWidgetItem * item = new QTreeWidgetItem(QTWI);
+            /*if(mRenderWindow->DeetsVector[i]->entity==mRenderWindow->entities[i]){
+                QString temp;
+
+                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[i]->title));
+            }else{*/
+                item->setText(0, "Unknown");
+            /*}*/
+    }
+}
+
+void MainWindow::updateViewPort()
+{
+    on_treeWidget_viewportEntered();
 }

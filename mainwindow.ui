@@ -54,10 +54,25 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
       <item>
-       <layout class="QVBoxLayout" name="OpenGLLayout" stretch=""/>
+       <layout class="QVBoxLayout" name="OpenGLLayout"/>
       </item>
       <item>
-       <widget class="QTreeView" name="treeView"/>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>World Details</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+         <item>
+          <widget class="QTreeWidget" name="treeWidget">
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </item>
@@ -69,7 +84,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">

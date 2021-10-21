@@ -222,9 +222,9 @@ void RenderWindow::init()
     //entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
     //RenderSys->init(mc1);
 
-    entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
+    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -257,11 +257,16 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     mSong->play();
+    mMainWindow->updateViewPort();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
+
+    //
+
+
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
 

@@ -9,25 +9,31 @@ class EntitySystem
 {
 public:
     EntitySystem();
+    EntitySystem(class RenderWindow * inputRW);
+
     ~EntitySystem();
-    void construct(class RenderWindow * inRW,
-                   std::string ObjReader,
+    void construct(std::string ObjReader,
                    QVector3D StartPos,
                    GLuint shader = 0,
                    GLint texture = 0,
                    int EntityId = -1
                    );
-    void constructCube(class RenderWindow * inRW);
-    void constructSphere(class RenderWindow * inRW);
-    void constructPlane(class RenderWindow * inRW);
-    void constructSuzanne(class RenderWindow * inRW);
-    void LODSuzanneSwithcer(MeshComponent* mesh);
+    void constructCube();
+    void constructSphere();
+    void constructPlane();
+    void constructSuzanne();
+    void LODSuzanneSwithcer(MeshComponent *mesh);
 
 private:
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
     MaterialComponent *MatComp;
+    DetailsComponent * Deets;
+
+
     resourceSystem * ResourceSys;
+    RenderWindow * inRW;
+
 
     QVector3D LastPos = QVector3D(0.0f, 0.0f, 0.0f);
     void offsetLastPos();

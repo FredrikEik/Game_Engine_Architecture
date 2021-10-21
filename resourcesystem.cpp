@@ -202,7 +202,6 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                 mesh->mVertices = it->second.meshVert;
                 mesh->mIndices = it->second.meshIndic;
                 mesh->collisionRadius = it->second.collisionRadius;
-                qDebug() << "REMADE OBJECT FUCKERS "  << " \n";
                 break;
             }
         }

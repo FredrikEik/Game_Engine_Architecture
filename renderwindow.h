@@ -51,7 +51,7 @@ public:
 
     RenderSystem *RenderSys = new RenderSystem();
     resourceSystem * MeshSys = new resourceSystem();
-    EntitySystem * entitySys = new EntitySystem();
+    EntitySystem * entitySys = new EntitySystem(this);
     collisionSystem* collisionSys = new collisionSystem();
 
     std::vector<int> entities;
@@ -59,6 +59,7 @@ public:
     std::vector<MeshComponent*> meshCompVec;
     std::vector<TransformComponent*> transformCompVec;
     std::vector<MaterialComponent*> MaterialCompVec;
+    std::vector<DetailsComponent*> DeetsVector;
 
     //Some sounds...
     SoundSource* mExplosionSound{};
