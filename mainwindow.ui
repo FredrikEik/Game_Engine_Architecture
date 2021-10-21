@@ -26,6 +26,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="text">
+       <string>Play</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">

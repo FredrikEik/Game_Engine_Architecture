@@ -392,12 +392,17 @@ void RenderWindow::render()
             //------------------------------------------------------
         }
     }
-    for(int i = 0; i < eSize; i++){
-        if(transformCompVec[i]->entity == 2){
-            transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
-            mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+    if(isPaused){
+
+    }else{
+        for(int i = 0; i < eSize; i++){
+            if(transformCompVec[i]->entity == 2){
+                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+                mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+            }
         }
     }
+
 
 
     /*
