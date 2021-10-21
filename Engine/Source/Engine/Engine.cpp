@@ -125,9 +125,9 @@ void Engine::loop()
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
 		//TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
 
-		if (ImGui::Button("Destroy entity 0"))
+		if (ImGui::Button("Destroy entity 1"))
 		{
-			ECS->destroyEntity(0);
+			ECS->destroyEntity(1);
 		}
 
 		ImGui::End();
