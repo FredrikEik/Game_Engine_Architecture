@@ -13,8 +13,8 @@ public:
     void construct(class RenderWindow * inRW,
                    std::string ObjReader,
                    QVector3D StartPos,
-                   GLuint shader,
-                   GLint texture,
+                   GLuint shader = 0,
+                   GLint texture = 0,
                    int EntityId = -1
                    );
     void constructCube(class RenderWindow * inRW);
@@ -24,7 +24,6 @@ public:
     void LODSuzanneSwithcer(MeshComponent* mesh);
 
 private:
-    class RenderWindow * rw;
     TransformComponent *TransComp;
     MeshComponent *MeshComp;
     MaterialComponent *MatComp;

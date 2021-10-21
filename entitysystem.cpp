@@ -15,28 +15,25 @@ EntitySystem::~EntitySystem()
 void EntitySystem::construct(RenderWindow * inRW, std::string ObjReader, QVector3D StartPos, GLuint shader, GLint texture, int EntityId)
 {
 
-
-
-    rw = inRW;
     if(EntityId == -1){
-        auto max = *std::max_element(rw->entities.begin(), rw->entities.end());
+        auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
         EntityId = max + 1;
-        rw->entities.push_back(EntityId);
+        inRW->entities.push_back(EntityId);
     }else{
         bool matchCheck = false;
-        int entitiesSize = rw->entities.size();
+        int entitiesSize = inRW->entities.size();
         for(int i = 0; i < entitiesSize; i++){
-            if(rw->entities[i] == EntityId){
+            if(inRW->entities[i] == EntityId){
                 matchCheck = true;
                 //Give error message and assign new id.
-                auto max = *std::max_element(rw->entities.begin(), rw->entities.end());
+                auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
                 EntityId = max + 1;
-                rw->entities.push_back(EntityId);
+                inRW->entities.push_back(EntityId);
                 break;
             }
         }
         if(!matchCheck){
-            rw->entities.push_back(EntityId);
+            inRW->entities.push_back(EntityId);
         }
     }
 
@@ -48,24 +45,22 @@ void EntitySystem::construct(RenderWindow * inRW, std::string ObjReader, QVector
     TransComp->entity = EntityId;
     TransComp->mMatrix.translate(StartPos.x(), StartPos.y(), StartPos.z());
 
-    rw->transformCompVec.push_back(TransComp);
+    inRW->transformCompVec.push_back(TransComp);
 
     ResourceSys->CreateMeshComponent(ObjReader, MeshComp);
     MeshComp->entity = EntityId;
     MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
     MeshComp->centerOfMesh.setY(TransComp->mMatrix.getPosition().getY());
     MeshComp->centerOfMesh.setZ(TransComp->mMatrix.getPosition().getZ());
-    rw->meshCompVec.push_back(MeshComp);
+    inRW->meshCompVec.push_back(MeshComp);
 
     MatComp->entity = EntityId;
     MatComp->mShaderProgram = shader;
     MatComp->mTextureUnit = texture;
-    rw->MaterialCompVec.push_back(MatComp);
+    inRW->MaterialCompVec.push_back(MatComp);
 
 
-
-
-    rw->RenderSys->init(MeshComp);
+    inRW->RenderSys->init(MeshComp);
 
 }
 
