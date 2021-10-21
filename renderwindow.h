@@ -11,6 +11,8 @@
 #include "objectfactory.h"
 #include "gameobject.h"
 #include "soundmanager.h"
+#include "mousepicker.h"
+
 
 class QOpenGLContext;
 class Shader;
@@ -58,6 +60,9 @@ public:
     void setScaleX(double value);
     void setScaleY(double value);
     void setScaleZ(double value);
+    void setScale(double x, double y, double z, int index);
+
+    void updateMatrix();
 
 private slots:
     void render();
@@ -71,7 +76,7 @@ private:
 
     void startOpenGLDebugger();
 
-    bool colliding(CollisionComponent &Box1, CollisionComponent &Box2);
+    bool objectsColliding(CollisionComponent Box1, CollisionComponent Box2, gsl::Vector3D box1Pos, gsl::Vector3D box2Pos);
 
     void setCameraSpeed(float value);
 
@@ -112,6 +117,8 @@ private:
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
+
+    MousePicker *mMousePicker{nullptr};
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 

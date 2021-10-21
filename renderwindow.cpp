@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLDebugLogger>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QStatusBar>
 #include <QDebug>
 
@@ -17,6 +18,7 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "MathStuff/MathStuff.h"
 
 #include "cube.h"
 #include "objimport.h"
@@ -140,6 +142,10 @@ void RenderWindow::init()
                                                      gsl::SoundFilePath + "pop.wav", false, 1.0f);
 
 //    mStereoSound->play();
+
+    mMousePicker = new MousePicker(mCurrentCamera);
+    mMainWindow->setMouseTracking(true);
+
 }
 
 // Called each frame - doing the rendering
@@ -187,16 +193,19 @@ void RenderWindow::render()
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateZ(5.f);
-            ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
-            ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
+            //ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
+            //ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
 
             for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
             {
                 if(ObjFactory->mGameObject[i] != ObjFactory->mGameObject[y])
                 {
                     bool test;
-                    test = colliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp());
-                    qDebug() << "Box " << i << " colliding with box " << y << " = " << test;                }
+                    test = objectsColliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp(),
+                                            ObjFactory->mGameObject[i]->getTransformComp()->mTrueScaleMatrix.getPosition(),
+                                            ObjFactory->mGameObject[y]->getTransformComp()->mTrueScaleMatrix.getPosition());
+                    qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
+                }
             }
         }
     }
@@ -333,7 +342,7 @@ void RenderWindow::deleteSelection()
 
 gsl::Matrix4x4 RenderWindow::getTransform(int index)
 {
-     gsl::Matrix4x4 Matrix = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix;
+     gsl::Matrix4x4 Matrix = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix;
 
      return Matrix;
 }
@@ -355,24 +364,27 @@ void RenderWindow::setPositionX(double value)
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(value,position.getY(),position.getZ());
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(value,position.getY(),position.getZ());
+    updateMatrix();
 }
 void RenderWindow::setPositionY(double value)
 {
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(position.getX(),value,position.getZ());
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(position.getX(),value,position.getZ());
+    updateMatrix();
 }
 void RenderWindow::setPositionZ(double value)
 {
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.getPosition();
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.setPosition(position.getX(),position.getY(),value);
+    gsl::Vector3D position = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.getPosition();
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(position.getX(),position.getY(),value);
+    updateMatrix();
 }
 
 void RenderWindow::setRotationX(double value)
@@ -382,7 +394,8 @@ void RenderWindow::setRotationX(double value)
         return;
     float x = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getX();
     ObjFactory->mGameObject[index]->getTransformComp()->Rot.setX(x+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getX());
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateX(x);
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateX(x);
+    updateMatrix();
 }
 void RenderWindow::setRotationY(double value)
 {
@@ -391,7 +404,8 @@ void RenderWindow::setRotationY(double value)
         return;
     float y = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getY();
     ObjFactory->mGameObject[index]->getTransformComp()->Rot.setY(y+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getY());
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateY(y);
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateY(y);
+    updateMatrix();
 }
 void RenderWindow::setRotationZ(double value)
 {
@@ -400,7 +414,8 @@ void RenderWindow::setRotationZ(double value)
         return;
     float z = value - ObjFactory->mGameObject[index]->getTransformComp()->Rot.getZ();
     ObjFactory->mGameObject[index]->getTransformComp()->Rot.setZ(z+ObjFactory->mGameObject[index]->getTransformComp()->Rot.getZ());
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.rotateZ(z);
+    ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateZ(z);
+    updateMatrix();
 }
 
 void RenderWindow::setScaleX(double value)
@@ -408,33 +423,48 @@ void RenderWindow::setScaleX(double value)
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    //float x = value - ObjFactory->mGameObject[index]->getTransformComp()->Scal.getX();
-    //ObjFactory->mGameObject[index]->getTransformComp()->Scal.setX(x+ObjFactory->mGameObject[index]->getTransformComp()->Scal.getX());
-    //gsl::Vector3D s = ObjFactory->mGameObject[index]->getTransformComp()->Scal;
-    gsl::Vector3D s = gsl::Vector3D(1, 1, 1);
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.scale(s);
+    ObjFactory->mGameObject[index]->getTransformComp()->Scal.setX(value);
+    updateMatrix();
 }
 void RenderWindow::setScaleY(double value)
 {
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    //float y = value - ObjFactory->mGameObject[index]->getTransformComp()->Scal.getY();
-    //ObjFactory->mGameObject[index]->getTransformComp()->Scal.setY(y+ObjFactory->mGameObject[index]->getTransformComp()->Scal.getY());
-    //gsl::Vector3D s = gsl::Vector3D(x, y, z);
-    gsl::Vector3D s = gsl::Vector3D(1, 1, 1);
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.scale(s);
+    ObjFactory->mGameObject[index]->getTransformComp()->Scal.setY(value);
+    updateMatrix();
 }
 void RenderWindow::setScaleZ(double value)
 {
     int index = ObjFactory->getOBJindex();
     if (index == -1)
         return;
-    //float z = value - ObjFactory->mGameObject[index]->getTransformComp()->Scal.getZ();
-    //ObjFactory->mGameObject[index]->getTransformComp()->Scal.setZ(z+ObjFactory->mGameObject[index]->getTransformComp()->Scal.getZ());
-    //gsl::Vector3D s = gsl::Vector3D(x, y, z);
-    gsl::Vector3D s = gsl::Vector3D(1, 1, 1);
-    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.scale(s);
+    ObjFactory->mGameObject[index]->getTransformComp()->Scal.setZ(value);
+    updateMatrix();
+}
+
+void RenderWindow::setScale(double x, double y, double z, int index)
+{
+    if (x == 0)
+        x = 0.01;
+    if (y == 0)
+        y = 0.01;
+    if (z == 0)
+        z = 0.01;
+
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.scale(gsl::Vector3D(x, y, z));
+}
+
+void RenderWindow::updateMatrix()
+{
+    int index = ObjFactory->getOBJindex();
+    if (index == -1)
+        return;
+    ObjFactory->mGameObject[index]->getTransformComp()->mMatrix = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix;
+    setScale(ObjFactory->mGameObject[index]->getTransformComp()->Scal.getX(),
+             ObjFactory->mGameObject[index]->getTransformComp()->Scal.getY(),
+             ObjFactory->mGameObject[index]->getTransformComp()->Scal.getZ(),
+             index);
 }
 
 void RenderWindow::ObjectButton(std::string object)
@@ -484,14 +514,20 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-bool RenderWindow::colliding(CollisionComponent &Box1, CollisionComponent &Box2)
+bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent Box2, gsl::Vector3D box1Pos, gsl::Vector3D box2Pos)
 {
-    return ((Box1.max.getX() > Box2.min.getX()) &&
-            (Box1.min.getX() < Box2.max.getX()) &&
-            (Box1.max.getY() > Box2.min.getY()) &&
-            (Box1.min.getY() < Box2.max.getY()) &&
-            (Box1.max.getZ() > Box2.min.getZ()) &&
-            (Box1.min.getZ() < Box2.max.getZ()));
+    gsl::Vector3D Box1min = Box1.min + box1Pos;
+    gsl::Vector3D Box1max = Box1.max + box1Pos;
+    gsl::Vector3D Box2min = Box2.min + box2Pos;
+    gsl::Vector3D Box2max = Box2.max + box2Pos;
+
+    qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
+    qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
+    qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
+
+    return (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX()) &&
+           (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY()) &&
+           (Box1min.getX() <= Box2max.getZ() && Box1max.getZ() >= Box2min.getZ());
 
 }
 
@@ -695,4 +731,8 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
+
+    mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
+    //qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
+
 }

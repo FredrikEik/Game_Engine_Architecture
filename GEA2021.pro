@@ -25,6 +25,7 @@ SOURCES += main.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    mousepicker.cpp \
     objectfactory.cpp \
     objimport.cpp \
     renderwindow.cpp \
@@ -44,6 +45,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    MathStuff/MathStuff.h \
     camera.h \
     components.h \
     constants.h \
@@ -54,6 +56,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    mousepicker.h \
     objectfactory.h \
     objimport.h \
     renderwindow.h \

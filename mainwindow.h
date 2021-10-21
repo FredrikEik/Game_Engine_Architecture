@@ -26,6 +26,9 @@ public:
 
     void displayCurrentTransform(int index);
 
+    int getWidth();
+    int getHeight();
+
 private slots:
     void on_pushButton_toggled(bool checked);
 

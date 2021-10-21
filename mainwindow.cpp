@@ -125,6 +125,20 @@ void MainWindow::displayCurrentTransform(int index)
     ui->scaleZ->setValue(scale.getZ());
 }
 
+int MainWindow::getWidth()
+{
+    QRect geometry = ui->OpenGLLayout->geometry();
+    int width = geometry.width();
+    return width;
+}
+
+int MainWindow::getHeight()
+{
+    QRect geometry = ui->OpenGLLayout->geometry();
+    int height = geometry.height();
+    return height;
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {

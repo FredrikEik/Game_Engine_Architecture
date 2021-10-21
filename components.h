@@ -11,6 +11,7 @@ struct TransformComponent
 {
     TransformComponent(){}
     gsl::Matrix4x4 mMatrix;
+    gsl::Matrix4x4 mTrueScaleMatrix;
     gsl::Vector3D Rot;
     gsl::Vector3D Scal = gsl::Vector3D(1.f, 1.f, 1.f);
 };
@@ -43,7 +44,8 @@ struct MaterialComponent
 
 struct CollisionComponent
 {
-    gsl::Vector3D min, max;
+    gsl::Vector3D min = gsl::Vector3D(0.f);
+    gsl::Vector3D max = gsl::Vector3D(0.f);
 };
 
 
