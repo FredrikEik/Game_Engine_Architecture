@@ -52,7 +52,14 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="OpenGLLayout"/>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
+      <item>
+       <layout class="QVBoxLayout" name="OpenGLLayout" stretch=""/>
+      </item>
+      <item>
+       <widget class="QTreeView" name="treeView"/>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -62,7 +69,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
