@@ -5,6 +5,7 @@
 #include "renderwindow.h"
 #include "soundmanager.h"
 #include "camera.h"
+#include "physicsballsystem.h"
 #include "mainwindow.h"
 
 
@@ -19,11 +20,12 @@ GameEngine::GameEngine()
 void GameEngine::SetUpScene()
 {
     mResourceManager = new class ResourceManager();
+    mPhysicsBallSystem = new PhysicsBallSystem();
     mInstance = this;
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera->setPosition(gsl::Vector3D(3.f, 0.3f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
     mGameCamera = new Camera();
     mGameCamera->setPosition(gsl::Vector3D(0,0,0));
@@ -58,6 +60,9 @@ void GameEngine::SetUpObjects()
     tempGameObject->mTransformComp->mMatrix.translate(0,0,0);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
+
+
+
     //    for(int i{0}; i < 100; i++)
     //    {
     //        for(int j{0}; j < 100; j++)
@@ -111,6 +116,33 @@ void GameEngine::SetUpObjects()
 //    tempGameObject->mMaterialComp->mShaderProgram = 0;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
+
+
+
+
+    // * * * * * Visualisering og simulering * * * * *
+
+    mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
+    mPhysicsBall->mTransformComp->mMatrix.translate(4.8f,-0.77f,-0.8f);
+    mPhysicsBall->mTransformComp->mMatrix.scale(0.1);
+    mPhysicsBall->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(mPhysicsBall);
+
+    mTerrainObject = mResourceManager->CreateObject(gsl::MeshFilePath + "toTriangles.obj");
+    mTerrainObject->mTransformComp->mMatrix.translate(4,-1,-1);
+    mTerrainObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(mTerrainObject);
+
+    mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
+
+
+
+
+
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "HamarHeightMap.obj");
+//    tempGameObject->mTransformComp->mMatrix.translate(0,-15,0);
+//    tempGameObject->mMaterialComp->mShaderProgram = 2;
+//    mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::HandleInput()
@@ -131,6 +163,8 @@ void GameEngine::togglePlay(bool bInIsPlaying)
 
 void GameEngine::GameLoop()
 {
+    mPhysicsBallSystem->update(*mPhysicsBall);
+
     HandleInput();
 
     mEditorCamera->update();

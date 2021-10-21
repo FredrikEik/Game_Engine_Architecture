@@ -18,6 +18,7 @@ SOURCES += main.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     meshhandler.cpp \
+    physicsballsystem.cpp \
     renderwindow.cpp \
     resourcemanager.cpp \
     shader.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     matrix3x3.h \
     matrix4x4.h \
     meshhandler.h \
+    physicsballsystem.h \
     renderwindow.h \
     resourcemanager.h \
     shader.h \

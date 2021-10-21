@@ -13,6 +13,7 @@ class ResourceManager;
 class QTimer;
 class SoundSourceComponent;
 class MainWindow;
+class PhysicsBallSystem;
 
 class GameEngine : public QObject
 {
@@ -45,10 +46,13 @@ private slots:
 private:
     //TODO InputHandler
 
-     ResourceManager *mResourceManager{nullptr};
+    ResourceManager *mResourceManager{nullptr};
+    PhysicsBallSystem *mPhysicsBallSystem{nullptr};
     //std::vector<GameObject*> mGameObjects;
 
-    GameObject* tempGameObject;
+    GameObject* tempGameObject{nullptr};
+    GameObject* mTerrainObject{nullptr};
+    GameObject* mPhysicsBall{nullptr};
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

@@ -66,6 +66,12 @@ public:
     bool bShowCollisionBox{false};
 };
 
+class BallPhysicsComponent
+{
+public:
+    float Radius{0};
+};
+
 class SoundListenerComponent
 {
 public:
