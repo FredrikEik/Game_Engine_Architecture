@@ -19,7 +19,7 @@ struct TransformComponent
 {
     int entity = 0;
     gsl::Matrix4x4 mMatrix;
-    gsl::Vector3D Velocity;
+    gsl::Vector3D Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
 };
 
 struct MeshComponent

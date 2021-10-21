@@ -224,7 +224,7 @@ void RenderWindow::init()
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,100.0f,0.0f),0,0);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,50.0f,0.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -257,6 +257,9 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     mSong->play();
+
+    oldTime = std::chrono::high_resolution_clock::now();
+    mSong->stop();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -279,48 +282,6 @@ void RenderWindow::render()
 
 
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
-/*
-    //LOD SWITCHER - OLE PLS DONT HATE
-    //calc length between obj and camera.
-    //use length to switch LOD level
-    //use length and LOD level to switch only one time
-    gsl::Vector3D LODlength = transformCompVec[2]->mMatrix.getPosition() - mCurrentCamera->position();
-
-    if((LODlength.length() < 5.0f) && (meshCompVec[2]->LOD0 == false) && meshCompVec[2]->LODLevel != 0)
-    {
-        qDebug() << "LOD level 0";
-        //LOD LEVEL 0
-        meshCompVec[2]->LODLevel = 0;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = true;
-        meshCompVec[2]->LOD1 = false;
-        meshCompVec[2]->LOD2 = false;
-    }
-    else if((LODlength.length() >= 5.0f && LODlength.length() < 10.0f) && (meshCompVec[2]->LOD1 == false) && meshCompVec[2]->LODLevel != 1)
-    {
-        qDebug() << "LOD level 1";
-        //LOD LEVEL 1
-        meshCompVec[2]->LODLevel = 1;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = false;
-        meshCompVec[2]->LOD1 = true;
-        meshCompVec[2]->LOD2 = false;
-    }
-    else if((LODlength.length() >= 10.0f && LODlength.length() < 20.0f) && (meshCompVec[2]->LOD2 == false) && meshCompVec[2]->LODLevel != 2)
-    {
-        qDebug() << "LOD level 2";
-        //LOD LEVEL 2
-        meshCompVec[2]->LODLevel = 2;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = false;
-        meshCompVec[2]->LOD1 = false;
-        meshCompVec[2]->LOD2 = true;
-    }
-*/
-
 
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
@@ -395,15 +356,15 @@ void RenderWindow::render()
     }
     for(int i = 0; i < eSize; i++){
         if(transformCompVec[i]->entity == 2){
-            transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+            //transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
             mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
         }
         //----------------------------FALL------------------------
-        if(transformCompVec[i]->entity == 4 )
+        if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
         {
-            float g = -9.81f;
-            transformCompVec[i]->Velocity =transformCompVec[i]->Velocity + gsl::Vector3D(0.0f, 0.0005f*g,0.f);
-            transformCompVec[i]->mMatrix.translate(0.0f, transformCompVec[i]->Velocity.getY(),0.f);
+           Physics->freeFall(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+           Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+           break;
         }
         //----------------------------FALL------------------------
     }
@@ -452,8 +413,23 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
+    CalcDeltaTime();
+
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
+
+void RenderWindow::CalcDeltaTime()
+{
+    auto newTime = std::chrono::high_resolution_clock::now();
+
+    float elapsed_time_ms = std::chrono::duration<double, std::milli>(newTime-oldTime).count();
+    oldTime = newTime;
+
+    DeltaTime = elapsed_time_ms/10000.f;
+    //qDebug()<<"/////////////TIME: "<<DeltaTime;
+
+}
+
 
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
