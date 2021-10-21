@@ -76,7 +76,7 @@ private:
 
     void startOpenGLDebugger();
 
-    bool objectsColliding(CollisionComponent Box1, CollisionComponent Box2, gsl::Vector3D box1Pos, gsl::Vector3D box2Pos);
+    bool objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans);
 
     void setCameraSpeed(float value);
 

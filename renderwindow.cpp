@@ -202,8 +202,8 @@ void RenderWindow::render()
                 {
                     bool test;
                     test = objectsColliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp(),
-                                            ObjFactory->mGameObject[i]->getTransformComp()->mTrueScaleMatrix.getPosition(),
-                                            ObjFactory->mGameObject[y]->getTransformComp()->mTrueScaleMatrix.getPosition());
+                                            *ObjFactory->mGameObject[i]->getTransformComp(),
+                                            *ObjFactory->mGameObject[y]->getTransformComp());
                     qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
                 }
             }
@@ -514,12 +514,12 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent Box2, gsl::Vector3D box1Pos, gsl::Vector3D box2Pos)
+bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans)
 {
-    gsl::Vector3D Box1min = Box1.min + box1Pos;
-    gsl::Vector3D Box1max = Box1.max + box1Pos;
-    gsl::Vector3D Box2min = Box2.min + box2Pos;
-    gsl::Vector3D Box2max = Box2.max + box2Pos;
+    gsl::Vector3D Box1min = gsl::Vector3D(Box1.min * Box1trans.Scal) + Box1trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box1max = gsl::Vector3D(Box1.max * Box1trans.Scal) + Box1trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box2min = gsl::Vector3D(Box2.min * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box2max = gsl::Vector3D(Box2.max * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
 
     qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
     qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
