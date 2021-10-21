@@ -21,11 +21,11 @@ macx {
 }
 
 win32 {
-#    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
-#    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\OpenAL32.lib
 
-INCLUDEPATH += C:\Users\fes22\Documents\GitHub\openal-soft-master\include\AL
-LIBS *= C:\Users\fes22\Documents\GitHub\cmake_build\Release\OpenAL32.lib
+#INCLUDEPATH += C:\Users\fes22\Documents\GitHub\openal-soft-master\include\AL
+#LIBS *= C:\Users\fes22\Documents\GitHub\cmake_build\Release\OpenAL32.lib
 }
 
 SOURCES += main.cpp \

@@ -48,9 +48,9 @@ void CoreEngine::setUpScene()
     player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to player:
     //mResourceManager->addComponent("run_stereo.wav", temp);
-    //mResourceManager->addComponent("techno_stereo.wav", player);
+    mResourceManager->addComponent("techno_stereo.wav", player);
 
-    playSound("techno_stereo.wav");
+    //playSound("techno_stereo.wav");
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
     mRenderSystem->mGameObjects.push_back(player);
