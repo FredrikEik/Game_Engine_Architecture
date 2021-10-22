@@ -19,6 +19,7 @@ struct MeshData
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
     float mColliderRadius{0};
+
 };
 
 //Because we need OpenGLFunctions, this class can not be static

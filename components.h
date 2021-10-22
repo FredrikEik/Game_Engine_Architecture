@@ -21,6 +21,7 @@ struct MeshComponent
     GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f};
+        bool collided = false;
 };
 
 struct MaterialComponent

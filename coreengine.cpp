@@ -44,7 +44,7 @@ void CoreEngine::setUpScene()
     player->mMaterial->mShaderProgram = 0;
     player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
     player->mTransform->mMatrix.rotateY(180.f);
-
+    player->mTransform->mMatrix.scale(0.5f);
     player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to player:
     //mResourceManager->addComponent("run_stereo.wav", temp);
