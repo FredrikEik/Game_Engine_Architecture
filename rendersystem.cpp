@@ -230,21 +230,35 @@ void RenderSystem::render()
         //Quick hack test to check if linebox/circle works:
         if(i == 1)
         {
-            MeshData circle = CoreEngine::getInstance()->mResourceManager->
+
+            circle1 = CoreEngine::getInstance()->mResourceManager->
             makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-            glBindVertexArray( circle.mVAO[0] );
-            glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray( circle1.mVAO[0] );
+            glDrawElements(circle1.mDrawType, circle1.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         if(i == 2)
         {
-            linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
-            glBindVertexArray( linebox2.mVAO[0] );
-            glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+//            linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
+//            glBindVertexArray( linebox2.mVAO[0] );
+//            glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+            circle2 = CoreEngine::getInstance()->mResourceManager->
+            makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
+            glBindVertexArray( circle2.mVAO[0] );
+            glDrawElements(circle2.mDrawType, circle2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
         }
         glBindVertexArray(0);
 
-        CoreEngine::getInstance()->mResourceManager->checkCollision(linebox, linebox2);
+
+
+    }
+
+    if(CoreEngine::getInstance()->mResourceManager->checkCollision(
+    mGameObjects[1], mGameObjects[2]))
+    {
+        qDebug() << "collided !";
+       mGameObjects[2]->mTransform->mMatrix.rotateX(90.f);
     }
 
 

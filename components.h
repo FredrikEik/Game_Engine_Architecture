@@ -7,6 +7,7 @@
 #include "gltypes.h"
 #include "altypes.h"
 
+
 struct TransformComponent
 {
     TransformComponent() {mMatrix.identity();};

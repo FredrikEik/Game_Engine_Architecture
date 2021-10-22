@@ -58,11 +58,34 @@ GameObject *ResourceManager::addObject(std::string meshName)
     return tempObject; //temporary to get to compile
 }
 
+bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
+{
+    //length between 2 objects from center to center
+    gsl::Vector3D lengthVec = obj1->mTransform->mMatrix.getPosition() -
+            obj2->mTransform->mMatrix.getPosition();
+
+    float distance = lengthVec.length();
+
+
+    float radiusOfBothObjects = obj1->mMesh->mColliderRadius + obj2->mMesh->mColliderRadius;
+
+    if(distance > radiusOfBothObjects){
+        //not colliding
+        return false;
+        //qDebug() << "objects has not collided ";
+    }
+    else {
+       //colliding if distance is <= radiusOfBothObjects
+        // qDebug() << "objects has collided ";
+        return true;
+    }
+}
 bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)
 {
     if(!ownerObject)
-    {
+        {
         qDebug() << "Trying to add Component to non-existing GameObject";
+
         return false;
     }
 
@@ -151,15 +174,16 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
 
-bool ResourceManager::checkCollision(MeshData &linebox1, MeshData &linebox2)
-{
-    if(linebox1.mUpRightFrontCorner.getX() >= linebox2.mLowLeftBackCorner.getX())
-    {
+//bool ResourceManager::checkCollision(MeshData &linebox1, MeshData &linebox2)
+//{
+//    if(linebox1.mUpRightFrontCorner.getX() >= linebox2.mLowLeftBackCorner.getX())
+//    {
 
-        qDebug() << "collided ! ! ! !! ";
-        Collided = true;
-    }
-    else
-        Collided = false;
-    return Collided;
-}
+//        //qDebug() << "collided ! ! ! !! ";
+//        Collided = true;
+//    }
+//    else
+//        Collided = false;
+//    return Collided;
+//}
+

@@ -9,6 +9,7 @@
 #include "input.h"
 #include "constants.h"
 #include "meshhandler.h"
+#include "collisionhandler.h"
 
 class QOpenGLContext;
 class ShaderHandler;
@@ -63,6 +64,7 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
@@ -88,6 +90,9 @@ private:
 
     MeshData linebox;
     MeshData linebox2;
+
+    MeshData circle1;
+    MeshData circle2;
 
 
 

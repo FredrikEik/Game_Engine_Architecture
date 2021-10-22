@@ -339,6 +339,7 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
     float zStart = radius;
     float yStart = 0.f;
 
+
     //pink
     gsl::Vector3D color{1.f, 0.301f, 0.933f};
 

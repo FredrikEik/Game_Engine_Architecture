@@ -4,6 +4,7 @@
 #include <QObject>
 #include "input.h"
 #include "gameobject.h"
+#include "collisionhandler.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;

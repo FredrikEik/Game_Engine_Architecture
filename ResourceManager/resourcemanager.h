@@ -9,6 +9,7 @@
 #include "components.h"
 #include "constants.h"
 #include "soundhandler.h"
+#include "collisionhandler.h"
 
 //forward declaration
 class GameObject;
@@ -31,8 +32,12 @@ public:
     MeshData makeCircleSphere(float radius, bool rgbColor);
 
     MeshHandler* mMeshHandler{nullptr};
+
+    bool checkCollision( GameObject* obj1, GameObject * obj2);
+
     
-    bool checkCollision(MeshData &linebox1, MeshData &linebox2);
+    //CollisionHandler *mCollisionHandler{nullptr};
+    //bool checkCollision(MeshData &linebox1, MeshData &linebox2);
 
 private:
     ResourceManager();  //singleton
