@@ -25,7 +25,7 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(3.f, 0.3f, 4.f));
+    mEditorCamera->setPosition(gsl::Vector3D(6.f, 0.3f, 4.f));
     mRenderwindow->mCurrentCamera = mEditorCamera;
     mGameCamera = new Camera();
     mGameCamera->setPosition(gsl::Vector3D(0,0,0));
@@ -131,6 +131,7 @@ void GameEngine::SetUpObjects()
     mTerrainObject = mResourceManager->CreateObject(gsl::MeshFilePath + "toTriangles.obj");
     mTerrainObject->mTransformComp->mMatrix.translate(4,-1,-1);
     mTerrainObject->mMaterialComp->mShaderProgram = 2;
+    //mTerrainObject->mMaterialComp->mTextureUnit = 2;
     mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
     mPhysicsBallSystem->SetTerrainData(*mTerrainObject);

@@ -12,9 +12,20 @@ void PhysicsBallSystem::update(GameObject& ballInn)
     gsl::Vector3D conv = ballInn.mTransformComp->mMatrix.getPosition();
     QVector2D xzBall {conv.x,conv.z};
 
-    qDebug() << "y: " << getZbyBarycentricCoordinates(xzBall);
+    //qDebug() << "y: " << getZbyBarycentricCoordinates(xzBall);
     gsl::Vector3D currentpos = ballInn.mTransformComp->mMatrix.getPosition();
-    ballInn.mTransformComp->mMatrix.setPosition(currentpos.x,getZbyBarycentricCoordinates(xzBall)-0.99f, currentpos.z);
+    //ballInn.mTransformComp->mMatrix.setPosition(currentpos.x,getZbyBarycentricCoordinates(xzBall)-0.99f, currentpos.z);
+    QVector3D aVector = getAkselerationVector(xzBall);
+
+    float dt = 0.017f;
+    mPosition =QVector3D(ballInn.mTransformComp->mMatrix.getPosition().x,ballInn.mTransformComp->mMatrix.getPosition().y,ballInn.mTransformComp->mMatrix.getPosition().z );
+    mVelocity = mVelocity + aVector * dt;
+    mPosition = mPosition + mVelocity * dt;
+    qDebug() << mPosition;
+    ballInn.mTransformComp->mMatrix.setPosition(mPosition.x(), mPosition.y(), mPosition.z() );
+
+
+    //ballInn.mTransformComp->mMatrix.translate(getAkselerationVector(xzBall).x(),getAkselerationVector(xzBall).y(),getAkselerationVector(xzBall).z());
 }
 
 void PhysicsBallSystem::SetTerrainData(GameObject &TerrainInn)
@@ -25,6 +36,11 @@ void PhysicsBallSystem::SetTerrainData(GameObject &TerrainInn)
     // this way i can use them in the getZbyBarycentricCoordinates
 
     //qDebug() << "TarrainPos X: " << mTerrain->mTransformComp->mMatrix.getPosition().x << "Y: " << mTerrain->mTransformComp->mMatrix.getPosition().y;
+}
+
+void PhysicsBallSystem::move(float dt)
+{
+
 }
 
 //PhysicsBallSystem * PhysicsBallSystem::getInstance()
@@ -45,6 +61,7 @@ QVector3D PhysicsBallSystem::barycentricCoordinates(const QVector2D &dette, cons
     QVector3D n = QVector3D::crossProduct(p12, p13);
     float areal_123 = n.length(); // dobbelt areal
     QVector3D baryc; // til retur. Husk
+
     // u
     QVector2D p = p2 - dette;
     QVector2D q = p3 - dette;
@@ -60,6 +77,7 @@ QVector3D PhysicsBallSystem::barycentricCoordinates(const QVector2D &dette, cons
     qa = {q.x(), q.y(), 0};
     n = QVector3D::crossProduct(pa,qa);
     baryc.setY(n.z()/areal_123);
+
     // w
     p = p1 - dette;
     q = p2 - dette;
@@ -70,7 +88,7 @@ QVector3D PhysicsBallSystem::barycentricCoordinates(const QVector2D &dette, cons
     return baryc;
 }
 
-float PhysicsBallSystem::getZbyBarycentricCoordinates(const QVector2D &ballPos)
+QVector3D PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
 {
     //qDebug() << "Barri: " << barycentricCoordinates(QVector2D{1,1},QVector2D{1,0},QVector2D{1,1},QVector2D{0,1});
     //world koordinater, men i forhold til height mapet der 0,0 er nederst til venstre (sør-vest).
@@ -95,17 +113,24 @@ float PhysicsBallSystem::getZbyBarycentricCoordinates(const QVector2D &ballPos)
         //qDebug () << "xz in Square x: " << xCoordInSquare << "z: " << zCoordInSquare;
         QVector3D uvw;
         float answer;
-        QVector2D p1{0,0};
-        QVector2D p2{1,0};
-        QVector2D p3{0,1};
-        QVector2D p4{1,1};
+        QVector2D p1_2D{0,0};
+        QVector2D p2_2D{1,0};
+        QVector2D p3_2D{0,1};
+        QVector2D p4_2D{1,1};
 
-        //TODO: make p1 p2 etc. in the right order. get the right y height from each vertex.
+        //TODO: make p1y p2y etc. in the right order. get the right y height from each vertex.
 
         float p1y = -0.000000f;
         float p2y = 0.203227f;
         float p3y = 0.203227f;
         float p4y = -0.000000f;
+
+        QVector3D p1{p1_2D.x(),p1y,p1_2D.y()};
+        QVector3D p2{p2_2D.x(),p2y,p2_2D.y()};
+        QVector3D p3{p3_2D.x(),p3y,p3_2D.y()};
+        QVector3D p4{p4_2D.x(),p4y,p4_2D.y()};
+
+        //qDebug() << "p1: " << p1 << "p2: " << p2 << "p3: " << p3 << "p4: " << p4;
 
 //       float p1y = sArrayHeights[(gridYPos)*rows + (gridXPos)];
 //        float p2y = sArrayHeights[(gridYPos+1)*rows + (gridXPos)];
@@ -116,18 +141,59 @@ float PhysicsBallSystem::getZbyBarycentricCoordinates(const QVector2D &ballPos)
         //Finne hvilken av de to trekantene spilleren står på
         if(xCoordInSquare <= (1-zCoordInSquare))
         {
-            uvw = barycentricCoordinates(QVector2D{float(xCoordInSquare),float(zCoordInSquare)},p1,p2,p3);
-            answer = p1y*uvw.x()+p2y*uvw.y()+p3y*uvw.z();
-            return answer;
+            // p1, p3, p4
+            QVector3D normal;
+            // p1, p2, p4
+            QVector3D v0 = p3 - p1;
+            QVector3D v1 = p4 - p1;
+            //qDebug() << "v0: " << v0 << "v1" << v1;
+
+            normal = QVector3D::crossProduct(v0,v1);
+            normal.normalize();
+            //qDebug() << "Normal: " << normal;
+
+            QVector3D a{normal.x()*normal.y(),(normal.y()*normal.y())-1,normal.y()*normal.z()};
+            //qDebug() << "Vector: " << a ;
+
+            QVector3D g{normal.x()*normal.y()*9.81f,((normal.y()*normal.y())-1)*9.81f,normal.y()*normal.z()*9.81f};
+            //qDebug() << "AkselerasjonsVector: " << g ;
+
+//            QVector2D posInsSquare{xCoordInSquare,zCoordInSquare};
+//            uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
+//            answer = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
+            return g ;
+
+//            uvw = barycentricCoordinates(QVector2D{float(xCoordInSquare),float(zCoordInSquare)},p1,p2,p3);
+//            answer = p1y*uvw.x()+p2y*uvw.y()+p3y*uvw.z();
+//            return answer;
         }
         if(xCoordInSquare > (1-zCoordInSquare))
-        {   QVector2D posInsSquare{xCoordInSquare,zCoordInSquare};
-            uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
-            answer = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
-            return answer;
+        {
+
+            QVector3D normal;
+            // p1, p2, p4
+            QVector3D v0 = p4 - p1;
+            QVector3D v1 = p2 - p1;
+            //qDebug() << "v0: " << v0 << "v1" << v1;
+
+            normal = QVector3D::crossProduct(v0,v1);
+            normal.normalize();
+            //qDebug() << "Normal: " << normal;
+
+            QVector3D a{normal.x()*normal.y(),(normal.y()*normal.y())-1,normal.y()*normal.z()};
+            //qDebug() << "Vector: " << a ;
+
+            QVector3D g{normal.x()*normal.y()*9.81f,((normal.y()*normal.y())-1)*9.81f,normal.y()*normal.z()*9.81f};
+            //qDebug() << "AkselerasjonsVector: " << g ;
+
+//            QVector2D posInsSquare{xCoordInSquare,zCoordInSquare};
+//            uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
+//            answer = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
+            return g ;
+
         }
     }else{
         qDebug() << "Ball is out of bounds!";
     }
-    return 0.f;
+    return QVector3D{0,0,0};
 }
