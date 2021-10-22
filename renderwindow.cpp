@@ -284,7 +284,7 @@ void RenderWindow::render()
 
 
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
-/*
+
     //LOD SWITCHER - OLE PLS DONT HATE
     //calc length between obj and camera.
     //use length to switch LOD level
@@ -324,7 +324,7 @@ void RenderWindow::render()
         meshCompVec[2]->LOD1 = false;
         meshCompVec[2]->LOD2 = true;
     }
-*/
+
 
 
     //Draws the objects

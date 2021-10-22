@@ -40,12 +40,24 @@ private slots:
 
 
 
+    void on_treeWidget_itemActivated(class QTreeWidgetItem *item, int column);
+
+    void on_PosX_valueChanged(double arg1);
+
+    void on_PosY_valueChanged(double arg1);
+
+    void on_PosZ_valueChanged(double arg1);
+
+
+
 private:
     void init();
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
+
+    int SelectedItem = 0;
 };
 
 #endif // MAINWINDOW_H

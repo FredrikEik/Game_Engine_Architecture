@@ -9,6 +9,7 @@
 #include <QTreeWidgetItem>
 #include <QTreeWidget>
 #include <QTreeWidgetItemIterator>
+#include <gsl/vector3d.h>
 
 #include "renderwindow.h"
 
@@ -84,6 +85,8 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
+    ui->ObjectDetails->setVisible(false);
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -168,3 +171,43 @@ void MainWindow::updateViewPort()
 {
     on_treeWidget_viewportEntered();
 }
+
+void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
+{
+    ui->ObjectDetails->setVisible(true);
+    ui->ObjectDetails->setEnabled(true);
+    QString itemName = item->text(column);
+    std::string itemNameOS = itemName.toStdString();
+    for(unsigned long i = 0; i < mRenderWindow->DeetsVector.size(); i++){
+        if(mRenderWindow->DeetsVector[i]->title == itemNameOS){
+            SelectedItem = mRenderWindow->DeetsVector[i]->entity;
+            ui->ObjectDetails->setTitle("Object Details: " + item->text(column));
+            ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
+            ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().y);
+            ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().z);
+
+            break;
+        }
+    }
+
+}
+
+void MainWindow::on_PosX_valueChanged(double arg1)
+{
+    gsl::Vector3D tempPos =     mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition();
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.setPosition(arg1,tempPos.y, tempPos.z);
+}
+
+void MainWindow::on_PosY_valueChanged(double arg1)
+{
+    gsl::Vector3D tempPos =     mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition();
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.setPosition(tempPos.x, arg1, tempPos.z);
+}
+
+void MainWindow::on_PosZ_valueChanged(double arg1)
+{
+    gsl::Vector3D tempPos =     mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition();
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.setPosition(tempPos.x, tempPos.y, arg1);
+}
+
+
