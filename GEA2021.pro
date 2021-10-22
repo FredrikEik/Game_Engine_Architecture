@@ -21,11 +21,11 @@ macx {
 }
 
 win32 {
-#    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
-#    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
 
-INCLUDEPATH += C:\\prog\\openAL\\openal-soft-1.21.1-bin\\openal-soft-1.21.1-bin\\include\\AL
-LIBS *= C:\\prog\\openAL\\openal-soft-1.21.1-bin\\openal-soft-1.21.1-bin\\libs\\Win64\\libOpenAL32.dll.a
+#INCLUDEPATH += C:\\prog\\openAL\\openal-soft-1.21.1-bin\\openal-soft-1.21.1-bin\\include\\AL
+#LIBS *= C:\\prog\\openAL\\openal-soft-1.21.1-bin\\openal-soft-1.21.1-bin\\libs\\Win64\\libOpenAL32.dll.a
 }
 
 SOURCES += main.cpp \

@@ -280,48 +280,18 @@ void RenderSystem::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
-void RenderSystem::mousePicking()
+gsl::Vector3D RenderSystem::GetRayFromMouse()
 {
-    mContext->makeCurrent(this);
-    initializeOpenGLFunctions();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    gsl::Vector2D ray_nds = gsl::Vector2D(mMouseXlast, mouseY);
+//	gsl::Vector3D ray_clip = gsl::Vector3D(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
+//	gsl::Matrix4x4 invProjMat = gsl::inverse(m_Camera.GetProjectionMatrix());
+//	gsl::Vector3D eyeCoords = invProjMat * ray_clip;
+//	eyeCoords = gsl::Vector3D(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
+//	gsl::Matrix4x4 invViewMat = gsl::inverse(m_Camera.ViewMatrix());
+//	gsl::Vector3D rayWorld = invViewMat * eyeCoords;
+//	gsl::Vector3D rayDirection = gsl::normalize(gsl::Vector3D(rayWorld));
 
-    //depth test
-    glEnable(GL_DEPTH_TEST);
-    //accepts if closer to the camera than the former
-    glDepthFunc(GL_LESS);
-    //cull triangle which normal is not towards the camera
-    glEnable(GL_CULL_FACE);
-
-    //configure how glReadPixels will behave with reespect to memory alignment
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    glFlush(); //force send gl commands
-    glFinish(); // force gl to finish rendering
-
-    //read the color of the pixel
-    //slow even for 1 pixel, because framebuffer is on the gpu
-    unsigned char data[4];
-
-    //global mouse position conversion to local
-    QPoint cursorPosition = this->mapFromGlobal(this->cursor().pos());
-
-    glReadPixels(cursorPosition.x(), (height()-cursorPosition.y()), 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    int pickedID = data[0] +
-                   data[1] * 256 +
-                   data[2] * 256*256;
-    pickedID = pickedID/20;
-
-    if(pickedID < 10000)
-    {
-        qDebug() << "mesh ID" << pickedID;
-//             mGameObjects[pickedID]->mName;
-
-    }
-    else
-        qDebug() << "Nothing Selected";
-
+//	return rayDirection;
 }
 
 

@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "vector3d.h"
 
 class QOpenGLContext;
 class ShaderHandler;
@@ -38,9 +39,10 @@ public:
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
-    void mousePicking();
     void mousePickingRay();
 
+    gsl::Vector3D GetRayFromMouse();
+    bool ray_sphere(gsl::Vector3D ray_origin, gsl::Vector3D ray_direction_world, float s);
     void render();
 
 
