@@ -3,17 +3,13 @@
 
 #include "input.h"
 
-class InputComponent
+struct InputComponent
 {
-public:
-    virtual ~InputComponent();
-
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
     float mPlayerSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-
 };
 
 #endif // INPUTCOMPONENT_H

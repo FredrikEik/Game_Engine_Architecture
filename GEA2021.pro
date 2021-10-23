@@ -19,15 +19,12 @@ win32 {
 
 SOURCES += main.cpp \
     camera.cpp \
-    camerainputcomponent.cpp \
     collisionsystem.cpp \
     component.cpp \
-    inputcomponent.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     player.cpp \
-    playerinputcomponent.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -45,7 +42,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
-    camerainputcomponent.h \
     collisionsystem.h \
     component.h \
     constants.h \
@@ -57,7 +53,6 @@ HEADERS += \
     matrix3x3.h \
     matrix4x4.h \
     player.h \
-    playerinputcomponent.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \

@@ -9,10 +9,8 @@
 #include "input.h"
 #include "constants.h"
 #include "inputsystem.h"
-#include "camerainputcomponent.h"
 #include "component.h"
 #include "shapefactory.h"
-#include "playerinputcomponent.h"
 #include "soundmanager.h"
 #include "soundsource.h"
 
@@ -42,24 +40,25 @@ public:
     void playMode(bool p);
     void toggleShapes(int shapeID);
     void setCameraSpeed(float value);
+    std::vector<NameComponent*> mNameComps;
 
 private slots:
     void render();
 
 private:
-    CameraInputComponent *mCamerainput;
-    PlayerInputComponent* mPlayerinput;
     SoundSource* mLaserSound{};
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
+    VisualObject* myShapes[5];
     Input mInput;
     Player* mPlayer;
     bool shapeExist[4];
     bool playM = false;
     int shapeID;
+
 
     MeshComponent mDebugMousePickRay;
     void mousePickingRay(QMouseEvent *event);

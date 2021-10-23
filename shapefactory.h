@@ -19,14 +19,9 @@ public:
     VisualObject* createShape(string shapeName);
     VisualObject* createMonkeys(int i);
 private:
-    void createCircle();
-    void createSquare();
-    void createTriangle();
-    void createPlain();
-    void createObj();
-    VisualObject* myShapes[5];
     VisualObject* myMonkeys[200];
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
+    bool doOnce = false;
 };
 
 class Circle : public VisualObject

@@ -115,3 +115,55 @@ void MainWindow::on_actionAdd_Monkey_triggered()
 {
     mRenderWindow->toggleShapes(0);
 }
+
+void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
+{
+
+    QString itemName = item->text(column);
+    std::string itemToString = itemName.toStdString();
+    for(auto i = 0; i<= mRenderWindow->mNameComps.back()->objectID; i++)
+        if(mRenderWindow->mNameComps[i]->mName == itemToString)
+        {
+            Objects = mRenderWindow->mNameComps[i]->objectID;
+            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().x);
+            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().y);
+            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().z);
+        }
+}
+
+
+
+void MainWindow::on_treeWidget_viewportEntered()
+{
+    QTreeWidgetItem * QTWI = new QTreeWidgetItem(ui->treeWidget);
+    ui->treeWidget->addTopLevelItem(QTWI);
+    QTWI->setText(0, "Objects");
+    QTWI->setExpanded(true);
+
+    for(auto i = 0; i<= mRenderWindow->mNameComps.back()->objectID; i++)
+    {
+        QTreeWidgetItem * item = new QTreeWidgetItem(QTWI);
+        QString temp;
+        item->setText(0, temp.fromStdString(mRenderWindow->mNameComps[i]->mName));
+    }
+}
+
+void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
+    mVisualObject->mTransform->mMatrix.setPosition(arg1,temp.y, temp.z);
+}
+
+
+void MainWindow::on_doubleSpinBoxY_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
+    mVisualObject->mTransform[Objects].mMatrix.setPosition(temp.y,arg1, temp.z);
+}
+
+
+void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
+    mVisualObject->mTransform[Objects].mMatrix.setPosition(temp.y,temp.z, arg1);
+}

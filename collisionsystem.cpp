@@ -6,14 +6,14 @@ void CollisionComponent::setBoundingBox(gsl::Vector3D Min, gsl::Vector3D Max)
     BoundingBoxMax = Max;
 }
 
-void CollisionComponent::moveBoundingBox(float dx, float dy, float dz)
+void CollisionSystem::moveBoundingBox(float dx, float dy, float dz, CollisionComponent *dCollision)
 {
-    BoundingBoxMin.setX(BoundingBoxMin.x + dx);
-    BoundingBoxMin.setY(BoundingBoxMin.y + dy);
-    BoundingBoxMin.setZ(BoundingBoxMin.z + dz);
-    BoundingBoxMax.setX(BoundingBoxMax.x + dx);
-    BoundingBoxMax.setY(BoundingBoxMax.y + dy);
-    BoundingBoxMax.setZ(BoundingBoxMax.z + dz);
+    dCollision->BoundingBoxMin.setX(dCollision->BoundingBoxMin.x + dx);
+    dCollision->BoundingBoxMin.setY(dCollision->BoundingBoxMin.y + dy);
+    dCollision->BoundingBoxMin.setZ(dCollision->BoundingBoxMin.z + dz);
+    dCollision->BoundingBoxMax.setX(dCollision->BoundingBoxMax.x + dx);
+    dCollision->BoundingBoxMax.setY(dCollision->BoundingBoxMax.y + dy);
+    dCollision->BoundingBoxMax.setZ(dCollision->BoundingBoxMax.z + dz);
 }
 
 void CollisionComponent::setBoundingSphere(float r, gsl::Vector3D pos)
@@ -22,11 +22,11 @@ void CollisionComponent::setBoundingSphere(float r, gsl::Vector3D pos)
     center = pos;
 }
 
-void CollisionComponent::moveBoundingSphere(float dx, float dy, float dz)
+void CollisionSystem::moveBoundingSphere(float dx, float dy, float dz, CollisionComponent *dCollision)
 {
-    center.setX(center.x + dx);
-    center.setY(center.y + dy);
-    center.setZ(center.z + dz);
+    dCollision->center.setX(dCollision->center.x + dx);
+    dCollision->center.setY(dCollision->center.y + dy);
+    dCollision->center.setZ(dCollision->center.z + dz);
 }
 
 bool CollisionSystem::CheckBoxCol(CollisionComponent *aCollision, CollisionComponent *bCollision)
