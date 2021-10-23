@@ -53,3 +53,13 @@ compile_commands.json
 
 # MacOS spam
 .DS_Store
+
+#Visual Studio spam
+.vs/*
+debug/*
+release/*
+*.vcxproj*
+*_resource.rc
+*.sln
+
+
