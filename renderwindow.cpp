@@ -226,7 +226,7 @@ void RenderWindow::init()
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"CurvedSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,50.0f,0.0f),0,0);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,50.0f,-5.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -303,7 +303,7 @@ void RenderWindow::render()
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
         glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+        //********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************//
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
@@ -326,7 +326,7 @@ void RenderWindow::render()
             //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
         }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
+        //************ CHANGE THE ABOVE BLOCK !!!!!! ******************//
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
@@ -385,35 +385,9 @@ void RenderWindow::render()
     }
 //ENTITY 3 is the surface for now.
 
-    /*
-    for(int i = 0; i < eSize; i++){
-        qDebug() << entities[i];
-    }
-    qDebug() << "\n";
-    */
-
-    //RENDER TRIANGLE
-    //GLUSEPROGRAM GETS THE CURRENT MATERIAL
-    glUseProgram(mShaderPrograms[TriangleMaterial->mShaderProgram]->getProgram());
-
-    RenderSys->draw(TriangelMesh,       //Meshcomponent
-                    TriangleMaterial,   //MaterialComponent
-                    TriangleTransform,  //TransformComponent
-                    vMatrixUniform,     //viewMatrix
-                    pMatrixUniform,     //Projection matrix
-                    mMatrixUniform,     //ModelMatrix
-                    mCurrentCamera );   //Camera
-
-
-    //for(auto i = entities->begin(); i < entities->end(); i++){
-
-
-    // }
-
 
     //Moves the dog triangle - should be mada another way!!!!
     mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-    TriangleTransform->mMatrix.translate(-.002f, -.002f, .002f);
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
