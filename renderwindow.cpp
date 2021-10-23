@@ -176,6 +176,7 @@ void RenderWindow::init()
     transformCompVec.push_back(Susy);
     MeshComponent * SusyMesh = new MeshComponent();
     MeshSys->CreateMeshComponent("Suzanne.obj", SusyMesh);
+    SusyMesh->isDrawable = false;
     meshCompVec.push_back(SusyMesh);
 
     MaterialComponent * SusyMat = new MaterialComponent();
@@ -202,6 +203,7 @@ void RenderWindow::init()
     MeshComponent * headMesh = new MeshComponent();
     MeshSys->CreateMeshComponent("head.obj", headMesh);
     headMesh->entity = 1;
+    headMesh->isDrawable=false;
     meshCompVec.push_back(headMesh);
 
     MaterialComponent * headMat = new MaterialComponent();
@@ -223,7 +225,7 @@ void RenderWindow::init()
     //RenderSys->init(mc1);
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct(this,"CurvedSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"sphere.obj", QVector3D(5.0f,50.0f,0.0f),0,0);
 
     SoundManager::getInstance()->init();
@@ -257,9 +259,19 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     mSong->play();
-
-    oldTime = std::chrono::high_resolution_clock::now();
     mSong->stop();
+//physics code
+    oldTime = std::chrono::high_resolution_clock::now();
+
+    int eSize = entities.size();
+    for(int i = 0; i < eSize; i++){
+        if(meshCompVec[i]->entity == 3)
+        {
+            Physics->InitPhysicsSystem(meshCompVec[i]);
+            break;
+        }
+    }
+
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -340,6 +352,7 @@ void RenderWindow::render()
                     mMatrixUniform,
                     mCurrentCamera);
 
+            /*
             //----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
@@ -352,7 +365,9 @@ void RenderWindow::render()
                 }
             }
             //------------------------------------------------------
+            */
         }
+
     }
     for(int i = 0; i < eSize; i++){
         if(transformCompVec[i]->entity == 2){
@@ -368,7 +383,7 @@ void RenderWindow::render()
         }
         //----------------------------FALL------------------------
     }
-
+//ENTITY 3 is the surface for now.
 
     /*
     for(int i = 0; i < eSize; i++){

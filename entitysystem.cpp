@@ -61,7 +61,7 @@ void EntitySystem::construct(RenderWindow * inRW, std::string ObjReader, QVector
     MatComp->mShaderProgram = shader;
     MatComp->mTextureUnit = texture;
     rw->MaterialCompVec.push_back(MatComp);
-    qDebug() << EntityId<<" ENITTY";
+    qDebug() << EntityId<<" ENITTY" ;
 
 
 
