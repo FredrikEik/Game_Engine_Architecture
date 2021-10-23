@@ -115,8 +115,6 @@ QVector3D PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
     {
         lastAndCurrentQ.push(lastGridXZPos);
         lastAndCurrentQ.push(currentGridXZPos);
-
-
         setup = false;
     }
 
@@ -126,30 +124,6 @@ QVector3D PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
         lastAndCurrentQ.push(currentGridXZPos);
         lastAndCurrentQ.pop();
     }
-
-    //qDebug() << "last: " << lastAndCurrentQ.front() << "current: " << lastAndCurrentQ.back();
-//    if(firstTriangle)
-//    {
-
-
-//        if(QVector2D(float(gridXPos),float(gridZPos)) != startPoint)
-//        {
-//            qDebug() << "OUT of first triangle";
-//            firstTriangle = false;
-//        }
-//    }
-
-
-
-
-
-
-
-
-
-
-
-
 
     if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
     {   //Koordinat grid
@@ -203,8 +177,20 @@ QVector3D PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
                 normalLastAndCurrentQ.pop();
                 normalLastAndCurrentQ.push(normal);
             }
+            QVector3D m = normalLastAndCurrentQ.front();
+            QVector3D n = normalLastAndCurrentQ.back();
+            QVector3D x{0,0,0};
+
+            QVector3D mn = m+n;
+            float mnLen = mn.length();
+            float mnPow = mnLen*mnLen;
+            // x = normalen på kolisjonsplanet
+            x = {mn.x()/mnLen,mn.y()/mnLen,mn.z()/mnLen};
             qDebug() << "lastNormal" << normalLastAndCurrentQ.front() << "currentNormal" << normalLastAndCurrentQ.back();
             QVector3D aVec{normal.x()*normal.y()*9.81f,((normal.y()*normal.y())-1)*9.81f,normal.y()*normal.z()*9.81f};
+
+            //aVec += x;
+
             return aVec;
         }
         if(xCoordInSquare > (zCoordInSquare))
@@ -228,8 +214,23 @@ QVector3D PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
                 normalLastAndCurrentQ.pop();
                 normalLastAndCurrentQ.push(normal);
             }
+
+            QVector3D m = normalLastAndCurrentQ.front();
+            QVector3D n = normalLastAndCurrentQ.back();
+            QVector3D x{0,0,0};
+
+            QVector3D mn = m+n;
+            float mnLen = mn.length();
+            float mnPow = mnLen*mnLen;
+            // x = normalen på kolisjonsplanet
+            x = {mn.x()/mnLen,mn.y()/mnLen,mn.z()/mnLen};
+
+
             qDebug() << "lastNormal" << normalLastAndCurrentQ.front() << "currentNormal" << normalLastAndCurrentQ.back();
             QVector3D aVec{normal.x()*normal.y()*9.81f,((normal.y()*normal.y())-1)*9.81f,normal.y()*normal.z()*9.81f};
+
+            aVec += x;
+
             return aVec;
         }
     }else{
