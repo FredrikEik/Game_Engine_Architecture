@@ -31,4 +31,10 @@ struct MaterialComponent
     GLint mTextureUnit{0};
 };
 
+struct NameComponent{
+    int Object = 0;
+    std::string ObjectName;
+
+};
+
 #endif // COMPONENT_H

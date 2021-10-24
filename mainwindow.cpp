@@ -24,7 +24,6 @@ MainWindow::~MainWindow()
 }
 
 
-
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
@@ -121,35 +120,67 @@ void MainWindow::on_actionAdd_Monkey_triggered()
     mRenderWindow->toggleShapes(0);
 }
 
-void MainWindow::on_doubleSpinBoxX(double x,VisualObject *mVisualObject)
+
+
+void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
 
-    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
-    ui->doubleSpinBoxX->setValue(getObjectT.x);
 
-    gsl::Vector3D ChangeObjectT;
-    ChangeObjectT.x = ui->doubleSpinBoxX->value();
-}
+    QString itemName = item->text(column);
+    std::string itemToString = itemName.toStdString();
+    for(auto i = 0;i<mRenderWindow->mNameComp.back()->Object; i++){
+        if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
+        {
+            ActiveObject = mRenderWindow->mNameComp[i]->Object;// mRenderWindow->mNameComp[i]->Object;
+            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
+            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
 
-void MainWindow::on_doubleSpinBoxY(double y, VisualObject *mVisualObject)
-{
-    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
-    ui->doubleSpinBoxY->setValue(getObjectT.y);
-
-    gsl::Vector3D ChangeObjectT;
-    ChangeObjectT.y = ui->doubleSpinBoxY->value();
-
-}
-
-void MainWindow::on_doubleSpinBoxZ(double z, VisualObject *mVisualObject)
-{
-
-    gsl::Vector3D getObjectT = mVisualObject->mTransform->mMatrix.getPosition();
-    ui->doubleSpinBoxZ->setValue(getObjectT.z);
-
-    gsl::Vector3D ChangeObjectT;
-    ChangeObjectT.z = ui->doubleSpinBoxZ->value();
+        }
+    }
 }
 
 
 
+void MainWindow::on_treeWidget_viewportEntered()
+{
+    QTreeWidgetItem * Widgetitem = new QTreeWidgetItem(ui->treeWidget);
+    ui->treeWidget->addTopLevelItem(Widgetitem);
+    Widgetitem->setText(0, "Objects");
+    Widgetitem->setExpanded(true);
+
+
+    for(auto i = 0; i <= mRenderWindow->mNameComp.back()->Object; i++){
+        QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+        QString temp;
+        item->setText(0, temp.fromStdString(mRenderWindow->mNameComp[i]->ObjectName));
+    }
+}
+
+
+void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(arg1,temp.y, temp.z);
+}
+
+
+void MainWindow::on_doubleSpinBoxY_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,arg1, temp.z);
+
+}
+
+
+void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
+{
+    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,temp.y, arg1);
+}
+
+
+//void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+//{
+//    on_treeWidget_itemActivated(item, column);
+//}

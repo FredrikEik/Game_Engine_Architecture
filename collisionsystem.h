@@ -3,14 +3,10 @@
 #include "vector3d.h"
 #include <math.h>
 
-class CollisionComponent
+struct CollisionComponent
 {
-public:
-    CollisionComponent(){};
     void setBoundingBox(gsl::Vector3D Min,gsl::Vector3D Max);
-    void moveBoundingBox(float dx, float dy, float dz);
     void setBoundingSphere(float r, gsl::Vector3D pos);
-    void moveBoundingSphere(float dx, float dy, float dz);
 
     float radius;
     gsl::Vector3D center;
@@ -18,15 +14,16 @@ public:
     gsl::Vector3D BoundingBoxMax;
 };
 
-class CollisionSystem : public CollisionComponent
+class CollisionSystem
 {
 public:
     CollisionSystem(){};
+    void moveBoundingBox(float dx, float dy, float dz, CollisionComponent *dCollision);
+    void moveBoundingSphere(float dx, float dy, float dz, CollisionComponent *dCollision);
     bool CheckBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphOnBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
-    bool CheckMousePickCollision(gsl::Vector3D point,CollisionComponent *sCollision);
-
+    bool CheckMousePickCollision(gsl::Vector3D point, CollisionComponent *sCollision);
 };
 
 #endif // COLLISIONSYSTEM_H

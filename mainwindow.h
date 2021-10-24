@@ -4,7 +4,9 @@
 #include <QComboBox>
 #include <QMainWindow>
 #include "shapefactory.h"
-
+#include <QTreeWidgetItem>
+#include <QTreeWidget>
+#include <QTreeWidgetItemIterator>
 
 class QWidget;
 class RenderWindow;
@@ -35,9 +37,19 @@ private slots:
 
     void on_actionAdd_Monkey_triggered();
 
-    void on_doubleSpinBoxX(double x,VisualObject *mVisualObject);
-    void on_doubleSpinBoxY(double y, VisualObject *mVisualObject);
-    void on_doubleSpinBoxZ(double z, VisualObject *mVisualObject);
+    void on_doubleSpinBoxX_valueChanged(double arg1);
+
+    void on_doubleSpinBoxY_valueChanged(double arg1);
+
+    void on_doubleSpinBoxZ_valueChanged(double arg1);
+
+    void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
+
+
+
+    void on_treeWidget_viewportEntered();
+
+  //  void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 private:
     void init();
@@ -47,6 +59,8 @@ private:
     QWidget *mRenderWindowContainer;
     ShapeFactory *mShapefactory;
     RenderWindow *mRenderWindow;
+    VisualObject *mVisualObject;
+    int ActiveObject = 0;
 
 };
 

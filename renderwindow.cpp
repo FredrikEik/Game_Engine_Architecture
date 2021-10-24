@@ -134,13 +134,11 @@ void RenderWindow::init()
 
 
     //********************** create input **********************
-    Camerainput = new CameraInputComponent();
-    mPlayerInput = new PlayerInputComponent();
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
+      SoundHandler();
 
-    SoundHandler();
 
 
 
@@ -150,91 +148,75 @@ void RenderWindow::init()
 void RenderWindow::initObjects()
 {
     //********************** Making the object to be drawn **********************
-    mPlayer = new Player();
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mPlayer->move(0,1,0);
-    mVisualObjects.push_back(mPlayer);
 
     VisualObject *temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
     mVisualObjects.push_back(temp);
 
-    //testing ShapeFactory - Plain
-    temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->move(2.5f, -0.5f, .5f);
-    mVisualObjects.push_back(temp);
-
-    //testing frustum
     mFrustumSystem = new FrustumSystem();
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
     mVisualObjects.push_back(mFrustumSystem);
 
-    //testing OBJ
-    temp = mShapeFactory.createShape("Obj");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->move(-1.f, .5f, .5f);
-    mVisualObjects.push_back(temp);
+    myShapes[0] = mShapeFactory.createShape("Circle");
+    myShapes[0]->init();
+    myShapes[0]->mMaterial->mShaderProgram = 0;    //plain shader
+    myShapes[0]->move(2.f, 1.f, .5f);
+    mTransformComp.push_back(myShapes[0]->mTransform);
+    mVisualObjects.push_back(myShapes[0]);
 
+    mNameComp.push_back(myShapes[0]->mNameComp);
 
-    //testing ShapeFactory - Triangle
-    temp = mShapeFactory.createShape("Triangle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->move(1.5f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+    myShapes[1] = mShapeFactory.createShape("Square");
+    myShapes[1]->init();
+    myShapes[1]->mMaterial->mShaderProgram = 0;    //plain shader
+    myShapes[1]->move(-2.f, 0.f, .5f);
+    mVisualObjects.push_back(myShapes[1]);
+    mTransformComp.push_back(myShapes[1]->mTransform);
+    mNameComp.push_back(myShapes[1]->mNameComp);
 
+    myShapes[2] = mShapeFactory.createShape("Triangle");
+    myShapes[2]->init();
+    myShapes[2]->mMaterial->mShaderProgram = 0;    //plain shader
+    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    myShapes[2]->move(3.f, 0.f, .5f);
+    mVisualObjects.push_back(myShapes[2]);
+    mTransformComp.push_back(myShapes[2]->mTransform);
+    mNameComp.push_back(myShapes[2]->mNameComp);
 
-    //testing ShapeFactory - Circle
+    myShapes[3] = mShapeFactory.createShape("Plain");
+    myShapes[3]->init();
+    myShapes[3]->mMaterial->mShaderProgram = 0;   //plain shader
+    mVisualObjects.push_back(myShapes[3]);
+    mTransformComp.push_back(myShapes[3]->mTransform);
+    mNameComp.push_back(myShapes[3]->mNameComp);
 
-    temp = mShapeFactory.createShape("Circle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //texture shader
-    temp->move(2.7f, 1.f, .5f);
-    mVisualObjects.push_back(temp);
+    myShapes[4] = mShapeFactory.createShape("Obj");
+    myShapes[4]->init();
+    myShapes[4]->mMaterial->mShaderProgram = 0;    //plain shader
+    mVisualObjects.push_back(myShapes[4]);
+    mTransformComp.push_back(myShapes[4]->mTransform);
+    mNameComp.push_back(myShapes[4]->mNameComp);
 
-
-    //testing ShapeFactory - Square
-    temp = mShapeFactory.createShape("Square");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->move(4.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
+    mPlayer = new Player();
+    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->init();
+    mPlayer->move(0,1,0);
+    mTransformComp.push_back(mPlayer->mTransform);
+    mVisualObjects.push_back(mPlayer);
 
         //Drawing 200 monkeys
-
-        int xPos=-12; int zPos=-9;
-    for(int i=0; i<200; i++){
-        temp = mShapeFactory.createMonkeys(i);
-        temp->init();
-        if(i<20)
-            temp->move((i-12) ,0.5, -9);
-        else if(i<40)
-            temp->move((i-32), 0.5, -7);
-        else if(i<60)
-            temp->move((i-52), 0.5, -5);
-        else if(i<80)
-            temp->move((i-72), 0.5, -3);
-        else if(i<100)
-            temp->move((i-92), 0.5, -1);
-        else if(i<120)
-            temp->move((i-112), 0.5, 1);
-        else if(i<140)
-            temp->move((i-132), 0.5, 3);
-        else if(i<160)
-            temp->move((i-152), 0.5, 5);
-        else if(i<180)
-            temp->move((i-172), 0.5, 7);
-        else if(i<200)
-            temp->move((i-192), 0.5, 9);
-        temp->mMaterial->mShaderProgram = 0;    //plain shader
-        mVisualObjects.push_back(temp);
+    for(int i=0; i<10; i++)
+    {
+        for(int y=0; y<10; y++)
+        {
+            temp = mShapeFactory.createMonkeys(i*y);
+            temp->init();
+            temp->move((i-y), 0.5, y-5);
+            temp->mMaterial->mShaderProgram = 0;    //plain shader
+            mVisualObjects.push_back(temp);
+        }
     }
 
 
@@ -251,8 +233,6 @@ void RenderWindow::makeObject()
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
         glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
-
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
@@ -282,23 +262,24 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        if(i<=2){
-            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-            glBindVertexArray(0);}
-        else if(i==3 && playM==false){
-            glBindVertexArray( mFrustumSystem->mMesh->mVAO );
-            glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
-            glBindVertexArray(0);}
-        else if(i>3 && i<9){
-            if(shapeExist[i-4]){
-                glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-                glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-                glBindVertexArray(0);}}
-        else if(i>=9){
-            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-            glBindVertexArray(0);}
+        if(i<=0){
+                   glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                   glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                   glBindVertexArray(0);}
+               else if(i==1 && playM==false){
+                   glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+                   glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+                   glBindVertexArray(0);}
+               else if(i>1 && i<7){
+                   if(shapeExist[i-2]){
+                       glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                       glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                       glBindVertexArray(0);}}
+               else if(i>=7){
+                   glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                   glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                   glBindVertexArray(0);}
+
 
     }
 }
@@ -309,10 +290,11 @@ void RenderWindow::makeObject()
 void RenderWindow::render()
 {
     // HandleInput();
-    mPlayerInput->update(mPlayer,mInput);
-    Camerainput->update(mCurrentCamera, mInput);
+    mInputSystem->updateP(mPlayer,mInput);
+    mInputSystem->updateC(mCurrentCamera, mInput);
     mCurrentCamera->update();
-    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[5]->mCollision))
+
+    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[6]->mCollision))
         qDebug() <<"Collision detected";
 
     mTimeStart.restart(); //restart FPS clock
@@ -324,6 +306,7 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     makeObject();
+
 
     if (mDrawMousePickRay)
     {
@@ -729,7 +712,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
         if (numDegrees.y() < 1)
             mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mInputSystem->setCameraSpeed(-0.001f);
+            mInputSystem->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
 }

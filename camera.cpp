@@ -8,6 +8,8 @@ Camera::Camera()
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mInputComp = new InputComponent;
 }
 
 void Camera::pitch(float degrees)

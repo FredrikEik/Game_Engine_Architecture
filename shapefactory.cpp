@@ -7,6 +7,10 @@ Circle::Circle()
     mMesh = new MeshComponent();
     makeVerticies();
     mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+//    mNameComp->ObjectName = "Circle";
+    mNameComp->Object = 1;
+
 }
 
 void Circle::makeVerticies()
@@ -73,6 +77,9 @@ Triangle::Triangle()
     mCollision = new CollisionComponent;
     makeVerticies();
     mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+  //  mNameComp->ObjectName = "Triangle";
+    mNameComp->Object = 2;
 }
 
 void Triangle::makeVerticies()
@@ -110,6 +117,9 @@ Square::Square()
     mCollision = new CollisionComponent;
     makeVerticies(mMesh, mCollision);
     mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+  //  mNameComp->ObjectName = "Square";
+    mNameComp->Object = 3;
 }
 
 void Square::makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision)
@@ -169,6 +179,9 @@ Plain::Plain()
     mMesh = new MeshComponent();
     makeVerticies(mMesh);
     mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+   // mNameComp->ObjectName = "Plain";
+    mNameComp->Object = 4;
 }
 
 void Plain::makeVerticies(MeshComponent* dMesh)
@@ -194,6 +207,7 @@ ObjMesh::ObjMesh(std::string filename)
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
+    mNameComp = new NameComponent();
 
     readFile(filename);
 
@@ -204,21 +218,32 @@ ObjMesh::ObjMesh(std::string filename)
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
+    VisualObject* temp;
     if (shapeName == "Circle"){
-        createCircle();
-        return myShapes[0];}
+        temp = new Circle;
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->Object = 0;
+        return temp;}
     else if(shapeName == "Square"){
-        createSquare();
-        return myShapes[1];}
+        temp = new Square;
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->Object = 1;
+        return temp;}
     else if(shapeName == "Triangle"){
-        createTriangle();
-        return myShapes[2];}
+        temp = new Triangle();
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->Object = 2;
+        return temp;}
     else if(shapeName == "Plain"){
-        createPlain();
-        return myShapes[3];}
+        temp = new Plain();
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->Object = 3;
+        return temp;}
     else if(shapeName == "Obj"){
-        createObj();
-        return myShapes[4];}
+        temp = new ObjMesh(monkeyString);
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->Object = 4;
+        return temp;}
     else{
         std::cout << "invalid string" << std::endl;
         return nullptr;}
@@ -226,31 +251,21 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
 VisualObject* ShapeFactory::createMonkeys(int i)
 {
-    myMonkeys[i] = new ObjMesh(monkeyString);
-    return myMonkeys[i];
-}
-
-void ShapeFactory::createCircle()
-{
-    myShapes[0] = new Circle;
-}
-
-void ShapeFactory::createSquare()
-{
-    myShapes[1] = new Square;
-}
-
-void ShapeFactory::createTriangle()
-{
-    myShapes[2] = new Triangle;
-}
-
-void ShapeFactory::createPlain()
-{
-    myShapes[3] = new Plain;
-}
-
-void ShapeFactory::createObj()
-{
-    myShapes[4] = new ObjMesh(monkeyString);
+    if(doOnce == false)
+    {
+        myMonkeys[i] = new ObjMesh(monkeyString);
+        return myMonkeys[i];
+        doOnce = true;
+    }
+    else if(i>0)
+    {
+        myMonkeys[i] = myMonkeys[0];
+        myMonkeys[i]->mTransform = new TransformComponent;
+        return myMonkeys[i];
+    }
+    else
+    {
+        qDebug() << "too many Monkeys can't even";
+        return nullptr;
+    }
 }

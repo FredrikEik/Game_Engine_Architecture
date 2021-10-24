@@ -45,9 +45,6 @@
      <layout class="QVBoxLayout" name="OpenGLLayout"/>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout"/>
-    </item>
-    <item>
      <widget class="QLabel" name="label">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -102,15 +99,20 @@
     <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
-    <widget class="QTreeView" name="treeView_2">
+    <widget class="QTreeWidget" name="treeWidget">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>121</width>
+       <width>131</width>
        <height>381</height>
       </rect>
      </property>
+     <column>
+      <property name="text">
+       <string>MyShapes</string>
+      </property>
+     </column>
     </widget>
    </widget>
   </widget>
@@ -138,6 +140,12 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
+     </property>
     </widget>
     <widget class="QDoubleSpinBox" name="doubleSpinBoxY">
      <property name="geometry">
@@ -148,6 +156,12 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
+     </property>
     </widget>
     <widget class="QDoubleSpinBox" name="doubleSpinBoxZ">
      <property name="geometry">
@@ -157,6 +171,12 @@
        <width>62</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>100.000000000000000</double>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">

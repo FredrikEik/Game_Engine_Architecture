@@ -2,17 +2,19 @@
 #define INPUTSYSTEM_H
 #include "camera.h"
 #include "input.h"
-#include "camerainputcomponent.h"
+#include "player.h"
+#include "inputcomponent.h"
 
-class InputSystem : public InputComponent
+class InputSystem
 {
 public:
     InputSystem();
-    Camera mCurrentCamera;
-    Input mInput;
-    void CheckActiveInput();
 
-    void setCameraSpeed(float value);
+
+    void updateP(Player *mPlayer,Input mInput);
+    void updateC(Camera *mCurrentCamera,Input mInput);
+    void CheckActiveInput();
+    void setCameraSpeed(Camera *mCurrentCamera,float value);
 
 
 
