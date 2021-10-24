@@ -135,37 +135,17 @@ void RenderWindow::init()
     /***** should not use separate classes init() - function ****************/
 
     //Axis
-    VisualObject *temp = new XYZ();
-    temp->mMaterial->mShaderProgram = 0; //plain shader
-    temp->init();
-    mVisualObjects.push_back(temp);
+//    VisualObject *temp = new XYZ();
+//    temp->mMaterial->mShaderProgram = 0; //plain shader
+//    temp->init();
+//    mVisualObjects.push_back(temp);
     ////*************************************start**////////////
-
-    TriangleTransform = new TransformComponent();
-
-
-    // Positions            // Colors       //UV
-    TriangleTransform->mMatrix.setToIdentity();
-
-    TriangelMesh = new MeshComponent() ;
-    TriangelMesh->mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    TriangelMesh->mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    TriangelMesh->mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
-    TriangelMesh->mDrawType = GL_TRIANGLES;
-    TriangleMaterial = new MaterialComponent();
-    RenderSys->init(TriangelMesh);
-
-
-    TriangleMaterial->mShaderProgram = 1;
-    TriangleMaterial->mTextureUnit = 1;
-
-    TriangleTransform->mMatrix.translate(0.f, 0.f, .5f);
 
     ////*************************************start**////////////
 
 
     ///PURE ECS TEST
-    entities.push_back(0);
+    entities.push_back(0); //help... code is refusing to run without this...
 
     TransformComponent * Susy = new TransformComponent();
     Susy->mMatrix.setToIdentity();
@@ -184,48 +164,22 @@ void RenderWindow::init()
     SusyMat->mTextureUnit = 0;
     MaterialCompVec.push_back(SusyMat);
 
-
-
+    DetailsComponent * SusyDeets = new DetailsComponent();
+    SusyDeets->entity = 0;
+    SusyDeets->title = "Susy... Code wont work without this help...";
+    DeetsVector.push_back(SusyDeets);
 
     RenderSys->init(meshCompVec[0]);
-    ///
-
-    ///PURE ECS TEST
-    entities.push_back(1);
-
-    TransformComponent * headTran = new TransformComponent();
-    headTran->mMatrix.setToIdentity();
-    headTran->entity = 1;
-    headTran->mMatrix.translate(0.f, 0.f, .11f);
-
-    transformCompVec.push_back(headTran);
-    MeshComponent * headMesh = new MeshComponent();
-    MeshSys->CreateMeshComponent("head.obj", headMesh);
-    headMesh->entity = 1;
-    meshCompVec.push_back(headMesh);
-
-    MaterialComponent * headMat = new MaterialComponent();
-    headMat->entity = 1;
-    headMat->mShaderProgram = 0;
-    headMat->mTextureUnit = 0;
-    MaterialCompVec.push_back(headMat);
 
 
-    RenderSys->init(meshCompVec[1]);
-    ///
 
-
-    //entities.push_back(2);
-    //MaterialComponent * matc1 = new MaterialComponent();
-   // MeshComponent * mc1 = new MeshComponent();
-    //TransformComponent * tc1 = new TransformComponent();
-    //entitySys->construct(2, tc1, mc1, matc1, "Suzanne.obj", MeshSys, meshCompVec, transformCompVec, MaterialCompVec, QVector3D(0.f, 0.f, 0.f),0,0);
-    //RenderSys->init(mc1);
-
-    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
+    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
+    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+
 
     SoundManager::getInstance()->init();
 
@@ -243,15 +197,6 @@ void RenderWindow::init()
     mSong = SoundManager::getInstance()->createSource(
                 "Caravan", Vector3(0.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
-
-
-    //dog triangle
-    temp = new Triangle();
-    temp->init();
-    temp->mMaterial->mShaderProgram = 1;    //texture shader
-    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->mTransform->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
@@ -328,61 +273,34 @@ void RenderWindow::render()
 */
 
 
-    //Draws the objects
-    for(int i{0}; i < mVisualObjects.size(); i++)
-    {
-        //First objekct - xyz
-        //what shader to use
-        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
-
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
-
-        //This block sets up the uniforms for the shader used in the material
-        //Also sets up texture if needed.
-        int viewMatrix{-1};
-        int projectionMatrix{-1};
-        int modelMatrix{-1};
-
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
-        {
-            viewMatrix = vMatrixUniform;
-            projectionMatrix = pMatrixUniform;
-            modelMatrix = mMatrixUniform;
-        }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
-        {
-            viewMatrix = vMatrixUniform1;
-            projectionMatrix = pMatrixUniform1;
-            modelMatrix = mMatrixUniform1;
-
-            //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
-        }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
-
-        //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
-
-        //draw the object
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-        glBindVertexArray(0);
-    }
 
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++){
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
-
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
+            int viewMatrix{-1};
+            int projectionMatrix{-1};
+            int modelMatrix{-1};
+            if (MaterialCompVec[i]->mShaderProgram == 0)
+            {
+                viewMatrix = vMatrixUniform;
+                projectionMatrix = pMatrixUniform;
+                modelMatrix = mMatrixUniform;
+            }
+            else if (MaterialCompVec[i]->mShaderProgram == 1)
+            {
+                viewMatrix = vMatrixUniform1;
+                projectionMatrix = pMatrixUniform1;
+                modelMatrix = mMatrixUniform1;
+                //Now mMaterial component holds texture slot directly - probably should be changed
+                glUniform1i(mTextureUniform, MaterialCompVec[i]->mTextureUnit);
+            }
             RenderSys->draw(meshCompVec[i],
                     MaterialCompVec[i],
                     transformCompVec[i],
-                    vMatrixUniform,
-                    pMatrixUniform,
-                    mMatrixUniform,
+                    viewMatrix,
+                    projectionMatrix,
+                    modelMatrix,
                     mCurrentCamera);
             //----------------------------------------------------
             //HARDCODED COLLIDER BABY
@@ -391,13 +309,14 @@ void RenderWindow::render()
                 if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[i],transformCompVec[i]))
                 {
                     //run collision code
-                    if(meshCompVec[i]->entity != 2)
+                    if(meshCompVec[i]->entity != 2 && meshCompVec[i]->entity != 1)
                         meshCompVec[i]->isDrawable = false;
                 }
             }
             //------------------------------------------------------
         }
     }
+
     if(isPaused){
 
     }else{
@@ -412,35 +331,7 @@ void RenderWindow::render()
 
 
 
-    /*
-    for(int i = 0; i < eSize; i++){
-        qDebug() << entities[i];
-    }
-    qDebug() << "\n";
-    */
 
-    //RENDER TRIANGLE
-    //GLUSEPROGRAM GETS THE CURRENT MATERIAL
-    glUseProgram(mShaderPrograms[TriangleMaterial->mShaderProgram]->getProgram());
-
-    RenderSys->draw(TriangelMesh,       //Meshcomponent
-                    TriangleMaterial,   //MaterialComponent
-                    TriangleTransform,  //TransformComponent
-                    vMatrixUniform,     //viewMatrix
-                    pMatrixUniform,     //Projection matrix
-                    mMatrixUniform,     //ModelMatrix
-                    mCurrentCamera );   //Camera
-
-
-    //for(auto i = entities->begin(); i < entities->end(); i++){
-
-
-    // }
-
-
-    //Moves the dog triangle - should be mada another way!!!!
-    mVisualObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
-    TriangleTransform->mMatrix.translate(-.002f, -.002f, .002f);
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time

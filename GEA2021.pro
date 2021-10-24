@@ -34,12 +34,9 @@ SOURCES += main.cpp \
     shader.cpp \
     mainwindow.cpp \
     texture.cpp \
-    triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
-    vertex.cpp \
-    visualobject.cpp \
-    xyz.cpp
+    vertex.cpp
 
 HEADERS += \
     camera.h \
@@ -63,12 +60,9 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     texture.h \
-    triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    vertex.h \
-    visualobject.h \
-    xyz.h
+    vertex.h
 
 FORMS += \
     mainwindow.ui

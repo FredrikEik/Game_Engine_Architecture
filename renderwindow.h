@@ -44,11 +44,6 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-
-    MeshComponent * TriangelMesh;
-    MaterialComponent *TriangleMaterial;
-    TransformComponent *TriangleTransform;
-
     RenderSystem *RenderSys = new RenderSystem();
     resourceSystem * MeshSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem(this);
@@ -105,8 +100,6 @@ private:
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
-
-    std::vector<VisualObject*> mVisualObjects;
 
     Input mInput;
     float mCameraSpeed{0.15f};

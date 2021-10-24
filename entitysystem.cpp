@@ -16,7 +16,7 @@ EntitySystem::~EntitySystem()
 
 }
 
-void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint shader, GLint texture, int EntityId)
+void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint shader, GLint texture, int EntityId, GLenum drawType)
 {
 
     if(inRW){
@@ -59,6 +59,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
 
         ResourceSys->CreateMeshComponent(ObjReader, MeshComp);
         MeshComp->entity = EntityId;
+        MeshComp->mDrawType = drawType;
         MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
         MeshComp->centerOfMesh.setY(TransComp->mMatrix.getPosition().getY());
         MeshComp->centerOfMesh.setZ(TransComp->mMatrix.getPosition().getZ());

@@ -2,6 +2,7 @@
 
 resourceSystem::resourceSystem()
 {
+    meshData obj;
     std::vector<Vertex> mVertices;
     mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
@@ -9,9 +10,10 @@ resourceSystem::resourceSystem()
     mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
     mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
     mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+    obj.meshVert = mVertices;
+    obj.internalIndex = 0;
 
-
-    meshContainer.push_back(std::make_pair("XYZ", mVertices));
+    meshDataContainer.push_back(std::make_pair("XYZ", obj));
 }
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
@@ -165,15 +167,12 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                     {
                         Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
                         tempMVertices.push_back(tempVert);
-                        mesh->mVertices.push_back(tempVert);
                     }
                     else            //no uv in mesh data, use 0, 0 as uv
                     {
                         Vertex tempVert(tempVertecies[index], tempNormals[normal], QVector2D(0.0f, 0.0f));
                         tempMVertices.push_back(tempVert);
-                        //mesh->mVertices.push_back(tempVert);
                     }
-                    //mesh->mIndices.push_back(temp_index++);
                     tempMIndices.push_back(temp_index++);
                 }
                 continue;
