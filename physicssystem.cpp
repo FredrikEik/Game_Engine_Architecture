@@ -13,15 +13,37 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData)
 void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float radius)
 {
     float g = -9.8067f;
-    float heightfromfloor = Transf->mMatrix.getPosition().getY() + radius;
+    gsl::Vector3D pos = Transf->mMatrix.getPosition();
+    float heightfromfloor = pos.getY() + radius;
     FindTriangle(Transf, radius);
-    //    if(heightfromfloor > radius )
-//    {
-//        Transf->Velocity.setY(Transf->Velocity.getY() +  g*deltaTime);
-//        Transf->mMatrix.translate(Transf->Velocity.getX(), Transf->Velocity.getY(),Transf->Velocity.getZ());
+    if(heightfromfloor > radius )
+    {
+        Transf->Velocity.setY(Transf->Velocity.getY() +  g*deltaTime);
+        Transf->mMatrix.translate(Transf->Velocity.getX(), Transf->Velocity.getY(),Transf->Velocity.getZ());
 
-//        //qDebug()<<"///////HEIGHT: "<<Transf->Velocity.getY();
-//    }
+        //check collision with floor
+        //add mirror vector to velocity
+        //apply velocity
+
+        if((Data.heightOfFloor.getY() < pos.getY()) && (pos.getY() < Data.heightOfFloor.getY() + 0.3f))
+        {
+            float elasticity = 0.15f;
+            if(Transf->Velocity.getY() < 0)
+            {
+                //powerloss from bounce
+                Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX()*elasticity, Transf->Velocity.getY()*elasticity,Transf->Velocity.getZ()*elasticity);
+                //turn vec up
+                QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
+                Transf->Velocity = MakeGSLvec3D(NewVector);
+
+                //Transf->Velocity.setY( -Transf->Velocity.getY() );
+                //set position above floor
+                Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(),heightfromfloor ,Transf->mMatrix.getPosition().getZ());
+
+            }
+        }
+        qDebug()<<"///////HEIGHT: "<<Transf->mMatrix.getPosition();
+    }
 
 
 
@@ -51,7 +73,6 @@ void PhysicsSystem::bounce_floor(float deltaTime, TransformComponent *Transf,flo
                 once = false;
             }
         }
-        FindTriangle(Transf, radius);
     }
 
 }
@@ -61,7 +82,7 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf, float collisionRadi
     //we need to setup the baryc function that returns baryc uvw numbers in vector3d    check
     //use these numbers in a if check to see if it is indeed on the same triangle       check
     // if barycx barycy and bvaryz is positive, we on the correct plane                 check
-    //when correct plane is found, get normal vec from plane
+    //when correct plane is found, get normal vec from plane                            check
     //use normal to calculate the mirror vector fig. 8.8
     //add mirror vec to the main velocity of ball,
     //then start on rotation, after we got movement on a plane :D
@@ -77,43 +98,36 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf, float collisionRadi
         p1 = MakeQvec3D(mSurfaceData->mVertices[i + 0].getVertex());//1
         p3 = MakeQvec3D(mSurfaceData->mVertices[i + 1].getVertex());//3
         p2 = MakeQvec3D(mSurfaceData->mVertices[i + 2].getVertex());//2
-        Data.floorNormal = mSurfaceData->mVertices[i].getNormal(); // dont need this right now
         //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
         Baryc = Barysentric( p1 , p2 , p3 , posBall );
         qDebug() << "BARYC: "<<Baryc;
         if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
         {
-//            p1 = MakeQvec3D(mSurfaceData->mVertices[i + 0].getVertex());//1
-//            p3 = MakeQvec3D(mSurfaceData->mVertices[i + 1].getVertex());//3
-//            p2 = MakeQvec3D(mSurfaceData->mVertices[i + 2].getVertex());//2
-
+            //use normals from plane here to displace ball in normal direction nVec * collisionRadius
+            Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
             float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
             qDebug() << "BARYC HEIGHT: "<<height;
-            Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius , Transf->mMatrix.getPosition().getZ());
+            Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
+            //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
             break;
         }
 
-        //calculate baryc from the postional data of vertecies
-        //float distance = distanceToPlane(Transf);
     }
 
 
 
 }
 
-float PhysicsSystem::distanceToPlane(TransformComponent *Transf)
+QVector3D PhysicsSystem::CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3)
 {
-    //https://mathworld.wolfram.com/Point-PlaneDistance.html
-    float distance = 0.0f;
-    /*
-    float x,y,z; // position physics object
-    float a,b,c; //position surface normalvector
 
-    Transf->mMatrix.getPosition()
-    distance =
-*/
-    return distance;
+    QVector3D normal;
+    normal = normal.crossProduct( (p3-p1) , (p2-p1) );
+    qDebug() << "normal: "<<normal;
+    normal.normalize();
+    qDebug() << "nomal normalized: "<<normal;
+    return normal;
 }
 
 QVector3D PhysicsSystem::Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVector3D pos)
@@ -174,4 +188,19 @@ QVector3D PhysicsSystem::MakeQvec3D(gsl::Vector3D vec)
     temp.setY(vec.getY());
     temp.setZ(vec.getZ());
     return temp;
+}
+
+QVector3D PhysicsSystem::MirrorVector(QVector3D Vector, QVector3D normal)
+{
+    QVector3D finalVec;
+    QVector2D Vxy,Vyz, Nxy,Nyz;
+    Vxy = QVector2D(Vector.x(),Vector.y());
+    Vyz = QVector2D(Vector.y(),Vector.z());
+    Nxy = QVector2D(normal.x(),normal.y());
+    Nyz = QVector2D(normal.y(),normal.z());
+
+    Vxy = Vxy - 2 * (Vxy*Nxy) * Vxy;
+    Vyz = Vyz - 2 * (Vyz*Nyz) * Vyz;
+    qDebug()<<"///////VECTOR NEW: "<<Vxy << Vyz;
+    return finalVec = -QVector3D(Vxy.x(),Vxy.y() , Vyz.x());
 }
