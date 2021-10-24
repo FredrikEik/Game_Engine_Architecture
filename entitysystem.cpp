@@ -21,9 +21,14 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
 
     if(inRW){
         if(EntityId == -1){
-            auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
-            EntityId = max + 1;
-            inRW->entities.push_back(EntityId);
+            if(!inRW->entities.empty()){
+                auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
+                EntityId = max + 1;
+                inRW->entities.push_back(EntityId);
+            }else{
+                EntityId = 0;
+                inRW->entities.push_back(0);
+            }
         }else{
             bool matchCheck = false;
             int entitiesSize = inRW->entities.size();

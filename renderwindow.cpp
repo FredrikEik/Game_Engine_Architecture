@@ -11,9 +11,6 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -134,47 +131,12 @@ void RenderWindow::init()
     /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
     /***** should not use separate classes init() - function ****************/
 
-    //Axis
-//    VisualObject *temp = new XYZ();
-//    temp->mMaterial->mShaderProgram = 0; //plain shader
-//    temp->init();
-//    mVisualObjects.push_back(temp);
-    ////*************************************start**////////////
-
     ////*************************************start**////////////
 
 
     ///PURE ECS TEST
-    entities.push_back(0); //help... code is refusing to run without this...
-
-    TransformComponent * Susy = new TransformComponent();
-    Susy->mMatrix.setToIdentity();
-    Susy->entity = 0;
-    Susy->mMatrix.translate(0.f, 0.f, .9f);
-
-
-    transformCompVec.push_back(Susy);
-    MeshComponent * SusyMesh = new MeshComponent();
-    MeshSys->CreateMeshComponent("Suzanne.obj", SusyMesh);
-    meshCompVec.push_back(SusyMesh);
-
-    MaterialComponent * SusyMat = new MaterialComponent();
-    SusyMat->entity = 0;
-    SusyMat->mShaderProgram = 0;
-    SusyMat->mTextureUnit = 0;
-    MaterialCompVec.push_back(SusyMat);
-
-    DetailsComponent * SusyDeets = new DetailsComponent();
-    SusyDeets->entity = 0;
-    SusyDeets->title = "Susy... Code wont work without this help...";
-    DeetsVector.push_back(SusyDeets);
-
-    RenderSys->init(meshCompVec[0]);
-
-
-
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
-    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+    entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
@@ -309,7 +271,7 @@ void RenderWindow::render()
                 if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[i],transformCompVec[i]))
                 {
                     //run collision code
-                    if(meshCompVec[i]->entity != 2 && meshCompVec[i]->entity != 1)
+                    if(meshCompVec[i]->entity != 2 && meshCompVec[i]->entity != 0)
                         meshCompVec[i]->isDrawable = false;
                 }
             }
