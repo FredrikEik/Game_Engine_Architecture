@@ -176,6 +176,8 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
     ui->ObjectDetails->setVisible(true);
     ui->ObjectDetails->setEnabled(true);
+    ui->checkBox->setEnabled(true);
+    ui->label_6->setEnabled(true);
     QString itemName = item->text(column);
     std::string itemNameOS = itemName.toStdString();
     for(unsigned long i = 0; i < mRenderWindow->DeetsVector.size(); i++){
@@ -211,3 +213,53 @@ void MainWindow::on_PosZ_valueChanged(double arg1)
 }
 
 
+
+void MainWindow::on_pushButton_3_clicked()
+{
+
+}
+
+
+void MainWindow::updateDetails(){
+    ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getX());
+    ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getY());
+    ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getZ());
+    ui->checkBox->setChecked(mRenderWindow->meshCompVec[SelectedItem]->isDrawable);
+
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(-10.f);
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(10.f);
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateY(-10.f);
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateY(10.f);
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateZ(-10.f);
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateZ(10.f);
+}
+
+void MainWindow::on_checkBox_toggled(bool checked)
+{
+    mRenderWindow->meshCompVec[SelectedItem]->isDrawable=checked;
+}

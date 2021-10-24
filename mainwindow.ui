@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1047</width>
-    <height>830</height>
+    <width>1779</width>
+    <height>1002</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,113 +93,187 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,1,1,1,1" columnstretch="0,0,0,0">
-              <property name="bottomMargin">
-               <number>0</number>
+             <widget class="QScrollArea" name="scrollArea">
+              <property name="widgetResizable">
+               <bool>true</bool>
               </property>
-              <item row="1" column="0">
-               <widget class="QDoubleSpinBox" name="PosX">
-                <property name="decimals">
-                 <number>4</number>
-                </property>
-                <property name="minimum">
-                 <double>-9999999999999999455752309870428160.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Rotation</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QDoubleSpinBox" name="PosY">
-                <property name="decimals">
-                 <number>4</number>
-                </property>
-                <property name="minimum">
-                 <double>-9999999999999999455752309870428160.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Location</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QPushButton" name="pushButton_5">
-                <property name="text">
-                 <string>RotX -1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QPushButton" name="pushButton_6">
-                <property name="text">
-                 <string>RotX +1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QPushButton" name="pushButton_4">
-                <property name="text">
-                 <string>Scale -1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QDoubleSpinBox" name="PosZ">
-                <property name="decimals">
-                 <number>4</number>
-                </property>
-                <property name="minimum">
-                 <double>-9999999999999999455752309870428160.000000000000000</double>
-                </property>
-                <property name="maximum">
-                 <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QPushButton" name="pushButton_3">
-                <property name="text">
-                 <string>Scale +1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Scale</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QPushButton" name="pushButton_7">
-                <property name="text">
-                 <string>RotZ -1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QPushButton" name="pushButton_8">
-                <property name="text">
-                 <string>RotZ +1</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+              <widget class="QWidget" name="scrollAreaWidgetContents">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>437</width>
+                 <height>360</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,1">
+                <item>
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Transform:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,1,1,1,1,0" columnstretch="0,0,0">
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="1" column="0">
+                   <widget class="QDoubleSpinBox" name="PosX">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Location</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QDoubleSpinBox" name="PosZ">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QPushButton" name="pushButton_8">
+                    <property name="text">
+                     <string>RotY +10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDoubleSpinBox" name="PosY">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Rotation</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QPushButton" name="pushButton_7">
+                    <property name="text">
+                     <string>RotY -10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QPushButton" name="pushButton_5">
+                    <property name="text">
+                     <string>RotX -10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QPushButton" name="pushButton_4">
+                    <property name="text">
+                     <string>Scale -1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QPushButton" name="pushButton_3">
+                    <property name="text">
+                     <string>Scale +1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>Scale</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QPushButton" name="pushButton_9">
+                    <property name="text">
+                     <string>RotZ -10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QPushButton" name="pushButton_10">
+                    <property name="text">
+                     <string>RotZ +10</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QPushButton" name="pushButton_6">
+                    <property name="text">
+                     <string>RotX +10</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_6">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Variables:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QFormLayout" name="formLayout">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_7">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Draw</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QCheckBox" name="checkBox">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>bCanBeDrawn</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -216,7 +290,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1047</width>
+     <width>1779</width>
      <height>20</height>
     </rect>
    </property>

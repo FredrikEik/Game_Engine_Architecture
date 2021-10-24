@@ -18,6 +18,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void updateViewPort();
+    void updateDetails();
+
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -49,6 +51,23 @@ private slots:
     void on_PosZ_valueChanged(double arg1);
 
 
+
+    void on_pushButton_3_clicked();
+
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_8_clicked();
+
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_checkBox_toggled(bool checked);
 
 private:
     void init();

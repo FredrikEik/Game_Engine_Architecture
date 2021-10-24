@@ -16,10 +16,11 @@
 #include "vertex.h"
 
 
-struct copyOBJ{
+struct meshData{
     std::vector<Vertex> meshVert;
     std::vector<GLuint> meshIndic;
     float collisionRadius;
+    int internalIndex;
 };
 class resourceSystem
 {
@@ -30,10 +31,12 @@ public:
 
 
 private:
+
     std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;
     std::vector < std::pair<std::string, std::vector<GLuint> > > meshIndiceContainer;
+
     std::vector < std::pair<std::string, float>> collisionRad;
-    std::vector < std::pair<std::string, copyOBJ>> OBJCOPYContainer;
+    std::vector < std::pair<std::string, meshData>> meshDataContainer;
     float calculateLenght(QVector3D pos );
 
 

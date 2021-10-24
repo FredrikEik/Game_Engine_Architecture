@@ -32,7 +32,7 @@ struct MeshComponent
 
     float collisionRadius = 0;
     QVector3D centerOfMesh = QVector3D(0.f,0.f,0.f);
-
+    float scale = 1;
 
     bool isDrawable = true;
 

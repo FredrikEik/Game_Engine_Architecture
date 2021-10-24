@@ -16,8 +16,9 @@ resourceSystem::resourceSystem()
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
 {
+    meshData obj;
     bool matchFound =false;
-    for(auto it = meshContainer.begin(); it < meshContainer.end();it++)
+    for(auto it = meshDataContainer.begin(); it < meshDataContainer.end();it++)
     {
         if(input == it->first){
             matchFound = true;
@@ -170,9 +171,9 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                     {
                         Vertex tempVert(tempVertecies[index], tempNormals[normal], QVector2D(0.0f, 0.0f));
                         tempMVertices.push_back(tempVert);
-                        mesh->mVertices.push_back(tempVert);
+                        //mesh->mVertices.push_back(tempVert);
                     }
-                    mesh->mIndices.push_back(temp_index++);
+                    //mesh->mIndices.push_back(temp_index++);
                     tempMIndices.push_back(temp_index++);
                 }
                 continue;
@@ -182,26 +183,30 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
         //beeing a nice boy and closing the file after use
         fileIn.close();
         //copy the object for future use
-        copyOBJ obj;
+
         obj.meshVert = tempMVertices;
         obj.meshIndic = tempMIndices;
         obj.collisionRadius = tempRadius;
-        OBJCOPYContainer.push_back(std::make_pair(input,obj));
+        obj.internalIndex = meshDataContainer.size()-1;
+        meshDataContainer.push_back(std::make_pair(input,obj));
 
         mesh->mVertices = tempMVertices;
         mesh->mIndices = tempMIndices;
+        mesh->mVAO = meshDataContainer.size()-1;
+
         //mesh->mRVertices = &meshContainer.end()->second;
         //mesh->mRIndices = &meshIndiceContainer.end()->second;
     }//if the object already exists, we point the existing object to the new one
     else
     {
         //we find the correct mesh to copy here
-        for(auto it = OBJCOPYContainer.begin(); it < OBJCOPYContainer.end();it++)
+        for(auto it = meshDataContainer.begin(); it < meshDataContainer.end();it++)
         {
             if(input == it->first){
                 mesh->mVertices = it->second.meshVert;
                 mesh->mIndices = it->second.meshIndic;
                 mesh->collisionRadius = it->second.collisionRadius;
+                mesh->mVAO = it->second.internalIndex;
                 break;
             }
         }

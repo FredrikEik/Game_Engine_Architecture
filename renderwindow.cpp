@@ -225,6 +225,7 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0,2);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
+    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
 
     SoundManager::getInstance()->init();
 
@@ -263,7 +264,7 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-
+    mMainWindow->updateDetails();
     //
 
 
@@ -284,7 +285,7 @@ void RenderWindow::render()
 
 
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
-
+    /*
     //LOD SWITCHER - OLE PLS DONT HATE
     //calc length between obj and camera.
     //use length to switch LOD level
@@ -324,7 +325,7 @@ void RenderWindow::render()
         meshCompVec[2]->LOD1 = false;
         meshCompVec[2]->LOD2 = true;
     }
-
+*/
 
 
     //Draws the objects
@@ -407,6 +408,7 @@ void RenderWindow::render()
             }
         }
     }
+
 
 
 
