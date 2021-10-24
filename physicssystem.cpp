@@ -12,36 +12,37 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData)
 
 void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float radius)
 {
-    float g = -9.8067f;
+    float g = -9.8067f *0.9f;
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
-    float heightfromfloor = pos.getY() + radius;
+    float heightfromfloor = pos.getY() + radius ;
     FindTriangle(Transf, radius);
     if(heightfromfloor > radius )
     {
-        Transf->Velocity.setY(Transf->Velocity.getY() +  g*deltaTime);
-        Transf->mMatrix.translate(Transf->Velocity.getX(), Transf->Velocity.getY(),Transf->Velocity.getZ());
 
         //check collision with floor
         //add mirror vector to velocity
         //apply velocity
+        Transf->Velocity.setY(Transf->Velocity.getY() +  g*deltaTime);
+        Transf->mMatrix.translate(Transf->Velocity.getX(), Transf->Velocity.getY(),Transf->Velocity.getZ());
 
-        if((Data.heightOfFloor.getY() < pos.getY()) && (pos.getY() < Data.heightOfFloor.getY() + 0.3f))
+
+        QVector3D length = MakeQvec3D(Data.heightOfFloor) - radius* pos.getQVector();
+        float LengthBallToSurf = length.length();
+        if(LengthBallToSurf <= radius )//(Data.heightOfFloor.getY() < pos.getY()) && (pos.getY() < Data.heightOfFloor.getY() + 0.3f))
         {
-            float elasticity = 0.15f;
+            float elasticity = 0.2f;
             if(Transf->Velocity.getY() < 0)
             {
+                //Transf->mMatrix.translateY(radius);
                 //powerloss from bounce
                 Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX()*elasticity, Transf->Velocity.getY()*elasticity,Transf->Velocity.getZ()*elasticity);
-                //turn vec up
+                //turn vec towards normal
                 QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
-                Transf->Velocity = MakeGSLvec3D(NewVector);
-
-                //Transf->Velocity.setY( -Transf->Velocity.getY() );
-                //set position above floor
-                Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(),heightfromfloor ,Transf->mMatrix.getPosition().getZ());
-
+                qDebug()<<"///////MIRRRORORORORORORORO: "<<NewVector;
+                Transf->Velocity =Transf->Velocity - MakeGSLvec3D(NewVector) * 3.85f;
             }
         }
+
         qDebug()<<"///////HEIGHT: "<<Transf->mMatrix.getPosition();
     }
 
@@ -101,13 +102,14 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf, float collisionRadi
         //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
         Baryc = Barysentric( p1 , p2 , p3 , posBall );
-        qDebug() << "BARYC: "<<Baryc;
+        //qDebug() << "BARYC: "<<Baryc;
         if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
         {
-            //use normals from plane here to displace ball in normal direction nVec * collisionRadius
+            //use normals from plane here to displace ball in normal direction
             Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
             float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
-            qDebug() << "BARYC HEIGHT: "<<height;
+            //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
+            //  qDebug() << "BARYC HEIGHT: "<<height;
             Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
             //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
             break;
@@ -192,15 +194,9 @@ QVector3D PhysicsSystem::MakeQvec3D(gsl::Vector3D vec)
 
 QVector3D PhysicsSystem::MirrorVector(QVector3D Vector, QVector3D normal)
 {
-    QVector3D finalVec;
-    QVector2D Vxy,Vyz, Nxy,Nyz;
-    Vxy = QVector2D(Vector.x(),Vector.y());
-    Vyz = QVector2D(Vector.y(),Vector.z());
-    Nxy = QVector2D(normal.x(),normal.y());
-    Nyz = QVector2D(normal.y(),normal.z());
-
-    Vxy = Vxy - 2 * (Vxy*Nxy) * Vxy;
-    Vyz = Vyz - 2 * (Vyz*Nyz) * Vyz;
-    qDebug()<<"///////VECTOR NEW: "<<Vxy << Vyz;
-    return finalVec = -QVector3D(Vxy.x(),Vxy.y() , Vyz.x());
+    QVector3D MVector;
+    QVector3D dotprod;
+    float dot = dotprod.dotProduct(Vector,normal);
+    MVector = Vector - 2*(dot)*normal;
+    return -MVector ;
 }
