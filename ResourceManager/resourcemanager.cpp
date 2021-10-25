@@ -57,6 +57,29 @@ GameObject *ResourceManager::addObject(std::string meshName)
     tempObject->mTransform = new TransformComponent();
     return tempObject; //temporary to get to compile
 }
+bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
+{
+    //length between 2 objects from center to center
+    gsl::Vector3D lengthVec = (obj1->mTransform->mMatrix.getPosition() -
+            obj2->mTransform->mMatrix.getPosition() ) * 3.14;
+
+    float distance = lengthVec.length();
+
+
+    float radiusOfObjects = obj1->mMesh->mColliderRadius + obj2->mMesh->mColliderRadius;
+
+
+
+         if(distance > radiusOfObjects)
+         {
+            return false;
+         }
+         else
+         {
+            return true;
+         }
+
+}
 
 bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)
 {

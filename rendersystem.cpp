@@ -243,6 +243,16 @@ void RenderSystem::render()
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
         glBindVertexArray(0);
+
+        if(CoreEngine::getInstance()->mResourceManager->checkCollision(
+        mGameObjects[1], mGameObjects[2]))
+        {
+            qDebug() << "collided !";
+            mGameObjects[2]->mTransform->mMatrix.rotateX(1);
+            //CoreEngine::getInstance()->mResourceManager->Collided = true;
+            //mGameObjects[2]->mMesh->collided = true;
+        }
+
     }
 
     //Moves the dog triangle - should be made another way!!!!

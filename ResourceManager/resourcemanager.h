@@ -31,6 +31,9 @@ public:
 
     MeshHandler* mMeshHandler{nullptr};
 
+    bool checkCollision( GameObject* obj1, GameObject * obj2);
+
+
 private:
     ResourceManager();  //singleton
     void operator=(ResourceManager&){};           //Assignment operator
