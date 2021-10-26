@@ -58,7 +58,6 @@ GameObject *ResourceManager::addObject(std::string meshName)
     tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     tempObject->mMesh = tempMesh;
 
-
     tempObject->mMaterial = getMaterial("Default");
     tempObject->mTransform = new TransformComponent();
     return tempObject; //temporary to get to compile
@@ -326,7 +325,7 @@ void ResourceManager::setUpAllShaders()
     // (out of the build-folder) and then up into the project folder.
     ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainshader.vert").c_str(),
             (gsl::ShaderFilePath + "plainshader.frag").c_str());
-
+    tempShader->mName = "PlainShader";
     mShaders.push_back(tempShader);
     std::string tempString;
     tempString += "Plain shader program id: " + std::to_string(mShaders[0]->mProgram);
@@ -337,6 +336,7 @@ void ResourceManager::setUpAllShaders()
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
+    tempShader->mName = "TextureShader";
     mShaders.push_back(tempShader);
     tempString.clear();
     tempString += "Texture shader program id: " + std::to_string(mShaders[1]->mProgram);

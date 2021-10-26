@@ -38,9 +38,15 @@ public:
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
     MeshHandler* mMeshHandler{nullptr};
+
+    std::map<std::string, unsigned int> mShaderMap;
     std::vector<ShaderHandler*> mShaders;
 
     MaterialComponent* getMaterial(std::string materialName);
+    TextureHandler *mTextureHandler{nullptr};
+
+    std::map<std::string, unsigned int> mMaterialMap;
+    std::vector<MaterialComponent> mMaterials;
 
 private:
     ResourceManager();  //singleton
@@ -54,13 +60,6 @@ private:
     //Should these belong to other class - like in MeshHandler?
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
-
-    std::map<std::string, unsigned int> mShaderMap;
-
-    std::map<std::string, unsigned int> mMaterialMap;
-    std::vector<MaterialComponent> mMaterials;
-
-    TextureHandler *mTextureHandler{nullptr};
 
     class Logger* mLogger{nullptr};
 };

@@ -71,6 +71,7 @@ private:
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr}; //pointer to root of sceneOutliner
     class WidgetTransform* mTransformWidget{nullptr};
+    class WidgetMaterial* mMaterialWidget{nullptr};
 
     //default steps when using transform widget
     float mPositionStep{1.f};

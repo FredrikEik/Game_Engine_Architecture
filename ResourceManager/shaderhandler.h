@@ -19,6 +19,7 @@ public:
 
     ///OpenGL program ID for this shader
     GLuint mProgram;
+    std::string mName{"none"};
 
 private:
     class Logger* mLogger{nullptr};

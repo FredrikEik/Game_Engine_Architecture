@@ -13,6 +13,7 @@
 #include "coreengine.h"
 #include "gameobject.h"
 #include "widgettransform.h"
+#include "widgetmaterial.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -243,6 +244,14 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
     mTransformWidget->setObjectName("TransformWidget"); //not sure if this is necessary
     mTransformWidget->init(mRenderSystem, mCurrentEditItemIndex);
     ui->blDetailsContainer->addWidget(mTransformWidget);    //add to details pane
+
+    //Material widget:
+    mMaterialWidget = new WidgetMaterial(this);
+    mMaterialWidget->setObjectName("MaterialWidget");
+    ui->blDetailsContainer->addWidget(mMaterialWidget);    //add to details pane
+//    mMaterialWidget->indexInSceneArray = mCurrentEditItemIndex;
+//    mMaterialWidget->mCurrentScene = mRenderWindow->mScene1;
+    mMaterialWidget->readMaterialData();
 }
 
 void MainWindow::clearLayout(QLayout *layout) {
