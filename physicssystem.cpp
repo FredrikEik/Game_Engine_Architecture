@@ -27,9 +27,10 @@ void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float 
         //translate(Transf->Velocity.getX()*deltaTime, Transf->Velocity.getY()*deltaTime + 0.5f*g.y()*deltaTime*deltaTime ,Transf->Velocity.getZ()*deltaTime);
 
 
-        QVector3D length = MakeQvec3D(Data.heightOfFloor) - pos.getQVector();
-        float LengthBallToSurf = length.length();
-        if(LengthBallToSurf < radius )//if it is colliding with floor
+        float length = QVector3D().dotProduct(MakeQvec3D(Data.heightOfFloor) - pos.getQVector(),MakeQvec3D( Data.floorNormal));
+        //float LengthBallToSurf = length.length();
+        length =  std::abs(length);
+        if(length  < radius )//if it is colliding with floor
         {
             float elasticity = 1.0f;
 
