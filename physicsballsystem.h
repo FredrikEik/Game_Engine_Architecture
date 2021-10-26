@@ -18,7 +18,7 @@ public:
 //    static PhysicsBallSystem* getInstance();
 
     QVector3D barycentricCoordinates(const QVector2D &dette, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3);
-    QVector3D getAkselerationVector(const QVector2D &ballPos);
+    std::pair<QVector3D,QVector3D> getAkselerationVector(const QVector2D &ballPos);
 
 private:
     float xPosOnTarrain;
@@ -44,11 +44,15 @@ private:
     QVector2D currentGridXZPos{0,0};
 
     std::queue<QVector2D> lastAndCurrentQ;
+    QVector3D collisionVector{0,0,0};
 
+    QVector3D normal;
     bool normalSetup{true};
     QVector3D lastNormal{0,0,0};
     QVector3D currentNormal{0,0,0};
     std::queue<QVector3D> normalLastAndCurrentQ;
+    bool onNewTriangle{false};
+    int id{0};
 
 //    int lastSquareID{0};
 //    int currentSquareID{0};
@@ -57,9 +61,11 @@ private:
 //    QVector3D BotLeftNormal{0,0,0};
 //    QVector3D TopRightNormal{0,0,0};
 
+
     QVector3D mVelocity{0,0,0};
     QVector3D mAcceleration{0,0,0};
     QVector3D mPosition{0,0,0};
+    QVector3D mFriction{0.3f,0.3f,0.3f};
 //    static PhysicsBallSystem* mInstance;
     GameObject* mTerrain;
 };
