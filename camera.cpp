@@ -120,30 +120,25 @@ void Camera::setCameraSpeed(float value)
 
 void Camera::calculateFrustumVectors()
 {
-    //Does not take into account the pitch of the camera!
-    //So it will not be accurate when camera is pitching
+//    Does not take into account the pitch of the camera!
+//    So it will not be accurate when camera is pitching - worse for large pitching
+
+    float halfVheight = mFrustum.mFarPlaneDistance * tanf(gsl::deg2radf(mFrustum.mFOVvertical/2)); //calculate the lenght of the opposite
+    float halfHwidth = halfVheight * mFrustum.mAspectRatio;
+
+    float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, mFrustum.mFarPlaneDistance)));
 
     gsl::Vector3D tempVector;
-
-    //calculate horisontal FOV:
-
-    //not to scale, since I use aspectratio with height 1
-    //the 0.5 is height / 2
-    float forwardVectorLenght = abs(0.5f/tan(mFrustum.mFOVvertical/2));
-    float horisontalFOV = gsl::rad2degf(atan(mFrustum.mAspectRatio/forwardVectorLenght));
-    horisontalFOV *= 2;      // it seems to look to narrow...
-
     //rightplane vector = mRight rotated by FOV around up
     tempVector = mRight;
-    tempVector.rotateY(-horisontalFOV);
-    mFrustum.mRightPlane = tempVector;    
+    tempVector.rotateY(-horisontalHalfAngle);
+    mFrustum.mRightPlane = tempVector.normalized();
 
     //leftPlane vector = mRight rotated by FOV+180 around up
     tempVector = mRight;
-    tempVector.rotateY(horisontalFOV + 180.f);
-    mFrustum.mLeftPlane = tempVector;
+    tempVector.rotateY(horisontalHalfAngle - 180.f);
+    mFrustum.mLeftPlane = tempVector.normalized();
 
-    Logger::getInstance()->logText("Camera horisontal FOV: " + std::to_string(horisontalFOV) + " Right vector: " + mFrustum.mRightPlane.getAsString());
-
-
+//    Logger::getInstance()->logText("Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
+//                                   " Right vector: " + mFrustum.mRightPlane.getAsString());
 }

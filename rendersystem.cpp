@@ -460,12 +460,12 @@ bool RenderSystem::frustumCulling(int gobIndex)
     //Project vector down to frustum normals:
     //Right plane:
     tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
-    if(tempDistance > 0)  //gobRadius)
+    if(tempDistance > gobRadius)
         return true;
 
     //Left plane:
     tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
-    if(tempDistance > 0) //gobRadius)
+    if(tempDistance > gobRadius)
         return true;
 
     //insert the rest of planes here

@@ -196,7 +196,7 @@ void MainWindow::on_actionPlay_triggered(bool checked)
 
 void MainWindow::on_actionKudos_to_triggered()
 {
-    QMessageBox::about(this, "Kutos to:",
+    QMessageBox::about(this, "Kudos to:",
                        "Some icons in this app are from https://icons8.com");
 }
 
