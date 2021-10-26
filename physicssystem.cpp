@@ -15,9 +15,7 @@ void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float 
     QVector3D g = QVector3D(0.0f, -9.8067f, 0.0f);
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
     float heightfromfloor = pos.getY() + radius ;
-    FindTriangle(Transf, radius);
-    if(heightfromfloor > radius )
-    {
+    FindTriangle(Transf, radius); // finds normal and height of plane
 
         //check collision with floor
         //add mirror vector to velocity
@@ -26,34 +24,28 @@ void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float 
 
         //add velocity component V = v0 + at
         Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX(), Transf->Velocity.getY() + g.y() * deltaTime, Transf->Velocity.getZ());
-       //translate(Transf->Velocity.getX()*deltaTime, Transf->Velocity.getY()*deltaTime + 0.5f*g.y()*deltaTime*deltaTime ,Transf->Velocity.getZ()*deltaTime);
+        //translate(Transf->Velocity.getX()*deltaTime, Transf->Velocity.getY()*deltaTime + 0.5f*g.y()*deltaTime*deltaTime ,Transf->Velocity.getZ()*deltaTime);
 
 
         QVector3D length = MakeQvec3D(Data.heightOfFloor) - pos.getQVector();
         float LengthBallToSurf = length.length();
-        if(LengthBallToSurf < radius )//(Data.heightOfFloor.getY() < pos.getY()) && (pos.getY() < Data.heightOfFloor.getY() + 0.3f))
+        if(LengthBallToSurf < radius )//if it is colliding with floor
         {
-            float elasticity = 0.1f;
-            if( once)
-            {
+            float elasticity = 1.0f;
 
-                //turn vec towards normal
-                QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
-                float speed = Transf->Velocity.length();
+            //turn vec towards normal
+            QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
+            float speed = Transf->Velocity.length() * elasticity;
 
-                Transf->Velocity = Transf->Velocity*0.5 +  MakeGSLvec3D( NewVector)*speed;
-                once = false;
-            }
+            Transf->Velocity =  MakeGSLvec3D( NewVector)*speed;
+
         }
-        else {
-            qDebug()<<"///////HEIGHT: "<<Transf->mMatrix.getPosition();
-            once = true;
-        }
+
 
         // add strekning s = v0*t + 1/2 * a * t^2
         QVector3D distance = MakeQvec3D( Transf->mMatrix.getPosition()) + DistanceTraveled(MakeQvec3D(Transf->Velocity),g,deltaTime);
         Transf->mMatrix.setPosition(distance.x(),distance.y(), distance.z());
-    }
+
 
 
 
@@ -179,7 +171,7 @@ QVector3D PhysicsSystem::Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVe
     //qDebug() <<"BARISENTRIC COORDINATES: " <<baryc;
 
     //i have no fucking clue why it needs to be negative. but hey it works ;)
-    return -baryc;
+    return (-1*baryc);
 }
 
 gsl::Vector3D PhysicsSystem::MakeGSLvec3D(QVector3D vec)
@@ -204,7 +196,7 @@ QVector3D PhysicsSystem::MirrorVector(QVector3D Vector, QVector3D normal)
 {
     QVector3D MVector;
     QVector3D dotprod;
-     qDebug()<<"-__--_-___MIroror VECTOR, NORMAL "<<Vector<<normal;
+    qDebug()<<"-__--_-___MIroror VECTOR, NORMAL "<<Vector<<normal;
     float dot = dotprod.dotProduct(Vector,normal);
     MVector = Vector -2.0f*(dot)*normal;
     MVector.normalize();
@@ -217,7 +209,7 @@ QVector3D PhysicsSystem::DistanceTraveled(QVector3D Velocity, QVector3D Accelera
 
     //s = v0*dt + 0.5*g*t^2
     Finaldistance = QVector3D( Velocity.x()*DT + 0.5f*Acceleration.x()*DT*DT
-                              ,Velocity.y()*DT + 0.5f*Acceleration.y()*DT*DT
-                              ,Velocity.z()*DT + 0.5f*Acceleration.z()*DT*DT);
+                               ,Velocity.y()*DT + 0.5f*Acceleration.y()*DT*DT
+                               ,Velocity.z()*DT + 0.5f*Acceleration.z()*DT*DT);
     return Finaldistance;
 }

@@ -378,7 +378,7 @@ void RenderWindow::render()
         if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
         {
            Physics->freeFall(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-           Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+           //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
            break;
         }
         //----------------------------FALL------------------------
