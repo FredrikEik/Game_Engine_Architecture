@@ -457,15 +457,19 @@ bool RenderSystem::frustumCulling(int gobIndex)
     //shortcut to frustum
     Frustum &frustum = cullCamera->mFrustum;
 
+    //the collider sphere seems to be a little to small, so adding this
+    //padding to not cull them to early
+    float padding{0.2f}; //
+
     //Project vector down to frustum normals:
     //Right plane:
     tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
-    if(tempDistance > gobRadius)
+    if(tempDistance > (gobRadius + padding))
         return true;
 
     //Left plane:
     tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
-    if(tempDistance > gobRadius)
+    if(tempDistance > (gobRadius + padding))
         return true;
 
     //insert the rest of planes here
