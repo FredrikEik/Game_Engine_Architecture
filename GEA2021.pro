@@ -108,8 +108,8 @@ FORMS += \
 DISTFILES += \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
-    Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert \
+    Shaders/plainshader.frag \
+    Shaders/plainshader.vert \
     Assets/materials.json
 
 RESOURCES += \

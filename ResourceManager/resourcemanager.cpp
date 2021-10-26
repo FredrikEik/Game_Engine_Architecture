@@ -324,8 +324,8 @@ void ResourceManager::setUpAllShaders()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-            (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+    ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainshader.vert").c_str(),
+            (gsl::ShaderFilePath + "plainshader.frag").c_str());
 
     mShaders.push_back(tempShader);
     std::string tempString;
