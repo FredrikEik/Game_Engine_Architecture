@@ -10,16 +10,11 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData)
     mSurfaceData = surfaceData;
 }
 
-void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float radius)
+void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
 {
-    QVector3D g = QVector3D(0.0f, -9.8067f*3, 0.0f);
+    QVector3D g = QVector3D(0.0f, -9.8067f*3.f, 0.0f);
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
-    FindTriangle(Transf, radius); // finds normal and height of plane
-
-    //check collision with floor
-    //add mirror vector to velocity
-    //apply velocity
-    //add acceleration
+    FindTriangle(Transf); // finds normal and height of plane
 
     //add velocity component V = v0 + at
     Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX(), Transf->Velocity.getY() +( g.y() * deltaTime ), Transf->Velocity.getZ());
@@ -33,12 +28,13 @@ void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float 
     {
         if(once)
         {
-            float elasticity = 1.f;
+            float elasticity = 0.95f;
 
-            //turn vec towards normal
+            //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
+            //get speed
             float speed = Transf->Velocity.length() * elasticity;
-
+            //apply speed to new vector direction
             Transf->Velocity =  MakeGSLvec3D( NewVector)*speed;
             once = false;
         }
@@ -56,43 +52,10 @@ void PhysicsSystem::freeFall(float deltaTime, TransformComponent *Transf, float 
 
 }
 
-void PhysicsSystem::bounce_floor(float deltaTime, TransformComponent *Transf,float radius)
+
+
+void PhysicsSystem::FindTriangle(TransformComponent *Transf)
 {
-
-    //length between ball and floor
-    float distance = Transf->mMatrix.getPosition().getY();
-    //qDebug()<<"///////DISTANCE TO FLOOR: "<<distance;
-    float elasticity = 0.9f;
-    if(distance < radius){
-        //add bouncing force
-        if(Transf->Velocity.getY() < 0)
-        {
-            //powerloss from bounce
-            Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX()*elasticity, Transf->Velocity.getY()*elasticity,Transf->Velocity.getZ()*elasticity);
-            //turn vec up
-            Transf->Velocity.setY( -Transf->Velocity.getY() );
-            //set position above floor
-            Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(),radius,Transf->mMatrix.getPosition().getZ());
-            if(once)
-            {
-                //here we add a single direction once to make it go brrr
-                Transf->Velocity = Transf->Velocity + gsl::Vector3D(0.0f, 0.0f,0.0f);
-                once = false;
-            }
-        }
-    }
-
-}
-
-void PhysicsSystem::FindTriangle(TransformComponent *Transf, float collisionRadius)
-{
-    //we need to setup the baryc function that returns baryc uvw numbers in vector3d    check
-    //use these numbers in a if check to see if it is indeed on the same triangle       check
-    // if barycx barycy and bvaryz is positive, we on the correct plane                 check
-    //when correct plane is found, get normal vec from plane                            check
-    //use normal to calculate the mirror vector fig. 8.8
-    //add mirror vec to the main velocity of ball,
-    //then start on rotation, after we got movement on a plane :D
 
     QVector3D p1,p2,p3,posBall, Baryc;
     posBall.setX( Transf->mMatrix.getPosition().getX());
@@ -213,7 +176,7 @@ QVector3D PhysicsSystem::DistanceTraveled(QVector3D Velocity, QVector3D Accelera
 {
     QVector3D Finaldistance;
 
-    //s = v0*dt + 0.5*g*t^2
+    //s = v0*dt + 0.5*g*dt^2
     Finaldistance = QVector3D( Velocity.x()*DT + 0.5f*Acceleration.x()*DT*DT
                                ,Velocity.y()*DT + 0.5f*Acceleration.y()*DT*DT
                                ,Velocity.z()*DT + 0.5f*Acceleration.z()*DT*DT);

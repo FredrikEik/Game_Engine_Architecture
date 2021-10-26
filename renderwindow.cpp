@@ -226,7 +226,7 @@ void RenderWindow::init()
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,9.0f,-5.0f),0,0);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,10.0f,-5.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -377,7 +377,7 @@ void RenderWindow::render()
         //----------------------------FALL------------------------
         if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
         {
-           Physics->freeFall(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+           Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
            //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
            break;
         }
