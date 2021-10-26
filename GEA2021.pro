@@ -52,6 +52,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    ResourceManager/entity.h \
     altypes.h \
     camera.h \
     components.h \
@@ -84,7 +85,11 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/mousepickershader.frag \
+    Shaders/mousepickershader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert
+    Shaders/plainvertex.vert \
+    mousepickershader.frag \
+    mousepickershader.vert

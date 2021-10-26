@@ -11,6 +11,7 @@ struct TransformComponent
 {
     TransformComponent() {mMatrix.identity();};
     gsl::Matrix4x4 mMatrix;
+    gsl::Vector3D position{0, 0, 0};
 };
 
 struct MeshComponent

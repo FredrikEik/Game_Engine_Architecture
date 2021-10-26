@@ -25,6 +25,7 @@
 #include "math_constants.h"
 #include "meshhandler.h"    //to check linebox
 
+
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
@@ -108,6 +109,10 @@ void RenderSystem::init()
     mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+
+    mShaderPrograms[2] = new ShaderHandler((gsl::ShaderFilePath + "mousepickershader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "mousepickershader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
     setupPlainShader(0);
     setupTextureShader(1);
@@ -244,14 +249,14 @@ void RenderSystem::render()
         }
         glBindVertexArray(0);
 
-        if(CoreEngine::getInstance()->mResourceManager->checkCollision(
-        mGameObjects[1], mGameObjects[2]))
-        {
-            qDebug() << "collided !";
-            mGameObjects[2]->mTransform->mMatrix.rotateX(1);
-            //CoreEngine::getInstance()->mResourceManager->Collided = true;
-            //mGameObjects[2]->mMesh->collided = true;
-        }
+
+            if(CoreEngine::getInstance()->mResourceManager->checkCollision(
+            mGameObjects[1], mGameObjects[2]))
+            {
+                mGameObjects[2]->mTransform->mMatrix.rotateX(1);
+                //CoreEngine::getInstance()->mResourceManager->Collided = true;
+                //mGameObjects[2]->mMesh->collided = true;
+            }
 
     }
 
@@ -290,68 +295,77 @@ void RenderSystem::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
-gsl::Vector3D RenderSystem::GetRayFromMouse()
+void RenderSystem::setPickedObject(int pickedID)
 {
-//    gsl::Vector2D ray_nds = gsl::Vector2D(mMouseXlast, mouseY);
-//	gsl::Vector3D ray_clip = gsl::Vector3D(ray_nds.x, ray_nds.y, -1.0f, 1.0f);
-//	gsl::Matrix4x4 invProjMat = gsl::inverse(m_Camera.GetProjectionMatrix());
-//	gsl::Vector3D eyeCoords = invProjMat * ray_clip;
-//	eyeCoords = gsl::Vector3D(eyeCoords.x, eyeCoords.y, -1.0f, 0.0f);
-//	gsl::Matrix4x4 invViewMat = gsl::inverse(m_Camera.ViewMatrix());
-//	gsl::Vector3D rayWorld = invViewMat * eyeCoords;
-//	gsl::Vector3D rayDirection = gsl::normalize(gsl::Vector3D(rayWorld));
+    cancelPickedObject();
+    mPickedObject = mGameObjects[pickedID];
 
-//	return rayDirection;
 }
 
-
-void RenderSystem::mousePickingRay()
+void RenderSystem::cancelPickedObject()
 {
+    mPickedObject = nullptr;
+    if(mPickedObjectMarker)
+    {
+        delete mPickedObjectMarker;
+        mPickedObjectMarker = nullptr;
+    }
+}
+
+void RenderSystem::mousePicking()
+{
+    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+    initializeOpenGLFunctions();    //must call this every frame it seems...
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
+    // Cull triangles which normal is not towards the camera
+    glEnable(GL_CULL_FACE);
+
+    gsl::Matrix4x4 temp;
+
+    checkForGLerrors();
 
 
-//    bool TestRayOBBIntersection(
-//        gsl::Vector3D ray_origin,        // Ray origin, in world space
-//        gsl::Vector3D ray_direction,     // Ray direction (NOT target position!), in world space. Must be normalize()'d.
-//        gsl::Vector3D aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
-//        gsl::Vector3D aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
-//        gsl::Vector3D ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
-//        float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
-//    ){
+    //    checkForGLerrors();
 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);  //configure how glReadPixels will behave with respect to memory alignment
+    //    checkForGLerrors();
 
+    glFlush();  //Force all GL-commands to be sent
+    glFinish(); //Force GL to finish rendering
 
+    //    checkForGLerrors();
 
+    // Read the color of the pixel at the mouse cursor.
+    // Ultra-mega-over slow, even for 1 pixel,
+    // because the framebuffer is on the GPU.
+    unsigned char data[4];
 
-//    float tMin =0.0f;
-//    float tMax =100000.f;
+    QPoint cursorPosition   = this->mapFromGlobal(this->cursor().pos());    //global mouse position converted to local
+    //    qDebug() << "pos" << cursorPosition;
 
-//    gsl::Vector3D OBBpostion_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
-//    gsl::Vector3D delta = OBBpostion_worldspace - ray_origin;
-//    gsl::Vector3D xaxis(ModelMatrix[0].x, ModelMatrix[0].y, ModelMatrix[0].z);
-//    float e = gsl::Vector3D::dot(xaxis, delta);
-//    float f = gsl::Vector3D::dot(ray_direction, xaxis);
+    glReadPixels(cursorPosition.x()*mRetinaScale, (height()- cursorPosition.y())*mRetinaScale , 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //    qDebug() << "Height" << height() * mRetinaScale << "Height - y" << (height()- cursorPosition.y())*mRetinaScale;
+    int pickedID =
+            data[0] +
+            data[1] * 256 +
+            data[2] * 256*256;
 
-//    float t1 = (e+aabb_min.x)/f;
-//    float t2 = (e+aabb_max.x)/f;
+    pickedID = pickedID/20;   //  divide by 20 because of hack in Scene::renderMousePicker()
 
-//    if (t1>t2){ // if wrong order
-//        float w=t1;t1=t2;t2=w; // swap t1 and t2
-//    }
-//    // tMax is the nearest "far" intersection (amongst the X,Y and Z planes pairs)
-//    if ( t2 < tMax ) tMax = t2;
-//    // tMin is the farthest "near" intersection (amongst the X,Y and Z planes pairs)
-//    if ( t1 > tMin ) tMin = t1;
+    if (pickedID < 100000)
+    {
+        qDebug() << "Mesh ID" << pickedID;
 
-//    if (tMax < tMin )
-//        return;
-
-//    for(int i=0; i<100; i++ ){
-//        float intersection_distance;
-//        gsl::Vector3D aabb_min(-1.0f, -1.0f, -1.0f);
-//        gsl::Vector3D aabb_max( 1.0f,  1.0f,  1.0f);
-
-//        if( TestRayOOBIntersection)
-//    }
+    }
+    else
+    {
+        qDebug() << "nothing happened";
+    }
 }
 
 

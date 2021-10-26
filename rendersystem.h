@@ -39,12 +39,11 @@ public:
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
-    void mousePickingRay();
-
-    gsl::Vector3D GetRayFromMouse();
-    bool ray_sphere(gsl::Vector3D ray_origin, gsl::Vector3D ray_direction_world, float s);
+    void mousePicking();
     void render();
 
+    void setPickedObject(int pickedID);
+    void cancelPickedObject();
 
 
 private:
@@ -67,11 +66,15 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     float mAspectratio{1.f};
+    qreal mRetinaScale{1};  //used on "double pixle/retina" displays
+    GameObject *mPickedObjectMarker{nullptr}; //The box around the picked object
+    GameObject *mPickedObject{nullptr};
 
     int mMouseXlast{0};
     int mMouseYlast{0};
