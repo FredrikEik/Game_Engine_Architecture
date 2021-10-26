@@ -143,7 +143,7 @@ void RenderSystem::render()
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
-        if(mUseFrustumCulling)
+        if(mUseFrustumCulling && i > 0) //don't cull object 0 == axis
         {
             //if frustum cull is true - object is outside of frustum == don't draw
             if(frustumCulling(i))
@@ -241,6 +241,7 @@ void RenderSystem::render()
     if(true)
     {
         ShaderHandler* tempShader = mResourceManager->mShaders[0];
+        glUseProgram(tempShader->mProgram);
         MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
         gsl::Matrix4x4 temp(true);
         temp.translate(mGameCamera->mPosition);

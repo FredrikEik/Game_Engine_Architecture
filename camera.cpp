@@ -136,6 +136,7 @@ void Camera::calculateFrustumVectors()
     tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, mUp);
     mFrustum.mLeftPlane = tempVector.normalized();
 
-    Logger::getInstance()->logText("Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
-                                   " Right vector: " + mFrustum.mRightPlane.getAsString());
+    /*Logger::getInstance()->logText(mName + "-Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
+                                   + ", vertical FOV: " + std::to_string(mFrustum.mFOVvertical) +
+                                   ", Right vector: " + mFrustum.mRightPlane.getAsString());*/
 }

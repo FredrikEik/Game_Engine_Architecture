@@ -65,6 +65,8 @@ public:
 
     float mPitch{0.f};
     float mYaw{0.f};
+
+    std::string mName{"none"};
 private:
     void calculateFrustumVectors();
 

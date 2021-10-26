@@ -36,7 +36,9 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
 
     //Make EditorCamera:
     mEditorCamera = new Camera(50.f, 0.1f, 1000.f);
+    mEditorCamera->mName = "Editor";
     mGameCamera = new Camera(50.f, 0.1f, 300.f);
+    mGameCamera->mName = "Game";
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -83,7 +85,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes - using default material:
-    for(int i{0}; i < 100; i++)
+    for(int i{-50}; i < 100; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -103,11 +105,11 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-    mEditorCamera->mPosition = gsl::Vector3D(30.f, 4.f, 4.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.f, 4.f, 4.f);
 //    mEditorCamera->pitch(-20);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
-    mGameCamera->mPosition = gsl::Vector3D(30.f, 1.f, 0.f);
+    mGameCamera->mPosition = gsl::Vector3D(0.f, 1.f, 0.f);
     mRenderSystem->mGameCamera = mGameCamera;
 
     //update SceneOutliner to show all objects:

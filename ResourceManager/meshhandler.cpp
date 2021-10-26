@@ -385,17 +385,18 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 MeshData MeshHandler::makeFrustum(const Frustum &frustumIn)
 {
     //calculate corners of frustum:
-    //Math shown here: https://docs.google.com/document/d/18tszRZWk5UhXuFieCzKJ4vT1eU7Vpk0fPFutnsuo9IY/edit?usp=sharing
-    float tanFOV = tanf(frustumIn.mFOVvertical);          // expensive calculation - save answer
-    float widthNear = tanFOV * frustumIn.mNearPlaneDistance;      // oposite side
-    float widthFar = tanFOV * frustumIn.mFarPlaneDistance;        // oposite side
+    //Math shown here: https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    float tanFOVv = tanf(gsl::deg2radf(frustumIn.mFOVvertical/2));          // expensive calculation - save answer
 
-    float heightNear = widthNear / frustumIn.mAspectRatio;
-    float heightFar = widthFar / frustumIn.mAspectRatio;
+    float halfHeightFar = abs(frustumIn.mFarPlaneDistance * tanFOVv);
+    float halfWidthFar = halfHeightFar * frustumIn.mAspectRatio;
 
-    // camera looks down -Z so near and far-plane are negative when drawn
-    gsl::Vector3D cornerNear = gsl::Vector3D(widthNear, heightNear, -frustumIn.mNearPlaneDistance);
-    gsl::Vector3D cornerFar = gsl::Vector3D(widthFar, heightFar, -frustumIn.mFarPlaneDistance);
+    float halfHeightNear = abs(frustumIn.mNearPlaneDistance * tanFOVv);
+    float halfWidthNear = halfHeightNear * frustumIn.mAspectRatio;
+
+    // camera looks down -Z (as a start) so near and far-plane are negative when drawn
+    gsl::Vector3D cornerNear = gsl::Vector3D(halfWidthNear, halfHeightNear, -frustumIn.mNearPlaneDistance);
+    gsl::Vector3D cornerFar = gsl::Vector3D(halfWidthFar, halfHeightFar, -frustumIn.mFarPlaneDistance);
 
     MeshData tempMesh;
 
