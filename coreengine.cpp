@@ -50,7 +50,7 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 {
     isPlaying = shouldPlay;
     SoundSystem::getInstance()->togglePlaySounds(isPlaying);
-    mRenderSystem->isPlaying = isPlaying;
+    mRenderSystem->mIsPlaying = isPlaying;
 }
 
 void CoreEngine::setUpScene()
@@ -67,6 +67,11 @@ void CoreEngine::setUpScene()
     //Axis
     GameObject *temp = mResourceManager->addObject("axis");
     temp->mName = "Axis";
+    mRenderSystem->mGameObjects.push_back(temp);
+
+    //Grid
+    temp = mResourceManager->addObject("editorgrid");
+    temp->mName = "EditorGrid";
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle

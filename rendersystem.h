@@ -46,7 +46,7 @@ public:
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
-    bool isPlaying{false};  //is the game playing?
+    bool mIsPlaying{false};  //is the game playing?
 
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
@@ -57,6 +57,9 @@ public:
 
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
+
+    bool mDrawAxis{true};
+    bool mDrawGrid{true};
 
 private:
     void init();

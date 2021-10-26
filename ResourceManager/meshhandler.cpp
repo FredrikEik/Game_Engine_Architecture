@@ -37,6 +37,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeAxis();
         if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
+        if (meshName.find("editorgrid") != std::string::npos)
+            meshIndex = makeEditorGrid();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -257,6 +259,72 @@ int MeshHandler::makeTriangle()
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
+}
+
+int MeshHandler::makeEditorGrid(int size, int scale)
+{
+    //should check if this object is new before this!
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+
+    float startPoint = -size * scale;
+
+    float lineStart = startPoint;
+    float lineEnd = -startPoint;
+
+    float mainColor{0.3f};
+    float altColor{0.5f};
+    float color{0.f};
+
+    bool altColorFlip{true};    //alternates between two colors
+
+    float altMainAxisColor{.45f};
+    float yHeight{-0.001f};     //to avoid z-fighting with axis
+
+    //lines parallell to Z
+    for(float i{startPoint}; i<= (startPoint*-1); i += scale)
+    {
+        //special case for 0 line:
+        if (i >=-0.1f && i<= 0.1f)
+        {
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineStart,       altMainAxisColor, altMainAxisColor, 1.f});
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineEnd,         altMainAxisColor, altMainAxisColor, 1.f});
+            altColorFlip = !altColorFlip;
+        }
+        else
+        {
+            altColorFlip ? color = mainColor : color = altColor;
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineStart, color, color, color});
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineEnd, color, color, color});
+            altColorFlip = !altColorFlip;
+        }
+    }
+
+    altColorFlip = true;    //reset for X-lines
+    //lines parallell to X
+    for(float i{startPoint}; i<= (startPoint*-1); i += scale)
+    {
+        //special case for  0 line:
+        if (i >=-0.1f && i<= 0.1f)
+        {
+            temp.mVertices[0].push_back(Vertex{lineStart, yHeight, i,       1.f, altMainAxisColor, altMainAxisColor});
+            temp.mVertices[0].push_back(Vertex{lineEnd, yHeight, i,         1.f, altMainAxisColor, altMainAxisColor});
+            altColorFlip = !altColorFlip;
+        }
+        else
+        {
+            altColorFlip ? color = mainColor : color = altColor;
+            temp.mVertices[0].push_back(Vertex{lineStart, yHeight, i, color, color, color});
+            temp.mVertices[0].push_back(Vertex{lineEnd, yHeight, i, color, color, color});
+            altColorFlip = !altColorFlip;
+        }
+    }
+
+    temp.mColliderRadius = 1.f; //grid should have no collider...
+    temp.mDrawType = GL_LINES;
+    //only LOD level 0
+    initMesh(temp, 0);
+    return mMeshes.size()-1;
 }
 
 MeshData MeshHandler::makeLine(gsl::Vector3D &positionIn, int direction, float lenght, gsl::Vector3D colorIn)

@@ -55,6 +55,8 @@ private:
     int makeAxis();
     int makeTriangle();
 
+    int makeEditorGrid(int size = 10, int scale = 1);
+
     ///Function that takes in a vertex, and compare to existing MeshData values.
     /// Makes numbers for bounding box and bounding sphere.
     /// Has to be run for every vertex in the mesh.

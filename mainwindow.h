@@ -57,6 +57,10 @@ private slots:
 
     void on_scaleStep_valueChanged(double arg1);
 
+    void on_actionAxis_toggled(bool arg1);
+
+    void on_actionGrid_toggled(bool arg1);
+
 private:
     void init();
 

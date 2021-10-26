@@ -135,15 +135,17 @@ void RenderSystem::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
-    //Draws the objects
-    for(int i{0}; i < mGameObjects.size(); i++)
+    //Draws the objects        
+    int cullSafe = mIsPlaying ? -1 : 1;      //cullSafe editor objects - always placed in start of array
+    int startObject = mIsPlaying ? 2 : 0;    //avoid editor objects when playing
+    for(int i{startObject}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
         //Do this early to avoid unnecessary work if mesh is not to be drawn
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
-        if(mUseFrustumCulling && i > 0) //don't cull object 0 == axis
+        if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
         {
             //if frustum cull is true - object is outside of frustum == don't draw
             if(frustumCulling(i))
@@ -176,8 +178,14 @@ void RenderSystem::render()
         }
 
         //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+        if(mIsPlaying) {
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
+        }
+        else {
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+        }
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
@@ -188,14 +196,14 @@ void RenderSystem::render()
             //LOD calculation
             float length = distanceVector.length();
 
-            if (length < 4)
+            if (length < 5)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-            else if(length < 6)
+            else if(length < 20)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
@@ -272,9 +280,8 @@ void RenderSystem::render()
         */
     }
 
-
     //debug mousePickingRay
-//    if (mDrawMousePickRay)
+/*    if (mDrawMousePickRay)
 //    {
 //        gsl::Matrix4x4 temp(true);
 //        glBindVertexArray( mDebugMousePickRay.mVAO[0] );
@@ -282,15 +289,19 @@ void RenderSystem::render()
 //        glUniformMatrix4fv( mShaderPrograms[0]->vMatrixUniform, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
 //        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
 //        glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
-//    }
+//    }*/
 
     //QuickHack to get something to move when pressing play
     //Testing gameCam now
-    if(isPlaying)
+    if(mIsPlaying)
     {
 //        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
         mGameCamera->yaw(0.07f);
+        mGameCamera->update();
+        mUseFrustumCulling = true;
+        mGameCamAsFrustumCulling = true;
     }
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -558,7 +569,7 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_R) //toggle play
     {
-        mMainWindow->on_actionPlay_triggered(!isPlaying);
+        mMainWindow->on_actionPlay_triggered(!mIsPlaying);
     }
 
     //    You get the keyboard input like this

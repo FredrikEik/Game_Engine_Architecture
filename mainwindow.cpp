@@ -293,4 +293,12 @@ void MainWindow::on_scaleStep_valueChanged(double arg1)
     }
 }
 
+void MainWindow::on_actionAxis_toggled(bool arg1)
+{
+    mRenderSystem->mDrawAxis = arg1;
+}
 
+void MainWindow::on_actionGrid_toggled(bool arg1)
+{
+    mRenderSystem->mDrawGrid = arg1;
+}
