@@ -21,6 +21,7 @@ public:
 private:
     FloorData Data;
     bool once = true;
+    bool onTriangle = false;
     MeshComponent* mSurfaceData = new MeshComponent();
     gsl::Vector3D MakeGSLvec3D(QVector3D vec);
     void FindTriangle(TransformComponent* Transf, float collisionRadius);

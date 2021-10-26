@@ -225,8 +225,8 @@ void RenderWindow::init()
     //RenderSys->init(mc1);
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"CurvedSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,8.0f,-5.0f),0,0);
+    entitySys->construct(this,"bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,9.0f,-5.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -415,7 +415,7 @@ void RenderWindow::CalcDeltaTime()
     oldTime = newTime;
 
     DeltaTime = elapsed_time_ms/1000.f;
-    qDebug()<<"/////////////TIME: "<<DeltaTime;
+    //qDebug()<<"/////////////TIME: "<<DeltaTime;
 
 }
 
