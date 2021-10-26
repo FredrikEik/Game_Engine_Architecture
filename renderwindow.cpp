@@ -226,7 +226,7 @@ void RenderWindow::init()
 
     entitySys->construct(this,"Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
     entitySys->construct(this,"CurvedSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0,2);
-    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,20.0f,-5.0f),0,0);
+    entitySys->construct(this,"sphere.obj", QVector3D(5.0f,8.0f,-5.0f),0,0);
 
     SoundManager::getInstance()->init();
 
@@ -414,8 +414,8 @@ void RenderWindow::CalcDeltaTime()
     float elapsed_time_ms = std::chrono::duration<double, std::milli>(newTime-oldTime).count();
     oldTime = newTime;
 
-    DeltaTime = elapsed_time_ms/10000.f;
-    //qDebug()<<"/////////////TIME: "<<DeltaTime;
+    DeltaTime = elapsed_time_ms/1000.f;
+    qDebug()<<"/////////////TIME: "<<DeltaTime;
 
 }
 
