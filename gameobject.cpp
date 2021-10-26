@@ -1,5 +1,6 @@
 #include "gameobject.h"
 #include "components.h"
+#include "collisionsystem.h"
 
 GameObject::GameObject()
 {

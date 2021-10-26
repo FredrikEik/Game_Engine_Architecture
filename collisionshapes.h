@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 
+class GameObject; // C2061 fix
+
 struct CollisionShape
 {
     virtual void setPoint(float sx, float sy, float sz)=0;
@@ -46,8 +48,8 @@ class CollisionShapes
 {
 public:
     CollisionShapes();
-    void createCollisionSphere(GameObject& obj);
-    gsl::Vector3D createCentroid(GameObject& obj);
+    void createCollisionSphere(GameObject &obj);
+    gsl::Vector3D createCentroid(GameObject &obj);
     float findRadian(GameObject &obj, gsl::Vector3D centroid);
     CollisionSphere* createSphere(float fl_r, gsl::Vector3D vec_centroid);
     CollisionShape* getGeometricForm();

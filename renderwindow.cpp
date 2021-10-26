@@ -132,7 +132,6 @@ void RenderWindow::init()
 //    mVisualObjects.push_back(source->addCube());
 //    mVisualObjects.push_back(source->addTriangle());
 //    mVisualObjects.push_back(source->addXYZ());
-    collision_sys = new CollisionSystem();
     source = new ResourceManageer();
     mVisualObjects.push_back(source->objectCreator("Triangle"));
     mVisualObjects.push_back(source->objectCreator("Triangle"));

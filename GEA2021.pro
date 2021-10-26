@@ -7,7 +7,6 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
-    collisionshapes.cpp \
     collisionsystem.cpp \
     components.cpp \
     gameobject.cpp \
@@ -28,7 +27,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
-    collisionshapes.h \
     collisionsystem.h \
     components.h \
     constants.h \

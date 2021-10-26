@@ -1,20 +1,27 @@
 #ifndef COLLISIONSYSTEM_H
 #define COLLISIONSYSTEM_H
 
-#include "collisionshapes.h"
-#include <vector>
+#include "vector3d.h"
+
+struct AABB
+{
+    gsl::Vector3D m_max;
+    gsl::Vector3D m_min;
+    void setAABB(gsl::Vector3D max, gsl::Vector3D min)
+    {
+        m_max = max;
+        m_min = min;
+    }
+};
 
 class CollisionSystem
 {
 public:
     CollisionSystem();
-    void addShape(CollisionShape* shape);
-    bool collisionTestPvsS();
-    bool collisionTestSvsS();
+    bool AABBtoAABB(const AABB &tBox1, const AABB &tBox2);
 
 private:
-    std::vector<CollisionShapes*> m_Collidables; // Collidables in the world
-    // contact informasjon
+
 };
 
 #endif // COLLISIONSYSTEM_H

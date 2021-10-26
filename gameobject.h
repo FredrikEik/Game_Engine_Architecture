@@ -1,7 +1,6 @@
-#ifndef VISUALOBJECT_H
-#define VISUALOBJECT_H
+#ifndef GAMEOBJECT_H
+#define GAMEOBJECT_H
 
-#include "collisionshapes.h"
 #include <QOpenGLFunctions_4_1_Core>
 
 class GameObject : public QOpenGLFunctions_4_1_Core
@@ -18,7 +17,7 @@ public:
     struct TransformComponent* mTransform{nullptr};
     struct MeshComponent* mMesh{nullptr};
     struct MaterialComponent* mMaterial{nullptr};
-    class CollisionComponent* mCollision{nullptr};
+    struct AABB* mCollisionObject{nullptr};
 
 };
-#endif // VISUALOBJECT_H
+#endif // GAMEOBJECT_H

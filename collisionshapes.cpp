@@ -5,7 +5,7 @@ CollisionShapes::CollisionShapes()
 
 }
 
-void CollisionShapes::createCollisionSphere(GameObject& obj)
+void CollisionShapes::createCollisionSphere(GameObject &obj)
 {
     CollisionSphere* tempShape = new CollisionSphere;
     // Find the center point

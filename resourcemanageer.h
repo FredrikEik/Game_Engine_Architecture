@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include "components.h"
 #include "gameobject.h"
+#include "collisionsystem.h"
 #include <string>
 #include <vector>
 #include <map>
