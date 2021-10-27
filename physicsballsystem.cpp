@@ -14,43 +14,24 @@ void PhysicsBallSystem::update(GameObject& ballInn)
     QVector2D xzBall {conv.x,conv.z};
 
     ballInn.mTransformComp->mMatrix.getPosition();
-    //qDebug() << "y: " << getZbyBarycentricCoordinates(xzBall);
     gsl::Vector3D currentpos = ballInn.mTransformComp->mMatrix.getPosition();
-    //ballInn.mTransformComp->mMatrix.setPosition(currentpos.x,getZbyBarycentricCoordinates(xzBall)-0.99f, currentpos.z);
 
     std::pair<QVector3D,QVector3D> aVectorAndCollVector = getAkselerationVector(xzBall);
     QVector3D aVector = aVectorAndCollVector.first;
     collisionVector = aVectorAndCollVector.second;
     collisionVector.normalize();
-    // legge til 9.81 her og ikke i funksjonen
 
-
-
-//    if(onNewTriangle)
-//    {
-//        qDebug() << "NEWTRIANGLE";
-//    }
-    //dt = 0.017;
-    float dt = 0.01f;
+    float dt = 0.017f;
     mPosition = QVector3D(ballInn.mTransformComp->mMatrix.getPosition().x,ballInn.mTransformComp->mMatrix.getPosition().y,ballInn.mTransformComp->mMatrix.getPosition().z );
     mVelocity = mVelocity + (aVector * 9.81f) * dt;
-    //qDebug() << mVelocity;
-//    mPosition = mPosition + (collVector * 0.856f) * dt;
-    //mPosition = mPosition + (collVector)*dt;
+
     if(onNewTriangle)
     {
-        //qDebug() << "NEWTRIANGLE";
-
         QVector3D nextVelocity = mVelocity - (2 * (mVelocity * collisionVector) * collisionVector);
         mVelocity = nextVelocity;
-        //collVector += aVectorAndCollVector.second;
-        //qDebug() << mPosition;
     }
+
     mPosition = mPosition + mVelocity * dt;
-    //qDebug() << mPosition;
-//    qDebug() << "lastNormal" << normalLastAndCurrentQ.front() << "currentNormal" << normalLastAndCurrentQ.back();
-//    qDebug() << "normal: " << normal;
-    //ballInn.mTransformComp->mMatrix.translate(mVelocity.x(),mVelocity.y(),mVelocity.z());
     ballInn.mTransformComp->mMatrix.setPosition(mPosition.x(), mPosition.y(), mPosition.z() );
 
 
@@ -125,11 +106,9 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     //qDebug() << "Barri: " << barycentricCoordinates(QVector2D{1,1},QVector2D{1,0},QVector2D{1,1},QVector2D{0,1});
     //world koordinater, men i forhold til height mapet der 0,0 er nederst til venstre (sør-vest).
 
-//    qDebug() << "ballPos X: " << ballPos.x() << "Y: " << ballPos.y();
     xPosOnTarrain = (ballPos.x() - mTerrain->mTransformComp->mMatrix.getPosition().x);
     zPosOnTarrain = (ballPos.y() - mTerrain->mTransformComp->mMatrix.getPosition().z);
 
-    //qDebug() << "xTerrain: " << xPosOnTarrain << "zTerrain: " << zPosOnTarrain;
 
     // xyScale og Gridsize er Hardkodet til å være 2 nå
     gridSquareSize = xzScale;
@@ -140,15 +119,12 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     float xCoordInSquare = fmod(xPosOnTarrain,gridSquareSize)/gridSquareSize;
     float zCoordInSquare = fmod(zPosOnTarrain,gridSquareSize)/gridSquareSize;
 
-//    qDebug() << "GridX: " <<gridXPos << "GridZ: " << gridZPos;
+
 
 
     if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
     {   //Koordinat grid
-//        qDebug() << "gridPos x: " << gridXPos << "z:" << gridZPos;
 
-
-        //qDebug () << "xz in Square x: " << xCoordInSquare << "z: " << zCoordInSquare;
         QVector2D p1_2D{0,0};
         QVector2D p2_2D{1,0};
         QVector2D p3_2D{0,1};
@@ -206,23 +182,13 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
 
             QVector3D mn = m+n;
             float mnLen = mn.length();
-            float mnPow = mnLen*mnLen;
-            // x = normalen på kolisjonsplanet
             x = {mn.x()/mnLen,mn.y()/mnLen,mn.z()/mnLen};
-            //qDebug() << "lastNormal" << normalLastAndCurrentQ.front() << "currentNormal" << normalLastAndCurrentQ.back();
             QVector3D Vec{normal.x()*normal.y(),((normal.y()*normal.y())-1),normal.y()*normal.z()};
-           // qDebug() << aVec;
 
-            //qDebug() << "id: " << id;
-            int idRemainder = remainder(id,2);
-            idRemainder = abs(idRemainder);
-            //qDebug() << "R: " << idRemainder;
             if(x == normalLastAndCurrentQ.back())
             {
                 return std::pair<QVector3D,QVector3D>{Vec,QVector3D{0,0,0}};
             }
-            //qDebug() << "x: " << x;
-            //aVec += x;
 
             return std::pair<QVector3D,QVector3D>{Vec,x};
         }
@@ -259,21 +225,12 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
 
             QVector3D mn = m+n;
             float mnLen = mn.length();
-            float mnPow = mnLen*mnLen;
-            // x = normalen på kolisjonsplanet
+
             x = {mn.x()/mnLen,mn.y()/mnLen,mn.z()/mnLen};
 
-
-            //qDebug() << "lastNormal" << normalLastAndCurrentQ.front() << "currentNormal" << normalLastAndCurrentQ.back();
             QVector3D aVec{normal.x()*normal.y(),((normal.y()*normal.y())-1),normal.y()*normal.z()};
-            //qDebug() << "x: " << x;
-            //qDebug() << aVec;
-            // could make if( x == currentnormal) dont use x;
 
-            //qDebug() << "id: " << id;
-            int idRemainder = remainder(id,2);
-            idRemainder = abs(idRemainder);
-            //qDebug() << "R: " << idRemainder;
+
             if(x == normalLastAndCurrentQ.back())
             {
                 return std::pair<QVector3D,QVector3D>{aVec,QVector3D{0,0,0}};
