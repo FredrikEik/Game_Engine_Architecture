@@ -18,11 +18,13 @@ class CollisionSystem
 {
 public:
     CollisionSystem(){};
+    ~CollisionSystem(){};
     void moveBoundingBox(float dx, float dy, float dz, CollisionComponent *dCollision);
     void moveBoundingSphere(float dx, float dy, float dz, CollisionComponent *dCollision);
     bool CheckBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphOnBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
+    bool CheckMousePickCollision(gsl::Vector3D point, CollisionComponent *sCollision);
 };
 
 #endif // COLLISIONSYSTEM_H

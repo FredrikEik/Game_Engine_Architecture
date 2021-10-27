@@ -41,6 +41,7 @@ public:
     void toggleShapes(int shapeID);
     void setCameraSpeed(float value);
     std::vector<NameComponent*> mNameComps;
+    std::vector<TransformComponent*> mTransComps;
 
 private slots:
     void render();
@@ -52,18 +53,19 @@ private:
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
-    VisualObject* myShapes[5];
+    static const int nrOfShapes = 5;
+    VisualObject* myShapes[nrOfShapes];
     Input mInput;
     Player* mPlayer;
-    bool shapeExist[4];
+    bool shapeExist[5];
     bool playM = false;
-    int shapeID;
 
 
     MeshComponent mDebugMousePickRay;
     void mousePickingRay(QMouseEvent *event);
     bool mDrawMousePickRay{false};
     gsl::Vector3D mMousePickRay;
+    gsl::Vector3D ray_wor;
 
     void init();
     void initObject();

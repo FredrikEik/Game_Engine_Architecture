@@ -45,6 +45,8 @@ private slots:
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 
+    void selectWithMousePick(int index);
+
 private:
     void init();
     Ui::MainWindow *ui;

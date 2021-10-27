@@ -55,7 +55,6 @@ void Circle::circleUnit(CollisionComponent* dCollision)
 
     dCollision->setBoundingSphere(a/2, mTransform->mPosition);
 }
-
 void Circle::makeTriangle(const gsl::Vector3D &v1, const gsl::Vector3D &v2, const gsl::Vector3D &v3)
 {
     Vertex v{v1.x, v1.y, v1.z, v1.x, v1.y, v1.z};
@@ -198,6 +197,7 @@ ObjMesh::ObjMesh(std::string filename)
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
+    mNameComp = new NameComponent();
 
     readFile(filename);
 
@@ -231,7 +231,6 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         return temp;}
     else if(shapeName == "Obj"){
         temp = new ObjMesh(monkeyString);
-        temp->mNameComp = new NameComponent();
         temp->mNameComp->mName = shapeName;
         temp->mNameComp->objectID = 4;
         return temp;}

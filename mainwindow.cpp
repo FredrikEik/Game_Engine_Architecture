@@ -121,13 +121,13 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
-    for(auto i = 0; i<= mRenderWindow->mNameComps.back()->objectID; i++)
+    for(auto i = 0; i< mRenderWindow->mNameComps.back()->objectID + 1; i++)
         if(mRenderWindow->mNameComps[i]->mName == itemToString)
         {
             Objects = mRenderWindow->mNameComps[i]->objectID;
-            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().x);
-            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().y);
-            ui->doubleSpinBoxX->setValue(mVisualObject->mTransform[Objects].mMatrix.getPosition().z);
+            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransComps[i]->mMatrix.getPosition().x);
+            ui->doubleSpinBoxY->setValue(mRenderWindow->mTransComps[i]->mMatrix.getPosition().y);
+            ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransComps[i]->mMatrix.getPosition().z);
         }
 }
 
@@ -140,7 +140,7 @@ void MainWindow::on_treeWidget_viewportEntered()
     QTWI->setText(0, "Objects");
     QTWI->setExpanded(true);
 
-    for(auto i = 0; i<= mRenderWindow->mNameComps.back()->objectID; i++)
+    for(auto i = 0; i< mRenderWindow->mNameComps.back()->objectID +1; i++)
     {
         QTreeWidgetItem * item = new QTreeWidgetItem(QTWI);
         QString temp;
@@ -148,22 +148,29 @@ void MainWindow::on_treeWidget_viewportEntered()
     }
 }
 
+void MainWindow::selectWithMousePick(int index)
+{
+//    ui->treeWidget->currentItem();
+//    ui->treeWidget->itemFromIndex(index);
+//
+}
+
 void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
-    mVisualObject->mTransform->mMatrix.setPosition(arg1,temp.y, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mTransComps[Objects]->mMatrix.getPosition();
+    mRenderWindow->mTransComps[Objects]->mMatrix.setPosition(arg1, temp.y, temp.z);
 }
 
 
 void MainWindow::on_doubleSpinBoxY_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
-    mVisualObject->mTransform[Objects].mMatrix.setPosition(temp.y,arg1, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mTransComps[Objects]->mMatrix.getPosition();
+    mRenderWindow->mTransComps[Objects]->mMatrix.setPosition(temp.x, arg1, temp.z);
 }
 
 
 void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mVisualObject->mTransform[Objects].mMatrix.getPosition();
-    mVisualObject->mTransform[Objects].mMatrix.setPosition(temp.y,temp.z, arg1);
+    gsl::Vector3D temp = mRenderWindow->mTransComps[Objects]->mMatrix.getPosition();
+    mRenderWindow->mTransComps[Objects]->mMatrix.setPosition(temp.x,temp.y, arg1);
 }

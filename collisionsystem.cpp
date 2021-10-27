@@ -89,3 +89,11 @@ bool CollisionSystem::CheckSphCol(CollisionComponent *aCollision, CollisionCompo
                 );
     return distance < (aCollision->radius + bCollision->radius);
 }
+
+bool CollisionSystem::CheckMousePickCollision(gsl::Vector3D point, CollisionComponent *sCollision)
+{
+    float distance = sqrt((point.getX() - sCollision->center.getX()) * (point.x - sCollision->center.getX()) +
+                          (point.y - sCollision->center.getY()) * (point.y - sCollision->center.getY()) +
+                          (point.z - sCollision->center.getZ()) * (point.z - sCollision->center.getZ()));
+    return distance < sCollision->radius;
+}

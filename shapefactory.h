@@ -39,6 +39,8 @@ private:
 
 };
 
+
+
 class Square : public VisualObject
 {
 public:
@@ -70,4 +72,11 @@ public:
     ~ObjMesh(){};
 };
 
+class Line : public VisualObject
+{
+public:
+        Line(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn);
+        ~Line() {};
+private:
+};
 #endif // SHAPEFACTORY_H

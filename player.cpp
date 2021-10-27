@@ -13,6 +13,11 @@ Player::Player() : mx{0.0f}, my{0.0f}, mz{0.0f}
     mCollision->setBoundingSphere(1, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mInputComp = new InputComponent;
+    mNameComp = new NameComponent();
+    mNameComp->mName = "Player";
+    mNameComp->objectID = 5;
+
+
 }
 
 Player::~Player()
@@ -24,7 +29,6 @@ void Player::move(float dx, float dy, float dz)
 {
     mTransform->mPosition += gsl::Vector3D(dx,dy,dz);
     mTransform->mMatrix.translate(dx,dy,dz);
-    mColSystem->moveBoundingBox(dx, dy, dz, mCollision);
-    mColSystem->moveBoundingSphere(dx, dy, dz, mCollision);
+    mColSystem->moveBoundingBox(dx, dy, dz,mCollision);
+    mColSystem->moveBoundingSphere(dx, dy, dz,mCollision);
 }
-

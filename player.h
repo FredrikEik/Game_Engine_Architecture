@@ -15,6 +15,7 @@ public:
 private:
     float mx, my, mz; // posisjon
     CollisionSystem* mColSystem;
+    ShapeFactory* factoryPtr;
 };
 
 #endif // PLAYER_H
