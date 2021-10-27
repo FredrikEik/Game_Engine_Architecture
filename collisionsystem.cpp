@@ -61,8 +61,7 @@ bool CollisionSystem::CheckSphCol(CollisionComponent *aCollision, CollisionCompo
     float distance = sqrt(
                 (aCollision->center.getX()- bCollision->center.getX())*(aCollision->center.getX() - bCollision->center.getX())+
                 (aCollision->center.getY()- bCollision->center.getY())*(aCollision->center.getY() - bCollision->center.getY())+
-                (aCollision->center.getY()- bCollision->center.getY())*(aCollision->center.getY() - bCollision->center.getY())
-                );
+                (aCollision->center.getY()- bCollision->center.getY())*(aCollision->center.getY() - bCollision->center.getY()));
     return distance < (aCollision->radius + bCollision->radius);
 }
 
@@ -72,5 +71,4 @@ bool CollisionSystem::CheckMousePickCollision(gsl::Vector3D point, CollisionComp
                           (point.y - sCollision->center.getY()) * (point.y - sCollision->center.getY()) +
                           (point.z - sCollision->center.getZ()) * (point.z - sCollision->center.getZ()));
     return distance < sCollision->radius;
-
 }

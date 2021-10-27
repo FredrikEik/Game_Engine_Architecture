@@ -32,7 +32,7 @@ struct MaterialComponent
 };
 
 struct NameComponent{
-    int Object = 0;
+    int ObjectID = 0;
     std::string ObjectName;
 
 };

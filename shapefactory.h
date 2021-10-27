@@ -39,6 +39,8 @@ private:
 
 };
 
+
+
 class Square : public VisualObject
 {
 public:
@@ -68,6 +70,6 @@ class ObjMesh : public VisualObject
 public:
     ObjMesh(std::string filename);
     ~ObjMesh(){};
-};
 
+};
 #endif // SHAPEFACTORY_H

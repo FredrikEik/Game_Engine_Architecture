@@ -128,16 +128,26 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
-    for(auto i = 0;i<mRenderWindow->mNameComp.back()->Object; i++){
+    for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID; i++){
         if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
         {
-            ActiveObject = mRenderWindow->mNameComp[i]->Object;// mRenderWindow->mNameComp[i]->Object;
+//            if(mRenderWindow->mousePickCollide == true)
+//                SelectWithMousePick(mRenderWindow->MousePickindex);
+//            else
+            ActiveObject = mRenderWindow->mNameComp[i]->ObjectID;// mRenderWindow->mNameComp[i]->Object;
+
             ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
-            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
-            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
+            ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+            ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
 
         }
     }
+}
+
+void MainWindow::SelectWithMousePick(int index)
+{
+
+     ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
 }
 
 
@@ -150,7 +160,7 @@ void MainWindow::on_treeWidget_viewportEntered()
     Widgetitem->setExpanded(true);
 
 
-    for(auto i = 0; i <= mRenderWindow->mNameComp.back()->Object; i++){
+    for(auto i = 0; i <= mRenderWindow->mNameComp.back()->ObjectID; i++){
         QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
         QString temp;
         item->setText(0, temp.fromStdString(mRenderWindow->mNameComp[i]->ObjectName));

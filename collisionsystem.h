@@ -18,6 +18,7 @@ class CollisionSystem
 {
 public:
     CollisionSystem(){};
+    ~CollisionSystem();
     void moveBoundingBox(float dx, float dy, float dz, CollisionComponent *dCollision);
     void moveBoundingSphere(float dx, float dy, float dz, CollisionComponent *dCollision);
     bool CheckBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);

@@ -9,7 +9,7 @@ Circle::Circle()
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 //    mNameComp->ObjectName = "Circle";
-    mNameComp->Object = 1;
+    //mNameComp->ObjectID = 1;
 
 }
 
@@ -79,7 +79,7 @@ Triangle::Triangle()
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
   //  mNameComp->ObjectName = "Triangle";
-    mNameComp->Object = 2;
+    //mNameComp->ObjectID = 2;
 }
 
 void Triangle::makeVerticies()
@@ -119,7 +119,7 @@ Square::Square()
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
   //  mNameComp->ObjectName = "Square";
-    mNameComp->Object = 3;
+   // mNameComp->ObjectID = 3;
 }
 
 void Square::makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision)
@@ -181,7 +181,7 @@ Plain::Plain()
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
    // mNameComp->ObjectName = "Plain";
-    mNameComp->Object = 4;
+   // mNameComp->ObjectID = 4;
 }
 
 void Plain::makeVerticies(MeshComponent* dMesh)
@@ -222,27 +222,27 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     if (shapeName == "Circle"){
         temp = new Circle;
         temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->Object = 0;
+        temp->mNameComp->ObjectID = 0;
         return temp;}
     else if(shapeName == "Square"){
         temp = new Square;
         temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->Object = 1;
+        temp->mNameComp->ObjectID = 1;
         return temp;}
     else if(shapeName == "Triangle"){
         temp = new Triangle();
         temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->Object = 2;
+        temp->mNameComp->ObjectID = 2;
         return temp;}
     else if(shapeName == "Plain"){
         temp = new Plain();
         temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->Object = 3;
+        temp->mNameComp->ObjectID = 3;
         return temp;}
     else if(shapeName == "Obj"){
         temp = new ObjMesh(monkeyString);
         temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->Object = 4;
+        temp->mNameComp->ObjectID = 4;
         return temp;}
     else{
         std::cout << "invalid string" << std::endl;
@@ -269,3 +269,4 @@ VisualObject* ShapeFactory::createMonkeys(int i)
         return nullptr;
     }
 }
+

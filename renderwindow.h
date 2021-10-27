@@ -55,6 +55,9 @@ public:
     std::vector<NameComponent*> mNameComp;
     std::vector<TransformComponent*> mTransformComp;
 
+    bool mousePickCollide = false;
+    int MousePickindex=0;
+
 
 
 
@@ -72,10 +75,12 @@ private:
     FrustumSystem* mFrustumSystem;
     VisualObject* myShapes[5];
 
-    MeshComponent mDebugMousePickRay;
+
     void mousePickingRay(QMouseEvent *event);
-    bool mDrawMousePickRay{false};
-    gsl::Vector3D mMousePickRay;
+     gsl::Vector3D ray_wor;
+
+   // bool mDrawMousePickRay{false};
+ //   gsl::Vector3D mMousePickRay;
 
     void initObjects();
     void makeObject();
@@ -114,7 +119,7 @@ private:
     Camera mEditorCamera;
     Camera mPlayCamera;
     float mAspectratio{1.f};
-    gsl::Vector3D ray_wor;
+
 
     std::vector<VisualObject*> mVisualObjects;
 
