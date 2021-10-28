@@ -118,7 +118,6 @@ void MainWindow::on_actionAdd_Monkey_triggered()
 
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
-
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
     for(auto i = 0; i< mRenderWindow->mNameComps.back()->objectID + 1; i++)
@@ -135,7 +134,7 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 
 void MainWindow::on_treeWidget_viewportEntered()
 {
-    QTreeWidgetItem * QTWI = new QTreeWidgetItem(ui->treeWidget);
+    QTWI = new QTreeWidgetItem(ui->treeWidget);
     ui->treeWidget->addTopLevelItem(QTWI);
     QTWI->setText(0, "Objects");
     QTWI->setExpanded(true);
@@ -146,13 +145,16 @@ void MainWindow::on_treeWidget_viewportEntered()
         QString temp;
         item->setText(0, temp.fromStdString(mRenderWindow->mNameComps[i]->mName));
     }
+    QTWI->isSelected();
 }
 
 void MainWindow::selectWithMousePick(int index)
 {
-//    ui->treeWidget->currentItem();
-//    ui->treeWidget->itemFromIndex(index);
-//
+    if(mQTWItem)
+        mQTWItem->setSelected(false);
+    mQTWItem = QTWI->child(index);
+    mQTWItem->setSelected(true);
+    on_treeWidget_itemActivated(mQTWItem, 0);
 }
 
 void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)

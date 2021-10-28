@@ -17,9 +17,9 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
-    VisualObject* createMonkeys(int i);
+    VisualObject* createMonkey();
 private:
-    VisualObject* myMonkeys[200];
+    VisualObject* myMonkey;
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     bool doOnce = false;
 };

@@ -46,8 +46,8 @@ void VisualObject::init()
 void VisualObject::move(float dx, float dy, float dz)
 {
     mTransform->mPosition += gsl::Vector3D(dx,dy,dz);
-    //mTransform->mMatrix.setPosition(dx, dy, dz);
-    mTransform->mMatrix.translate(dx,dy,dz);
+    mTransform->mMatrix.setPosition(dx, dy, dz);
+    //mTransform->mMatrix.translate(dx,dy,dz);
     mColSystem->moveBoundingBox(dx, dy, dz, mCollision);
 }
 

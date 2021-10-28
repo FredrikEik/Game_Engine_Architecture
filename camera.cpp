@@ -81,7 +81,7 @@ void Camera::setPosition(const gsl::Vector3D &position)
 
 void Camera::setSpeed(float speed)
 {
-    mSpeed += speed;
+    mSpeed = speed;
 }
 
 void Camera::updateHeigth(float deltaHeigth)

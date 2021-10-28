@@ -6,6 +6,8 @@ CONFIG      += c++17
 INCLUDEPATH += .
 INCLUDEPATH += ./include
 
+PRECOMPILED_HEADER = PCH.h
+
 TARGET      = GEA2021
 
 mac {
@@ -26,6 +28,7 @@ SOURCES += main.cpp \
     matrix4x4.cpp \
     player.cpp \
     renderwindow.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
@@ -41,6 +44,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    PCH.h \
     camera.h \
     collisionsystem.h \
     component.h \
@@ -54,6 +58,7 @@ HEADERS += \
     matrix4x4.h \
     player.h \
     renderwindow.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
     shapefactory.h \

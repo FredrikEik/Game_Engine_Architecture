@@ -239,23 +239,14 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         return nullptr;}
 }
 
-VisualObject* ShapeFactory::createMonkeys(int i)
+VisualObject* ShapeFactory::createMonkey()
 {
     if(doOnce == false)
     {
-        myMonkeys[i] = new ObjMesh(monkeyString);
-        return myMonkeys[i];
+        myMonkey = new ObjMesh(monkeyString);
+        return myMonkey;
         doOnce = true;
     }
-    else if(i>0)
-    {
-        myMonkeys[i] = myMonkeys[0];
-        myMonkeys[i]->mTransform = new TransformComponent;
-        return myMonkeys[i];
-    }
     else
-    {
-        qDebug() << "too many Monkeys can't even";
-        return nullptr;
-    }
+        return myMonkey;
 }

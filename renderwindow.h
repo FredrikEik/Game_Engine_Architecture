@@ -1,25 +1,7 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-#include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
-#include <QTimer>
-#include <QElapsedTimer>
 
-#include "input.h"
-#include "constants.h"
-#include "inputsystem.h"
-#include "component.h"
-#include "shapefactory.h"
-#include "soundmanager.h"
-#include "soundsource.h"
-
-class QOpenGLContext;
-class Shader;
-class MainWindow;
-class VisualObject;
-class Camera;
-class Texture;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -57,7 +39,7 @@ private:
     VisualObject* myShapes[nrOfShapes];
     Input mInput;
     Player* mPlayer;
-    bool shapeExist[5];
+    bool shapeExist[nrOfShapes];
     bool playM = false;
 
 

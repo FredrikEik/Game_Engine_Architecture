@@ -1,21 +1,4 @@
 #include "renderwindow.h"
-#include <QTimer>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLDebugLogger>
-#include <QKeyEvent>
-#include <QStatusBar>
-#include <QDebug>
-
-#include <iostream>
-
-#include "shader.h"
-#include "mainwindow.h"
-#include "visualobject.h"
-#include "xyz.h"
-#include "camera.h"
-#include "constants.h"
-#include "texture.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -207,7 +190,7 @@ void RenderWindow::initObject()
     {
         for(int y=0; y<10; y++)
         {
-            temp = mShapeFactory.createMonkeys(i*y);
+            temp = mShapeFactory.createMonkey();
             temp->init();
             temp->move((i-y), 0.5, y-5);
             temp->mMaterial->mShaderProgram = 0;    //plain shader
@@ -291,7 +274,7 @@ void RenderWindow::render()
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
     //mFrustumSystem->updateFrustumPos(&mEditorCamera);
-    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[5]->mCollision))
+    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, myShapes[1]->mCollision))
         qDebug() <<"Collision detected"; //testing collision
 
     mTimeStart.restart(); //restart FPS clock
@@ -604,15 +587,41 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     ray_wor = {temp.x, temp.y, temp.z};
     ray_wor.normalize();
 
-    //gir ikke riktig tall så må jobbes mere med
-    qDebug() << ray_wor;
-    for(int i{0}; i < nrOfShapes ; i++)
-    {
-        if(mCollisionSystem->CheckMousePickCollision(ray_wor, myShapes[i]->mCollision))
-        {
-            mMainWindow->selectWithMousePick(i);
+    for(int i{0}; i <nrOfShapes; i++)
+        {        //making the vector from camera to object we test against
+            gsl::Vector3D camToObject =  myShapes[i]->mTransform->mMatrix.getPosition() - mEditorCamera.position();
+
+            qDebug() <<"Inside For-loop";
+            //making the normal of the ray - in relation to the camToObject vector
+            //this is the normal of the surface the camToObject and ray_wor makes:
+            gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+            //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+            gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+            rayNormal.normalize();
+
+            //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+            //getting distance from GameObject to ray using dot product:
+            float distance = camToObject * rayNormal;   //* gives the dot product
+            //we are interested in the absolute distance, so fixes any negative numbers
+             distance = abs(distance);
+            if(mCollisionSystem->CheckMousePickCollision(distance,myShapes[i]->mCollision))
+            {
+                mMainWindow->selectWithMousePick(i);
+                qDebug() <<"Mouse Collision detected";
+            }
+
         }
-    }
+
+//    //gir ikke riktig tall så må jobbes mere med
+//    qDebug() << ray_wor;
+//    for(int i{0}; i < nrOfShapes ; i++)
+//    {
+//        if(mCollisionSystem->CheckMousePickCollision(ray_wor, myShapes[i]->mCollision))
+//        {
+//            mMainWindow->selectWithMousePick(i);
+//        }
+//    }
 }
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
