@@ -142,6 +142,12 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before rendering
 
 
+    if(mMainWindow->renderMousePick)
+    {
+        mousePicking();
+    }
+
+
 
     //Draws the objects
     for(int i{0}; i < mGameObjects.size(); i++)
@@ -258,6 +264,8 @@ void RenderSystem::render()
                 //mGameObjects[2]->mMesh->collided = true;
             }
 
+
+
     }
 
     //Moves the dog triangle - should be made another way!!!!
@@ -359,11 +367,12 @@ void RenderSystem::mousePicking()
     if (pickedID < 100000)
     {
         qDebug() << "Mesh ID" << pickedID;
-
+        setPickedObject(pickedID);
     }
     else
     {
-        qDebug() << "nothing happened";
+       // qDebug() << "nothing happened";
+        cancelPickedObject();
     }
 }
 
@@ -489,7 +498,6 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
     {
         mMainWindow->on_pb_togglePlay_toggled(!isPlaying);
     }
-
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
@@ -611,7 +619,10 @@ void RenderSystem::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::RightButton)
         input.RMB = true;
     if (event->button() == Qt::LeftButton)
+    {
         input.LMB = true;
+        mMainWindow->on_actionRender_MousePick_toggled(true);
+    }
     if (event->button() == Qt::MiddleButton)
         input.MMB = true;
 }
@@ -623,7 +634,10 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::RightButton)
         input.RMB = false;
     if (event->button() == Qt::LeftButton)
+    {
         input.LMB = false;
+        mMainWindow->on_actionRender_MousePick_toggled(false);
+    }
     if (event->button() == Qt::MiddleButton)
         input.MMB = false;
 }

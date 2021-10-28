@@ -12,6 +12,7 @@
 #include "soundsystem.h"
 #include "resourcemanager.h"
 #include "coreengine.h"
+#include "meshhandler.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -111,6 +112,10 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
         ui->pb_toggleWireframe->setText("Show Solid");
     else
         ui->pb_toggleWireframe->setText("Show Wireframe");
+}
+void MainWindow::on_actionRender_MousePick_toggled(bool arg1)
+{
+    renderMousePick = arg1;
 }
 
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
