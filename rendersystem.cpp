@@ -355,7 +355,6 @@ void RenderSystem::mousePicking()
             data[1] * 256 +
             data[2] * 256*256;
 
-    pickedID = pickedID/20;   //  divide by 20 because of hack in Scene::renderMousePicker()
 
     if (pickedID < 100000)
     {
