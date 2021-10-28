@@ -161,7 +161,7 @@ void RenderWindow::initObject()
     mTransComps.push_back(myShapes[3]->mTransform);
     mNameComps.push_back(myShapes[3]->mNameComp);
 
-    myShapes[4] = mShapeFactory.createShape("Obj");
+    myShapes[4] = mShapeFactory.createShape("Monkey.obj");
     myShapes[4]->init();
     myShapes[4]->mMaterial->mShaderProgram = 0;    //plain shader
     mVisualObjects.push_back(myShapes[4]);
@@ -190,7 +190,7 @@ void RenderWindow::initObject()
     {
         for(int y=0; y<10; y++)
         {
-            temp = mShapeFactory.createMonkey();
+            temp = mShapeFactory.createShape("Monkey.obj");
             temp->init();
             temp->move((i-y), 0.5, y-5);
             temp->mMaterial->mShaderProgram = 0;    //plain shader
@@ -588,40 +588,40 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     ray_wor.normalize();
 
     for(int i{0}; i <nrOfShapes; i++)
-        {        //making the vector from camera to object we test against
-            gsl::Vector3D camToObject =  myShapes[i]->mTransform->mMatrix.getPosition() - mEditorCamera.position();
+    {        //making the vector from camera to object we test against
+        gsl::Vector3D camToObject =  myShapes[i]->mTransform->mMatrix.getPosition() - mEditorCamera.position();
 
-            qDebug() <<"Inside For-loop";
-            //making the normal of the ray - in relation to the camToObject vector
-            //this is the normal of the surface the camToObject and ray_wor makes:
-            gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+        qDebug() <<"Inside For-loop";
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
 
-            //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
-            gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
-            rayNormal.normalize();
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
 
-            //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-            //getting distance from GameObject to ray using dot product:
-            float distance = camToObject * rayNormal;   //* gives the dot product
-            //we are interested in the absolute distance, so fixes any negative numbers
-             distance = abs(distance);
-            if(mCollisionSystem->CheckMousePickCollision(distance,myShapes[i]->mCollision))
-            {
-                mMainWindow->selectWithMousePick(i);
-                qDebug() <<"Mouse Collision detected";
-            }
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray using dot product:
+        float distance = camToObject * rayNormal;   //* gives the dot product
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
+        //            if(mCollisionSystem->CheckMousePickCollision(distance,myShapes[i]->mCollision))
+        //            {
+        //                mMainWindow->selectWithMousePick(i);
+        //                qDebug() <<"Mouse Collision detected";
+        //            }
 
-        }
+    }
 
-//    //gir ikke riktig tall så må jobbes mere med
-//    qDebug() << ray_wor;
-//    for(int i{0}; i < nrOfShapes ; i++)
-//    {
-//        if(mCollisionSystem->CheckMousePickCollision(ray_wor, myShapes[i]->mCollision))
-//        {
-//            mMainWindow->selectWithMousePick(i);
-//        }
-//    }
+    //    //gir ikke riktig tall så må jobbes mere med
+    //    qDebug() << ray_wor;
+    //    for(int i{0}; i < nrOfShapes ; i++)
+    //    {
+    //        if(mCollisionSystem->CheckMousePickCollision(ray_wor, myShapes[i]->mCollision))
+    //        {
+    //            mMainWindow->selectWithMousePick(i);
+    //        }
+    //    }
 }
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)

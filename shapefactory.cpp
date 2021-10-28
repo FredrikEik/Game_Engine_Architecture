@@ -208,45 +208,74 @@ ObjMesh::ObjMesh(std::string filename)
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
-    VisualObject* temp;
+    string obj{"obj"};
     if (shapeName == "Circle"){
-        temp = new Circle;
-        temp->mNameComp->mName = shapeName;
-        temp->mNameComp->objectID = 0;
-        return temp;}
+        if(myShapes[0]->mNameComp->mName == shapeName){
+            return myShapes[0];}
+        else{
+            myShapes[0] = new Circle;
+            myShapes[0]->mNameComp->mName = shapeName;
+            myShapes[0]->mNameComp->objectID = 0;
+            return myShapes[0];}}
     else if(shapeName == "Square"){
-        temp = new Square;
-        temp->mNameComp->mName = shapeName;
-        temp->mNameComp->objectID = 1;
-        return temp;}
+        if(myShapes[1]->mNameComp->mName == shapeName)
+            return myShapes[1];
+        else{
+            myShapes[1] = new Square;
+            myShapes[1]->mNameComp->mName = shapeName;
+            myShapes[1]->mNameComp->objectID = 1;
+            return myShapes[1];}}
     else if(shapeName == "Triangle"){
-        temp = new Triangle();
-        temp->mNameComp->mName = shapeName;
-        temp->mNameComp->objectID = 2;
-        return temp;}
+        if(myShapes[2]->mNameComp->mName == shapeName)
+            return myShapes[2];
+        else{
+            myShapes[2] = new Triangle();
+            myShapes[2]->mNameComp->mName = shapeName;
+            myShapes[2]->mNameComp->objectID = 2;
+            return myShapes[2];}}
     else if(shapeName == "Plain"){
-        temp = new Plain();
-        temp->mNameComp->mName = shapeName;
-        temp->mNameComp->objectID = 3;
-        return temp;}
-    else if(shapeName == "Obj"){
-        temp = new ObjMesh(monkeyString);
-        temp->mNameComp->mName = shapeName;
-        temp->mNameComp->objectID = 4;
-        return temp;}
+        if(myShapes[3]->mNameComp->mName == shapeName)
+            return myShapes[3];
+        else{
+            myShapes[3] = new Plain();
+            myShapes[3]->mNameComp->mName = shapeName;
+            myShapes[3]->mNameComp->objectID = 3;
+            return myShapes[3];}}
+    else if(shapeName.find(obj) != std::string::npos)
+    {
+        VisualObject* temp = nullptr;
+        if(myObjs.size()>=1)
+        {
+            for(auto a = myObjs.begin(); a != myObjs.end(); a++)
+            {
+                if (shapeName.find(a->first) != std::string::npos)
+                    temp = myShapes[a->second];
+
+            }
+            return temp;
+        }
+        else{
+            myShapes[ObjStartID] = (new ObjMesh("../GEA2021/Assets/" + shapeName));
+            shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+            myObjs[shapeName] = ObjStartID;
+            return myShapes[ObjStartID];
+            ObjStartID++;}
+    }
     else{
         std::cout << "invalid string" << std::endl;
         return nullptr;}
 }
 
-VisualObject* ShapeFactory::createMonkey()
-{
-    if(doOnce == false)
-    {
-        myMonkey = new ObjMesh(monkeyString);
-        return myMonkey;
-        doOnce = true;
-    }
-    else
-        return myMonkey;
-}
+
+
+//VisualObject* ShapeFactory::createMonkey()
+//{
+//    if(doOnce == false)
+//    {
+//        myMonkey = new ObjMesh(monkeyString);
+//        return myMonkey;
+//        doOnce = true;
+//    }
+//    else
+//        return myMonkey;
+//}

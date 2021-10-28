@@ -28,7 +28,6 @@ SOURCES += main.cpp \
     matrix4x4.cpp \
     player.cpp \
     renderwindow.cpp \
-    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
@@ -58,7 +57,6 @@ HEADERS += \
     matrix4x4.h \
     player.h \
     renderwindow.h \
-    resourcemanager.h \
     shader.h \
     mainwindow.h \
     shapefactory.h \

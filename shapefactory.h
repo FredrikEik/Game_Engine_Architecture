@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include "vertex.h"
 #include "shader.h"
 #include "gltypes.h"
@@ -17,11 +18,15 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
-    VisualObject* createMonkey();
+//    VisualObject* createMonkey();
 private:
-    VisualObject* myMonkey;
-    string monkeyString = "../GEA2021/Assets/Monkey.obj";
-    bool doOnce = false;
+    std::map<string, int> myObjs;
+    int ObjStartID;
+    std::vector<VisualObject*> myShapes;
+//    VisualObject* myMonkey;
+//    string monkeyString = "../GEA2021/Assets/Monkey.obj";
+//    string pacmanString = "../GEA2021/Assets/Pacman.obj";
+//    bool doOnce = false;
 };
 
 class Circle : public VisualObject
