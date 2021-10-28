@@ -17,6 +17,7 @@
 #include "constants.h"
 #include "texture.h"
 
+
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
@@ -644,9 +645,25 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     //gir ikke riktig tall så må jobbes mere med
     qDebug() << ray_wor;
 
-    for(int i{0}; i < mVisualObjects.size(); i++)
-    {        //making the vector from camera to object we test against
-        gsl::Vector3D camToObject =  mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
+//    for(int i{-2};i<mVisualObjects.size();i++)
+//    {
+//        mCollisionSystem->CheckMousePickCollisions(i,ray_wor,mEditorCamera,myShapes[i],myShapes[i]->mCollision);
+//        if(mCollisionSystem->CheckMousePickCollision)
+//        {
+//            mousePickCollide = true;
+//            mMainWindow->SelectWithMousePick(i);
+
+//            MousePickindex = i;
+//            qDebug() <<"Mouse Collision detected";
+
+//        }
+//    }
+
+
+/*    for(int i{-2}; i < mVisualObjects.size(); i++)
+
+    {  */      //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mPlayer->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
 
         //making the normal of the ray - in relation to the camToObject vector
         //this is the normal of the surface the camToObject and ray_wor makes:
@@ -662,20 +679,17 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 
         //we are interested in the absolute distance, so fixes any negative numbers
         distance = abs(distance);
-        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision))
+
+        if(mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision))
         {
             mousePickCollide = true;
-            mMainWindow->SelectWithMousePick(i);
+            mMainWindow->SelectWithMousePick(5);
 
-            MousePickindex = i;
+            MousePickindex = 5;
             qDebug() <<"Mouse Collision detected";
         }
 
-    }
-
-
-
-
+    //}
 
 }
 

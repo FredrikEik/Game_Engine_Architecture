@@ -79,9 +79,6 @@ private:
     void mousePickingRay(QMouseEvent *event);
      gsl::Vector3D ray_wor;
 
-   // bool mDrawMousePickRay{false};
- //   gsl::Vector3D mMousePickRay;
-
     void initObjects();
     void makeObject();
     void HandleInput();
@@ -89,7 +86,6 @@ private:
 
     bool shapeExist[4];
     bool playM = false;
-    int shapeID;
 
     void init();
 

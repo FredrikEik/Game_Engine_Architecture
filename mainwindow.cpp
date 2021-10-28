@@ -131,14 +131,20 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID; i++){
         if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
         {
-//            if(mRenderWindow->mousePickCollide == true)
-//                SelectWithMousePick(mRenderWindow->MousePickindex);
-//            else
-            ActiveObject = mRenderWindow->mNameComp[i]->ObjectID;// mRenderWindow->mNameComp[i]->Object;
+            if(mRenderWindow->mousePickCollide == true)
+            {
+                SelectWithMousePick(mRenderWindow->MousePickindex);
+                ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
+                ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+                ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
+                mRenderWindow->mousePickCollide = false;
+            }else{
+                ActiveObject = mRenderWindow->mNameComp[i]->ObjectID;
+                ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
+                ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+                ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
 
-            ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
-            ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
-            ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
+            }
 
         }
     }
@@ -147,7 +153,7 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 void MainWindow::SelectWithMousePick(int index)
 {
 
-     ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
+    ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
 }
 
 

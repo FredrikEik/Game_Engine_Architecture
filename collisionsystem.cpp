@@ -1,5 +1,6 @@
 #include "collisionsystem.h"
 
+
 void CollisionComponent::setBoundingBox(gsl::Vector3D Min, gsl::Vector3D Max)
 {
     BoundingBoxMin = Min;
@@ -65,10 +66,36 @@ bool CollisionSystem::CheckSphCol(CollisionComponent *aCollision, CollisionCompo
     return distance < (aCollision->radius + bCollision->radius);
 }
 
-bool CollisionSystem::CheckMousePickCollision(gsl::Vector3D point, CollisionComponent *sCollision)
+bool CollisionSystem::CheckMousePickCollision(float distance, CollisionComponent *sCollision)
 {
-    float distance = sqrt((point.getX() - sCollision->center.getX()) * (point.x - sCollision->center.getX()) +
-                          (point.y - sCollision->center.getY()) * (point.y - sCollision->center.getY()) +
-                          (point.z - sCollision->center.getZ()) * (point.z - sCollision->center.getZ()));
+//    float distance = sqrt((point.getX() - sCollision->center.getX()) * (point.x - sCollision->center.getX()) +
+//                          (point.y - sCollision->center.getY()) * (point.y - sCollision->center.getY()) +
+//                          (point.z - sCollision->center.getZ()) * (point.z - sCollision->center.getZ()));
     return distance < sCollision->radius;
 }
+
+//bool CollisionSystem::CheckMousePickCollisions(int i,gsl::Vector3D ray_wor,Camera *mCurrentCamera,VisualObject *mVisualObjects, CollisionComponent *sCollision)
+//{
+//    //making the vector from camera to object we test against
+//    gsl::Vector3D camToObject =  mVisualObjects[i].mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
+
+//    //making the normal of the ray - in relation to the camToObject vector
+//    //this is the normal of the surface the camToObject and ray_wor makes:
+//    gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+//    //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+//    gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+//    rayNormal.normalize();
+
+//    //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+//    //getting distance from GameObject to ray using dot product:
+//    float distance = camToObject * rayNormal;   //* gives the dot product
+
+//    //we are interested in the absolute distance, so fixes any negative numbers
+//    distance = abs(distance);
+
+//    CheckMousePickCollision()
+
+//   // return distance < sCollision->radius;
+
+//}
