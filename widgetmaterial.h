@@ -1,9 +1,6 @@
 #ifndef WIDGETMATERIAL_H
 #define WIDGETMATERIAL_H
 
-#include <QWidget>
-#include "components.h"
-
 namespace Ui {
 class WidgetMaterial;
 }

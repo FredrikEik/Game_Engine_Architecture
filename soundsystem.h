@@ -1,12 +1,6 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
-#include <string>
-#include <vector>
-//#include "soundsource.h"
-#include "vector3d.h"
-#include "altypes.h"
-
 //Forward declaration
 class RenderSystem;
 

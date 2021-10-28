@@ -1,14 +1,6 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
-#include <QTimer>
-#include <QElapsedTimer>
-
-#include "input.h"
-#include "constants.h"
-
 //Just to debug mousePickingRay
 #include "meshhandler.h"
 

@@ -1,10 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "matrix4x4.h"
-#include "vector3d.h"
-#include "components.h"
-
 /**
   Holds normals to the different planes of the frustum
   and some other necessary data

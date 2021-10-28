@@ -1,12 +1,9 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <iostream>
 #include "vector3d.h"
 #include "vector2d.h"
 #include "gltypes.h"
-#include <iostream>
-#include <fstream>
 
 class Vertex {
 public:

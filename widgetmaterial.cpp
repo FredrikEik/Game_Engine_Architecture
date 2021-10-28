@@ -1,16 +1,12 @@
 #include "widgetmaterial.h"
 #include "ui_widgetmaterial.h"
 
-#include <QColorDialog>
 
 //#include "scene.h"
 #include "rendersystem.h"
 //#include "visualobject.h"
-#include "components.h"
 #include "texturehandler.h"
-#include "constants.h"
 #include "resourcemanager.h"
-#include "components.h"
 #include "shaderhandler.h"
 
 WidgetMaterial::WidgetMaterial(QWidget *parent) :

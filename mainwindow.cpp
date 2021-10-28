@@ -1,11 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QSurfaceFormat>
-#include <QDebug>
-#include <QScreen>  //for resizing the program at start
-#include <QMessageBox>  //For Help menu messages
-#include <QTreeWidgetItem> //Scene Outliner
 
 #include "rendersystem.h"
 #include "soundsystem.h"

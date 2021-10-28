@@ -3,6 +3,8 @@ QT          += core gui widgets opengl
 TEMPLATE    = app
 CONFIG      += c++17
 
+PRECOMPILED_HEADER = pch.h
+
 TARGET      = GEA2021
 
 RC_ICONS    = INNgine.ico
@@ -92,6 +94,7 @@ HEADERS += \
     ResourceManager/texturehandler.h \
     ResourceManager/meshhandler.h \
     logger.h \
+    pch.h \
     rendersystem.h \
     mainwindow.h \
     soundsystem.h \

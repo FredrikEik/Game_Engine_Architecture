@@ -1,13 +1,9 @@
 #include "widgettransform.h"
 #include "ui_widgettransform.h"
-#include <QTreeWidget>
-#include <QKeyEvent>
 
 //#include "scene.h"
 #include "gameobject.h"
-#include "matrix4x4.h"
 #include "rendersystem.h"
-#include "components.h"
 
 WidgetTransform::WidgetTransform(QWidget *parent, float positionStep, float rotationStep, float scaleStep) :
     QWidget{parent}, ui{new Ui::WidgetTransform},

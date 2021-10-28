@@ -2,14 +2,10 @@
 
 #include "resourcemanager.h"
 #include "soundsystem.h"
-
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
 #include "mainwindow.h"
-#include "logger.h"
-
-#include <ctime>
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 

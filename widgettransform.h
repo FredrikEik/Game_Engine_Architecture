@@ -1,10 +1,6 @@
 #ifndef WIDGETTRANSFORM_H
 #define WIDGETTRANSFORM_H
 
-#include <QWidget>
-
-#include "vector3d.h"
-
 class RenderSystem;
 
 namespace Ui {

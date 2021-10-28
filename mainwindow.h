@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
 //Forward declarations
 class QWidget;
 class QTreeWidgetItem;

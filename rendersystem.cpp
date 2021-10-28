@@ -1,31 +1,17 @@
 #include "rendersystem.h"
-#include <QTimer>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLDebugLogger>
-#include <QKeyEvent>
-#include <QStatusBar>
-#include <QDebug>
-#include <string>
 
-#include <iostream>
+#include <QOpenGLContext>
+#include <QOpenGLDebugLogger>
 
 #include "shaderhandler.h"
 #include "mainwindow.h"
 #include "gameobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
-#include "constants.h"
 #include "texturehandler.h"
-#include "components.h"
 #include "resourcemanager.h"
 #include "soundsystem.h"
 #include "coreengine.h"
-#include "math_constants.h"
 #include "meshhandler.h"    //to check linebox
-#include "vector4d.h"
-#include "logger.h"
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
