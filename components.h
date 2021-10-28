@@ -7,6 +7,15 @@
 #include "gltypes.h"
 #include "altypes.h"
 
+struct ColliderComponent
+{
+    bool objectsHasCollided = false;
+    bool sphereCollider = false;
+    bool OBBCollider = false;
+    float distance{0};
+    float radiusOfObjects{0};
+
+};
 
 struct TransformComponent
 {
@@ -21,7 +30,7 @@ struct MeshComponent
     GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f};
-        bool collided = false;
+    //    bool collided = false;
 };
 
 struct MaterialComponent

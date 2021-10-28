@@ -22,7 +22,9 @@ class ResourceManager : public QOpenGLFunctions_4_1_Core
 public:
     static ResourceManager& getInstance();
 
+    ColliderComponent *mCollider = new ColliderComponent();
     GameObject* addObject(std::string meshName);
+    bool addCollider(std::string colliderType, GameObject* obj);
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
     void setUpAllTextures();

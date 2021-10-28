@@ -41,11 +41,14 @@ void CoreEngine::setUpScene()
 
     //dog triangle
     player = mResourceManager->addObject("suzanne.obj");
+//    player = mResourceManager->addSphereCollider();
     player->mMaterial->mShaderProgram = 0;
     player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
     player->mTransform->mMatrix.rotateY(180.f);
     player->mTransform->mMatrix.scale(0.5f);
     player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    mResourceManager->addCollider("sphere", player);
+    //mResourceManager->addSphereCollider(player);
     //Adds sound to player:
     //mResourceManager->addComponent("run_stereo.wav", temp);
     mResourceManager->addComponent("techno_stereo.wav", player);
@@ -56,20 +59,24 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(player);
 
     //lager test objekter
-    for(int i{0}; i < 15; i++)
-    {
-        for(int j{0}; j < 15; j++)
-        {
+
+//    for(int i{0}; i < 15; i++)
+//    {
+//        for(int j{0}; j < 15; j++)
+//        {
               temp = mResourceManager->addObject("suzanne3.obj");
               temp->mTransform->mMatrix.translate(-2, 1.f,2.f);
               temp->mMaterial->mShaderProgram = 1;
               temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
               temp->mTransform->mMatrix.rotateY(180.f);
-              temp->mTransform->mMatrix.translate(-2.f*i, 1.f, 2.f*j);
+              temp->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
               temp->mTransform->mMatrix.scale(0.5f);
+//            temp = mResourceManager->addSphereCollider();
+              //mResourceManager->addSphereCollider(temp);
+              mResourceManager->addCollider("sphere", temp);
               mRenderSystem->mGameObjects.push_back(temp);
-        }
-    }
+//        }
+//    }
 
 
     mEditorCamera = new Camera();

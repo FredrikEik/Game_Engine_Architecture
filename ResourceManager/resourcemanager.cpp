@@ -55,7 +55,25 @@ GameObject *ResourceManager::addObject(std::string meshName)
 
     tempObject->mMaterial = new MaterialComponent();
     tempObject->mTransform = new TransformComponent();
+    tempObject->mCollider = new ColliderComponent();
+
     return tempObject; //temporary to get to compile
+
+}
+
+bool ResourceManager::addCollider(std::string ColliderType, GameObject* obj)
+{
+
+
+    if(ColliderType == "sphere")
+    {
+            obj->mCollider->sphereCollider = true;
+            qDebug() << "added sphere collider";
+    }
+
+
+
+    return true;
 }
 
 bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
@@ -64,21 +82,23 @@ bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
     gsl::Vector3D lengthVec = (obj1->mTransform->mMatrix.getPosition() -
             obj2->mTransform->mMatrix.getPosition() ) * 3.14;
 
-    float distance = lengthVec.length();
 
+    //sphere collider
+    if(obj1->mCollider->sphereCollider && obj2->mCollider->sphereCollider)
+    {
+        mCollider->distance = lengthVec.length();
+        mCollider->radiusOfObjects = obj1->mMesh->mColliderRadius + obj2->mMesh->mColliderRadius;
 
-    float radiusOfObjects = obj1->mMesh->mColliderRadius + obj2->mMesh->mColliderRadius;
+             if(mCollider->distance > mCollider->radiusOfObjects)
+             {
+                return false;
+             }
+             else
+             {
+                return true;
+             }
 
-
-
-         if(distance > radiusOfObjects)
-         {
-            return false;
-         }
-         else
-         {
-            return true;
-         }
+    }
 
 }
 bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)
@@ -175,16 +195,4 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
 
-//bool ResourceManager::checkCollision(MeshData &linebox1, MeshData &linebox2)
-//{
-//    if(linebox1.mUpRightFrontCorner.getX() >= linebox2.mLowLeftBackCorner.getX())
-//    {
-
-//        //qDebug() << "collided ! ! ! !! ";
-//        Collided = true;
-//    }
-//    else
-//        Collided = false;
-//    return Collided;
-//}
 

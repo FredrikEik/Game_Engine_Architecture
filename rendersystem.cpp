@@ -250,18 +250,18 @@ void RenderSystem::render()
         }
         glBindVertexArray(0);
 
-        if(!mGameObjects[2]->mMesh->collided)
+//        if(mGameObjects[2]->mCollider->objectsHasCollided == false)
 
-        {
+//        {
             if(CoreEngine::getInstance()->mResourceManager->checkCollision(
             mGameObjects[1], mGameObjects[2]))
             {
                 qDebug() << "collided !";
                 mGameObjects[2]->mTransform->mMatrix.rotateX(90);
                 //CoreEngine::getInstance()->mResourceManager->Collided = true;
-                mGameObjects[2]->mMesh->collided = true;
+                mGameObjects[2]->mCollider->objectsHasCollided = true;
             }
-        }
+//        }
 
 
 
