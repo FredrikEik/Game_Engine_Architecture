@@ -9,6 +9,10 @@
 #include "input.h"
 #include "constants.h"
 #include "inputsystem.h"
+#include "component.h"
+#include "shapefactory.h"
+#include "soundmanager.h"
+#include "soundsource.h"
 
 class QOpenGLContext;
 class Shader;
@@ -33,22 +37,46 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void playMode(bool p);
+    void toggleShapes(int shapeID);
+    void setCameraSpeed(float value);
+    std::vector<NameComponent*> mNameComps;
+    std::vector<TransformComponent*> mTransComps;
 
 private slots:
     void render();
 
 private:
+    SoundSource* mLaserSound{};
+    InputComponent *mInputComponent;
+    InputSystem *mInputSystem;
+    CollisionSystem* mCollisionSystem;
+    FrustumSystem* mFrustumSystem;
+    ShapeFactory mShapeFactory;
+    static const int nrOfShapes = 5;
+    VisualObject* myShapes[nrOfShapes];
+    Input mInput;
+    Player* mPlayer;
+    bool shapeExist[5];
+    bool playM = false;
+
+
+    MeshComponent mDebugMousePickRay;
+    void mousePickingRay(QMouseEvent *event);
+    bool mDrawMousePickRay{false};
+    gsl::Vector3D mMousePickRay;
+    gsl::Vector3D ray_wor;
+
     void init();
+    void initObject();
+    void drawObject();
+
 
     void checkForGLerrors();
 
     void calculateFramerate();
 
     void startOpenGLDebugger();
-
-    void setCameraSpeed(float value);
-
-    //void handleInput();
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
@@ -66,16 +94,10 @@ private:
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera *mCurrentCamera{nullptr};
-    float mAspectratio{1.f};
+    Camera mEditorCamera;
+    Camera mPlayCamera;
 
     std::vector<VisualObject*> mVisualObjects;
-    CameraInputComponent* mCameraInputComponent;
-
-        Input mInput;
-        float mCameraSpeed{0.05f};
-        float mCameraRotateSpeed{0.1f};
-        int mMouseXlast{0};
-        int mMouseYlast{0};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
@@ -87,18 +109,14 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
-
-
-
-
 protected:
-    //The QWindow that we inherit from has these functions to capture mouse and keyboard.
-    //    void mousePressEvent(QMouseEvent *event) override;
-    //    void mouseReleaseEvent(QMouseEvent *event) override;
-    //    void mouseMoveEvent(QMouseEvent *event) override;
-    //    void keyPressEvent(QKeyEvent *event) override;
-    //    void keyReleaseEvent(QKeyEvent *event) override;
-        void wheelEvent(QWheelEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void wheelEvent(QWheelEvent *event) override;
+
 };
 
 #endif // RENDERWINDOW_H

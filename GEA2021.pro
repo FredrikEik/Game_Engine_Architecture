@@ -3,35 +3,48 @@ QT          += core gui widgets opengl
 TEMPLATE    = app
 CONFIG      += c++17
 
+INCLUDEPATH += .
+INCLUDEPATH += ./include
+
 TARGET      = GEA2021
+
+mac {
+    LIBS += -framework OpenAL
+}
+
+win32 {
+    INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
+    LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+}
 
 SOURCES += main.cpp \
     camera.cpp \
-    camerainputcomponent.cpp \
+    collisionsystem.cpp \
     component.cpp \
-    gameobject.cpp \
-    inputcomponent.cpp \
     inputsystem.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
-    playerinputcomponent.cpp \
+    player.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    shapefactory.cpp \
+    soundmanager.cpp \
+    soundsource.cpp \
     texture.cpp \
-    triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
+    vector4d.cpp \
     vertex.cpp \
     visualobject.cpp \
+    wavfilehandler.cpp \
     xyz.cpp
 
 HEADERS += \
     camera.h \
-    camerainputcomponent.h \
+    collisionsystem.h \
     component.h \
     constants.h \
-    gameobject.h \
     gltypes.h \
     input.h \
     inputcomponent.h \
@@ -39,16 +52,20 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    playerinputcomponent.h \
+    player.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    shapefactory.h \
+    soundmanager.h \
+    soundsource.h \
     texture.h \
-    triangle.h \
     vector2d.h \
     vector3d.h \
+    vector4d.h \
     vertex.h \
     visualobject.h \
+    wavfilehandler.h \
     xyz.h
 
 FORMS += \

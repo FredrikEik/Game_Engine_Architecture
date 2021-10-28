@@ -1,35 +1,25 @@
 #ifndef VISUALOBJECT_H
 #define VISUALOBJECT_H
-
+#include "component.h"
+#include <sstream>
 #include <QOpenGLFunctions_4_1_Core>
-#include <vector>
-#include "vertex.h"
-#include "matrix4x4.h"
-#include "shader.h"
-
-class RenderWindow;
+#include "collisionsystem.h"
 
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init();
-    virtual void draw()=0;
+    virtual void move(float dx, float dy, float dz);
+    void readFile(std::string filename);
 
-    gsl::Matrix4x4 mMatrix;
+    CollisionComponent* mCollision{nullptr};
+    struct TransformComponent* mTransform{nullptr};
+    struct MeshComponent* mMesh{nullptr};
+    struct MaterialComponent* mMaterial{nullptr};
+    struct NameComponent* mNameComp{nullptr};
 
-    std::string mName;
-
-    RenderWindow *mRenderWindow{nullptr}; //Just to be able to call checkForGLerrors()
-
-protected:
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
-
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
-
+private:
+    CollisionSystem* mColSystem;
 };
 #endif // VISUALOBJECT_H
-

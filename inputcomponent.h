@@ -1,13 +1,15 @@
 #ifndef INPUTCOMPONENT_H
 #define INPUTCOMPONENT_H
-#include <QKeyEvent>
+
 #include "input.h"
 
-class InputComponent
+struct InputComponent
 {
-public:
-    virtual ~InputComponent() {}
-    virtual void update();//(Player& player) = 0;
+    float mCameraSpeed{0.05f};
+    float mCameraRotateSpeed{0.1f};
+    float mPlayerSpeed{0.1f};
+    int mMouseXlast{0};
+    int mMouseYlast{0};
 };
 
 #endif // INPUTCOMPONENT_H
