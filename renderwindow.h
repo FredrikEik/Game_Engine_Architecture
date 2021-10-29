@@ -71,8 +71,10 @@ private:
     SoundSource* mLaserSound{};
     Input mInput;
     CollisionSystem* mCollisionSystem;
-    ShapeFactory mShapeFactory;
     FrustumSystem* mFrustumSystem;
+    ShapeFactory mShapeFactory;
+//    static const int nrOfShapes = 5;
+//    VisualObject* myShapes[nrOfShapes];
     VisualObject* myShapes[5];
 
 

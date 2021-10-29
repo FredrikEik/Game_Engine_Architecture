@@ -121,13 +121,11 @@ void MainWindow::on_actionAdd_Monkey_triggered()
 }
 
 
-
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 {
-
-
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
+    ui->DetailGroupBox->setTitle("Details: "+itemName);
     for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID; i++){
         if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
         {
@@ -137,15 +135,14 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
                 ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
                 ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
                 ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
+               // ui->DetailGroupBox->setTitle("Details: "+itemName);
                 mRenderWindow->mousePickCollide = false;
             }else{
                 ActiveObject = mRenderWindow->mNameComp[i]->ObjectID;
                 ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
                 ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
                 ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
-
             }
-
         }
     }
 }
@@ -155,6 +152,7 @@ void MainWindow::SelectWithMousePick(int index)
 
     ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
 }
+
 
 
 
@@ -196,7 +194,37 @@ void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
 }
 
 
-//void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
-//{
-//    on_treeWidget_itemActivated(item, column);
-//}
+
+void MainWindow::on_RotateX_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateX(5.f);
+}
+
+
+void MainWindow::on_RotateY_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateY(5.f);
+}
+
+
+void MainWindow::on_RotateZ_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateZ(5.f);
+}
+
+
+
+
+
+
+void MainWindow::on_ScaleP_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(1.5f);
+}
+
+
+void MainWindow::on_ScaleM_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.75f);
+}
+

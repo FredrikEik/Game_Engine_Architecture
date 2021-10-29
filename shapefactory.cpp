@@ -270,3 +270,16 @@ VisualObject* ShapeFactory::createMonkeys(int i)
     }
 }
 
+//VisualObject* ShapeFactory::createMonkeys(int i)
+//{
+//    if(doOnce == false)
+//    {
+//        myMonkeys[i] = new ObjMesh(monkeyString); //VisualObject* myMonkey;
+//        return myMonkeys[i];
+//        doOnce = true;
+//    }
+//    else
+//    {
+//        return myMonkeys[i];
+//    }
+//}

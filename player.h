@@ -19,6 +19,7 @@ public:
 private:
     float mx, my, mz; // posisjon
     CollisionSystem *mColsystem;
+    ShapeFactory* factoryPtr;
 
 };
 

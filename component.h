@@ -11,6 +11,8 @@ struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D mPosition;
+    gsl::Vector3D mScale{};
+    gsl::Vector3D mRotation{};
     float scale = 1;
 
 };

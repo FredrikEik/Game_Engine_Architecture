@@ -23,6 +23,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void SelectWithMousePick(int index);
+    void setRotation();
+    void setRotationRate();
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -53,11 +55,23 @@ private slots:
 
   //  void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
+
+    void on_RotateX_clicked();
+
+    void on_RotateY_clicked();
+
+    void on_RotateZ_clicked();
+
+
+
+
+    void on_ScaleP_clicked();
+
+    void on_ScaleM_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;
-
-
     QWidget *mRenderWindowContainer;
     ShapeFactory *mShapefactory;
     RenderWindow *mRenderWindow;

@@ -10,17 +10,9 @@ class InputSystem
 public:
     InputSystem();
 
-
-    void updateP(Player *mPlayer,Input mInput);
-    void updateC(Camera *mCurrentCamera,Input mInput);
+    void update(Player *mPlayer,Camera *mCamera,Input mInput);
     void CheckActiveInput();
     void setCameraSpeed(Camera *mCurrentCamera,float value);
-
-
-
-
-
-
 };
 
 #endif // INPUTSYSTEM_H

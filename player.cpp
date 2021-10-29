@@ -8,6 +8,7 @@ Player::Player() : mx{0.0f}, my{0.0f}, mz{0.0f}
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     mColsystem = new CollisionSystem;
+    //factoryPtr->createShape("Pacman.obj");
     readFile("../GEA2021/Assets/Pacman.obj");
     mCollision->setBoundingBox(gsl::Vector3D(-1, -1, -1),gsl::Vector3D(1, 1, 1));
     mCollision->setBoundingSphere(1, mTransform->mPosition);

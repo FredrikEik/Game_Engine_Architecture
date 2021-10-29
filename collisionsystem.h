@@ -3,6 +3,7 @@
 #include "vector3d.h"
 #include <math.h>
 
+
 struct CollisionComponent
 {
     void setBoundingBox(gsl::Vector3D Min,gsl::Vector3D Max);
@@ -25,7 +26,7 @@ public:
     bool CheckSphOnBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckMousePickCollision(float distance, CollisionComponent *sCollision);
-  //  void CheckMousePickCollisions(int i,gsl::Vector3D ray_wor,Camera *mCurrentCamera,VisualObject *mVisualObjects, CollisionComponent *sCollision)
+  //  void CheckMousePickCollisions(int i,gsl::Vector3D ray_wor,Camera *mCurrentCamera,VisualObject *mVisualObjects, CollisionComponent *sCollision);
 };
 
 #endif // COLLISIONSYSTEM_H
