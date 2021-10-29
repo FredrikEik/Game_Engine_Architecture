@@ -16,43 +16,28 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Toggle Wireframe</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Toggle Wireframe</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>Play</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>Play</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed.</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,0">
       <item>
        <layout class="QVBoxLayout" name="OpenGLLayout"/>
       </item>
@@ -72,7 +57,7 @@
              <widget class="QTreeWidget" name="treeWidget">
               <column>
                <property name="text">
-                <string notr="true">1</string>
+                <string notr="true">World</string>
                </property>
               </column>
              </widget>
@@ -103,7 +88,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>437</width>
-                 <height>360</height>
+                 <height>382</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,1">
@@ -281,6 +266,9 @@
         </layout>
        </widget>
       </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6"/>
+      </item>
      </layout>
     </item>
    </layout>
@@ -298,6 +286,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionControls"/>
    </widget>
    <widget class="QMenu" name="menuAdd_Mesh">
     <property name="title">
@@ -338,6 +327,11 @@
   <action name="actionPlane">
    <property name="text">
     <string>Plane</string>
+   </property>
+  </action>
+  <action name="actionControls">
+   <property name="text">
+    <string>Controls</string>
    </property>
   </action>
  </widget>

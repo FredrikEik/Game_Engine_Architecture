@@ -10,6 +10,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItemIterator>
 #include <gsl/vector3d.h>
+#include <QMessageBox>
 
 #include "renderwindow.h"
 
@@ -262,4 +263,13 @@ void MainWindow::on_pushButton_10_clicked()
 void MainWindow::on_checkBox_toggled(bool checked)
 {
     mRenderWindow->meshCompVec[SelectedItem]->isDrawable=checked;
+}
+
+void MainWindow::on_actionControls_triggered()
+{
+    //QMessageBox(QMessageBox::Information, "Help -> Controls", "const QString &text");
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setText("Move and rotate camera by holding down right mouse button. \nUse WASD. \nQ = down, \nE = up. \nUse ScrollWheel to adjust speed.");
+    msgBox.exec();
 }
