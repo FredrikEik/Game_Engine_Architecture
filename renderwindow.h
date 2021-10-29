@@ -13,10 +13,12 @@
 #include "resourcesystem.h"
 #include "entitysystem.h"
 #include "collisionsystem.h"
+#include "physicssystem.h"
 
 #include "soundmanager.h"
 #include "soundsource.h"
 #include "vector3.h"
+#include <ctime>    //for physics
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
 
@@ -65,12 +67,19 @@ public:
 
     bool isPaused = false;
 
+    //PHYSICS
+    PhysicsSystem* Physics = new PhysicsSystem();
 
 
 private slots:
     void render();
 
 private:
+
+    void CalcDeltaTime();
+    float DeltaTime =0.0;
+    std::chrono::steady_clock::time_point oldTime;
+
     void init();
 
     void checkForGLerrors();
