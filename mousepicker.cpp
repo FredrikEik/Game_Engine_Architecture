@@ -1,4 +1,5 @@
 #include "mousepicker.h"
+#include "cmath"
 
 
 MousePicker::MousePicker(Camera *cam)
@@ -46,4 +47,35 @@ gsl::Vector3D MousePicker::toWorldCoords(tog::vec4 eyeCoords)
     gsl::Vector3D mouseRay = gsl::Vector3D(rayWorld.x, rayWorld.y, rayWorld.z);
     mouseRay.normalize();
     return mouseRay;
+}
+
+bool MousePicker::TestRayOBBIntersection(gsl::Vector3D rayOrigin, gsl::Vector3D rayDirection, gsl::Vector3D aabb_min, gsl::Vector3D aabb_max, gsl::Vector3D objectPosition , float& intersection_distance)
+{
+    float tMin = 0.f;
+    float tMax = 100000.f;
+
+    gsl::Vector3D OBBposition_worldspace = objectPosition;
+
+    gsl::Vector3D delta = OBBposition_worldspace - rayOrigin;
+
+    gsl::Vector3D xaxis;
+    float e = tog::dotProduct(xaxis, delta);
+    float f = tog::dotProduct(rayDirection, xaxis);
+
+    float t1 = (e + aabb_min.getX()) / f; // Intersection with the "left" plane
+    float t2 = (e + aabb_max.getX()) / f;
+
+    if (t1 > t2) {
+        float w = t1;
+        t1=t2;
+        t2=w;
+    }
+
+    if ( t2 < tMax ) tMax = t2;
+    if ( t1 > tMin ) tMin = t1;
+
+    if (tMax < tMin )
+        return false;
+    else
+        return true;
 }
