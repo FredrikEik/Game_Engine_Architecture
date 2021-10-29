@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     openal/soundsource.cpp \
     openal/vector3.cpp \
     openal/wavfilehandler.cpp \
+    physicssystem.cpp \
     rendersystem.cpp \
     renderwindow.cpp \
     resourcesystem.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     openal/soundsource.h \
     openal/vector3.h \
     openal/wavfilehandler.h \
+    physicssystem.h \
     rendersystem.h \
     renderwindow.h \
     resourcesystem.h \

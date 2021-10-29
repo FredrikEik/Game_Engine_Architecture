@@ -138,6 +138,8 @@ void RenderWindow::init()
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
+    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+    entitySys->construct("sphere.obj", QVector3D(5.0f,10.0f,-5.0f),0,0);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
@@ -166,6 +168,22 @@ void RenderWindow::init()
 
     mSong->play();
     mMainWindow->updateViewPort();
+
+    //physics code
+    oldTime = std::chrono::high_resolution_clock::now();
+
+    int eSize = entities.size();
+    for(int i = 0; i < eSize; i++)
+    {
+        if(meshCompVec[i]->entity == 3)
+        {
+            Physics->InitPhysicsSystem(meshCompVec[i]);
+            break;
+        }
+    }
+
+
+
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -237,7 +255,8 @@ void RenderWindow::render()
 
 
     int eSize = entities.size();
-    for(int i = 0; i < eSize; i++){
+    for(int i = 0; i < eSize; i++)
+    {
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             int viewMatrix{-1};
@@ -258,13 +277,13 @@ void RenderWindow::render()
                 glUniform1i(mTextureUniform, MaterialCompVec[i]->mTextureUnit);
             }
             RenderSys->draw(meshCompVec[i],
-                    MaterialCompVec[i],
-                    transformCompVec[i],
-                    viewMatrix,
-                    projectionMatrix,
-                    modelMatrix,
-                    mCurrentCamera);
-            //----------------------------------------------------
+                            MaterialCompVec[i],
+                            transformCompVec[i],
+                            viewMatrix,
+                            projectionMatrix,
+                            modelMatrix,
+                            mCurrentCamera);
+            /*//----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
             if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2){
@@ -276,6 +295,7 @@ void RenderWindow::render()
                 }
             }
             //------------------------------------------------------
+            */
         }
     }
 
@@ -285,7 +305,13 @@ void RenderWindow::render()
         for(int i = 0; i < eSize; i++){
             if(transformCompVec[i]->entity == 2){
                 transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
-                mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+                //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+            }
+            if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
+            {
+               Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+               //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+               break;
             }
         }
     }
@@ -308,7 +334,19 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
+    CalcDeltaTime();
+
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+}
+
+void RenderWindow::CalcDeltaTime()
+{
+    auto newTime = std::chrono::high_resolution_clock::now();
+
+    float elapsed_time_ms = std::chrono::duration<double, std::milli>(newTime-oldTime).count();
+    oldTime = newTime;
+
+    DeltaTime = elapsed_time_ms/1000.f;
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)

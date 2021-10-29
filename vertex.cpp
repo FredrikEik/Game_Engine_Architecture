@@ -93,6 +93,12 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
+gsl::Vector3D Vertex::getVertex()   {return mXYZ;}
+
+gsl::Vector3D Vertex::getNormal()   {return mNormal;}
+
+gsl::Vector2D Vertex::getUV()       {return mST;}
+
 Vertex::Vertex(QVector3D vec1, QVector3D vec2, QVector2D vec3)
 {
     mXYZ.setX(vec1.x());
