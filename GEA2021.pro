@@ -20,6 +20,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    MathStuff/MathStuff.cpp \
     camera.cpp \
     cube.cpp \
     gameobject.cpp \

@@ -38,11 +38,7 @@ struct vec4
     }
 };
 
-float dotProduct(gsl::Vector3D a, gsl::Vector3D b)
-{
-    float ans = (a.getX()*b.getX()) + (a.getY()*b.getY()) + (a.getZ()*b.getZ());
-    return ans;
-}
+float dotProduct(gsl::Vector3D a, gsl::Vector3D b);
 
 }
 

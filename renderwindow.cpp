@@ -733,6 +733,5 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     mMouseYlast = event->pos().y();
 
     mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
-    //qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
-
+    qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
 }
