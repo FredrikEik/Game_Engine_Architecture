@@ -1,4 +1,4 @@
-#include "systemmanager.h"
+#include "resourcemanager.h"
 
 SystemManager::SystemManager()
 {

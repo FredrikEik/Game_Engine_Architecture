@@ -14,18 +14,14 @@ SOURCES += main.cpp \
     entitymanager.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
-    renderwindow.cpp \
+    rendersystem.cpp \
+    resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
-    system.cpp \
-    systemmanager.cpp \
     texture.cpp \
-    triangle.cpp \
     vector2d.cpp \
     vector3d.cpp \
-    vertex.cpp \
-    visualobject.cpp \
-    xyz.cpp
+    vertex.cpp
 
 HEADERS += \
     camera.h \
@@ -40,18 +36,14 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    renderwindow.h \
+    rendersystem.h \
+    resourcemanager.h \
     shader.h \
     mainwindow.h \
-    system.h \
-    systemmanager.h \
     texture.h \
-    triangle.h \
     vector2d.h \
     vector3d.h \
-    vertex.h \
-    visualobject.h \
-    xyz.h
+    vertex.h
 
 FORMS += \
     mainwindow.ui

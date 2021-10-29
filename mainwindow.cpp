@@ -6,7 +6,7 @@
 #include <QStyleFactory>
 #include <QScreen>  //for resizing the program at start
 
-#include "renderwindow.h"
+#include "rendersystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete mRenderWindow;
+    delete mRenderSystem;
     delete ui;
 }
 
@@ -75,19 +75,19 @@ void MainWindow::init()
     qDebug() << "Requesting surface format: " << format;
 
     //We have a format for the OpenGL window, so let's make it:
-    mRenderWindow = new RenderWindow(format, this);
+    mRenderSystem = new RenderSystem(format, this);
 
     //Check if renderwindow did initialize, else prints error and quit
-    if (!mRenderWindow->context()) {
+    if (!mRenderSystem->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindow;
+        delete mRenderSystem;
         return;
     }
 
     //The OpenGL RenderWindow got made, so continuing the setup:
     //We put the RenderWindow inside a QWidget so we can put in into a
     //layout that is made in the .ui-file
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
+    mRenderWindowContainer = QWidget::createWindowContainer(mRenderSystem);
     //OpenGLLayout is made in the .ui-file!
     ui->OpenGLLayout->addWidget(mRenderWindowContainer);
 
@@ -106,7 +106,7 @@ void MainWindow::init()
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_ToggleWireframe_toggled(bool checked)
 {
-    mRenderWindow->toggleWireframe(checked);
+    mRenderSystem->toggleWireframe(checked);
 }
 
 void MainWindow::on_SpawnEntity_clicked()
@@ -118,4 +118,3 @@ void MainWindow::on_SelectEntity_editTextChanged(const QString &arg1)
 {
 
 }
-

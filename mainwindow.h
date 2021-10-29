@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 class QWidget;
-class RenderWindow;
+class RenderSystem;
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +30,7 @@ private:
     Ui::MainWindow *ui;
 
     QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
+    RenderSystem *mRenderSystem;
 };
 
 #endif // MAINWINDOW_H

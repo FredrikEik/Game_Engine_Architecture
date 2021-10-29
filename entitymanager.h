@@ -22,8 +22,10 @@ public:
 
     gsl::Signature GetSignature(gsl::Entity entity);
 
+    uint32_t getLivingEntities() {return mLivingEntitiesCount;}
+
 private:
-    uint32_t mLivingEntitiesCount;
+    uint32_t mLivingEntitiesCount{0};
 
     std::array<gsl::Signature, gsl::MAX_ENTITIES> mSignatures{};
 

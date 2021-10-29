@@ -1,5 +1,5 @@
-#ifndef RENDERWINDOW_H
-#define RENDERWINDOW_H
+#ifndef RENDERSYSTEM_H
+#define RENDERSYSTEM_H
 
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
@@ -21,12 +21,12 @@ class Texture;
 // OpenGL surface.
 // We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
 // This is the same as using glad and glw from general OpenGL tutorials
-class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
+class RenderSystem : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
 public:
-    RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow);
-    ~RenderWindow() override;
+    RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow);
+    ~RenderSystem() override;
 
     QOpenGLContext *context() { return mContext; }
 
@@ -97,4 +97,4 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 };
 
-#endif // RENDERWINDOW_H
+#endif // RENDERSYSTEM_H

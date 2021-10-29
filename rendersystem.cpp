@@ -1,4 +1,4 @@
-#include "renderwindow.h"
+#include "rendersystem.h"
 #include <QTimer>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -11,15 +11,12 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
 #include "componenttypes.h"
 
-RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
+RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
 {
@@ -40,12 +37,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 }
 
-RenderWindow::~RenderWindow()
+RenderSystem::~RenderSystem()
 {
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
-void RenderWindow::init()
+void RenderSystem::init()
 {
     //Connect the gameloop timer to the render function:
     //This makes our render loop
@@ -140,40 +137,33 @@ void RenderWindow::init()
     signature.set(myECS.GetComponentType<Sound>());
 
 
+    //Default identity matrix
     gsl::Matrix4x4 mMatrix;
     mMatrix.setToIdentity();
-
-    //Draw entities
-    for(auto &eachEntity: mEntities)
-    {
-        eachEntity = myECS.CreateEntity();
-
-        gsl::Matrix4x4 mMatrix;
-        mMatrix.setToIdentity();
-        myECS.AddComponent(eachEntity, Transform{mMatrix});
-        myECS.AddComponent(eachEntity, Mesh{});
-
-    }
-
-    /*VisualObject *temp = new XYZ();
-    temp->init();
-    mVisualObjects.push_back(temp);
-    */
-    //testing triangle class
-    /*
-    temp = new Triangle();
-    temp->init();
-    temp->mMatrix.translate(0.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-    */
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+
+    Mesh tempTriangleMesh;
+    tempTriangleMesh.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+    tempTriangleMesh.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+    tempTriangleMesh.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
+
+    //Create entities
+    for(auto &eachEntity: mEntities)
+    {
+        eachEntity = myECS.CreateEntity();
+        myECS.AddComponent(eachEntity, Transform{mMatrix});
+        myECS.AddComponent(eachEntity, Mesh{tempTriangleMesh});
+        myECS.GetComponent<Transform>(eachEntity).mMatrix.setPosition(0,0,0);
+        myECS.InitEntityMesh(eachEntity);
+    }
+
 }
 
 // Called each frame - doing the rendering
-void RenderWindow::render()
+void RenderSystem::render()
 {
     //Keyboard / mouse input
     handleInput();
@@ -188,30 +178,14 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //Draws the objects
-    //This should be in a loop!
+    for(auto &eachEntity : mEntities)
     {
-        //First objekct - xyz
-        //what shader to use
-        glUseProgram(mShaderPrograms[0]->getProgram() );
-
-        //send data to shader
+        glUseProgram(mShaderPrograms[0]->getProgram());
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-        //draw the object
-        mVisualObjects[0]->draw();
-
-        //Second object - triangle
-        //what shader to use - texture shader
-        glUseProgram(mShaderPrograms[1]->getProgram() );
-        //what texture (slot) to use
-        glUniform1i(mTextureUniform, 1);
-        glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mVisualObjects[1]->mMatrix.constData());
-        mVisualObjects[1]->draw();
-        mVisualObjects[1]->mMatrix.translate(.001f, .001f, -.001f);     //just to move the triangle each frame
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, myECS.GetComponent<Transform>(eachEntity).mMatrix.constData());
+        Mesh *meshComp = &myECS.GetComponent<Mesh>(eachEntity);
+        myECS.DrawEntity(meshComp->mVAO, GL_TRIANGLES);
     }
 
     //Calculate framerate before
@@ -228,14 +202,14 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 }
 
-void RenderWindow::setupPlainShader(int shaderIndex)
+void RenderSystem::setupPlainShader(int shaderIndex)
 {
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
-void RenderWindow::setupTextureShader(int shaderIndex)
+void RenderSystem::setupTextureShader(int shaderIndex)
 {
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
@@ -246,7 +220,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
-void RenderWindow::exposeEvent(QExposeEvent *)
+void RenderSystem::exposeEvent(QExposeEvent *)
 {
     //if not already initialized - run init() function
     if (!mInitialized)
@@ -279,7 +253,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 // and check the time right after it is finished (done in the render function)
 //This will approximate what framerate we COULD have.
 //The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
-void RenderWindow::calculateFramerate()
+void RenderSystem::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
     static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
@@ -301,7 +275,7 @@ void RenderWindow::calculateFramerate()
 //Simple way to turn on/off wireframe mode
 //Not totally accurate, but draws the objects with
 //lines instead of filled polygons
-void RenderWindow::toggleWireframe(bool buttonState)
+void RenderSystem::toggleWireframe(bool buttonState)
 {
     if (buttonState)
     {
@@ -317,7 +291,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
-void RenderWindow::checkForGLerrors()
+void RenderSystem::checkForGLerrors()
 {
     if(mOpenGLDebugLogger)
     {
@@ -336,7 +310,7 @@ void RenderWindow::checkForGLerrors()
 }
 
 //Tries to start the extended OpenGL debugger that comes with Qt
-void RenderWindow::startOpenGLDebugger()
+void RenderSystem::startOpenGLDebugger()
 {
     QOpenGLContext * temp = this->context();
     if (temp)
@@ -355,7 +329,7 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-void RenderWindow::setCameraSpeed(float value)
+void RenderSystem::setCameraSpeed(float value)
 {
     mCameraSpeed += value;
 
@@ -366,7 +340,7 @@ void RenderWindow::setCameraSpeed(float value)
         mCameraSpeed = 0.3f;
 }
 
-void RenderWindow::handleInput()
+void RenderSystem::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
@@ -387,7 +361,7 @@ void RenderWindow::handleInput()
     }
 }
 
-void RenderWindow::keyPressEvent(QKeyEvent *event)
+void RenderSystem::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
@@ -449,7 +423,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void RenderWindow::keyReleaseEvent(QKeyEvent *event)
+void RenderSystem::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_W)
     {
@@ -505,7 +479,7 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-void RenderWindow::mousePressEvent(QMouseEvent *event)
+void RenderSystem::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
         mInput.RMB = true;
@@ -515,7 +489,7 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.MMB = true;
 }
 
-void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
+void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
         mInput.RMB = false;
@@ -525,7 +499,7 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
         mInput.MMB = false;
 }
 
-void RenderWindow::wheelEvent(QWheelEvent *event)
+void RenderSystem::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
 
@@ -540,7 +514,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-void RenderWindow::mouseMoveEvent(QMouseEvent *event)
+void RenderSystem::mouseMoveEvent(QMouseEvent *event)
 {
     if (mInput.RMB)
     {

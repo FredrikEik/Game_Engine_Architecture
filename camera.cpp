@@ -5,7 +5,6 @@ Camera::Camera()
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
-
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 }
