@@ -57,7 +57,9 @@ private:
 
     int inSceneArrayIndex{-1};
     Factory *mfactory{nullptr};
-
+    gsl::Vector3D position;
+    gsl::Vector3D rotation;
+    gsl::Vector3D scale;
 
 };
 
