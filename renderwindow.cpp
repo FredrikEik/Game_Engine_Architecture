@@ -241,7 +241,7 @@ GameObject *temp=nullptr;
         {
             for(int j{0}; j < 10; j++)
             {
-                temp = factory->createObject("Sphere");
+                temp = factory->createObject("Cube");
                 temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
                 temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
