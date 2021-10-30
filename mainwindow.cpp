@@ -267,9 +267,8 @@ void MainWindow::on_checkBox_toggled(bool checked)
 
 void MainWindow::on_actionControls_triggered()
 {
-    //QMessageBox(QMessageBox::Information, "Help -> Controls", "const QString &text");
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Information);
-    msgBox.setText("Move and rotate camera by holding down right mouse button. \nUse WASD. \nQ = down, \nE = up. \nUse ScrollWheel to adjust speed.");
+    msgBox.setText("Move and rotate camera by holding down right mouse button. \nUse WASD to move around. \nQ = down, \nE = up. \nUse ScrollWheel to adjust speed.");
     msgBox.exec();
 }

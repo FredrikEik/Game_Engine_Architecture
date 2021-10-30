@@ -165,7 +165,7 @@ QVector3D PhysicsSystem::MirrorVector(QVector3D Vector, QVector3D normal)
 {
     QVector3D MVector;
     QVector3D dotprod;
-    qDebug()<<"-__--_-___MIroror VECTOR, NORMAL "<<Vector<<normal;
+    //qDebug()<<"-__--_-___MIroror VECTOR, NORMAL "<<Vector<<normal;
     float dot = dotprod.dotProduct(Vector,normal);
     MVector = Vector -2.0f*(dot)*normal;
     MVector.normalize();
