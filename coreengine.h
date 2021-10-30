@@ -47,6 +47,7 @@ public:
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
+    void updateCamera();
     void updateScene();
 
     void handleInput();

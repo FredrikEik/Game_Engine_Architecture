@@ -11,6 +11,7 @@ CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSystemIn}
 {
+
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
     mInstance = this;
@@ -26,9 +27,23 @@ CoreEngine *CoreEngine::getInstance()
 
 void CoreEngine::togglePlayMode(bool shouldPlay)
 {
-    isPlaying = shouldPlay;
-    SoundSystem::getInstance()->togglePlaySounds(isPlaying);
-    mRenderSystem->isPlaying = isPlaying;
+    //isPlaying = shouldPlay;
+    if (shouldPlay == true)
+    {
+        SoundSystem::getInstance()->togglePlaySounds(true);
+        mRenderSystem->isPlaying = true;
+        isPlaying = true;
+        //mRenderSystem->mCurrentCamera = mGameCamera;
+    }
+    else
+    {
+        SoundSystem::getInstance()->togglePlaySounds(false);
+        isPlaying = false;
+        mRenderSystem->isPlaying = false;
+        mRenderSystem->mCurrentCamera = mEditorCamera;
+        mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    }
+
 }
 
 void CoreEngine::setUpScene()
@@ -37,6 +52,7 @@ void CoreEngine::setUpScene()
 
     //Axis
     axis = mResourceManager->addObject("axis");
+    //scene->setupScene1();
     mRenderSystem->mGameObjects.push_back(axis);
     //scene->setupScene1();
 
@@ -56,29 +72,37 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(player);
 
 
-              enemy = mResourceManager->addObject("suzanne3.obj");
-              enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
-              enemy->mMaterial->mShaderProgram = 1;
-              enemy->mMaterial->mTextureUnit = 2;
-              enemy->mTransform->mMatrix.rotateY(180.f);
-              enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
-              enemy->mTransform->mMatrix.scale(0.5f);
-              mResourceManager->addCollider("sphere", enemy);
-              mRenderSystem->mGameObjects.push_back(enemy);
+    enemy = mResourceManager->addObject("suzanne3.obj");
+    enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
+    enemy->mMaterial->mShaderProgram = 1;
+    enemy->mMaterial->mTextureUnit = 2;
+    enemy->mTransform->mMatrix.rotateY(180.f);
+    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
+    enemy->mTransform->mMatrix.scale(0.5f);
+    mResourceManager->addCollider("sphere", enemy);
+    mRenderSystem->mGameObjects.push_back(enemy);
 
 
+    //setup camera
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
-
     mGameCamera->mViewMatrix.rotateY(30.f);
     mGameCamera->mViewMatrix.rotateX(90.f);
-
-
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+
     mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
-    mRenderSystem->mCurrentCamera = mGameCamera;
 
+//       if(isPlaying == true)
+//        {
+//            qDebug() << "game is playing";
+//            mRenderSystem->mCurrentCamera = mGameCamera;
+//        }
 
+//        else
+//        {
+            mRenderSystem->mCurrentCamera = mEditorCamera;
+//            qDebug() << "not playing";
+//        }
 
 
     mResourceManager->setUpAllTextures();
@@ -91,13 +115,30 @@ void CoreEngine::setUpScene()
     mGameLoopTimer->start(16);
 }
 
+void CoreEngine::updateCamera()
+{
+    if (isPlaying)
+    {
+
+        //gsl::Vector3D playerRot = player->mTransform->mMatrix.getRotation();
+        gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
+        mRenderSystem->mCurrentCamera->mPosition = playerpos;
+        mRenderSystem->mCurrentCamera->mPosition.setZ(playerpos.getZ()+2.f);
+        mRenderSystem->mCurrentCamera->mPosition.setY(playerpos.getY()+1.5);
+//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateX(playerRot.getRotX());
+//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateY(playerRot.getRotY());
+//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateZ(playerRot.getRotZ());
+
+    }
+
+
+}
+
 void CoreEngine::updateScene()
 {
     //TODO:
-    gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
-    mGameCamera->mPosition = playerpos;
-    mGameCamera->mPosition.setZ(playerpos.getZ()+2.f);
-    mGameCamera->mPosition.setY(playerpos.getY()+1.5);
+
+    updateCamera();
 
 
     if(getInstance()->mResourceManager->checkCollision(
@@ -121,17 +162,17 @@ void CoreEngine::handleInput()
     if(mInput.RMB)
     {
         if(mInput.W)
-            mRenderSystem->mCurrentCamera->setSpeed(-mEditorCamera->mCameraSpeed);
+            mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
         if(mInput.S)
-            mRenderSystem->mCurrentCamera->setSpeed(mEditorCamera->mCameraSpeed);
+            mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
         if(mInput.D)
-            mRenderSystem->mCurrentCamera->moveRight(mEditorCamera->mCameraSpeed);
+            mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
         if(mInput.A)
-            mRenderSystem->mCurrentCamera->moveRight(-mEditorCamera->mCameraSpeed);
+            mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
         if(mInput.Q)
-            mRenderSystem->mCurrentCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
+            mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
         if(mInput.E)
-            mRenderSystem->mCurrentCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+            mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
     }
     else if(mInput.W)
     {

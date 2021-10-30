@@ -11,9 +11,12 @@ class RenderSystem;
 class scene
 {
 public:
+
     scene();
     void setupScene1();
-    GameObject *axis;
+    void setupScene2();
+    ResourceManager *mResourceManager;
+    GameObject *axis2;
 
 private:
 

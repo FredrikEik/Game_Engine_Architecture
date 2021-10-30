@@ -211,8 +211,14 @@ Vector3D Matrix4x4::getPosition()
     return gsl::Vector3D(matrix[3], matrix[7], matrix[11]);
 }
 
+//Vector3D Matrix4x4::getRotation()
+//{
+//    return gsl::Vector3D(degreesX, degreesY, degreesZ);
+//}
+
 void Matrix4x4::rotateX(GLfloat degrees)
 {
+    //degreesX = degrees;
     GLfloat rad = deg2radf(degrees);
 
     Matrix4x4 temp =
@@ -228,6 +234,7 @@ void Matrix4x4::rotateX(GLfloat degrees)
 
 void Matrix4x4::rotateY(GLfloat degrees)
 {
+    //degreesY = degrees;
     GLfloat rad = deg2radf(degrees);
 
     Matrix4x4 temp =
@@ -243,6 +250,7 @@ void Matrix4x4::rotateY(GLfloat degrees)
 
 void Matrix4x4::rotateZ(GLfloat degrees)
 {
+    //degreesZ = degrees;
     GLfloat rad = deg2radf(degrees);
 
     Matrix4x4 temp =

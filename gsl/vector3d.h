@@ -56,6 +56,11 @@ public:
     GLfloat getZ() const;
     void setZ(const GLfloat &value);
 
+    GLfloat getRotX() const;
+    GLfloat getRotY() const;
+    GLfloat getRotZ() const;
+
+
     GLfloat *xP();
     GLfloat *yP();
     GLfloat *zP();
@@ -84,6 +89,10 @@ public:
     GLfloat x;
     GLfloat y;
     GLfloat z;
+
+    GLfloat rotX;
+    GLfloat rotY;
+    GLfloat rotZ;
 };
 
 } //namespace
