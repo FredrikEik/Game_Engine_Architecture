@@ -139,6 +139,12 @@ int MainWindow::getHeight()
     return height;
 }
 
+void MainWindow::disableWorldObjects(bool disable)
+{
+    ui->WorldObjects->setCurrentRow(-1);
+    ui->WorldObjects->setDisabled(disable);
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
