@@ -24,11 +24,12 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     float length = QVector3D().dotProduct(MakeQvec3D(Data.heightOfFloor) - pos.getQVector(),MakeQvec3D( Data.floorNormal));
     length =  std::abs(length);
 
+    QVector3D ClippingVec = QVector3D(0.0f,0.0f,0.0f);
     if(length  < radius  && onTriangle)//if it is colliding with floor
     {
         if(once)
         {
-            float elasticity = 0.95f;
+            float elasticity = 0.9f;
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
@@ -37,11 +38,16 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
             //apply speed to new vector direction
             Transf->Velocity =  MakeGSLvec3D( NewVector)*speed;
             once = false;
+
+            //clipping collision
+            ClippingVec =deltaTime*(radius-length)*MakeQvec3D( Data.floorNormal);
+            Transf->mMatrix.translate(MakeGSLvec3D( ClippingVec));
         }
 
     }
     if(!once)
         once=true;
+
 
     // add strekning s = v0*t + 1/2 * a * t^2
     QVector3D distance = MakeQvec3D( Transf->mMatrix.getPosition()) + DistanceTraveled(MakeQvec3D(Transf->Velocity),g,deltaTime);
