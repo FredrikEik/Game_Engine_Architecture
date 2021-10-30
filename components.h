@@ -40,7 +40,7 @@ struct SoundListenerComponent
 struct SoundComponent
 {
     ALuint mSource;             ///< The sound source ID.
-//    ALuint mBuffer;             ///< The buffer the source should play.
+//    ALuint mBuffer;           ///< The buffer the source should play.
     gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
     float gain{1.0f};
     bool shouldPlay{false};

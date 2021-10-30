@@ -45,10 +45,10 @@ GameObject *GameObjectManager::addObject(std::string meshName)
     //Make the GameObject
     GameObject* currentGameObject = new GameObject();
 
-    //add the standard components to GameObject
+    //Add the standard components to GameObject
     MeshComponent* currentMesh = new MeshComponent();
 
-    //run throuhg all the potential lod levels
+    //run through all the potential lod levels
     for(int i{0}; i<3; i++)
     {
         currentMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[1];
