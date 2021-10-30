@@ -64,6 +64,8 @@ public:
 
     void updateMatrix();
 
+    void toggleGameMode();
+
 private slots:
     void render();
 
@@ -121,6 +123,8 @@ private:
     MousePicker *mMousePicker{nullptr};
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+
+    bool bPlayGame;
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.

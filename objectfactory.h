@@ -20,6 +20,7 @@ public:
 
     private:
         std::map<std::string, MeshComponent*> storedMeshes;
+        std::unordered_map<std::string, MeshComponent> storedMeshes1;
 
         int OBJindex;
 

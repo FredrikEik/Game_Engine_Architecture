@@ -204,7 +204,7 @@ void RenderWindow::render()
                     test = objectsColliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp(),
                                             *ObjFactory->mGameObject[i]->getTransformComp(),
                                             *ObjFactory->mGameObject[y]->getTransformComp());
-                    qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
+                    //qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
                 }
             }
         }
@@ -467,6 +467,14 @@ void RenderWindow::updateMatrix()
              index);
 }
 
+void RenderWindow::toggleGameMode()
+{
+    if (bPlayGame)
+        bPlayGame = false;
+    else
+        bPlayGame = true;
+}
+
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);
@@ -521,9 +529,9 @@ bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent 
     gsl::Vector3D Box2min = gsl::Vector3D(Box2.min * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
     gsl::Vector3D Box2max = gsl::Vector3D(Box2.max * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
 
-    qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
-    qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
-    qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
+    //qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
+    //qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
+    //qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
 
     return (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX()) &&
            (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY()) &&
@@ -733,5 +741,5 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     mMouseYlast = event->pos().y();
 
     mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
-    qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
+    //qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
 }

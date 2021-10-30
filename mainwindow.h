@@ -60,6 +60,8 @@ private slots:
     void on_scaleY_valueChanged(double arg1);
     void on_scaleZ_valueChanged(double arg1);
 
+    void on_startGame_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

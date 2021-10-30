@@ -232,3 +232,9 @@ void MainWindow::on_scaleZ_valueChanged(double arg1)
 {
     mRenderWindow->setScaleZ(arg1);
 }
+
+void MainWindow::on_startGame_clicked()
+{
+    //start game and prevent editor features
+    mRenderWindow->toggleGameMode();
+}

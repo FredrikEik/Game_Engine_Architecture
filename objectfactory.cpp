@@ -25,6 +25,12 @@ void ObjectFactory::createObject(std::string objectName)
         if (EXISTS("Cube"))
         {
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
+            qDebug() << "mesh extracted";
+        }
+        else
+        {
+            storedMeshes.insert(std::pair("Cube", willCreateObject->getMeshComp()));
+            qDebug() << "mesh saved";
         }
     }
 

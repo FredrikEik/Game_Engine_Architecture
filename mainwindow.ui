@@ -117,7 +117,11 @@
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QDoubleSpinBox" name="Value_x"/>
+       <widget class="QPushButton" name="startGame">
+        <property name="text">
+         <string>Start Game</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton">
