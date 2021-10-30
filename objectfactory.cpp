@@ -40,6 +40,12 @@ void ObjectFactory::createObject(std::string objectName)
         if (EXISTS("Triangle"))
         {
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Triangle"]));
+            qDebug() << "triangle mesh extracted";
+        }
+        else
+        {
+            storedMeshes.insert(std::pair("Triangle", willCreateObject->getMeshComp()));
+            qDebug() << "triangle mesh saved";
         }
     }
 
@@ -49,6 +55,12 @@ void ObjectFactory::createObject(std::string objectName)
         if (EXISTS("Goat"))
         {
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Goat"]));
+            qDebug() << "goat mesh extracted";
+        }
+        else
+        {
+            storedMeshes.insert(std::pair("Goat", willCreateObject->getMeshComp()));
+            qDebug() << "goat mesh saved";
         }
     }
     else
