@@ -135,7 +135,7 @@ void MainWindow::on_CreateObject_clicked()
 
 void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
 {
-  qDebug() << "Heroin";
+  //qDebug() << "Tempcoom";
     //clear all current items
     ui->outliner->clear();
 
@@ -155,7 +155,6 @@ void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
 
 void MainWindow::selectObjectByIndex(int indexIn)
 {
-     qDebug() << "Heroin";
    if(mSceneOutlinerRoot)
     {
         if(mCurrentEditItem) mCurrentEditItem->setSelected(false);

@@ -114,7 +114,7 @@ GameObject* Factory::createObject(std::string objectName)
     void Factory::saveMesh(std::string fileName, std::string nickName)
     {
      if(EXISTS(nickName)){
-        qDebug() << storedMeshes.size();
+        //qDebug() << storedMeshes.size();
         }
         else {
             ObjReader objReader;
