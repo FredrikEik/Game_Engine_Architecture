@@ -5,6 +5,7 @@
 #include "input.h"
 #include "gameobject.h"
 #include "collisionhandler.h"
+#include "meshhandler.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
@@ -29,9 +30,20 @@ public:
     ///Not singleton now, but can use this function to get Engine instance
     static CoreEngine* getInstance();
     GameObject * player;
+    GameObject *axis;
+    GameObject *enemy;
+
+
+    MeshData linebox;
+    MeshData linebox2;
+
+    MeshData circle1;
+    MeshData circle2;
+
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
+    void RenderScene();
 
     void handleInput();
     ResourceManager *mResourceManager{nullptr};

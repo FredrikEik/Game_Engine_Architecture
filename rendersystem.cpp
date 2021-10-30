@@ -136,7 +136,7 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    for(int i{0}; i < mGameObjects.size(); i++)
+    for(unsigned int i{0}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
         gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
@@ -253,14 +253,15 @@ void RenderSystem::render()
 //        if(mGameObjects[2]->mCollider->objectsHasCollided == false)
 
 //        {
-            if(CoreEngine::getInstance()->mResourceManager->checkCollision(
-            mGameObjects[1], mGameObjects[2]))
-            {
-                qDebug() << "collided !";
-                mGameObjects[2]->mTransform->mMatrix.rotateX(90);
-                //CoreEngine::getInstance()->mResourceManager->Collided = true;
-                mGameObjects[2]->mCollider->objectsHasCollided = true;
-            }
+//            if(CoreEngine::getInstance()->mResourceManager->checkCollision(
+//            mGameObjects[1], mGameObjects[2]))
+//            {
+//                qDebug() << "collided !";
+//                mGameObjects[2]->mTransform->mMatrix.rotateX(90);
+//                //CoreEngine::getInstance()->mResourceManager->Collided = true;
+//                mGameObjects[2]->mCollider->objectsHasCollided = true;
+//            }
+            CoreEngine::getInstance()->RenderScene();
 //        }
 
 

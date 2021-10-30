@@ -10,6 +10,13 @@
 *.dll
 *.dylib
 debug/
+.vs/*
+debug/*
+release/*
+*.vcxproj*
+*_resource.rc
+*.sln
+
 
 # Qt-es
 object_script.*.Release

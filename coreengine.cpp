@@ -36,8 +36,8 @@ void CoreEngine::setUpScene()
     //********************** Making the object to be drawn **********************
 
     //Axis
-    GameObject *temp = mResourceManager->addObject("axis");
-    mRenderSystem->mGameObjects.push_back(temp);
+    axis = mResourceManager->addObject("axis");
+    mRenderSystem->mGameObjects.push_back(axis);
 
     //dog triangle
     player = mResourceManager->addObject("suzanne.obj");
@@ -64,17 +64,15 @@ void CoreEngine::setUpScene()
 //    {
 //        for(int j{0}; j < 15; j++)
 //        {
-              temp = mResourceManager->addObject("suzanne3.obj");
-              temp->mTransform->mMatrix.translate(-2, 1.f,2.f);
-              temp->mMaterial->mShaderProgram = 1;
-              temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
-              temp->mTransform->mMatrix.rotateY(180.f);
-              temp->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
-              temp->mTransform->mMatrix.scale(0.5f);
-//            temp = mResourceManager->addSphereCollider();
-              //mResourceManager->addSphereCollider(temp);
-              mResourceManager->addCollider("sphere", temp);
-              mRenderSystem->mGameObjects.push_back(temp);
+              enemy = mResourceManager->addObject("suzanne3.obj");
+              enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
+              enemy->mMaterial->mShaderProgram = 1;
+              enemy->mMaterial->mTextureUnit = 2;
+              enemy->mTransform->mMatrix.rotateY(180.f);
+              enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
+              enemy->mTransform->mMatrix.scale(0.5f);
+              mResourceManager->addCollider("sphere", enemy);
+              mRenderSystem->mGameObjects.push_back(enemy);
 //        }
 //    }
 
@@ -91,6 +89,20 @@ void CoreEngine::setUpScene()
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
+}
+
+void CoreEngine::RenderScene()
+{
+    //TODO:
+
+    if(getInstance()->mResourceManager->checkCollision(
+    player, enemy))
+    {
+        qDebug() << "collided !";
+        enemy->mTransform->mMatrix.rotateX(90);
+        //CoreEngine::getInstance()->mResourceManager->Collided = true;
+        enemy->mCollider->objectsHasCollided = true;
+    }
 }
 
 void CoreEngine::handleInput()
