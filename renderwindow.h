@@ -97,6 +97,8 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
+    bool onceLeftClicked{true};
+    bool isMousePicking{false};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

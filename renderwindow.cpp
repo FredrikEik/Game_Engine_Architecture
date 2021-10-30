@@ -145,7 +145,22 @@ void RenderWindow::render()
 {
     // TODO: move camera and inputhandler to the resource manager
 
-
+    if(mInput.LMB)
+    {
+        if(onceLeftClicked)
+        {
+            isMousePicking = true;
+            onceLeftClicked = false;
+        }
+        else
+        {
+            isMousePicking = false;
+        }
+    }
+    if(!mInput.LMB)
+    {
+        onceLeftClicked = true;
+    }
     //--->Shoudl be in GameEngine
     //Keyboard / mouse input
     handleInput();
@@ -205,6 +220,7 @@ void RenderWindow::render()
 //        qDebug() << "meshID: " << pickedID;
 //    }
 
+    qDebug() << "mousepressedonce: " << isMousePicking;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
@@ -257,7 +273,7 @@ void RenderWindow::render()
         // MousePicking_
         GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
 
-        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB)
+        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && isMousePicking)
         {
 
 
@@ -298,16 +314,24 @@ void RenderWindow::render()
             }
             mObjectsDrawn++;
             glBindVertexArray(0);
+
+//            glUseProgram(mShaderPrograms[0]->getProgram() );
+//            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+
+//            glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
             continue;
 
         }
 
-        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB != true)
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && !isMousePicking)
         {
             glUseProgram(mShaderPrograms[0]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+            //mContext->swapBuffers(this);
         }
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
@@ -374,7 +398,10 @@ void RenderWindow::render()
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
-    mContext->swapBuffers(this);
+    if (!isMousePicking)
+    {
+        mContext->swapBuffers(this);
+    }
 
     glUseProgram(0);
 }
@@ -712,7 +739,9 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::RightButton)
         mInput.RMB = true;
     if (event->button() == Qt::LeftButton)
+    {
         mInput.LMB = true;
+    }
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
     if(mInput.LMB)
@@ -732,7 +761,15 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::RightButton)
         mInput.RMB = false;
     if (event->button() == Qt::LeftButton)
+    {
         mInput.LMB = false;
+        //onceLeftClicked = true;
+//        if(onceLeftRelesed)
+//        {
+//            actualOnce = false;
+//            onceLeftRelesed = false;
+//        }
+    }
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = false;
 
