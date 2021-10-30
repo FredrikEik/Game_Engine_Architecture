@@ -14,6 +14,7 @@ SOURCES += main.cpp \
     entitymanager.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    objreader.cpp \
     rendersystem.cpp \
     resourcemanager.cpp \
     shader.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    objreader.h \
     rendersystem.h \
     resourcemanager.h \
     shader.h \

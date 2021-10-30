@@ -9,6 +9,7 @@
 #include "input.h"
 #include "constants.h"
 #include "ecs.h"
+#include "objreader.h"
 
 class QOpenGLContext;
 class Shader;
@@ -70,6 +71,8 @@ private:
 
     ECS myECS;
     std::vector<gsl::Entity> mEntities{gsl::MAX_ENTITIES};
+
+    objReader OBJreader;
 
     Input mInput;
     float mCameraSpeed{0.05f};

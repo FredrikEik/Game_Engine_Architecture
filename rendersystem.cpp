@@ -6,7 +6,7 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
-
+#include "objreader.h"
 #include <iostream>
 
 #include "shader.h"
@@ -145,21 +145,19 @@ void RenderSystem::init()
     mCurrentCamera = new Camera();
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
-    Mesh tempTriangleMesh;
-    tempTriangleMesh.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
-    tempTriangleMesh.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
-    tempTriangleMesh.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
-    //Create entities
-    for(auto &eachEntity: mEntities)
-    {
-        eachEntity = myECS.CreateEntity();
-        myECS.AddComponent(eachEntity, Transform{mMatrix});
-        myECS.AddComponent(eachEntity, Mesh{tempTriangleMesh});
-        myECS.GetComponent<Transform>(eachEntity).mMatrix.setPosition(0,0,0);
-        myECS.InitEntityMesh(eachEntity);
-    }
+//    Mesh tempTriangleMesh;
+//    tempTriangleMesh.mVertices.push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
+//    tempTriangleMesh.mVertices.push_back(Vertex{0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.f}); // Bottom Right
+//    tempTriangleMesh.mVertices.push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
+    myECS.addMesh("../GEA2021/Assets/Meshes/suzanne.obj");
+    Mesh suzanneMesh = myECS.getMesh("../GEA2021/Assets/Meshes/suzanne.obj");
+    gsl::Entity testEntity = myECS.CreateEntity();
+    myECS.AddComponent(testEntity, Transform{mMatrix});
+    myECS.AddComponent(testEntity, Mesh{suzanneMesh});
+    mEntities.push_back(testEntity);
+    //qDebug() << "Living entities: " << myECS.mEntityManager->getLivingEntities();
 }
 
 // Called each frame - doing the rendering
@@ -184,8 +182,9 @@ void RenderSystem::render()
         glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, myECS.GetComponent<Transform>(eachEntity).mMatrix.constData());
-        Mesh *meshComp = &myECS.GetComponent<Mesh>(eachEntity);
-        myECS.DrawEntity(meshComp->mVAO, GL_TRIANGLES);
+        //Mesh *meshComp = &myECS.GetComponent<Mesh>(eachEntity);
+        qDebug() << "test";
+        myECS.DrawEntity(eachEntity);
     }
 
     //Calculate framerate before

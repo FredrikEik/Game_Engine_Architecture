@@ -24,8 +24,9 @@ public:
     GLint mVertexCount{-1};
     GLint mIndexCount{-1};
     GLenum mDrawType{GL_TRIANGLES};
-    std::vector<Vertex> mVertices;      //this should be moved out of component
-    std::vector<GLuint> mIndices;
+    //
+    //std::vector<Vertex> mVertices;      //this should be moved out of component
+    //std::vector<GLuint> mIndices;
 };
 
 struct Material

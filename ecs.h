@@ -5,7 +5,7 @@
 #include "entitymanager.h"
 #include "resourcemanager.h"
 #include "componenttypes.h"
-#include <QOpenGLFunctions_4_1_Core>
+
 #include "constants.h"
 
 
@@ -18,11 +18,15 @@ public:
 
     gsl::Entity CreateEntity();
 
-    void InitEntityMesh(gsl::Entity entity);
+    void InitEntityMesh(gsl::Entity entity, std::vector<Vertex> vertices, std::vector<GLuint> indices);
 
-    void DrawEntity(GLuint &vao, GLenum drawMode);
+    void DrawEntity(gsl::Entity entity);
 
     void DestroyEntity(gsl::Entity entity);
+
+    void addMesh(std::string filePath);
+
+    Mesh getMesh(std::string filePath);
 
     template<typename T>
     void RegisterComponent();
@@ -44,6 +48,7 @@ public:
 private:
     std::unique_ptr<ComponentManager> mComponentManager{};
     std::unique_ptr<EntityManager> mEntityManager{};
+    std::unique_ptr<ResourceManager> mResourceManager{};
     //std::unique_ptr<SystemManager> mSystemManager;
 };
 
