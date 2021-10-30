@@ -261,7 +261,7 @@ void RenderSystem::render()
 //                //CoreEngine::getInstance()->mResourceManager->Collided = true;
 //                mGameObjects[2]->mCollider->objectsHasCollided = true;
 //            }
-            CoreEngine::getInstance()->RenderScene();
+            CoreEngine::getInstance()->updateScene();
 //        }
 
 

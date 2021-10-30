@@ -6,10 +6,12 @@
 #include "gameobject.h"
 #include "collisionhandler.h"
 #include "meshhandler.h"
+#include "scene.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
 class RenderSystem;
+class scene;
 class Camera;
 class QTimer;
 
@@ -40,10 +42,12 @@ public:
     MeshData circle1;
     MeshData circle2;
 
+    scene *scene;
+
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
-    void RenderScene();
+    void updateScene();
 
     void handleInput();
     ResourceManager *mResourceManager{nullptr};

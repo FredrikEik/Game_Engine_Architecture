@@ -1,4 +1,4 @@
-#include "coreengine.h"
+﻿#include "coreengine.h"
 
 #include "resourcemanager.h"
 #include "soundsystem.h"
@@ -38,32 +38,24 @@ void CoreEngine::setUpScene()
     //Axis
     axis = mResourceManager->addObject("axis");
     mRenderSystem->mGameObjects.push_back(axis);
+    //scene->setupScene1();
 
     //dog triangle
     player = mResourceManager->addObject("suzanne.obj");
-//    player = mResourceManager->addSphereCollider();
     player->mMaterial->mShaderProgram = 0;
     player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
     player->mTransform->mMatrix.rotateY(180.f);
     player->mTransform->mMatrix.scale(0.5f);
-    player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    player->mTransform->mMatrix.translate(0.f, 0, -6);
     mResourceManager->addCollider("sphere", player);
-    //mResourceManager->addSphereCollider(player);
     //Adds sound to player:
-    //mResourceManager->addComponent("run_stereo.wav", temp);
     mResourceManager->addComponent("techno_stereo.wav", player);
 
-    //playSound("techno_stereo.wav");
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
     mRenderSystem->mGameObjects.push_back(player);
 
-    //lager test objekter
 
-//    for(int i{0}; i < 15; i++)
-//    {
-//        for(int j{0}; j < 15; j++)
-//        {
               enemy = mResourceManager->addObject("suzanne3.obj");
               enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
               enemy->mMaterial->mShaderProgram = 1;
@@ -73,13 +65,21 @@ void CoreEngine::setUpScene()
               enemy->mTransform->mMatrix.scale(0.5f);
               mResourceManager->addCollider("sphere", enemy);
               mRenderSystem->mGameObjects.push_back(enemy);
-//        }
-//    }
 
 
+    mGameCamera = new Camera();
     mEditorCamera = new Camera();
+
+    mGameCamera->mViewMatrix.rotateY(30.f);
+    mGameCamera->mViewMatrix.rotateX(90.f);
+
+
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
-    mRenderSystem->mCurrentCamera = mEditorCamera;
+    mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
+    mRenderSystem->mCurrentCamera = mGameCamera;
+
+
+
 
     mResourceManager->setUpAllTextures();
 
@@ -91,9 +91,14 @@ void CoreEngine::setUpScene()
     mGameLoopTimer->start(16);
 }
 
-void CoreEngine::RenderScene()
+void CoreEngine::updateScene()
 {
     //TODO:
+    gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
+    mGameCamera->mPosition = playerpos;
+    mGameCamera->mPosition.setZ(playerpos.getZ()+2.f);
+    mGameCamera->mPosition.setY(playerpos.getY()+1.5);
+
 
     if(getInstance()->mResourceManager->checkCollision(
     player, enemy))
@@ -103,6 +108,8 @@ void CoreEngine::RenderScene()
         //CoreEngine::getInstance()->mResourceManager->Collided = true;
         enemy->mCollider->objectsHasCollided = true;
     }
+
+
 }
 
 void CoreEngine::handleInput()
@@ -114,17 +121,17 @@ void CoreEngine::handleInput()
     if(mInput.RMB)
     {
         if(mInput.W)
-            mEditorCamera->setSpeed(-mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->setSpeed(-mEditorCamera->mCameraSpeed);
         if(mInput.S)
-            mEditorCamera->setSpeed(mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->setSpeed(mEditorCamera->mCameraSpeed);
         if(mInput.D)
-            mEditorCamera->moveRight(mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->moveRight(mEditorCamera->mCameraSpeed);
         if(mInput.A)
-            mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->moveRight(-mEditorCamera->mCameraSpeed);
         if(mInput.Q)
-            mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
         if(mInput.E)
-            mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+            mRenderSystem->mCurrentCamera->updateHeigth(mEditorCamera->mCameraSpeed);
     }
     else if(mInput.W)
     {
@@ -164,7 +171,7 @@ void CoreEngine::gameLoop()
     //Keyboard / mouse input
     handleInput();
 
-    mEditorCamera->update();
+    mRenderSystem->mCurrentCamera->update();
     SoundSystem::getInstance()->update(mRenderSystem);
 
     mRenderSystem->render();
