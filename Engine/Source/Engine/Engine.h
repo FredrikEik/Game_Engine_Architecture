@@ -19,6 +19,7 @@ private:
 	void processInput(struct GLFWwindow* window);
 	static void mouse_callback(struct GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(struct GLFWwindow* window, double xoffset, double yoffset);
+	static void mouseButton_callback(GLFWwindow* window, int button, int action, int mods);
 
 
 	// glGetError is very slow, thus should only be used in debug builds
@@ -40,6 +41,8 @@ private:
 	//TODO: Move these into appropriate classes. 
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
+	class Shader* selectionShader{};
 
 	uint32 editorCameraEntity{};
+
 };

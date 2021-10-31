@@ -76,6 +76,7 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 	//std::cout << currentTransform->transform[3].x << " " 
 	//	<< currentTransform->transform[3].y<< " " 
 	//	<< currentTransform->transform[3].z << "\n";
+
 }
 
 void CameraSystem::processEditorMouseInput(CameraComponent& currentCamera)

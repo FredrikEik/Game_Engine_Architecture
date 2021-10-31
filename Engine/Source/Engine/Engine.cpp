@@ -47,6 +47,7 @@ void Engine::start()
 void Engine::init()
 {
 	glfwInit();
+	glfwWindowHint(GLFW_SAMPLES, 16);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -73,8 +74,19 @@ void Engine::init()
 	glfwSetFramebufferSizeCallback(window, Engine::framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, Engine::mouse_callback);
 	glfwSetScrollCallback(window, Engine::scroll_callback);
+	glfwSetMouseButtonCallback(window, Engine::mouseButton_callback);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
+
 
 	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
+	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
+
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
 	CameraSystem::setPerspective(editorCameraEntity, ECS, 
@@ -95,21 +107,18 @@ void Engine::loop()
 {
 	while (!glfwWindowShouldClose(window))
 	{
-		glfwPollEvents();
-		// can be used to calc deltatime
-		float currentFrame = glfwGetTime();
 
 		//// input
 		processInput(window);
+
+		// can be used to calc deltatime
+		float currentFrame = glfwGetTime();
+
 		// feed inputs to dear imgui, start new frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		//// RENDER
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		// render your GUI
 
 		ImGui::Begin("Demo window");
@@ -120,7 +129,6 @@ void Engine::loop()
 			ECS->addComponent<TransformComponent>(entity);
 			std::cout << "Adding entity " << entity << '\n';
 		}
-
 		//// TEMP UPDATE
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
 		//TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
@@ -129,22 +137,74 @@ void Engine::loop()
 		{
 			ECS->destroyEntity(1);
 		}
-
 		ImGui::End();
+
+
+
+
+
 		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
-		MeshSystem::draw(ourShader, "u_model", ECS);
-		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-		//ourShader.setMat4("u_model", model);
-		//ourShader->setMat4("u_view", view);
-		//ourShader->setMat4("u_projection", projection);
+
+		//// RENDER
+		// Selection Render
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+		{
+
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
+			MeshSystem::drawSelectable(selectionShader, "u_model", ECS);
+
+
+			glFlush();
+			glFinish();
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+			unsigned char data[4];
+			glReadPixels(xpos,ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+			// Convert the color back to an integer ID
+			int pickedID =
+				data[0] +
+				data[1] * 256 +
+				data[2] * 256 * 256;
+
+			if (pickedID == 0x00ffffff)
+			{ // Full white, must be the background !
+				std::cout << "background" << '\n';
+			}
+			else
+			{
+				std::ostringstream oss;
+				oss << "mesh " << pickedID;
+				std::cout << oss.str() << '\n';
+			}
+
+			glfwSwapBuffers(window);
+		}
+		else
+		{
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			CameraSystem::draw(editorCameraEntity, ourShader, ECS);
+			MeshSystem::draw(ourShader, "u_model", ECS);
+		}
+		
+
 
 
 		// Render dear imgui into screen
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
+		
+		
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 }
 
@@ -180,6 +240,11 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	//	fov = 1.0f;
 	//if (fov > 45.0f)
 	//	fov = 45.0f;
+}
+
+void Engine::mouseButton_callback(GLFWwindow* window, int button, int action, int mods)
+{
+
 }
 
 void Engine::GLClearError()
