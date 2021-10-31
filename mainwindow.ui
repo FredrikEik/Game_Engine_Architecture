@@ -115,55 +115,147 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>X</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QDoubleSpinBox" name="doubleSpinBoxX">
-       <property name="minimum">
-        <double>-100.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Y</string>
+      <widget class="QGroupBox" name="DetailsGroupBox">
+       <property name="title">
+        <string>Details</string>
        </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QDoubleSpinBox" name="doubleSpinBoxY">
-       <property name="minimum">
-        <double>-100.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>100.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QDoubleSpinBox" name="doubleSpinBoxZ">
-       <property name="minimum">
-        <double>-100.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>100.000000000000000</double>
-       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QGroupBox" name="TransformGroupBox">
+          <property name="title">
+           <string>Transform</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="2" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBoxZ">
+             <property name="minimum">
+              <double>-100.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBoxX">
+             <property name="minimum">
+              <double>-100.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="doubleSpinBoxY">
+             <property name="minimum">
+              <double>-100.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>100.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Z</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="RoationGroupBox">
+          <property name="title">
+           <string>Rotation</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="RotateX">
+             <property name="text">
+              <string>Rotate</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="RotateY">
+             <property name="text">
+              <string>Rotate</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Z</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="RotateZ">
+             <property name="text">
+              <string>Rotate</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="ScaleGroupBox">
+          <property name="title">
+           <string>Scale</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="ScalePlus">
+             <property name="text">
+              <string>+Scale</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="ScaleMinus">
+             <property name="text">
+              <string>-Scale</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

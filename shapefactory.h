@@ -27,7 +27,7 @@ private:
 //    VisualObject* myMonkey;
 //    string monkeyString = "../GEA2021/Assets/Monkey.obj";
 //    string pacmanString = "../GEA2021/Assets/Pacman.obj";
-//    bool doOnce = false;
+//    bool doOncee = false;
 };
 
 class Circle : public VisualObject

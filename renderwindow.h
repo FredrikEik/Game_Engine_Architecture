@@ -20,10 +20,12 @@ public:
 
     void toggleWireframe(bool buttonState);
     void playMode(bool p);
-    void toggleShapes(int shapeID);
+    void createShapes(string shapeID);
     void setCameraSpeed(float value);
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
+    bool mousePickCollide = false;
+    int MousePickindex = 0;
 
 private slots:
     void render();
@@ -36,17 +38,10 @@ private:
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
     static const int nrOfShapes = 5;
-    VisualObject* myShapes[nrOfShapes];
     Input mInput;
     Player* mPlayer;
-    bool shapeExist[nrOfShapes];
     bool playM = false;
-
-
-    MeshComponent mDebugMousePickRay;
     void mousePickingRay(QMouseEvent *event);
-    bool mDrawMousePickRay{false};
-    gsl::Vector3D mMousePickRay;
     gsl::Vector3D ray_wor;
 
     void init();

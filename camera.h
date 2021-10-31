@@ -12,7 +12,7 @@
 
 struct FrustumComponent
 {
-    float mFOV{45.f};
+    float mFOV{90.f};
     float mAspectRatio{1.f};
     float mFarPlaneDistance{100.f};
     float mNearPlaneDistance{0.1};
@@ -28,7 +28,7 @@ public:
     void init() override;
     void calculateFrustumVectors();
     void makeFrustumLines();
-    //void updateFrustumPos(Camera* mCameraPtr);
+    void updateFrustumPos(gsl::Vector3D cameraPos);
     FrustumComponent mFrustum;
 
 private:

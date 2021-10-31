@@ -170,8 +170,10 @@ Plain::Plain()
 {
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
+    mCollision = new CollisionComponent;
     mMesh = new MeshComponent();
     makeVerticies(mMesh);
+    mCollision->setBoundingSphere(0.01, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 }
@@ -216,13 +218,15 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 {
     string obj{"obj"};
     string fileStr{"../GEA2021/Assets/" + shapeName};
+    VisualObject* temp = nullptr;
     if (shapeName == "Circle"){
         if(doOnce[0] == false){
-            myShapes.push_back(new Circle);
-            myShapes[0]->mNameComp->mName = shapeName;
-            myShapes[0]->mNameComp->objectID = 0;
+            temp = new Circle;
+            temp->mNameComp->mName = shapeName;
+            temp->mNameComp->objectID = 0;
+            myShapes.push_back(temp);
             doOnce[0] = true;
-            return myShapes[0];}
+            return temp;}
         else{
             return myShapes[0];}}
     else if(shapeName == "Square"){
@@ -254,7 +258,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
             return myShapes[3];}}
     else if(shapeName.find(obj) != std::string::npos)
     {
-        VisualObject* temp = nullptr;
+        temp = nullptr;
         if(myObjs.size()>=1)
         {
             for(auto a = myObjs.begin(); a != myObjs.end(); a++)
@@ -262,7 +266,6 @@ VisualObject* ShapeFactory::createShape(string shapeName)
                 if (shapeName.find(a->first) != std::string::npos)
                 {
                     temp = myShapes[a->second];
-                    temp->mNameComp = nullptr;
                 }
             }
             if(temp!=nullptr)
@@ -271,18 +274,18 @@ VisualObject* ShapeFactory::createShape(string shapeName)
                 myShapes.push_back(new ObjMesh(fileStr));
                 shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
                 myObjs[shapeName] = ObjStartID;
-                myShapes.back()->mNameComp->mName = shapeName;
-                myShapes.back()->mNameComp->objectID = ObjStartID;
-                return myShapes.back();
+                myShapes[ObjStartID]->mNameComp->mName = shapeName;
+                myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
+                return myShapes[ObjStartID];
                 ObjStartID++;}
         }
         else{
             myShapes.push_back(new ObjMesh(fileStr));
             shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
             myObjs[shapeName] = ObjStartID;
-            myShapes.back()->mNameComp->mName = shapeName;
-            myShapes.back()->mNameComp->objectID = ObjStartID;
-            return myShapes.back();
+            myShapes[ObjStartID]->mNameComp->mName = shapeName;
+            myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
+            return myShapes[ObjStartID];
             ObjStartID++;}
     }
     else{
@@ -294,11 +297,11 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
 //VisualObject* ShapeFactory::createMonkey()
 //{
-//    if(doOnce == false)
+//    if(doOncee == false)
 //    {
 //        myMonkey = new ObjMesh(monkeyString);
 //        return myMonkey;
-//        doOnce = true;
+//        doOncee = true;
 //    }
 //    else
 //        return myMonkey;

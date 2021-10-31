@@ -21,6 +21,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void selectWithMousePick(int index);
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -45,7 +46,15 @@ private slots:
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 
-    void selectWithMousePick(int index);
+    void on_RotateX_clicked();
+
+    void on_RotateY_clicked();
+
+    void on_RotateZ_clicked();
+
+    void on_ScalePlus_clicked();
+
+    void on_ScaleMinus_clicked();
 
 private:
     void init();
