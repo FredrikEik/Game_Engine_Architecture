@@ -68,7 +68,7 @@ void ObjectFactory::createObject(std::string objectName)
 
     /*Trying to create each new object at an added position so
      *  all objects is not in the same place. Needs some work..*/
-    willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
+    //willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
     willCreateObject->getTransformComp()->mTrueScaleMatrix = willCreateObject->getTransformComp()->mMatrix; // important do not delete
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);

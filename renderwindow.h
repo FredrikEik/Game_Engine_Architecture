@@ -12,6 +12,7 @@
 #include "gameobject.h"
 #include "soundmanager.h"
 #include "mousepicker.h"
+#include "spawner.h"
 
 
 class QOpenGLContext;
@@ -104,7 +105,8 @@ private:
 
     ObjectFactory* ObjFactory = new ObjectFactory;
     SoundSource* mStereoSound;
-    SoundSource* mPop;
+    SoundSource* mPop;  
+    Spawner* MapSpawner;
 
     Input mInput;
     float mCameraSpeed{0.05f};

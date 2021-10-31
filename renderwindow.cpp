@@ -19,6 +19,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "MathStuff/MathStuff.h"
+#include "spawner.h"
 
 #include "cube.h"
 #include "objimport.h"
@@ -43,6 +44,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
+    MapSpawner = new Spawner(ObjFactory);
+    MapSpawner->SpawnRow();
 }
 
 RenderWindow::~RenderWindow()
@@ -480,6 +483,7 @@ void RenderWindow::ObjectButton(std::string object)
     ObjFactory->createObject(object);
     mMainWindow->addObjectToWorldList(object);
     mPop->play();
+
 }
 
 //Uses QOpenGLDebugLogger if this is present
