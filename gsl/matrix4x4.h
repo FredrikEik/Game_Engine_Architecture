@@ -57,6 +57,10 @@ public:
 
     Matrix3x3 toMatrix3() const;
 
+    //new
+    QVector4D multiplyWithQVector4D(QVector4D vec4D);
+    //new
+
     GLfloat& operator()(const int &y, const int &x);
     GLfloat operator()(const int &y, const int &x) const;
 

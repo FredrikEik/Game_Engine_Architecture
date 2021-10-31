@@ -19,12 +19,12 @@ public:
                    int EntityId = -1,
                    GLenum drawType = GL_TRIANGLES
                    );
+    void construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vector3D forwardVec);
     void constructCube();
     void constructSphere();
     void constructPlane();
     void constructSuzanne();
     void LODSuzanneSwithcer(MeshComponent *mesh);
-
 private:
     TransformComponent *TransComp;
     MeshComponent *MeshComp;

@@ -19,7 +19,7 @@ public:
     ~MainWindow();
     void updateViewPort();
     void updateDetails();
-
+    void setSelectedItem(int i);
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -70,6 +70,7 @@ private slots:
     void on_checkBox_toggled(bool checked);
 
     void on_actionControls_triggered();
+
 
 private:
     void init();

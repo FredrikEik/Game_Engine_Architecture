@@ -80,6 +80,76 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
     }
 }
 
+void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vector3D forwardVec)
+{
+    std::string ObjReader = "RayCast"; QVector3D StartPos =CameraPos;
+     GLuint shader = 0; GLint texture = 0;
+
+     int EntityId = -1;
+
+    if(inRW){
+        if(EntityId == -1){
+            if(!inRW->entities.empty()){
+                auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
+                EntityId = max + 1;
+                inRW->entities.push_back(EntityId);
+            }else{
+                EntityId = 0;
+                inRW->entities.push_back(0);
+            }
+        }else{
+            bool matchCheck = false;
+            int entitiesSize = inRW->entities.size();
+            for(int i = 0; i < entitiesSize; i++){
+                if(inRW->entities[i] == EntityId){
+                    matchCheck = true;
+                    //Give error message and assign new id.
+                    auto max = *std::max_element(inRW->entities.begin(), inRW->entities.end());
+                    EntityId = max + 1;
+                    inRW->entities.push_back(EntityId);
+                    break;
+                }
+            }
+            if(!matchCheck){
+                inRW->entities.push_back(EntityId);
+            }
+        }
+
+        TransComp = new TransformComponent();
+        MeshComp = new MeshComponent();
+        MatComp = new MaterialComponent();
+        Deets = new DetailsComponent();
+
+        Deets->entity = EntityId;
+        Deets->title = ObjReader+"-"+std::to_string(EntityId);
+        inRW->DeetsVector.push_back(Deets);
+
+        TransComp->mMatrix.setToIdentity();
+        TransComp->entity = EntityId;
+        TransComp->mMatrix.translate(StartPos.x(), StartPos.y(), StartPos.z());
+
+        inRW->transformCompVec.push_back(TransComp);
+        //lag vertexen her for å lage strek;
+
+        //MeshComp->mVertices.push_back(fromvector);
+        //MeshComp->mVertices.push_back(tovector);
+        MeshComp->entity = EntityId;
+         MeshComp->mDrawType = GL_LINES;
+        MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
+        MeshComp->centerOfMesh.setY(TransComp->mMatrix.getPosition().getY());
+        MeshComp->centerOfMesh.setZ(TransComp->mMatrix.getPosition().getZ());
+        inRW->meshCompVec.push_back(MeshComp);
+
+        MatComp->entity = EntityId;
+        MatComp->mShaderProgram = shader;
+        MatComp->mTextureUnit = texture;
+        inRW->MaterialCompVec.push_back(MatComp);
+
+
+        inRW->RenderSys->init(MeshComp);
+    }
+}
+
 void EntitySystem::constructCube()
 {
     offsetLastPos();

@@ -261,11 +261,11 @@ void Matrix4x4::rotateZ(GLfloat degrees)
 //{
 //    vector.normalize();
 
-    //    https://learnopengl.com/Getting-started/Transformations
-    //    cosθ+Rx2(1−cosθ)      RxRy(1−cosθ)−Rzsinθ     RxRz(1−cosθ)+Rysinθ     0
-    //    RyRx(1−cosθ)+Rzsinθ   cosθ+Ry2(1−cosθ)        RyRz(1−cosθ)−Rxsinθ     0
-    //    RzRx(1−cosθ)−Rysinθ   RzRy(1−cosθ)+Rxsinθ     cosθ+Rz2(1−cosθ)        0
-    //    0                     0                       0                       1
+//    https://learnopengl.com/Getting-started/Transformations
+//    cosθ+Rx2(1−cosθ)      RxRy(1−cosθ)−Rzsinθ     RxRz(1−cosθ)+Rysinθ     0
+//    RyRx(1−cosθ)+Rzsinθ   cosθ+Ry2(1−cosθ)        RyRz(1−cosθ)−Rxsinθ     0
+//    RzRx(1−cosθ)−Rysinθ   RzRy(1−cosθ)+Rxsinθ     cosθ+Rz2(1−cosθ)        0
+//    0                     0                       0                       1
 //}
 
 //void Matrix4x4::rotate(GLfloat angle, GLfloat xIn, GLfloat yIn, GLfloat zIn)
@@ -365,9 +365,9 @@ void Matrix4x4::perspective(GLfloat fieldOfView, GLfloat aspectRatio, GLfloat ne
     *this =
     {
         uw,     0.f,    0.f,                                        0.f,
-        0.f,    uh,     0.f,                                        0.f,
-        0.f,    0.f,    -(farPlane)/(farPlane-nearPlane),    -2 * farPlane*nearPlane/(farPlane-nearPlane),
-        0.f,    0.f,    -1.f,                                        0.f
+                0.f,    uh,     0.f,                                        0.f,
+                0.f,    0.f,    -(farPlane)/(farPlane-nearPlane),    -2 * farPlane*nearPlane/(farPlane-nearPlane),
+                0.f,    0.f,    -1.f,                                        0.f
     };
 
 
@@ -461,6 +461,16 @@ Matrix3x3 Matrix4x4::toMatrix3() const
         matrix[0], matrix[1], matrix[2],
                 matrix[4], matrix[5], matrix[6],
                 matrix[8], matrix[9], matrix[10]
+    };
+}
+
+QVector4D Matrix4x4::multiplyWithQVector4D(QVector4D vec4D)
+{
+    return{
+                vec4D.x()*matrix[0] + vec4D.y()*matrix[1] + vec4D.y()*matrix[2] + vec4D.z()*matrix[3],
+                vec4D.x()*matrix[4] + vec4D.y()*matrix[5] + vec4D.y()*matrix[6] + vec4D.z()*matrix[7],
+                vec4D.x()*matrix[8] + vec4D.y()*matrix[9] + vec4D.y()*matrix[10] + vec4D.z()*matrix[11],
+                vec4D.x()*matrix[12] + vec4D.y()*matrix[13] + vec4D.y()*matrix[14] + vec4D.z()*matrix[15],
     };
 }
 

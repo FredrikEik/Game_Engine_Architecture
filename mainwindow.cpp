@@ -229,6 +229,22 @@ void MainWindow::updateDetails(){
 
 }
 
+void MainWindow::setSelectedItem(int i)
+{
+    ui->ObjectDetails->setVisible(true);
+    ui->ObjectDetails->setEnabled(true);
+    ui->checkBox->setEnabled(true);
+    ui->label_6->setEnabled(true);
+    SelectedItem = i;
+    std::string text = mRenderWindow->DeetsVector[SelectedItem]->title;
+    QString Qtext = QString::fromStdString(text);
+    ui->ObjectDetails->setTitle("Object Details: " + Qtext);
+    ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
+    ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().y);
+    ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().z);
+
+}
+
 void MainWindow::on_pushButton_5_clicked()
 {
     mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(-10.f);

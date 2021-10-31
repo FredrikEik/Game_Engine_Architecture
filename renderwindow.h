@@ -126,6 +126,10 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
+    //raycasting
+    void RayCasting(QMouseEvent *event);
+    void RayCastSphereCollision(QVector3D RayVec);
+
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;
