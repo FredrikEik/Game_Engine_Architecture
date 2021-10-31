@@ -45,6 +45,7 @@ SOURCES += main.cpp \
     scene.cpp \
     soundsystem.cpp \
     soundsource.cpp \
+    transformwidget.cpp \
     triangle.cpp \
     vertex.cpp \
     gameobject.cpp \
@@ -73,13 +74,15 @@ HEADERS += \
     scene.h \
     soundsystem.h \
     soundsource.h \
+    transformwidget.h \
     triangle.h \
     vertex.h \
     gameobject.h \
     xyz.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    transformwidget.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \

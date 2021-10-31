@@ -9,6 +9,7 @@
 #include "soundsystem.h"
 #include "resourcemanager.h"
 #include "coreengine.h"
+#include "transformwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -137,3 +138,11 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
         ui->pb_togglePlay->setText("Play (R)");
 }
 
+
+
+void MainWindow::on_actionRotate_Transform_triggered()
+{
+    mTransformWidget = new transformWidget();
+    //ui->verticalLayout_2->addWidget(mTransformWidget);
+    ui->verticalLayout_2->addWidget(mTransformWidget);
+}

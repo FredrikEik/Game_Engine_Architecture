@@ -107,7 +107,14 @@
     <addaction name="actionAdd_Goat"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuTransform">
+    <property name="title">
+     <string>Transform</string>
+    </property>
+    <addaction name="actionRotate_Transform"/>
+   </widget>
    <addaction name="menuGameObject"/>
+   <addaction name="menuTransform"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -118,6 +125,30 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetMovable</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>0</y>
+       <width>561</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2"/>
+    </widget>
+   </widget>
+  </widget>
   <action name="actionAdd_Triangle">
    <property name="text">
     <string>Add Triangle</string>
@@ -131,6 +162,11 @@
   <action name="actionAdd_Goat">
    <property name="text">
     <string>Add Goat</string>
+   </property>
+  </action>
+  <action name="actionRotate_Transform">
+   <property name="text">
+    <string>Rotate/Transform</string>
    </property>
   </action>
  </widget>

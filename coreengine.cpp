@@ -111,14 +111,11 @@ void CoreEngine::updateCamera()
     if (isPlaying)
     {
 
-        //gsl::Vector3D playerRot = player->mTransform->mMatrix.getRotation();
+        // MÅ ORDNE ROTATION RIKTIG
         gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
         mRenderSystem->mCurrentCamera->mPosition = playerpos;
         mRenderSystem->mCurrentCamera->mPosition.setZ(playerpos.getZ()+2.f);
         mRenderSystem->mCurrentCamera->mPosition.setY(playerpos.getY()+1.5);
-//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateX(playerRot.getRotX());
-//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateY(playerRot.getRotY());
-//        mRenderSystem->mCurrentCamera->mViewMatrix.rotateZ(playerRot.getRotZ());
 
     }
 
@@ -130,7 +127,6 @@ void CoreEngine::updateScene()
     //TODO:
 
     updateCamera();
-
 
     if(getInstance()->mResourceManager->checkCollision(
     player, enemy))
