@@ -377,10 +377,10 @@ void RenderWindow::RayCasting(QMouseEvent *event)
     float x = (2.0f * mouseXPixel) / width() - 1.0f;
     float y = 1.0f - (2.0f * mouseYPixel) / height();
     float z = 1.0f;
-    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+    QVector3D ray_nds = QVector3D(x, y, z);
 
     //step 2
-    QVector4D ray_clip = QVector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+    QVector4D ray_clip = QVector4D(ray_nds.x(), ray_nds.y(), -1.0, 1.0);
 
     //step 3
     projMatrix.inverse();
@@ -396,7 +396,7 @@ void RenderWindow::RayCasting(QMouseEvent *event)
 
 
 
-    qDebug() << ray_wor;
+    qDebug() << ray_wor<<"x: "<<mouseXPixel << "  Y: " <<mouseYPixel;
     RayCastSphereCollision(ray_wor);
 }
 
