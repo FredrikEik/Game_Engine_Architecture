@@ -472,10 +472,15 @@ void RenderWindow::updateMatrix()
 
 void RenderWindow::toggleGameMode()
 {
-    if (bPlayGame)
+    if (bPlayGame) {
         bPlayGame = false;
-    else
+        mMainWindow->disableWorldObjects(false);
+    }
+    else {
         bPlayGame = true;
+        ObjFactory->setOBJindex(-1);
+        mMainWindow->disableWorldObjects(true);
+    }
 }
 
 void RenderWindow::ObjectButton(std::string object)
@@ -558,7 +563,7 @@ void RenderWindow::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
+    if(mInput.RMB && !bPlayGame)
     {
         if(mInput.W)
             mCurrentCamera->setSpeed(-mCameraSpeed);
@@ -572,6 +577,12 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(-mCameraSpeed);
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
+    }
+
+    //Player
+    if (bPlayGame)
+    {
+
     }
 }
 
@@ -730,7 +741,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB)
+    if (mInput.RMB && !bPlayGame)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;

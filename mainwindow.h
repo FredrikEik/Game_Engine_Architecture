@@ -29,6 +29,8 @@ public:
     int getWidth();
     int getHeight();
 
+    void disableWorldObjects(bool disable);
+
 private slots:
     void on_pushButton_toggled(bool checked);
 

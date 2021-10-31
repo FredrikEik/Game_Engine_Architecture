@@ -29,6 +29,7 @@ SOURCES += main.cpp \
     mousepicker.cpp \
     objectfactory.cpp \
     objimport.cpp \
+    player.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     mousepicker.h \
     objectfactory.h \
     objimport.h \
+    player.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
