@@ -16,7 +16,7 @@ public:
 private:
 
     ObjectFactory* ObjSpawnFactory;
-    GameObject* SpawnedObject;
+    GameObject* SpawnedObject {nullptr};
 };
 
 #endif // SPAWNER_H
