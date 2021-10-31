@@ -439,7 +439,7 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
              //return true;
              mMainWindow->setSelectedItem(transformCompVec[i]->entity);
              collided = true;
-             //entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
+             entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
              qDebug() <<"COL1"<<CamPos;
              break;
          }
@@ -453,7 +453,7 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
              {
                  mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
                  collided = true;
-                 //entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
+                 entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
                  qDebug() <<"COL2"<<CamPos;
                  break;
              }
@@ -461,7 +461,7 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
              {
                 mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
                 collided = true;
-                //entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
+                entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
                 qDebug() <<"COL3"<<CamPos;
                 break;
              }
@@ -470,6 +470,7 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
 
      if(!collided)
      {qDebug() <<"NO COLLISION";}
+     entitySys->construcRay(RayVec,CamPos,mCurrentCamera->Cam.mForward);
         // No real roots //NOT colliding
         //return false;
 

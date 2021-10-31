@@ -4,10 +4,10 @@
 
 EntitySystem::EntitySystem(RenderWindow * inputRW)
 {
- ResourceSys = new resourceSystem();
- if(inputRW){
-     inRW = inputRW;
- }
+    ResourceSys = new resourceSystem();
+    if(inputRW){
+        inRW = inputRW;
+    }
 
 }
 
@@ -83,9 +83,9 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
 void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vector3D forwardVec)
 {
     std::string ObjReader = "RayCast"; QVector3D StartPos =CameraPos;
-     GLuint shader = 0; GLint texture = 0;
+    GLuint shader = 0; GLint texture = 0;
 
-     int EntityId = -1;
+    int EntityId = -1;
 
     if(inRW){
         if(EntityId == -1){
@@ -126,15 +126,23 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vect
 
         TransComp->mMatrix.setToIdentity();
         TransComp->entity = EntityId;
-        TransComp->mMatrix.translate(StartPos.x(), StartPos.y(), StartPos.z());
+        //TransComp->mMatrix.translate(StartPos.x(), StartPos.y(), StartPos.z());
 
         inRW->transformCompVec.push_back(TransComp);
         //lag vertexen her for å lage strek;
+        QVector3D temp = CameraPos + LineVec;
+        QVector3D Color = temp;
+        Color.normalize(); //make color based on position
+        Vertex fromvector = Vertex(temp.x(), temp.y(), temp.z(), Color.x(), Color.y(), Color.z(),0.f, 0.f);
+        MeshComp->mVertices.push_back(fromvector);
 
-        //MeshComp->mVertices.push_back(fromvector);
-        //MeshComp->mVertices.push_back(tovector);
+        temp = LineVec*30.f + CameraPos;
+        fromvector = Vertex(temp.x(), temp.y(), temp.z(),  1,1, 1,0.f, 0.f); //white edges
+
+
+        MeshComp->mVertices.push_back(fromvector);
         MeshComp->entity = EntityId;
-         MeshComp->mDrawType = GL_LINES;
+        MeshComp->mDrawType = GL_LINES;
         MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
         MeshComp->centerOfMesh.setY(TransComp->mMatrix.getPosition().getY());
         MeshComp->centerOfMesh.setZ(TransComp->mMatrix.getPosition().getZ());
