@@ -102,22 +102,22 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
-    mRenderWindow->toggleShapes(1);
+    mRenderWindow->toggleShapes(2);
 }
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-    mRenderWindow->toggleShapes(2);
+    mRenderWindow->toggleShapes(0);
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
-    mRenderWindow->toggleShapes(3);
+    mRenderWindow->toggleShapes(1);
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
-    mRenderWindow->toggleShapes(0);
+    mRenderWindow->toggleShapes(4);
 }
 
 
@@ -129,6 +129,7 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID; i++){
         if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
         {
+
             if(mRenderWindow->mousePickCollide == true)
             {
                 SelectWithMousePick(mRenderWindow->MousePickindex);
@@ -213,10 +214,6 @@ void MainWindow::on_RotateZ_clicked()
 }
 
 
-
-
-
-
 void MainWindow::on_ScaleP_clicked()
 {
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(1.5f);
@@ -225,6 +222,6 @@ void MainWindow::on_ScaleP_clicked()
 
 void MainWindow::on_ScaleM_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.75f);
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.50f);
 }
 

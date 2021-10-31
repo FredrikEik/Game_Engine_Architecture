@@ -9,6 +9,7 @@ Camera::Camera()
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
+    updateForwardVector();
     mInputComp = new InputComponent;
 }
 
@@ -115,7 +116,8 @@ FrustumSystem::FrustumSystem()
     mTransform = new TransformComponent;
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent;
-
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
     calculateFrustumVectors();
     makeFrustumLines();
 

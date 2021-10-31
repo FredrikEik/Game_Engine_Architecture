@@ -150,77 +150,74 @@ void RenderWindow::initObjects()
 {
     //********************** Making the object to be drawn **********************
 
-     VisualObject *temp = new XYZ();
-     temp->mMaterial->mShaderProgram = 0; //plain shader
-     temp->init();
-     mVisualObjects.push_back(temp);
+    myShapes[0] = mShapeFactory.createShape("Circle");
+    myShapes[0]->init();
+    myShapes[0]->mMaterial->mShaderProgram = 0;    //plain shader
+    myShapes[0]->move(2.f, 1.f, .5f);
+    mVisualObjects.push_back(myShapes[0]);
+    mTransformComp.push_back(myShapes[0]->mTransform);
+    mNameComp.push_back(myShapes[0]->mNameComp);
 
-     mFrustumSystem = new FrustumSystem();
-     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
-     mFrustumSystem->init();
-     mVisualObjects.push_back(mFrustumSystem);
+    myShapes[1] = mShapeFactory.createShape("Square");
+    myShapes[1]->init();
+    myShapes[1]->mMaterial->mShaderProgram = 0;    //plain shader
+    myShapes[1]->move(-2.f, 0.f, .5f);
+    mVisualObjects.push_back(myShapes[1]);
+    mTransformComp.push_back(myShapes[1]->mTransform);
+    mNameComp.push_back(myShapes[1]->mNameComp);
 
-     myShapes[0] = mShapeFactory.createShape("Circle");
-     myShapes[0]->init();
-     myShapes[0]->mMaterial->mShaderProgram = 0;    //plain shader
-     myShapes[0]->move(2.f, 1.f, .5f);
-     mTransformComp.push_back(myShapes[0]->mTransform);
-     mVisualObjects.push_back(myShapes[0]);
+    myShapes[2] = mShapeFactory.createShape("Triangle");
+    myShapes[2]->init();
+    myShapes[2]->mMaterial->mShaderProgram = 0;    //plain shader
+    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
+    myShapes[2]->move(3.f, 0.f, .5f);
+    mVisualObjects.push_back(myShapes[2]);
+    mTransformComp.push_back(myShapes[2]->mTransform);
+    mNameComp.push_back(myShapes[2]->mNameComp);
 
-     mNameComp.push_back(myShapes[0]->mNameComp);
+    myShapes[3] = mShapeFactory.createShape("Plain");
+    myShapes[3]->init();
+    myShapes[3]->mMaterial->mShaderProgram = 0;   //plain shader
+    mVisualObjects.push_back(myShapes[3]);
+    mTransformComp.push_back(myShapes[3]->mTransform);
+    mNameComp.push_back(myShapes[3]->mNameComp);
 
-     myShapes[1] = mShapeFactory.createShape("Square");
-     myShapes[1]->init();
-     myShapes[1]->mMaterial->mShaderProgram = 0;    //plain shader
-     myShapes[1]->move(-2.f, 0.f, .5f);
-     mVisualObjects.push_back(myShapes[1]);
-     mTransformComp.push_back(myShapes[1]->mTransform);
-     mNameComp.push_back(myShapes[1]->mNameComp);
+    myShapes[4] = mShapeFactory.createShape("Monkey.obj");
+    myShapes[4]->init();
+    myShapes[4]->mMaterial->mShaderProgram = 0;    //plain shader
+    mVisualObjects.push_back(myShapes[4]);
+    mTransformComp.push_back(myShapes[4]->mTransform);
+    mNameComp.push_back(myShapes[4]->mNameComp);
 
-     myShapes[2] = mShapeFactory.createShape("Triangle");
-     myShapes[2]->init();
-     myShapes[2]->mMaterial->mShaderProgram = 0;    //plain shader
-     //    temp->mMaterial->mTextureUnit = 1;      //dog texture
-     myShapes[2]->move(3.f, 0.f, .5f);
-     mVisualObjects.push_back(myShapes[2]);
-     mTransformComp.push_back(myShapes[2]->mTransform);
-     mNameComp.push_back(myShapes[2]->mNameComp);
+    mPlayer = new Player();
+    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->init();
+    mPlayer->move(0,1,0);
+    mVisualObjects.push_back(mPlayer);
+    mTransformComp.push_back(mPlayer->mTransform);
+    mNameComp.push_back(mPlayer->mNameComp);
 
-     myShapes[3] = mShapeFactory.createShape("Plain");
-     myShapes[3]->init();
-     myShapes[3]->mMaterial->mShaderProgram = 0;   //plain shader
-     mVisualObjects.push_back(myShapes[3]);
-     mTransformComp.push_back(myShapes[3]->mTransform);
-     mNameComp.push_back(myShapes[3]->mNameComp);
+    VisualObject *temp = new XYZ();
+    temp->mMaterial->mShaderProgram = 0; //plain shader
+    temp->init();
+    mVisualObjects.push_back(temp);
 
-     myShapes[4] = mShapeFactory.createShape("Obj");
-     myShapes[4]->init();
-     myShapes[4]->mMaterial->mShaderProgram = 0;    //plain shader
-     mVisualObjects.push_back(myShapes[4]);
-     mTransformComp.push_back(myShapes[4]->mTransform);
-     mNameComp.push_back(myShapes[4]->mNameComp);
+    mFrustumSystem = new FrustumSystem();
+    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
+    mFrustumSystem->init();
+    mVisualObjects.push_back(mFrustumSystem);
 
-     mPlayer = new Player();
-     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-     mPlayer->init();
-     mPlayer->move(0,1,0);
-     mTransformComp.push_back(mPlayer->mTransform);
-     mNameComp.push_back(mPlayer->mNameComp);
-     mVisualObjects.push_back(mPlayer);
-
-     //Drawing 200 monkeys
-     //    for(int i=0; i<10; i++)
-     //    {
-     //        for(int y=0; y<10; y++)
-     //        {
-     //            temp = mShapeFactory.createMonkeys(i*y);
-     //            temp->init();
-     //            temp->move((i-y), 0.5, y-5);
-     //            temp->mMaterial->mShaderProgram = 0;    //plain shader
-     //            mVisualObjects.push_back(temp);
-     //        }
-     //    }
-
+    for(int i=0; i<10; i++)
+    {
+        for(int y=0; y<10; y++)
+        {
+            temp = mShapeFactory.createShape("Monkey.obj");
+            temp->init();
+            temp->move((i-y), 0.5, y-5);
+            temp->mMaterial->mShaderProgram = 0;    //plain shader
+            mVisualObjects.push_back(temp);
+        }
+    }
 
 
 }
@@ -228,61 +225,61 @@ void RenderWindow::initObjects()
 void RenderWindow::makeObject()
 {
     //Draws the objects
-     for(int i{0}; i < mVisualObjects.size(); i++)
-     {
-         //First objekct - xyz
-         //what shader to use
-         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-         glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+    for(int i{0}; i < mVisualObjects.size(); i++)
+    {
+        //First objekct - xyz
+        //what shader to use
+        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
-         //This block sets up the uniforms for the shader used in the material
-         //Also sets up texture if needed.
-         int viewMatrix{-1};
-         int projectionMatrix{-1};
-         int modelMatrix{-1};
+        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
 
-         if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
-         {
-             viewMatrix = vMatrixUniform;
-             projectionMatrix = pMatrixUniform;
-             modelMatrix = mMatrixUniform;
-         }
-         else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
-         {
-             viewMatrix = vMatrixUniform1;
-             projectionMatrix = pMatrixUniform1;
-             modelMatrix = mMatrixUniform1;
+        //This block sets up the uniforms for the shader used in the material
+        //Also sets up texture if needed.
+        int viewMatrix{-1};
+        int projectionMatrix{-1};
+        int modelMatrix{-1};
 
-             //Now mMaterial component holds texture slot directly - probably should be changed
-             glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
-         }
-         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
+        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        {
+            viewMatrix = vMatrixUniform;
+            projectionMatrix = pMatrixUniform;
+            modelMatrix = mMatrixUniform;
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        {
+            viewMatrix = vMatrixUniform1;
+            projectionMatrix = pMatrixUniform1;
+            modelMatrix = mMatrixUniform1;
 
-         //send data to shader
-         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+            //Now mMaterial component holds texture slot directly - probably should be changed
+            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+        }
+        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
-         if(i<=0){
-             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-             glBindVertexArray(0);}
-         else if(i==1 && playM==false){
-             glBindVertexArray( mFrustumSystem->mMesh->mVAO );
-             glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
-             glBindVertexArray(0);}
-         else if(i>1 && i<7){
-             if(shapeExist[i-2]){
-                 glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-                 glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-                 glBindVertexArray(0);}}
-         else if(i>=7){
-             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-             glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
-             glBindVertexArray(0);}
+        //send data to shader
+        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-
-     }
+        if(i<5){
+            if(shapeExist[i]){
+                glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+                glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+                glBindVertexArray(0);}}
+        else if(i>=5 && i<7){
+            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i==7 && playM==false){
+            glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+            glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+        else if(i>=8){
+            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);}
+    }
 }
 
 
@@ -294,8 +291,8 @@ void RenderWindow::render()
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
 
-    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[6]->mCollision))
-        qDebug() <<"Collision detected";
+//    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[6]->mCollision))
+//        qDebug() <<"Collision detected";
 
 
     mTimeStart.restart(); //restart FPS clock
@@ -644,38 +641,37 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 
     qDebug() << ray_wor;
 
-//    int size = sizeof(myShapes)/sizeof(myShapes[0]);
 
-//    for(int i{0}; i < size; i++)
+    for(int i{0}; i < mVisualObjects.size(); i++)
 
-//    {      //making the vector from camera to object we test against
-//        gsl::Vector3D camToObject = myShapes[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
+    {      //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
 
-//        //making the normal of the ray - in relation to the camToObject vector
-//        //this is the normal of the surface the camToObject and ray_wor makes:
-//        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
 
-//        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
-//        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
-//        rayNormal.normalize();
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
 
-//        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-//        //getting distance from GameObject to ray using dot product:
-//        float distance = camToObject * rayNormal;   //* gives the dot product
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray using dot product:
+        float distance = camToObject * rayNormal;   //* gives the dot product
 
-//        //we are interested in the absolute distance, so fixes any negative numbers
-//        distance = abs(distance);
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
 
-//        if(mCollisionSystem->CheckMousePickCollision(distance, myShapes[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
-//        {
-//            mousePickCollide = true;
-//            mMainWindow->SelectWithMousePick(i);
+        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
+        {
+            mousePickCollide = true;
+            mMainWindow->SelectWithMousePick(i);
 
-//            MousePickindex = i;
-//            qDebug() <<"Mouse Collision detected";
-//        }
+            MousePickindex = i;
+            qDebug() <<"Mouse Collision detected";
+        }
 
-//    }
+    }
 
 }
 

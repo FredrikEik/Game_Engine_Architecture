@@ -8,9 +8,6 @@ Circle::Circle()
     makeVerticies();
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
-//    mNameComp->ObjectName = "Circle";
-    //mNameComp->ObjectID = 1;
-
 }
 
 void Circle::makeVerticies()
@@ -58,7 +55,6 @@ void Circle::circleUnit(CollisionComponent* dCollision)
 
     dCollision->setBoundingSphere(a/2, mTransform->mPosition);
 }
-
 void Circle::makeTriangle(const gsl::Vector3D &v1, const gsl::Vector3D &v2, const gsl::Vector3D &v3)
 {
     Vertex v{v1.x, v1.y, v1.z, v1.x, v1.y, v1.z};
@@ -76,10 +72,9 @@ Triangle::Triangle()
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     makeVerticies();
+    mCollision->setBoundingSphere(0.3266, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
-  //  mNameComp->ObjectName = "Triangle";
-    //mNameComp->ObjectID = 2;
 }
 
 void Triangle::makeVerticies()
@@ -116,10 +111,9 @@ Square::Square()
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     makeVerticies(mMesh, mCollision);
+    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
-  //  mNameComp->ObjectName = "Square";
-   // mNameComp->ObjectID = 3;
 }
 
 void Square::makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision)
@@ -176,12 +170,12 @@ Plain::Plain()
 {
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
     mMesh = new MeshComponent();
     makeVerticies(mMesh);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
-   // mNameComp->ObjectName = "Plain";
-   // mNameComp->ObjectID = 4;
 }
 
 void Plain::makeVerticies(MeshComponent* dMesh)
@@ -210,76 +204,104 @@ ObjMesh::ObjMesh(std::string filename)
     mNameComp = new NameComponent();
 
     readFile(filename);
+    if(filename.find("Monkey") != std::string::npos)
+        mCollision->setBoundingSphere(0.2, mTransform->mPosition);
+    else
+        mCollision->setBoundingSphere(0.5, mTransform->mPosition);
+
 
     mMesh->mDrawType = GL_TRIANGLES;
     mMaterial = new MaterialComponent();
-
 }
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
-    VisualObject* temp;
+    string obj{"obj"};
+    string fileStr{"../GEA2021/Assets/" + shapeName};
     if (shapeName == "Circle"){
-        temp = new Circle;
-        temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->ObjectID = 0;
-        return temp;}
+        if(doOnce1 == false){
+            myShapes.push_back(new Circle);
+            myShapes[0]->mNameComp->ObjectName = shapeName;
+            myShapes[0]->mNameComp->ObjectID = 0;
+            doOnce1 = true;
+            return myShapes[0];}
+        else{
+            return myShapes[0];}}
     else if(shapeName == "Square"){
-        temp = new Square;
-        temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->ObjectID = 1;
-        return temp;}
+        if(doOnce[1] == false){
+            myShapes.push_back(new Square);
+            myShapes[1]->mNameComp->ObjectName = shapeName;
+            myShapes[1]->mNameComp->ObjectID = 1;
+            doOnce[1] = true;
+            return myShapes[1];}
+        else{
+            return myShapes[1];}}
     else if(shapeName == "Triangle"){
-        temp = new Triangle();
-        temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->ObjectID = 2;
-        return temp;}
+        if(doOnce2 == false){
+            myShapes.push_back(new Triangle);
+            myShapes[2]->mNameComp->ObjectName = shapeName;
+            myShapes[2]->mNameComp->ObjectID = 2;
+            doOnce2 = true;
+            return myShapes[2];}
+        else{
+            return myShapes[2];}}
     else if(shapeName == "Plain"){
-        temp = new Plain();
-        temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->ObjectID = 3;
-        return temp;}
-    else if(shapeName == "Obj"){
-        temp = new ObjMesh(monkeyString);
-        temp->mNameComp->ObjectName = shapeName;
-        temp->mNameComp->ObjectID = 4;
-        return temp;}
+        if(doOnce3 == false){
+            myShapes.push_back(new Plain);
+            myShapes[3]->mNameComp->ObjectName = shapeName;
+            myShapes[3]->mNameComp->ObjectID = 3;
+            doOnce3 = true;
+            return myShapes[3];}
+        else{
+            return myShapes[3];}}
+    else if(shapeName.find(obj) != std::string::npos)
+    {
+        VisualObject* temp = nullptr;
+        if(myObjs.size()>=1)
+        {
+            for(auto a = myObjs.begin(); a != myObjs.end(); a++)
+            {
+                if (shapeName.find(a->first) != std::string::npos)
+                {
+                    temp = myShapes[a->second];
+                    temp->mNameComp = nullptr;
+                }
+            }
+            if(temp!=nullptr)
+                return temp;
+            else{
+                myShapes.push_back(new ObjMesh(fileStr));
+                shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+                myObjs[shapeName] = ObjStartID;
+                myShapes.back()->mNameComp->ObjectName = shapeName;
+                myShapes.back()->mNameComp->ObjectID = ObjStartID;
+                return myShapes.back();
+                ObjStartID++;}
+        }
+        else{
+            myShapes.push_back(new ObjMesh(fileStr));
+            shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+            myObjs[shapeName] = ObjStartID;
+            myShapes.back()->mNameComp->ObjectName = shapeName;
+            myShapes.back()->mNameComp->ObjectID = ObjStartID;
+            return myShapes.back();
+            ObjStartID++;}
+    }
     else{
         std::cout << "invalid string" << std::endl;
         return nullptr;}
 }
 
-VisualObject* ShapeFactory::createMonkeys(int i)
-{
-    if(doOnce == false)
-    {
-        myMonkeys[i] = new ObjMesh(monkeyString);
-        return myMonkeys[i];
-        doOnce = true;
-    }
-    else if(i>0)
-    {
-        myMonkeys[i] = myMonkeys[0];
-        myMonkeys[i]->mTransform = new TransformComponent;
-        return myMonkeys[i];
-    }
-    else
-    {
-        qDebug() << "too many Monkeys can't even";
-        return nullptr;
-    }
-}
 
-//VisualObject* ShapeFactory::createMonkeys(int i)
+
+//VisualObject* ShapeFactory::createMonkey()
 //{
 //    if(doOnce == false)
 //    {
-//        myMonkeys[i] = new ObjMesh(monkeyString); //VisualObject* myMonkey;
-//        return myMonkeys[i];
+//        myMonkey = new ObjMesh(monkeyString);
+//        return myMonkey;
 //        doOnce = true;
 //    }
 //    else
-//    {
-//        return myMonkeys[i];
-//    }
+//        return myMonkey;
 //}

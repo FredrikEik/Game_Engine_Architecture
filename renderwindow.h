@@ -73,9 +73,9 @@ private:
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
-//    static const int nrOfShapes = 5;
-//    VisualObject* myShapes[nrOfShapes];
-    VisualObject* myShapes[5];
+    static const int nrOfShapes = 5;
+    VisualObject* myShapes[nrOfShapes];
+   // VisualObject* myShapes[5];
 
 
     void mousePickingRay(QMouseEvent *event);
@@ -86,7 +86,7 @@ private:
     void HandleInput();
     void SoundHandler();
 
-    bool shapeExist[4];
+    bool shapeExist[nrOfShapes];
     bool playM = false;
 
     void init();

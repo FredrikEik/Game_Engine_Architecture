@@ -10,6 +10,8 @@ XYZ::XYZ() {
     mTransform->mMatrix.setToIdentity();
 
     mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
 
     mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
     mMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
