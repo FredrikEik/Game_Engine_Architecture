@@ -11,7 +11,7 @@ public:
 	/// </summary>
 	/// <param name="collisionComponent"></param>
 	/// <param name="ECS"></param>
-	static void construct(struct AxisAlignedBoxComponent& collisionComponent,
+	static void construct(uint32 entity,
 		class ECSManager* ECS);
 
 

@@ -21,3 +21,9 @@ void TransformSystem::move(uint32 entity, glm::vec3 deltaLocation, ECSManager* E
 	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
 	transform->transform[3] += glm::vec4(deltaLocation, 0);
 }
+
+void TransformSystem::setPosition(uint32 entity, glm::vec3 newLocation, ECSManager* ECS)
+{
+	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	transform->transform[3] = glm::vec4(newLocation, 1);
+}

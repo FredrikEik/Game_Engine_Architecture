@@ -40,15 +40,14 @@ SweepAndPrune::~SweepAndPrune()
 //
 //}
 //
-//void SweepAndPrune::update()
-//{
-//	updateData();
-//	sortAndSweep();
-//}
-//
+void SweepAndPrune::update()
+{
+	if(updateData())
+		sortAndSweep();
+}
+
 void SweepAndPrune::sortAndSweep()
 {
-
 	// Sort
 	uint8 tempSortAxis = sortAxis;
 	auto compare = [tempSortAxis](const SweepElement& a, const SweepElement& b) -> bool
@@ -74,15 +73,29 @@ void SweepAndPrune::sortAndSweep()
 		sum += center;
 		sum2 += center * center;
 
+		int32 CollisionsTested{};
 		for (uint32 j{ i + 1 }; j < m_data.size(); ++j)
 		{
-			// If the tested collision cannot collide with the current, break
-			if (m_data.at(j).min[sortAxis] > m_data.at(i).max[sortAxis])
-				break;
+
+			// If the tested collision can collide on one axis collide with the current collision, test collision.
+			// If not, break
+			if ((m_data.at(j).max[sortAxis]) >=
+				(m_data.at(i).min[sortAxis]) &&
+				(m_data.at(i).max[sortAxis]) >=
+				(m_data.at(j).min[sortAxis]))
 			// Does the actual collision test.
-			CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS);
+				CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS);
+			else
+				break;
+
+			++CollisionsTested;
+
 		}
+		//std::cout << "tested " << CollisionsTested << " out of " << m_data.size() << " collisions before breaking\n";
+		//_sleep(250);
 	}
+	//std::cout << "Finished testing collisions\n";
+
 	updateSortAxis(sum, sum2);
 }
 
@@ -113,11 +126,12 @@ void SweepAndPrune::clearAndFillData()
 }
 
 
-void SweepAndPrune::updateData()
+bool SweepAndPrune::updateData()
 {
 	ComponentManager<AxisAlignedBoxComponent>* AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
 	ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
-
+	if (!AABBManager || !transformManager)
+		return false;
 	// TODO: There is an edgecase where this doesn't work. If a AABB component is removed, 
 	// then a new one added in the same frame, this breaks. 
 	// For now it is unlikely, so for performance reasons we do not care about this edgecase
@@ -136,7 +150,7 @@ void SweepAndPrune::updateData()
 		it.max = glm::vec2(AABB.maxScaled.x + transform.transform[3].x,
 			AABB.maxScaled.z + transform.transform[3].z);
 	}
-
+	return true;
 	//AxisAlignedBoxComponent* AABBComponent = AABBManager->getComponentChecked(entity);
 	//TransformComponent* transformComponent = transformManager->getComponentChecked(entity);
 }

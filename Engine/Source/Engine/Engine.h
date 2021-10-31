@@ -44,5 +44,5 @@ private:
 	class Shader* selectionShader{};
 
 	uint32 editorCameraEntity{};
-
+	class SweepAndPrune* CollisionBroadphaseDatastructure{};
 };
