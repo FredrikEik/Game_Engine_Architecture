@@ -82,7 +82,7 @@ void ObjectFactory::saveMesh(std::string fileName, std::string nickName)
         qDebug() << storedMeshes.size();
     }
     else {
-        ObjImport *objImport;
+        ObjImport *objImport {nullptr};
         MeshComponent* newMesh = new MeshComponent();
         objImport->readFile(fileName/*, &newMesh->mVertices, &newMesh->mIndices*/);
         storedMeshes.emplace(std::pair<std::string, MeshComponent*>{nickName, newMesh});

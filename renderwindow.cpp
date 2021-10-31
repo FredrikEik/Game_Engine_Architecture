@@ -44,8 +44,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
-    MapSpawner = new Spawner(ObjFactory);
-    MapSpawner->SpawnRow();
+
 }
 
 RenderWindow::~RenderWindow()
@@ -148,6 +147,9 @@ void RenderWindow::init()
 
     mMousePicker = new MousePicker(mCurrentCamera);
     mMainWindow->setMouseTracking(true);
+
+    MapSpawner = new Spawner(ObjFactory);
+    MapSpawner->SpawnRow();
 
 }
 

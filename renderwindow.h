@@ -106,7 +106,7 @@ private:
     ObjectFactory* ObjFactory = new ObjectFactory;
     SoundSource* mStereoSound;
     SoundSource* mPop;  
-    Spawner* MapSpawner;
+    class Spawner* MapSpawner;
 
     Input mInput;
     float mCameraSpeed{0.05f};
