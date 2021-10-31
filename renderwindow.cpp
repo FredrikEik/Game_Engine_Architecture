@@ -150,7 +150,7 @@ void RenderWindow::init()
 
     MapSpawner = new Spawner(ObjFactory);
     MapSpawner->SpawnRow();
-
+    //MapSpawner->addObjectToEditor(object);
 }
 
 // Called each frame - doing the rendering
