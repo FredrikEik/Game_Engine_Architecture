@@ -138,8 +138,8 @@ void CoreEngine::gameLoop()
     SoundSystem::getInstance()->update(mRenderSystem);
 
     //Update PhysicsObjects in scene
-    PhysicsComponent pc;
-    pc.movePhysicsObject();
+    //PhysicsComponent pc;
+    //pc.movePhysicsObject();
 
     mRenderSystem->render();
 }

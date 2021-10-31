@@ -24,7 +24,7 @@ struct Frustum
 class Camera
 {
 public:
-    Camera();
+    Camera(float fovIn = 45, float nearPlaneDistanceIn = 0.1f, float farPlaneDistanceIn = 500.f);
 
     void pitch(float degrees);
     void yaw(float degrees);

@@ -1,15 +1,22 @@
 ﻿#include "camera.h"
 //#include <QDebug>
-
 #include "soundsystem.h"
 
-Camera::Camera()
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOVvertical = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
 }
 
 void Camera::pitch(float degrees)
@@ -24,6 +31,7 @@ void Camera::yaw(float degrees)
     // rotate around mUp
     mYaw -= degrees;
     updateForwardVector();
+    calculateFrustumVectors();
 }
 
 void Camera::updateRightVector()
@@ -61,17 +69,18 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 
     SoundSystem::getInstance()->updateListener(mPosition, mForward, mUp);
+
 }
 
-void Camera::setPosition(const gsl::Vector3D &position)
-{
-    mPosition = position;
-}
+//void Camera::setPosition(const gsl::Vector3D &position)
+//{
+//    mPosition = position;
+//}
 
-void Camera::setSpeed(float speed)
-{
-    mSpeed = speed;
-}
+//void Camera::setSpeed(float speed)
+//{
+//    mSpeed = speed;
+//}
 
 void Camera::calculateProjectionMatrix()
 {

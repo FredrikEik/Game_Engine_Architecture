@@ -1,8 +1,8 @@
-#include "components.h"
+#include "ResourceManager/physicshandler.h"
 #include <vector>
 
-void PhysicsComponent::movePhysicsObject()
-{
+//void PhysicsComponent::movePhysicsObject()
+//{
     //Get the surface the physicsobject is going to interact with.
 //    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(mGameObject->mName = "TriangleSurface")->get_vertices();
     //Getting a reference to the GameObject that is the trianglesurface?
@@ -124,4 +124,4 @@ void PhysicsComponent::movePhysicsObject()
 //        //qDebug() << "ball is falling";
 //    }
 
-}
+//}

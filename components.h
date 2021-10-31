@@ -6,7 +6,7 @@
 #include "vertex.h"
 #include "gltypes.h"
 #include "altypes.h"
-#include "gameobject.h"
+//#include "gameobject.h"
 
 struct TransformComponent
 {
@@ -61,8 +61,6 @@ struct PhysicsComponent
     gsl::Matrix4x4 mPosition;
     //gsl::Matrix4x4 mRotation;
     gsl::Matrix4x4 mScale;
-
-    void movePhysicsObject();
 };
 
 #endif // COMPONENTS_H

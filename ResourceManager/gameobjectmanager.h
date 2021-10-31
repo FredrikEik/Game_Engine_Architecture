@@ -15,6 +15,7 @@ class GameObject;
 class MeshHandler;
 class TextureHandler;
 struct MeshData;
+class ShaderHandler;
 
 class GameObjectManager : public QOpenGLFunctions_4_1_Core
 {
@@ -25,11 +26,26 @@ public:
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
     void setUpAllTextures();
+    void setUpAllSounds();
+    void setUpAllMeshes();
+
+    void setUpAllMaterials();
+    void setUpAllShaders();
 
     MeshData makeLineBox(std::string MeshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
+    MeshData makeFrustum(const struct Frustum &frustumIn);
 
     MeshHandler* mMeshHandler{nullptr};
+
+    std::map<std::string, unsigned int> mShaderMap;
+    std::vector<ShaderHandler*> mShaders;
+
+    MaterialComponent* getMaterial(std::string materialName);
+    TextureHandler *mTextureHandler{nullptr};
+
+    std::map<std::string, unsigned int> mMaterialMap;
+    std::vector<MaterialComponent> mMaterials;
 
 private:
     GameObjectManager();                            //singleton
@@ -43,7 +59,7 @@ private:
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
 
-    TextureHandler *mTextureHandler{nullptr};
+//    class Logger* mLogger{nullptr};
 
 };
 #endif // GAMEOBJECTMANAGER_H

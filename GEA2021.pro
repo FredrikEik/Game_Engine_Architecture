@@ -23,6 +23,26 @@ macx {
 win32 {
     INCLUDEPATH += $(OPENAL_HOME)\\include\\AL
     LIBS *= $(OPENAL_HOME)\\libs\\Win64\\libOpenAL32.dll.a
+
+# Copy required DLLs to output directory
+    contains(QT_ARCH, x86_64)
+    {
+        CONFIG(debug, debug|release) {
+            OpenAL32.commands = copy /Y \"$(OPENAL_HOME)\\bin\\Win64\\OpenAL32.dll\" debug
+            OpenAL32.target = debug/OpenAL32.dll
+
+            QMAKE_EXTRA_TARGETS += OpenAL32
+            PRE_TARGETDEPS += debug/OpenAL32.dll
+        } else:CONFIG(release, debug|release) {
+            OpenAL32.commands = copy /Y \"$(OPENAL_HOME)\\bin\\Win64\\OpenAL32.dll\" release
+            OpenAL32.target = release/OpenAL32.dll
+
+            QMAKE_EXTRA_TARGETS += OpenAL32
+            PRE_TARGETDEPS += release/OpenAL32.dll release/OpenAL32.dll
+        } else {
+            error(Unknown set of dependencies.)
+        }
+    }
 }
 
 SOURCES += main.cpp \
@@ -31,7 +51,7 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/gameobjectmanager.cpp \
-    components.cpp \
+    ResourceManager/physicshandler.cpp \
     coreengine.cpp \
     logger.cpp \
     rendersystem.cpp \
@@ -46,6 +66,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     ResourceManager/meshhandler.h \
+    ResourceManager/physicshandler.h \
     ResourceManager/shaderhandler.h \
     ResourceManager/soundhandler.h \
     ResourceManager/texturehandler.h \
