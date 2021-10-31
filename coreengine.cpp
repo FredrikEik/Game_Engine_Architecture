@@ -92,17 +92,8 @@ void CoreEngine::setUpScene()
 
     mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
-//       if(isPlaying == true)
-//        {
-//            qDebug() << "game is playing";
-//            mRenderSystem->mCurrentCamera = mGameCamera;
-//        }
+    mRenderSystem->mCurrentCamera = mEditorCamera;
 
-//        else
-//        {
-            mRenderSystem->mCurrentCamera = mEditorCamera;
-//            qDebug() << "not playing";
-//        }
 
 
     mResourceManager->setUpAllTextures();

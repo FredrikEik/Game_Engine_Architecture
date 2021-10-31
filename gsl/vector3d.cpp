@@ -133,7 +133,6 @@ namespace gsl
 
     void Vector3D::rotateX(GLfloat angle)
     {
-        //rotX = angle;
         Vector3D dir;
         angle = gsl::deg2rad(angle);
 
@@ -148,7 +147,6 @@ namespace gsl
 
     void Vector3D::rotateY(GLfloat angle)
     {
-        //rotY = angle;
         Vector3D dir;
         angle = gsl::deg2rad(angle);
 
@@ -163,7 +161,6 @@ namespace gsl
 
     void Vector3D::rotateZ(GLfloat angle)
     {
-        //rotZ = angle;
         Vector3D dir;
         angle = gsl::deg2rad(angle);
 
@@ -219,18 +216,5 @@ namespace gsl
     void Vector3D::setZ(const GLfloat &value)
     {
         z = value;
-    }
-
-    GLfloat Vector3D::getRotX() const
-    {
-        return rotX;
-    }
-    GLfloat Vector3D::getRotY() const
-    {
-        return rotY;
-    }
-    GLfloat Vector3D::getRotZ() const
-    {
-        return rotZ;
     }
 } //namespace
