@@ -47,7 +47,7 @@ public:
     void toggleWireframe(bool buttonState);
 
     RenderSystem *RenderSys = new RenderSystem();
-    resourceSystem * MeshSys = new resourceSystem();
+    resourceSystem * ResSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem(this);
     collisionSystem* collisionSys = new collisionSystem();
 

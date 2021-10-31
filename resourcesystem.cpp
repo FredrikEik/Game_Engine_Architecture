@@ -219,6 +219,24 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
 }
 
+std::vector<std::string> resourceSystem::GetAllMeshesInAssetsDirectory()
+{
+    std::vector<std::string> assetNames;
+    std::string dir = gsl::ModelFilePath;
+    qDebug() << "-------------------------------------------Checking Models Assets-------------------------------";
+    QDirIterator iterator("../GEA2021/Assets/Models/", QDirIterator::Subdirectories);
+    while (iterator.hasNext()) {
+        QFile file(iterator.next());
+        if ( file.open( QIODevice::ReadOnly ) ){
+            QFileInfo fileInf(file.fileName());
+            qDebug() << "Detected Model :" << fileInf.fileName();
+        }
+    }
+    qDebug() << "-----------------------------------------------Models Assets------------------------------------";
+
+    return assetNames;
+}
+
 
 float resourceSystem::calculateLenght(QVector3D pos)
 {   //we assume that the center of the obj is at 0,0,0
