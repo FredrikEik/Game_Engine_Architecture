@@ -148,7 +148,7 @@ void RenderWindow::init()
     mMousePicker = new MousePicker(mCurrentCamera);
     mMainWindow->setMouseTracking(true);
 
-    MapSpawner = new Spawner(ObjFactory);
+    MapSpawner = new Spawner(ObjFactory, mMainWindow);
     MapSpawner->SpawnRow();
     //MapSpawner->addObjectToEditor(object);
 }

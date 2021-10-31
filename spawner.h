@@ -10,16 +10,18 @@
 class Spawner
 {
 public:
-    Spawner(ObjectFactory* ObjFactory);
+    Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow);
 
     void SpawnRow();
     //void addObjectToEditor(std::string object);
 
 private:
 
-    MainWindow *mMainWindow{nullptr};
+    MainWindow *mMainWindow {nullptr};
     ObjectFactory* ObjSpawnFactory;
     GameObject* SpawnedObject {nullptr};
+
+
 };
 
 #endif // SPAWNER_H
