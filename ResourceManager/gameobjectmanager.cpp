@@ -155,3 +155,4 @@ MeshData GameObjectManager::makeCircleSphere(float radius, bool rgbColor)
 {
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
+

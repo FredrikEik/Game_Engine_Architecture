@@ -102,8 +102,15 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QListWidget" name="GameObjectList"/>
+        <item alignment="Qt::AlignRight">
+         <widget class="QListWidget" name="GameObjectList">
+          <property name="maximumSize">
+           <size>
+            <width>490</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

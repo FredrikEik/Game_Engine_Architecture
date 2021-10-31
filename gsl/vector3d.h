@@ -27,12 +27,12 @@ public:
     Vector3D operator-(const Vector3D &rhs) const;      // v - v
     Vector3D& operator+=(const Vector3D &rhs);          // v += v
     Vector3D& operator-=(const Vector3D &rhs);          // v -= v
-    Vector3D operator-() const;                     // -v
-    Vector3D operator*(GLfloat rhs) const;          // v * f
-    //Vector3D operator*(Vector3D rhs) const;                                       //GLfloat operatoren funker ikke med denne???
+    Vector3D operator-() const;                         // -v
+    Vector3D operator*(GLfloat rhs) const;              // v * f
+    //Vector3D operator*(Vector3D rhs) const;           //GLfloat operatoren funker ikke med denne???
     Vector3D operator/(GLfloat rhs) const;
-    Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
-    GLfloat operator*(const Vector3D& rhs) const;  // v * v
+    Vector3D operator^(const Vector3D& rhs) const;      // v x v  - cross product
+    GLfloat operator*(const Vector3D& rhs) const;       // v * v
 
     //Functions
     GLfloat length() const;
@@ -60,6 +60,7 @@ public:
     GLfloat *yP();
     GLfloat *zP();
 
+    Vector3D getPosition3D();
 
     //Friend functions
     friend std::ostream& operator<<(std::ostream &output, const Vector3D &rhs )

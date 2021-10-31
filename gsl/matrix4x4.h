@@ -72,6 +72,7 @@ public:
         return output;
     }
     GLfloat getFloat(int space);
+
 private:
     GLfloat matrix[16];
 };

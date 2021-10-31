@@ -43,6 +43,8 @@ public:
     GLfloat getY() const;
     void setY(const GLfloat &value);
 
+    Vector2D getPosition2D();
+
     //Friend functions
     friend std::ostream& operator<<(std::ostream &output, const Vector2D &rhs)
     {

@@ -31,6 +31,7 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/gameobjectmanager.cpp \
+    components.cpp \
     coreengine.cpp \
     rendersystem.cpp \
     soundsystem.cpp \

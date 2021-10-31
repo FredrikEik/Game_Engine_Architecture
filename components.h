@@ -49,4 +49,17 @@ struct SoundComponent
 
 };
 
+struct PhysicsComponent
+{
+    bool simulatePhysics{true};
+    gsl::Vector3D velocity{0.0f, 0.0f, 0.0f};
+    gsl::Vector3D gravity{0.f, 0.f, 9.8f};
+    gsl::Matrix4x4 mMatrix;
+    gsl::Matrix4x4 mPosition;
+    //gsl::Matrix4x4 mRotation;
+    gsl::Matrix4x4 mScale;
+
+    void movePhysicsObject();
+};
+
 #endif // COMPONENTS_H
