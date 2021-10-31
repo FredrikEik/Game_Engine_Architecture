@@ -1,9 +1,11 @@
 #include "components.h"
+#include <vector>
 
 void PhysicsComponent::movePhysicsObject()
 {
     //Get the surface the physicsobject is to interact with.
-    //std::vector<gsl::Vertex>& triangleVertices = dynamic_cast<TriangleSurface*>(triangle_surface)->get_vertices();
+    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(GameObject.mName = "TriangleSurface").get_vertices();
+    //Getting a reference to the GameObject that is the trianglesurface
 
     mMatrix = mPosition * mScale;
 
@@ -11,14 +13,14 @@ void PhysicsComponent::movePhysicsObject()
     gsl::Vector3D ballPosition3d = mMatrix.getPosition();
     qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
-
+    qDebug() << triangleVertices.size();
 
 //Find the distance between the balls position and vertices of the trianglesurface
 //    gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.
 
 //    for (int i = 0; i < triangleVertices.size(); i++)
 //    {
-//        distanceBetweenBallAndVert[i] = triangleVertices[i].getXYZ() - ballPosition3d;
+//        distanceBetweenBallAndVert[i] = triangleVertices[i].mMatrix.getPosition() - ballPosition3d;
 
 //        //if the distance is a negative number, flip it. This makes sure that the lowest physical distance is selected, not the lowest number.
 //        if (distanceBetweenBallAndVert[i].x < 0)

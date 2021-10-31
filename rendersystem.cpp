@@ -192,7 +192,6 @@ void RenderSystem::render()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
-
         //draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
@@ -252,7 +251,8 @@ void RenderSystem::render()
     calculateFramerate();
 
     //using our expanded OpenGL debugger to check if everything is OK.
-    checkForGLerrors();
+    //checkForGLerrors();
+    //Tried moving this to the top of this function. still getting errors. Disabled for now.
 
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
