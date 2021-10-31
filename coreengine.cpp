@@ -56,7 +56,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(axis);
     //scene->setupScene1();
 
-    //dog triangle
+    //PLAYER
     player = mResourceManager->addObject("suzanne.obj");
     player->mMaterial->mShaderProgram = 0;
     player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
@@ -65,13 +65,13 @@ void CoreEngine::setUpScene()
     player->mTransform->mMatrix.translate(0.f, 0, -6);
     mResourceManager->addCollider("sphere", player);
     //Adds sound to player:
-    mResourceManager->addComponent("techno_stereo.wav", player);
+    mResourceManager->addComponent("caravan_mono.wav", player);
 
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
     mRenderSystem->mGameObjects.push_back(player);
 
-
+    //ENEMY
     enemy = mResourceManager->addObject("suzanne3.obj");
     enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
     enemy->mMaterial->mShaderProgram = 1;
@@ -80,8 +80,24 @@ void CoreEngine::setUpScene()
     enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
     enemy->mTransform->mMatrix.scale(0.5f);
     mResourceManager->addCollider("sphere", enemy);
+    mResourceManager->addComponent("roblox_stereo.wav", enemy);
+    enemy->mSoundComponent->shouldPlay = false;
     mRenderSystem->mGameObjects.push_back(enemy);
 
+    //BOSS
+    boss = mResourceManager->addObject("suzanne3.obj");
+    boss->mTransform->mMatrix.translate(-2, 1.f,2.f);
+    boss->mMaterial->mShaderProgram = 1;
+    boss->mMaterial->mTextureUnit = 2;
+    boss->mTransform->mMatrix.rotateY(180.f);
+    boss->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 5.f/**j*/);
+    boss->mTransform->mMatrix.scale(1.5f);
+    mResourceManager->addCollider("sphere", boss);
+    mResourceManager->addComponent("run_stereo.wav", boss);
+    boss->mSoundComponent->shouldPlay = false;
+    //looping fungerer ikke
+    boss->mSoundComponent->looping = false;
+    //mRenderSystem->mGameObjects.push_back(boss);
 
     //setup camera
     mGameCamera = new Camera();
@@ -133,9 +149,12 @@ void CoreEngine::updateScene()
     {
         qDebug() << "collided !";
         enemy->mTransform->mMatrix.rotateX(90);
-        //CoreEngine::getInstance()->mResourceManager->Collided = true;
         enemy->mCollider->objectsHasCollided = true;
+        enemy->mSoundComponent->shouldPlay = true;
+
     }
+    else
+        enemy->mSoundComponent->shouldPlay = false;
 
 
 }

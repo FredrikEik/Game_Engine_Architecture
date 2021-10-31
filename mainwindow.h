@@ -30,6 +30,10 @@ public slots:
 
     void on_actionRotate_Transform_triggered();
 
+
+private slots:
+    void on_pushButton_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

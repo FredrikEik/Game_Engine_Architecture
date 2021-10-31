@@ -34,6 +34,7 @@ public:
     GameObject * player;
     GameObject *axis;
     GameObject *enemy;
+    GameObject *boss;
 
 
     MeshData linebox;

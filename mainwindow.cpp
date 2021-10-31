@@ -115,7 +115,7 @@ void MainWindow::on_actionAdd_Goat_triggered()
         temp->mMaterial->mShaderProgram = 1;
         temp->mMaterial->mTextureUnit = 2;
     }
- //mResourceManager->getTextureID()->;
+
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -145,4 +145,12 @@ void MainWindow::on_actionRotate_Transform_triggered()
     mTransformWidget = new transformWidget();
     //ui->verticalLayout_2->addWidget(mTransformWidget);
     ui->verticalLayout_2->addWidget(mTransformWidget);
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    mRenderSystem->mGameObjects.push_back(CoreEngine::getInstance()->boss);
+    CoreEngine::getInstance()->boss->mSoundComponent->shouldPlay = true;
+
 }
