@@ -184,6 +184,7 @@ void RenderWindow::init()
     
     
     
+    ResSys->GetAllMeshesInAssetsDirectory();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
