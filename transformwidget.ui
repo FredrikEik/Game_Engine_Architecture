@@ -46,7 +46,7 @@
     <item row="1" column="2">
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Scale Y</string>
+       <string>transform y</string>
       </property>
      </widget>
     </item>
@@ -64,12 +64,16 @@
      <widget class="QDoubleSpinBox" name="scaleZ"/>
     </item>
     <item row="0" column="1">
-     <widget class="QDoubleSpinBox" name="rotX"/>
+     <widget class="QDoubleSpinBox" name="rotX">
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="3" column="2">
      <widget class="QLabel" name="label_6">
       <property name="text">
-       <string>Scale Z</string>
+       <string>transform z</string>
       </property>
      </widget>
     </item>
@@ -79,7 +83,7 @@
     <item row="0" column="2">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Scale X</string>
+       <string>transform x</string>
       </property>
      </widget>
     </item>
