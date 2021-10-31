@@ -11,7 +11,7 @@ struct Frustum
     float mFarPlaneDistance{100.0f};
     float mNearPlaneDistance{0.1f};
     float mFOVvertical{45.0f};
-    float mAspectRation{16/9};
+    float mAspectRatio{16/9};
 
     //Normals for the side planes - for frustum culling
     //Make sure these are stored normalized
@@ -31,6 +31,7 @@ public:
     void updateRightVector();
     void updateForwardVector();
     void update();
+    void calculateProjectionMatrix();
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
@@ -54,9 +55,13 @@ public:
 
     Frustum mFrustum;
 
-private:
     float mPitch{0.f};
     float mYaw{0.f};
+
+    std::string mName{"none"};
+
+private:
+    void calculateFrustumVectors();
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;

@@ -59,7 +59,7 @@ private:
 
     void startOpenGLDebugger();
 
-    bool RenderSystem::frustumCulling(int gobIndex);
+    bool frustumCulling(int gobIndex);
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};

@@ -12,6 +12,8 @@ namespace gsl  //Game School Lib
     const std::string SoundFilePath{AssetFilePath + "Sounds/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
 
+    const std::string LODLevelPrefix{"_L0"};
+
     const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
 
     const int NumberOfShaders{4};

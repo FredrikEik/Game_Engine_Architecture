@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     ResourceManager/gameobjectmanager.cpp \
     components.cpp \
     coreengine.cpp \
+    logger.cpp \
     rendersystem.cpp \
     soundsystem.cpp \
     camera.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     ResourceManager/gameobjectmanager.h \
     altypes.h \
     coreengine.h \
+    logger.h \
     rendersystem.h \
     soundsystem.h \
     camera.h \

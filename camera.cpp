@@ -1,5 +1,5 @@
 ﻿#include "camera.h"
-#include <QDebug>
+//#include <QDebug>
 
 #include "soundsystem.h"
 
@@ -73,6 +73,13 @@ void Camera::setSpeed(float speed)
     mSpeed = speed;
 }
 
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOVvertical, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    calculateFrustumVectors();
+    //Logger::getInstance()->logText("AspectRatio " + std::to_string(mFrustum.mAspectRatio))
+}
+
 void Camera::updateHeigth(float deltaHeigth)
 {
     mPosition.y += deltaHeigth;
@@ -97,4 +104,27 @@ void Camera::setCameraSpeed(float value)
         mCameraSpeed = 0.01f;
     if (mCameraSpeed > 0.3f)
         mCameraSpeed = 0.3f;
+}
+
+void Camera::calculateFrustumVectors()
+{
+    float halfVheight = mFrustum.mFarPlaneDistance * tanf(gsl::deg2radf(mFrustum.mFOVvertical/2)); //calculate the lenght of the opposite
+    float halfHwidth = halfVheight * mFrustum.mAspectRatio;
+
+    float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, mFrustum.mFarPlaneDistance)));
+
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around camera up
+    tempVector = mRight;
+    tempVector.axisAngleRotation(-horisontalHalfAngle, mUp);
+    mFrustum.mRightPlane = tempVector.normalized();
+
+    //leftPlane vector = mRight rotated by FOV+180 around camera up
+    tempVector = mRight;
+    tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, mUp);
+    mFrustum.mLeftPlane = tempVector.normalized();
+
+    /*Logger::getInstance()->logText(mName + "-Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
+                                   + ", vertical FOV: " + std::to_string(mFrustum.mFOVvertical) +
+                                   ", Right vector: " + mFrustum.mRightPlane.getAsString());*/
 }

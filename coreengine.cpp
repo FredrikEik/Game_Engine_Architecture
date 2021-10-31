@@ -31,7 +31,7 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 {
     isPlaying = shouldPlay;
     SoundSystem::getInstance()->togglePlaySounds(isPlaying);
-    mRenderSystem->isPlaying = isPlaying;
+    mRenderSystem->mIsPlaying = isPlaying;
 }
 
 void CoreEngine::setUpScene()
@@ -75,19 +75,19 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
 //Rollingball, getting vis & sim code integrated into GEA code
-    temp = mGameObjectManager->addObject("Ball.obj");
-    temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
-    temp->mTransform->mMatrix.scale(1.0f);
-    temp->mName = "Rullendeball";
-    mGameObjectManager->addComponent("PhysicsComponent", temp);
-    mRenderSystem->mGameObjects.push_back(temp);
+    //    temp = mGameObjectManager->addObject("Ball.obj");
+    //    temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
+    //    temp->mTransform->mMatrix.scale(1.0f);
+    //    temp->mName = "Rullendeball";
+    //    mGameObjectManager->addComponent("PhysicsComponent", temp);
+    //    mRenderSystem->mGameObjects.push_back(temp);
 
-    temp = mGameObjectManager->addObject("TriangleSurface.obj");
-    temp->mTransform->mMatrix.translate(1.5f, -2.0f, -9.0f);
-    temp->mTransform->mMatrix.scale(3.0f);
-    temp->mTransform->mMatrix.rotateY(90);
-    temp->mName = "TriangleSurface";
-    mRenderSystem->mGameObjects.push_back(temp);
+    //    temp = mGameObjectManager->addObject("TriangleSurface.obj");
+    //    temp->mTransform->mMatrix.translate(1.5f, -2.0f, -9.0f);
+    //    temp->mTransform->mMatrix.scale(3.0f);
+    //    temp->mTransform->mMatrix.rotateY(90);
+    //    temp->mName = "TriangleSurface";
+    //    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);

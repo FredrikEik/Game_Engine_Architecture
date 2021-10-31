@@ -265,7 +265,7 @@ void RenderSystem::render()
 }
 
     //Moves the dog triangle - should be made another way!!!!
-    if(isPlaying)
+    if(mIsPlaying)
         mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
 
     //Calculate framerate before
@@ -316,10 +316,14 @@ void RenderSystem::exposeEvent(QExposeEvent *)
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
 
     //calculate aspect ration and set projection matrix
-    mAspectratio = static_cast<float>(width()) / height();
+    float aspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(mFOVangle, mAspectratio, 0.1f, 100.f);
+    mEditorCamera->mFrustum.mAspectRatio = aspectRatio;
+    mEditorCamera->calculateProjectionMatrix();
     //    qDebug() << mCamera.mProjectionMatrix;
+
+    mGameCamera->mFrustum.mAspectRatio = aspectRatio;
+    mGameCamera->calculateProjectionMatrix();
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -461,7 +465,7 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_R) //toggle play
     {
-        mMainWindow->on_pb_togglePlay_toggled(!isPlaying);
+        mMainWindow->on_pb_togglePlay_toggled(!mIsPlaying);
     }
 
     //    You get the keyboard input like this
@@ -611,9 +615,9 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
     if (input.RMB)
     {
         if (numDegrees.y() < 1)
-            mCurrentCamera->setCameraSpeed(0.001f);
+            mEditorCamera->setCameraSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mCurrentCamera->setCameraSpeed(-0.001f);
+            mEditorCamera->setCameraSpeed(-0.001f);
     }
     event->accept();
 }
@@ -629,9 +633,9 @@ void RenderSystem::mouseMoveEvent(QMouseEvent *event)
         mMouseYlast = event->pos().y() - mMouseYlast;
 
         if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCurrentCamera->mCameraRotateSpeed * mMouseXlast);
+            mEditorCamera->yaw(mEditorCamera->mCameraRotateSpeed * mMouseXlast);
         if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCurrentCamera->mCameraRotateSpeed * mMouseYlast);
+            mEditorCamera->pitch(mEditorCamera->mCameraRotateSpeed * mMouseYlast);
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
