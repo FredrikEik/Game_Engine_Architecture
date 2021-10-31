@@ -219,11 +219,11 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     string obj{"obj"};
     string fileStr{"../GEA2021/Assets/" + shapeName};
     if (shapeName == "Circle"){
-        if(doOnce1 == false){
+        if(doOnce[0] == false){
             myShapes.push_back(new Circle);
             myShapes[0]->mNameComp->ObjectName = shapeName;
             myShapes[0]->mNameComp->ObjectID = 0;
-            doOnce1 = true;
+            doOnce[0] = true;
             return myShapes[0];}
         else{
             return myShapes[0];}}
@@ -237,20 +237,20 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         else{
             return myShapes[1];}}
     else if(shapeName == "Triangle"){
-        if(doOnce2 == false){
+        if(doOnce[2] == false){
             myShapes.push_back(new Triangle);
             myShapes[2]->mNameComp->ObjectName = shapeName;
             myShapes[2]->mNameComp->ObjectID = 2;
-            doOnce2 = true;
+            doOnce[2] = true;
             return myShapes[2];}
         else{
             return myShapes[2];}}
     else if(shapeName == "Plain"){
-        if(doOnce3 == false){
+        if(doOnce[3] == false){
             myShapes.push_back(new Plain);
             myShapes[3]->mNameComp->ObjectName = shapeName;
             myShapes[3]->mNameComp->ObjectID = 3;
-            doOnce3 = true;
+            doOnce[3] = true;
             return myShapes[3];}
         else{
             return myShapes[3];}}

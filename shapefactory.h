@@ -23,10 +23,6 @@ private:
     std::map<string, int> myObjs;
     int ObjStartID = 4;
     std::vector<VisualObject*> myShapes;
-    bool doOnce1;
-    bool doOnce2;
-    bool doOnce3;
-    bool doOnce4;
     bool doOnce[4]{false};
 
 };

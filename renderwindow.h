@@ -49,7 +49,7 @@ public:
 
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
-    void toggleShapes(int shapeID);
+    void createShapes(string shapeID);
     void playMode(bool p);
 
     std::vector<NameComponent*> mNameComp;
@@ -74,9 +74,7 @@ private:
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
     static const int nrOfShapes = 5;
-    VisualObject* myShapes[nrOfShapes];
-   // VisualObject* myShapes[5];
-
+    bool playM = false;
 
     void mousePickingRay(QMouseEvent *event);
      gsl::Vector3D ray_wor;
@@ -86,8 +84,7 @@ private:
     void HandleInput();
     void SoundHandler();
 
-    bool shapeExist[nrOfShapes];
-    bool playM = false;
+
 
     void init();
 

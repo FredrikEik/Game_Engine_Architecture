@@ -23,13 +23,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void SelectWithMousePick(int index);
-    void setRotation();
-    void setRotationRate();
 
 private slots:
     void on_pushButton_toggled(bool checked);
 
     void on_pushButton_2_toggled(bool checked);
+
 
     void on_actionAdd_Triangle_triggered();
 
@@ -39,21 +38,17 @@ private slots:
 
     void on_actionAdd_Monkey_triggered();
 
+
     void on_doubleSpinBoxX_valueChanged(double arg1);
 
     void on_doubleSpinBoxY_valueChanged(double arg1);
 
     void on_doubleSpinBoxZ_valueChanged(double arg1);
 
+
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 
-
-
-
-
     void on_treeWidget_viewportEntered();
-
-  //  void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
 
     void on_RotateX_clicked();
@@ -61,9 +56,6 @@ private slots:
     void on_RotateY_clicked();
 
     void on_RotateZ_clicked();
-
-
-
 
     void on_ScaleP_clicked();
 

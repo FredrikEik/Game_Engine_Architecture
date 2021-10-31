@@ -102,22 +102,22 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
-    mRenderWindow->toggleShapes(2);
+    mRenderWindow->createShapes("Triangle");
 }
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-    mRenderWindow->toggleShapes(0);
+    mRenderWindow->createShapes("Circle");
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
-    mRenderWindow->toggleShapes(1);
+   mRenderWindow->createShapes("Square");
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
-    mRenderWindow->toggleShapes(4);
+    mRenderWindow->createShapes("Monkey.obj");
 }
 
 
@@ -224,4 +224,7 @@ void MainWindow::on_ScaleM_clicked()
 {
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.50f);
 }
+
+
+
 

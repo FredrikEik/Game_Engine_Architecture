@@ -190,15 +190,8 @@
            <string>Rotate</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>X</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="RotateX">
+           <item row="1" column="1">
+            <widget class="QPushButton" name="RotateY">
              <property name="text">
               <string>Rotate</string>
              </property>
@@ -211,10 +204,10 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="RotateY">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>Rotate</string>
+              <string>X</string>
              </property>
             </widget>
            </item>
@@ -222,6 +215,13 @@
             <widget class="QLabel" name="label_7">
              <property name="text">
               <string>Z</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="RotateX">
+             <property name="text">
+              <string>Rotate</string>
              </property>
             </widget>
            </item>
@@ -249,7 +249,7 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="ScaleM">
              <property name="text">
               <string>-Scale</string>
              </property>

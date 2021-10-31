@@ -9,9 +9,9 @@ Camera::Camera()
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
-    updateForwardVector();
     mInputComp = new InputComponent;
 }
+
 
 void Camera::pitch(float degrees)
 {
@@ -61,10 +61,26 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 }
 
-//void FrustumSystem::updateFrustumPos(Camera* mCameraPtr)
-//{
-// mCameraPtr.mPosition
-//}
+void FrustumSystem::updateFrustumPos(gsl::Vector3D cameraPos)
+{
+    move(cameraPos.x, cameraPos.y, cameraPos.z);
+    mFarPlane.x  = tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance;
+    mFarPlane.y  = (tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance)/mFrustum.mAspectRatio;
+    mFarPlane.z  = mFrustum.mFarPlaneDistance;
+    mNearPlane.x = tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance;
+    mNearPlane.y = (tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance)/mFrustum.mAspectRatio;
+    mNearPlane.z = mFrustum.mNearPlaneDistance;
+
+    mRightTopFar     = gsl::Vector3D(mFarPlane.x, mFarPlane.y, -mFarPlane.z);
+    mRightBotFar  = gsl::Vector3D(mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
+    mLeftTopFar      = gsl::Vector3D(-mFarPlane.x, mFarPlane.y, -mFarPlane.z);
+    mLeftBotFar   = gsl::Vector3D(-mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
+
+    mRightTopNear    = gsl::Vector3D(mNearPlane.x, mNearPlane.y, -mNearPlane.z);
+    mRightBotNear = gsl::Vector3D(mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
+    mLeftTopNear     = gsl::Vector3D(-mNearPlane.x, mNearPlane.y, -mNearPlane.z);
+    mLeftBotNear  = gsl::Vector3D(-mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
+}
 
 void Camera::calculateProjectionMatrix()
 {
@@ -117,9 +133,10 @@ FrustumSystem::FrustumSystem()
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent;
     mCollision = new CollisionComponent;
-    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
+
     calculateFrustumVectors();
     makeFrustumLines();
+    mCollision->setBoundingSphere(0.01, mTransform->mPosition);
 
     mMesh->mDrawType = GL_LINES;
     mMaterial = new MaterialComponent;
