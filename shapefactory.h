@@ -21,8 +21,9 @@ public:
 //    VisualObject* createMonkey();
 private:
     std::map<string, int> myObjs;
-    int ObjStartID;
+    int ObjStartID = 4;
     std::vector<VisualObject*> myShapes;
+    bool doOnce[4]{false};
 //    VisualObject* myMonkey;
 //    string monkeyString = "../GEA2021/Assets/Monkey.obj";
 //    string pacmanString = "../GEA2021/Assets/Pacman.obj";

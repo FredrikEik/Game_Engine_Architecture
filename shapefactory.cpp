@@ -72,6 +72,7 @@ Triangle::Triangle()
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     makeVerticies();
+    mCollision->setBoundingSphere(0.3266, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 }
@@ -110,6 +111,7 @@ Square::Square()
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     makeVerticies(mMesh, mCollision);
+    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 }
@@ -200,46 +202,55 @@ ObjMesh::ObjMesh(std::string filename)
     mNameComp = new NameComponent();
 
     readFile(filename);
+    if(filename.find("Monkey") != std::string::npos)
+        mCollision->setBoundingSphere(0.2, mTransform->mPosition);
+    else
+        mCollision->setBoundingSphere(0.5, mTransform->mPosition);
+
 
     mMesh->mDrawType = GL_TRIANGLES;
     mMaterial = new MaterialComponent();
-
 }
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
     string obj{"obj"};
+    string fileStr{"../GEA2021/Assets/" + shapeName};
     if (shapeName == "Circle"){
-        if(myShapes[0]->mNameComp->mName == shapeName){
-            return myShapes[0];}
-        else{
-            myShapes[0] = new Circle;
+        if(doOnce[0] == false){
+            myShapes.push_back(new Circle);
             myShapes[0]->mNameComp->mName = shapeName;
             myShapes[0]->mNameComp->objectID = 0;
+            doOnce[0] = true;
+            return myShapes[0];}
+        else{
             return myShapes[0];}}
     else if(shapeName == "Square"){
-        if(myShapes[1]->mNameComp->mName == shapeName)
-            return myShapes[1];
-        else{
-            myShapes[1] = new Square;
+        if(doOnce[1] == false){
+            myShapes.push_back(new Square);
             myShapes[1]->mNameComp->mName = shapeName;
             myShapes[1]->mNameComp->objectID = 1;
+            doOnce[1] = true;
+            return myShapes[1];}
+        else{
             return myShapes[1];}}
     else if(shapeName == "Triangle"){
-        if(myShapes[2]->mNameComp->mName == shapeName)
-            return myShapes[2];
-        else{
-            myShapes[2] = new Triangle();
+        if(doOnce[2] == false){
+            myShapes.push_back(new Triangle);
             myShapes[2]->mNameComp->mName = shapeName;
             myShapes[2]->mNameComp->objectID = 2;
+            doOnce[2] = true;
+            return myShapes[2];}
+        else{
             return myShapes[2];}}
     else if(shapeName == "Plain"){
-        if(myShapes[3]->mNameComp->mName == shapeName)
-            return myShapes[3];
-        else{
-            myShapes[3] = new Plain();
+        if(doOnce[3] == false){
+            myShapes.push_back(new Plain);
             myShapes[3]->mNameComp->mName = shapeName;
             myShapes[3]->mNameComp->objectID = 3;
+            doOnce[3] = true;
+            return myShapes[3];}
+        else{
             return myShapes[3];}}
     else if(shapeName.find(obj) != std::string::npos)
     {
@@ -249,16 +260,29 @@ VisualObject* ShapeFactory::createShape(string shapeName)
             for(auto a = myObjs.begin(); a != myObjs.end(); a++)
             {
                 if (shapeName.find(a->first) != std::string::npos)
+                {
                     temp = myShapes[a->second];
-
+                    temp->mNameComp = nullptr;
+                }
             }
-            return temp;
+            if(temp!=nullptr)
+                return temp;
+            else{
+                myShapes.push_back(new ObjMesh(fileStr));
+                shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+                myObjs[shapeName] = ObjStartID;
+                myShapes.back()->mNameComp->mName = shapeName;
+                myShapes.back()->mNameComp->objectID = ObjStartID;
+                return myShapes.back();
+                ObjStartID++;}
         }
         else{
-            myShapes[ObjStartID] = (new ObjMesh("../GEA2021/Assets/" + shapeName));
+            myShapes.push_back(new ObjMesh(fileStr));
             shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
             myObjs[shapeName] = ObjStartID;
-            return myShapes[ObjStartID];
+            myShapes.back()->mNameComp->mName = shapeName;
+            myShapes.back()->mNameComp->objectID = ObjStartID;
+            return myShapes.back();
             ObjStartID++;}
     }
     else{
