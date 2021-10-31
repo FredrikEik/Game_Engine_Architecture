@@ -3,17 +3,17 @@
 
 void PhysicsComponent::movePhysicsObject()
 {
-    //Get the surface the physicsobject is to interact with.
-    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(GameObject.mName = "TriangleSurface").get_vertices();
-    //Getting a reference to the GameObject that is the trianglesurface
+    //Get the surface the physicsobject is going to interact with.
+//    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(mGameObject->mName = "TriangleSurface")->get_vertices();
+    //Getting a reference to the GameObject that is the trianglesurface?
 
-    mMatrix = mPosition * mScale;
+//    mMatrix = mPosition * mScale;
 
 //Find the three vector3d of the closest triangle
-    gsl::Vector3D ballPosition3d = mMatrix.getPosition();
-    qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
+    //gsl::Vector3D ballPosition3d = mMatrix.getPosition();
+    //qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
-    qDebug() << triangleVertices.size();
+//    qDebug() << triangleVertices.size();
 
 //Find the distance between the balls position and vertices of the trianglesurface
 //    gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.

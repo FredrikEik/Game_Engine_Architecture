@@ -91,7 +91,7 @@ void CoreEngine::setUpScene()
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
-    mRenderSystem->mCurrentCamera = mEditorCamera;
+    mRenderSystem->mEditorCamera = mEditorCamera;
 
     mGameObjectManager->setUpAllTextures();
 

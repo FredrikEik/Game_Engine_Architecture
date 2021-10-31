@@ -15,6 +15,7 @@ class MainWindow;
 class GameObject;
 class Camera;
 class TextureHandler;
+class GameObjectManager;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -32,13 +33,22 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toggleBackSideCulling(bool state);
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
-    bool isPlaying{false};  //is the game playing?
-    Camera *mCurrentCamera{nullptr};
+    bool mIsPlaying{false};
+
+    Camera *mEditorCamera{nullptr};
+    Camera *mGameCamera{nullptr};
+    //Camera *mCurrentCamera{nullptr};
+
+    GameObjectManager *mGameObjectManager{nullptr};
 
     void render();
+
+    bool mUseFrustumCulling{true};
+    bool mGameCamAsFrustumCulling{false};
 
 private:
     void init();
@@ -48,6 +58,8 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
+
+    bool RenderSystem::frustumCulling(int gobIndex);
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};

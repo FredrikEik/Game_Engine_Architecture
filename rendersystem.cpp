@@ -93,7 +93,7 @@ void RenderSystem::init()
 
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //Compile shaders:
@@ -116,6 +116,7 @@ void RenderSystem::init()
     //Probably should be placed elsewhere
     CoreEngine::getInstance()->setUpScene();
 
+    mGameObjectManager = &GameObjectManager::getInstance();
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
 }
@@ -136,26 +137,34 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
+    int cullSafe = mIsPlaying ? -1 : 1;
+    int startObject = mIsPlaying ? -1 : 1;
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
-        gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
+        gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
-        gsl::Vector3D distanceVector = gobPos -cameraPos;
 
-//        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
-        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
-//        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
+        if(mUseFrustumCulling && i > cullSafe)
+        {
+            if(frustumCulling(i))
+                continue;
+        }
 
-//        //if angle between camera Forward, and camera->GameObject > FOV of camera
-        if(angle > mFOVangle)
-            continue;   //don't draw object
-
-        //LOD calculation
-        float length = distanceVector.length();
-//        qDebug() << "distance is" << length;
         /*************************************/
+//        //gsl::Vector3D distanceVector = gobPos -cameraPos;
 
+////        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
+//        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+////        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
+
+////        //if angle between camera Forward, and camera->GameObject > FOV of camera
+//        if(angle > mFOVangle)
+//            continue;   //don't draw object
+
+//        //LOD calculation
+//        float length = distanceVector.length();
+////        qDebug() << "distance is" << length;
 
         //First object - xyz
         //what shader to use
@@ -169,6 +178,8 @@ void RenderSystem::render()
         int viewMatrix{-1};
         int projectionMatrix{-1};
         int modelMatrix{-1};
+
+
 
         if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
         {
@@ -188,14 +199,26 @@ void RenderSystem::render()
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        if(mIsPlaying)
+        {
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
+        }
+        else
+        {
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+        }
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
         {
+            gsl::Vector3D distanceVector = gobPos - cameraPos;
+            //LOD calculation
+            float length = distanceVector.length();
+
             if (length < 4)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
@@ -383,6 +406,48 @@ void RenderSystem::startOpenGLDebugger()
                 qDebug() << "Started OpenGL debug logger!";
         }
     }
+}
+
+bool RenderSystem::frustumCulling(int gobIndex)
+{
+    Camera *cullCamera{nullptr};
+    (mGameCamAsFrustumCulling) ? cullCamera = mGameCamera : cullCamera = mEditorCamera;
+
+    //Vector from position of cam to object;
+    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition();
+
+    //radius of object sphere
+    float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
+
+    //Mesh data is not scaled so have to calculate for that
+    //Todo:: The system will break if scaling is not uniform
+    gobRadius *= mGameObjects[gobIndex]->mTransform->mScale.x;
+
+    //if radius is not set == very small
+    if(gobRadius <= 0.000001f)
+        return false;
+
+    //length of the vectorToObject onto frustum normal
+    float tempDistance{0.0f};
+
+    //Shortcut to frustum
+    Frustum &frustum = cullCamera->mFrustum;
+
+    //Avoid culling objects still slightly in frame
+    float padding{0.2f};
+
+    //Project vector down to frustum normals:
+    //Right plane:
+    tempDistance = frustum.mRightPlane * vectorToObject;
+    if(tempDistance > (gobRadius + padding))
+        return true;
+
+    //left plane:
+    tempDistance = frustum.mLeftPlane * vectorToObject;
+    if(tempDistance > (gobRadius + padding))
+        return true;
+
+    return false;
 }
 
 void RenderSystem::keyPressEvent(QKeyEvent *event)
