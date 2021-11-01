@@ -5,6 +5,7 @@
 
 //Forward declarations
 class QWidget;
+class QListWidgetItem;
 class RenderSystem;
 class CoreEngine;
 
@@ -34,12 +35,18 @@ public slots:
 private slots:
     void on_pushButton_clicked();
 
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
 private:
     void init();
     Ui::MainWindow *ui;
 
     class transformWidget *mTransformWidget{nullptr};
+    bool clicked = true;
 
+    QString prevstring;
+    QListWidgetItem *mCurrentEditItem{nullptr};
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     CoreEngine *mCoreEngine{nullptr};

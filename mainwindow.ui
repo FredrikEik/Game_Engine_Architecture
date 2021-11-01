@@ -154,6 +154,21 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2"/>
     </widget>
+    <widget class="QWidget" name="verticalLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>580</x>
+       <y>0</y>
+       <width>451</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QListWidget" name="listWidget"/>
+      </item>
+     </layout>
+    </widget>
    </widget>
   </widget>
   <action name="actionAdd_Triangle">

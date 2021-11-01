@@ -15,8 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //this sets up what's in the mainwindow.ui
+
     ui->setupUi(this);
     init();
+
 }
 
 MainWindow::~MainWindow()
@@ -142,9 +144,8 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
 void MainWindow::on_actionRotate_Transform_triggered()
 {
-    mTransformWidget = new transformWidget();
-    //ui->verticalLayout_2->addWidget(mTransformWidget);
-    ui->verticalLayout_2->addWidget(mTransformWidget);
+//    mTransformWidget = new transformWidget();
+//    ui->verticalLayout_2->addWidget(mTransformWidget);
 }
 
 
@@ -152,5 +153,36 @@ void MainWindow::on_pushButton_clicked()
 {
     mRenderSystem->mGameObjects.push_back(CoreEngine::getInstance()->boss);
     CoreEngine::getInstance()->boss->mSoundComponent->shouldPlay = true;
+
+    ui->listWidget->addItem("boss");
+
+
+
+}
+
+void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+
+
+    if(clicked == true)
+    {
+        mTransformWidget = new transformWidget();
+        item = ui->listWidget->currentItem();
+        item->setForeground(Qt::green);
+
+        ui->verticalLayout_2->addWidget(mTransformWidget);
+        clicked = false;
+    }
+    else
+    {
+
+        item->setText(ui->listWidget->currentItem()->text());
+        item->setForeground(Qt::black);
+        ui->verticalLayout_2->removeWidget(mTransformWidget);
+        //ui->verticalLayout_2->setEnabled(false);
+        delete mTransformWidget;
+        clicked = true;
+    }
+
 
 }
