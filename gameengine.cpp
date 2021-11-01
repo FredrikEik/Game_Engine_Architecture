@@ -58,10 +58,10 @@ void GameEngine::SetUpScene()
 void GameEngine::SetUpObjects()
 {
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(0,0,0);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
-    mRenderwindow->mGameObjects.push_back(tempGameObject);
+    mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
+    mPlayer->mTransformComp->mMatrix.translate(0,0,-15);
+    mPlayer->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(mPlayer);
 
 
 
@@ -107,6 +107,16 @@ void GameEngine::SetUpObjects()
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-5,2.5,0);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-12,0.5,-13);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+
 
 
 
@@ -124,19 +134,19 @@ void GameEngine::SetUpObjects()
 
     // * * * * * Visualisering og simulering * * * * *
 
-    mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
-    mPhysicsBall->mTransformComp->mMatrix.translate(4.8f,-0.77f,-0.8f);
-    mPhysicsBall->mTransformComp->mMatrix.scale(0.1);
-    mPhysicsBall->mMaterialComp->mShaderProgram = 2;
-    mRenderwindow->mGameObjects.push_back(mPhysicsBall);
+//    mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
+//    mPhysicsBall->mTransformComp->mMatrix.translate(4.8f,-0.77f,-0.8f);
+//    mPhysicsBall->mTransformComp->mMatrix.scale(0.1);
+//    mPhysicsBall->mMaterialComp->mShaderProgram = 2;
+//    mRenderwindow->mGameObjects.push_back(mPhysicsBall);
 
-    mTerrainObject = mResourceManager->CreateObject(gsl::MeshFilePath + "toTriangles.obj");
-    mTerrainObject->mTransformComp->mMatrix.translate(4,-1,-1);
-    mTerrainObject->mMaterialComp->mShaderProgram = 2;
-    //mTerrainObject->mMaterialComp->mTextureUnit = 2;
-    mRenderwindow->mGameObjects.push_back(mTerrainObject);
+//    mTerrainObject = mResourceManager->CreateObject(gsl::MeshFilePath + "toTriangles.obj");
+//    mTerrainObject->mTransformComp->mMatrix.translate(4,-1,-1);
+//    mTerrainObject->mMaterialComp->mShaderProgram = 2;
+//    //mTerrainObject->mMaterialComp->mTextureUnit = 2;
+//    mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
-    mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
+//    mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
 
 
 
@@ -164,15 +174,25 @@ void GameEngine::togglePlay(bool bInIsPlaying)
          mRenderwindow->mCurrentCamera = mEditorCamera;
 }
 
+void GameEngine::UpdateGameCameraFollow()
+{
+    mGameCamera->setPosition(mPlayer->mTransformComp->mMatrix.getPosition());
+}
+
 void GameEngine::GameLoop()
 {
-    mPhysicsBallSystem->update(*mPhysicsBall);
+    //mPhysicsBallSystem->update(*mPhysicsBall);
 
     HandleInput();
 
     mEditorCamera->update();
 
+    //UpdateGameCameraFollow();
+
+    mGameCamera->updateFirstPerson();
+
     mRenderwindow->render();
+
 }
 
 void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)

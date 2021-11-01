@@ -10,6 +10,7 @@ PhysicsBallSystem::PhysicsBallSystem()
 
 void PhysicsBallSystem::update(GameObject& ballInn)
 {
+
     gsl::Vector3D conv = ballInn.mTransformComp->mMatrix.getPosition();
     QVector2D xzBall {conv.x,conv.z};
 

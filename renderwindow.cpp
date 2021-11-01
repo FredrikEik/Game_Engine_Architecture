@@ -173,54 +173,9 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-//    //to clear the screen for each redraw
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//    if(mInput.LMB)
-//    {
-//        for(int i{0}; i < mGameObjects.size(); i++)
-//        {
-//            glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
-//            //glUseProgram(2);
-//            GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
-//            if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mInput.LMB)
-//            {
-//                int id = mGameObjects[i]->id; // +50 for å se rød nyansen
-//                int r = (id & 0x000000FF) >>  0;
-//                int g = (id & 0x0000FF00) >>  8;
-//                int b = (id & 0x00FF0000) >> 16;
-//                glUniform4f(pickingColorID, r/255.0f, g/255.0f, b/255.0f, 1.0f);
-//                glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//                glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//                glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-
-//                glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
-//                glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
 
 
-//            }
-//        }
-//        //Mouspicking Stuff:
-//        glFlush();
-//        glFinish();
 
-//        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-//        unsigned char data[4];
-//        glReadPixels(1024/2, 768/2,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-//        mObjectsDrawn++;
-//        glBindVertexArray(0);
-
-//        int pickedID =
-//                data[0] +
-//                data[1] * 256 +
-//                data[2] * 256*256;
-
-//        qDebug() << "meshID: " << pickedID;
-//    }
-
-    //qDebug() << "mousepressedonce: " << isMousePicking;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
@@ -378,7 +333,7 @@ void RenderWindow::render()
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
-        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox)
+        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox && !bIsPlaying)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
@@ -604,15 +559,42 @@ void RenderWindow::handleInput()
     }
     if(/*isPlaying*/!mInput.RMB && bIsPlaying)
     {
-        mCurrentCamera->setPosition(mGameObjects[0]->mTransformComp->mMatrix.getPosition());
+        //mCurrentCamera->setPosition(mGameObjects[0]->mTransformComp->mMatrix.getPosition());
+//        if(mInput.W)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateZ(0.1f);
+//        if(mInput.S)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateZ(-0.1f);
+//        if(mInput.D)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateX(-0.1f);
+//        if(mInput.A)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
+
         if(mInput.W)
-            mGameObjects[0]->mTransformComp->mMatrix.translateZ(0.1f);
+            mCurrentCamera->setSpeed(-mCameraSpeed);
         if(mInput.S)
-            mGameObjects[0]->mTransformComp->mMatrix.translateZ(-0.1f);
+            mCurrentCamera->setSpeed(mCameraSpeed);
         if(mInput.D)
-            mGameObjects[0]->mTransformComp->mMatrix.translateX(-0.1f);
+            mCurrentCamera->moveRight(mCameraSpeed);
         if(mInput.A)
-            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
+            mCurrentCamera->moveRight(-mCameraSpeed);
+        if(mInput.Q)
+            mCurrentCamera->updateHeigth(-mCameraSpeed);
+        if(mInput.E)
+            mCurrentCamera->updateHeigth(mCameraSpeed);
+
+//        if(mInput.W)
+//        {
+//         //mGameObjects[0]->mTransformComp->mMatrix.setPosition(mCurrentCamera->getFowrardVector().x,mCurrentCamera->getFowrardVector().y, mCurrentCamera->getFowrardVector().z);
+//         mGameObjects[0]->mTransformComp->mMatrix.translateX(mCurrentCamera->getFowrardVector().x*mCameraSpeed);
+//         mGameObjects[0]->mTransformComp->mMatrix.translateY(0);
+//         mGameObjects[0]->mTransformComp->mMatrix.translateZ(mCurrentCamera->getFowrardVector().z*mCameraSpeed);
+//        }
+//        if(mInput.S)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateZ(-0.1f);
+//        if(mInput.D)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateX(-0.1f);
+//        if(mInput.A)
+//            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
     }
 
 }
@@ -621,7 +603,15 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
-        mMainWindow->close();
+        if(bIsPlaying)
+        {
+            bIsPlaying = false;
+            //GameEngine::getInstance()->togglePlay(bIsPlaying);
+            mMainWindow->on_PlayStop_toggled(bIsPlaying);
+        }else
+        {
+            mMainWindow->close();
+        }
     }
 
     //    You get the keyboard input like this
@@ -657,7 +647,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_P)
     {
-        mMainWindow->on_PlayStop_toggled(bIsPlaying);
+
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -798,7 +788,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB)
+    if (mInput.RMB && !bIsPlaying)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;
@@ -808,6 +798,31 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
             mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
         if (mMouseYlast != 0)
             mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+    }
+    if(bIsPlaying)
+    {
+        //Using mMouseXYlast as deltaXY so we don't need extra variables
+//        mMouseXlast = event->pos().x() - mMouseXlast;
+//        mMouseYlast = event->pos().y() - mMouseYlast;
+
+//        if (mMouseXlast != 0)
+//            mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
+//        if (mMouseYlast != 0)
+//            mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+
+
+        mMouseXlast = width()/2;
+        mMouseYlast = height()/2;
+
+        float xoffset = mMouseXlast - event->pos().x();
+        float yoffset = mMouseYlast - event->pos().y();
+
+        QPoint glob = mapToGlobal(QPoint(width()/2, height()/2));
+        QCursor::setPos(glob);
+
+        mCurrentCamera->handleMouseMovement(xoffset, yoffset);
+
+
     }
 
     mMouseXlast = event->pos().x();

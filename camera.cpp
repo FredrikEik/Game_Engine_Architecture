@@ -65,6 +65,44 @@ void Camera::update()
     mViewMatrix.translate(-mPosition);
 }
 
+void Camera::updateFirstPerson()
+{
+    mYawMatrix.setToIdentity();
+    mPitchMatrix.setToIdentity();
+
+    mPitchMatrix.rotateX(mPitch);
+    mYawMatrix.rotateY(mYaw);
+
+    gsl::Vector3D fpsForardMovement {mForward.x, 0, mForward.z};
+    mPosition -= fpsForardMovement * mSpeed*2;
+
+
+    mViewMatrix = mPitchMatrix* mYawMatrix;
+    mViewMatrix.translate(-mPosition);
+}
+
+void Camera::handleMouseMovement(float xoffset, float yoffset)
+{
+
+    xoffset *= MouseSens;
+    yoffset *= MouseSens;
+
+    mYaw   += xoffset;
+    mPitch += yoffset;
+
+    // make sure that when pitch is out of bounds, screen doesn't get flipped
+
+        if (mPitch > 89.0f)
+            mPitch = 89.0f;
+        if (mPitch < -89.0f)
+            mPitch = -89.0f;
+
+
+    // update Front, Right and Up Vectors using the updated Euler angles
+        updateForwardVector();
+    //update();
+}
+
 gsl::Vector3D Camera::getFowrardVector()
 {
     return mForward;
@@ -88,6 +126,15 @@ void Camera::setSpeed(float speed)
 void Camera::updateHeigth(float deltaHeigth)
 {
     mPosition.y += deltaHeigth;
+}
+
+void Camera::moveForward(float speed)
+{
+//    QVector3D forward{mForward.x,mForward.y,mForward.z};
+//    QVector3D pos{mPosition.x, mPosition.y, mPosition.z};
+//    QVector3D result = pos.x() * forward * speed ;
+//    mPosition = {result.x(),result.y(), result.z()};
+
 }
 
 void Camera::moveRight(float delta)

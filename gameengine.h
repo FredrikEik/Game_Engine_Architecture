@@ -40,6 +40,7 @@ public:
     void CreateSphere();
     void CreateSuzanne();
 
+    GameObject* mPlayer{nullptr};
 private slots:
     void GameLoop();
 
@@ -59,13 +60,14 @@ private:
 
     SoundSource* mStereoSound{nullptr};
 
-    bool isPlaying{false};
+    //bool isPlaying{false};
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};
     MainWindow* mMainWindow{nullptr};
 
     QTimer *mGameLoopRenderTimer{nullptr};
+    void UpdateGameCameraFollow();
 };
 
 #endif // GAMEENGINE_H
