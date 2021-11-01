@@ -74,9 +74,9 @@ float fov{ 45.0f };
 
 int main()
 {
-	Engine* engine = new Engine();
-	engine->start();
-	delete engine;
+	Engine engine = Engine::Get();
+	engine.start();
+	delete& engine;
 
 
 	return 0;

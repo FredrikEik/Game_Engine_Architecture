@@ -77,11 +77,11 @@ inline uint32 ComponentManager<T>::createComponent(uint32 entityID, bool isReusa
 	// Constructing a new T and pushing it to the packed array
 	// The array is already on the heap, so we don't need to use new. 
 	// This way, the objects will be in a contiguous array
-	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray before push: " << packedComponentArray.size()<<'\n';
+	//std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray before push: " << packedComponentArray.size()<<'\n';
 	packedComponentArray.push_back(T(entityID, sparseComponentArray[entityID]));
 
-	std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray after push: " << packedComponentArray.size()<<"\n\n";
-	std::cout << "Size of created component: " << sizeof(T) << '\n';
+	//std::cout << "Creating component " << typeid(T).name() << ". Size of packedArray after push: " << packedComponentArray.size()<<"\n\n";
+	//std::cout << "Size of created component: " << sizeof(T) << '\n';
 	return packedComponentArray.back().ID;
 }
 

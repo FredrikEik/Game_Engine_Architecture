@@ -61,6 +61,7 @@ public:
 	GLenum m_drawType{ GL_TRIANGLES };
 	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
+	bool bIsTranslucent{ false };
 };
 
 struct CameraComponent final : public Component
@@ -86,4 +87,15 @@ struct AxisAlignedBoxComponent final : public Component
 	glm::vec3 minScaled{};
 	glm::vec3 maxScaled{};
 	glm::vec3 center{};
+};
+
+
+struct SelectionComponent final : public Component
+{
+	SelectionComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::vec3 initialHitPos{};
+	glm::vec3 currentHitPos{};
+
+	std::vector<uint32> hitEntities;
 };

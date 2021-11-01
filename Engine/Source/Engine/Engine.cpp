@@ -16,8 +16,10 @@
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
 #include "../Systems/CameraSystem.h"
+#include "../Systems/SelectionSystem.h"
 
 #include "../Input/Input.h"
+
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -52,7 +54,7 @@ void Engine::init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
+	window = glfwCreateWindow(getWindowWidth(), getWindowHeight(), "Welcome to GameInJin", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -70,7 +72,7 @@ void Engine::init()
 
 	//Note that processed coordinates in OpenGL are between - 1 and 1
 	//so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 	glfwSetFramebufferSizeCallback(window, Engine::framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, Engine::mouse_callback);
 	glfwSetScrollCallback(window, Engine::scroll_callback);
@@ -89,6 +91,13 @@ void Engine::init()
 
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
+
+	RTSSelectionEntity = ECS->newEntity();
+	/// transform can be used to creat rts selection
+	//mesh comp
+	// opacity shader
+	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
+
 	CameraSystem::setPerspective(editorCameraEntity, ECS, 
 		glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f));
 
@@ -110,6 +119,7 @@ void Engine::loop()
 
 		//// input
 		processInput(window);
+
 
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
@@ -141,60 +151,67 @@ void Engine::loop()
 
 
 
-
-
-		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//// RENDER
-		// Selection Render
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
-		{
+	// Selection Render
 
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
-			MeshSystem::drawSelectable(selectionShader, "u_model", ECS);
+		
+		CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
+		MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
 
 
-			glFlush();
-			glFinish();
+		glFlush();
+		glFinish();
 
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			double xpos, ypos;
-			glfwGetCursorPos(window, &xpos, &ypos);
-			unsigned char data[4];
-			glReadPixels(xpos,ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		MousePosition mPos = Input::getInstance()->getMousePosition();
+		unsigned char data[4];
+		glReadPixels(mPos.x, mPos.y,1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-			// Convert the color back to an integer ID
-			int pickedID =
-				data[0] +
-				data[1] * 256 +
-				data[2] * 256 * 256;
+		// Convert the color back to an integer ID
+		int pickedID =
+			data[0] +
+			data[1] * 256 +
+			data[2] * 256 * 256;
 
-			if (pickedID == 0x00ffffff)
-			{ // Full white, must be the background !
-				std::cout << "background" << '\n';
-			}
-			else
-			{
-				std::ostringstream oss;
-				oss << "mesh " << pickedID;
-				std::cout << oss.str() << '\n';
-			}
-
-			glfwSwapBuffers(window);
+		if (pickedID == 0x00ffffff)
+		{ // Full white, must be the background !
+			
 		}
 		else
 		{
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			std::ostringstream oss;
+			oss << "mesh " << pickedID;
+			std::cout << oss.str() << '\n';
+		}
+
+
+	
+
+
+
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+
+		// RTS Selection render -- Translucent
+		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
+		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+
+
+
+	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 			MeshSystem::draw(ourShader, "u_model", ECS);
-		}
+	
 		
+
 
 
 
