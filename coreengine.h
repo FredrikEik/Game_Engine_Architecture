@@ -1,8 +1,6 @@
 #ifndef COREENGINE_H
 #define COREENGINE_H
 
-#include <QObject>
-#include "input.h"
 //Forward declarations
 class GameObjectManager;
 class SoundSystem;

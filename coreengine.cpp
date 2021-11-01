@@ -7,7 +7,6 @@
 #include "rendersystem.h"
 #include "camera.h"
 #include "mainwindow.h"
-//#include "components.h"
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 

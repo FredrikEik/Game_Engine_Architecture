@@ -1,7 +1,4 @@
-﻿#include "vertex.h"
-#include <iostream>
-
-Vertex::Vertex() { }
+﻿Vertex::Vertex() { }
 
 Vertex::Vertex(float x, float y, float z, float r, float g, float b, float s, float t)
 {

@@ -1,11 +1,6 @@
 ﻿#ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include "constants.h"
-#include "matrix4x4.h"
-#include "vertex.h"
-#include "gltypes.h"
-#include "altypes.h"
 //#include "gameobject.h"
 
 struct TransformComponent

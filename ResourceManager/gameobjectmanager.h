@@ -1,13 +1,8 @@
 ﻿#ifndef GAMEOBJECTMANAGER_H
 #define GAMEOBJECTMANAGER_H
 
-#include <QOpenGLFunctions_4_1_Core>
-#include <string>
 #include <map>
-#include <vector>
 
-#include "components.h"
-#include "constants.h"
 #include "ResourceManager/soundhandler.h"
 
 //forward declaration

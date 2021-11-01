@@ -1,11 +1,8 @@
 #include "soundsystem.h"
 #include "ResourceManager/soundhandler.h"
-#include <iostream>
-#include <QDebug>
 
 #include "rendersystem.h"   //should not be needed when update is fixed
 #include "gameobject.h"
-#include "components.h"
 
 SoundSystem* SoundSystem::mInstance = nullptr;    //static pointer to instance
 

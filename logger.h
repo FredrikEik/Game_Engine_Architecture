@@ -1,8 +1,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <string>
-
 enum class LColor
 {
     LOG = 0,

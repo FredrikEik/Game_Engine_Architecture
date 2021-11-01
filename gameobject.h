@@ -1,8 +1,6 @@
 ﻿#ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <QOpenGLFunctions_4_1_Core>
-
 class GameObject : public QOpenGLFunctions_4_1_Core
 {
 public:

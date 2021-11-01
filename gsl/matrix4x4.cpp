@@ -1,8 +1,3 @@
-#include "matrix4x4.h"
-//#include "quaternion.h"
-#include "math_constants.h"
-#include "matrix3x3.h"
-
 #include <cmath>
 #include <cstring> // For memcpy on linux
 #include <utility>

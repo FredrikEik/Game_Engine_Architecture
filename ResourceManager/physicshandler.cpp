@@ -1,6 +1,4 @@
 #include "ResourceManager/physicshandler.h"
-#include <vector>
-#include <QDebug>
 
 void PhysicsHandler::movePhysicsObject()
 {

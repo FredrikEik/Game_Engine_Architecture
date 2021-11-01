@@ -1,18 +1,10 @@
 ﻿#include "ResourceManager/gameobjectmanager.h"
 
 #include <sstream>
-#include <fstream>
-#include <vector>
 #include <QString>
-#include <QDebug>
 #include <QList>
 
-#include "components.h"
-#include "vector3d.h"
-#include "vector2d.h"
-#include "vertex.h"
 #include "gameobject.h"
-#include "constants.h"
 #include "soundsystem.h"
 #include "ResourceManager/soundhandler.h"
 #include "ResourceManager/meshhandler.h"

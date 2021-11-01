@@ -1,10 +1,5 @@
 #include "ResourceManager/soundhandler.h"
-#include <iostream>
 #include <sstream>
-#include <QDebug>
-
-#include "altypes.h"
-#include "constants.h"
 
 WaveRawData *SoundHandler::loadWave(std::string fileName)
 {

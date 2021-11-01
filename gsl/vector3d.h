@@ -1,10 +1,7 @@
 #ifndef VECTOR3D_H
 #define VECTOR3D_H
 
-#include "gltypes.h"
 #include <cmath>
-#include <iostream>
-#include <QDebug>
 #include <QVector3D>
 
 namespace gsl

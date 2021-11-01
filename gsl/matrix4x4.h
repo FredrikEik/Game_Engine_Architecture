@@ -1,9 +1,6 @@
 #ifndef MATRIX4X4_H
 #define MATRIX4X4_H
 
-#include "vector3d.h"
-#include "gltypes.h"
-#include <iostream>
 #include <iomanip>
 
 namespace gsl

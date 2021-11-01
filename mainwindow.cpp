@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QSurfaceFormat>
-#include <QDebug>
-#include <QScreen>  //for resizing the program at start
 #include <QListWidget>
 
 #include "rendersystem.h"

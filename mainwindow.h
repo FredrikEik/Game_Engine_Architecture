@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
 class QWidget;
 class RenderSystem;
 class CoreEngine;

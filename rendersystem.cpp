@@ -1,27 +1,15 @@
 #include "rendersystem.h"
-#include <QTimer>
 #include <QOpenGLContext>
-#include <QOpenGLFunctions>
 #include <QOpenGLDebugLogger>
-#include <QKeyEvent>
-#include <QStatusBar>
-#include <QDebug>
-
-#include <iostream>
 
 #include "ResourceManager/shaderhandler.h"
 #include "mainwindow.h"
 #include "gameobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
-#include "constants.h"
 #include "ResourceManager/texturehandler.h"
-#include "components.h"
 #include "ResourceManager/gameobjectmanager.h"
 #include "soundsystem.h"
 #include "coreengine.h"
-#include "math_constants.h"
 #include "ResourceManager/meshhandler.h"    //to check linebox
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -274,7 +262,7 @@ void RenderSystem::render()
     calculateFramerate();
 
     //using our expanded OpenGL debugger to check if everything is OK.
-    //checkForGLerrors();
+    checkForGLerrors();
     //Tried moving this to the top of this function. still getting errors. Disabled for now.
 
     //Qt require us to call this swapBuffers() -function.

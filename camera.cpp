@@ -1,7 +1,6 @@
 ﻿#include "camera.h"
-#include <QDebug>
+
 #include "soundsystem.h"
-#include "math_constants.h"
 
 Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {

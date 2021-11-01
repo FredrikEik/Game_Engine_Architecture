@@ -1,10 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "matrix4x4.h"
-#include "vector3d.h"
-#include "components.h"
-
 struct Frustum
 {
     //Used to make the projection matrix
