@@ -145,38 +145,37 @@ void RenderWindow::render()
     //Draws the objects
     for( int i = 0; i < mGameObjects.size(); i++)
     {
-    /** FRUSTUM */
-    if(bFrustumEnabled){
-        gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
-        rightPlaneNormal.rotateY(-45.f);
+        /** FRUSTUM */
+        if(bFrustumEnabled)
+        {
+            gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
-        gsl::Vector3D topPlaneNormal = -mCurrentCamera->getmForward();
-        topPlaneNormal.rotateX(-45.f);
+            gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
+            leftPlaneNormal.rotateY(45.f);
+            float ObjDistanceFromLeftPlane = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
 
-        gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
-        bottomPlaneNormal.rotateX(45.f);
+            if(ObjDistanceFromLeftPlane > 0) continue;
 
-        gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
-        leftPlaneNormal.rotateY(45.f);
+            gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
+            rightPlaneNormal.rotateY(-45.f);
+            float ObjDistanceFromRightPlane = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
 
-        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
-        gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+            if(ObjDistanceFromRightPlane > 0) continue;
 
-        float ObjDistanceFromRightPlane = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
-        float ObjDistanceFromLeftPlane = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
-        float ObjDistanceFromTopPlane = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
-        float ObjDistanceFromBottomPlane = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
+            gsl::Vector3D topPlaneNormal = -mCurrentCamera->getmForward();
+            topPlaneNormal.rotateX(-45.f);
+            float ObjDistanceFromTopPlane = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
 
-        if(ObjDistanceFromLeftPlane > 0)
-            continue;
-        if(ObjDistanceFromRightPlane > 0)
-            continue;
-        if(ObjDistanceFromTopPlane > 0)
-            continue;
-        if(ObjDistanceFromBottomPlane > 0)
-            continue;
-    }
-    /**  */
+            if(ObjDistanceFromTopPlane > 0) continue;
+
+            gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
+            bottomPlaneNormal.rotateX(45.f);
+            float ObjDistanceFromBottomPlane = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
+
+            if(ObjDistanceFromBottomPlane > 0) continue;
+        }
+        /**  */
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
@@ -197,11 +196,11 @@ void RenderWindow::render()
 
         if(mGameObjects[i]->mesh->bLodEnabled && bLODToggleEnabled){ //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
             if(distanceToObject > 50)
-                mGameObjects[i]->mesh->lodLevel = 2;  
+                mGameObjects[i]->mesh->lodLevel = 2;
             else if(distanceToObject > 20)
                 mGameObjects[i]->mesh->lodLevel = 1;
             else
-                mGameObjects[i]->mesh->lodLevel = 0;    
+                mGameObjects[i]->mesh->lodLevel = 0;
         }
         else
             mGameObjects[i]->mesh->lodLevel = 0;
@@ -250,7 +249,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
-//Currently using (almost) the same solution as Ole. from Anton Gerdelan. https://antongerdelan.net/opengl/raycasting.html
+//Currently using a similar solution to Ole_experiments. from Anton Gerdelan. https://antongerdelan.net/opengl/raycasting.html
 
     int mousePixelX = event->pos().x();
     int mousePixelY = event->pos().y();
