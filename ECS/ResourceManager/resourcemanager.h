@@ -8,8 +8,7 @@ class ResourceManager
 public:
     ResourceManager();
 
-    void readObj();
-    void requestObj(std::string object);
+    void readMesh(std::string Filename);
 
 private:
     std::unordered_map<std::string, class Texture*> m_textureMap;

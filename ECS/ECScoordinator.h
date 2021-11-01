@@ -7,7 +7,7 @@
 #include "entitymanager.h"
 #include "compmanager.h"
 #include "systemmanager.h"
-#include "resourcemanager.h"
+#include "ECS/ResourceManager/resourcemanager.h"
 
 class ECScoordinator
 {

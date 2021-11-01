@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
+    ECS/ResourceManager/resourcemanager.cpp \
     ECS/entitymanager.cpp \
     ECS/resourcemanager.cpp \
     Shaders/cubemapshader.cpp \
@@ -28,6 +29,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     ECS/ECScoordinator.h \
+    ECS/ResourceManager/resourcemanager.h \
     ECS/compmanager.h \
     ECS/componentarray.h \
     ECS/entitymanager.h \
