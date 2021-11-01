@@ -13,8 +13,6 @@ SOURCES += main.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
     mathfunctions.cpp \
-    matrix3x3.cpp \
-    matrix4x4.cpp \
     phongshader.cpp \
     plainshader.cpp \
     plane.cpp \
@@ -45,8 +43,6 @@ HEADERS += \
     lightsource.h \
     math_constants.h \
     mathfunctions.h \
-    matrix3x3.h \
-    matrix4x4.h \
     phongshader.h \
     plainshader.h \
     plane.h \

@@ -120,7 +120,7 @@ void RenderWindow::init()
         (*it).second->setup();
 
     //textures
-    m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture(gsl::AssetFilePath + "hund.bmp")});
+    m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture(gsl::TextureFilePath + "hund.bmp")});
 
     //Set textures to a texture unit
     glActiveTexture(GL_TEXTURE1);
@@ -131,7 +131,7 @@ void RenderWindow::init()
     m_light->setPosition(QVector3D(0.f, 150.f, 150.f));
 
     //Map
-    m_world = new Plane("../3Dprog21/Assets/hm2.bmp");
+    m_world = new Plane(gsl::TextureFilePath + "hm2.bmp");
     m_world->setShader(m_shaderProgramMap["phong"]);
     m_world->setObjectName("World");
 
@@ -139,12 +139,6 @@ void RenderWindow::init()
     m_skybox = new SkyBox();
     m_skybox->setShader(m_shaderProgramMap["cubemap"]);
     m_skybox->setObjectName("Skybox");
-
-//    createAllObjects(false);
-//    int sizeOfPlane = dynamic_cast<Plane*>(m_world)->getRows();
-//    gsm::Point2D boundsA{0, 0}, boundsB{sizeOfPlane, 0}, boundsC{sizeOfPlane, sizeOfPlane}, boundsD{0, sizeOfPlane};
-//    m_quadTree.init(boundsA, boundsB, boundsC, boundsD);
-//    m_quadTree.subDivide(6);
 
     //Camera
     m_camera = new Camera();
