@@ -103,7 +103,7 @@ void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
     //making correct bounding sphere radius:
     float length = vertexIn.length();
     if(length > meshIn->sphereRadius)
-        meshIn->sphereRadius = length/1.4; //Dividing the number is temporary... i get more accurate colission results like this
+        meshIn->sphereRadius = length;
 }
 
 

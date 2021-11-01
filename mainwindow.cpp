@@ -156,3 +156,42 @@ void MainWindow::on_ObjectDropdown_currentTextChanged(const QString &arg1)
 {
     spawnObject = arg1.toStdString() + ".obj";
 }
+
+void MainWindow::on_xPos_valueChanged(double value)
+{
+    int index = mRenderWindow->getSelectedObject();
+    if(index != -1){
+        gsl::Matrix4x4 *objMatrix = &mRenderWindow->getGameObjects()[index]->transform->mMatrix;
+        gsl::Vector3D pos = objMatrix->getPosition();
+        objMatrix->setPosition(value, pos.y, pos.z);
+
+        pos.x = value;
+        mCoreEngine->MoveSelectionArrow(pos);
+    }
+}
+void MainWindow::on_yPos_valueChanged(double value)
+{
+    int index = mRenderWindow->getSelectedObject();
+    if(index != -1){
+        gsl::Matrix4x4 *objMatrix = &mRenderWindow->getGameObjects()[index]->transform->mMatrix;
+        gsl::Vector3D pos = objMatrix->getPosition();
+        objMatrix->setPosition(pos.x, value, pos.z);
+
+        pos.y = value;
+        mCoreEngine->MoveSelectionArrow(pos);
+    }
+}
+void MainWindow::on_zPos_valueChanged(double value)
+{
+    int index = mRenderWindow->getSelectedObject();
+    if(index != -1){
+        gsl::Matrix4x4 *objMatrix = &mRenderWindow->getGameObjects()[index]->transform->mMatrix;
+        gsl::Vector3D pos = objMatrix->getPosition();
+        objMatrix->setPosition(pos.x, pos.y, value);
+
+        pos.z = value;
+
+        mCoreEngine->MoveSelectionArrow(pos);
+    }
+
+}

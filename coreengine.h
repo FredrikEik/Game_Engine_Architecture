@@ -33,6 +33,7 @@ public:
     void EditorCameraInput();
 
     void CreateObjectButton(std::string objName);
+    void MoveSelectionArrow(gsl::Vector3D pos);
 
     void swapCurrentCamera();
     void initCameraProjectionMatrixes(float AspectRatio);

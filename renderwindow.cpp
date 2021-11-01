@@ -293,16 +293,24 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         //getting distance from GameObject to ray:
         float distance = gsl::Vector3D::dot(CameraToObject, rayNormal);
 
-        //we are interested in the absolute distance, no negative numbers
+        //Absolute distance
         distance = abs(distance);
 
-        //if distance to ray < objects bounding sphere == we have a collision
+        //if distance to ray < objects bounding sphere == collision
         if(distance < mGameObjects[i]->mesh->sphereRadius)
         {
-            qDebug() << "Collision with" << QString::fromStdString(mGameObjects[i]->mName) << "at index:" << i;
+            qDebug() << "You clicked" << QString::fromStdString(mGameObjects[i]->mName) << "in gameObjects[" << i << "]";
             indexToPickedObject = i;
+
+        /** Put arrow above selected object */
+            gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
+            mCoreEngine->MoveSelectionArrow(pos);
+
             break;  //breaking out of for loop - does not check if the ray is touching several objects
         }
+        else //if no object is selected, move arrow out of sight.
+            mCoreEngine->MoveSelectionArrow(gsl::Vector3D{9999,9999,9999});
+            indexToPickedObject = -1;
     }
 
 }
@@ -495,6 +503,11 @@ double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt rikti
             vertexCount += mGameObjects[i]->mesh->mVertices[2].size();
     }
     return vertexCount;
+}
+
+int RenderWindow::getSelectedObject()
+{
+    return indexToPickedObject;
 }
 
 void RenderWindow::setToCurrentCamera(Camera *cam)

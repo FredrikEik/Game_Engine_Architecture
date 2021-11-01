@@ -41,6 +41,11 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.translate(gsl::Vector3D(57.f, -1.f, 0.f));
     mRenderWindow->addToGameObjects(temp);
 
+    temp = mResourceManager->CreateObject("arrow.obj");
+    temp->transform->mMatrix.translate(9999,9999,9999);
+    temp->transform->mMatrix.scale(0.3f);
+    mRenderWindow->addToGameObjects(temp);
+
 
     for(int i{0}; i < 40; i++)
    {
@@ -128,6 +133,15 @@ void CoreEngine::CreateObjectButton(std::string objName)
     temp->transform->mMatrix.scale(2);
     temp->transform->mMatrix.setPosition(0, 0, -10.f);
     mRenderWindow->addToGameObjects(temp);
+}
+
+void CoreEngine::MoveSelectionArrow(gsl::Vector3D pos)
+{
+    for(auto i : mRenderWindow->getGameObjects())
+    {
+        if(i->mName == "arrow.obj")
+            i->transform->mMatrix.setPosition(pos.x, pos.y + i->mesh->sphereRadius/3, pos.z);
+    }
 }
 
 void CoreEngine::swapCurrentCamera()

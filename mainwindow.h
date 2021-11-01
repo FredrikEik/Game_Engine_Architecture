@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "GameObject.h"
+#include <QDoubleSpinBox>
 
 class QWidget;
 class RenderWindow;
@@ -24,6 +25,8 @@ public:
 
     void makeObjList(std::vector<GameObject*> mGameObjects);
 
+    int prevSelectedIndex{0};
+
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -32,6 +35,10 @@ private slots:
     void on_FrustumToggle_toggled(bool checked);
     void on_CreateObjectButton_clicked();
     void on_ObjectDropdown_currentTextChanged(const QString &arg1);
+
+    void on_xPos_valueChanged(double value);
+    void on_yPos_valueChanged(double value);
+    void on_zPos_valueChanged(double value);
 
 private:
     void init();
