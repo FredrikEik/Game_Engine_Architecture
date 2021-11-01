@@ -12,7 +12,7 @@ class Spawner
 public:
     Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow);
 
-    void SpawnRow();
+    void SpawnRow(int rowLength);
     //void addObjectToEditor(std::string object);
 
 private:
