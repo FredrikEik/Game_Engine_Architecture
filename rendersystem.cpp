@@ -253,6 +253,8 @@ void RenderSystem::render()
         if(CoreEngine::getInstance()->isPlaying == true)
             CoreEngine::getInstance()->updateScene();
 
+
+
     }
 
 
@@ -272,6 +274,11 @@ void RenderSystem::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+}
+
+void RenderSystem::rotateObj(double val)
+{
+    mGameObjects[1]->mTransform->mMatrix.rotateZ(val);
 }
 
 void RenderSystem::setupPlainShader(int shaderIndex)

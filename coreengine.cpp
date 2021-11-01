@@ -185,8 +185,10 @@ void CoreEngine::handleInput()
     }
     else if(mInput.W)
     {
+
         if(isPlaying)
          player->move(0,0 , speed);
+
 
     }
     else if(mInput.S)

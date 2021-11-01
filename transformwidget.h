@@ -2,9 +2,12 @@
 #define TRANSFORMWIDGET_H
 
 #include <QWidget>
-#include "rendersystem.h"
+
+#include "mainwindow.h"
+class RenderSystem;
 namespace Ui {
 class transformWidget;
+
 }
 
 class transformWidget : public QWidget
@@ -14,6 +17,10 @@ class transformWidget : public QWidget
 public:
     explicit transformWidget(QWidget *parent = nullptr);
     ~transformWidget();
+
+    void init(RenderSystem *rendersystem, int index);
+
+
 
 private slots:
     void on_rotX_valueChanged(double arg1);
@@ -30,6 +37,9 @@ private slots:
 
 private:
     Ui::transformWidget *ui;
+    MainWindow *mMainWindow{nullptr};
+
+            int objectsInList{-1};
 
     RenderSystem* mRenderSystem{nullptr};
 };

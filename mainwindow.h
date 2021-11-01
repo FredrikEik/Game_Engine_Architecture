@@ -21,6 +21,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QListWidgetItem *mCurrentSelectedItem{nullptr};
+
+
 public slots:
 
 
@@ -47,8 +50,9 @@ private:
     class transformWidget *mTransformWidget{nullptr};
     bool clicked = true;
 
+    int currentIndex{-1};
     QString prevstring;
-    QListWidgetItem *mCurrentSelectedItem{nullptr};
+
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     CoreEngine *mCoreEngine{nullptr};

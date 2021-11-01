@@ -42,6 +42,8 @@ public:
 
     void render();
 
+    void rotateObj(double val);
+
 
 
 private:

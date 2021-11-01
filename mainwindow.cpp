@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QSurfaceFormat>
@@ -28,6 +28,7 @@ MainWindow::~MainWindow()
     delete mRenderSystem;
     delete ui;
 }
+
 
 void MainWindow::init()
 {
@@ -122,6 +123,8 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
 void MainWindow::on_pushButton_clicked()
 {
+    //mTransformWidget->objectsInList +=1;
+    currentIndex +=1;
     mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
     mCoreEngine->boss->mSoundComponent->shouldPlay = true;
 
@@ -134,14 +137,21 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    mCurrentSelectedItem = item;
 
+
+
+    //qDebug() << "DATA FOR ITEM " << item->data(currentIndex);
     if(clicked == true)
     {
         item->setSelected(true);
         mTransformWidget = new transformWidget();
+        mTransformWidget->init(mRenderSystem, currentIndex);
         item = ui->listWidget->currentItem();
         item->setForeground(Qt::green);
+        mCurrentSelectedItem = item;
+
+
+        //qDebug() << "selected item " << mCurrentSelectedItem->
 
         ui->verticalLayout_2->addWidget(mTransformWidget);
         clicked = false;
@@ -151,7 +161,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
         item->setSelected(false);
         item->setText(ui->listWidget->currentItem()->text());
         item->setForeground(Qt::black);
-        ui->verticalLayout_2->removeWidget(mTransformWidget);
+        //ui->verticalLayout_2->removeWidget(mTransformWidget);
         //ui->verticalLayout_2->setEnabled(false);
         delete mTransformWidget;
         clicked = true;
@@ -162,8 +172,11 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_actionAdd_Player_triggered()
 {
+    //mTransformWidget->objectsInList +=1;
+
     if(CoreEngine::getInstance()->isPlaying == false)
     {
+        currentIndex +=1;
     mRenderSystem->mGameObjects.push_back(mCoreEngine->player);
     ui->listWidget->addItem(mCoreEngine->player->objName);
     }
@@ -171,8 +184,10 @@ void MainWindow::on_actionAdd_Player_triggered()
 
 void MainWindow::on_actionAdd_Enemy_triggered()
 {
+
     if(CoreEngine::getInstance()->isPlaying == false)
     {
+    currentIndex +=1;
     mRenderSystem->mGameObjects.push_back(mCoreEngine->enemy);
     ui->listWidget->addItem(mCoreEngine->enemy->objName);
     }
@@ -180,8 +195,10 @@ void MainWindow::on_actionAdd_Enemy_triggered()
 
 void MainWindow::on_actionAdd_XYZ_triggered()
 {
+
     if(CoreEngine::getInstance()->isPlaying == false)
     {
+        currentIndex +=1;
     mRenderSystem->mGameObjects.push_back(mCoreEngine->axis);
     ui->listWidget->addItem(mCoreEngine->axis->objName);
     }
