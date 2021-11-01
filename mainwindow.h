@@ -22,14 +22,10 @@ public:
     ~MainWindow();
 
 public slots:
-    void on_actionAdd_Triangle_triggered();
-    void on_actionAdd_Suzanne_triggered();
-    void on_actionAdd_Goat_triggered();
+
 
     void on_pb_toggleWireframe_toggled(bool checked);
     void on_pb_togglePlay_toggled(bool checked);
-
-    void on_actionRotate_Transform_triggered();
 
 
 private slots:
@@ -37,6 +33,12 @@ private slots:
 
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
+
+    void on_actionAdd_Player_triggered();
+
+    void on_actionAdd_Enemy_triggered();
+
+    void on_actionAdd_XYZ_triggered();
 
 private:
     void init();
@@ -46,7 +48,7 @@ private:
     bool clicked = true;
 
     QString prevstring;
-    QListWidgetItem *mCurrentEditItem{nullptr};
+    QListWidgetItem *mCurrentSelectedItem{nullptr};
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     CoreEngine *mCoreEngine{nullptr};

@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //this sets up what's in the mainwindow.ui
 
     ui->setupUi(this);
+
+
     init();
 
 }
@@ -84,41 +86,15 @@ void MainWindow::init()
 
     mCoreEngine = new CoreEngine(mRenderSystem);
 
+//    ui->listWidget->addItem(mCoreEngine->player->objName);
+//    ui->listWidget->addItem(mCoreEngine->enemy->objName);
+
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
 
-void MainWindow::on_actionAdd_Triangle_triggered()
-{
-    if(CoreEngine::getInstance()->isPlaying == false)
-    {
-    GameObject *temp = ResourceManager::getInstance().addObject("triangle");
-    mRenderSystem->mGameObjects.push_back(temp);
 
-    }
-}
-
-void MainWindow::on_actionAdd_Suzanne_triggered()
-{
-    if(CoreEngine::getInstance()->isPlaying == false)
-    {
-    GameObject *temp = ResourceManager::getInstance().addObject("suzanne.obj");
-    mRenderSystem->mGameObjects.push_back(temp);
-    }
-}
-
-void MainWindow::on_actionAdd_Goat_triggered()
-{
-    if(CoreEngine::getInstance()->isPlaying == false)
-    {
-        GameObject *temp = ResourceManager::getInstance().addObject("suzanne3.obj");
-        mRenderSystem->mGameObjects.push_back(temp);
-        temp->mMaterial->mShaderProgram = 1;
-        temp->mMaterial->mTextureUnit = 2;
-    }
-
-}
 
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
@@ -142,19 +118,15 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
 
 
-void MainWindow::on_actionRotate_Transform_triggered()
-{
-//    mTransformWidget = new transformWidget();
-//    ui->verticalLayout_2->addWidget(mTransformWidget);
-}
 
 
 void MainWindow::on_pushButton_clicked()
 {
-    mRenderSystem->mGameObjects.push_back(CoreEngine::getInstance()->boss);
-    CoreEngine::getInstance()->boss->mSoundComponent->shouldPlay = true;
+    mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
+    mCoreEngine->boss->mSoundComponent->shouldPlay = true;
 
-    ui->listWidget->addItem("boss");
+    ui->listWidget->addItem(mCoreEngine->boss->objName);
+
 
 
 
@@ -162,10 +134,11 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-
+    mCurrentSelectedItem = item;
 
     if(clicked == true)
     {
+        item->setSelected(true);
         mTransformWidget = new transformWidget();
         item = ui->listWidget->currentItem();
         item->setForeground(Qt::green);
@@ -175,7 +148,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     }
     else
     {
-
+        item->setSelected(false);
         item->setText(ui->listWidget->currentItem()->text());
         item->setForeground(Qt::black);
         ui->verticalLayout_2->removeWidget(mTransformWidget);
@@ -185,4 +158,31 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     }
 
 
+}
+
+void MainWindow::on_actionAdd_Player_triggered()
+{
+    if(CoreEngine::getInstance()->isPlaying == false)
+    {
+    mRenderSystem->mGameObjects.push_back(mCoreEngine->player);
+    ui->listWidget->addItem(mCoreEngine->player->objName);
+    }
+}
+
+void MainWindow::on_actionAdd_Enemy_triggered()
+{
+    if(CoreEngine::getInstance()->isPlaying == false)
+    {
+    mRenderSystem->mGameObjects.push_back(mCoreEngine->enemy);
+    ui->listWidget->addItem(mCoreEngine->enemy->objName);
+    }
+}
+
+void MainWindow::on_actionAdd_XYZ_triggered()
+{
+    if(CoreEngine::getInstance()->isPlaying == false)
+    {
+    mRenderSystem->mGameObjects.push_back(mCoreEngine->axis);
+    ui->listWidget->addItem(mCoreEngine->axis->objName);
+    }
 }

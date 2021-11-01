@@ -109,19 +109,12 @@
     <property name="title">
      <string>GameObject</string>
     </property>
-    <addaction name="actionAdd_Triangle"/>
-    <addaction name="actionAdd_Suzanne"/>
-    <addaction name="actionAdd_Goat"/>
     <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="menuTransform">
-    <property name="title">
-     <string>Transform</string>
-    </property>
-    <addaction name="actionRotate_Transform"/>
+    <addaction name="actionAdd_Player"/>
+    <addaction name="actionAdd_Enemy"/>
+    <addaction name="actionAdd_XYZ"/>
    </widget>
    <addaction name="menuGameObject"/>
-   <addaction name="menuTransform"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -149,7 +142,7 @@
        <x>9</x>
        <y>0</y>
        <width>561</width>
-       <height>231</height>
+       <height>191</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2"/>
@@ -171,24 +164,19 @@
     </widget>
    </widget>
   </widget>
-  <action name="actionAdd_Triangle">
+  <action name="actionAdd_Player">
    <property name="text">
-    <string>Add Triangle</string>
+    <string>Add Player</string>
    </property>
   </action>
-  <action name="actionAdd_Suzanne">
+  <action name="actionAdd_Enemy">
    <property name="text">
-    <string>Add Suzanne</string>
+    <string>Add Enemy</string>
    </property>
   </action>
-  <action name="actionAdd_Goat">
+  <action name="actionAdd_XYZ">
    <property name="text">
-    <string>Add Goat</string>
-   </property>
-  </action>
-  <action name="actionRotate_Transform">
-   <property name="text">
-    <string>Rotate/Transform</string>
+    <string>Add XYZ</string>
    </property>
   </action>
  </widget>

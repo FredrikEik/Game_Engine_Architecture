@@ -8,6 +8,7 @@
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
     std::string mName{"NoName"};
+    QString objName{"NoName"};
 
      ColliderComponent *mCollider{nullptr};
      TransformComponent* mTransform{nullptr};

@@ -52,8 +52,8 @@ void CoreEngine::setUpScene()
 
     //Axis
     axis = mResourceManager->addObject("axis");
+    axis->objName = "Axis";
     //scene->setupScene1();
-    mRenderSystem->mGameObjects.push_back(axis);
     //scene->setupScene1();
 
     //PLAYER
@@ -69,7 +69,8 @@ void CoreEngine::setUpScene()
 
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
-    mRenderSystem->mGameObjects.push_back(player);
+    player->objName = "Player";
+    //mRenderSystem->mGameObjects.push_back(player);
 
     //ENEMY
     enemy = mResourceManager->addObject("suzanne3.obj");
@@ -82,7 +83,8 @@ void CoreEngine::setUpScene()
     mResourceManager->addCollider("sphere", enemy);
     mResourceManager->addComponent("roblox_stereo.wav", enemy);
     enemy->mSoundComponent->shouldPlay = false;
-    mRenderSystem->mGameObjects.push_back(enemy);
+    enemy->objName = "enemy";
+    //mRenderSystem->mGameObjects.push_back(enemy);
 
     //BOSS
     boss = mResourceManager->addObject("suzanne3.obj");
@@ -97,6 +99,7 @@ void CoreEngine::setUpScene()
     boss->mSoundComponent->shouldPlay = false;
     //looping fungerer ikke
     boss->mSoundComponent->looping = false;
+    boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
     //setup camera
@@ -182,29 +185,36 @@ void CoreEngine::handleInput()
     }
     else if(mInput.W)
     {
-
+        if(isPlaying)
          player->move(0,0 , speed);
 
     }
     else if(mInput.S)
     {
-
+if(isPlaying)
          player->move(0,0 , -speed);
     }
      else if(mInput.A)
     {
-
+if(isPlaying)
          player->move(speed, 0, 0);
     }
      else if(mInput.D)
     {
-
+if(isPlaying)
          player->move(-speed, 0, 0);
     }
     else if(mInput.Q)
+    {
+
+        if(isPlaying)
         player->move(0, speed, 0);
+    }
     else if(mInput.E)
+    {
+            if(isPlaying)
         player->move(0, -speed, 0);
+    }
 
 }
 
