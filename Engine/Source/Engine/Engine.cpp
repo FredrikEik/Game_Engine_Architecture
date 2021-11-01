@@ -79,6 +79,8 @@ void Engine::init()
 	glfwSetMouseButtonCallback(window, Engine::mouseButton_callback);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
+	glfwSetCursorPos(window, getWindowWidth() * 0.5, getWindowHeight() * 0.5);
+
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -169,6 +171,7 @@ void Engine::loop()
 
 		MousePosition mPos = Input::getInstance()->getMousePosition();
 		unsigned char data[4];
+
 		glReadPixels(mPos.x, mPos.y,1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		// Convert the color back to an integer ID
