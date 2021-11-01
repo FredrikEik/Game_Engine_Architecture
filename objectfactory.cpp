@@ -21,47 +21,28 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new Cube;
         willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
         willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
-
-        if (EXISTS("Cube"))
-        {
-            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
-            qDebug() << "mesh extracted";
-        }
-        else
-        {
-            storedMeshes.insert(std::pair("Cube", willCreateObject->getMeshComp()));
-            qDebug() << "mesh saved";
-        }
     }
 
     else if (objectName == "Triangle")
     {
         willCreateObject = new Triangle;
-        if (EXISTS("Triangle"))
-        {
-            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Triangle"]));
-            qDebug() << "triangle mesh extracted";
-        }
-        else
-        {
-            storedMeshes.insert(std::pair("Triangle", willCreateObject->getMeshComp()));
-            qDebug() << "triangle mesh saved";
-        }
     }
 
     else if (objectName == "Goat")
     {
-        willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
         if (EXISTS("Goat"))
         {
+            willCreateObject = new ObjImport("");
             willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Goat"]));
             qDebug() << "goat mesh extracted";
         }
         else
         {
+            willCreateObject = new ObjImport("../GEA2021/Assets/goat.obj");
             storedMeshes.insert(std::pair("Goat", willCreateObject->getMeshComp()));
             qDebug() << "goat mesh saved";
         }
+
     }
     else
         return;
