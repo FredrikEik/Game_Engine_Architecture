@@ -25,8 +25,6 @@ SOURCES += main.cpp \
     skybox.cpp \
     texture.cpp \
     textureshader.cpp \
-    vector2d.cpp \
-    vector3d.cpp \
     vertex.cpp \
     visualobject.cpp \
     xyz.cpp
@@ -61,8 +59,6 @@ HEADERS += \
     systemmanager.h \
     texture.h \
     textureshader.h \
-    vector2d.h \
-    vector3d.h \
     vertex.h \
     visualobject.h \
     xyz.h
