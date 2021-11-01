@@ -12,94 +12,46 @@ Spawner::Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow)
 void Spawner::SpawnRow()
 {
     //FLOOR OF MAP
-    ObjSpawnFactory->createObject("Cube");
+    /*ObjSpawnFactory->createObject("Cube");
     SpawnedObject = ObjSpawnFactory->mGameObject.back();
     if(SpawnedObject)
     {
         SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(0.0f);
         SpawnedObject->getTransformComp()->mMatrix.translateX(0.0f);
         mMainWindow->addObjectToWorldList("Floor Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(1.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(1.0f);
-        mMainWindow->addObjectToWorldList("Floor Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(2.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(2.0f);
-        mMainWindow->addObjectToWorldList("Floor Cube");
-    }
+    }*/
+
     ObjSpawnFactory->createObject("Cube");
     SpawnedObject = ObjSpawnFactory->mGameObject.back();
     if(SpawnedObject)
     {
         SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(3.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(3.0f);
+        //SpawnedObject->getTransformComp()->mMatrix.translateX(3.0f);
+        //SpawnedObject->getTransformComp()->mTrueScaleMatrix.scale(7.f, 1.f, 1.f);
+        SpawnedObject->getTransformComp()->Scal.setX(7.f);
+        SpawnedObject->getTransformComp()->Scal.setY(1.f);
+        SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+        SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
+        SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
+                                                         SpawnedObject->getTransformComp()->Scal.getY(),
+                                                         SpawnedObject->getTransformComp()->Scal.getZ());
         mMainWindow->addObjectToWorldList("Floor Cube");
     }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(4.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(4.0f);
-        mMainWindow->addObjectToWorldList("Floor Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(5.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(5.0f);
-        mMainWindow->addObjectToWorldList("Floor Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(6.0f);
-        mMainWindow->addObjectToWorldList("Floor Cube");
-    }
+
 
     //LEFT ROW OF MAP
     ObjSpawnFactory->createObject("Cube");
     SpawnedObject = ObjSpawnFactory->mGameObject.back();
     if(SpawnedObject)
     {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(1.0f);
-        mMainWindow->addObjectToWorldList("Left Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(2.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(2.0f);
-        mMainWindow->addObjectToWorldList("Left Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
         SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(3.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(3.0f);
-        mMainWindow->addObjectToWorldList("Left Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(4.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(4.0f);
+        SpawnedObject->getTransformComp()->Scal.setX(1.f);
+        SpawnedObject->getTransformComp()->Scal.setY(5.f);
+        SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+        SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
+        SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
+                                                         SpawnedObject->getTransformComp()->Scal.getY(),
+                                                         SpawnedObject->getTransformComp()->Scal.getZ());
         mMainWindow->addObjectToWorldList("Left Row Cube");
     }
 
@@ -109,39 +61,14 @@ void Spawner::SpawnRow()
     if(SpawnedObject)
     {
         SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(1.0f);
-        mMainWindow->addObjectToWorldList("Right Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(2.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(2.0f);
-        mMainWindow->addObjectToWorldList("Right Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(6.0f);
         SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(3.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(3.0f);
-        mMainWindow->addObjectToWorldList("Right Row Cube");
-    }
-    ObjSpawnFactory->createObject("Cube");
-    SpawnedObject = ObjSpawnFactory->mGameObject.back();
-    if(SpawnedObject)
-    {
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateX(6.0f);
-        SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateY(4.0f);
-        SpawnedObject->getTransformComp()->mMatrix.translateY(4.0f);
+        SpawnedObject->getTransformComp()->Scal.setX(1.f);
+        SpawnedObject->getTransformComp()->Scal.setY(5.f);
+        SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+        SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
+        SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
+                                                         SpawnedObject->getTransformComp()->Scal.getY(),
+                                                         SpawnedObject->getTransformComp()->Scal.getZ());
         mMainWindow->addObjectToWorldList("Right Row Cube");
     }
 }
