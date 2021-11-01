@@ -1,4 +1,5 @@
 #include "rendersystem.h"
+
 #include <QOpenGLContext>
 #include <QOpenGLDebugLogger>
 
