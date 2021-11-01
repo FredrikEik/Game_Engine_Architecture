@@ -41,7 +41,6 @@ struct Mesh
 
 struct SoundListener
 {
-    //should be fetced from other component?
     gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
     gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};

@@ -41,6 +41,7 @@ public:
     void toggleFrustum();
 
     Input getInput();
+    void setPlayerMovement(float x, float y, float z);
 
     void addToGameObjects(GameObject *obj);
     std::vector<GameObject*> getGameObjects();
@@ -95,6 +96,8 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
+
+    float moveX{0}, moveY{0}, moveZ{0};
 
     int indexToPickedObject{-1};
 

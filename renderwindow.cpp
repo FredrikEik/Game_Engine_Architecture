@@ -145,8 +145,15 @@ void RenderWindow::render()
     //Draws the objects
     for( int i = 0; i < mGameObjects.size(); i++)
     {
-        /** FRUSTUM */
-        if(bFrustumEnabled)
+        if(mGameObjects[i]->mName == "cube.obj"){
+            checkForCollisions(mGameObjects[i]);
+            mGameObjects[i]->move(moveX, moveY, moveZ);
+            setPlayerMovement(0,0,0); //resets movement. (stops constant movement after buttonpress)
+        }
+    /** FRUSTUM */
+        //Check if mForward.x = 0. This fixes the problem where nothing renders at the start
+        //This happened because all "objDistanceFromPlane" floats = 0, because vectors multiplied by 0.
+        if(bFrustumEnabled && mCurrentCamera->getmForward().x != 0.f)
         {
             gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
             gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
@@ -175,7 +182,7 @@ void RenderWindow::render()
 
             if(ObjDistanceFromBottomPlane > 0) continue;
         }
-        /**  */
+    /**  */
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
@@ -194,7 +201,8 @@ void RenderWindow::render()
         gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
         float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
 
-        if(mGameObjects[i]->mesh->bLodEnabled && bLODToggleEnabled){ //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
+        //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
+        if(mGameObjects[i]->mesh->bLodEnabled && bLODToggleEnabled){
             if(distanceToObject > 50)
                 mGameObjects[i]->mesh->lodLevel = 2;
             else if(distanceToObject > 20)
@@ -210,10 +218,6 @@ void RenderWindow::render()
         glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
         glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
         glBindVertexArray(0);
-
-        if(mGameObjects[i]->mName == "cube.obj"){
-            checkForCollisions(mGameObjects[i]);
-        }
     }
 
     //Calculate framerate before
@@ -386,6 +390,13 @@ void RenderWindow::toggleFrustum()
 Input RenderWindow::getInput()
 {
     return mInput;
+}
+
+void RenderWindow::setPlayerMovement(float x, float y, float z)
+{
+    moveX = x;
+    moveY = y;
+    moveZ = z;
 }
 
 //Uses QOpenGLDebugLogger if this is present
@@ -662,7 +673,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB && mCurrentCamera != mCoreEngine->getGameCamera()) // != because i didn't want to make a getEditorCamera Function.
+    if (mInput.RMB && mCurrentCamera != mCoreEngine->getGameCamera())// if right mouse button is held && Editorcamera == current
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;
