@@ -59,7 +59,7 @@ private:
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
 
-//    class Logger* mLogger{nullptr};
+    class Logger* mLogger{nullptr};
 
 };
 #endif // GAMEOBJECTMANAGER_H

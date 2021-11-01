@@ -1,9 +1,13 @@
 QT          += core gui widgets opengl
 
 TEMPLATE    = app
-CONFIG      += c++17 PRECOMPILED_HEADER
+CONFIG      += c++17 precomile_header
+
+PRECOMPILED_HEADER = pch.h
 
 TARGET      = GEA2021
+
+
 
 
 DEFINES     += _CRT_SECURE_NO_WARNINGS
@@ -74,6 +78,7 @@ HEADERS += \
     altypes.h \
     coreengine.h \
     logger.h \
+    pch.h \
     rendersystem.h \
     soundsystem.h \
     camera.h \

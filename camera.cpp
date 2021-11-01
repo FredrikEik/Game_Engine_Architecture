@@ -1,6 +1,7 @@
 ﻿#include "camera.h"
 #include <QDebug>
 #include "soundsystem.h"
+#include "math_constants.h"
 
 Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
@@ -86,7 +87,7 @@ void Camera::calculateProjectionMatrix()
 {
     mProjectionMatrix.perspective(mFrustum.mFOVvertical, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
     calculateFrustumVectors();
-    //Logger::getInstance()->logText("AspectRatio " + std::to_string(mFrustum.mAspectRatio))
+    Logger::getInstance()->logText("AspectRatio " + std::to_string(mFrustum.mAspectRatio));
 }
 
 void Camera::updateHeigth(float deltaHeigth)
@@ -133,7 +134,7 @@ void Camera::calculateFrustumVectors()
     tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, mUp);
     mFrustum.mLeftPlane = tempVector.normalized();
 
-    /*Logger::getInstance()->logText(mName + "-Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
-                                   + ", vertical FOV: " + std::to_string(mFrustum.mFOVvertical) +
-                                   ", Right vector: " + mFrustum.mRightPlane.getAsString());*/
+//    Logger::getInstance()->logText(mName + "-Camera horisontal FOV: " + std::to_string(horisontalHalfAngle) +
+//                                   + ", vertical FOV: " + std::to_string(mFrustum.mFOVvertical) +
+//                                   ", Right vector: " + mFrustum.mRightPlane.getAsString());
 }

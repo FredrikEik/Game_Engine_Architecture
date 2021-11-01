@@ -55,7 +55,7 @@ private slots:
 private:
     static CoreEngine* mInstance;   //Not singleton, but can use static getInstance()
 
-    //class Logger *mLogger{nullptr};
+    class Logger *mLogger{nullptr};
 
 };
 

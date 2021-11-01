@@ -14,15 +14,15 @@ CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
                     : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
-//    mLogger = Logger::getInstance();
+    mLogger = Logger::getInstance();
 
-//    mLogger->setMainWindow(mMainWindow);
+    mLogger->setMainWindow(mMainWindow);
 
-//    time_t now = time(0);
+    time_t now = time(0);
 
-//    char* dt = ctime(&now);
+    char* dt = ctime(&now);
 
-//    mLogger->logText("Logger started " + std::string(dt), LColor::HIGHLIGHT);
+    mLogger->logText("Logger started " + std::string(dt), LColor::HIGHLIGHT);
 
     mGameObjectManager = &GameObjectManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
