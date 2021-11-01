@@ -26,6 +26,8 @@
 #include "lightsource.h"
 #include "plane.h"
 #include "ECScoordinator.h"
+#include "constants.h"
+#include "skybox.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -98,7 +100,7 @@ void RenderWindow::init()
 
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+    //glEnable(GL_CULL_FACE);          //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f, 1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
     //ECS Coordinator:
@@ -109,56 +111,50 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"plain", new PlainShader("../3Dprog21/plainshader.vert", "../3Dprog21/plainshader.frag")});
-    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"texture", new TextureShader("../3Dprog21/texture.vert", "../3Dprog21/texture.frag")});
-    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"phong", new PhongShader("../3Dprog21/phong.vert", "../3Dprog21/phong.frag")});
-    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"cubemap", new CubemapShader("../3Dprog21/cubemap.vert", "../3Dprog21/cubemap.frag")});
+    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"plain", new PlainShader((gsl::ShaderFilePath + "plainshader.vert").c_str(), (gsl::ShaderFilePath + "plainshader.frag").c_str())});
+    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"texture", new TextureShader((gsl::ShaderFilePath + "texture.vert").c_str(), (gsl::ShaderFilePath + "texture.frag").c_str())});
+    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"phong", new PhongShader((gsl::ShaderFilePath + "phong.vert").c_str(), (gsl::ShaderFilePath + "phong.frag").c_str())});
+    m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"cubemap", new CubemapShader((gsl::ShaderFilePath + "cubemap.vert").c_str(), (gsl::ShaderFilePath + "cubemap.frag").c_str())});
 
     for (auto it = m_shaderProgramMap.begin(); it != m_shaderProgramMap.end(); it++)
         (*it).second->setup();
 
     //textures
-    m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture("../3Dprog21/Assets/hund.bmp")});
+    m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture(gsl::AssetFilePath + "hund.bmp")});
 
     //Set textures to a texture unit
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_textureMap["dog"]->id());
 
-//    //Light
-//    m_light = new LightSource(m_shaderProgramMap["phong"]);
-//    m_light->setPosition(QVector3D(0.f, 150.f, 150.f));
+    //Light
+    m_light = new LightSource(m_shaderProgramMap["phong"]);
+    m_light->setPosition(QVector3D(0.f, 150.f, 150.f));
 
-//    //The player:
-////    m_player = new Player();
-////    m_player->setPosition(QVector3D(50.f,0.f,50.f));
+    //Map
+    m_world = new Plane("../3Dprog21/Assets/hm2.bmp");
+    m_world->setShader(m_shaderProgramMap["phong"]);
+    m_world->setObjectName("World");
 
-//    //Map
-//    m_world = new Plane("../3Dprog21/Assets/hm2.bmp");
-//    m_world->setShader(m_shaderProgramMap["phong"]);
-//    m_world->setObjectName("World");
-//    //m_player->setPlane(dynamic_cast<Plane*>(m_world));
+    //Skybox
+    m_skybox = new SkyBox();
+    m_skybox->setShader(m_shaderProgramMap["cubemap"]);
+    m_skybox->setObjectName("Skybox");
 
-//    //Skybox
-//    m_skybox = new SkyBox();
-//    m_skybox->setShader(m_shaderProgramMap["cubemap"]);
-//    m_skybox->setObjectName("Skybox");
 //    createAllObjects(false);
 //    int sizeOfPlane = dynamic_cast<Plane*>(m_world)->getRows();
 //    gsm::Point2D boundsA{0, 0}, boundsB{sizeOfPlane, 0}, boundsC{sizeOfPlane, sizeOfPlane}, boundsD{0, sizeOfPlane};
 //    m_quadTree.init(boundsA, boundsB, boundsC, boundsD);
 //    m_quadTree.subDivide(6);
 
-    createCoins();
     //Camera
     m_camera = new Camera();
     m_camera->pitch(10.f);
     m_camera->perspective(60.f, 4.f/3.f, 0.1f, 1000.f);
-    //m_camera->setTarget(m_player);
+
     //Objects
     for (auto it = m_objectMap.begin(); it != m_objectMap.end(); it++)
         (*it).second->init(m_shaderProgramMap[(*it).second->getShaderName()]->getModelMatrixUniform());
 
-    //m_player->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
@@ -181,8 +177,9 @@ void RenderWindow::render()
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//    m_camera->update(m_skybox->getShader()->getProjectionMatrixUniform(), m_skybox->getShader()->getViewMatrixUniform());
-    for(auto it: m_shaderProgramMap)
+    m_camera->update(m_skybox->getShader()->getProjectionMatrixUniform(), m_skybox->getShader()->getViewMatrixUniform());
+
+    for(auto it : m_shaderProgramMap)
     {
         it.second->use();
         m_camera->update(it.second->getProjectionMatrixUniform(), it.second->getViewMatrixUniform());
@@ -190,33 +187,21 @@ void RenderWindow::render()
 
     glUseProgram(m_skybox->getShader()->getProgram());
     m_skybox->draw();
+
     for (auto it = m_objectMap.begin(); it != m_objectMap.end(); it++)
     {
         (*it).second->getShader()->use();
-//        m_camera->update((*it).second->getShader()->getProjectionMatrixUniform(), (*it).second->getShader()->getViewMatrixUniform());
+        m_camera->update((*it).second->getShader()->getProjectionMatrixUniform(), (*it).second->getShader()->getViewMatrixUniform());
         (*it).second->draw();
     }
-    //auto hitObjects=m_quadTree.find(gsm::Point2D(m_player->getPosition().x(), m_player->getPosition().z()))->getObjects();
 
-//    while(!hitObjects.empty())
-//    {
-//        OctahedronBall* hitObject = dynamic_cast<OctahedronBall*>(hitObjects.front().second);
-//        hitObjects.pop_front();
-//        if(hitObject)
-//        {
-//            hitObject->setIsActive(false);
-//        }
-//    }
-//    //Draw special objects
-//    glUseProgram(m_shaderProgramMap["phong"]->getProgram());
-//    m_camera->update(m_shaderProgramMap["phong"]->getProjectionMatrixUniform(), m_shaderProgramMap["phong"]->getViewMatrixUniform());
+    //Draw special objects
+    glUseProgram(m_shaderProgramMap["phong"]->getProgram());
+    m_camera->update(m_shaderProgramMap["phong"]->getProjectionMatrixUniform(), m_shaderProgramMap["phong"]->getViewMatrixUniform());
 
-//    //Put these in a container?
-//    m_world->draw();
-//    m_player->draw();
-//    m_light->draw();
-
-
+    //Put these in a container?
+    m_world->draw();
+    m_light->draw();
 
 
     //Calculate framerate before
@@ -371,15 +356,6 @@ void RenderWindow::createAllObjects(/*bool bReset*/)
         qDebug() << "Error: Dynamic cast failed for m_player";
 }
 
-void RenderWindow::togglePlay(bool shouldPlay)
-{
-    if(shouldPlay)
-        m_camera->setEditorCamera(false);
-    else
-        m_camera->setEditorCamera(true);
-
-}
-
 void RenderWindow::setCameraSpeed(float value)
 {
     m_cameraSpeed += value;
@@ -455,26 +431,6 @@ void RenderWindow::handleInput()
 //    }
 }
 
-//void RenderWindow::createCoins()
-//{
-//    QVector3D playerPos = m_player->getPosition();
-//    for(int i{}; i<2; i++)
-//    {
-////        return;
-//        OctahedronBall* coin = new OctahedronBall(2);
-
-//        coin->setObjectName(std::string("Coin").append(std::to_string(i)));
-//        coin->setShaderName("phong");
-//        coin->setShader(m_shaderProgramMap["phong"]);
-
-//        QVector3D positionToSet = QVector3D(playerPos.x() + 13.f * i + 10.f, playerPos.y(), playerPos.z() + 17.f * i - 12.f);
-//        float height = dynamic_cast<Plane*>(m_world)->getHeight(positionToSet);
-//        positionToSet.setY(height);
-//        coin->setPosition(positionToSet);
-//        m_quadTree.insert(gsm::Point2D(coin->getPosition().x(), coin->getPosition().z()),coin->getObjectName(), coin);
-//        m_objectMap.insert(std::pair<std::string, VisualObject*>{coin->getObjectName(), coin});
-//    }
-//}
 
 //Event sent from Qt when program receives a keyPress
 void RenderWindow::keyPressEvent(QKeyEvent *event)

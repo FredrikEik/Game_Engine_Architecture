@@ -16,7 +16,7 @@ public:
     {
         //Create a pointer to each manager!
         m_ComponentManager = std::make_unique<ComponentManager>();
-        m_EntityManager = std::make_unique<EntityManager>();
+        m_EntityManager = EntityManager::Create();
         m_SystemManager = std::make_unique<SystemManager>();
         m_ResourceManager = std::make_unique<ResourceManager>();
     }

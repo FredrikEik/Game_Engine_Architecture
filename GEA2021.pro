@@ -7,6 +7,7 @@ TARGET      = GEA2021
 
 SOURCES += main.cpp \
     camera.cpp \
+    cubemap.cpp \
     cubemapshader.cpp \
     entitymanager.cpp \
     interactiveobject.cpp \
@@ -21,6 +22,7 @@ SOURCES += main.cpp \
     resourcemanager.cpp \
     shader.cpp \
     mainwindow.cpp \
+    skybox.cpp \
     texture.cpp \
     textureshader.cpp \
     vector2d.cpp \
@@ -36,6 +38,7 @@ HEADERS += \
     componentarray.h \
     components.h \
     constants.h \
+    cubemap.h \
     cubemapshader.h \
     entitymanager.h \
     gltypes.h \
@@ -53,6 +56,7 @@ HEADERS += \
     resourcemanager.h \
     shader.h \
     mainwindow.h \
+    skybox.h \
     systembase.h \
     systemmanager.h \
     texture.h \

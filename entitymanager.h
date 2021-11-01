@@ -9,6 +9,8 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 class EntityManager
 {
+    friend class ECScoordinator;
+
 public:
     Entity CreateEntity();
     void DestroyEntity(Entity entity);
@@ -19,6 +21,9 @@ private:
     //TODO: Friend with factory class!
     //friend class Factory;
     EntityManager();
+
+    static std::unique_ptr<EntityManager> Create()
+    { return std::unique_ptr<EntityManager>( new EntityManager() ); }
 
     //Holds availeble Id's for entitys to use.
     std::queue<Entity> m_availableEntityIDs;

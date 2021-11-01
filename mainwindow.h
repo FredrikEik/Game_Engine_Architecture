@@ -19,7 +19,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_toggled(bool checked);
+    //void on_pushButton_toggled(bool checked);
 
 private:
     void init();

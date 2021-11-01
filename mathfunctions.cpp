@@ -73,21 +73,21 @@ QVector3D gsm::MathFunctions::barycentricCoordinates(const QVector2D &pos, const
 {
     QVector2D p12 = p2 - p1;
     QVector2D p13 = p3-p1;
-    QVector3D n = QVector3D::crossProduct(p12, p13);
+    QVector3D n = QVector3D::crossProduct(p12.toVector3D(), p13.toVector3D());
     float areal_123 = n.length(); // dobbelt areal
     QVector3D baryc; // til retur. Husk// u
     QVector2D p = p2 - pos;
     QVector2D q = p3 - pos;
-    n = QVector3D::crossProduct(p,q);
+    n = QVector3D::crossProduct(p.toVector3D(), q.toVector3D());
     baryc.setX(n.z()/areal_123);// v
     p = p3 - pos;
     q = p1 - pos;
 
-    n = QVector3D::crossProduct(p,q);
+    n = QVector3D::crossProduct(p.toVector3D(), q.toVector3D());
     baryc.setY(n.z()/areal_123);// w
     p = p1 - pos;
     q = p2 - pos;
-    n = QVector3D::crossProduct(p,q);
+    n = QVector3D::crossProduct(p.toVector3D(), q.toVector3D());
     baryc.setZ(n.z()/areal_123); // u
     return baryc;
 }

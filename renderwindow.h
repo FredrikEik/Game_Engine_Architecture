@@ -32,9 +32,6 @@ public:
 
     void exposeEvent(QExposeEvent *) override;  //gets called when app is shown and resized
 
-    bool mRotate{true};     //Check if triangle should rotate
-    void togglePlay(bool shouldPlay);
-
 private slots:
     void render();          //the actual render - function
 
@@ -49,7 +46,6 @@ private:
 
     //Data containers
     std::unordered_map<std::string, VisualObject*> m_objectMap; //Primary object container
-//    gsm::QuadTree<std::string, VisualObject*> m_quadTree;
     VisualObject* m_light{nullptr}; //Scene lightning
     VisualObject* m_world{nullptr}; //The scene map
     VisualObject* m_skybox{nullptr}; //The skybox
@@ -98,8 +94,6 @@ private:
     void startOpenGLDebugger();         //starts QOpenGLDebugLogger if possible
 
     void handleInput();   //Handles the input from mouse/keyboard
-
-    void createCoins();
 
 protected:
     //The QWindow that we inherit from have these functions to capture
