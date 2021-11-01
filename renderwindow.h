@@ -39,6 +39,7 @@ public:
     void toggleFrustumCulling(bool bIsToggleOn);
     void toggleShowCollsionBox(bool bIsToggleOn);
     std::vector<GameObject*> getAllGameObject();
+    void deleteGameObjectAt(int index);
 
 
     std::vector<GameObject*> mGameObjects;

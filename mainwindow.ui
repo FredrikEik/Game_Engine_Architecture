@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1052</width>
-    <height>761</height>
+    <height>945</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,7 +111,7 @@
             <property name="minimumSize">
              <size>
               <width>300</width>
-              <height>300</height>
+              <height>500</height>
              </size>
             </property>
             <property name="title">
@@ -126,6 +126,12 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>400</height>
+                </size>
+               </property>
                <property name="widgetResizable">
                 <bool>true</bool>
                </property>
@@ -134,13 +140,20 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>88</width>
-                  <height>88</height>
+                  <width>260</width>
+                  <height>418</height>
                  </rect>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <widget class="QListWidget" name="listWidget"/>
+                  <widget class="QListWidget" name="listWidget">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>400</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -354,12 +367,14 @@
    </property>
    <widget class="QMenu" name="menuAdd_Mesh">
     <property name="title">
-     <string>Add Mesh</string>
+     <string>Mesh</string>
     </property>
     <addaction name="actionCube"/>
     <addaction name="actionPyramid"/>
     <addaction name="actionSphere"/>
     <addaction name="actionSuzanne"/>
+    <addaction name="actionDelete_Selected"/>
+    <addaction name="actionGetCurrentRow"/>
    </widget>
    <addaction name="menuAdd_Mesh"/>
   </widget>
@@ -392,9 +407,14 @@
     <string>Suzanne</string>
    </property>
   </action>
-  <action name="actiondeselect">
+  <action name="actionDelete_Selected">
    <property name="text">
-    <string>deselect</string>
+    <string>Delete Selected</string>
+   </property>
+  </action>
+  <action name="actionGetCurrentRow">
+   <property name="text">
+    <string>GetCurrentRow</string>
    </property>
   </action>
  </widget>

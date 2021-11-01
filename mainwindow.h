@@ -23,6 +23,7 @@ public:
 
     void initList();
     void updateList();
+    void refreshList();
     void setID(int ID);
 
 public slots:
@@ -63,6 +64,10 @@ private slots:
     void on_actionCube_hovered();
 
     void on_ScaleXspinBox_valueChanged(double arg1);
+
+    void on_actionDelete_Selected_triggered();
+
+    void on_actionGetCurrentRow_triggered();
 
 private:
     void init();

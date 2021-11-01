@@ -220,7 +220,7 @@ void RenderWindow::render()
 //        qDebug() << "meshID: " << pickedID;
 //    }
 
-    qDebug() << "mousepressedonce: " << isMousePicking;
+    //qDebug() << "mousepressedonce: " << isMousePicking;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // For GameObjects
     for(int i{0}; i < mGameObjects.size(); i++)
@@ -277,7 +277,7 @@ void RenderWindow::render()
         {
 
 
-            int id = mGameObjects[i]->id; // +50 for å se rød nyansen
+            int id = i; // +50 for å se rød nyansen
             int r = (id & 0x000000FF) >>  0;
             int g = (id & 0x0000FF00) >>  8;
             int b = (id & 0x00FF0000) >> 16;
@@ -519,6 +519,11 @@ void RenderWindow::toggleShowCollsionBox(bool bIsToggleOn)
 std::vector<GameObject*> RenderWindow::getAllGameObject()
 {
     return mGameObjects;
+}
+
+void RenderWindow::deleteGameObjectAt(int index)
+{
+    mGameObjects.erase(mGameObjects.begin() + index);
 }
 
 

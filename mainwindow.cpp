@@ -50,6 +50,20 @@ void MainWindow::updateList()
     }
 }
 
+void MainWindow::refreshList()
+{
+    if(mRenderWindow)
+    {
+        GameObjects.clear();
+        GameObjects = mRenderWindow->getAllGameObject();
+
+        for(auto it : GameObjects)
+        {
+            new QListWidgetItem(tr((*it).name.c_str()), listWidget);
+        }
+    }
+}
+
 void MainWindow::setID(int ID)
 {
     listWidget->setCurrentRow(ID);
@@ -274,5 +288,23 @@ void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 {
 //    QVector3D  scale = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(arg1));
     //GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D{GLfloat(arg1),1,1});
+}
+
+
+void MainWindow::on_actionDelete_Selected_triggered()
+{
+    mRenderWindow->deleteGameObjectAt(ObjectListIndex);
+    GameObjects.erase(GameObjects.begin() + ObjectListIndex);
+    listWidget->takeItem(listWidget->currentRow());
+    //listWidget->removeItemWidget(listWidget->currentItem());
+
+    //refreshList();
+}
+
+
+void MainWindow::on_actionGetCurrentRow_triggered()
+{
+        qDebug() << listWidget->currentRow();
+        qDebug() << "objIndex: " << ObjectListIndex;
 }
 
