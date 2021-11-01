@@ -1,5 +1,5 @@
 ﻿#include "camera.h"
-//#include <QDebug>
+#include <QDebug>
 #include "soundsystem.h"
 
 Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
@@ -77,10 +77,10 @@ void Camera::update()
 //    mPosition = position;
 //}
 
-//void Camera::setSpeed(float speed)
-//{
-//    mSpeed = speed;
-//}
+void Camera::setSpeed(float speed)
+{
+    mSpeed = speed;
+}
 
 void Camera::calculateProjectionMatrix()
 {

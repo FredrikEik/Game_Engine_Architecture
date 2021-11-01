@@ -14,12 +14,27 @@ CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
                     : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
+//    mLogger = Logger::getInstance();
+
+//    mLogger->setMainWindow(mMainWindow);
+
+//    time_t now = time(0);
+
+//    char* dt = ctime(&now);
+
+//    mLogger->logText("Logger started " + std::string(dt), LColor::HIGHLIGHT);
+
     mGameObjectManager = &GameObjectManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
     mInstance = this;
 
     //Make the gameloop timer:
     mGameLoopTimer = new QTimer(this);
+
+    mEditorCamera = new Camera(50.0f, 0.1f, 1000.f);
+    mEditorCamera->mName = "Editor";
+    mGameCamera = new Camera(50.0f, 0.1f, 300.f);
+    mGameCamera->mName = "Game";
 }
 
 CoreEngine *CoreEngine::getInstance()

@@ -1,8 +1,9 @@
 #include "ResourceManager/physicshandler.h"
 #include <vector>
+#include <QDebug>
 
-//void PhysicsComponent::movePhysicsObject()
-//{
+void PhysicsHandler::movePhysicsObject()
+{
     //Get the surface the physicsobject is going to interact with.
 //    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(mGameObject->mName = "TriangleSurface")->get_vertices();
     //Getting a reference to the GameObject that is the trianglesurface?
@@ -14,6 +15,7 @@
     //qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
 //    qDebug() << triangleVertices.size();
+    qDebug() << "Physicshandler";
 
 //Find the distance between the balls position and vertices of the trianglesurface
 //    gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.
@@ -35,7 +37,7 @@
 
 //    //qDebug() << "Vert nr                 " << i+1 << "X" << triangleVertices[i].getXYZ().x << "Y" << triangleVertices[i].getXYZ().y << "Z" << triangleVertices[i].getXYZ().z;
 //    //qDebug() << "Distance ball to vert nr" << i+1 << "X" << distanceBetweenBallAndVert[i].x << "Y" << distanceBetweenBallAndVert[i].y << "Z" << distanceBetweenBallAndVert[i].z;
-//    }
+    }
 
 
 
