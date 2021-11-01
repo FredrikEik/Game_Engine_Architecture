@@ -307,7 +307,6 @@ void RenderSystem::setPickedObject(int pickedID)
 {
     cancelPickedObject();
     mPickedObject = mGameObjects[pickedID];
-
 }
 
 void RenderSystem::cancelPickedObject()
@@ -366,8 +365,10 @@ void RenderSystem::mousePicking()
 
     if (pickedID < 100000)
     {
+
         qDebug() << "Mesh ID" << pickedID;
         setPickedObject(pickedID);
+
     }
     else
     {
