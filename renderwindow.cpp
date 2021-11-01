@@ -127,6 +127,8 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     CoreEngine::getInstance()->SetUpScene();
+
+    mMainWindow->makeObjList(mGameObjects);
 }
 
 // Called each frame - doing the rendering
@@ -151,11 +153,13 @@ void RenderWindow::render()
             setPlayerMovement(0,0,0); //resets movement. (stops constant movement after buttonpress)
         }
     /** FRUSTUM */
+
+        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+
         //Check if mForward.x = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors multiplied by 0.
         if(bFrustumEnabled && mCurrentCamera->getmForward().x != 0.f)
         {
-            gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
             gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
             gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
@@ -198,8 +202,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
-        gsl::Vector3D currentObjPosition = mGameObjects[i]->transform->mMatrix.getPosition();
-        float  distanceToObject = (currentObjPosition - mCurrentCamera->position()).length();
+        float  distanceToObject = (ObjectPos - mCurrentCamera->position()).length();
 
         //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
         if(mGameObjects[i]->mesh->bLodEnabled && bLODToggleEnabled){

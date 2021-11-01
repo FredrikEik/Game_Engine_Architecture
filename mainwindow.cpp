@@ -24,6 +24,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::makeObjList(std::vector<GameObject *> mGameObjects)
+{
+    std::string name;
+    for(int i = 0; i<mGameObjects.size(); i++){
+        name = mGameObjects[i]->mName;
+        name.erase(name.find(".obj"));
+        ui->objList->addItem(QString::fromStdString(name));
+    }
+}
+
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into

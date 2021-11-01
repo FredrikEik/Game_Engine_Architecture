@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "GameObject.h"
 
 class QWidget;
 class RenderWindow;
@@ -18,7 +19,10 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    static MainWindow *getInstance();
     ~MainWindow();
+
+    void makeObjList(std::vector<GameObject*> mGameObjects);
 
 
 private slots:

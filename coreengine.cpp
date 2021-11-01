@@ -1,6 +1,5 @@
 #include "coreengine.h"
 
-
 CoreEngine* CoreEngine::mInstance = nullptr;
 
 CoreEngine::CoreEngine(RenderWindow *renderWindow)
