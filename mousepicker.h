@@ -15,6 +15,7 @@ public:
     void update(int x, int y, int width, int height);
 
     gsl::Vector3D getCurrentRay() { return currentRay; }
+    bool TestRayHitSphere(gsl::Vector3D sphereCenter, float sphereRadius);
 
 private:
     gsl::Vector3D currentRay;
@@ -27,8 +28,7 @@ private:
     tog::vec4 toEyeCoords(tog::vec4 clipCoords);
     gsl::Vector3D toWorldCoords(tog::vec4 eyeCoords);
 
-    bool TestRayOBBIntersection(gsl::Vector3D rayOrigin, gsl::Vector3D rayDirection, gsl::Vector3D aabb_min, gsl::Vector3D aabb_max, gsl::Vector3D objectPosition , float& intersection_distance);
-
+    //bool TestRayOBBIntersection(gsl::Vector3D rayOrigin, gsl::Vector3D rayDirection, gsl::Vector3D aabb_min, gsl::Vector3D aabb_max, gsl::Vector3D objectPosition , float& intersection_distance);
 
 };
 

@@ -581,6 +581,19 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
 
+    //Mousepicking
+    if(mInput.LMB && !bPlayGame)
+    {
+        for (int i = 0; i < ObjFactory->mGameObject.size(); i++ ) {
+            if (mMousePicker->TestRayHitSphere(ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.getPosition(), 0.5f))
+            {
+                ObjFactory->setOBJindex(i);
+                mMainWindow->setSelection(i);
+                break;
+            }
+        }
+    }
+
     //Player
     if (bPlayGame)
     {
@@ -758,5 +771,6 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     mMouseYlast = event->pos().y();
 
     mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
-    //qDebug() << "x: " << mMousePicker->getCurrentRay().getX() << " y: " << mMousePicker->getCurrentRay().getY() << " z: " << mMousePicker->getCurrentRay().getZ();
+
+    qDebug() << "x: " << mMouseXlast << " y: " << mMouseYlast <<" mp x: " << mMousePicker->getCurrentRay().getX() << " mp y: " << mMousePicker->getCurrentRay().getY() << " mp z: " << mMousePicker->getCurrentRay().getZ();
 }

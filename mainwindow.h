@@ -30,6 +30,7 @@ public:
     int getHeight();
 
     void disableWorldObjects(bool disable);
+    void setSelection(int index);
 
 private slots:
     void on_pushButton_toggled(bool checked);

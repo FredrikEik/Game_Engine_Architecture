@@ -145,6 +145,11 @@ void MainWindow::disableWorldObjects(bool disable)
     ui->WorldObjects->setDisabled(disable);
 }
 
+void MainWindow::setSelection(int index)
+{
+    ui->WorldObjects->setCurrentRow(index);
+}
+
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {

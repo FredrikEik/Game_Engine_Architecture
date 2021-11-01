@@ -18,25 +18,9 @@ struct vec4
         z = inZ;
         w = inW;
     }
-
-    vec4 (gsl::Matrix4x4 matrix, vec4 vector)
-    {
-        x = y = z = w = 0;
-        for (int i = 0; i < 4; i++ ) {
-            x += matrix.getFloat(i);
-        }
-        for (int i = 0; i < 4; i++ ) {
-            y += matrix.getFloat(i+4);
-        }
-        for (int i = 0; i < 4; i++ ) {
-            z += matrix.getFloat(i+8);
-        }
-        for (int i = 0; i < 4; i++ ) {
-            w += matrix.getFloat(i+12);
-        }
-
-    }
 };
+
+vec4 Transform(gsl::Matrix4x4 matrix, vec4 vector);
 
 float dotProduct(gsl::Vector3D a, gsl::Vector3D b);
 

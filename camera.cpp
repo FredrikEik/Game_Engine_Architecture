@@ -64,6 +64,11 @@ void Camera::setPosition(const gsl::Vector3D &position)
     mPosition = position;
 }
 
+gsl::Vector3D Camera::getPosition()
+{
+    return mPosition;
+}
+
 void Camera::setSpeed(float speed)
 {
     mSpeed = speed;

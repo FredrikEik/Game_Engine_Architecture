@@ -22,6 +22,7 @@ public:
     gsl::Matrix4x4 mProjectionMatrix;
 
     void setPosition(const gsl::Vector3D &position);
+    gsl::Vector3D getPosition();
 
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
