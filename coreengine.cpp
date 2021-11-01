@@ -14,20 +14,22 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
 {
     mLogger = Logger::getInstance();
 
+
     mLogger->setMainWindow(mMainWindow);
 
     time_t now = time(0);
 
     char* dt = ctime(&now);
-
     mLogger->logText("Logger started " + std::string(dt), LColor::HIGHLIGHT);
 
     mGameObjectManager = &GameObjectManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
+
     mInstance = this;
 
     //Make the gameloop timer:
     mGameLoopTimer = new QTimer(this);
+
 
     mEditorCamera = new Camera(50.0f, 0.1f, 1000.f);
     mEditorCamera->mName = "Editor";
@@ -49,14 +51,23 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 
 void CoreEngine::setUpScene()
 {
+    //ask resource manager to set up all asstes
+//    mGameObjectManager->setUpAllSounds();
+//    mGameObjectManager->setUpAllMeshes();
+//    mGameObjectManager->setUpAllTextures();
+//    mGameObjectManager->setUpAllShaders();
+//    mGameObjectManager->setUpAllMaterials();
     //********************** Making the object to be drawn **********************
 
     //Axis
     GameObject *temp = mGameObjectManager->addObject("axis");
+    temp->mName = "Axis";
     mRenderSystem->mGameObjects.push_back(temp);
 
     //dog triangle
     temp = mGameObjectManager->addObject("triangle");
+    temp->mName = "DogTriangle";
+    //temp->mMaterial = mGameObjectManager->getMaterial("Texture");
     temp->mMaterial->mShaderProgram = 1;
     temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
 
@@ -102,11 +113,14 @@ void CoreEngine::setUpScene()
     //    temp->mName = "TriangleSurface";
     //    mRenderSystem->mGameObjects.push_back(temp);
 
-    mEditorCamera = new Camera();
+    //mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     mGameObjectManager->setUpAllTextures();
+
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 0.0f);
+    mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:
     mMainWindow->updateHierarchy(mRenderSystem->mGameObjects);

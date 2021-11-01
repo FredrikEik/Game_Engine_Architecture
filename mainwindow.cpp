@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
+
     //ui->GameObjectList->addItem("Cheese");
     init();
 }
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWind
 MainWindow::~MainWindow()
 {
     delete mRenderSystem;
+    delete mCoreEngine;
     delete ui;
 }
 
@@ -85,6 +87,16 @@ void MainWindow::init()
     mRenderWindowContainer->setFocus();
 }
 
+void MainWindow::updateHierarchy(const std::vector<GameObject *> &GameObjectData)
+{
+    ui->GameObjectList->clear();
+
+    for (auto god : GameObjectData)
+    {
+        ui->GameObjectList->addItem(QString::fromStdString(god->mName));
+    }
+}
+
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
     GameObject *temp = GameObjectManager::getInstance().addObject("triangle");
@@ -95,16 +107,6 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
 {
     GameObject *temp = GameObjectManager::getInstance().addObject("suzanne.obj");
     mRenderSystem->mGameObjects.push_back(temp);
-}
-
-void MainWindow::updateHierarchy(const std::vector<GameObject *> &GameObjectData)
-{
-    ui->GameObjectList->clear();
-
-    for (auto god : GameObjectData)
-    {
-        ui->GameObjectList->addItem(QString::fromStdString(god->mName));
-    }
 }
 
 //Example of a slot called from the button on the top of the program.

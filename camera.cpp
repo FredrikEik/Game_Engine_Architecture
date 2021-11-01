@@ -72,21 +72,21 @@ void Camera::update()
 
 }
 
-//void Camera::setPosition(const gsl::Vector3D &position)
-//{
-//    mPosition = position;
-//}
-
-void Camera::setSpeed(float speed)
-{
-    mSpeed = speed;
-}
-
 void Camera::calculateProjectionMatrix()
 {
     mProjectionMatrix.perspective(mFrustum.mFOVvertical, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
     calculateFrustumVectors();
     Logger::getInstance()->logText("AspectRatio " + std::to_string(mFrustum.mAspectRatio));
+}
+
+void Camera::setPosition(const gsl::Vector3D &position)
+{
+    mPosition = position;
+}
+
+void Camera::setSpeed(float speed)
+{
+    mSpeed = speed;
 }
 
 void Camera::updateHeigth(float deltaHeigth)

@@ -27,6 +27,7 @@ RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     if (!mContext->create()) {
         delete mContext;
         mContext = nullptr;
+
         qDebug() << "Context could not be made - quitting this application";
     }
 }
@@ -47,6 +48,7 @@ void RenderSystem::init()
         return;
     }
 
+
     //just to make sure we don't init several times
     //used in exposeEvent()
     if (!mInitialized)
@@ -55,23 +57,30 @@ void RenderSystem::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
+    mLogger = Logger::getInstance();
+
     //Print render version info (what GPU is used):
     //(Have to use cout to see text- qDebug just writes numbers...)
     //Nice to see if you use the Intel GPU or the dedicated GPU on your laptop
     // - can be deleted
-    std::cout << "The active GPU and API: \n";
-    std::cout << "  Vendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "  Renderer: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "  Version: " << glGetString(GL_VERSION) << std::endl;
+    mLogger->logText("The active GPU and API:", LColor::HIGHLIGHT);
+
+    std::string tempString;
+
+    tempString +=  std::string("  Vendor: ") + std::string((char*)glGetString(GL_VENDOR)) + "\n" +
+                   std::string("  Renderer: ") + std::string((char*)glGetString(GL_RENDERER)) + "\n" +
+                   std::string(" Version: ") + std::string((char*)glGetString(GL_VERSION)) + "\n";
+    mLogger->logText(tempString);
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
     int textureUnits;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
-    std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
+    tempString.clear();
+    tempString += "  This GPU as " + std::to_string(textureUnits) + " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
-    std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
-
+    tempString += "and supports " + std::to_string(mTextureUnits) + " texture units pr shader";
+    mLogger->logText(tempString);
 
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
