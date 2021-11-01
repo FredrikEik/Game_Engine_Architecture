@@ -172,7 +172,8 @@ void Engine::loop()
 		MousePosition mPos = Input::getInstance()->getMousePosition();
 		unsigned char data[4];
 
-		glReadPixels(mPos.x, mPos.y,1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glReadPixels(mPos.x, getWindowHeight() - mPos.y,1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		std::cout << "x:      " << mPos.x << " y:   " << mPos.y << '\n';
 
 		// Convert the color back to an integer ID
 		int pickedID =
