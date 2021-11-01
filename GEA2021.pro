@@ -6,6 +6,13 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
+    ECS/entitymanager.cpp \
+    ECS/resourcemanager.cpp \
+    Shaders/cubemapshader.cpp \
+    Shaders/phongshader.cpp \
+    Shaders/plainshader.cpp \
+    Shaders/shader.cpp \
+    Shaders/textureshader.cpp \
     camera.cpp \
     cubemap.cpp \
     cubemapshader.cpp \
@@ -28,7 +35,19 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
-    ECScoordinator.h \
+    ECS/ECScoordinator.h \
+    ECS/compmanager.h \
+    ECS/componentarray.h \
+    ECS/entitymanager.h \
+    ECS/resourcemanager.h \
+    ECS/systembase.h \
+    ECS/systemmanager.h \
+    ECS/ECScoordinator.h \
+    Shaders/cubemapshader.h \
+    Shaders/phongshader.h \
+    Shaders/plainshader.h \
+    Shaders/shader.h \
+    Shaders/textureshader.h \
     camera.h \
     compmanager.h \
     componentarray.h \
