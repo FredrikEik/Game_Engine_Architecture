@@ -15,24 +15,16 @@ SOURCES += main.cpp \
     Shaders/textureshader.cpp \
     camera.cpp \
     cubemap.cpp \
-    cubemapshader.cpp \
-    entitymanager.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
     mathfunctions.cpp \
-    phongshader.cpp \
-    plainshader.cpp \
     plane.cpp \
     renderwindow.cpp \
-    resourcemanager.cpp \
-    shader.cpp \
     mainwindow.cpp \
     skybox.cpp \
     texture.cpp \
-    textureshader.cpp \
     vertex.cpp \
     visualobject.cpp \
-    xyz.cpp
 
 HEADERS += \
     ECS/ECScoordinator.h \
@@ -49,34 +41,22 @@ HEADERS += \
     Shaders/shader.h \
     Shaders/textureshader.h \
     camera.h \
-    compmanager.h \
-    componentarray.h \
     components.h \
     constants.h \
     cubemap.h \
-    cubemapshader.h \
-    entitymanager.h \
     gltypes.h \
     input.h \
     interactiveobject.h \
     lightsource.h \
     math_constants.h \
     mathfunctions.h \
-    phongshader.h \
-    plainshader.h \
     plane.h \
     renderwindow.h \
-    resourcemanager.h \
-    shader.h \
     mainwindow.h \
     skybox.h \
-    systembase.h \
-    systemmanager.h \
     texture.h \
-    textureshader.h \
     vertex.h \
     visualobject.h \
-    xyz.h
 
 FORMS += \
     mainwindow.ui

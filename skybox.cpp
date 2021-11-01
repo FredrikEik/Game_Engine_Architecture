@@ -1,6 +1,6 @@
 #include "skybox.h"
 #include "cubemap.h"
-#include "shader.h"
+#include "Shaders/shader.h"
 
 SkyBox::SkyBox()
     :VisualObject()

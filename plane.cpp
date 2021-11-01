@@ -1,6 +1,6 @@
 #include "plane.h"
 #include "texture.h"
-#include "shader.h"
+#include "Shaders/shader.h"
 #include "qvector2d.h"
 #include "mathfunctions.h"
 Plane::Plane(std::string filename)

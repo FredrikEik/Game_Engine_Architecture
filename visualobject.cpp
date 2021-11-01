@@ -1,5 +1,5 @@
 #include "visualobject.h"
-#include "shader.h"
+#include "Shaders/shader.h"
 #include "texture.h"
 #include <QDebug>
 

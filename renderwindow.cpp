@@ -10,11 +10,13 @@
 
 #include <iostream> //we use std::cout for GPU readout
 
-#include "shader.h"
-#include "plainshader.h"
-#include "textureshader.h"
-#include "phongshader.h"
-#include "cubemapshader.h"
+#include "Shaders/shader.h"
+#include "Shaders/plainshader.h"
+#include "Shaders/textureshader.h"
+#include "Shaders/phongshader.h"
+#include "Shaders/cubemapshader.h"
+
+#include "ECS/ECScoordinator.h"
 
 #include "vertex.h"
 #include "visualobject.h"
@@ -22,10 +24,8 @@
 #include "input.h"
 #include "camera.h"
 #include "mainwindow.h"
-#include "xyz.h"
 #include "lightsource.h"
 #include "plane.h"
-#include "ECScoordinator.h"
 #include "constants.h"
 #include "skybox.h"
 

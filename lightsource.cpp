@@ -1,5 +1,5 @@
 #include "lightsource.h"
-#include "shader.h"
+#include "Shaders/shader.h"
 
 LightSource::LightSource(Shader* shader)
     :VisualObject()

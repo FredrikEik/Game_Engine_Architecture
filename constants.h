@@ -18,6 +18,14 @@ namespace gsl  //Game School Lib
         PHONGSHADER
     };
 
+    enum AssetType
+    {
+        NULLASSETTYPE = 0,
+        OBJ = 1,
+        BMP = 2,
+        WAV = 3
+    };
+
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
