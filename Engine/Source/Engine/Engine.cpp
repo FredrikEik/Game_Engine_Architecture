@@ -12,11 +12,15 @@
 
 #include "../Shader.h"
 #include "../ECSManager.h"
+#include "../DataStructures/SweepAndPrune.h"
 
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
 #include "../Systems/CameraSystem.h"
+
 #include "../Systems/SelectionSystem.h"
+#include "../Systems/CollisionSystem.h"
+
 
 #include "../Input/Input.h"
 #include "../Components/Components.h"
@@ -32,10 +36,12 @@
 Engine::Engine()
 {
 	ECS = new ECSManager();
+	CollisionBroadphaseDatastructure = new SweepAndPrune(ECS);
 }
 
 Engine::~Engine()
 {
+	delete CollisionBroadphaseDatastructure;
 	delete ECS;
 	delete ourShader;
 }
@@ -121,6 +127,7 @@ void Engine::init()
 	ImGui::StyleColorsDark();
 }
 
+int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
 	while (!glfwWindowShouldClose(window))
@@ -139,27 +146,47 @@ void Engine::loop()
 		ImGui::NewFrame();
 
 		// render your GUI
-
 		ImGui::Begin("Demo window");
+		
 		if (ImGui::Button("Spawn cube"))
 		{
 			uint32 entity = ECS->newEntity();
 			ECS->loadAsset(entity, DefaultAsset::CUBE);
 			ECS->addComponent<TransformComponent>(entity);
+			ECS->addComponent<AxisAlignedBoxComponent>(entity);
+			CollisionSystem::construct(entity, ECS);
 			std::cout << "Adding entity " << entity << '\n';
+	
 		}
 		//// TEMP UPDATE
 		//ComponentManager<TransformComponent>* mng = ECS->getComponentManager<TransformComponent>();
 		//TransformSystem::moveAll(ECS->getComponentManager<TransformComponent>());
 
-		if (ImGui::Button("Destroy entity 0"))
+		if (ImGui::Button("Destroy entity 1"))
 		{
-			ECS->destroyEntity(0);
+			ECS->destroyEntity(1);
 		}
 		ImGui::End();
 
+		ImGui::Begin("TransformWidget");
+
+		ImGui::InputInt("Entity", &EntityToTransform, 1, 10);
+		glm::vec3 position = glm::vec3(ECS->getComponentManager<TransformComponent>()->getComponent(EntityToTransform).transform[3]);
+		float test[3]{ position.x, position.y, position.z };
+		//ImGui::InputFloat3("Position", test);
+		ImGui::DragFloat3("Position", test, 0.1f, -10000.f, 10000.f);
+		//std::cout << "Setting position x: " << test[0] << " y: " << test[1] << " z: " << test[2]<<'\n';
+
+		TransformSystem::setPosition(EntityToTransform, glm::vec3(test[0], test[1], test[2]), ECS);
 
 
+
+
+		ImGui::End();
+		CollisionBroadphaseDatastructure->update();
+
+
+		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
 
 
 		//// RENDER

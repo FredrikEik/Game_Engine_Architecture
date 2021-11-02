@@ -29,7 +29,7 @@ private:
 	std::vector<SweepElement> &m_data;
 	class ECSManager* ECS{};
 	// TODO: Only update entities that moved. Dirty bit maybe?
-	void updateData();
+	bool updateData();
 	void sortAndSweep();
 	void updateSortAxis(const glm::vec2& sum, const glm::vec2& sum2);
 

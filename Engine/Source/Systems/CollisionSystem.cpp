@@ -4,14 +4,16 @@
 #include "../Components/ComponentManager.h"
 #include "../Vertex.h"
 
-void CollisionSystem::construct(struct AxisAlignedBoxComponent& collisionComponent,
+void CollisionSystem::construct(uint32 entity,
 	class ECSManager* ECS)
 {
 	auto transformManager = ECS->getComponentManager<TransformComponent>();
 	auto meshManager = ECS->getComponentManager<MeshComponent>();
-	uint32 entityID = collisionComponent.entityID;
-	const TransformComponent& transform = transformManager->getComponent(entityID);
-	const MeshComponent* mesh = meshManager->getComponentChecked(entityID);
+	auto collisionComponent = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
+
+	//uint32 entityID = collisionComponent->entityID;
+	const TransformComponent& transform = transformManager->getComponent(entity);
+	const MeshComponent* mesh = meshManager->getComponentChecked(entity);
 
 	// TODO: test if this works for the default case of a tiny cube collision
 	glm::vec3 min{-0.5f, -0.5f, -0.5f};
@@ -27,9 +29,9 @@ void CollisionSystem::construct(struct AxisAlignedBoxComponent& collisionCompone
 	min *= scale;
 	max *= scale;
 
-	collisionComponent.minScaled = min;
-	collisionComponent.maxScaled = max;
-	collisionComponent.center = glm::vec3((max.x - min.x) / 2.f,
+	collisionComponent->minScaled = min;
+	collisionComponent->maxScaled = max;
+	collisionComponent->center = glm::vec3((max.x - min.x) / 2.f,
 		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
 }
 
@@ -89,7 +91,14 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 
 void CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* ECS)
 {
-	assert(false); // Implement
+	//assert(false); // Implement
+
+	auto AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
+	isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
+	//if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
+	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
+	//else
+	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are not colliding\n";
 }
 
 void CollisionSystem::scaleToMesh(const MeshComponent* mesh, 

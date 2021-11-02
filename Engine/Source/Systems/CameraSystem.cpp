@@ -73,11 +73,10 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 		deltaMovement -= glm::vec3(0, 1, 0) * 10.f * deltaTime;
 
 	TransformSystem::move(entity, deltaMovement, ECS);
-	/*
-	std::cout << currentTransform->transform[3].x << " " 
-		<< currentTransform->transform[3].y<< " " 
-		<< currentTransform->transform[3].z << "\n";
-		*/
+	//std::cout << currentTransform->transform[3].x << " " 
+	//	<< currentTransform->transform[3].y<< " " 
+	//	<< currentTransform->transform[3].z << "\n";
+
 }
 
 void CameraSystem::processEditorMouseInput(CameraComponent& currentCamera)

@@ -52,6 +52,7 @@ private:
 	class Shader* outlineShader{};
 
 	uint32 editorCameraEntity{};
+
 	uint32 RTSSelectionEntity{};
 
 
@@ -63,4 +64,7 @@ public:
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
+
+	class SweepAndPrune* CollisionBroadphaseDatastructure{};
+
 };
