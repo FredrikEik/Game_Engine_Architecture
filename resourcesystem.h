@@ -41,7 +41,6 @@ public:
     void SetMeshDataContainer();
 
     RenderSystem * rendSys;
-    std::vector < std::pair<std::string, meshData>> meshDataContainer;
 
     //frostum
     meshData* makeFrustum(const Frustum &frustumIn, RenderSystem * inRendSys);
