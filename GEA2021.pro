@@ -85,6 +85,8 @@ FORMS += \
     transform.ui
 
 DISTFILES += \
+    Shaders/mousepicker.frag \
+    Shaders/mousepicker.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

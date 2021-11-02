@@ -184,7 +184,6 @@ void RenderWindow::render()
 //        //draw the object
 //        mVisualObjects[0]->draw();
 
-
     if(ObjFactory->mGameObject.size() > 0)
     {
         glUseProgram(mShaderPrograms[0]->getProgram() );
@@ -596,6 +595,13 @@ void RenderWindow::handleInput()
                 break;
             }
         }
+        /*ObjFactory->createObject("Cube");
+        GameObject* test = ObjFactory->mGameObject.back();
+        test->getTransformComp()->mMatrix.setPosition(mCurrentCamera->getPosition().x, mCurrentCamera->getPosition().y, mCurrentCamera->getPosition().z);
+        qDebug() << "camera x: " << mCurrentCamera->getPosition().x << " y: " << mCurrentCamera->getPosition().z << " z: " << mCurrentCamera->getPosition().z;
+        test->getTransformComp()->mMatrix.setRotationToVector(mMousePicker->getCurrentRay());
+        test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 10.f));
+        qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
 
     //Player
@@ -776,5 +782,5 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 
     mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
 
-    qDebug() << "x: " << mMouseXlast << " y: " << mMouseYlast <<" mp x: " << mMousePicker->getCurrentRay().getX() << " mp y: " << mMousePicker->getCurrentRay().getY() << " mp z: " << mMousePicker->getCurrentRay().getZ();
+    //qDebug() << "x: " << mMouseXlast << " y: " << mMouseYlast <<" mp x: " << mMousePicker->getCurrentRay().getX() << " mp y: " << mMousePicker->getCurrentRay().getY() << " mp z: " << mMousePicker->getCurrentRay().getZ();
 }
