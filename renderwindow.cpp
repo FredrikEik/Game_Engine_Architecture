@@ -145,6 +145,18 @@ void RenderWindow::init()
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
     
     
+    //Suzannes - using default material:
+    for(int i{-50}; i < 100; i++)
+    {
+        for(int j{0}; j < 10; j++)
+        {
+            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),1,1);
+            //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
+
+        }
+    }
+
+
     SoundManager::getInstance()->init();
     
     mExplosionSound = SoundManager::getInstance()->createSource(
@@ -259,6 +271,9 @@ void RenderWindow::render()
     for(int i = 0; i < eSize; i++)
     {
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
+            //frustum culling
+            frustumCulling(i);
+
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             int viewMatrix{-1};
             int projectionMatrix{-1};
@@ -318,27 +333,26 @@ void RenderWindow::render()
         }
     }
 
+    if(mCurrentCamera->mFrustum.isDrawable)
+    {
+        meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
+        gsl::Matrix4x4 temp(true);
+        temp.translate(mCurrentCamera->Cam.mPosition);
+        temp.rotateY(-mCurrentCamera->Cam.mYaw);
+        temp.rotateX(-mCurrentCamera->Cam.mPitch);
 
-    //glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
-    meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
-    gsl::Matrix4x4 temp(true);
-    temp.translate(mCurrentCamera->Cam.mPosition);
-    temp.rotateY(-mCurrentCamera->Cam.mYaw);
-    temp.rotateX(-mCurrentCamera->Cam.mPitch);
+        initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    initializeOpenGLFunctions();    //must call this every frame it seems...
+       glUniformMatrix4fv(vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+       glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+       glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
 
-   glUniformMatrix4fv(vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-   glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-   glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
+       //draw the object
+        glBindVertexArray( frustum->VAO );
+        glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
+        glBindVertexArray(0);
 
-   //draw the object
-    glBindVertexArray( frustum->VAO );
-    glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
-    glBindVertexArray(0);
-    //glUniformMatrix4fv(mMatrixUniform, 1, GL_TRUE, temp.constData());
-    //glBindVertexArray( frustum->VAO );
-    //glDrawElements(frustum->DrawType, 24, GL_UNSIGNED_INT, nullptr);
+    }
 
     
     //Calculate framerate before
@@ -611,6 +625,63 @@ void RenderWindow::startOpenGLDebugger()
                 qDebug() << "Started OpenGL debug logger!";
         }
     }
+}
+
+bool RenderWindow::frustumCulling(int Index)
+{
+    //tatt fra ole.experiment frostum culling
+    mCurrentCamera->calculateFrustumVectors();
+
+    //vector from position of cam to object;
+    gsl::Vector3D vectorToObject =transformCompVec[Index]->mMatrix.getPosition()
+            - mCurrentCamera->Cam.mPosition;
+
+    //radius of object sphere
+    float gobRadius = meshCompVec[Index]->collisionRadius;
+    //Mesh data is not scaled so have to calculate for that
+    //TODO: The system will break if scaling is not uniform...
+    //gobRadius *= mGameObjects[gobIndex]->mTransform->mScale.x;
+    //CURRENTLY NO SCALE
+
+    //if radius is not set == very small
+    if(gobRadius <= 0.000001f)
+    {
+        meshCompVec[Index]->isDrawable = true;
+        return false;
+    }
+
+    //length of vectorToObject onto frustum normal
+    float tempDistance{0.f};
+
+    //shortcut to frustum
+    Frustum &frustum = mCurrentCamera->mFrustum;
+
+    //the collider sphere seems to be a little to small, so adding this
+    //padding to not cull them to early
+    float padding{0.2f}; //
+
+    //Project vector down to frustum normals:
+    //Right plane:
+    tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding))
+    {
+        meshCompVec[Index]->isDrawable = false;
+        return true;
+
+    }
+
+    //Left plane:
+    tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding))
+    {
+        meshCompVec[Index]->isDrawable = false;
+        return true;
+    }
+
+    //insert the rest of planes here
+
+    meshCompVec[Index]->isDrawable = true;
+    return false;
 }
 
 void RenderWindow::setCameraSpeed(float value)

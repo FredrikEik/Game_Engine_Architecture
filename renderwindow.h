@@ -88,6 +88,9 @@ private:
 
     void startOpenGLDebugger();
 
+    //frustum culling - taken from ole.experiment
+    bool frustumCulling(int Index);
+
     void setCameraSpeed(float value);
 
     void handleInput();

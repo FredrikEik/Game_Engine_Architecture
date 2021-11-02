@@ -124,7 +124,7 @@ void RenderSystem::initData(meshData * obj)
         glGenBuffers( 1, &obj->VBO );
         glBindBuffer( GL_ARRAY_BUFFER, obj->VBO );
 
-        //Vertex Buffer Object to hold vertices - VBO
+        //Vertex Buffer Object to hold vertices -5 VBO
         glBufferData( GL_ARRAY_BUFFER, obj->meshVert.size()*sizeof( Vertex ),
                       obj->meshVert.data(), GL_STATIC_DRAW );
 

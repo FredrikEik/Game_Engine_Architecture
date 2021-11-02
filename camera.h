@@ -15,7 +15,7 @@ struct Frustum
     float mNearPlaneDistance{0.1f};  //used to make projection matrix
     float mFOVvertical{45.f};                //used to make projection matrix
     float mAspectRatio{1.7777778f};        //used to make projection matrix - set to 16/9 as default
-
+    bool isDrawable = true;
     //Normals for the side planes - for frustum culling
     //Make sure these are stored normalized!
     gsl::Vector3D mRightPlane;
@@ -51,9 +51,9 @@ public:
 
     //frustum
     Frustum mFrustum;
+    void calculateFrustumVectors();
 private:
     //frostum
-    void calculateFrustumVectors();
 };
 
 #endif // CAMERA_H
