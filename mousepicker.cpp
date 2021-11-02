@@ -39,13 +39,14 @@ gsl::Vector2D MousePicker::getNormalizedDeviceCoords(int mouse_x, int mouse_y, i
 
 tog::vec4 MousePicker::toEyeCoords(tog::vec4 clipCoords)
 {
+    projectionMatrix = camera->mProjectionMatrix;
     gsl::Matrix4x4 invertedProjectionMatrix = projectionMatrix;
     invertedProjectionMatrix.inverse();
-    //qDebug() << "projectionMatrix:";
-    //qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
-    //qDebug() << projectionMatrix.getFloat(4) << projectionMatrix.getFloat(5) << projectionMatrix.getFloat(6) << projectionMatrix.getFloat(7);
-    //qDebug() << projectionMatrix.getFloat(8) << projectionMatrix.getFloat(9) << projectionMatrix.getFloat(10) << projectionMatrix.getFloat(11);
-    //qDebug() << projectionMatrix.getFloat(12) << projectionMatrix.getFloat(13) << projectionMatrix.getFloat(14) << projectionMatrix.getFloat(15);
+    qDebug() << "projectionMatrix: copy";
+    qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
+    qDebug() << projectionMatrix.getFloat(4) << projectionMatrix.getFloat(5) << projectionMatrix.getFloat(6) << projectionMatrix.getFloat(7);
+    qDebug() << projectionMatrix.getFloat(8) << projectionMatrix.getFloat(9) << projectionMatrix.getFloat(10) << projectionMatrix.getFloat(11);
+    qDebug() << projectionMatrix.getFloat(12) << projectionMatrix.getFloat(13) << projectionMatrix.getFloat(14) << projectionMatrix.getFloat(15);
     tog::vec4 eyeCoords = tog::Transform(invertedProjectionMatrix, clipCoords);
     return tog::vec4(eyeCoords.x, eyeCoords.y, -1.f, 0.f);
 }
@@ -55,6 +56,11 @@ gsl::Vector3D MousePicker::toWorldCoords(tog::vec4 eyeCoords)
     gsl::Matrix4x4 invertedViewMatrix = viewMatrix;
     invertedViewMatrix.inverse();
     tog::vec4 rayWorld = tog::Transform(invertedViewMatrix, eyeCoords);
+    //qDebug() << "viewMatrix:";
+    //qDebug() << viewMatrix.getFloat(0) << viewMatrix.getFloat(1) << viewMatrix.getFloat(2) << viewMatrix.getFloat(3);
+    //qDebug() << viewMatrix.getFloat(4) << viewMatrix.getFloat(5) << viewMatrix.getFloat(6) << viewMatrix.getFloat(7);
+    //qDebug() << viewMatrix.getFloat(8) << viewMatrix.getFloat(9) << viewMatrix.getFloat(10) << viewMatrix.getFloat(11);
+    //qDebug() << viewMatrix.getFloat(12) << viewMatrix.getFloat(13) << viewMatrix.getFloat(14) << viewMatrix.getFloat(15);
     gsl::Vector3D mouseRay = gsl::Vector3D(rayWorld.x, rayWorld.y, rayWorld.z);
     mouseRay.normalize();
     return mouseRay;
