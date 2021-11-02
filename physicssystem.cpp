@@ -8,6 +8,7 @@ PhysicsSystem::PhysicsSystem()
 void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData)
 {
     mSurfaceData = surfaceData;
+    mSurfaceData->collisionRadius = 0.0f;
 }
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
@@ -29,7 +30,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
-            float elasticity = 0.9f;
+            float elasticity = 0.97f;
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
