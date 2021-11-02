@@ -251,6 +251,48 @@ void MeshHandler::findCollisionCorners(CollisionComponent *CollComp, QVector3D &
         {
             CollComp->zMax = vertex.z();
         }
+
+        if(vertex.length() > CollComp->mRaidus)
+        {
+            CollComp->mRaidus = vertex.length();
+        }
+
+}
+
+void MeshHandler::findCollisionRadious(CollisionComponent *CollComp, QVector3D &vertex)
+{
+    gsl::Vector3D origo{0,0,0};
+    //Min
+    if(vertex.x() < CollComp->xMin)
+    {
+        CollComp->xMin = vertex.x();
+    }
+    if(vertex.y() < CollComp->yMin)
+    {
+        CollComp->yMin = vertex.y();
+    }
+    if(vertex.z() < CollComp->zMin)
+    {
+        CollComp->zMin = vertex.z();
+    }
+
+    //Max
+    if(vertex.x() > CollComp->xMax)
+    {
+        CollComp->xMax = vertex.x();
+    }
+    if(vertex.y() > CollComp->yMax)
+    {
+        CollComp->yMax = vertex.y();
+    }
+    if(vertex.z() > CollComp->zMax)
+    {
+        CollComp->zMax = vertex.z();
+    }
+
+
+
+
 }
 
 void MeshHandler::makeCollisionBox(CollisionComponent* CollisionComp, MeshComponent* CollisionLines)
@@ -285,23 +327,14 @@ void MeshHandler::makeCollisionBox(CollisionComponent* CollisionComp, MeshCompon
 //       Vertex{minX, maxY, minZ,      1, 0.301, 0.933,          0.f, 0.f},
 //                      });
 
-    //One line at a time
     CollisionLines->mIndices[0].insert( CollisionLines->mIndices[0].end(),
-    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
-      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
-      0, 4, 3, 7,                   //leftside lines
-      1, 5, 2, 6                    //rightside lines
+    { 0, 1, 1, 2, 2, 3, 3, 0,
+      4, 5, 5, 6, 6, 7, 7, 4,
+      0, 4, 3, 7,
+      1, 5, 2, 6
                      });
 
     CollisionLines->mDrawType = GL_LINES;
 
     init(*CollisionLines,0);
 }
-
-//void MeshHandler::draw()
-//{
-//    glBindVertexArray( mMeshComp->mVAO );
-//    //glUniformMatrix4fv( mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
-//    glDrawElements(GL_TRIANGLES, mMeshComp->mIndices.size(), GL_UNSIGNED_INT, nullptr);
-//    glBindVertexArray(0);
-//}

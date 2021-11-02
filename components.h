@@ -59,14 +59,16 @@ public:
     float zMin{0};
     float zMax{0};
 
+    float mRaidus{0};
+
     bool bShowCollisionBox{false};
 };
 
-class BallPhysicsComponent
-{
-public:
-    float Radius{0};
-};
+//class BallPhysicsComponent
+//{
+//public:
+//    float Radius{0};
+//};
 
 class SoundListenerComponent
 {

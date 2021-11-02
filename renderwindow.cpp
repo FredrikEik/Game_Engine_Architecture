@@ -172,9 +172,6 @@ void RenderWindow::render()
     {
         onceLeftClicked = true;
     }
-    //--->Shoudl be in GameEngine
-    //Keyboard / mouse input
-    handleInput();
 
     mVerticesDrawn = 0;
     mObjectsDrawn = 0;
@@ -183,7 +180,6 @@ void RenderWindow::render()
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
-
 
 
 
@@ -215,11 +211,11 @@ void RenderWindow::render()
         // ----- end -----
         if(bUsingFrustumCulling)
         {
-            if(distanceToRightObject > 0)
+            if(distanceToRightObject - mGameObjects[i]->mCollisionComp->mRaidus > 0)
             {
                 continue;
             }
-            if(distanceToLeftObject > 0)
+            if(distanceToLeftObject - mGameObjects[i]->mCollisionComp->mRaidus > 0)
             {
                 continue;
             }
@@ -316,7 +312,7 @@ void RenderWindow::render()
         // need to fix [] for LOD
         //qDebug() << "Distacne: " << distanceToFrontObject;
 
-        // not draw player while playig
+        // to not draw player while playig
         if(i==0 && isPlaying)
         {
             continue;
