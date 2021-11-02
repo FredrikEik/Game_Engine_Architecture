@@ -7,6 +7,7 @@
 #include "../Systems/TransformSystem.h"
 #include "../Systems/CameraSystem.h"
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/SphereSystem.h"
 #include "../Engine/Engine.h"
 
 #include "WorldOutliner.h"
@@ -64,7 +65,10 @@ void Viewport::render()
 			ECS->loadAsset(entity, DefaultAsset::CUBE);
 			ECS->addComponent<TransformComponent>(entity);
 			ECS->addComponent<AxisAlignedBoxComponent>(entity);
+			ECS->addComponent<SphereComponent>(entity);
 			CollisionSystem::construct(entity, ECS);
+			SphereSystem::construct(entity, ECS);
+			
 			std::cout << "Adding entity " << entity << '\n';
 
 		}

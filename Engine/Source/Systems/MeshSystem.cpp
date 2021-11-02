@@ -28,12 +28,14 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     if (!meshManager || !transformManager)
         return;
+    
 
-    //auto& meshArray = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity);
+    auto meshesToRender = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity); // Frustum culling, a bit buggy, thus not used atm
     auto& meshArray = meshManager->getComponentArray();
     shader->use();
     for (auto& meshComp : meshArray)
     {
+        //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
         // skip transulenct objects
         if (meshComp.bIsTranslucent == true) 
             continue;
@@ -48,16 +50,17 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 }
 
 
-std::vector<class MeshComponent> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vector<class MeshComponent>& allMeshes,
+std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vector<class MeshComponent>& allMeshes,
                                                             uint32 cameraEntity)
 {
     ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
+    ComponentManager<SphereComponent>* sphereManager = ECS->getComponentManager<SphereComponent>();
     CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
     glm::vec3 forward(CameraSystem::getForwardVector(*camera));
     glm::vec3 right(CameraSystem::getRightVector(forward));
     glm::vec3 up(CameraSystem::getUpVector(forward, right));
-
-    glm::mat4x4 viewProjectionMatrix = camera->m_viewMatrix * camera->m_projectionMatrix;
+    
+    glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
 
     glm::vec4 leftPlane{};
     leftPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
@@ -78,19 +81,53 @@ std::vector<class MeshComponent> MeshSystem::getMeshesToDraw(ECSManager* ECS, co
     topPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[1].w;
 
     glm::vec4 bottomPlane{};
-    topPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[1].x;
-    topPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[1].y;
-    topPlane.z = viewProjectionMatrix[3].z + viewProjectionMatrix[1].z;
-    topPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[1].w;
+    bottomPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[1].x;
+    bottomPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[1].y;
+    bottomPlane.z = viewProjectionMatrix[3].z + viewProjectionMatrix[1].z;
+    bottomPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[1].w;
+
+    glm::vec4 nearPlane{};
+    nearPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[2].x;
+    nearPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[2].y;
+    nearPlane.z = viewProjectionMatrix[3].z + viewProjectionMatrix[2].z;
+    nearPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[2].w;
+
+    glm::vec4 farPlane{};
+    farPlane.x = viewProjectionMatrix[3].x - viewProjectionMatrix[2].x;
+    farPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[2].y;
+    farPlane.z = viewProjectionMatrix[3].z - viewProjectionMatrix[2].z;
+    farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;
+
 
     CameraSystem::normalizePlane(leftPlane);
     CameraSystem::normalizePlane(rightPlane);
     CameraSystem::normalizePlane(topPlane);
-    CameraSystem::normalizePlane(topPlane);
+    CameraSystem::normalizePlane(bottomPlane);
+    CameraSystem::normalizePlane(nearPlane);
+    CameraSystem::normalizePlane(farPlane);
 
+    std::vector<uint32> meshesToRender;
+    uint32 count{};
+    for (auto it : allMeshes)
+    {
+        const auto& transformComp = transformManager->getComponent(it.entityID);
+        const auto& sphereComp = sphereManager->getComponent(it.entityID);
+        glm::vec3 center = sphereComp.center + glm::vec3(transformComp.transform[3]);
+        const float& radius = sphereComp.radius;
+        if (CameraSystem::isPointInPlane(leftPlane, center, radius) &&
+            CameraSystem::isPointInPlane(rightPlane, center, radius) &&
+            CameraSystem::isPointInPlane(topPlane, center, radius) &&
+            CameraSystem::isPointInPlane(bottomPlane, center, radius))
+            meshesToRender.push_back(count);
 
+        //std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)
+        //    << " top " << CameraSystem::isPointInPlane(topPlane, center, radius) << " bottom " << CameraSystem::isPointInPlane(bottomPlane, center, radius) <<
+        //    " near "<<CameraSystem::isPointInPlane(nearPlane, center, radius) <<" far " << CameraSystem::isPointInPlane(farPlane, center, radius) << '\n';
+
+        ++count;
+    }
     
-    return std::vector<class MeshComponent>();
+    return meshesToRender;
 }
 
 void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECSManager* manager)
