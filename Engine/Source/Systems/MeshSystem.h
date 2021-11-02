@@ -16,6 +16,8 @@ public:
     //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
     static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager);
 
+    static void drawOutline(Shader* shader, const std::string& uniformName, ECSManager* ECS);
+
     static void MeshSystem::drawRTSSelection(Shader* shader, const glm::vec3& startPoint, const  glm::vec3& endPoint,
         const std::string& uniformName, MeshComponent& meshComp, TransformComponent& transformComp);
 

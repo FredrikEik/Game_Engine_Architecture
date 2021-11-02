@@ -19,6 +19,7 @@
 #include "../Systems/SelectionSystem.h"
 
 #include "../Input/Input.h"
+#include "../Components/Components.h"
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -86,10 +87,16 @@ void Engine::init()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
+
 
 
 	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
+	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
+
 
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
@@ -153,43 +160,57 @@ void Engine::loop()
 
 
 
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		//// RENDER
-	// Selection Render
-
-		
-		CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
-		MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
-
-
-		glFlush();
-		glFinish();
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-		MousePosition mPos = Input::getInstance()->getMousePosition();
-		unsigned char data[4];
-
-		glReadPixels(mPos.x, getWindowHeight() - mPos.y,1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		std::cout << "x:      " << mPos.x << " y:   " << mPos.y << '\n';
-
-		// Convert the color back to an integer ID
-		int pickedID =
-			data[0] +
-			data[1] * 256 +
-			data[2] * 256 * 256;
-
-		if (pickedID == 0x00ffffff)
-		{ // Full white, must be the background !
-			
-		}
-		else
+		// Selection Render
+		if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
 		{
-			std::ostringstream oss;
-			oss << "mesh " << pickedID;
-			std::cout << oss.str() << '\n';
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
+			MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
+
+
+			glFlush();
+			glFinish();
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+			MousePosition mPos = Input::getInstance()->getMousePosition();
+			unsigned char data[4];
+
+			glReadPixels(mPos.x, getWindowHeight() - mPos.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+
+			// Convert the color back to an integer ID
+			int pickedID =
+				data[0] +
+				data[1] * 256 +
+				data[2] * 256 * 256;
+			auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(RTSSelectionEntity);
+			selectionComp.hitEntities.clear();
+
+			if (pickedID == 0x00ffffff)
+			{ // Full white, must be the background !
+
+			}
+			else
+			{
+
+				selectionComp.hitEntities.push_back(pickedID);
+
+				std::ostringstream oss;
+				oss << "mesh " << pickedID;
+				std::cout << oss.str() << '\n';
+
+				// use single color shader
+
+
+				// do logic for highlighting object here.
+				// flip a bool maybe in meshcomp for being selected, or make a new selectable component
+			}
 		}
 
 
@@ -197,26 +218,37 @@ void Engine::loop()
 
 
 
-
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
 
-		// RTS Selection render -- Translucent
+
+		// RTS Selection render -- Translucent -- ingame only
 		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
 		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 
 
 
+		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+		glStencilMask(0xFF); // enable writing to the stencil buffer
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-			MeshSystem::draw(ourShader, "u_model", ECS);
-	
+		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
+		MeshSystem::draw(ourShader, "u_model", ECS);
+
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00); // disable writing to the stencil buffer
+		glDisable(GL_DEPTH_TEST);
+		CameraSystem::draw(editorCameraEntity, outlineShader, ECS);
+		MeshSystem::drawOutline(outlineShader, "u_model", ECS);
 		
-
-
+	
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 
 		// Render dear imgui into screen

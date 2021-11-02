@@ -47,6 +47,37 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     }
 }
 
+
+void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECSManager* manager)
+{
+
+	ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
+	ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
+    ComponentManager<SelectionComponent>* selectionManager = manager->getComponentManager<SelectionComponent>();
+	if (!meshManager || !transformManager || !selectionManager)
+		return;
+
+    auto& selectionArray = selectionManager->getComponentArray();
+	shader->use();
+	for (auto& selection : selectionArray)
+	{
+        for (uint32 id : selection.hitEntities)
+        {
+            
+            MeshComponent& meshComp = *meshManager->getComponentChecked(id);
+			auto& transformComp = transformManager->getComponent(meshComp.entityID);
+
+			glm::mat4x4 temp = transformComp.transform;
+			glm::mat4x4 tempscale = glm::scale(temp, glm::vec3(1.03f, 1.03f, 1.03f));
+
+			glBindVertexArray(meshComp.m_VAO);
+			glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(tempscale));
+			glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+        }
+	}
+}
+
 void MeshSystem::drawRTSSelection(Shader* shader, const glm::vec3& startPoint, const glm::vec3& endPoint,
     const std::string& uniformName, MeshComponent& meshComp, TransformComponent& transformComp)
 {

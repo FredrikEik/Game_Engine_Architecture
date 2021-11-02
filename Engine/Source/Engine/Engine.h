@@ -49,6 +49,7 @@ private:
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
 	class Shader* selectionShader{};
+	class Shader* outlineShader{};
 
 	uint32 editorCameraEntity{};
 	uint32 RTSSelectionEntity{};
