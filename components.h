@@ -24,13 +24,16 @@ struct TransformComponent
 
 struct MeshComponent
 {
+    std::vector<Vertex> mVertices; // to be deleted if resource management works
+    std::vector<GLuint> mIndices; // to be deleted if resource management works
+    //****^ All of these are marked for deletion. Our physics system currently relies on them being existent, but we are changing that.
+
     int entity{0};
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
-    std::vector<Vertex> mVertices; // to be deleted if resource management works
-    std::vector<GLuint> mIndices; // to be deleted if resource management works
 
+    size_t VertexSize;
     float collisionRadius = 0;
     QVector3D centerOfMesh = QVector3D(0.f,0.f,0.f);
     float scale = 1;
@@ -38,9 +41,7 @@ struct MeshComponent
     bool isDrawable = true;
 
     unsigned int LODLevel = 0;
-    bool LOD0 = false;
-    bool LOD1 = false;
-    bool LOD2 = false;
+    bool LODEnabled = false;
 
     GLenum mDrawType{GL_TRIANGLES};
 };

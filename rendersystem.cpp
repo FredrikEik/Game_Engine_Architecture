@@ -83,11 +83,11 @@ void RenderSystem::init(std::vector<Vertex> * vertexData, GLuint * VAO, GLuint *
         initializeOpenGLFunctions();
 
 
-        qDebug() << "Initialized: VAO Index" <<  VAO;
+        //qDebug() << "Initialized: VAO Index" <<  VAO;
         //Vertex Array Object - VAO
         glGenVertexArrays( 1, VAO);
         glBindVertexArray( *VAO );
-        qDebug() << "Initialized: VAO Index" <<  VAO;
+        //qDebug() << "Initialized: VAO Index" <<  VAO;
         //Vertex Buffer Object to hold vertices - VBO
         glGenBuffers( 1, VBO );
         glBindBuffer( GL_ARRAY_BUFFER, *VBO );
@@ -147,7 +147,7 @@ void RenderSystem::initData(meshData * obj)
 void RenderSystem::draw(MeshComponent* mMesh)
 {
     glBindVertexArray( mMesh->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, mMesh->mVertices.size());
+    glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize);
     glBindVertexArray(0);
 }
 
@@ -164,7 +164,7 @@ void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,Trans
 
        //draw the object
        glBindVertexArray( mMesh->mVAO );
-       glDrawArrays(mMesh->mDrawType, 0, mMesh->mVertices.size());
+       glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize);
        glBindVertexArray(0);
     }
 
