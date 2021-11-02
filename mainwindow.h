@@ -54,9 +54,10 @@ private:
     class transformWidget *mTransformWidget{nullptr};
     bool clicked = true;
 
+
    // int currentIndex{-1};
     QString prevstring;
-
+    bool itemFromSceneAdded = false;
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     CoreEngine *mCoreEngine{nullptr};

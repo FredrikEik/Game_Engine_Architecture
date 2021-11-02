@@ -10,6 +10,7 @@
 #include "resourcemanager.h"
 #include "coreengine.h"
 #include "transformwidget.h"
+#include "resourcemanager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -125,10 +126,19 @@ void MainWindow::on_pushButton_clicked()
 {
     //mTransformWidget->objectsInList +=1;
 
-    mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
-    mCoreEngine->boss->mSoundComponent->shouldPlay = true;
+    if(!itemFromSceneAdded)
+    {
+        mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
+        mCoreEngine->boss->mSoundComponent->shouldPlay = true;
 
-    ui->listWidget->addItem(mCoreEngine->boss->objName);
+        ui->listWidget->addItem(mCoreEngine->boss->objName);
+        itemFromSceneAdded = true;
+    }
+//    else
+//    {
+//        GameObject *newboss = ResourceManager::getInstance().addObject("suzanne3.obj");
+//        mRenderSystem->mGameObjects.push_back(newboss);
+//    }
 
 
 
@@ -145,29 +155,34 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
     if(clicked)
     {
-        item->setSelected(true);
+        mCurrentSelectedItem = item;
+        mCurrentSelectedItem->setSelected(true);
         mTransformWidget = new transformWidget();
         mTransformWidget->init(this, mRenderSystem, mCoreEngine);
-        item = ui->listWidget->currentItem();
-        item->setForeground(Qt::green);
-        mCurrentSelectedItem = item;
+        mCurrentSelectedItem = ui->listWidget->currentItem();
+        mCurrentSelectedItem->setForeground(Qt::green);
+
 
 
         //qDebug() << "selected item " << mCurrentSelectedItem->
         if(!mCoreEngine->isPlaying)
         ui->verticalLayout_2->addWidget(mTransformWidget);
         clicked = false;
+
     }
     else
     {
-        item->setSelected(false);
+        mCurrentSelectedItem->setSelected(false);
         item->setText(ui->listWidget->currentItem()->text());
-        item->setForeground(Qt::black);
+        mCurrentSelectedItem->setForeground(Qt::black);
         //ui->verticalLayout_2->removeWidget(mTransformWidget);
         //ui->verticalLayout_2->setEnabled(false);
         delete mTransformWidget;
         clicked = true;
+        mCurrentSelectedItem = nullptr;
     }
+
+
 
 
 

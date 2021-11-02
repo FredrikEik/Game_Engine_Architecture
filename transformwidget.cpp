@@ -24,6 +24,10 @@ void transformWidget::init(MainWindow * mainwindow, RenderSystem *rendersystem, 
     mRenderSystem = rendersystem;
     mCoreEngine = coreengine;
     mMainWindow = mainwindow;
+
+
+
+
 }
 
 void transformWidget::on_rotX_valueChanged(double arg1)
@@ -79,28 +83,66 @@ void transformWidget::on_scaleX_valueChanged(double arg1)
     ui->scaleX->setValue(arg1);
 
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
+    {
+        translatey = mCoreEngine->player->mTransform->mMatrix.getPosition().getY();
+        translatez = mCoreEngine->player->mTransform->mMatrix.getPosition().getZ();
         mCoreEngine->player->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->enemy->objName)
+    {
+        translatey = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getY();
+        translatez = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getZ();
+
         mCoreEngine->enemy->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->boss->objName)
+    {
+        translatey = mCoreEngine->boss->mTransform->mMatrix.getPosition().getY();
+        translatez = mCoreEngine->boss->mTransform->mMatrix.getPosition().getZ();
+
         mCoreEngine->boss->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->axis->objName)
+    {
+        translatey = mCoreEngine->axis->mTransform->mMatrix.getPosition().getY();
+        translatez = mCoreEngine->axis->mTransform->mMatrix.getPosition().getZ();
+
         mCoreEngine->axis->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
 
 }
 //transform y
 void transformWidget::on_scaleY_valueChanged(double arg1)
 {
     translatey = arg1;
-    ui->scaleY->setValue(arg1);
+    ui->scaleY            ->setValue(arg1);
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
+    {
+        translatex = mCoreEngine->player->mTransform->mMatrix.getPosition().getX();
+        translatez = mCoreEngine->player->mTransform->mMatrix.getPosition().getZ();
         mCoreEngine->player->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->enemy->objName)
+    {
+        translatex = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getX();
+        translatez = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getZ();
+
         mCoreEngine->enemy->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->boss->objName)
-         mCoreEngine->boss->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    {
+        translatex = mCoreEngine->boss->mTransform->mMatrix.getPosition().getX();
+        translatez = mCoreEngine->boss->mTransform->mMatrix.getPosition().getZ();
+
+        mCoreEngine->boss->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->axis->objName)
+    {
+        translatex = mCoreEngine->axis->mTransform->mMatrix.getPosition().getX();
+        translatez = mCoreEngine->axis->mTransform->mMatrix.getPosition().getZ();
+
         mCoreEngine->axis->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
 }
 //transform z
 void transformWidget::on_scaleZ_valueChanged(double arg1)
@@ -108,11 +150,30 @@ void transformWidget::on_scaleZ_valueChanged(double arg1)
     translatez = arg1;
     ui->scaleZ->setValue(arg1);
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
+    {
+        translatey = mCoreEngine->player->mTransform->mMatrix.getPosition().getY();
+        translatex = mCoreEngine->player->mTransform->mMatrix.getPosition().getX();
         mCoreEngine->player->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->enemy->objName)
+    {
+        translatey = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getY();
+        translatex = mCoreEngine->enemy->mTransform->mMatrix.getPosition().getX();
+
         mCoreEngine->enemy->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->boss->objName)
-         mCoreEngine->boss->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    {
+        translatey = mCoreEngine->boss->mTransform->mMatrix.getPosition().getY();
+        translatex = mCoreEngine->boss->mTransform->mMatrix.getPosition().getX();
+
+        mCoreEngine->boss->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->axis->objName)
+    {
+        translatey = mCoreEngine->axis->mTransform->mMatrix.getPosition().getY();
+        translatex = mCoreEngine->axis->mTransform->mMatrix.getPosition().getX();
+
         mCoreEngine->axis->mTransform->mMatrix.setPosition(translatex, translatey, translatez);
+    }
 }

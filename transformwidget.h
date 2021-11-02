@@ -48,7 +48,7 @@ private:
     CoreEngine * mCoreEngine{nullptr};
     float translatex{0};
     float translatey{0};
-    float translatez{0};
+    float translatez;
 };
 
 #endif // TRANSFORMWIDGET_H
