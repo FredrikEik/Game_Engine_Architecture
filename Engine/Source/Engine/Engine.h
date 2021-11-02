@@ -13,7 +13,8 @@ public:
 
 	void start();
 	~Engine();
-
+	// TODO: Make this a callback func instead of public
+	void setIsPlaying(bool isPlaying);
 private:
 
 	Engine();
@@ -36,6 +37,7 @@ private:
 	static bool GLLogCall(const char* function, const char* file, int line);
 
 	struct GLFWwindow* window{};
+
 
 private:
 	// TODO: Move this shit ASAP
@@ -62,6 +64,8 @@ private:
 	class SweepAndPrune* CollisionBroadphaseDatastructure{};
 
 	class Viewport* viewport;
+
+	bool bIsPlaying{ false };
 public:
 	float getWindowWidth() const { return windowWidth; }
 	void setWindowWidth(float val) { windowWidth = val; }

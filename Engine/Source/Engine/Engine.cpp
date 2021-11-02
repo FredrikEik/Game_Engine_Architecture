@@ -26,7 +26,7 @@
 
 #include "../Input/Input.h"
 #include "../Components/Components.h"
-
+#include "AL/al.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -48,6 +48,10 @@ Engine::~Engine()
 	delete ECS;
 	delete ourShader;
 	delete viewport;
+}
+
+void Engine::setIsPlaying(bool isPlaying)
+{
 }
 
 float Engine::windowWidth = 800.f;

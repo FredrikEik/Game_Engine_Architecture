@@ -118,5 +118,5 @@ void Viewport::togglePlay()
 {
 	bIsPlaying = !bIsPlaying;
 	playButtonText = bIsPlaying ? std::string("Stop") : std::string("Play");
-	
+	Engine::Get().setIsPlaying(bIsPlaying);
 }
