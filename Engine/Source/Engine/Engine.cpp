@@ -19,9 +19,14 @@
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
 #include "../Systems/CameraSystem.h"
+
+#include "../Systems/SelectionSystem.h"
 #include "../Systems/CollisionSystem.h"
 
+
 #include "../Input/Input.h"
+#include "../Components/Components.h"
+
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -60,7 +65,7 @@ void Engine::init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(800, 600, "Welcome to GameInJin", NULL, NULL);
+	window = glfwCreateWindow(getWindowWidth(), getWindowHeight(), "Welcome to GameInJin", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -78,25 +83,42 @@ void Engine::init()
 
 	//Note that processed coordinates in OpenGL are between - 1 and 1
 	//so we effectively map from the range(-1 to 1) to(0, 800) and (0, 600).
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, getWindowWidth(), getWindowHeight());
 	glfwSetFramebufferSizeCallback(window, Engine::framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, Engine::mouse_callback);
 	glfwSetScrollCallback(window, Engine::scroll_callback);
 	glfwSetMouseButtonCallback(window, Engine::mouseButton_callback);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
 	glfwSetWindowSizeCallback(window, Engine::windowSize_callback);
+
+	glfwSetCursorPos(window, getWindowWidth() * 0.5, getWindowHeight() * 0.5);
+
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
+
 
 
 	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
+	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
+
 
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
+
+	RTSSelectionEntity = ECS->newEntity();
+	/// transform can be used to creat rts selection
+	//mesh comp
+	// opacity shader
+	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
+
 	CameraSystem::setPerspective(editorCameraEntity, ECS, 
 		glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f));
 
@@ -120,6 +142,7 @@ void Engine::loop()
 
 		//// input
 		processInput(window);
+
 
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
@@ -248,21 +271,39 @@ void Engine::loop()
 		//	ImGui::End();
 		//}
 
+// <<<<<<< HEAD
+// =======
+// 		ImGui::Begin("TransformWidget");
+
+// 		ImGui::InputInt("Entity", &EntityToTransform, 1, 10);
+// 		glm::vec3 position = glm::vec3(ECS->getComponentManager<TransformComponent>()->getComponent(EntityToTransform).transform[3]);
+// 		float test[3]{ position.x, position.y, position.z };
+// 		//ImGui::InputFloat3("Position", test);
+// 		ImGui::DragFloat3("Position", test, 0.1f, -10000.f, 10000.f);
+// 		//std::cout << "Setting position x: " << test[0] << " y: " << test[1] << " z: " << test[2]<<'\n';
+
+// 		TransformSystem::setPosition(EntityToTransform, glm::vec3(test[0], test[1], test[2]), ECS);
+
+
+
+
+// 		ImGui::End();
+// >>>>>>> Isak_og_Johannes
 		CollisionBroadphaseDatastructure->update();
 
 
 		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
 
+
 		//// RENDER
 		// Selection Render
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+		if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
 		{
-
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
-			MeshSystem::drawSelectable(selectionShader, "u_model", ECS);
+			MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
 
 
 			glFlush();
@@ -270,40 +311,77 @@ void Engine::loop()
 
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			double xpos, ypos;
-			glfwGetCursorPos(window, &xpos, &ypos);
+			MousePosition mPos = Input::getInstance()->getMousePosition();
 			unsigned char data[4];
-			glReadPixels(xpos,ypos, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+			glReadPixels(mPos.x, getWindowHeight() - mPos.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
 
 			// Convert the color back to an integer ID
 			int pickedID =
 				data[0] +
 				data[1] * 256 +
 				data[2] * 256 * 256;
+			auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(RTSSelectionEntity);
+			selectionComp.hitEntities.clear();
 
 			if (pickedID == 0x00ffffff)
 			{ // Full white, must be the background !
-				//std::cout << "background" << '\n';
+
 			}
 			else
 			{
+
+				selectionComp.hitEntities.push_back(pickedID);
+
 				std::ostringstream oss;
 				oss << "mesh " << pickedID;
 				std::cout << oss.str() << '\n';
+
+				// use single color shader
+
+
+				// do logic for highlighting object here.
+				// flip a bool maybe in meshcomp for being selected, or make a new selectable component
 			}
-
-			glfwSwapBuffers(window);
 		}
-		else
-		{
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	
+
+
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+
+
+		// RTS Selection render -- Translucent -- ingame only
+		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
+		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+
+
+
+		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+		glStencilMask(0xFF); // enable writing to the stencil buffer
+	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-			MeshSystem::draw(ourShader, "u_model", ECS);
-		}
-		
+		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
+		MeshSystem::draw(ourShader, "u_model", ECS);
 
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00); // disable writing to the stencil buffer
+		glDisable(GL_DEPTH_TEST);
+		CameraSystem::draw(editorCameraEntity, outlineShader, ECS);
+		MeshSystem::drawOutline(outlineShader, "u_model", ECS);
+		
+	
+		glStencilMask(0xFF);
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 
 		//// Render dear imgui into screen

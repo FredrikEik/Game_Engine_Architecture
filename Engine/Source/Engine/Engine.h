@@ -5,12 +5,19 @@
 class Engine
 {
 public:
-	Engine();
-	~Engine();
+	static Engine& Get()
+	{
+		static Engine* engineInst = new Engine();
+		return *engineInst;
+	}
 
 	void start();
+	~Engine();
 
 private:
+
+	Engine();
+
 	void init();
 	void loop();
 	void terminate();
@@ -42,9 +49,24 @@ private:
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
 	class Shader* selectionShader{};
+	class Shader* outlineShader{};
 
 	uint32 editorCameraEntity{};
+
+	uint32 RTSSelectionEntity{};
+
+
+	float windowWidth = 800.f;
+	float windowHeight = 600.f;
+
+public:
+	float getWindowWidth() const { return windowWidth; }
+	void setWindowWidth(float val) { windowWidth = val; }
+	float getWindowHeight() const { return windowHeight; }
+	void setWindowHeight(float val) { windowHeight = val; }
+
 	class SweepAndPrune* CollisionBroadphaseDatastructure{};
 
 	class Viewport* viewport;
+
 };

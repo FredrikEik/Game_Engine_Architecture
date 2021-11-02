@@ -5,12 +5,12 @@
 #include "MeshSystem.h"
 #include "glad/glad.h"
 #include "../Components/Components.h"
-#include "glm/glm.hpp"
 #include "../Assets/DefaultAssets.h"
 #include "../Components/ComponentManager.h"
 #include "../Components/Components.h"
 #include "../ECSManager.h"
 #include "../Shader.h"
+
 
 
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
@@ -34,16 +34,97 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     shader->use();
     for (auto& meshComp : meshArray)
     {
+        // skip transulenct objects
+        if (meshComp.bIsTranslucent == true) 
+            continue;
+
         auto& transformComp = transformManager->getComponent(meshComp.entityID);
         
         glBindVertexArray(meshComp.m_VAO); 
 		glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-        glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 }
 
-void MeshSystem::drawSelectable(Shader* shader, const std::string& uniformName, class ECSManager* manager)
+
+void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECSManager* manager)
+{
+
+	ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
+	ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
+    ComponentManager<SelectionComponent>* selectionManager = manager->getComponentManager<SelectionComponent>();
+	if (!meshManager || !transformManager || !selectionManager)
+		return;
+
+    auto& selectionArray = selectionManager->getComponentArray();
+	shader->use();
+	for (auto& selection : selectionArray)
+	{
+        for (uint32 id : selection.hitEntities)
+        {
+            
+            MeshComponent& meshComp = *meshManager->getComponentChecked(id);
+			auto& transformComp = transformManager->getComponent(meshComp.entityID);
+
+			glm::mat4x4 temp = transformComp.transform;
+			glm::mat4x4 tempscale = glm::scale(temp, glm::vec3(1.03f, 1.03f, 1.03f));
+
+			glBindVertexArray(meshComp.m_VAO);
+			glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(tempscale));
+			glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+        }
+	}
+}
+
+void MeshSystem::drawRTSSelection(Shader* shader, const glm::vec3& startPoint, const glm::vec3& endPoint,
+    const std::string& uniformName, MeshComponent& meshComp, TransformComponent& transformComp)
+{
+    // when using this function meshcomp and transformcomp should already be checked to be valid, see Selection system.
+
+    meshComp.m_vertices.clear();
+    meshComp.m_indices.clear();
+    meshComp.m_drawType = GL_TRIANGLES;
+
+	float minX = startPoint.x < endPoint.x ? startPoint.x : endPoint.x;
+	float minZ = startPoint.z < endPoint.z ? startPoint.z : endPoint.z;
+	float maxX = startPoint.x >= endPoint.x ? startPoint.x : endPoint.x;
+	float maxZ = startPoint.z >= endPoint.z ? startPoint.z : endPoint.z;
+
+    glm::vec3 MinXZ = glm::vec3(minX, startPoint.y, minZ);
+    glm::vec3 MaxXZ = glm::vec3(maxX, startPoint.y, maxZ);
+	glm::vec3 MinXMaxZ = glm::vec3(minX, startPoint.y, maxZ);
+	glm::vec3 MaxXMinZ = glm::vec3(maxX, startPoint.y, minZ);
+
+    meshComp.m_vertices.push_back(Vertex(MinXZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
+    meshComp.m_vertices.push_back(Vertex(MinXMaxZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
+    meshComp.m_vertices.push_back(Vertex(MaxXMinZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
+    meshComp.m_vertices.push_back(Vertex(MaxXZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
+
+
+    //std::vector<int> vec{ 0, 1, 2, 2, 3, 1 };
+    meshComp.m_indices.push_back(0);
+    meshComp.m_indices.push_back(1);
+    meshComp.m_indices.push_back(3);
+    meshComp.m_indices.push_back(0);
+	meshComp.m_indices.push_back(3);
+	meshComp.m_indices.push_back(2);
+    initialize(meshComp);
+
+
+	glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    shader->use();
+	glBindVertexArray(meshComp.m_VAO);
+	glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
+	glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    glDisable(GL_BLEND);
+}
+
+void MeshSystem::drawSelectableEditor(Shader* shader, const std::string& uniformName, class ECSManager* manager)
 {
 
 	ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
