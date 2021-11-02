@@ -85,8 +85,8 @@ void CoreEngine::setUpScene()
         for(int j{0}; j < 10; j++)
         {
             temp = mGameObjectManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(2.f*i, -3.f, -2.f*j);
-            temp->mTransform->mMatrix.scale(0.5f);
+            temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
+            temp->mTransform->mMatrix.scale(1.0f);
             temp->mName = "Monkey " + std::to_string((i*10)+j+1);
             mRenderSystem->mGameObjects.push_back(temp);
         }
@@ -97,7 +97,7 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-//Rollingball, getting vis & sim code integrated into GEA code
+//Rollingball, getting vis & sim collision code integrated into GEA
         temp = mGameObjectManager->addObject("Ball.obj");
         temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
         temp->mTransform->mMatrix.scale(0.5f);

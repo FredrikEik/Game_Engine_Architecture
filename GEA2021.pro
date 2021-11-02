@@ -102,7 +102,9 @@ HEADERS += \
     widgettransform.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    widgetmaterial.ui \
+    widgettransform.ui
     widgettransform.ui
     widgetmaterial.ui
 

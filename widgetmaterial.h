@@ -37,4 +37,5 @@ private slots:
 private:
     Ui::WidgetMaterial *ui;
 };
+
 #endif // WIDGETMATERIAL_H

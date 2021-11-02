@@ -23,18 +23,14 @@
 #include "shaderhandler.h"
 #include "logger.h"
 
-
-////Forward declaration
-//class SoundSystem;
-
 GameObjectManager::GameObjectManager()
 {
+    mLogger = Logger::getInstance();
     SoundSystem::getInstance(); //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
-
-    //QList<MainWindow*> GameObjectList;
 }
+
 GameObjectManager &GameObjectManager::getInstance()
 {
     static GameObjectManager *mInstance = new GameObjectManager();
@@ -116,13 +112,12 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
 
     //check if asset is made
     auto result = mSoundBufferMap.find(assetName);
-
     //If already made
-    if (result != mSoundBufferMap.end())
-    {
+    if (result != mSoundBufferMap.end()){
         soundIndex = result->second;
     }
-    else //Not made, make new
+    //Not made, make new
+    else
     {
         waveData = SoundHandler::loadWave(assetName);
         if (!waveData)
@@ -130,11 +125,11 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
             mLogger->logText("Error loading wave file!", LColor::DAMNERROR);
             return nullptr;
         }
+
         mWaveBuffers.emplace_back(*waveData);
         soundIndex = mWaveBuffers.size()-1;
         mSoundBufferMap.emplace(assetName, soundIndex);
     }
-
     SoundComponent *tempSource = new SoundComponent();
     if (waveData)
     {
@@ -360,6 +355,11 @@ MeshData GameObjectManager::makeCircleSphere(float radius, bool rgbColor)
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
 
+MeshData GameObjectManager::makeFrustum(const Frustum &frustumIn)
+{
+    return mMeshHandler->makeFrustum(frustumIn);
+}
+
 MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
 {
     int index{-1};
@@ -374,4 +374,3 @@ MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
         return &mMaterials[0];
     }
 }
-
