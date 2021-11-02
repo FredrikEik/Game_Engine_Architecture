@@ -194,6 +194,14 @@ namespace gsl
         z = dir.getZ();
     }
 
+    void Vector3D::axisAngleRotation(float angle, Vector3D axis)
+    {
+            Vector3D vToRotate = *this;
+            float angleInRadians = gsl::deg2radf(angle);
+            *this =  vToRotate * cosf(angleInRadians) + axis * (1 - cos(angleInRadians)) * (vToRotate * axis) +
+                    (axis ^ vToRotate) * sinf(angleInRadians);
+    }
+
     GLfloat *Vector3D::xP()
     {
         return &x;

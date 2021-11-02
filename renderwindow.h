@@ -38,6 +38,14 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toggleBacksideCulling(bool state);
+
+    std::vector<GameObject*> mGameObjects;
+
+    bool mIsPlaying{false};  //is the game playing?
+
+    Camera *mEditorCamera{nullptr};
+    Camera *mGameCamera{nullptr};
 
     void playSound();
     void pauseSound();
@@ -69,6 +77,9 @@ public:
 
     void mousePickingRay(QMouseEvent *event);
 
+    bool mUseFrustumCulling{true};
+    bool mGameCamAsFrustumCulling{false};
+
 private slots:
     void render();
 
@@ -80,6 +91,8 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
+
+    bool frustumCulling(int gameObjectIndex);
 
     bool objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans);
 
@@ -125,10 +138,14 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     MousePicker *mMousePicker{nullptr};
-
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
     bool bPlayGame = false;
+
+    //for statistics in status bar
+    int mVerticesDrawn{0};
+    int mObjectsDrawn{0};
+
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
