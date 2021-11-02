@@ -207,17 +207,17 @@ void RenderWindow::initObjects()
     mFrustumSystem->init();
     mVisualObjects.push_back(mFrustumSystem);
 
-    //    for(int i=0; i<10; i++)
-    //    {
-    //        for(int y=0; y<10; y++)
-    //        {
-    //            temp = mShapeFactory.createShape("Monkey.obj");
-    //            temp->init();
-    //            temp->move((i-y), 0.5, y-5);
-    //            temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //            mVisualObjects.push_back(temp);
-    //        }
-    //    }
+        for(int i=0; i<10; i++)
+        {
+            for(int y=0; y<10; y++)
+            {
+                temp = mShapeFactory.createMonkey();
+                temp->init();
+                temp->move((i-y), 0.5, y-5);
+                temp->mMaterial->mShaderProgram = 0;    //plain shader
+                mVisualObjects.push_back(temp);
+            }
+        }
 
 
 }
@@ -261,10 +261,9 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
-
-        if(i<5 && i<7){
+        if(i<7){
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0,Lod(i) /*mVisualObjects[i]->mMesh->mVertices.size()*/);
             glBindVertexArray(0);}
         else if(i==7 && playM==false){
             glBindVertexArray( mFrustumSystem->mMesh->mVAO );
@@ -272,7 +271,7 @@ void RenderWindow::makeObject()
             glBindVertexArray(0);}
         else{
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, Lod(i)/*mVisualObjects[i]->mMesh->mVertices.size()*/);
             glBindVertexArray(0);}
     }
 }
@@ -287,12 +286,12 @@ void RenderWindow::render()
     mCurrentCamera->update();
     mFrustumSystem->updateFrustumPos(mEditorCamera.position());
     //Check Collision
-//    for(int i{0}; i < mVisualObjects.size(); i++)
+    //    for(int i{0}; i < mVisualObjects.size(); i++)
 
-//    {
-//        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[i]->mCollision))
-//            qDebug() <<"Collision detected";
-//    }
+    //    {
+    //        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[i]->mCollision))
+    //            qDebug() <<"Collision detected";
+    //    }
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -319,6 +318,90 @@ void RenderWindow::render()
 }
 
 
+
+int RenderWindow::Lod(int i)
+{
+
+    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+    //Testing lenght from cam to object
+    if(camToObject.length()>5 && mVisualObjects[i]->mMesh->mVertices.size()>60) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/
+    {
+         return mVisualObjects[i]->mMesh->mVertices.size()/2;
+    }else if(camToObject.length()>10 && mVisualObjects[i]->mMesh->mVertices.size()>60)
+    {
+        return mVisualObjects[i]->mMesh->mVertices.size()/4;
+    }else
+        return mVisualObjects[i]->mMesh->mVertices.size();
+
+}
+
+
+
+
+void RenderWindow::mousePickingRay(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+
+    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+    // projMatrix.inverse();
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye;
+    ray_wor = {temp.x, temp.y, temp.z};
+    ray_wor.normalize();
+
+    qDebug() << ray_wor;
+
+
+    for(int i{0}; i < 6; i++)
+
+    {      //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
+
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray using dot product:
+        float distance = camToObject * rayNormal;   //* gives the dot product
+
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
+
+        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
+        {
+            mousePickCollide = true;
+            mMainWindow->SelectWithMousePick(i);
+
+            MousePickindex = i;
+            qDebug() <<"Mouse Collision detected";
+        }
+
+    }
+
+}
+
 void RenderWindow::playMode(bool p)
 {
     if(p)
@@ -343,138 +426,7 @@ void RenderWindow::createShapes(string shapeID)
     mVisualObjects.push_back(temp);
 }
 
-void RenderWindow::setupPlainShader(int shaderIndex)
-{
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-}
 
-void RenderWindow::setupTextureShader(int shaderIndex)
-{
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
-}
-
-//This function is called from Qt when window is exposed (shown)
-// and when it is resized
-//exposeEvent is a overridden function from QWindow that we inherit from
-void RenderWindow::exposeEvent(QExposeEvent *)
-{
-    //if not already initialized - run init() function
-    if (!mInitialized)
-        init();
-
-    //This is just to support modern screens with "double" pixels (Macs and some 4k Windows laptops)
-    const qreal retinaScale = devicePixelRatio();
-
-    //Set viewport width and height
-    glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
-
-    //If the window actually is exposed to the screen we start the main loop
-    //isExposed() is a function in QWindow
-    if (isExposed())
-    {
-        //This timer runs the actual MainLoop
-        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-        mRenderTimer->start(16);
-        mTimeStart.start();
-    }
-
-    //calculate aspect ration and set projection matrix
-    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
-    //    qDebug() << mAspectratio;
-
-    mPlayCamera.calculateProjectionMatrix();
-    mEditorCamera.calculateProjectionMatrix();
-
-    //mPlayCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
-    //mEditorCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
-}
-
-//The way this is set up is that we start the clock before doing the draw call,
-// and check the time right after it is finished (done in the render function)
-//This will approximate what framerate we COULD have.
-//The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
-void RenderWindow::calculateFramerate()
-{
-    long nsecElapsed = mTimeStart.nsecsElapsed();
-    static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
-
-    if (mMainWindow)            //if no mainWindow, something is really wrong...
-    {
-        ++frameCount;
-        if (frameCount > 30)    //once pr 30 frames = update the message twice pr second (on a 60Hz monitor)
-        {
-            //showing some statistics in status bar
-            mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
-                                                  QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
-                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
-            frameCount = 0;     //reset to show a new message in 60 frames
-        }
-    }
-}
-
-//Simple way to turn on/off wireframe mode
-//Not totally accurate, but draws the objects with
-//lines instead of filled polygons
-void RenderWindow::toggleWireframe(bool buttonState)
-{
-    if (buttonState)
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
-        //glDisable(GL_CULL_FACE);
-    }
-    else
-    {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
-        //glEnable(GL_CULL_FACE);
-    }
-}
-
-//Uses QOpenGLDebugLogger if this is present
-//Reverts to glGetError() if not
-void RenderWindow::checkForGLerrors()
-{
-    if(mOpenGLDebugLogger)
-    {
-        const QList<QOpenGLDebugMessage> messages = mOpenGLDebugLogger->loggedMessages();
-        for (const QOpenGLDebugMessage &message : messages)
-            qDebug() << message;
-    }
-    else
-    {
-        GLenum err = GL_NO_ERROR;
-        while((err = glGetError()) != GL_NO_ERROR)
-        {
-            qDebug() << "glGetError returns " << err;
-        }
-    }
-}
-
-//Tries to start the extended OpenGL debugger that comes with Qt
-void RenderWindow::startOpenGLDebugger()
-{
-    QOpenGLContext * temp = this->context();
-    if (temp)
-    {
-        QSurfaceFormat format = temp->format();
-        if (! format.testOption(QSurfaceFormat::DebugContext))
-            qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
-
-        if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
-        {
-            qDebug() << "System can log OpenGL errors!";
-            mOpenGLDebugLogger = new QOpenGLDebugLogger(this);
-            if (mOpenGLDebugLogger->initialize()) // initializes in the current context
-                qDebug() << "Started OpenGL debug logger!";
-        }
-    }
-}
 
 void RenderWindow::HandleInput()
 {
@@ -609,71 +561,6 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 }
 
 
-
-void RenderWindow::mousePickingRay(QMouseEvent *event)
-{
-    int mouseXPixel = event->pos().x();
-    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
-
-    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
-    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
-
-    //step 1
-    float x = (2.0f * mouseXPixel) / width() - 1.0f;
-    float y = 1.0f - (2.0f * mouseYPixel) / height();
-    float z = 1.0f;
-    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
-
-    //step 2
-    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
-
-    //step 3
-    // projMatrix.inverse();
-    gsl::Vector4D ray_eye = projMatrix * ray_clip;
-    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
-
-    //step 4
-    viewMatrix.inverse();
-    gsl::Vector4D temp = viewMatrix * ray_eye;
-    ray_wor = {temp.x, temp.y, temp.z};
-    ray_wor.normalize();
-
-    qDebug() << ray_wor;
-
-
-    for(int i{0}; i < 6; i++)
-
-    {      //making the vector from camera to object we test against
-        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
-
-        //making the normal of the ray - in relation to the camToObject vector
-        //this is the normal of the surface the camToObject and ray_wor makes:
-        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
-
-        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
-        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
-        rayNormal.normalize();
-
-        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray using dot product:
-        float distance = camToObject * rayNormal;   //* gives the dot product
-
-        //we are interested in the absolute distance, so fixes any negative numbers
-        distance = abs(distance);
-
-        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
-        {
-            mousePickCollide = true;
-            mMainWindow->SelectWithMousePick(i);
-
-            MousePickindex = i;
-            qDebug() <<"Mouse Collision detected";
-        }
-
-    }
-
-}
-
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
@@ -732,4 +619,138 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
             mInputSystem->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
+}
+
+
+void RenderWindow::setupPlainShader(int shaderIndex)
+{
+    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+}
+
+void RenderWindow::setupTextureShader(int shaderIndex)
+{
+    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+//This function is called from Qt when window is exposed (shown)
+// and when it is resized
+//exposeEvent is a overridden function from QWindow that we inherit from
+void RenderWindow::exposeEvent(QExposeEvent *)
+{
+    //if not already initialized - run init() function
+    if (!mInitialized)
+        init();
+
+    //This is just to support modern screens with "double" pixels (Macs and some 4k Windows laptops)
+    const qreal retinaScale = devicePixelRatio();
+
+    //Set viewport width and height
+    glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
+
+    //If the window actually is exposed to the screen we start the main loop
+    //isExposed() is a function in QWindow
+    if (isExposed())
+    {
+        //This timer runs the actual MainLoop
+        //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
+        mRenderTimer->start(16);
+        mTimeStart.start();
+    }
+
+    //calculate aspect ration and set projection matrix
+    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
+    //    qDebug() << mAspectratio;
+
+    mPlayCamera.calculateProjectionMatrix();
+    mEditorCamera.calculateProjectionMatrix();
+
+    //mPlayCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    //    qDebug() << mCamera.mProjectionMatrix;
+    //mEditorCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    //    qDebug() << mCamera.mProjectionMatrix;
+}
+
+//The way this is set up is that we start the clock before doing the draw call,
+// and check the time right after it is finished (done in the render function)
+//This will approximate what framerate we COULD have.
+//The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
+void RenderWindow::calculateFramerate()
+{
+    long nsecElapsed = mTimeStart.nsecsElapsed();
+    static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
+
+    if (mMainWindow)            //if no mainWindow, something is really wrong...
+    {
+        ++frameCount;
+        if (frameCount > 30)    //once pr 30 frames = update the message twice pr second (on a 60Hz monitor)
+        {
+            //showing some statistics in status bar
+            mMainWindow->statusBar()->showMessage(" Time pr FrameDraw: " +
+                                                  QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
+                                                  "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 7));
+            frameCount = 0;     //reset to show a new message in 60 frames
+        }
+    }
+}
+
+//Simple way to turn on/off wireframe mode
+//Not totally accurate, but draws the objects with
+//lines instead of filled polygons
+void RenderWindow::toggleWireframe(bool buttonState)
+{
+    if (buttonState)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
+        //glDisable(GL_CULL_FACE);
+    }
+    else
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
+        //glEnable(GL_CULL_FACE);
+    }
+}
+
+//Uses QOpenGLDebugLogger if this is present
+//Reverts to glGetError() if not
+void RenderWindow::checkForGLerrors()
+{
+    if(mOpenGLDebugLogger)
+    {
+        const QList<QOpenGLDebugMessage> messages = mOpenGLDebugLogger->loggedMessages();
+        for (const QOpenGLDebugMessage &message : messages)
+            qDebug() << message;
+    }
+    else
+    {
+        GLenum err = GL_NO_ERROR;
+        while((err = glGetError()) != GL_NO_ERROR)
+        {
+            qDebug() << "glGetError returns " << err;
+        }
+    }
+}
+
+//Tries to start the extended OpenGL debugger that comes with Qt
+void RenderWindow::startOpenGLDebugger()
+{
+    QOpenGLContext * temp = this->context();
+    if (temp)
+    {
+        QSurfaceFormat format = temp->format();
+        if (! format.testOption(QSurfaceFormat::DebugContext))
+            qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
+
+        if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
+        {
+            qDebug() << "System can log OpenGL errors!";
+            mOpenGLDebugLogger = new QOpenGLDebugLogger(this);
+            if (mOpenGLDebugLogger->initialize()) // initializes in the current context
+                qDebug() << "Started OpenGL debug logger!";
+        }
+    }
 }

@@ -294,14 +294,14 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
 
 
-//VisualObject* ShapeFactory::createMonkey()
-//{
-//    if(doOnce == false)
-//    {
-//        myMonkey = new ObjMesh(monkeyString);
-//        return myMonkey;
-//        doOnce = true;
-//    }
-//    else
-//        return myMonkey;
-//}
+VisualObject* ShapeFactory::createMonkey()
+{
+    if(doOnce1 == false)
+    {
+        myMonkey = new ObjMesh("../GEA2021/Assets/Monkey.obj");
+        return myMonkey;
+        doOnce1 = true;
+    }
+    else
+        return myMonkey;
+}

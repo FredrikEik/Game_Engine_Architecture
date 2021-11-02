@@ -76,6 +76,7 @@ private:
     static const int nrOfShapes = 5;
     bool playM = false;
 
+    int Lod(int i);
     void mousePickingRay(QMouseEvent *event);
      gsl::Vector3D ray_wor;
 

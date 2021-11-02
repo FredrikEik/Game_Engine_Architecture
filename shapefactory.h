@@ -18,12 +18,14 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
-//    VisualObject* createMonkey();
+    VisualObject* createMonkey();
 private:
     std::map<string, int> myObjs;
     int ObjStartID = 4;
     std::vector<VisualObject*> myShapes;
     bool doOnce[4]{false};
+    bool doOnce1{false};
+    VisualObject* myMonkey;
 
 };
 
