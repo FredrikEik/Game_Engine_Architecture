@@ -477,11 +477,14 @@ void RenderWindow::toggleGameMode()
 {
     if (bPlayGame) {
         bPlayGame = false;
+        stopSound();
         mMainWindow->disableWorldObjects(false);
     }
     else {
         bPlayGame = true;
         ObjFactory->setOBJindex(-1);
+        mCurrentCamera->setPosition(gsl::Vector3D(3.f, 2.f, 5.f));
+        playSound();
         mMainWindow->disableWorldObjects(true);
     }
 }
