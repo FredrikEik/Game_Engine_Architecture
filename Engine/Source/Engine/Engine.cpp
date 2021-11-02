@@ -151,7 +151,12 @@ void Engine::loop()
 		if (ImGui::Button("Spawn cube"))
 		{
 			uint32 entity = ECS->newEntity();
-			ECS->loadAsset(entity, DefaultAsset::CUBE);
+			ECS->loadAsset(entity, "Assets/suzanne.obj");
+			MeshComponent* meshComp{ ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity) };
+			if(!MeshSystem::loadMeshLOD("Assets/suzanne_L01.obj", *meshComp, LODMeshType::LOD1))
+			{ std::cout << "could not add LOD1"; }
+			if(!MeshSystem::loadMeshLOD("Assets/suzanne_L02.obj", *meshComp, LODMeshType::LOD2))
+			{ std::cout << "could not add LOD2"; }
 			ECS->addComponent<TransformComponent>(entity);
 			ECS->addComponent<AxisAlignedBoxComponent>(entity);
 			CollisionSystem::construct(entity, ECS);
@@ -263,7 +268,7 @@ void Engine::loop()
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-		MeshSystem::draw(ourShader, "u_model", ECS);
+		MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

@@ -4,6 +4,7 @@
 #include <vector>
 #include "../Vertex.h"
 #include "glm/glm.hpp"
+#include "../Assets/DefaultAssets.h"
 
 /*     ATTENTION
 *
@@ -61,8 +62,12 @@ public:
 	GLenum m_drawType{ GL_TRIANGLES };
 	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
+	std::vector<MeshComponent> LODMeshes;
+
+	LODMeshType LODType{ LODMeshType::Default };
 	bool bIsTranslucent{ false };
 };
+
 
 struct CameraComponent final : public Component
 {
