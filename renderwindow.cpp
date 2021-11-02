@@ -145,6 +145,17 @@ void RenderWindow::render()
 {
     bool isPlaying = GameEngine::getInstance()->bIsPlaying;
     Input input = GameEngine::getInstance()->mInput;
+
+    // For makeing the cursor look like a crosshair, stolen from my 3Dprog project
+    if(isPlaying)
+    {
+        setCursor(QCursor(Qt::CrossCursor));
+    }
+    else
+    {
+        setCursor(QCursor(Qt::ArrowCursor));
+    }
+
     if(input.LMB)
     {
         if(onceLeftClicked)

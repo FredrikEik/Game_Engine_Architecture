@@ -1,5 +1,7 @@
 #include "gameengine.h"
 
+#include <QKeyEvent>
+
 #include "resourcemanager.h"
 #include "gameobject.h"
 #include "renderwindow.h"
@@ -165,6 +167,10 @@ void GameEngine::HandleInput()
     mRenderwindow->mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     float cameraSpeed = mRenderwindow->getCameraSpeed();
     Camera *currentCamera = mRenderwindow->mCurrentCamera;
+    float camSpeedMultiplyer{2};
+
+    UpdateGameCameraFollow();
+
     if(mInput.RMB)
     {
         if(mInput.W)
@@ -180,32 +186,31 @@ void GameEngine::HandleInput()
         if(mInput.E)
             currentCamera->updateHeigth(cameraSpeed);
     }
-    if(/*isPlaying*/!mInput.RMB && bIsPlaying)
+    if(bIsPlaying)
     {
         if(mInput.W)
         {
-         //mGameObjects[0]->mTransformComp->mMatrix.setPosition(mCurrentCamera->getFowrardVector().x,mCurrentCamera->getFowrardVector().y, mCurrentCamera->getFowrardVector().z);
-         mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed);
-         mPlayer->mTransformComp->mMatrix.translateY(0);
-         mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+            mPlayer->mTransformComp->mMatrix.translateY(0);
+            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
         }
         if(mInput.S)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
         }
         if(mInput.D)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
         }
         if(mInput.A)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getRightVector().z*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
         }
     }
 }
@@ -232,10 +237,8 @@ void GameEngine::GameLoop()
 
     HandleInput();
 
+    //mCurrentCameraUPDATE??
     mEditorCamera->update();
-
-    UpdateGameCameraFollow();
-
     mGameCamera->update();
 
     mRenderwindow->render();
