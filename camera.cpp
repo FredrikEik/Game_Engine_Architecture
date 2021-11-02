@@ -15,6 +15,24 @@ Camera::Camera()
     //mPitchMatrix.setToIdentity();
 }
 
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
+{
+
+    Cam.mViewMatrix.setToIdentity();
+    Cam.mProjectionMatrix.setToIdentity();
+
+    Cam.mYawMatrix.setToIdentity();
+    Cam.mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOVvertical = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
+}
+
 void Camera::pitch(float degrees)
 {
     //  rotate around mRight
@@ -106,4 +124,24 @@ gsl::Vector3D Camera::up() const
 gsl::Vector3D Camera::forward() const
 {
     return Cam.mForward;
+}
+
+void Camera::calculateFrustumVectors()
+{
+    float halfVheight = mFrustum.mFarPlaneDistance * tanf(gsl::deg2radf(mFrustum.mFOVvertical/2)); //calculate the lenght of the opposite
+    float halfHwidth = halfVheight * mFrustum.mAspectRatio;
+
+    float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, mFrustum.mFarPlaneDistance)));
+
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around camera up
+    tempVector = Cam.mRight;
+    tempVector.axisAngleRotation(-horisontalHalfAngle, Cam.mUp);
+    mFrustum.mRightPlane = tempVector.normalized();
+
+    //leftPlane vector = mRight rotated by FOV+180 around camera up
+    tempVector = Cam.mRight;
+    tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, Cam.mUp);
+    mFrustum.mLeftPlane = tempVector.normalized();
+
 }

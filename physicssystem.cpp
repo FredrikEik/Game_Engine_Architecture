@@ -30,7 +30,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
-            float elasticity = 0.97f;
+            float elasticity = 0.99f;
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));

@@ -161,7 +161,6 @@ void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,Trans
        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, camera->Cam.mViewMatrix.constData());
        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, camera->Cam.mProjectionMatrix.constData());
        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE,mTrasform->mMatrix.constData());
-
        //draw the object
        glBindVertexArray( mMesh->mVAO );
        glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize);

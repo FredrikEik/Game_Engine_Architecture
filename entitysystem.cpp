@@ -81,7 +81,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
     }
 }
 
-void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vector3D forwardVec)
+void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Length)
 {
     std::string ObjReader = "RayCast"; QVector3D StartPos =CameraPos;
     GLuint shader = 0; GLint texture = 0;
@@ -137,7 +137,7 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vect
         Vertex fromvector = Vertex(temp.x(), temp.y(), temp.z(), Color.x(), Color.y(), Color.z(),0.f, 0.f);
         MeshComp->mVertices.push_back(fromvector);
 
-        temp = LineVec*30.f + CameraPos;
+        temp = LineVec*Length + CameraPos;
         fromvector = Vertex(temp.x(), temp.y(), temp.z(),  1,1, 1,0.f, 0.f); //white edges
 
 
