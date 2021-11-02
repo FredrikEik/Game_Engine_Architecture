@@ -13,6 +13,8 @@
 #include <QDirIterator>
 //#include <QFile>
 #include <QFileInfo>
+#include <rendersystem.h>
+#include <QOpenGLFunctions_4_1_Core>
 
 #include "components.h"
 #include "constants.h"
@@ -24,6 +26,8 @@ struct meshData{
     std::vector<GLuint> meshIndic;
     float collisionRadius;
     int internalIndex;
+    GLuint VBO = 0;
+    GLuint VAO = 0;
 };
 class resourceSystem
 {
@@ -32,7 +36,10 @@ public:
     void CreateMeshComponent();
     void CreateMeshComponent(std::string input, MeshComponent * mesh);
     std::vector<std::string> GetAllMeshesInAssetsDirectory();
-    void ResourceSystemInit();
+    void ResourceSystemInit(RenderSystem * inRendSys);
+    void SetMeshDataContainer();
+
+    RenderSystem * rendSys;
 
 private:
     std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;

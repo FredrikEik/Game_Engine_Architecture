@@ -223,20 +223,212 @@ std::vector<std::string> resourceSystem::GetAllMeshesInAssetsDirectory()
 {
     std::vector<std::string> assetNames;
     std::string dir = gsl::ModelFilePath;
-    qDebug() << "-------------------------------------------Checking Models Assets-------------------------------";
+    qDebug() << "-------------------------------------------Checking Model Assets--------------------------------";
     QDirIterator iterator("../GEA2021/Assets/Models/", QDirIterator::Subdirectories);
     while (iterator.hasNext()) {
         QFile file(iterator.next());
         if ( file.open( QIODevice::ReadOnly ) ){
             QFileInfo fileInf(file.fileName());
-            qDebug() << "Detected Model :" << fileInf.fileName();
+            QString qFN = fileInf.fileName();
+            std::string fn = qFN.toStdString();
+            if(fn.find("_L0") != std::string::npos){
+                qDebug() << "Detected LOD Model :" << fileInf.fileName();
+            }else{
+                qDebug() << "Detected Model :" << fileInf.fileName();
+            }
+            assetNames.push_back(fn);
         }
     }
-    qDebug() << "-----------------------------------------------Models Assets------------------------------------";
+    qDebug() << "-----------------------------------------------Completed----------------------------------------";
 
     return assetNames;
 }
 
+void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
+{
+    rendSys = inRendSys;
+    SetMeshDataContainer();
+    qDebug() << "-------------------------------------------Loading Model Assets---------------------------------";
+    for(int i = 0; i < (int)meshDataContainer.size(); i++){
+        qDebug() << "Loaded Mesh: " << QString::fromStdString(meshDataContainer[i].first);
+        rendSys->init(meshDataContainer[i].second.meshVert, meshDataContainer[i].second.VAO, meshDataContainer[i].second.VBO);
+        qDebug() << "Initialized: " << QString::fromStdString(meshDataContainer[i].first) << "VAO Index" <<  QString::fromStdString(std::to_string(meshDataContainer[i].second.VAO));
+    }
+    qDebug() << "-----------------------------------------------Completed----------------------------------------";
+}
+
+void resourceSystem::SetMeshDataContainer()
+{
+    meshDataContainer.clear();
+    std::vector<std::string> assetNames = GetAllMeshesInAssetsDirectory();
+
+    for(int i = 0; i < (int)assetNames.size(); i++){
+        meshData obj;
+        std::string filename = gsl::ModelFilePath + assetNames[i];
+        std::vector<Vertex> tempMVertices;
+        std::vector<GLuint> tempMIndices;
+        float tempRadius = 0;
+        //Open File
+        //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
+        std::ifstream fileIn;
+        fileIn.open (filename, std::ifstream::in);
+        if(!fileIn)
+            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
+
+        //One line at a time-variable
+        std::string oneLine;
+        //One word at a time-variable
+        std::string oneWord;
+
+        std::vector<QVector3D> tempVertecies;
+        std::vector<QVector3D> tempNormals;
+        std::vector<QVector2D> tempUVs;
+        std::vector<QVector3D> tempColors;
+
+        //    std::vector<Vertex> mVertices;    //made in VisualObject
+        //    std::vector<GLushort> mIndices;   //made in VisualObject
+
+        // Varible for constructing the indices vector
+        unsigned int temp_index = 0;
+
+        //Reading one line at a time from file to oneLine
+        while(std::getline(fileIn, oneLine))
+        {
+            //Doing a trick to get one word at a time
+            std::stringstream sStream;
+            //Pushing line into stream
+            sStream << oneLine;
+            //Streaming one word out of line
+            oneWord = ""; //resetting the value or else the last value might survive!
+            sStream >> oneWord;
+
+            if (oneWord == "#")
+            {
+                //Ignore this line
+                //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+                continue;
+            }
+            if (oneWord == "")
+            {
+                //Ignore this line
+                //            qDebug() << "Line is blank ";
+                continue;
+            }
+            if (oneWord == "v")
+            {
+                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+                QVector3D tempVertex;
+                sStream >> oneWord;
+                tempVertex.setX(std::stof(oneWord));
+                sStream >> oneWord;
+                tempVertex.setY( std::stof(oneWord));
+                sStream >> oneWord;
+                tempVertex.setZ (std::stof(oneWord));
+
+                //Vertex made - pushing it into vertex-vector
+                tempVertecies.push_back(tempVertex);
+
+                //calculate radius of sphere
+                tempRadius = calculateLenght(tempVertex);
+                //if last radius is less than new radius, apply new radius
+                if(obj.collisionRadius < tempRadius)
+                    obj.collisionRadius = tempRadius;
+
+                continue;
+            }
+            if (oneWord == "vt")
+            {
+                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+                QVector2D tempUV;
+                sStream >> oneWord;
+                tempUV.setX( std::stof(oneWord));
+                sStream >> oneWord;
+                tempUV.setY( std::stof(oneWord));
+
+                //UV made - pushing it into UV-vector
+                tempUVs.push_back(tempUV);
+
+                continue;
+            }
+            if (oneWord == "vn")
+            {
+                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+                QVector3D tempNormal;
+                sStream >> oneWord;
+                tempNormal.setX( std::stof(oneWord));
+                sStream >> oneWord;
+                tempNormal.setY(std::stof(oneWord));
+                sStream >> oneWord;
+                tempNormal.setZ(std::stof(oneWord));
+
+                //Vertex made - pushing it into vertex-vector
+                tempNormals.push_back(tempNormal);
+                //tempColors.push_back(QVector3D{0,0,0}/*tempNormal*/);
+
+                continue;
+            }
+            if (oneWord == "f")
+            {
+                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+                //int slash; //used to get the / from the v/t/n - format
+                int index, normal, uv;
+                for(int i = 0; i < 3; i++)
+                {
+                    sStream >> oneWord;     //one word read
+                    std::stringstream tempWord(oneWord);    //to use getline on this one word
+                    std::string segment;    //the numbers in the f-line
+                    std::vector<std::string> segmentArray;  //temp array of the numbers
+                    while(std::getline(tempWord, segment, '/')) //splitting word in segments
+                    {
+                        segmentArray.push_back(segment);
+                    }
+                    index = std::stoi(segmentArray[0]);     //first is vertex
+                    if (segmentArray[1] != "")              //second is uv
+                        uv = std::stoi(segmentArray[1]);
+                    else
+                    {
+                        //qDebug() << "No uvs in mesh";       //uv not present
+                        uv = 0;                             //this will become -1 in a couple of lines
+                    }
+                    normal = std::stoi(segmentArray[2]);    //third is normal
+
+                    //Fixing the indexes
+                    //because obj f-lines starts with 1, not 0
+                    --index;
+                    --uv;
+                    --normal;
+
+                    if (uv > -1)    //uv present!
+                    {
+                        Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
+                        tempMVertices.push_back(tempVert);
+                    }
+                    else            //no uv in mesh data, use 0, 0 as uv
+                    {
+                        Vertex tempVert(tempVertecies[index], tempNormals[normal], QVector2D(0.0f, 0.0f));
+                        tempMVertices.push_back(tempVert);
+                    }
+                    tempMIndices.push_back(temp_index++);
+                }
+                continue;
+            }
+
+
+            //beeing a nice boy and closing the file after use
+            fileIn.close();
+            //copy the object for future use
+
+            obj.meshVert = tempMVertices;
+            obj.meshIndic = tempMIndices;
+            obj.collisionRadius = tempRadius;
+            obj.internalIndex = meshDataContainer.size()-1;
+            obj.VAO = 0;//(GLuint)meshDataContainer.size()+1;
+            obj.VBO = 0;//(GLuint)meshDataContainer.size()+1;
+            meshDataContainer.push_back(std::make_pair(assetNames[i], obj));
+        }
+
+    }
+}
 
 float resourceSystem::calculateLenght(QVector3D pos)
 {   //we assume that the center of the obj is at 0,0,0

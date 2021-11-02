@@ -132,7 +132,7 @@ void RenderWindow::init()
     /***** should not use separate classes init() - function ****************/
     
     ////*************************************start**////////////
-    
+    ResSys->ResourceSystemInit(RenderSys);
     
     ///PURE ECS TEST
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
@@ -184,7 +184,7 @@ void RenderWindow::init()
     
     
     
-    ResSys->GetAllMeshesInAssetsDirectory();
+
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
