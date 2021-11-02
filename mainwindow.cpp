@@ -124,7 +124,7 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 void MainWindow::on_pushButton_clicked()
 {
     //mTransformWidget->objectsInList +=1;
-    currentIndex +=1;
+
     mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
     mCoreEngine->boss->mSoundComponent->shouldPlay = true;
 
@@ -145,7 +145,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     {
         item->setSelected(true);
         mTransformWidget = new transformWidget();
-        mTransformWidget->init(mRenderSystem, currentIndex);
+        mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
         item = ui->listWidget->currentItem();
         item->setForeground(Qt::green);
         mCurrentSelectedItem = item;
@@ -176,7 +176,7 @@ void MainWindow::on_actionAdd_Player_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
-        currentIndex +=1;
+
     mRenderSystem->mGameObjects.push_back(mCoreEngine->player);
     ui->listWidget->addItem(mCoreEngine->player->objName);
     }
@@ -187,7 +187,7 @@ void MainWindow::on_actionAdd_Enemy_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
-    currentIndex +=1;
+
     mRenderSystem->mGameObjects.push_back(mCoreEngine->enemy);
     ui->listWidget->addItem(mCoreEngine->enemy->objName);
     }
@@ -198,8 +198,26 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
-        currentIndex +=1;
+
     mRenderSystem->mGameObjects.push_back(mCoreEngine->axis);
     ui->listWidget->addItem(mCoreEngine->axis->objName);
     }
+}
+
+void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+//    if(!item)
+//    {
+//        mCurrentTreeItem = nullptr;
+//        return;
+//    }
+    mCurrentTreeItem = item;
+    item->setSelected(true);
+    ui->treeWidget->scrollToItem(mCurrentTreeItem);
+    currentIndex = item->parent()->indexOfChild(item);
+
+    mTransformWidget = new transformWidget();
+    mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
+     ui->verticalLayout_2->addWidget(mTransformWidget);
+
 }

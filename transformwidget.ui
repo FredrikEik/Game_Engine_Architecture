@@ -31,10 +31,39 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QDoubleSpinBox" name="rotZ"/>
+     <widget class="QDoubleSpinBox" name="rotZ">
+      <property name="minimum">
+       <double>-360.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>360.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="0" column="3">
-     <widget class="QDoubleSpinBox" name="scaleX"/>
+     <widget class="QDoubleSpinBox" name="scaleX">
+      <property name="wrapping">
+       <bool>true</bool>
+      </property>
+      <property name="accelerated">
+       <bool>true</bool>
+      </property>
+      <property name="minimum">
+       <double>-9999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>9999.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+      <property name="stepType">
+       <enum>QAbstractSpinBox::DefaultStepType</enum>
+      </property>
+     </widget>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_2">
@@ -51,7 +80,17 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="rotY"/>
+     <widget class="QDoubleSpinBox" name="rotY">
+      <property name="minimum">
+       <double>-360.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>360.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">
@@ -61,10 +100,26 @@
      </widget>
     </item>
     <item row="3" column="3">
-     <widget class="QDoubleSpinBox" name="scaleZ"/>
+     <widget class="QDoubleSpinBox" name="scaleZ">
+      <property name="minimum">
+       <double>-9999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>9999.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="0" column="1">
      <widget class="QDoubleSpinBox" name="rotX">
+      <property name="minimum">
+       <double>-360.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>360.000000000000000</double>
+      </property>
       <property name="singleStep">
        <double>0.050000000000000</double>
       </property>
@@ -78,7 +133,17 @@
      </widget>
     </item>
     <item row="1" column="3">
-     <widget class="QDoubleSpinBox" name="scaleY"/>
+     <widget class="QDoubleSpinBox" name="scaleY">
+      <property name="minimum">
+       <double>-9999.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>9999.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.050000000000000</double>
+      </property>
+     </widget>
     </item>
     <item row="0" column="2">
      <widget class="QLabel" name="label_4">

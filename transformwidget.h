@@ -5,6 +5,8 @@
 
 #include "mainwindow.h"
 class RenderSystem;
+class CoreEngine;
+class MainWindow;
 namespace Ui {
 class transformWidget;
 
@@ -18,7 +20,7 @@ public:
     explicit transformWidget(QWidget *parent = nullptr);
     ~transformWidget();
 
-    void init(RenderSystem *rendersystem, int index);
+    void init(MainWindow * mainwindow, RenderSystem *rendersystem, CoreEngine* coreengine, int index);
 
 
 
@@ -29,7 +31,7 @@ private slots:
 
     void on_rotZ_valueChanged(double arg1);
 
-    void on_scaleX_valueChanged(double arg1);
+    void on_scaleX_valueChanged(double translatex);
 
     void on_scaleY_valueChanged(double arg1);
 
@@ -42,6 +44,9 @@ private:
             int objectsInList{-1};
 
     RenderSystem* mRenderSystem{nullptr};
+
+    CoreEngine * mCoreEngine{nullptr};
+    double translatex{0}, translatey{0}, translatez{0};
 };
 
 #endif // TRANSFORMWIDGET_H

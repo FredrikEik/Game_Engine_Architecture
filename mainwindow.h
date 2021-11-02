@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "QListWidgetItem"
 
 //Forward declarations
 class QWidget;
-class QListWidgetItem;
+//class QListWidgetItem;
+class QTreeWidgetItem;
 class RenderSystem;
 class CoreEngine;
 
@@ -22,6 +24,7 @@ public:
     ~MainWindow();
 
     QListWidgetItem *mCurrentSelectedItem{nullptr};
+    QTreeWidgetItem *mCurrentTreeItem{nullptr};
 
 
 public slots:
@@ -42,6 +45,8 @@ private slots:
     void on_actionAdd_Enemy_triggered();
 
     void on_actionAdd_XYZ_triggered();
+
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     void init();
