@@ -1,9 +1,13 @@
 ﻿#ifndef GAMEOBJECTMANAGER_H
 #define GAMEOBJECTMANAGER_H
 
+#include <string>
 #include <map>
+#include <vector>
 
-#include "ResourceManager/soundhandler.h"
+#include "components.h"
+#include "constants.h"
+#include "soundhandler.h"
 
 //forward declaration
 class GameObject;

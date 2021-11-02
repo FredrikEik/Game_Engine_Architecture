@@ -1,11 +1,12 @@
 #include "coreengine.h"
 
-#include "ResourceManager/gameobjectmanager.h"
+#include "gameobjectmanager.h"
 #include "soundsystem.h"
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
 #include "mainwindow.h"
+#include "physicshandler.h"
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
@@ -52,11 +53,11 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 void CoreEngine::setUpScene()
 {
     //ask resource manager to set up all asstes
-//    mGameObjectManager->setUpAllSounds();
-//    mGameObjectManager->setUpAllMeshes();
-//    mGameObjectManager->setUpAllTextures();
-//    mGameObjectManager->setUpAllShaders();
-//    mGameObjectManager->setUpAllMaterials();
+    mGameObjectManager->setUpAllSounds();
+    mGameObjectManager->setUpAllMeshes();
+    mGameObjectManager->setUpAllTextures();
+    mGameObjectManager->setUpAllShaders();
+    mGameObjectManager->setUpAllMaterials();
     //********************** Making the object to be drawn **********************
 
     //Axis
@@ -99,19 +100,19 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
 //Rollingball, getting vis & sim code integrated into GEA code
-    //    temp = mGameObjectManager->addObject("Ball.obj");
-    //    temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
-    //    temp->mTransform->mMatrix.scale(1.0f);
-    //    temp->mName = "Rullendeball";
-    //    mGameObjectManager->addComponent("PhysicsComponent", temp);
-    //    mRenderSystem->mGameObjects.push_back(temp);
+        temp = mGameObjectManager->addObject("Ball.obj");
+        temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
+        temp->mTransform->mMatrix.scale(0.5f);
+        temp->mName = "Rullendeball";
+        mGameObjectManager->addComponent("PhysicsComponent", temp);
+        mRenderSystem->mGameObjects.push_back(temp);
 
-    //    temp = mGameObjectManager->addObject("TriangleSurface.obj");
-    //    temp->mTransform->mMatrix.translate(1.5f, -2.0f, -9.0f);
-    //    temp->mTransform->mMatrix.scale(3.0f);
-    //    temp->mTransform->mMatrix.rotateY(90);
-    //    temp->mName = "TriangleSurface";
-    //    mRenderSystem->mGameObjects.push_back(temp);
+        temp = mGameObjectManager->addObject("TriangleSurface.obj");
+        temp->mTransform->mMatrix.translate(1.5f, -2.0f, -9.0f);
+        temp->mTransform->mMatrix.scale(3.0f);
+        temp->mTransform->mMatrix.rotateY(90);
+        temp->mName = "TriangleSurface";
+        mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
@@ -165,8 +166,8 @@ void CoreEngine::gameLoop()
     SoundSystem::getInstance()->update(mRenderSystem);
 
     //Update PhysicsObjects in scene
-    //PhysicsComponent pc;
-    //pc.movePhysicsObject();
+    PhysicsHandler ph;
+    ph.movePhysicsObject();
 
     mRenderSystem->render();
 }

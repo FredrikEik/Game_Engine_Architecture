@@ -1,7 +1,7 @@
 #ifndef SHADERHANDLER_H
 #define SHADERHANDLER_H
 
-//#include "GL/glew.h" //We use QOpenGLFunctions instead, so no need for Glew (or GLAD)!
+#include <QOpenGLFunctions_4_1_Core>
 
 //This class is pretty much a copy of the shader class at
 //https://github.com/SonarSystems/Modern-OpenGL-Tutorials/blob/master/%5BLIGHTING%5D/%5B8%5D%20Basic%20Lighting/Shader.h
@@ -14,14 +14,19 @@ public:
     // Constructor generates the shader on the fly
     ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
 
-    // Use the current shader
-    void use( );
+    void setupShader(bool useTexture);
 
-    //Get program number for this shader
-    GLuint getProgram() const;
+    GLint mMatrixUniform{-1};
+    GLint vMatrixUniform{-1};
+    GLint pMatrixUniform{-1};
+    GLint mTextureUniform{-1};
+
+    ///OpenGL program ID for this shader
+    GLuint mProgram;
+    std::string mName{"none"};
 
 private:
-    GLuint program;
+    class Logger* mLogger{nullptr};
 };
 
 #endif // SHADERHANDLER_H

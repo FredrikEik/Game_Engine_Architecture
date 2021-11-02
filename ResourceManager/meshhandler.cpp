@@ -1,6 +1,12 @@
 #include "ResourceManager/meshhandler.h"
 
 #include <sstream>
+#include <fstream>
+
+#include "constants.h"
+#include "math_constants.h"
+#include "camera.h"
+#include "logger.h"
 
 MeshHandler::MeshHandler()
 {

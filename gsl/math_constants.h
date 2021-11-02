@@ -1,6 +1,8 @@
 #ifndef MATH_CONSTANTS_H
 #define MATH_CONSTANTS_H
 
+#include "gltypes.h"
+
 namespace gsl
 {
     // Mathematical constants

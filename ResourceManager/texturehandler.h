@@ -1,6 +1,8 @@
 #ifndef TEXTUREHANDLER_H
 #define TEXTUREHANDLER_H
 
+#include <QOpenGLFunctions_4_1_Core>
+
 struct Texture
 {
     int mColumns{};

@@ -1,3 +1,5 @@
+#include "vector3d.h"
+#include "math_constants.h"
 #include <cmath>
 
 namespace gsl

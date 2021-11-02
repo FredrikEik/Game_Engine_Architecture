@@ -94,20 +94,20 @@ void RenderSystem::init()
     glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-    //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
+//    //Compile shaders:
+//    //NB: hardcoded path to files! You have to change this if you change directories for the project.
+//    //Qt makes a build-folder besides the project folder. That is why we go down one directory
+//    // (out of the build-folder) and then up into the project folder.
+//    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+//                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+//    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
-    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+//    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+//                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+//    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
-    setupPlainShader(0);
-    setupTextureShader(1);
+//    setupPlainShader(0);
+//    setupTextureShader(1);
 
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
@@ -137,7 +137,7 @@ void RenderSystem::render()
     //Draws the objects
     int cullSafe = mIsPlaying ? -1 : 1;
     int startObject = mIsPlaying ? -1 : 1;
-    for(int i{0}; i < mGameObjects.size(); i++)
+    for(int i{startObject}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
@@ -167,9 +167,9 @@ void RenderSystem::render()
         //First object - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
-
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
+        int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
+        ShaderHandler *tempShader = mGameObjectManager->mShaders[shaderIndex];
+        glUseProgram(tempShader->mProgram);
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
@@ -177,23 +177,31 @@ void RenderSystem::render()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
+        viewMatrix = tempShader->vMatrixUniform;
+        projectionMatrix = tempShader->pMatrixUniform;
+        modelMatrix = tempShader->mMatrixUniform;
 
-
-        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
+        if(tempShader->mTextureUniform > -1)
         {
-            viewMatrix = vMatrixUniform;
-            projectionMatrix = pMatrixUniform;
-            modelMatrix = mMatrixUniform;
-        }
-        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
-        {
-            viewMatrix = vMatrixUniform1;
-            projectionMatrix = pMatrixUniform1;
-            modelMatrix = mMatrixUniform1;
-
             //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
+
+//        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
+//        {
+//            viewMatrix = vMatrixUniform;
+//            projectionMatrix = pMatrixUniform;
+//            modelMatrix = mMatrixUniform;
+//        }
+//        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
+//        {
+//            viewMatrix = vMatrixUniform1;
+//            projectionMatrix = pMatrixUniform1;
+//            modelMatrix = mMatrixUniform1;
+
+//            //Now mMaterial component holds texture slot directly - probably should be changed
+//            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+//        }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
@@ -248,14 +256,18 @@ void RenderSystem::render()
         }
 
         //Quick hack test to check if linebox/circle works:
-        if(i == 2)
+        if(i == mIndexToPickedObject)
         {
-            MeshData lineBox = CoreEngine::getInstance()->mGameObjectManager->makeLineBox("suzanne.obj");
+            tempShader = mGameObjectManager->mShaders[0];
+//            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mGameObjectManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
+            //Hackety hack - have to get rid of scale in the objects model matrix
+            gsl::Matrix4x4 temp(true);
+            temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
+            glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//            glBindVertexArray( lineBox.mVAO[0] );
+//            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
@@ -264,8 +276,13 @@ void RenderSystem::render()
 
     //Moves the dog triangle - should be made another way!!!!
     if(mIsPlaying)
+    {
         mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-
+        mGameCamera->yaw(0.07f);
+        mGameCamera->update();
+        mUseFrustumCulling = true;
+        mGameCamAsFrustumCulling = true;
+    }
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -273,7 +290,6 @@ void RenderSystem::render()
 
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
-    //Tried moving this to the top of this function. still getting errors. Disabled for now.
 
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
@@ -283,20 +299,20 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
-void RenderSystem::setupPlainShader(int shaderIndex)
-{
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-}
+//void RenderSystem::setupPlainShader(int shaderIndex)
+//{
+//    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+//    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+//    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+//}
 
-void RenderSystem::setupTextureShader(int shaderIndex)
-{
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
-}
+//void RenderSystem::setupTextureShader(int shaderIndex)
+//{
+//    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+//    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+//    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+//    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+//}
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
@@ -315,10 +331,8 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     float aspectRatio = static_cast<float>(width()) / height();
-    //    qDebug() << mAspectratio;
     mEditorCamera->mFrustum.mAspectRatio = aspectRatio;
     mEditorCamera->calculateProjectionMatrix();
-    //    qDebug() << mCamera.mProjectionMatrix;
 
     mGameCamera->mFrustum.mAspectRatio = aspectRatio;
     mGameCamera->calculateProjectionMatrix();
@@ -366,6 +380,20 @@ void RenderSystem::toggleWireframe(bool buttonState)
     }
 }
 
+void RenderSystem::toggleBackSideCulling(bool state)
+{
+    state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
+}
+
+void RenderSystem::setPickedObject(int pickedID)
+{
+    mIndexToPickedObject = pickedID;
+}
+void RenderSystem::cancelPickedObject()
+{
+    mIndexToPickedObject = -1;
+}
+
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
 void RenderSystem::checkForGLerrors()
@@ -377,7 +405,7 @@ void RenderSystem::checkForGLerrors()
         {
             if (!(message.type() == message.OtherType)) // got rid of "object ...
                                                         //will use VIDEO memory as the source for buffer object operations"
-                qDebug() << message;
+                mLogger->logText(message.message().toStdString(), LColor::DAMNERROR);
         }
     }
     else
@@ -385,7 +413,7 @@ void RenderSystem::checkForGLerrors()
         GLenum err = GL_NO_ERROR;
         while((err = glGetError()) != GL_NO_ERROR)
         {
-            qDebug() << "glGetError returns " << err;
+            mLogger->logText("glGetError returns " + std::to_string(err), LColor::DAMNERROR);
         }
     }
 }
@@ -398,14 +426,14 @@ void RenderSystem::startOpenGLDebugger()
     {
         QSurfaceFormat format = temp->format();
         if (! format.testOption(QSurfaceFormat::DebugContext))
-            qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
+            mLogger->logText("This system can not use QOpenGLDebugLogger, so we revert to glGetError()");
 
         if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
         {
-            qDebug() << "System can log OpenGL errors!";
+            mLogger->logText("System can log OpenGL errors!");
             mOpenGLDebugLogger = new QOpenGLDebugLogger(this);
             if (mOpenGLDebugLogger->initialize()) // initializes in the current context
-                qDebug() << "Started OpenGL debug logger!";
+                mLogger->logText("Started OpenGL debug logger!");
         }
     }
 }

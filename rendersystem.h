@@ -27,6 +27,12 @@ public:
     void toggleWireframe(bool buttonState);
     void toggleBackSideCulling(bool state);
 
+    //Editor functions
+    void setPickedObject(int pickedID);
+    void cancelPickedObject();
+    //Just to test mousePickingRay
+    int mIndexToPickedObject{-1};
+
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     bool mIsPlaying{false};

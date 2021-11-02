@@ -1,11 +1,16 @@
-#include "ResourceManager/shaderhandler.h"
+#include "shaderhandler.h"
+#include <string>
+#include <fstream>
 #include <sstream>
-
-//#include "GL/glew.h" - using QOpenGLFunctions instead
+#include <iostream>
+#include <QDebug>
+#include "logger.h"
 
 ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath)
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
+
+    mLogger = Logger::getInstance();
 
     // 1. Retrieve the vertex/fragment source code from filePath
     std::string vertexCode;
@@ -16,10 +21,10 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     // Open files and check for errors
     vShaderFile.open( vertexPath );
     if(!vShaderFile)
-        std::cout << "ERROR SHADER FILE " << vertexPath << " NOT SUCCESFULLY READ" << std::endl;
+        mLogger->logText("ERROR SHADER FILE " + std::string(vertexPath) + " NOT SUCCESFULLY READ", LColor::DAMNERROR);
     fShaderFile.open( fragmentPath );
     if(!fShaderFile)
-        std::cout << "ERROR SHADER FILE " << fragmentPath << " NOT SUCCESFULLY READ" << std::endl;
+        mLogger->logText("ERROR SHADER FILE " + std::string(fragmentPath) + " NOT SUCCESFULLY READ", LColor::DAMNERROR);
     std::stringstream vShaderStream, fShaderStream;
     // Read file's buffer contents into streams
     vShaderStream << vShaderFile.rdbuf( );
@@ -47,7 +52,8 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     if ( !success )
     {
         glGetShaderInfoLog( vertex, 512, nullptr, infoLog );
-        std::cout << "ERROR SHADER VERTEX " << vertexPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
+        mLogger->logText("ERROR SHADER VERTEX " + std::string(vertexPath) +
+                         " COMPILATION_FAILED\n" + infoLog, LColor::DAMNERROR);
     }
     // Fragment Shader
     fragment = glCreateShader( GL_FRAGMENT_SHADER );
@@ -58,20 +64,21 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     if ( !success )
     {
         glGetShaderInfoLog( fragment, 512, nullptr, infoLog );
-        std::cout << "ERROR SHADER FRAGMENT " << fragmentPath << " COMPILATION_FAILED\n" << infoLog << std::endl;
+        mLogger->logText("ERROR SHADER FRAGMENT " + std::string(fragmentPath) +
+                         " COMPILATION_FAILED\n" + infoLog, LColor::DAMNERROR);
     }
     // Shader Program
-    this->program = glCreateProgram( );
-    glAttachShader( this->program, vertex );
-    glAttachShader( this->program, fragment );
-    glLinkProgram( this->program );
+    this->mProgram = glCreateProgram( );
+    glAttachShader( this->mProgram, vertex );
+    glAttachShader( this->mProgram, fragment );
+    glLinkProgram( this->mProgram );
     // Print linking errors if any
-    glGetProgramiv( this->program, GL_LINK_STATUS, &success );
+    glGetProgramiv( this->mProgram, GL_LINK_STATUS, &success );
     if (!success)
     {
-        glGetProgramInfoLog( this->program, 512, nullptr, infoLog );
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                  << "  " << vertexPath <<  "\n   " << infoLog << std::endl;
+        glGetProgramInfoLog( this->mProgram, 512, nullptr, infoLog );
+        mLogger->logText("ERROR::SHADER::PROGRAM::LINKING_FAILED\n" +
+                         std::string(vertexPath) +  "\n   " + infoLog, LColor::DAMNERROR);
     }
     else
     {
@@ -82,12 +89,11 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     glDeleteShader( fragment );
 }
 
-void ShaderHandler::use()
+void ShaderHandler::setupShader(bool useTexture)
 {
-    glUseProgram( this->program );
-}
-
-GLuint ShaderHandler::getProgram() const
-{
-    return program;
+    mMatrixUniform = glGetUniformLocation( mProgram, "mMatrix" );
+    vMatrixUniform = glGetUniformLocation( mProgram, "vMatrix" );
+    pMatrixUniform = glGetUniformLocation( mProgram, "pMatrix" );
+    if(useTexture)
+        mTextureUniform = glGetUniformLocation(mProgram, "textureSampler");
 }

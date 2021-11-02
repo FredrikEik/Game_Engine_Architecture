@@ -24,6 +24,7 @@ struct MaterialComponent
 {
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
+    gsl::Vector3D mColor{0.4f};
 };
 
 struct SoundListenerComponent

@@ -1,6 +1,9 @@
 #ifndef MESHHANDLER_H
 #define MESHHANDLER_H
 
+#include <QOpenGLFunctions_4_1_Core>
+#include "vertex.h"
+#include "gltypes.h"
 
 struct MeshData
 {

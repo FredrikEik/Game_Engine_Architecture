@@ -1,3 +1,6 @@
+#include "matrix3x3.h"
+#include "matrix4x4.h"
+
 namespace gsl
 {
 Matrix3x3::Matrix3x3(bool isIdentity)

@@ -3,6 +3,7 @@
 
 class PhysicsHandler
 {
+public:
     void movePhysicsObject();
 };
 

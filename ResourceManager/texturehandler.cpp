@@ -1,10 +1,16 @@
+#include <QDebug>
 #include <QImage>
 #include <QBuffer>
 #include <QByteArray>
 
+#include <iostream>
+#include <fstream>
 #include <sstream>
+#include <string>
 
-#include "ResourceManager/texturehandler.h"
+#include "texturehandler.h"
+#include "constants.h"
+#include "logger.h"
 
 TextureHandler::TextureHandler()
 {}
