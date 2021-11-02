@@ -97,7 +97,7 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
-    MeshData linebox;
+   // MeshData linebox;
     MeshData linebox2;
 
     MeshData circle1;
