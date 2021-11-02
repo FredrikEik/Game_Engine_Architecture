@@ -5,6 +5,7 @@
 
 #include "gameobject.h"
 #include "soundmanager.h"
+#include "input.h"
 
 
 class Camera;
@@ -14,6 +15,7 @@ class QTimer;
 class SoundSourceComponent;
 class MainWindow;
 class PhysicsBallSystem;
+class CollisionSystem;
 
 class GameEngine : public QObject
 {
@@ -33,6 +35,10 @@ public:
     void playMusic(bool bIsPlaying);
     void resetWorld();
 
+    bool bIsPlaying{false};
+
+    Input mInput;
+
     //could simplify the createObject function to include the pusback in the mGameObjects in renderwindow
     //this way i dont need these functions and can only call the Createfunciton in resourcemanager.
     void CreateCube();
@@ -49,6 +55,8 @@ private:
 
     ResourceManager *mResourceManager{nullptr};
     PhysicsBallSystem *mPhysicsBallSystem{nullptr};
+    CollisionSystem *mCollisionSystem{nullptr};
+
     //std::vector<GameObject*> mGameObjects;
 
     GameObject* tempGameObject{nullptr};
@@ -60,14 +68,13 @@ private:
 
     SoundSource* mStereoSound{nullptr};
 
-    //bool isPlaying{false};
-
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};
     MainWindow* mMainWindow{nullptr};
 
     QTimer *mGameLoopRenderTimer{nullptr};
     void UpdateGameCameraFollow();
+
 };
 
 #endif // GAMEENGINE_H

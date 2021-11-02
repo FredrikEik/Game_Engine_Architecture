@@ -12,6 +12,7 @@ win32 {
 
 SOURCES += main.cpp \
     camera.cpp \
+    collisionsystem.cpp \
     components.cpp \
     gameengine.cpp \
     gameobject.cpp \
@@ -33,6 +34,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     camera.h \
+    collisionsystem.h \
     components.h \
     constants.h \
     gameengine.h \

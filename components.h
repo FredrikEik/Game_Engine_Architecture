@@ -21,8 +21,8 @@ class TransformComponent
 public:
 //    TransformComponent();
     gsl::Matrix4x4 mMatrix;
-    gsl::Vector3D rotationDeg{0.f,0.f,0.f};
-    gsl::Vector3D scale{0.f,0.f,0.f};
+//    gsl::Vector3D rotationDeg{0.f,0.f,0.f};
+//    gsl::Vector3D scale{0.f,0.f,0.f};
 };
 
 class MeshComponent
@@ -59,10 +59,6 @@ public:
     float zMin{0};
     float zMax{0};
 
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLuint mEAB{0};
-
     bool bShowCollisionBox{false};
 };
 
@@ -91,55 +87,5 @@ public:
     float gain;
 };
 
-
-//class ShaderComponent
-//{
-//public:
-//    GLint mMatrixUniform{0};
-//    GLint vMatrixUniform{0};
-//    GLint pMatrixUniform{0};
-//    GLint TextureUniform{0};
-//};
-
-//// TO DO: Create multiple shadercomponents, plainshadercomp, textureshadercomp...
-//class PlainShaderComponent
-//{
-//public:
-//    GLint mMatrixUniform{0};
-//    GLint vMatrixUniform{0};
-//    GLint pMatrixUniform{0};
-//};
-
-//class TextureShaderComponent
-//{
-//public:
-//    GLint mMatrixUniform{0};
-//    GLint vMatrixUniform{0};
-//    GLint pMatrixUniform{0};
-//    GLint TextureUniform{0};
-//};
-
-
-
-//struct TransformComponent
-//{
-//    gsl::Matrix4x4 mMatrix;
-//};
-
-//struct MeshComponent
-//{
-//    GLuint mVAO{0};
-//    GLuint mVBO{0};
-//    GLuint mEAB{0};
-//    std::vector<Vertex> mVertices;
-//    std::vector<GLuint> mIndices;
-//    GLenum mDrawType{GL_TRIANGLES};
-//};
-
-//struct MaterialComponent
-//{
-//    GLuint mShaderProgram{0};
-//    GLint mTextureUnit{0};
-//};
 
 #endif // COMPONENTS_H

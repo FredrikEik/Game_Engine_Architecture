@@ -143,9 +143,9 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    // TODO: move camera and inputhandler to the resource manager
-
-    if(mInput.LMB)
+    bool isPlaying = GameEngine::getInstance()->bIsPlaying;
+    Input input = GameEngine::getInstance()->mInput;
+    if(input.LMB)
     {
         if(onceLeftClicked)
         {
@@ -157,7 +157,7 @@ void RenderWindow::render()
             isMousePicking = false;
         }
     }
-    if(!mInput.LMB)
+    if(!input.LMB)
     {
         onceLeftClicked = true;
     }
@@ -241,6 +241,12 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
 
+            // not draw player while playig
+            if(i==0 && isPlaying)
+            {
+                continue;
+            }
+
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
 
@@ -298,6 +304,12 @@ void RenderWindow::render()
         }
         // need to fix [] for LOD
         //qDebug() << "Distacne: " << distanceToFrontObject;
+
+        // not draw player while playig
+        if(i==0 && isPlaying)
+        {
+            continue;
+        }
         if(mGameObjects[i]->mMeshComp->bUsingLOD && bRenderingLOD)
         {
             if(distanceCamToObj < 10)
@@ -333,12 +345,11 @@ void RenderWindow::render()
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
-        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox && !bIsPlaying)
+        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox && !isPlaying)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
-
 
     }
 
@@ -381,6 +392,11 @@ void RenderWindow::setupMousPickingShader(int shaderIndex)
     mMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+}
+
+float RenderWindow::getCameraSpeed() const
+{
+    return mCameraSpeed;
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -541,24 +557,9 @@ void RenderWindow::setCameraSpeed(float value)
 void RenderWindow::handleInput()
 {
     //Camera
-    mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
-    {
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
-    }
-    if(/*isPlaying*/!mInput.RMB && bIsPlaying)
-    {
+
+//    if(/*isPlaying*/!mInput.RMB && bIsPlaying)
+//    {
         //mCurrentCamera->setPosition(mGameObjects[0]->mTransformComp->mMatrix.getPosition());
 //        if(mInput.W)
 //            mGameObjects[0]->mTransformComp->mMatrix.translateZ(0.1f);
@@ -569,45 +570,34 @@ void RenderWindow::handleInput()
 //        if(mInput.A)
 //            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
 
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
-
 //        if(mInput.W)
-//        {
-//         //mGameObjects[0]->mTransformComp->mMatrix.setPosition(mCurrentCamera->getFowrardVector().x,mCurrentCamera->getFowrardVector().y, mCurrentCamera->getFowrardVector().z);
-//         mGameObjects[0]->mTransformComp->mMatrix.translateX(mCurrentCamera->getFowrardVector().x*mCameraSpeed);
-//         mGameObjects[0]->mTransformComp->mMatrix.translateY(0);
-//         mGameObjects[0]->mTransformComp->mMatrix.translateZ(mCurrentCamera->getFowrardVector().z*mCameraSpeed);
-//        }
+//            mCurrentCamera->setSpeed(-mCameraSpeed);
 //        if(mInput.S)
-//            mGameObjects[0]->mTransformComp->mMatrix.translateZ(-0.1f);
+//            mCurrentCamera->setSpeed(mCameraSpeed);
 //        if(mInput.D)
-//            mGameObjects[0]->mTransformComp->mMatrix.translateX(-0.1f);
+//            mCurrentCamera->moveRight(mCameraSpeed);
 //        if(mInput.A)
-//            mGameObjects[0]->mTransformComp->mMatrix.translateX(0.1f);
-    }
+//            mCurrentCamera->moveRight(-mCameraSpeed);
+//        if(mInput.Q)
+//            mCurrentCamera->updateHeigth(-mCameraSpeed);
+//        if(mInput.E)
+//            mCurrentCamera->updateHeigth(mCameraSpeed);
+
+//    }
 
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
+    bool &isPlaying = GameEngine::getInstance()->bIsPlaying;
+    Input &input = GameEngine::getInstance()->mInput;
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
-        if(bIsPlaying)
+        if(isPlaying)
         {
-            bIsPlaying = false;
+            isPlaying = false;
             //GameEngine::getInstance()->togglePlay(bIsPlaying);
-            mMainWindow->on_PlayStop_toggled(bIsPlaying);
+            mMainWindow->on_PlayStop_toggled(isPlaying);
         }else
         {
             mMainWindow->close();
@@ -617,27 +607,27 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
-        mInput.W = true;
+        input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
-        mInput.S = true;
+        input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
-        mInput.D = true;
+        input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
-        mInput.A = true;
+        input.A = true;
     }
     if(event->key() == Qt::Key_Q)
     {
-        mInput.Q = true;
+        input.Q = true;
     }
     if(event->key() == Qt::Key_E)
     {
-        mInput.E = true;
+        input.E = true;
     }
     if(event->key() == Qt::Key_Z)
     {
@@ -651,19 +641,19 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Up)
     {
-        mInput.UP = true;
+        input.UP = true;
     }
     if(event->key() == Qt::Key_Down)
     {
-        mInput.DOWN = true;
+        input.DOWN = true;
     }
     if(event->key() == Qt::Key_Left)
     {
-        mInput.LEFT = true;
+        input.LEFT = true;
     }
     if(event->key() == Qt::Key_Right)
     {
-        mInput.RIGHT = true;
+        input.RIGHT = true;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -675,29 +665,30 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 {
+    Input &input = GameEngine::getInstance()->mInput;
     if(event->key() == Qt::Key_W)
     {
-        mInput.W = false;
+        input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
-        mInput.S = false;
+        input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
-        mInput.D = false;
+        input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
-        mInput.A = false;
+        input.A = false;
     }
     if(event->key() == Qt::Key_Q)
     {
-        mInput.Q = false;
+        input.Q = false;
     }
     if(event->key() == Qt::Key_E)
     {
-        mInput.E = false;
+        input.E = false;
     }
     if(event->key() == Qt::Key_Z)
     {
@@ -707,19 +698,19 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Up)
     {
-        mInput.UP = false;
+        input.UP = false;
     }
     if(event->key() == Qt::Key_Down)
     {
-        mInput.DOWN = false;
+        input.DOWN = false;
     }
     if(event->key() == Qt::Key_Left)
     {
-        mInput.LEFT = false;
+        input.LEFT = false;
     }
     if(event->key() == Qt::Key_Right)
     {
-        mInput.RIGHT = false;
+        input.RIGHT = false;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -731,15 +722,16 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
+    Input &input = GameEngine::getInstance()->mInput;
     if (event->button() == Qt::RightButton)
-        mInput.RMB = true;
+        input.RMB = true;
     if (event->button() == Qt::LeftButton)
     {
-        mInput.LMB = true;
+        input.LMB = true;
     }
     if (event->button() == Qt::MiddleButton)
-        mInput.MMB = true;
-    if(mInput.LMB)
+        input.MMB = true;
+    if(input.LMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         xMousePos = event->pos().x();
@@ -753,11 +745,12 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+    Input &input = GameEngine::getInstance()->mInput;
     if (event->button() == Qt::RightButton)
-        mInput.RMB = false;
+        input.RMB = false;
     if (event->button() == Qt::LeftButton)
     {
-        mInput.LMB = false;
+        input.LMB = false;
         //onceLeftClicked = true;
 //        if(onceLeftRelesed)
 //        {
@@ -766,16 +759,17 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 //        }
     }
     if (event->button() == Qt::MiddleButton)
-        mInput.MMB = false;
+        input.MMB = false;
 
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {
+    Input &input = GameEngine::getInstance()->mInput;
     QPoint numDegrees = event->angleDelta() / 8;
 
     //if RMB, change the speed of the camera
-    if (mInput.RMB)
+    if (input.RMB)
     {
         if (numDegrees.y() < 1)
             setCameraSpeed(0.01f);
@@ -788,7 +782,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB && !bIsPlaying)
+    bool &isPlaying = GameEngine::getInstance()->bIsPlaying;
+    Input &input = GameEngine::getInstance()->mInput;
+    if (input.RMB && !isPlaying)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         mMouseXlast = event->pos().x() - mMouseXlast;
@@ -799,7 +795,7 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         if (mMouseYlast != 0)
             mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
     }
-    if(bIsPlaying)
+    if(isPlaying)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
 //        mMouseXlast = event->pos().x() - mMouseXlast;

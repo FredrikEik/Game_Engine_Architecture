@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "physicsballsystem.h"
 #include "mainwindow.h"
+#include "collisionsystem.h"
 
 
 // Make Singelton
@@ -30,7 +31,8 @@ void GameEngine::SetUpScene()
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
     mGameCamera = new Camera();
-    mGameCamera->setPosition(gsl::Vector3D(0,0,0));
+    mGameCamera->setPosition(gsl::Vector3D(0,2,0));
+    mGameCamera->yaw(180);
 
 
 
@@ -59,7 +61,7 @@ void GameEngine::SetUpObjects()
 {
 
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
-    mPlayer->mTransformComp->mMatrix.translate(0,0,-15);
+    mPlayer->mTransformComp->mMatrix.translate(0,-1.8f,-15);
     mPlayer->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mPlayer);
 
@@ -112,7 +114,7 @@ void GameEngine::SetUpObjects()
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(-12,0.5,-13);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
@@ -160,13 +162,58 @@ void GameEngine::SetUpObjects()
 
 void GameEngine::HandleInput()
 {
-
+    mRenderwindow->mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
+    float cameraSpeed = mRenderwindow->getCameraSpeed();
+    Camera *currentCamera = mRenderwindow->mCurrentCamera;
+    if(mInput.RMB)
+    {
+        if(mInput.W)
+            currentCamera->setSpeed(-cameraSpeed);
+        if(mInput.S)
+            currentCamera->setSpeed(cameraSpeed);
+        if(mInput.D)
+            currentCamera->moveRight(cameraSpeed);
+        if(mInput.A)
+            currentCamera->moveRight(-cameraSpeed);
+        if(mInput.Q)
+            currentCamera->updateHeigth(-cameraSpeed);
+        if(mInput.E)
+            currentCamera->updateHeigth(cameraSpeed);
+    }
+    if(/*isPlaying*/!mInput.RMB && bIsPlaying)
+    {
+        if(mInput.W)
+        {
+         //mGameObjects[0]->mTransformComp->mMatrix.setPosition(mCurrentCamera->getFowrardVector().x,mCurrentCamera->getFowrardVector().y, mCurrentCamera->getFowrardVector().z);
+         mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed);
+         mPlayer->mTransformComp->mMatrix.translateY(0);
+         mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed);
+        }
+        if(mInput.S)
+        {
+            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateY(0);
+            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed);
+        }
+        if(mInput.D)
+        {
+            mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateY(0);
+            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed);
+        }
+        if(mInput.A)
+        {
+            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed);
+            mPlayer->mTransformComp->mMatrix.translateY(0);
+            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getRightVector().z*cameraSpeed);
+        }
+    }
 }
 
 void GameEngine::togglePlay(bool bInIsPlaying)
 {
     playMusic(bInIsPlaying);
-    mRenderwindow->bIsPlaying = bInIsPlaying;
+    bIsPlaying = bInIsPlaying;
     if(bInIsPlaying)
     {
         mRenderwindow->mCurrentCamera = mGameCamera;
@@ -176,7 +223,7 @@ void GameEngine::togglePlay(bool bInIsPlaying)
 
 void GameEngine::UpdateGameCameraFollow()
 {
-    mGameCamera->setPosition(mPlayer->mTransformComp->mMatrix.getPosition());
+    mGameCamera->setPosition(mPlayer->mTransformComp->mMatrix.getPosition() + gsl::Vector3D(0,2,0));
 }
 
 void GameEngine::GameLoop()
@@ -187,9 +234,9 @@ void GameEngine::GameLoop()
 
     mEditorCamera->update();
 
-    //UpdateGameCameraFollow();
+    UpdateGameCameraFollow();
 
-    mGameCamera->updateFirstPerson();
+    mGameCamera->update();
 
     mRenderwindow->render();
 

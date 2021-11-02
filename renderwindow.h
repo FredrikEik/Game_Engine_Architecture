@@ -49,9 +49,11 @@ public:
 
     void render();
 
-    bool bIsPlaying{false};
+    //bool bIsPlaying{false};
 
     Camera *mCurrentCamera{nullptr};
+    float getCameraSpeed() const;
+
 private slots:
 
 private:
@@ -93,7 +95,7 @@ private:
 
     std::vector<VisualObject*> mVisualObjects;
 
-    Input mInput;
+//    Input mInput;
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
