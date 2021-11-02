@@ -28,6 +28,7 @@ struct meshData{
     int internalIndex;
     GLuint VBO = 0;
     GLuint VAO = 0;
+    GLuint DrawType = GL_TRIANGLES;
 };
 class resourceSystem
 {
@@ -41,6 +42,9 @@ public:
 
     RenderSystem * rendSys;
     std::vector < std::pair<std::string, meshData>> meshDataContainer;
+
+    //frostum
+    meshData* makeFrustum(const Frustum &frustumIn, RenderSystem * inRendSys);
 private:
     std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;
     std::vector < std::pair<std::string, std::vector<GLuint> > > meshIndiceContainer;

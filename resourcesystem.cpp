@@ -430,6 +430,76 @@ void resourceSystem::SetMeshDataContainer()
     }
 }
 
+meshData* resourceSystem::makeFrustum(const Frustum &frustumIn, RenderSystem * inRendSys)
+{
+    //calculate corners of frustum:
+    //Math shown here: https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    //code taken from ole.experiment
+    float tanFOVv = tanf(gsl::deg2radf(frustumIn.mFOVvertical/2));          // expensive calculation - save answer
+
+    float halfHeightFar = abs(frustumIn.mFarPlaneDistance * tanFOVv);
+    float halfWidthFar = halfHeightFar * frustumIn.mAspectRatio;
+
+    float halfHeightNear = abs(frustumIn.mNearPlaneDistance * tanFOVv);
+    float halfWidthNear = halfHeightNear * frustumIn.mAspectRatio;
+
+    // camera looks down -Z (as a start) so near and far-plane are negative when drawn
+    gsl::Vector3D cornerNear = gsl::Vector3D(halfWidthNear, halfHeightNear, -frustumIn.mNearPlaneDistance);
+    gsl::Vector3D cornerFar = gsl::Vector3D(halfWidthFar, halfHeightFar, -frustumIn.mFarPlaneDistance);
+
+    meshData *tempMesh = new meshData();
+    //Vertex data for front points                  color                       uv
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//0
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//1
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//1
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//2
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//2
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//3
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//3
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//0
+    //Vertex data for back
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//4
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//5
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//5
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//6
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//6
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//7
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//7
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//4
+
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//0
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//4
+    tempMesh->meshVert.push_back(Vertex(-cornerNear.getX(), cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//3
+    tempMesh->meshVert.push_back(Vertex(-cornerFar.getX(), cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//7
+
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  -cornerNear.getY(), cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//1
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  -cornerFar.getY(), cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//5
+    tempMesh->meshVert.push_back(Vertex(cornerNear.getX(),  cornerNear.getY(),  cornerNear.getZ(),       1.f, 0.301f, 0.933f,          0.f, 0.f));//2
+    tempMesh->meshVert.push_back(Vertex(cornerFar.getX(),  cornerFar.getY(),  cornerFar.getZ(),          1.f, 0.301f, 0.933f,          0.f, 0.f));//6
+
+    //One line at a time
+    tempMesh->meshIndic.clear();
+    unsigned int arr[24]=
+    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+      0, 4, 3, 7,                   //leftside lines
+      1, 5, 2, 6                    //rightside lines
+    };
+    for (int i = 0; i < sizeof (arr); i++)
+    {
+        tempMesh->meshIndic.push_back(arr[i]);
+    }
+
+    tempMesh->DrawType = GL_LINES;
+    tempMesh->VAO = 0;
+    tempMesh->VBO = 0;    //only LOD level 0
+    inRendSys->init(&tempMesh->meshVert, &tempMesh->VAO, &tempMesh->VBO);
+
+    //initMesh(tempMesh, 0);
+    tempMesh->internalIndex = tempMesh->meshIndic.size();
+    return tempMesh;
+}
+
 float resourceSystem::calculateLenght(QVector3D pos)
 {   //we assume that the center of the obj is at 0,0,0
     //sqrt(x^2        +         y^2        +         z^2      ) = length

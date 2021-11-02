@@ -43,6 +43,9 @@ public:
     void rotateY(GLfloat angle);
     void rotateZ(GLfloat angle);
 
+    ///rotate this vector around axis vector, angle degrees - Ole.Experiments
+    void axisAngleRotation(float angle, Vector3D axis);
+
     //Getters and setters
     GLfloat getX() const;
     void setX(const GLfloat &value);

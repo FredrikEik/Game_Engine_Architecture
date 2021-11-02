@@ -163,7 +163,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
     
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
+    mCurrentCamera = new Camera(50.f, 0.1f,300.f);
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
     mSong->play();
@@ -317,9 +317,29 @@ void RenderWindow::render()
             }
         }
     }
-    
-    
-    
+
+
+    //glUseProgram(mShaderPrograms[MaterialCompVec[0]->mShaderProgram]->getProgram());
+    meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
+    gsl::Matrix4x4 temp(true);
+    temp.translate(mCurrentCamera->Cam.mPosition);
+    temp.rotateY(-mCurrentCamera->Cam.mYaw);
+    temp.rotateX(-mCurrentCamera->Cam.mPitch);
+
+    initializeOpenGLFunctions();    //must call this every frame it seems...
+
+   glUniformMatrix4fv(vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+   glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+   glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
+
+   //draw the object
+    glBindVertexArray( frustum->VAO );
+    glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
+    glBindVertexArray(0);
+    //glUniformMatrix4fv(mMatrixUniform, 1, GL_TRUE, temp.constData());
+    //glBindVertexArray( frustum->VAO );
+    //glDrawElements(frustum->DrawType, 24, GL_UNSIGNED_INT, nullptr);
+
     
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
