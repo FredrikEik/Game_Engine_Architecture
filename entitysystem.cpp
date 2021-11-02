@@ -4,9 +4,9 @@
 
 EntitySystem::EntitySystem(RenderWindow * inputRW)
 {
-    ResourceSys = new resourceSystem();
     if(inputRW){
         inRW = inputRW;
+        ResourceSys = inputRW->ResSys;
     }
 
 }
@@ -63,7 +63,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
         inRW->transformCompVec.push_back(TransComp);
 
         ResourceSys->CreateMeshComponent(ObjReader, MeshComp);
-        MeshComp->mVAO = 0;
+        //MeshComp->mVAO = 0;
         MeshComp->entity = EntityId;
         MeshComp->mDrawType = drawType;
         MeshComp->centerOfMesh.setX(TransComp->mMatrix.getPosition().getX());
@@ -77,7 +77,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
         inRW->MaterialCompVec.push_back(MatComp);
 
 
-        inRW->RenderSys->init(MeshComp);
+        //inRW->RenderSys->init(MeshComp);
     }
 }
 
