@@ -18,8 +18,6 @@ public:
     Signature GetSignature(Entity entity);
 
 private:
-    //TODO: Friend with factory class!
-    //friend class Factory;
     EntityManager();
 
     static std::unique_ptr<EntityManager> Create()

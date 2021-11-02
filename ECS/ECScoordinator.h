@@ -16,9 +16,9 @@ public:
     {
         //Create a pointer to each manager!
         m_ComponentManager = std::make_unique<ComponentManager>();
-        m_EntityManager = EntityManager::Create();
         m_SystemManager = std::make_unique<SystemManager>();
-        m_ResourceManager = std::make_unique<ResourceManager>();
+        m_EntityManager = EntityManager::Create();
+        m_ResourceManager = ResourceManager::Create();
     }
 
     //Entity functionality:
@@ -96,8 +96,6 @@ private:
     std::unique_ptr<SystemManager> m_SystemManager;
     std::unique_ptr<ResourceManager> m_ResourceManager;
 
-    //Factory goes here!
-    //std::unique_ptr<Factory> m_Factory;
 };
 
 #endif // ECSCOORDINATOR_H

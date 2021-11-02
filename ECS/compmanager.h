@@ -21,10 +21,10 @@ public:
 
         assert(m_ComponentTypes.find(typeName) == m_ComponentTypes.end() && "Tried to register same component more than once!");
 
-        //Add this component type tp the map.
+        //Add this component type to the map.
         m_ComponentTypes.insert({typeName, m_NextComponentType});
 
-        //Create a ComponentArray pointer, the add it to the array map.
+        //Create a ComponentArray pointer, then add it to the array map.
         m_ComponentArrays.insert({typeName, std::make_shared<ComponentArray<T>>()});
 
         //Increment next component type value.

@@ -42,7 +42,7 @@ private:
     void createAllObjects(/*bool bReset*/);
 
     //BOSS MAN - This is supposed to oversee most things!
-    std::unique_ptr<ECScoordinator> ECScord{};
+    std::unique_ptr<ECScoordinator> ECScord{nullptr};
 
     //Data containers
     std::unordered_map<std::string, VisualObject*> m_objectMap; //Primary object container

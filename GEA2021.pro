@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
+    ECS/ResourceManager/meshsystem.cpp \
     ECS/ResourceManager/resourcemanager.cpp \
     ECS/entitymanager.cpp \
     ECS/resourcemanager.cpp \
@@ -16,6 +17,7 @@ SOURCES += main.cpp \
     Shaders/textureshader.cpp \
     camera.cpp \
     cubemap.cpp \
+    gameobject.cpp \
     interactiveobject.cpp \
     lightsource.cpp \
     mathfunctions.cpp \
@@ -29,6 +31,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     ECS/ECScoordinator.h \
+    ECS/ResourceManager/meshsystem.h \
     ECS/ResourceManager/resourcemanager.h \
     ECS/compmanager.h \
     ECS/componentarray.h \
@@ -46,6 +49,7 @@ HEADERS += \
     components.h \
     constants.h \
     cubemap.h \
+    gameobject.h \
     gltypes.h \
     input.h \
     interactiveobject.h \
