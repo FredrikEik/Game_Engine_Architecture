@@ -18,7 +18,7 @@ struct Input
     bool Q{false};
     bool E{false};
     bool C{false};
-    bool f{false};      //used to "find" objects in editor
+    bool F{false};      //used to "find" objects in editor
     bool LSHIFT{false};
     bool LCTRL{false};
     bool SPACE{false};

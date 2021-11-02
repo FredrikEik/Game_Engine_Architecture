@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 class QWidget;
 class QTreeWidgetItem;
 class QLayout;
 class RenderSystem;
 class CoreEngine;
 class GameObject;
-
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +22,7 @@ public:
     ~MainWindow();
 
     void updateHierarchy(const std::vector<GameObject *> &GameObjectData);
-    void selectedObjectByIndex(int indexIn);
+    void selectObjetByIndex(int indexIn);
 
 public slots:
     void on_actionAdd_Triangle_triggered();

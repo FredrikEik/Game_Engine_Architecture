@@ -2,7 +2,7 @@
 //#include "quaternion.h"
 #include "math_constants.h"
 #include "matrix3x3.h"
-//#include "vector4d.h"
+#include "vector4d.h"
 
 #include <cmath>
 #include <cstring> // For memcpy on linux
@@ -205,6 +205,13 @@ void Matrix4x4::setPosition(GLfloat x, GLfloat y, GLfloat z)
     matrix[3] = x;
     matrix[7] = y;
     matrix[11] = z;
+}
+
+void Matrix4x4::setPosition(gsl::Vector3D vectorIn)
+{
+    matrix[3] = vectorIn.x;
+    matrix[7] = vectorIn.y;
+    matrix[11] = vectorIn.z;
 }
 
 Vector3D Matrix4x4::getPosition()
@@ -465,7 +472,6 @@ Matrix3x3 Matrix4x4::toMatrix3() const
     };
 }
 
-
 GLfloat& Matrix4x4::operator()(const int &y, const int &x)
 {
     return matrix[y * 4 + x];
@@ -502,9 +508,17 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &other)
     };
 }
 
-GLfloat Matrix4x4::getFloat(int space)
+Vector4D Matrix4x4::operator*(const Vector4D &v) const
 {
-    return matrix[space];
+    return Vector4D(matrix[0]*v.x  + matrix[1]*v.y  + matrix[2]*v.z  + matrix[3] *v.w,
+            matrix[4]*v.x  + matrix[5]*v.y  + matrix[6]*v.z  + matrix[7] *v.w,
+            matrix[8]*v.x  + matrix[9]*v.y  + matrix[10]*v.z + matrix[11] *v.w,
+            matrix[12]*v.x + matrix[13]*v.y + matrix[14]*v.z + matrix[15] *v.w);
+}
+
+GLfloat Matrix4x4::getValueFromIndex(int index)
+{
+    return matrix[index];
 }
 
 } //namespace

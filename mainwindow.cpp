@@ -1,20 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QListWidget>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
 #include "ResourceManager/gameobjectmanager.h"
 #include "coreengine.h"
 #include "gameobject.h"
+#include "widgettransform.h"
+#include "widgetmaterial.h"
 
-MainWindow::MainWindow(QWidget *parent):QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //this sets up what's in the mainwindow.ui
     ui->setupUi(this);
-
-    //ui->GameObjectList->addItem("Cheese");
     init();
 }
 
@@ -134,6 +134,7 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
     GameObject *temp = GameObjectManager::getInstance().addObject("suzanne.obj");
     mRenderSystem->mGameObjects.push_back(temp);
 }
+
 void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
 {
     mRenderSystem->toggleBacksideCulling(checked);

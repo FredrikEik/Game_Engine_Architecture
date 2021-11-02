@@ -25,7 +25,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
-    void toggleBackSideCulling(bool state);
+    void toggleBacksideCulling(bool state);
 
     //Editor functions
     void setPickedObject(int pickedID);
@@ -48,6 +48,9 @@ public:
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 
+    bool mDrawAxis{true};
+    bool mDrawGrid{true};
+
 private:
     void init();
 
@@ -59,30 +62,14 @@ private:
 
     bool frustumCulling(int gobIndex);
 
-    void setupPlainShader(int shaderIndex);
-    GLint mMatrixUniform{-1};
-    GLint vMatrixUniform{-1};
-    GLint pMatrixUniform{-1};
-
-    void setupTextureShader(int shaderIndex);
-    GLint mMatrixUniform1{-1};
-    GLint vMatrixUniform1{-1};
-    GLint pMatrixUniform1{-1};
-    GLint mTextureUniform{-1};
-
-    class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
-
-    class ShaderHandler *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
-
-    float mAspectratio{1.f};
+    void mousePickingRay(QMouseEvent *event);
 
     int mMouseXlast{0};
     int mMouseYlast{0};
 
+    //for statistics in status bar
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
-
-    float mFOVangle{45};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

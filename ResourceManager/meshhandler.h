@@ -7,9 +7,12 @@
 
 struct MeshData
 {
+    //according to https://www.learncpp.com/cpp-tutorial/arrays-part-ii/
+    //an empty {} should initialize all elements to 0
     GLuint mVAO[3]{};
     GLuint mVBO[3]{};
     GLuint mEAB[3]{};
+
     GLint mVertexCount[3]{-1, -1, -1};
     GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
@@ -34,13 +37,21 @@ public:
 
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
+    ///Makes a line for debug drawing.
+    /// positionIn is origin
+    MeshData makeLine(gsl::Vector3D &positionIn, int direction = 1, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
+
+    ///Makes a line for debug drawing.
+    MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
+
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
-
 private:
     int readObj(std::string filename);
     int makeAxis();
     int makeTriangle();
+
+    int makeEditorGrid(int size = 10, int scale = 1);
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
 

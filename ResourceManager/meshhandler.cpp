@@ -37,8 +37,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeAxis();
         if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
-//        if (meshName.find("editorgrid") != std::string::npos)
-//            meshIndex = makeEditorGrid();
+        if (meshName.find("editorgrid") != std::string::npos)
+            meshIndex = makeEditorGrid();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -261,6 +261,107 @@ int MeshHandler::makeTriangle()
     return mMeshes.size()-1;    //returns index to last object
 }
 
+int MeshHandler::makeEditorGrid(int size, int scale)
+{
+    //should check if this object is new before this!
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+
+    float startPoint = -size * scale;
+
+    float lineStart = startPoint;
+    float lineEnd = -startPoint;
+
+    float mainColor{0.3f};
+    float altColor{0.5f};
+    float color{0.f};
+
+    bool altColorFlip{true};    //alternates between two colors
+
+    float altMainAxisColor{.45f};
+    float yHeight{-0.001f};     //to avoid z-fighting with axis
+
+    //lines parallell to Z
+    for(float i{startPoint}; i<= (startPoint*-1); i += scale)
+    {
+        //special case for 0 line:
+        if (i >=-0.1f && i<= 0.1f)
+        {
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineStart,       altMainAxisColor, altMainAxisColor, 1.f});
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineEnd,         altMainAxisColor, altMainAxisColor, 1.f});
+            altColorFlip = !altColorFlip;
+        }
+        else
+        {
+            altColorFlip ? color = mainColor : color = altColor;
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineStart, color, color, color});
+            temp.mVertices[0].push_back(Vertex{i, yHeight, lineEnd, color, color, color});
+            altColorFlip = !altColorFlip;
+        }
+    }
+
+    altColorFlip = true;    //reset for X-lines
+    //lines parallell to X
+    for(float i{startPoint}; i<= (startPoint*-1); i += scale)
+    {
+        //special case for  0 line:
+        if (i >=-0.1f && i<= 0.1f)
+        {
+            temp.mVertices[0].push_back(Vertex{lineStart, yHeight, i,       1.f, altMainAxisColor, altMainAxisColor});
+            temp.mVertices[0].push_back(Vertex{lineEnd, yHeight, i,         1.f, altMainAxisColor, altMainAxisColor});
+            altColorFlip = !altColorFlip;
+        }
+        else
+        {
+            altColorFlip ? color = mainColor : color = altColor;
+            temp.mVertices[0].push_back(Vertex{lineStart, yHeight, i, color, color, color});
+            temp.mVertices[0].push_back(Vertex{lineEnd, yHeight, i, color, color, color});
+            altColorFlip = !altColorFlip;
+        }
+    }
+
+    temp.mColliderRadius = 1.f; //grid should have no collider...
+    temp.mDrawType = GL_LINES;
+    //only LOD level 0
+    initMesh(temp, 0);
+    return mMeshes.size()-1;
+}
+
+MeshData MeshHandler::makeLine(gsl::Vector3D &positionIn, int direction, float lenght, gsl::Vector3D colorIn)
+{
+    MeshData tempMesh;
+    tempMesh.mVertices[0].push_back(Vertex{0.f, 0.f, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    if(direction == 1)  //X axis
+        tempMesh.mVertices[0].push_back(Vertex{1.f * lenght, 0.f, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    if(direction == 2)  //Y axis
+        tempMesh.mVertices[0].push_back(Vertex{0.f, 1.f * lenght, 0.f,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    if(direction == 3)  //Z axis
+        tempMesh.mVertices[0].push_back(Vertex{0.f, 0.f, 1.f * lenght,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
+}
+
+MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn)
+{
+    MeshData tempMesh;
+    endIn = endIn * lenght;
+    tempMesh.mVertices[0].push_back(Vertex{startIn.x, startIn.y, startIn.z,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+    tempMesh.mVertices[0].push_back(Vertex{endIn.x, endIn.y, endIn.z,   colorIn.x, colorIn.y, colorIn.z,  0.f, 0.f});
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
+}
+
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
     MeshData tempMesh;
@@ -349,6 +450,53 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
     return tempMesh;
 }
 
+MeshData MeshHandler::makeFrustum(const Frustum &frustumIn)
+{
+    //calculate corners of frustum:
+    //Math shown here: https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    float tanFOVv = tanf(gsl::deg2radf(frustumIn.mFOVvertical/2));          // expensive calculation - save answer
+
+    float halfHeightFar = abs(frustumIn.mFarPlaneDistance * tanFOVv);
+    float halfWidthFar = halfHeightFar * frustumIn.mAspectRatio;
+
+    float halfHeightNear = abs(frustumIn.mNearPlaneDistance * tanFOVv);
+    float halfWidthNear = halfHeightNear * frustumIn.mAspectRatio;
+
+    // camera looks down -Z (as a start) so near and far-plane are negative when drawn
+    gsl::Vector3D cornerNear = gsl::Vector3D(halfWidthNear, halfHeightNear, -frustumIn.mNearPlaneDistance);
+    gsl::Vector3D cornerFar = gsl::Vector3D(halfWidthFar, halfHeightFar, -frustumIn.mFarPlaneDistance);
+
+    MeshData tempMesh;
+
+    tempMesh.mVertices[0].insert( tempMesh.mVertices[0].end(),
+      {         //Vertex data for front points                  color                       uv
+       Vertex{-cornerNear.x, -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
+       Vertex{cornerNear.x,  -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerNear.x,  cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerNear.x, cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       //Vertex data for back
+       Vertex{-cornerFar.x, -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},    // 4
+       Vertex{cornerFar.x,  -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerFar.x,  cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerFar.x, cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+                      });
+
+    //One line at a time
+    tempMesh.mIndices[0].insert( tempMesh.mIndices[0].end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+      0, 4, 3, 7,                   //leftside lines
+      1, 5, 2, 6                    //rightside lines
+                     });
+
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
+}
+
 MeshData MeshHandler::makeLineBox(std::string meshName)
 {
     auto result = mMeshMap.find(meshName);
@@ -408,6 +556,11 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
         meshIn.mUpRightFrontCorner.y = vertexIn.y;
     if(vertexIn.z > meshIn.mUpRightFrontCorner.z)
         meshIn.mUpRightFrontCorner.z = vertexIn.z;
+
+    //making correct bounding sphere radius:
+    float length = vertexIn.length();
+    if(length > meshIn.mColliderRadius)
+        meshIn.mColliderRadius = length;
 }
 
 void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
@@ -451,3 +604,4 @@ void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
     tempMesh.mIndexCount[lodLevel] = tempMesh.mIndices[lodLevel].size();
     tempMesh.mVertexCount[lodLevel] = tempMesh.mVertices[lodLevel].size();
 }
+

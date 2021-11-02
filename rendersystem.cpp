@@ -94,30 +94,17 @@ void RenderSystem::init()
     glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-//    //Compile shaders:
-//    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-//    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-//    // (out of the build-folder) and then up into the project folder.
-//    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-//                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-//    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-
-//    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-//                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-//    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-
-//    setupPlainShader(0);
-//    setupTextureShader(1);
-
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
     //Probably should be placed elsewhere
     CoreEngine::getInstance()->setUpScene();
 
     mGameObjectManager = &GameObjectManager::getInstance();
+
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
 }
+
 
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderSystem::render()
@@ -140,6 +127,7 @@ void RenderSystem::render()
     for(int i{startObject}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
+
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
@@ -149,20 +137,8 @@ void RenderSystem::render()
                 continue;
         }
 
+
         /*************************************/
-//        //gsl::Vector3D distanceVector = gobPos -cameraPos;
-
-////        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
-//        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
-////        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
-
-////        //if angle between camera Forward, and camera->GameObject > FOV of camera
-//        if(angle > mFOVangle)
-//            continue;   //don't draw object
-
-//        //LOD calculation
-//        float length = distanceVector.length();
-////        qDebug() << "distance is" << length;
 
         //First object - xyz
         //what shader to use
@@ -187,23 +163,6 @@ void RenderSystem::render()
             glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
 
-//        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
-//        {
-//            viewMatrix = vMatrixUniform;
-//            projectionMatrix = pMatrixUniform;
-//            modelMatrix = mMatrixUniform;
-//        }
-//        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
-//        {
-//            viewMatrix = vMatrixUniform1;
-//            projectionMatrix = pMatrixUniform1;
-//            modelMatrix = mMatrixUniform1;
-
-//            //Now mMaterial component holds texture slot directly - probably should be changed
-//            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
-//        }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
-
         //send data to shader
         if(mIsPlaying)
         {
@@ -225,14 +184,14 @@ void RenderSystem::render()
             //LOD calculation
             float length = distanceVector.length();
 
-            if (length < 4)
+            if (length < 5)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-            else if(length < 6)
+            else if(length < 20)
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
@@ -274,10 +233,45 @@ void RenderSystem::render()
         glBindVertexArray(0);
 }
 
+    //Quick hack test to check if frustum line mesh is OK
+    if(true)
+    {
+        ShaderHandler* tempShader = mGameObjectManager->mShaders[0];
+        glUseProgram(tempShader->mProgram);
+        MeshData frustum = CoreEngine::getInstance()->mGameObjectManager->makeFrustum(mGameCamera->mFrustum);
+        gsl::Matrix4x4 temp(true);
+        temp.translate(mGameCamera->mPosition);
+        temp.rotateY(-mGameCamera->mYaw);
+        temp.rotateX(mGameCamera->mPitch);
+
+        glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glBindVertexArray( frustum.mVAO[0] );
+        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+        //Drawing forward vector of gameCam
+/*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+        MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( forwardVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+
+        //Drawing FOV vector of gameCam on right side
+        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+        MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( frustumCullRightVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+        */
+    }
+
     //Moves the dog triangle - should be made another way!!!!
     if(mIsPlaying)
     {
-        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
         mGameCamera->yaw(0.07f);
         mGameCamera->update();
         mUseFrustumCulling = true;
@@ -298,21 +292,6 @@ void RenderSystem::render()
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
-
-//void RenderSystem::setupPlainShader(int shaderIndex)
-//{
-//    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-//    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-//    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-//}
-
-//void RenderSystem::setupTextureShader(int shaderIndex)
-//{
-//    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-//    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-//    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-//    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
-//}
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized
@@ -380,7 +359,7 @@ void RenderSystem::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderSystem::toggleBackSideCulling(bool state)
+void RenderSystem::toggleBacksideCulling(bool state)
 {
     state ? glEnable(GL_CULL_FACE):glDisable(GL_CULL_FACE);
 }
@@ -448,7 +427,6 @@ bool RenderSystem::frustumCulling(int gobIndex)
 
     //radius of object sphere
     float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
-
     //Mesh data is not scaled so have to calculate for that
     //Todo:: The system will break if scaling is not uniform
     gobRadius *= mGameObjects[gobIndex]->mTransform->mScale.x;
@@ -480,6 +458,75 @@ bool RenderSystem::frustumCulling(int gobIndex)
     return false;
 }
 
+//Directly based on https://antongerdelan.net/opengl/raycasting.html
+void RenderSystem::mousePickingRay(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+
+    //Since we are going to invert these, I make a copy
+    gsl::Matrix4x4 projMatrix = mEditorCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mEditorCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+    projMatrix.inverse();
+    gsl::Vector4D ray_eye = projMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
+    gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
+    // don't forget to normalise the vector at some point
+    ray_wor.normalize();
+
+
+    /************************************************************************/
+    //Collision detection - in world space coordinates:
+    //Writing here as a quick test - probably should be in a CollisionSystem class
+
+    //This is ray vs bounding sphere collision
+
+    for(int i{0}; i < mGameObjects.size(); i++)
+    {
+        //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mGameObjects[i]->mTransform->mMatrix.getPosition() - mEditorCamera->mPosition;
+
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
+
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
+
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray using dot product:
+        float distance = camToObject * rayNormal;   //* gives the dot product
+
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
+
+        //if distance to ray < objects bounding sphere == we have a collision
+        if(distance < mGameObjects[i]->mMesh->mColliderRadius)
+        {
+//            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+            mIndexToPickedObject = i;
+            mMainWindow->selectObjetByIndex(mIndexToPickedObject);
+            break;  //breaking out of for loop - does not check if ray touch several objects
+        }
+    }
+}
+
 void RenderSystem::keyPressEvent(QKeyEvent *event)
 {
     Input &input = CoreEngine::getInstance()->mInput;
@@ -491,7 +538,7 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_R) //toggle play
     {
-        mMainWindow->on_pb_togglePlay_toggled(!mIsPlaying);
+        mMainWindow->on_actionPlay_triggered(!mIsPlaying);
     }
 
     //    You get the keyboard input like this
@@ -617,6 +664,10 @@ void RenderSystem::mousePressEvent(QMouseEvent *event)
         input.LMB = true;
     if (event->button() == Qt::MiddleButton)
         input.MMB = true;
+
+    //This should be organized better - just getting it working for now
+    if(event->button() == Qt::LeftButton)
+        mousePickingRay(event);
 }
 
 void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
@@ -650,6 +701,8 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
 
 void RenderSystem::mouseMoveEvent(QMouseEvent *event)
 {
+    this->requestActivate();    //should grab keyboard focus
+
     Input &input = CoreEngine::getInstance()->mInput;
 
     if (input.RMB)

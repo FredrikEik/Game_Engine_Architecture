@@ -74,7 +74,8 @@ void CoreEngine::setUpScene()
     mGameObjectManager->addComponent("caravan_mono.wav", temp);
 
     //Hack to test sound system
-    temp->mSoundComponent->shouldPlay = true;
+    if(temp->mSoundComponent)
+        temp->mSoundComponent->shouldPlay = true;
 
     mRenderSystem->mGameObjects.push_back(temp);
 
@@ -115,7 +116,7 @@ void CoreEngine::setUpScene()
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
-    mGameObjectManager->setUpAllTextures();
+    //mGameObjectManager->setUpAllTextures();
 
     mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 0.0f);
     mRenderSystem->mGameCamera = mGameCamera;
@@ -137,6 +138,22 @@ void CoreEngine::handleInput()
 
     //TODO: Probably a cleaner way to do this!
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
+
+    //move camera to selected object
+    if(mInput.F && mRenderSystem->mIndexToPickedObject >-1)
+    {
+        int tempIndex = mRenderSystem->mIndexToPickedObject;
+        mEditorCamera->mPosition = mRenderSystem->mGameObjects.at(tempIndex)->mTransform->mMatrix.getPosition();
+        //dynamic distance to object
+        mEditorCamera->mPosition.z += (mRenderSystem->mGameObjects.at(tempIndex)->mMesh->mColliderRadius)*7;
+        //dynamic height placement
+        mEditorCamera->mPosition.y += (mRenderSystem->mGameObjects.at(tempIndex)->mMesh->mColliderRadius*4);
+        mEditorCamera->mPitch = -30.f;
+        mEditorCamera->mYaw = 0.f;
+        mEditorCamera->update();
+        mInput.F = false;
+    }
+
     if(mInput.RMB)
     {
         if(mInput.W)

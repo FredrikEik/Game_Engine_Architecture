@@ -37,7 +37,7 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 #include "vector2d.h"
-//include "vector4d.h"
+#include "vector4d.h"
 #include "math_constants.h"
 #include "components.h"
 #include "vertex.h"

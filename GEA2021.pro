@@ -57,6 +57,7 @@ SOURCES += main.cpp \
     ResourceManager/gameobjectmanager.cpp \
     ResourceManager/physicshandler.cpp \
     coreengine.cpp \
+    gsl/vector4d.cpp \
     logger.cpp \
     rendersystem.cpp \
     soundsystem.cpp \
@@ -79,6 +80,7 @@ HEADERS += \
     ResourceManager/gameobjectmanager.h \
     altypes.h \
     coreengine.h \
+    gsl/vector4d.h \
     logger.h \
     pch.h \
     rendersystem.h \
@@ -101,14 +103,14 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
-    widgetmaterial.ui
     widgettransform.ui
+    widgetmaterial.ui
 
 DISTFILES += \
+    Shaders/plainshader.frag \
+    Shaders/plainshader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
-    Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert \
     Assets/materials.json
 
 RESOURCES += \

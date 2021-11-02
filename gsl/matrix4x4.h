@@ -19,7 +19,10 @@ public:
     Matrix4x4(bool isIdentity = false);
     Matrix4x4(std::initializer_list<GLfloat> values);
 
+
     Matrix4x4 identity();
+
+
     void setToIdentity();
 
     bool inverse();
@@ -29,6 +32,7 @@ public:
     void translateZ(GLfloat z = 0.f);
 
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
+    void setPosition(gsl::Vector3D vectorIn);
     gsl::Vector3D getPosition();
 
     //Rotate using EulerMatrix
@@ -64,6 +68,8 @@ public:
 
     Matrix4x4 operator*(const Matrix4x4 &other);
 
+    class Vector4D operator*(const Vector4D &v) const;
+
     friend std::ostream& operator<<(std::ostream &output, const Matrix4x4 &mIn)
     {
         output << std::setprecision(4) <<
@@ -73,7 +79,18 @@ public:
                   "{" << mIn.matrix[3] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[11] << "\t, " << mIn.matrix[15] << "}\n";
         return output;
     }
-    GLfloat getFloat(int space);
+
+    friend QDebug operator<<(QDebug output, const Matrix4x4 &mIn)
+    {
+        output <<
+                  " {" << mIn.matrix[0] << "\t, " << mIn.matrix[4] << "\t, " << mIn.matrix[8] << "\t, " << mIn.matrix[12] << "}\n" <<
+                  "{" << mIn.matrix[1] << "\t, " << mIn.matrix[5] << "\t, " << mIn.matrix[9] << "\t, " << mIn.matrix[13] << "}\n" <<
+                  "{" << mIn.matrix[2] << "\t, " << mIn.matrix[6] << "\t, " << mIn.matrix[10] << "\t, " << mIn.matrix[14] << "}\n" <<
+                  "{" << mIn.matrix[3] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[11] << "\t, " << mIn.matrix[15] << "}\n";
+        return output;
+    }
+
+    GLfloat getValueFromIndex(int index);
 
 private:
     GLfloat matrix[16];

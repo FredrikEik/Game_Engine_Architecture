@@ -6,7 +6,7 @@
 #include "rendersystem.h"
 //#include "visualobject.h"
 #include "texturehandler.h"
-#include "resourcemanager.h"
+#include "gameobjectmanager.h"
 #include "shaderhandler.h"
 
 WidgetMaterial::WidgetMaterial(QWidget *parent) :
@@ -26,7 +26,7 @@ void WidgetMaterial::readMaterialData()
 //    unsigned short tempMaterialID = mCurrentScene->mEntities[indexInSceneArray].mMaterialIDIndex;
 //    qDebug() << mCurrentScene->mEntities[indexInSceneArray].mName.c_str();
 //    mCurrentMaterial = ResourceManager::getInstance().mMaterial[tempMaterialID];
-    auto it = ResourceManager::getInstance().mMaterialMap.begin();
+    auto it = GameObjectManager::getInstance().mMaterialMap.begin();
     ui->materialName->setText(it->first.c_str());
 //    qDebug() << "Shader" << mCurrentMaterial->mShader;
     fillShaders();
@@ -49,14 +49,14 @@ void WidgetMaterial::readMaterialData()
 
 void WidgetMaterial::fillShaders()
 {
-    for (const auto &var : ResourceManager::getInstance().mShaders) {
+    for (const auto &var : GameObjectManager::getInstance().mShaders) {
         ui->shaderComboBox->addItem(var->mName.c_str());
     }
 }
 
 void WidgetMaterial::fillTextures()
 {
-    for (const auto &var: ResourceManager::getInstance().mTextureHandler->mTextureMap)
+    for (const auto &var: GameObjectManager::getInstance().mTextureHandler->mTextureMap)
             ui->textureComboBox->addItem(var.first.c_str());
 //    //TODO: This will break when GLTextureID is not the same as the texture placement in mTexture
 //    ui->textureComboBox->setCurrentIndex(mCurrentMaterial->mGLTextureID);
