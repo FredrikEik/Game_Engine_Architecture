@@ -27,3 +27,9 @@ void TransformSystem::setPosition(uint32 entity, glm::vec3 newLocation, ECSManag
 	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
 	transform->transform[3] = glm::vec4(newLocation, 1);
 }
+
+void TransformSystem::setHeight(uint32 entity, float newHeight, ECSManager* ECS)
+{
+	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	transform->transform[3].y = newHeight;
+}

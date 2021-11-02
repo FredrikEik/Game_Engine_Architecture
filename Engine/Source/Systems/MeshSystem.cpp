@@ -10,8 +10,7 @@
 #include "../Components/Components.h"
 #include "../ECSManager.h"
 #include "../Shader.h"
-
-
+#include "CameraSystem.h"
 
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
 {
@@ -22,7 +21,7 @@ bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& 
 	return true;
 }
 
-void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager)
+void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity)
 {
 
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
@@ -30,6 +29,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     if (!meshManager || !transformManager)
         return;
 
+    //auto& meshArray = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity);
     auto& meshArray = meshManager->getComponentArray();
     shader->use();
     for (auto& meshComp : meshArray)
@@ -47,6 +47,51 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     }
 }
 
+
+std::vector<class MeshComponent> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vector<class MeshComponent>& allMeshes,
+                                                            uint32 cameraEntity)
+{
+    ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
+    CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
+    glm::vec3 forward(CameraSystem::getForwardVector(*camera));
+    glm::vec3 right(CameraSystem::getRightVector(forward));
+    glm::vec3 up(CameraSystem::getUpVector(forward, right));
+
+    glm::mat4x4 viewProjectionMatrix = camera->m_viewMatrix * camera->m_projectionMatrix;
+
+    glm::vec4 leftPlane{};
+    leftPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
+    leftPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[0].y;    
+    leftPlane.z = viewProjectionMatrix[3].z + viewProjectionMatrix[0].z;
+    leftPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[0].w;
+
+    glm::vec4 rightPlane{};
+    rightPlane.x = viewProjectionMatrix[3].x - viewProjectionMatrix[0].x;
+    rightPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[0].y;
+    rightPlane.z = viewProjectionMatrix[3].z - viewProjectionMatrix[0].z;
+    rightPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[0].w;
+
+    glm::vec4 topPlane{};
+    topPlane.x = viewProjectionMatrix[3].x - viewProjectionMatrix[1].x;
+    topPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[1].y;
+    topPlane.z = viewProjectionMatrix[3].z - viewProjectionMatrix[1].z;
+    topPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[1].w;
+
+    glm::vec4 bottomPlane{};
+    topPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[1].x;
+    topPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[1].y;
+    topPlane.z = viewProjectionMatrix[3].z + viewProjectionMatrix[1].z;
+    topPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[1].w;
+
+    CameraSystem::normalizePlane(leftPlane);
+    CameraSystem::normalizePlane(rightPlane);
+    CameraSystem::normalizePlane(topPlane);
+    CameraSystem::normalizePlane(topPlane);
+
+
+    
+    return std::vector<class MeshComponent>();
+}
 
 void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECSManager* manager)
 {
@@ -318,3 +363,4 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
     inputFile.close();
     return true;
 }
+

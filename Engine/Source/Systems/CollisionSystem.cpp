@@ -7,6 +7,34 @@
 void CollisionSystem::construct(uint32 entity,
 	class ECSManager* ECS)
 {
+	//auto transformManager = ECS->getComponentManager<TransformComponent>();
+	//auto meshManager = ECS->getComponentManager<MeshComponent>();
+	//auto collisionComponent = ECS->getComponentManager<SphereComponent>()->getComponentChecked(entity);
+
+	////uint32 entityID = collisionComponent->entityID;
+	//const TransformComponent& transform = transformManager->getComponent(entity);
+	//const MeshComponent* mesh = meshManager->getComponentChecked(entity);
+
+	//// TODO: test if this works for the default case of a tiny cube collision
+	//glm::vec3 min{-0.5f, -0.5f, -0.5f};
+	//glm::vec3 max{0.5f, 0.5f, 0.5f};
+
+	//if (mesh)
+	//	scaleToMesh(mesh, min, max);
+
+
+	//glm::vec3 scale = glm::vec3(transform.transform[0][0],
+	//	transform.transform[1][1],
+	//	transform.transform[2][2]);
+	//min *= scale;
+	//max *= scale;
+	//
+	//glm::vec3 center = glm::vec3((max.x - min.x) / 2.f,
+	//	(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
+	//collisionComponent->center = center;
+	//float radius = std::sqrt (center.x * center.x + center.y * center.y + center.z * center.z );
+	//collisionComponent->radius = radius;
+
 	auto transformManager = ECS->getComponentManager<TransformComponent>();
 	auto meshManager = ECS->getComponentManager<MeshComponent>();
 	auto collisionComponent = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
@@ -16,8 +44,8 @@ void CollisionSystem::construct(uint32 entity,
 	const MeshComponent* mesh = meshManager->getComponentChecked(entity);
 
 	// TODO: test if this works for the default case of a tiny cube collision
-	glm::vec3 min{-0.5f, -0.5f, -0.5f};
-	glm::vec3 max{0.5f, 0.5f, 0.5f};
+	glm::vec3 min{ -0.5f, -0.5f, -0.5f };
+	glm::vec3 max{ 0.5f, 0.5f, 0.5f };
 
 	if (mesh)
 		scaleToMesh(mesh, min, max);
@@ -94,11 +122,17 @@ void CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* 
 	//assert(false); // Implement
 
 	auto AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
+#ifndef DEBUG
 	isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
-	//if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
-	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
-	//else
-	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are not colliding\n";
+
+#endif // !Debug
+#ifdef DEBUG
+	if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
+		std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
+
+#endif // DEBUG
+
+
 }
 
 void CollisionSystem::scaleToMesh(const MeshComponent* mesh, 

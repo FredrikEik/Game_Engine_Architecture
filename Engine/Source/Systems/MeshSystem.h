@@ -14,7 +14,7 @@ class MeshSystem final : public BaseSystem
 public:
 	static bool loadMesh(const std::filesystem::path& filePath, struct MeshComponent& meshComponent);
     //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
-    static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager);
+    static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity);
 
     static void drawOutline(Shader* shader, const std::string& uniformName, ECSManager* ECS);
 
@@ -28,6 +28,8 @@ public:
 private:
 	static void initialize(class MeshComponent& meshComponent);
 	static bool readObj(const std::filesystem::path& filePath, struct MeshComponent& meshComponent);
+    static std::vector<class MeshComponent> getMeshesToDraw(class ECSManager* ECS, 
+        const std::vector<class MeshComponent>& allMeshes, uint32 cameraEntity);
     //static void loadCube(class MeshComponent& meshComponent);
 
 

@@ -16,8 +16,6 @@ public:
 
 
 	static void testCollision(uint32 entityA, uint32 entityB, class ECSManager* ECS);
-
-private:
 	/// <summary>
 	/// Scales the min and max vectors to the outer bounds of the mesh.
 	/// </summary>
@@ -26,6 +24,8 @@ private:
 	/// <param name="OUTscaledMax">The highest position of the mesh</param>
 	static void scaleToMesh(const struct MeshComponent* mesh,
 		glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax);
+
+private:
 
 	/// <summary>
 	/// Checks if two colliders are colliding

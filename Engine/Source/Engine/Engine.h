@@ -10,13 +10,19 @@ public:
 		static Engine* engineInst = new Engine();
 		return *engineInst;
 	}
+	static Engine* GetInstance()
+	{
+		if (!instance)
+			instance = new Engine();
+		return instance;
+	}
 
 	void start();
 	~Engine();
 	// TODO: Make this a callback func instead of public
 	void setIsPlaying(bool isPlaying);
 private:
-
+	static Engine* instance;
 	Engine();
 
 	void init();
@@ -45,7 +51,7 @@ private:
 	float lastFrame{ 0.0f }; // Time of last frame
 
 	//fov
-	float fov{ 45.0f };
+	static float fov;
 
 	//TODO: Move these into appropriate classes. 
 	class ECSManager* ECS{};

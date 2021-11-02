@@ -56,45 +56,52 @@ void Viewport::render()
 	{
 		togglePlay();
 	}
-
-	if (ImGui::Button("New Entity"))
+	if (!bIsPlaying)
 	{
-		uint32 entity = ECS->newEntity();
-		//ECS->loadAsset(entity, DefaultAsset::CUBE);
-		//ECS->addComponent<TransformComponent>(entity);
-		//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-		//CollisionSystem::construct(entity, ECS);
-		//std::cout << "Adding entity " << entity << '\n';
+		if (ImGui::Button("New Entity"))
+		{
+			uint32 entity = ECS->newEntity();
+			ECS->loadAsset(entity, DefaultAsset::CUBE);
+			ECS->addComponent<TransformComponent>(entity);
+			ECS->addComponent<AxisAlignedBoxComponent>(entity);
+			CollisionSystem::construct(entity, ECS);
+			std::cout << "Adding entity " << entity << '\n';
 
-	}
+		}
 
-	if (ImGui::Button("Destroy selected entity"))
-	{
-		if(selectedEntity >= reservedEntities)
-			ECS->destroyEntity(selectedEntity);
-	}
-	ImGui::End();
+		if(selectedEntity >= reservedEntities && ImGui::Button("Destroy selected entity"))
 
-	//ImGui::Begin("TransformWidget");
-	////ImGui::BeginChild("TransformWidget");
+		{
+				ECS->destroyEntity(selectedEntity);
+		}
+		ImGui::End();
 
-	//if(!selectedEntity == 0)
-	//	ImGui::DragFloat3("Position", &ECS->getComponentManager<TransformComponent>()->getComponent(selectedEntity).transform[3].x, 0.1f, -10000.f, 10000.f);
+		//ImGui::Begin("TransformWidget");
+		////ImGui::BeginChild("TransformWidget");
 
-	////ImGui::EndChild();
-	//ImGui::End();
-	ImGui::EndGroup();
+		//if(!selectedEntity == 0)
+		//	ImGui::DragFloat3("Position", &ECS->getComponentManager<TransformComponent>()->getComponent(selectedEntity).transform[3].x, 0.1f, -10000.f, 10000.f);
 
-	ImGui::BeginGroup();
-	ImGui::Begin("WorldOutliner");
-	worldOutliner->update();
-	ImGui::End();
-	ImGui::Begin("Details Panel");
-	if (selectedEntity >= reservedEntities)
-	details->update(selectedEntity);
-	ImGui::End();
-	ImGui::EndGroup();
+		////ImGui::EndChild();
+		//ImGui::End();
+		ImGui::EndGroup();
+
+		ImGui::BeginGroup();
+		ImGui::Begin("WorldOutliner");
+		worldOutliner->update();
+		ImGui::End();
+		ImGui::Begin("Details Panel");
+		if (selectedEntity >= reservedEntities)
+		details->update(selectedEntity);
+		ImGui::End();
+		ImGui::EndGroup();
 	// Render dear imgui into screen
+	}
+	else
+	{
+		ImGui::End();
+		ImGui::EndGroup();
+	}
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	worldOutliner->end();
@@ -118,5 +125,7 @@ void Viewport::togglePlay()
 {
 	bIsPlaying = !bIsPlaying;
 	playButtonText = bIsPlaying ? std::string("Stop") : std::string("Play");
-	Engine::Get().setIsPlaying(bIsPlaying);
+	//Engine::Get().setIsPlaying(bIsPlaying);
+
+	Engine::GetInstance()->setIsPlaying(bIsPlaying);
 }

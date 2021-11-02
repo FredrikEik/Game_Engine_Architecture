@@ -17,7 +17,7 @@ void Details::begin(Viewport* inViewport, int32 inReservedEntities)
 
 void Details::update(int32 inEntityID)
 {
-	if (inEntityID <= reservedEntities || !ECS->entityExists(inEntityID))
+	if (inEntityID < reservedEntities || !ECS->entityExists(inEntityID))
 		return;
 
 	entityID = inEntityID;

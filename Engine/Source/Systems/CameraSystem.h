@@ -8,18 +8,30 @@
 class CameraSystem : public BaseSystem
 {
 public:
+/*	static void setPerspective(uint32 entity, class ECSManager* ECS, 
+		const glm::mat4& projectionMatrix );*/	
 	static void setPerspective(uint32 entity, class ECSManager* ECS, 
-		const glm::mat4& projectionMatrix );
-	static void update(uint32 entity, class ECSManager* ECS);
+		float fovY, float aspect, float near, float far );
+	static void updateGameCamera(uint32 entity, class ECSManager* ECS, float deltaTime);
 
 	static void updateEditorCamera(uint32 entity, class ECSManager* ECS, float deltaTime);
 
 	static void draw(uint32 entity, class Shader* shader, class ECSManager* ECS);
 
+	static glm::vec3 getForwardVector(const CameraComponent& currentCamera);
+	static glm::vec3 getRightVector(const glm::vec3& forwardVector);
+	static glm::vec3 getUpVector(const glm::vec3& forwardVector, const glm::vec3& upVector);
+	static void normalizePlane(glm::vec4& OUTplane);
 	// Add functionality to update forward/right/up vector
 	// Add pitching
 
 private:
+	// GAME
+	static void processGameMouseInput(CameraComponent& currentCamera, ECSManager* ECS, float deltaTime);
+	// End of game -----------------------------------------
+
+private:
+	// EDITOR
 	static void processEditorKeyboardInput(uint32 entity, class ECSManager* ECS, float deltaTime);
 	static void processEditorMouseInput(CameraComponent& currentCamera);
 
@@ -29,8 +41,8 @@ private:
 	static void yaw(float deltaYaw, CameraComponent& currentCamera);
 
 	static void updateEditorViewMatrix(CameraComponent& currentCamera);
-	static glm::vec3 getForwardVector(const CameraComponent& currentCamera);
-	static glm::vec3 getRightVector(const glm::vec3& forwardVector);
-	static glm::vec3 getUpVector(const glm::vec3& forwardVector, const glm::vec3& upVector);
+
+private:
 	static void updateEditorCameraPosition(uint32 entity, class ECSManager* ECS);
+	// End of editor -----------------------------------------
 };

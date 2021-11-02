@@ -28,6 +28,9 @@
 #define GLCall(x) x
 #endif
 
+//#define DEBUG
+//#define DEBUG_BROADPHASE
+
 // glGetError is very slow, thus should only be used in debug builds
 static void GLClearError()
 {
@@ -74,11 +77,13 @@ float fov{ 45.0f };
 
 int main()
 {
-	Engine engine = Engine::Get();
-	engine.start();
-	delete& engine;
+	//Engine engine = Engine::Get();
+	//engine.start();
+	//delete& engine;
 
-
+	Engine* engine = Engine::GetInstance();
+	engine->start();
+	delete engine;
 	return 0;
 	//glfwInit();
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

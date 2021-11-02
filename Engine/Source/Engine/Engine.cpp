@@ -52,10 +52,14 @@ Engine::~Engine()
 
 void Engine::setIsPlaying(bool isPlaying)
 {
+	bIsPlaying = isPlaying;
+	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
+Engine* Engine::instance = nullptr;
 float Engine::windowWidth = 800.f;
 float Engine::windowHeight = 600.f;
+float Engine::fov = 45.f;	
 
 void Engine::start()
 {
@@ -126,8 +130,8 @@ void Engine::init()
 	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
-	CameraSystem::setPerspective(editorCameraEntity, ECS, 
-		glm::perspective(glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
+	//CameraSystem::setPerspective(editorCameraEntity, ECS, 
+	//	glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
 
 	// Setup Dear ImGui context
 	//IMGUI_CHECKVERSION();
@@ -151,8 +155,7 @@ void Engine::loop()
 		processInput(window);
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(editorCameraEntity, ECS,
-			glm::perspective(glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
+		CameraSystem::setPerspective(editorCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
@@ -280,28 +283,10 @@ void Engine::loop()
 		//	ImGui::End();
 		//}
 
-// <<<<<<< HEAD
-// =======
-// 		ImGui::Begin("TransformWidget");
-
-// 		ImGui::InputInt("Entity", &EntityToTransform, 1, 10);
-// 		glm::vec3 position = glm::vec3(ECS->getComponentManager<TransformComponent>()->getComponent(EntityToTransform).transform[3]);
-// 		float test[3]{ position.x, position.y, position.z };
-// 		//ImGui::InputFloat3("Position", test);
-// 		ImGui::DragFloat3("Position", test, 0.1f, -10000.f, 10000.f);
-// 		//std::cout << "Setting position x: " << test[0] << " y: " << test[1] << " z: " << test[2]<<'\n';
-
-// 		TransformSystem::setPosition(EntityToTransform, glm::vec3(test[0], test[1], test[2]), ECS);
-
-
-
-
-// 		ImGui::End();
-// >>>>>>> Isak_og_Johannes
 		CollisionBroadphaseDatastructure->update();
 
 
-		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+		//CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
 
 
 		//// RENDER
@@ -355,16 +340,21 @@ void Engine::loop()
 			}
 		}
 
-
-	
-
-
-
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+		if (bIsPlaying)
+		{
+			//std::cout << "Game camera'\n";
+
+			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+		}
+		else
+		{
+			//std::cout << "Editor camera'\n";
+			CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+		}
 
 
 		// RTS Selection render -- Translucent -- ingame only
@@ -378,7 +368,7 @@ void Engine::loop()
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-		MeshSystem::draw(ourShader, "u_model", ECS);
+		MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -396,7 +386,7 @@ void Engine::loop()
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		
+
 		viewport->render();
 
 		glfwSwapBuffers(window);

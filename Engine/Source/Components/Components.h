@@ -5,14 +5,14 @@
 #include "../Vertex.h"
 #include "glm/glm.hpp"
 
-/*     ATTENTION
-*
-*
-*
-*
-*
-*
-*
+/*		ATTENTION
+*		ATTENTION
+*		ATTENTION	
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
 *
 * Whenever you create a new component you need to add it
 * to the function removeComponentByRTTI in ECSManager.cpp
@@ -20,15 +20,15 @@
 * If the component is reusable, you need to add it 
 * to the function assignAsset in Factory.h
 *
-*
-*
-*
-*
-*
-*
-*
-*
-*
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
+*		ATTENTION
 */
 
 
@@ -72,6 +72,10 @@ struct CameraComponent final : public Component
 	glm::mat4x4 m_projectionMatrix{};
 	float yaw{};
 	float pitch{};
+	float fovY{};
+	float near{};
+	float far{};
+	float aspect{};
 };
 
 struct TransformComponent final : public Component
@@ -98,4 +102,11 @@ struct SelectionComponent final : public Component
 	glm::vec3 currentHitPos{};
 
 	std::vector<uint32> hitEntities;
+};
+
+struct SphereComponent final : public Component
+{
+	SphereComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	float radius{};
+	glm::vec3 center{};
 };

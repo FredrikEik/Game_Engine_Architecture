@@ -6,20 +6,38 @@
 #include "../Systems/TransformSystem.h"
 #include "../Shader.h"
 #include "GLFW/glfw3.h"
+#include "../Engine/Engine.h"
 
 #define _USE_MATH_DEFINES // Must be defined to use the M_PI constant
 #include <math.h>
-void CameraSystem::setPerspective(uint32 entity, class ECSManager* ECS, const glm::mat4& projectionMatrix)
+//void CameraSystem::setPerspective(uint32 entity, class ECSManager* ECS, const glm::mat4& projectionMatrix)
+//{
+//
+//}
+
+void CameraSystem::setPerspective(uint32 entity, ECSManager* ECS, float fovY, float aspect, float near, float far)
 {
 	CameraComponent* currentCamera{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity) };
 	assert(currentCamera);
 
-	currentCamera->m_projectionMatrix = projectionMatrix;
+	currentCamera->m_projectionMatrix = glm::perspective(glm::radians(fovY), aspect, near, far);
+	currentCamera->aspect = aspect;
+	currentCamera->far = far;
+	currentCamera->near = near;
+	currentCamera->fovY = fovY;
 }
 
-void CameraSystem::update(uint32 entity, class ECSManager* ECS)
+void CameraSystem::updateGameCamera(uint32 entity, class ECSManager* ECS, float deltaTime)
 {
-	assert(false); // Implement this before you try to use it maybe?
+	CameraComponent* currentCamera{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity) };
+	assert(currentCamera);
+
+	currentCamera->pitch = -70.f;
+	currentCamera->yaw = 0.f;
+	TransformSystem::setHeight(entity, 20.f, ECS);
+	processGameMouseInput(*currentCamera, ECS, deltaTime);
+	updateEditorViewMatrix(*currentCamera);
+	updateEditorCameraPosition(entity, ECS);
 }
 
 void CameraSystem::updateEditorCamera(uint32 entity, class ECSManager* ECS, float deltaTime)
@@ -41,7 +59,31 @@ void CameraSystem::draw(uint32 entity, Shader* shader, ECSManager* ECS)
 
 	shader->setMat4("u_view", currentCamera->m_viewMatrix);
 	shader->setMat4("u_projection", currentCamera->m_projectionMatrix);
+}
 
+void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSManager* ECS, float deltaTime)
+{
+	float screenWidth = Engine::Get().getWindowWidth();
+	float screenHeight = Engine::Get().getWindowHeight();
+	MousePosition mousePosition = Input::getInstance()->getMousePosition();
+
+	//glm::vec3 forward(getForwardVector(currentCamera));
+	//glm::vec3 right(getRightVector(forward));
+	glm::vec3 forward(1, 0, 0);
+	glm::vec3 right(0, 0, 1);
+	//std::cout << "x " << right.x << " y " << right.y << " z " << right.z << std::endl;
+
+	glm::vec3 deltaMovement{};
+	if (mousePosition.x < 50)
+		deltaMovement -= right * 5.f * deltaTime;
+	if (mousePosition.y < 50)
+		deltaMovement += forward * 5.f * deltaTime;
+	if (mousePosition.y > (screenHeight-50))
+		deltaMovement -= forward * 5.f * deltaTime;
+	if (mousePosition.x > (screenWidth-50))
+		deltaMovement += right * 5.f * deltaTime;
+	
+	TransformSystem::move(currentCamera.entityID, deltaMovement, ECS);
 }
 
 void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* ECS, float deltaTime)
@@ -147,10 +189,21 @@ glm::vec3 CameraSystem::getUpVector(const glm::vec3& forwardVector, const glm::v
 	return glm::normalize(glm::cross(forwardVector, upVector));
 }
 
+
+
 void CameraSystem::updateEditorCameraPosition(uint32 entity, class ECSManager* ECS)
 {
 	// TODO: Figure out if this should translate negative ;)
 	TransformComponent* currentTransform{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity) };
 	CameraComponent* currentCamera{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity) };
 	currentCamera->m_viewMatrix = glm::translate(currentCamera->m_viewMatrix, -glm::vec3(currentTransform->transform[3]));
+}
+
+void CameraSystem::normalizePlane(glm::vec4& plane)
+{
+	float mag{std::sqrt(plane.x*plane.x + plane.y*plane.y + plane.z*plane.z)};
+	plane.x /= mag;
+	plane.y /= mag;
+	plane.z /= mag;
+	plane.w /= mag;
 }
