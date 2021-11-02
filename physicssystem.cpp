@@ -5,10 +5,11 @@ PhysicsSystem::PhysicsSystem()
 
 }
 
-void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData)
+void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Vertex> inVertexData)
 {
     mSurfaceData = surfaceData;
     mSurfaceData->collisionRadius = 0.0f;
+    vertexData = inVertexData;
 }
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)

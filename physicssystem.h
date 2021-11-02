@@ -13,7 +13,7 @@ class PhysicsSystem
 {
 public:
     PhysicsSystem();
-    void InitPhysicsSystem(MeshComponent* surfaceData);
+    void InitPhysicsSystem(MeshComponent* surfaceData, std::vector<Vertex> inVertexData);
     void move(float deltaTime, TransformComponent* Transf, float radius);
 
 
@@ -23,6 +23,7 @@ private:
     bool once = true;
     bool onTriangle = false;
     MeshComponent* mSurfaceData = new MeshComponent();
+    std::vector<Vertex> vertexData;
     gsl::Vector3D MakeGSLvec3D(QVector3D vec);
     void FindTriangle(TransformComponent* Transf);
     QVector3D CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3);

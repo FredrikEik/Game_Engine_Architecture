@@ -146,7 +146,7 @@ void RenderWindow::init()
     
     
     //Suzannes - using default material:
-    for(int i{-50}; i < 100; i++)
+    /*for(int i{-50}; i < 100; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -154,7 +154,7 @@ void RenderWindow::init()
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
 
         }
-    }
+    }*/
 
 
     SoundManager::getInstance()->init();
@@ -187,11 +187,11 @@ void RenderWindow::init()
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++)
     {
-        if(meshCompVec[i]->entity == 3)
-        {
-            Physics->InitPhysicsSystem(meshCompVec[i]);
-            break;
-        }
+            if(meshCompVec[i]->entity == 3)
+            {
+                Physics->InitPhysicsSystem(meshCompVec[i],ResSys->getVertexDataByVAO("bowlSurface.obj"));
+                break;
+            }
     }
     
     

@@ -32,8 +32,13 @@ struct MeshComponent
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+    size_t VertexSize{0};
 
-    size_t VertexSize;
+
+    //GLuint mVAO[3] = {0,0,0};
+    //GLuint mVBO[3] = {0,0,0};
+    //GLuint mEAB[3] = {0,0,0};
+    //size_t VertexSize[3] = {0,0,0};
     float collisionRadius = 0;
     QVector3D centerOfMesh = QVector3D(0.f,0.f,0.f);
     float scale = 1;

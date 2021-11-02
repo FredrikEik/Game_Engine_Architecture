@@ -22,8 +22,8 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
         qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
         qDebug() << "INPUT: " << QString::fromStdString(input);
         qDebug() << "meshDataContainer Size: " << meshDataContainer.size();
-        for(int i = 0; i < meshDataContainer.size(); i++){
-            qDebug() << "Matching: " << QString::fromStdString(input) << " with: " << QString::fromStdString(meshDataContainer[i].first);
+        for(int i = 0; i < (int)meshDataContainer.size(); i++){
+            qDebug() << "Comparing: " << QString::fromStdString(input) << " to: " << QString::fromStdString(meshDataContainer[i].first);
             if(input == meshDataContainer[i].first){
                 qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
                 mesh->collisionRadius = meshDataContainer[i].second.collisionRadius;
@@ -33,13 +33,9 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                 mesh->mVertices = meshDataContainer[i].second.meshVert;
                 mesh->mIndices = meshDataContainer[i].second.meshIndic;
                 qDebug() << "Query for " << QString::fromStdString(input) << " is completed...";
-                //break;
+                break;
             }
         }
-       /*' for(auto it = meshDataContainer.begin(); it < meshDataContainer.end();it++)
-        {
-
-        }*/
         qDebug() << "--------------------------------------------------------Complete------------------------------------------------";
 }
 
@@ -285,7 +281,7 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
 
 void resourceSystem::SetMeshDataContainer()
 {
-//    meshDataContainer.clear();
+    meshDataContainer.clear();
     std::vector<std::string> assetNames = GetAllMeshesInAssetsDirectory();
 
     for(int i = 0; i < (int)assetNames.size(); i++){
@@ -451,6 +447,16 @@ void resourceSystem::SetMeshDataContainer()
         meshDataContainer.push_back(std::make_pair(assetNames[i], obj));
 
 
+    }
+}
+
+/// Returns vertex data for a specific mesh.
+std::vector<Vertex> resourceSystem::getVertexDataByVAO(std::string meshName)
+{
+    for(int i = 0; i < (int)meshDataContainer.size(); i++){
+        if(meshName == meshDataContainer[i].first){
+            return meshDataContainer[i].second.meshVert;
+        }
     }
 }
 

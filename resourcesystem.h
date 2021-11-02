@@ -39,6 +39,7 @@ public:
     std::vector<std::string> GetAllMeshesInAssetsDirectory();
     void ResourceSystemInit(RenderSystem * inRendSys);
     void SetMeshDataContainer();
+    std::vector<Vertex> getVertexDataByVAO(std::string meshName);
 
     RenderSystem * rendSys;
 
