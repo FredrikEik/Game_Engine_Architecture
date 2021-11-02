@@ -61,6 +61,8 @@ public:
     GLfloat& operator()(const int &y, const int &x);
     GLfloat operator()(const int &y, const int &x) const;
 
+    class Vector4D operator*(const Vector4D &v) const;
+
     Matrix4x4 operator*(const Matrix4x4 &other);
 
     friend std::ostream& operator<<(std::ostream &output, const Matrix4x4 &mIn)

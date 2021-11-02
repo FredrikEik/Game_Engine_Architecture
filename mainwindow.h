@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void selectObjectByIndex(int indexIn);
     QListWidgetItem *mCurrentSelectedItem{nullptr};
     QTreeWidgetItem *mCurrentTreeItem{nullptr};
 

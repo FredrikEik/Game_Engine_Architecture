@@ -40,6 +40,7 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/meshhandler.cpp \
+    gsl/vector4d.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     scene.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     constants.h \
     coreengine.h \
     gltypes.h \
+    gsl/vector4d.h \
     input.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \

@@ -88,9 +88,6 @@ void MainWindow::init()
 
     mCoreEngine = new CoreEngine(mRenderSystem);
 
-//    ui->listWidget->addItem(mCoreEngine->player->objName);
-//    ui->listWidget->addItem(mCoreEngine->enemy->objName);
-
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
@@ -144,14 +141,25 @@ void MainWindow::on_pushButton_clicked()
 
 
 }
+void MainWindow::selectObjectByIndex(int indexIn)
+{
 
+    //mCurrentSelectedItem->setForeground(Qt::green);
+//   if(mSceneOutlinerRoot)
+//    {
+//        if() mCurrentEditItem->setSelected(false);
+
+//        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+//        mCurrentEditItem->setSelected(true);
+
+//        on_outliner_itemClicked(mCurrentEditItem, 0);
+//    }
+
+}
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
 
-
-
-    //qDebug() << "DATA FOR ITEM " << item->data(currentIndex);
-
+//setter opp lists
 
     if(clicked)
     {
@@ -162,9 +170,6 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
         mCurrentSelectedItem = ui->listWidget->currentItem();
         mCurrentSelectedItem->setForeground(Qt::green);
 
-
-
-        //qDebug() << "selected item " << mCurrentSelectedItem->
         if(!mCoreEngine->isPlaying)
         ui->verticalLayout_2->addWidget(mTransformWidget);
         clicked = false;
@@ -175,8 +180,6 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
         mCurrentSelectedItem->setSelected(false);
         item->setText(ui->listWidget->currentItem()->text());
         mCurrentSelectedItem->setForeground(Qt::black);
-        //ui->verticalLayout_2->removeWidget(mTransformWidget);
-        //ui->verticalLayout_2->setEnabled(false);
         delete mTransformWidget;
         clicked = true;
         mCurrentSelectedItem = nullptr;

@@ -22,6 +22,8 @@
 #include "soundsystem.h"
 #include "coreengine.h"
 #include "math_constants.h"
+#include "vector4d.h"
+#include "matrix4x4.h"
 #include "meshhandler.h"    //to check linebox
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -279,6 +281,11 @@ void RenderSystem::render()
 void RenderSystem::rotateObj(double val)
 {
     mGameObjects[1]->mTransform->mMatrix.rotateZ(val);
+}
+
+void RenderSystem::setPickedObject(int pickedID)
+{
+
 }
 
 void RenderSystem::setupPlainShader(int shaderIndex)
@@ -549,11 +556,17 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
     Input &input = CoreEngine::getInstance()->mInput;
 
     if (event->button() == Qt::RightButton)
-        input.RMB = false;
+         input.RMB = false;
     if (event->button() == Qt::LeftButton)
+    {
         input.LMB = false;
+        mousePicking(event);
+    }
+
     if (event->button() == Qt::MiddleButton)
         input.MMB = false;
+
+
 }
 
 void RenderSystem::wheelEvent(QWheelEvent *event)
@@ -571,6 +584,79 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
             mCurrentCamera->setCameraSpeed(-0.001f);
     }
     event->accept();
+}
+
+void RenderSystem::mousePicking(QMouseEvent *event)
+{
+    int mouseXPixel = event->pos().x();
+    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+
+    //Since we are going to invert these, I make a copy
+    gsl::Matrix4x4 projectionMatrix = mCurrentCamera->mProjectionMatrix;
+    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+    //step 1
+    float x = (2.0f * mouseXPixel) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYPixel) / height();
+    float z = 1.0f;
+    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+
+    //step 2
+    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+    //step 3
+    projectionMatrix.inverse();
+    gsl::Vector4D ray_eye = projectionMatrix * ray_clip;
+    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+    //step 4
+    viewMatrix.inverse();
+    gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
+    gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
+    // don't forget to normalise the vector at some point
+    ray_wor.normalize();
+
+
+    /************************************************************************/
+    //Collision detection - in world space coordinates:
+    //Writing here as a quick test - probably should be in a CollisionSystem class
+
+    //This is ray vs bounding sphere collision
+
+    for(unsigned int i{0}; i < mGameObjects.size(); i++)
+    {
+        //making the vector from camera to object we test against
+        gsl::Vector3D tempObject = mGameObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
+
+        //making the normal of the ray - in relation to the camToObject vector
+        //this is the normal of the surface the camToObject and ray_wor makes:
+        gsl::Vector3D planeNormal = ray_wor ^ tempObject;    //^ gives the cross product
+
+        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
+        rayNormal.normalize();
+
+        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+        //getting distance from GameObject to ray using dot product:
+        float distance = tempObject * rayNormal;   //* gives the dot product
+
+        //we are interested in the absolute distance, so fixes any negative numbers
+        distance = abs(distance);
+
+        //if distance to ray < objects bounding sphere == we have a collision
+        if(distance < 0.5f)
+        {
+            qDebug() << "Item picked " << i << distance << "meters away from ray";
+            mIndexToPickedObject = i;
+            mMainWindow->selectObjectByIndex(mIndexToPickedObject);
+
+            //factory->mGameObjects[i]->move(1000.f,0,0);
+            break;  //breaking out of for loop - does not check if ray touch several objects
+
+
+        }
+
+    }
 }
 
 void RenderSystem::mouseMoveEvent(QMouseEvent *event)

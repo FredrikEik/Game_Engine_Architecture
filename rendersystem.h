@@ -44,9 +44,16 @@ public:
 
     void rotateObj(double val);
 
+   void setPickedObject(int pickedID);
+
+   void updatePickedObject();
+
 
 
 private:
+
+   int mIndexToPickedObject{-1};
+
     void init();
 
     void checkForGLerrors();
@@ -106,6 +113,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePicking(QMouseEvent *event);
 };
 
 #endif // RENDERSYSTEM_H
