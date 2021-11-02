@@ -20,7 +20,7 @@ private:
 	static void mouse_callback(struct GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(struct GLFWwindow* window, double xoffset, double yoffset);
 	static void mouseButton_callback(GLFWwindow* window, int button, int action, int mods);
-
+	static void windowSize_callback(GLFWwindow* window, int x, int y);
 
 	// glGetError is very slow, thus should only be used in debug builds
 	static void GLClearError();

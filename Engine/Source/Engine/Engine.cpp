@@ -69,7 +69,7 @@ void Engine::init()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
-
+	
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
@@ -84,7 +84,7 @@ void Engine::init()
 	glfwSetScrollCallback(window, Engine::scroll_callback);
 	glfwSetMouseButtonCallback(window, Engine::mouseButton_callback);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
+	glfwSetWindowSizeCallback(window, Engine::windowSize_callback);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -355,6 +355,10 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void Engine::mouseButton_callback(GLFWwindow* window, int button, int action, int mods)
 {
 
+}
+
+void Engine::windowSize_callback(GLFWwindow* window, int x, int y)
+{
 }
 
 void Engine::GLClearError()
