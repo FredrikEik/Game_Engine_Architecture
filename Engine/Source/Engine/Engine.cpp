@@ -325,6 +325,8 @@ void Engine::loop()
 			}
 			else
 			{
+				if (core::MAX_ENTITIES < pickedID)
+					return;
 
 				selectionComp.hitEntities.push_back(pickedID);
 
