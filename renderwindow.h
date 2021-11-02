@@ -41,6 +41,7 @@ private:
     Input mInput;
     Player* mPlayer;
     bool playM = false;
+    int levelOfDetail(int i);
     void mousePickingRay(QMouseEvent *event);
     gsl::Vector3D ray_wor;
 

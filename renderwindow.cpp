@@ -189,7 +189,7 @@ void RenderWindow::initObject()
     {
         for(int y=0; y<10; y++)
         {
-            temp = mShapeFactory.createShape("Monkey.obj");
+            temp = mShapeFactory.createMonkey();
             temp->init();
             temp->move((i-y), 0.5, y-5);
             temp->mMaterial->mShaderProgram = 0;    //plain shader
@@ -248,7 +248,7 @@ void RenderWindow::drawObject()
 
         if(i<7){
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
             glBindVertexArray(0);}
         else if(i==7 && playM==false){
             glBindVertexArray( mFrustumSystem->mMesh->mVAO );
@@ -256,7 +256,7 @@ void RenderWindow::drawObject()
             glBindVertexArray(0);}
         else{
             glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size());
+            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
             glBindVertexArray(0);}
     }
 }
@@ -550,6 +550,31 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     {
         mInput.RIGHT = false;
     }
+
+}
+
+int RenderWindow::levelOfDetail(int i)
+{
+
+    //making the vector from camera to object we test against
+    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+
+    if(camToObject.length()<5)
+    {
+        return mVisualObjects[i]->mMesh->mVertices.size();
+    }
+    else if(camToObject.length()<20)
+    {
+        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
+            return mVisualObjects[i]->mMesh->mVertices.size()/2;
+        else
+            return mVisualObjects[i]->mMesh->mVertices.size();
+    }
+    else
+        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
+            return mVisualObjects[i]->mMesh->mVertices.size()/4;
+        else
+            return mVisualObjects[i]->mMesh->mVertices.size();
 
 }
 

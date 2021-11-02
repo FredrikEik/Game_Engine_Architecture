@@ -111,7 +111,7 @@ Square::Square()
     mMesh = new MeshComponent();
     mCollision = new CollisionComponent;
     makeVerticies(mMesh, mCollision);
-    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
+    mCollision->setBoundingSphere(0.25, gsl::Vector3D(mTransform->mPosition.x + 0.25, mTransform->mPosition.y + 0.25,  mTransform->mPosition.z + 0.25));
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 }
@@ -295,14 +295,14 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
 
 
-//VisualObject* ShapeFactory::createMonkey()
-//{
-//    if(doOncee == false)
-//    {
-//        myMonkey = new ObjMesh(monkeyString);
-//        return myMonkey;
-//        doOncee = true;
-//    }
-//    else
-//        return myMonkey;
-//}
+VisualObject* ShapeFactory::createMonkey()
+{
+    if(doOncee == false)
+    {
+        myMonkey = new ObjMesh(monkeyString);
+        return myMonkey;
+        doOncee = true;
+    }
+    else
+        return myMonkey;
+}
