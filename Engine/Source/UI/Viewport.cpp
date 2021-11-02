@@ -17,6 +17,7 @@ Viewport::Viewport(ECSManager* InECS)
 	ECS = InECS;
 	worldOutliner = new WorldOutliner("World Outliner", InECS);
 	details = new Details("Details", InECS);
+	playButtonText = "Play";
 }
 
 Viewport::~Viewport()
@@ -49,20 +50,26 @@ void Viewport::render()
 	ImGui::BeginGroup();
 
 	ImGui::Begin("Demo window");
-	if (ImGui::Button("Spawn cube"))
+	if (ImGui::Button("Play"))
+	{
+		togglePlay();
+	}
+
+	if (ImGui::Button(playButtonText.c_str()))
 	{
 		uint32 entity = ECS->newEntity();
-		ECS->loadAsset(entity, DefaultAsset::CUBE);
-		ECS->addComponent<TransformComponent>(entity);
-		ECS->addComponent<AxisAlignedBoxComponent>(entity);
-		CollisionSystem::construct(entity, ECS);
-		std::cout << "Adding entity " << entity << '\n';
+		//ECS->loadAsset(entity, DefaultAsset::CUBE);
+		//ECS->addComponent<TransformComponent>(entity);
+		//ECS->addComponent<AxisAlignedBoxComponent>(entity);
+		//CollisionSystem::construct(entity, ECS);
+		//std::cout << "Adding entity " << entity << '\n';
 
 	}
 
-	if (ImGui::Button("Destroy entity 1"))
+	if (ImGui::Button("Destroy selected entity"))
 	{
-		ECS->destroyEntity(1);
+		if(selectedEntity > 0)
+			ECS->destroyEntity(selectedEntity);
 	}
 	ImGui::End();
 
@@ -102,4 +109,11 @@ void Viewport::setCurrentEntity(int32 entityID)
 {
 	//std::cout << "Setting entity " << entityID << "\n";
 	selectedEntity = entityID;
+}
+
+void Viewport::togglePlay()
+{
+	bIsPlaying = !bIsPlaying;
+	playButtonText = bIsPlaying ? std::string("Stop") : std::string("Play");
+	
 }
