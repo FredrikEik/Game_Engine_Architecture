@@ -19,7 +19,7 @@ public:
                    int EntityId = -1,
                    GLenum drawType = GL_TRIANGLES
                    );
-    void construcRay(QVector3D LineVec, QVector3D CameraPos, gsl::Vector3D forwardVec);
+    void construcRay(QVector3D LineVec, QVector3D CameraPos, float Length = 25.0f);
     void constructCube();
     void constructSphere();
     void constructPlane();
