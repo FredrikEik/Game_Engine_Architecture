@@ -67,6 +67,8 @@ public:
 
     void toggleGameMode();
 
+    void mousePickingRay(QMouseEvent *event);
+
 private slots:
     void render();
 

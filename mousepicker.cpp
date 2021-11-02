@@ -24,6 +24,9 @@ gsl::Vector3D MousePicker::calculateMouseRay(int mouse_x, int mouse_y, int width
     tog::vec4 eyeCoords = toEyeCoords(clipCoords);
     //qDebug() << "eyeCoords x: " << eyeCoords.x << " y: " << eyeCoords.y << " z: " << eyeCoords.z << " w: " << eyeCoords.w;
     gsl::Vector3D worldRay = toWorldCoords(eyeCoords);
+    //worldRay.setX(eyeCoords.x);
+    //worldRay.setY(eyeCoords.y);
+    //worldRay.setZ(eyeCoords.z);
     return worldRay;
 }
 
@@ -59,13 +62,24 @@ gsl::Vector3D MousePicker::toWorldCoords(tog::vec4 eyeCoords)
 
 bool MousePicker::TestRayHitSphere(gsl::Vector3D sphereCenter, float sphereRadius)
 {
+    // klarte ikke finne noe forståelig om collision i 3d så stjal litt kode fra ole
     gsl::Vector3D rayOrigin = camera->getPosition();
-    float rayLength = 1000.f;
 
+    gsl::Vector3D rayToObject = sphereCenter - rayOrigin;
+
+    gsl::Vector3D planeNormal = currentRay ^ rayToObject;
+
+    gsl::Vector3D rayNormal = planeNormal ^ currentRay;
+    rayNormal.normalize();
+
+    float length = rayToObject * rayNormal;
+    length = abs(length);
+
+    /* funker bare for 2d
     gsl::Vector3D t = tog::dotProduct(sphereCenter - rayOrigin, currentRay);
     gsl::Vector3D tToSphereCenter = sphereCenter - t;
     float length = tToSphereCenter.length();
-    float x = std::sqrt((sphereRadius * sphereRadius) - (length * length));
+    float x = std::sqrt((sphereRadius * sphereRadius) - (length * length));*/
 
     if (length <= sphereRadius)
         return true;

@@ -488,6 +488,36 @@ void RenderWindow::toggleGameMode()
     }
 }
 
+void RenderWindow::mousePickingRay(QMouseEvent *event)
+{
+    int mouseX = event->pos().x();
+    int mouseY = event->pos().y();
+
+    mMousePicker->update(mouseX, mouseY, mMainWindow->getWidth(), mMainWindow->getHeight());
+
+    //qDebug() << "x: " << mouseX << " y: " << mouseY <<" mp x: " << mMousePicker->getCurrentRay().getX() << " mp y: " << mMousePicker->getCurrentRay().getY() << " mp z: " << mMousePicker->getCurrentRay().getZ();
+
+    //Mousepicking
+    if(mInput.LMB && !bPlayGame)
+    {
+        for (int i = 0; i < ObjFactory->mGameObject.size(); i++ ) {
+            if (mMousePicker->TestRayHitSphere(ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.getPosition(), 0.5f))
+            {
+                ObjFactory->setOBJindex(i);
+                mMainWindow->setSelection(i);
+                break;
+            }
+        }
+        /*ObjFactory->createObject("Cube");
+        GameObject* test = ObjFactory->mGameObject.back();
+        test->getTransformComp()->mMatrix.setPosition(mCurrentCamera->getPosition().x, mCurrentCamera->getPosition().y, mCurrentCamera->getPosition().z);
+        qDebug() << "camera x: " << mCurrentCamera->getPosition().x << " y: " << mCurrentCamera->getPosition().z << " z: " << mCurrentCamera->getPosition().z;
+        test->getTransformComp()->mMatrix.setRotationToVector(mMousePicker->getCurrentRay());
+        test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 100.f));
+        qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
+    }
+}
+
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);
@@ -582,26 +612,6 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(-mCameraSpeed);
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
-    }
-
-    //Mousepicking
-    if(mInput.LMB && !bPlayGame)
-    {
-        for (int i = 0; i < ObjFactory->mGameObject.size(); i++ ) {
-            if (mMousePicker->TestRayHitSphere(ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.getPosition(), 0.5f))
-            {
-                ObjFactory->setOBJindex(i);
-                mMainWindow->setSelection(i);
-                break;
-            }
-        }
-        /*ObjFactory->createObject("Cube");
-        GameObject* test = ObjFactory->mGameObject.back();
-        test->getTransformComp()->mMatrix.setPosition(mCurrentCamera->getPosition().x, mCurrentCamera->getPosition().y, mCurrentCamera->getPosition().z);
-        qDebug() << "camera x: " << mCurrentCamera->getPosition().x << " y: " << mCurrentCamera->getPosition().z << " z: " << mCurrentCamera->getPosition().z;
-        test->getTransformComp()->mMatrix.setRotationToVector(mMousePicker->getCurrentRay());
-        test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 10.f));
-        qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
 
     //Player
@@ -737,6 +747,11 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.LMB = true;
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;
+
+    if(event->button() == Qt::LeftButton)
+    {
+        mousePickingRay(event);
+    }
 }
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -779,8 +794,4 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
-
-    mMousePicker->update(mMouseXlast, mMouseYlast, mMainWindow->getWidth(), mMainWindow->getHeight());
-
-    //qDebug() << "x: " << mMouseXlast << " y: " << mMouseYlast <<" mp x: " << mMousePicker->getCurrentRay().getX() << " mp y: " << mMousePicker->getCurrentRay().getY() << " mp z: " << mMousePicker->getCurrentRay().getZ();
 }
