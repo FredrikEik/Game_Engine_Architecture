@@ -225,31 +225,31 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
 void MeshHandler::findCollisionCorners(CollisionComponent *CollComp, QVector3D &vertex)
 {
         //Min
-        if(vertex.x() < CollComp->xMin)
+        if(vertex.x() < CollComp->minCorner.x())
         {
-            CollComp->xMin = vertex.x();
+            CollComp->minCorner.setX(vertex.x());
         }
-        if(vertex.y() < CollComp->yMin)
+        if(vertex.y() < CollComp->minCorner.y())
         {
-            CollComp->yMin = vertex.y();
+            CollComp->minCorner.setY(vertex.y());
         }
-        if(vertex.z() < CollComp->zMin)
+        if(vertex.z() < CollComp->minCorner.z())
         {
-            CollComp->zMin = vertex.z();
+            CollComp->minCorner.setZ(vertex.z());
         }
 
         //Max
-        if(vertex.x() > CollComp->xMax)
+        if(vertex.x() > CollComp->maxCorner.x())
         {
-            CollComp->xMax = vertex.x();
+            CollComp->maxCorner.setX(vertex.x());
         }
-        if(vertex.y() > CollComp->yMax)
+        if(vertex.y() > CollComp->maxCorner.y())
         {
-            CollComp->yMax = vertex.y();
+            CollComp->maxCorner.setY(vertex.y());
         }
-        if(vertex.z() > CollComp->zMax)
+        if(vertex.z() > CollComp->maxCorner.z())
         {
-            CollComp->zMax = vertex.z();
+            CollComp->maxCorner.setZ(vertex.z());
         }
 
         if(vertex.length() > CollComp->mRaidus)
@@ -259,50 +259,15 @@ void MeshHandler::findCollisionCorners(CollisionComponent *CollComp, QVector3D &
 
 }
 
-void MeshHandler::findCollisionRadious(CollisionComponent *CollComp, QVector3D &vertex)
-{
-    gsl::Vector3D origo{0,0,0};
-    //Min
-    if(vertex.x() < CollComp->xMin)
-    {
-        CollComp->xMin = vertex.x();
-    }
-    if(vertex.y() < CollComp->yMin)
-    {
-        CollComp->yMin = vertex.y();
-    }
-    if(vertex.z() < CollComp->zMin)
-    {
-        CollComp->zMin = vertex.z();
-    }
-
-    //Max
-    if(vertex.x() > CollComp->xMax)
-    {
-        CollComp->xMax = vertex.x();
-    }
-    if(vertex.y() > CollComp->yMax)
-    {
-        CollComp->yMax = vertex.y();
-    }
-    if(vertex.z() > CollComp->zMax)
-    {
-        CollComp->zMax = vertex.z();
-    }
-
-
-
-
-}
 
 void MeshHandler::makeCollisionBox(CollisionComponent* CollisionComp, MeshComponent* CollisionLines)
 {
-    float minX = CollisionComp->xMin;
-    float minY = CollisionComp->yMin;
-    float minZ = CollisionComp->zMin;
-    float maxX = CollisionComp->xMax;
-    float maxY = CollisionComp->yMax;
-    float maxZ = CollisionComp->zMax;
+    float minX = CollisionComp->minCorner.x();
+    float minY = CollisionComp->minCorner.y();
+    float minZ = CollisionComp->minCorner.z();
+    float maxX = CollisionComp->maxCorner.x();
+    float maxY = CollisionComp->maxCorner.y();
+    float maxZ = CollisionComp->maxCorner.z();
 
     CollisionLines->mVertices->push_back(Vertex(minX, minY, maxZ,   1,0,0,  0,0));
     CollisionLines->mVertices->push_back(Vertex(maxX, minY, maxZ,   1,0,0,  0,0));

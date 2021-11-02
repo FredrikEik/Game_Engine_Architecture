@@ -52,12 +52,14 @@ class CollisionComponent
 {
 public:
 
-    float xMin{0};
-    float xMax{0};
-    float yMin{0};
-    float yMax{0};
-    float zMin{0};
-    float zMax{0};
+    QVector3D maxCorner{0,0,0};
+    QVector3D minCorner{0,0,0};
+//    float xMin{0};
+//    float xMax{0};
+//    float yMin{0};
+//    float yMax{0};
+//    float zMin{0};
+//    float zMax{0};
 
     float mRaidus{0};
 

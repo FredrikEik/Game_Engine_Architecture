@@ -188,7 +188,7 @@ void GameEngine::HandleInput()
     }
     if(bIsPlaying)
     {
-        if(mInput.W)
+        if(mInput.W && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
         {
             mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
