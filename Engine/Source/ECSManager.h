@@ -38,6 +38,9 @@ public:
 
 	template <typename T>
 	class ComponentManager<T>* getComponentManager();
+
+	int32 getNumberOfEntities() const;
+	std::vector<std::pair<std::type_index, uint32>> getEntity(int32 entityID);
 private:
 	ECSManager();
 

@@ -45,4 +45,6 @@ private:
 
 	uint32 editorCameraEntity{};
 	class SweepAndPrune* CollisionBroadphaseDatastructure{};
+
+	class Viewport* viewport;
 };

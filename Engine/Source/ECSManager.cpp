@@ -1,6 +1,7 @@
 #include "ECSManager.h"
 #include <iostream>
 #include "Assets/DefaultAssets.h"
+
 ECSManager::ECSManager()
 	: entities{ (*new std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>) },
 	factory{*new Factory},
@@ -21,6 +22,16 @@ ECSManager::~ECSManager()
 	delete& availableEntityIDs;
 }
 
+int32 ECSManager::getNumberOfEntities() const
+{
+	return core::MAX_ENTITIES - availableEntityIDs.size();
+}
+
+std::vector<std::pair<std::type_index, uint32>> ECSManager::getEntity(int32 entityID)
+{
+	assert(entities[entityID].first);
+	return entities[entityID].second;
+}
 
 uint32 ECSManager::newEntity()
 {
