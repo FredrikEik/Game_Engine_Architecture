@@ -144,6 +144,8 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<AxisAlignedBoxComponent>(entityID);
 	else if (componentType == std::type_index(typeid(SphereComponent)))
 		removeComponent<SphereComponent>(entityID);
+	else if (componentType == std::type_index(typeid(SelectionComponent)))
+		removeComponent<SelectionComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };

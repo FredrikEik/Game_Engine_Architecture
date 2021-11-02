@@ -21,12 +21,26 @@ bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& 
 	return true;
 }
 
+bool MeshSystem::loadMeshLOD(const std::filesystem::path& filePath, MeshComponent& meshComponent, LODMeshType type)
+{
+    auto& LODMesh = MeshComponent(meshComponent.entityID, meshComponent.ID);
+    LODMesh.LODType = type;
+    assert(readObj(filePath, LODMesh));
+
+	initialize(LODMesh);
+	std::cout << LODMesh.m_indices.size();
+
+	meshComponent.LODMeshes.push_back(LODMesh);
+    return true;
+}
+
 void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity)
 {
 
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
-    if (!meshManager || !transformManager)
+    TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+    if (!meshManager || !transformManager || !cameraTransform)
         return;
     
 
@@ -40,12 +54,54 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         if (meshComp.bIsTranslucent == true) 
             continue;
 
-        auto& transformComp = transformManager->getComponent(meshComp.entityID);
+
+
+        // calculate distance form mesh to camera determine lod to draw
+        glm::vec3 cameraPos = glm::vec3(cameraTransform->transform[3]);
+        glm::vec3 meshPos= glm::vec3(transformManager->getComponent(meshComp.entityID).transform[3]);
         
-        glBindVertexArray(meshComp.m_VAO); 
-		glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-        glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        float dist = glm::distance(cameraPos, meshPos);
+        // Size doesnt matter
+        int LODArraySize = meshComp.LODMeshes.size();
+        LODMeshType LODToDraw = LODMeshType::Default;
+        if (dist < 8 || LODArraySize == 0)
+            LODToDraw = LODMeshType::Default;
+        else if (dist < 10 && LODArraySize >= 1)
+            LODToDraw = LODMeshType::LOD1;
+        else if (dist < 12 && LODArraySize >= 2)
+            LODToDraw = LODMeshType::LOD2;
+		else if (dist < 120 && LODArraySize >= 3)
+			LODToDraw = LODMeshType::LOD3;
+        else
+            LODToDraw = (LODMeshType)(LODArraySize);
+
+		if (LODToDraw == LODMeshType::Default)
+		{
+			auto& transformComp = transformManager->getComponent(meshComp.entityID);
+
+			glBindVertexArray(meshComp.m_VAO);
+			glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
+			glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+		}
+        else
+        {
+			for (auto meshToDrawn : meshComp.LODMeshes)
+			{
+				if (meshToDrawn.LODType == LODToDraw)
+				{
+					auto& transformComp = transformManager->getComponent(meshToDrawn.entityID);
+
+					glBindVertexArray(meshToDrawn.m_VAO);
+					glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
+					glDrawElements(GL_TRIANGLES, meshToDrawn.m_indices.size(), GL_UNSIGNED_INT, 0);
+					glBindVertexArray(0);
+
+                    break;
+				}
+			}
+
+        }
     }
 }
 
