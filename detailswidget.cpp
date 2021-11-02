@@ -24,7 +24,7 @@ void DetailsWidget::init(Factory *factory, int index)
     mfactory = factory;
     inSceneArrayIndex = index;
     readPosition();
-    //readRotation();
+    readRotation();
     //readScale();
     clearFocus();
 }
@@ -39,7 +39,10 @@ void DetailsWidget::readPosition()
 
 void DetailsWidget::readRotation()
 {
-    // rotation = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.
+     //rotation = (0,0,0);
+     ui->DoubleSpinBoxXRotation->setValue(rotation.x);
+     ui->DoubleSpinBoxYRotation->setValue(rotation.y);
+     ui->DoubleSpinBoxZRotation->setValue(rotation.z);
 }
 
 void DetailsWidget::readScale()
@@ -50,7 +53,7 @@ void DetailsWidget::readScale()
 void DetailsWidget::setPosition()
 {
         mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
-        mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
+        //mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)
@@ -76,19 +79,22 @@ void DetailsWidget::on_DoubleSpinBoxZPosition_valueChanged(double arg1)
 
 void DetailsWidget::on_DoubleSpinBoxXRotation_valueChanged(double arg1)
 {
-
+    rotation.x = ui->DoubleSpinBoxXRotation->value();
+    mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.rotateX(rotation.x);
 }
 
 
 void DetailsWidget::on_DoubleSpinBoxYRotation_valueChanged(double arg1)
 {
-
+    rotation.y = ui->DoubleSpinBoxYRotation->value();
+    rotation.rotateY(rotation.y);
 }
 
 
 void DetailsWidget::on_DoubleSpinBoxZRotation_valueChanged(double arg1)
 {
-
+    rotation.z = ui->DoubleSpinBoxZRotation->value();
+    rotation.rotateZ(rotation.z);
 }
 
 
