@@ -46,7 +46,6 @@ private slots:
 
     void on_actionAdd_XYZ_triggered();
 
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     void init();

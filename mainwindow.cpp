@@ -141,7 +141,9 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 
     //qDebug() << "DATA FOR ITEM " << item->data(currentIndex);
-    if(clicked == true)
+
+
+    if(clicked)
     {
         item->setSelected(true);
         mTransformWidget = new transformWidget();
@@ -152,7 +154,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 
         //qDebug() << "selected item " << mCurrentSelectedItem->
-
+        if(!mCoreEngine->isPlaying)
         ui->verticalLayout_2->addWidget(mTransformWidget);
         clicked = false;
     }
@@ -166,6 +168,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
         delete mTransformWidget;
         clicked = true;
     }
+
 
 
 }
@@ -204,20 +207,4 @@ void MainWindow::on_actionAdd_XYZ_triggered()
     }
 }
 
-void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
-{
-//    if(!item)
-//    {
-//        mCurrentTreeItem = nullptr;
-//        return;
-//    }
-    mCurrentTreeItem = item;
-    item->setSelected(true);
-    ui->treeWidget->scrollToItem(mCurrentTreeItem);
-    //currentIndex = item->parent()->indexOfChild(item);
 
-    mTransformWidget = new transformWidget();
-    //mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
-     ui->verticalLayout_2->addWidget(mTransformWidget);
-
-}

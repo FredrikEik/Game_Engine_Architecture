@@ -28,8 +28,10 @@ void transformWidget::init(MainWindow * mainwindow, RenderSystem *rendersystem, 
 
 void transformWidget::on_rotX_valueChanged(double arg1)
 {
+    //Helt klart en dårlig måte å gjøre dette på, men for mitt lille spill går det greit. prøver finne en bedre løsning
 
-   ui->rotX->setValue(arg1);
+  // ui->rotX->setValue(arg1);
+
    if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
        mCoreEngine->player->mTransform->mMatrix.rotateZ(arg1);
    if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->enemy->objName)
@@ -43,7 +45,7 @@ void transformWidget::on_rotX_valueChanged(double arg1)
 
 void transformWidget::on_rotY_valueChanged(double arg1)
 {
-    ui->rotY->setValue(arg1);
+   // ui->rotY->setValue(arg1);
 
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
         mCoreEngine->player->mTransform->mMatrix.rotateY(arg1);
@@ -59,7 +61,7 @@ void transformWidget::on_rotY_valueChanged(double arg1)
 
 void transformWidget::on_rotZ_valueChanged(double arg1)
 {
-    ui->rotZ->setValue(arg1);
+   // ui->rotZ->setValue(arg1);
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->player->objName)
         mCoreEngine->player->mTransform->mMatrix.rotateX(arg1);
     if(mMainWindow->mCurrentSelectedItem->text() == mCoreEngine->enemy->objName)
