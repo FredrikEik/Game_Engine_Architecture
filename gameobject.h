@@ -26,11 +26,12 @@ public:
 
     void setMeshComponent(MeshComponent* newMeshComp){MeshComp = newMeshComp;}
 
-private:
     MeshComponent* MeshComp;
     MaterialComponent* MaterialComp;
     TransformComponent* TransformComp;
     CollisionComponent* CollisionComp;
+
+private:
 };
 
 #endif // GAMEOBJECT_H

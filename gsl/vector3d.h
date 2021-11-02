@@ -53,6 +53,8 @@ public:
     GLfloat getZ() const;
     void setZ(const GLfloat &value);
 
+    void axisAngleRotation(float angle, Vector3D axis);
+
     GLfloat *xP();
     GLfloat *yP();
     GLfloat *zP();

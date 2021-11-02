@@ -156,13 +156,16 @@ void RenderWindow::init()
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
-{
+{ 
     //Keyboard / mouse input
     handleInput();
 
     mCurrentCamera->update();
 
     mTimeStart.restart(); //restart FPS clock
+    mVerticesDrawn = 0;     //reset vertex counter
+    mObjectsDrawn = 0;      //reset object counter
+
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
@@ -170,7 +173,171 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //Draws the objects
+
+
+        //Drawing forward vector of gameCam
+/*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+        MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( forwardVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+
+        //Drawing FOV vector of gameCam on right side
+        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+        MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
+                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+        glBindVertexArray( frustumCullRightVector.mVAO[0] );
+        temp.setToIdentity();
+        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+        */
+
+        //Draws the objects
+        /*int cullSafe = mIsPlaying ? -1 : 1;      //cullSafe editor objects - always placed in start of array
+        int startObject = mIsPlaying ? 2 : 0;    //avoid editor objects when playing
+        for(int i{startObject}; i < mGameObjects.size(); i++)
+        {*/
+            /************** LOD and Frustum culling stuff ***********************/
+            //Do this early to avoid unnecessary work if mesh is not to be drawn
+            /*gsl::Vector3D cameraPos = mEditorCamera->mPosition;
+            gsl::Vector3D gobPos = mGameObjects[i]->TransformComp->mMatrix.getPosition();
+
+            if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
+            {
+                //if frustum cull is true - object is outside of frustum == don't draw
+                if(frustumCulling(i))
+                    continue;
+            }
+
+
+            //First object - xyz
+            //what shader to use
+            //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+            int shaderIndex = mGameObjects[i]->MaterialComp->mShaderProgram;
+            ShaderHandler *tempShader = mResourceManager->mShaders[shaderIndex];
+            glUseProgram(tempShader->mProgram);
+
+            //This block sets up the uniforms for the shader used in the material
+            //Also sets up texture if needed.
+            int viewMatrix{-1};
+            int projectionMatrix{-1};
+            int modelMatrix{-1};
+
+            viewMatrix = tempShader->vMatrixUniform;
+            projectionMatrix = tempShader->pMatrixUniform;
+            modelMatrix = tempShader->mMatrixUniform;
+
+            if(tempShader->mTextureUniform > -1)
+            {
+                //Now mMaterial component holds texture slot directly - probably should be changed
+                glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->MaterialComp->mTextureUnit);
+            }
+
+            //send data to shader
+            if(mIsPlaying) {
+                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
+            }
+            else {
+                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+            }
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->TransformComp->mMatrix.constData());
+
+            //draw the object
+            //Quick hack*** LOD test:
+            if(mGameObjects[i]->MeshComp->mVertexCount[1] > 0) //mesh has LODs
+            {
+                gsl::Vector3D distanceVector = gobPos - cameraPos;
+                //LOD calculation
+                float length = distanceVector.length();
+
+                if (length < 5)
+                {
+                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[0] );
+                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[0]);
+                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[0];
+                    mObjectsDrawn++;
+                }
+                else if(length < 20)
+                {
+                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[1] );
+                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[1]);
+                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[1];
+                    mObjectsDrawn++;
+                }
+                else
+                {
+                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[2] );
+                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[2]);
+                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[2];
+                    mObjectsDrawn++;
+                }
+            }
+            else    //no LOD exists
+            {
+                glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[0] );
+                glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[0]);
+                mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[0];
+                mObjectsDrawn++;
+            }*/
+
+            //Quick hack test to check if linebox/circle works:
+            /*if(i == mIndexToPickedObject)
+            {
+                tempShader = mResourceManager->mShaders[0];
+    //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+                MeshData circle = CoreEngine::getInstance()->mResourceManager->
+                        makeCircleSphere(mGameObjects[i]->MeshComp->mColliderRadius, false);
+                //Hackety hack - have to get rid of scale in the objects model matrix
+                gsl::Matrix4x4 temp(true);
+                temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
+                glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+    //            glBindVertexArray( lineBox.mVAO[0] );
+    //            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+                glBindVertexArray( circle.mVAO[0] );
+                glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            }
+            glBindVertexArray(0);
+        }*/
+
+        //Quick hack test to check if frustum line mesh is OK
+        /*if(true)
+        {
+            ShaderHandler* tempShader = mResourceManager->mShaders[0];
+            glUseProgram(tempShader->mProgram);
+            MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
+            gsl::Matrix4x4 temp(true);
+            temp.translate(mGameCamera->mPosition);
+            temp.rotateY(-mGameCamera->mYaw);
+            temp.rotateX(mGameCamera->mPitch);
+
+            glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glBindVertexArray( frustum.mVAO[0] );
+            glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);*/
+
+            //Drawing forward vector of gameCam
+    /*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+            MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
+                    makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+            glBindVertexArray( forwardVector.mVAO[0] );
+            temp.setToIdentity();
+            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+
+            //Drawing FOV vector of gameCam on right side
+            tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+            MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
+                    makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+            glBindVertexArray( frustumCullRightVector.mVAO[0] );
+            temp.setToIdentity();
+            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+            glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+
+        }*/
+
     //This should be in a loop!
 //    {
 //        //First object - xyz
