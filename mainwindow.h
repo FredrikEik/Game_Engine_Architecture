@@ -55,7 +55,7 @@ private:
     class transformWidget *mTransformWidget{nullptr};
     bool clicked = true;
 
-    int currentIndex{-1};
+   // int currentIndex{-1};
     QString prevstring;
 
     QWidget *mRenderWindowContainer{nullptr};

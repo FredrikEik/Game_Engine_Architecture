@@ -20,7 +20,7 @@ public:
     explicit transformWidget(QWidget *parent = nullptr);
     ~transformWidget();
 
-    void init(MainWindow * mainwindow, RenderSystem *rendersystem, CoreEngine* coreengine, int index);
+    void init(MainWindow * mainwindow, RenderSystem *rendersystem, CoreEngine* coreengine);
 
 
 
@@ -41,12 +41,14 @@ private:
     Ui::transformWidget *ui;
     MainWindow *mMainWindow{nullptr};
 
-            int objectsInList{-1};
+            //int objectsInList{-1};
 
     RenderSystem* mRenderSystem{nullptr};
 
     CoreEngine * mCoreEngine{nullptr};
-    double translatex{0}, translatey{0}, translatez{0};
+    float translatex{0};
+    float translatey{0};
+    float translatez{0};
 };
 
 #endif // TRANSFORMWIDGET_H

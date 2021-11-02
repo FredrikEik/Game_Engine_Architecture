@@ -145,7 +145,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     {
         item->setSelected(true);
         mTransformWidget = new transformWidget();
-        mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
+        mTransformWidget->init(this, mRenderSystem, mCoreEngine);
         item = ui->listWidget->currentItem();
         item->setForeground(Qt::green);
         mCurrentSelectedItem = item;
@@ -214,10 +214,10 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     mCurrentTreeItem = item;
     item->setSelected(true);
     ui->treeWidget->scrollToItem(mCurrentTreeItem);
-    currentIndex = item->parent()->indexOfChild(item);
+    //currentIndex = item->parent()->indexOfChild(item);
 
     mTransformWidget = new transformWidget();
-    mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
+    //mTransformWidget->init(this, mRenderSystem, mCoreEngine, currentIndex);
      ui->verticalLayout_2->addWidget(mTransformWidget);
 
 }
