@@ -13,7 +13,9 @@
 #include "logger.h"
 
 TextureHandler::TextureHandler()
-{}
+{
+    mLogger = Logger::getInstance();
+}
 
 int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
 {
@@ -25,7 +27,7 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
     auto result = mTextureMap.find(filename);
     //if already made
     if (result != mTextureMap.end()) {        //found!!!
-        qDebug() << filename.c_str() << "made already";
+        mLogger->logText(filename + "made already", LColor::DAMNERROR);
         textureIndex = result->second;
     }
     else {
@@ -69,7 +71,7 @@ int TextureHandler::makeDefault()
 
     glGenTextures(1, &temp.mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, temp.mGLTextureID);
-    qDebug() << "Texture default: id = " << temp.mGLTextureID;
+    mLogger->logText("Texture ..Default texture..: id = " + std::to_string(temp.mGLTextureID));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, temp.mBitmap);
@@ -93,7 +95,7 @@ int TextureHandler::readBitmap(const std::string &filename)
         file.read((char *) &bmFileHeader, 14);
         if (bmFileHeader.bfType != 19778)   // 19778 equals "BM"
         {
-            qDebug() << "ERROR:" << QString(fileWithPath.c_str()) << "is not a bitmap file!";
+            mLogger->logText("ERROR: " + fileWithPath + " is not a bitmap file!", LColor::DAMNERROR);
             return -1;
         }
 
@@ -107,11 +109,11 @@ int TextureHandler::readBitmap(const std::string &filename)
         temp.mBitmap = new unsigned char[temp.mColumns * temp.mRows * temp.mBytesPrPixel];
         file.read((char *) temp.mBitmap, temp.mColumns * temp.mRows * temp.mBytesPrPixel);
         file.close();
-        qDebug() << "Texture:" << QString(fileWithPath.c_str()) <<"read from file";
+        mLogger->logText("  Texture: " + fileWithPath +" read from file");
     }
     else
     {
-        qDebug() << "ERROR: Can not read " << QString(fileWithPath.c_str());
+        mLogger->logText("ERROR: Can not read " + fileWithPath, LColor::DAMNERROR);
     }
 
     setTexture(temp);
@@ -124,9 +126,10 @@ void TextureHandler::setTexture(Texture &textureIn)
 {
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, textureIn.mGLTextureID);
-    qDebug() << "Texture" << "successfully read | id = " << textureIn.mGLTextureID <<
-                "| bytes pr pixel:" << textureIn.mBytesPrPixel << "| using alpha:" << textureIn.mAlphaUsed <<
-                "| w:" << textureIn.mColumns << "|h:" << textureIn.mRows;
+    mLogger->logText("  Texture successfully read | id = " + std::to_string(textureIn.mGLTextureID) +
+                " | bytes pr pixel: " + std::to_string(textureIn.mBytesPrPixel) + "| using alpha: " +
+                     std::to_string(textureIn.mAlphaUsed) +
+                " | w:" + std::to_string(textureIn.mColumns) + " |h: " +  std::to_string(textureIn.mRows));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

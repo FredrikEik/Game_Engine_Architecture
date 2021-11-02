@@ -1,5 +1,4 @@
 #include "coreengine.h"
-
 #include "gameobjectmanager.h"
 #include "soundsystem.h"
 #include "gameobject.h"
@@ -68,9 +67,7 @@ void CoreEngine::setUpScene()
     //dog triangle
     temp = mGameObjectManager->addObject("triangle");
     temp->mName = "DogTriangle";
-    //temp->mMaterial = mGameObjectManager->getMaterial("Texture");
-    temp->mMaterial->mShaderProgram = 1;
-    temp->mMaterial->mTextureUnit = 1; //mResourceManager->getTextureID()->;
+    temp->mMaterial = mGameObjectManager->getMaterial("Texture");
 
     temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to moving triangle:
@@ -163,11 +160,10 @@ void CoreEngine::gameLoop()
     handleInput();
 
     mEditorCamera->update();
-    SoundSystem::getInstance()->update(mRenderSystem);
+    //SoundSystem::getInstance()->update(mRenderSystem);
 
     //Update PhysicsObjects in scene
     PhysicsHandler ph;
     ph.movePhysicsObject();
-
     mRenderSystem->render();
 }

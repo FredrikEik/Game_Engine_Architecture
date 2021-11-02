@@ -7,11 +7,11 @@
 
 struct MeshData
 {
-    GLuint mVAO[3]{0};
-    GLuint mVBO[3]{0};
-    GLuint mEAB[3]{0};
-    GLint mVertexCount[3]{-1};
-    GLint mIndexCount[3]{-1};
+    GLuint mVAO[3]{};
+    GLuint mVBO[3]{};
+    GLuint mEAB[3]{};
+    GLint mVertexCount[3]{-1, -1, -1};
+    GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];
@@ -32,6 +32,8 @@ public:
 
     MeshData makeCircleSphere(float radius = 1, bool rgbColor = true);
 
+    MeshData makeFrustum(const struct Frustum &frustumIn);
+
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
 
@@ -44,6 +46,8 @@ private:
 
     //initalizes the mesh with OpenGL buffers - VAO, VBO, EAB
     void initMesh(MeshData &currentMesh, int lodLevel);
+
+    class Logger* mLogger{nullptr};
 };
 
 #endif // MESHHANDLER_H

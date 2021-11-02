@@ -85,15 +85,41 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
+    //read what is set in the GUI
+    mPositionStep = (float)ui->positionStep->value();
+    mRotationStep = (float)ui->rotationStep->value();
+    mScaleStep = (float)ui->scaleStep->value();
 }
 
 void MainWindow::updateHierarchy(const std::vector<GameObject *> &GameObjectData)
 {
-    ui->GameObjectList->clear();
+    //clear all current items
+    ui->twSceneOutliner->clear();
 
-    for (auto god : GameObjectData)
+    // Create the new tree root - since I use TreeWidget not listWidget
+    mSceneOutlinerRoot = new QTreeWidgetItem(ui->twSceneOutliner);
+    mSceneOutlinerRoot->setText(0,  "Scene");//QString::fromStdString(mRenderWindow->mScene1->mSceneName));
+    ui->twSceneOutliner->addTopLevelItem(mSceneOutlinerRoot);
+    ui->twSceneOutliner->expandAll();
+
+    for(auto gob : GameObjectData)
     {
-        ui->GameObjectList->addItem(QString::fromStdString(god->mName));
+        QTreeWidgetItem* item = new QTreeWidgetItem(mSceneOutlinerRoot);
+        item->setText(0, QString::fromStdString(gob->mName));
+//        item->setFlags(item->flags() | Qt::ItemIsEditable);
+    }
+}
+
+void MainWindow::selectObjetByIndex(int indexIn)
+{
+    if(mSceneOutlinerRoot)
+    {
+        if(mCurrentEditItem)
+            mCurrentEditItem->setSelected(false);
+        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
+        mCurrentEditItem->setSelected(true);
+        on_twSceneOutliner_itemClicked(mCurrentEditItem, 0);
     }
 }
 
@@ -108,23 +134,159 @@ void MainWindow::on_actionAdd_Suzanne_triggered()
     GameObject *temp = GameObjectManager::getInstance().addObject("suzanne.obj");
     mRenderSystem->mGameObjects.push_back(temp);
 }
+void MainWindow::on_actionToggle_backside_culling_toggled(bool checked)
+{
+    mRenderSystem->toggleBacksideCulling(checked);
+}
 
-//Example of a slot called from the button on the top of the program.
-void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
+void MainWindow::on_actionFrustum_Culling_triggered(bool checked)
+{
+    mRenderSystem->mUseFrustumCulling = checked;
+}
+
+void MainWindow::on_actionCull_With_EditorCam_toggled(bool checked)
+{
+    mRenderSystem->mGameCamAsFrustumCulling = !checked;
+}
+
+//void MainWindow::on_pb_togglefrustumcam_toggled(bool checked)
+//{
+//    mRenderSystem->mGameCamAsFrustumCulling = checked;
+//    (checked) ? ui->pb_togglefrustumcam->setText("Cull with GameCam") : ui->pb_togglefrustumcam->setText("Cull with EditorCam");
+//}
+
+void MainWindow::on_actionBasic_Editor_Controls_triggered()
+{
+    QMessageBox::about(this, "Basic Controls",
+                       "Move and rotate camera by holding down right mouse button,"
+                       "\nand move with WASD and Q = down, E = up."
+                       "\nUse ScrollWheel to adjust speed." // and Left Shift
+                       "\nUse F to move camera to selected object.");
+}
+
+void MainWindow::on_actionWireframe_triggered(bool checked)
 {
     mRenderSystem->toggleWireframe(checked);
     if(checked)
-        ui->pb_toggleWireframe->setText("Show Solid");
+        ui->actionWireframe->setText("Show Solid");
     else
-        ui->pb_toggleWireframe->setText("Show Wireframe");
+        ui->actionWireframe->setText("Show Wireframe");
 }
 
-void MainWindow::on_pb_togglePlay_toggled(bool checked)
+void MainWindow::on_actionPlay_triggered(bool checked)
 {
     mCoreEngine->togglePlayMode(checked);
 
     if(checked)
-        ui->pb_togglePlay->setText("Stop (R)");
+        ui->actionPlay->setText("Stop");
     else
-        ui->pb_togglePlay->setText("Play (R)");
+        ui->actionPlay->setText("Play");
+}
+
+void MainWindow::on_actionKudos_to_triggered()
+{
+    QMessageBox::about(this, "Kudos to:",
+                       "Some icons in this app are from https://icons8.com");
+}
+
+void MainWindow::on_actionAxis_triggered(bool checked)
+{
+    //Toggle axis on/off
+}
+
+void MainWindow::on_actionGrid_triggered(bool checked)
+{
+    //Toggle grid on/off
+}
+
+void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int column)
+{
+    clearLayout(ui->blDetailsContainer); //delete all widgets in the details panel
+
+    //Top node selected or no selection:
+    if (!item || item->text(0) == "Scene") //mRenderSystem->mScene1->mSceneName.c_str())
+    {
+        mRenderSystem->cancelPickedObject();
+        ui->gobNameEdit->setText("no selection");
+        mCurrentEditItem = nullptr;
+        return;
+    }
+
+    mCurrentEditItem = item;
+    ui->gobNameEdit->setText(mCurrentEditItem->text(0));
+    item->setSelected(true);
+
+    //scroll to selected item
+    ui->twSceneOutliner->scrollToItem(mCurrentEditItem);
+
+    //getting the index of the selected item from the TreeWidget
+    // = parent of this selected item
+    mCurrentEditItemIndex = item->parent()->indexOfChild(item);
+//    qDebug() <<"Index" << mCurrentEditItemIndex;
+
+    //tell RenderSystem to highlight selected object
+    mRenderSystem->setPickedObject(mCurrentEditItemIndex);
+
+    //Transform widget:
+    mTransformWidget = new WidgetTransform(this, mPositionStep, mRotationStep, mScaleStep);
+    mTransformWidget->setObjectName("TransformWidget"); //not sure if this is necessary
+    mTransformWidget->init(mRenderSystem, mCurrentEditItemIndex);
+    ui->blDetailsContainer->addWidget(mTransformWidget);    //add to details pane
+
+    //Material widget:
+    mMaterialWidget = new WidgetMaterial(this);
+    mMaterialWidget->setObjectName("MaterialWidget");
+    ui->blDetailsContainer->addWidget(mMaterialWidget);    //add to details pane
+//    mMaterialWidget->indexInSceneArray = mCurrentEditItemIndex;
+//    mMaterialWidget->mCurrentScene = mRenderWindow->mScene1;
+    mMaterialWidget->readMaterialData();
+}
+
+void MainWindow::clearLayout(QLayout *layout) {
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))) {
+        if (item->widget()) {   //probably not neccesary
+            delete item->widget();
+        }
+        delete item; //probably not neccesary - Qt should do it automatically
+    }
+//    mTransformWidget = nullptr;
+    ui->twSceneOutliner->clearSelection();
+}
+
+void MainWindow::on_positionStep_valueChanged(double arg1)
+{
+    mPositionStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->setPositionStep(arg1);
+    }
+}
+
+void MainWindow::on_rotationStep_valueChanged(double arg1)
+{
+    mRotationStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->setRotationStep(arg1);
+    }
+}
+
+void MainWindow::on_scaleStep_valueChanged(double arg1)
+{
+    mScaleStep = arg1;
+    if(mTransformWidget)
+    {
+        mTransformWidget->setScaleStep(arg1);
+    }
+}
+
+void MainWindow::on_actionAxis_toggled(bool arg1)
+{
+    mRenderSystem->mDrawAxis = arg1;
+}
+
+void MainWindow::on_actionGrid_toggled(bool arg1)
+{
+    mRenderSystem->mDrawGrid = arg1;
 }

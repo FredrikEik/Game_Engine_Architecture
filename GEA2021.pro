@@ -7,7 +7,7 @@ PRECOMPILED_HEADER = pch.h
 
 TARGET      = GEA2021
 
-
+RC_ICONS    = INNgine.ico
 
 
 DEFINES     += _CRT_SECURE_NO_WARNINGS
@@ -66,7 +66,9 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
-    vertex.cpp
+    vertex.cpp \
+    widgetmaterial.cpp \
+    widgettransform.cpp
 
 HEADERS += \
     ResourceManager/meshhandler.h \
@@ -93,13 +95,21 @@ HEADERS += \
     mainwindow.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    vertex.h
+    vertex.h \
+    widgetmaterial.h \
+    widgettransform.h
 
 FORMS += \
     mainwindow.ui
+    widgetmaterial.ui
+    widgettransform.ui
 
 DISTFILES += \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert
+    Shaders/plainvertex.vert \
+    Assets/materials.json
+
+RESOURCES += \
+    AppIconResources.qrc

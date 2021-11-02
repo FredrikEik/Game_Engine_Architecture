@@ -1,21 +1,27 @@
 ﻿#include "ResourceManager/gameobjectmanager.h"
 
 #include <sstream>
+#include <fstream>
+#include <vector>
 #include <QString>
-#include <QList>
 #include <QDir>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "components.h"
+#include "vector3d.h"
+#include "vector2d.h"
+#include "vertex.h"
 #include "gameobject.h"
+#include "constants.h"
 #include "soundsystem.h"
 #include "soundhandler.h"
 #include "meshhandler.h"
 #include "texturehandler.h"
 #include "shaderhandler.h"
-#include "mainwindow.h"
+#include "logger.h"
 
 
 ////Forward declaration
@@ -46,20 +52,18 @@ GameObject *GameObjectManager::addObject(std::string meshName)
     //Add the standard components to GameObject
     MeshComponent* currentMesh = new MeshComponent();
 
-    //run through all the potential lod levels
-    for(int i{0}; i<3; i++)
-    {
-        currentMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[1];
-        currentMesh->mVertexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[1];
-        currentMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[1];
-    }
+    //copy all potential LOD levels:
+    //std::copy faster than for loop and safer and ca as fast as memcpy
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVAO, mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVertexCount, mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mIndexCount, mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+
     currentMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
     currentMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     currentGameObject->mMesh = currentMesh;
 
-    currentGameObject->mMaterial = new MaterialComponent();
-    currentGameObject->mTransform = new TransformComponent;
-
+    currentGameObject->mMaterial = getMaterial("Default");
+    currentGameObject->mTransform = new TransformComponent();
     return currentGameObject;
 }
 
@@ -67,7 +71,7 @@ bool GameObjectManager::addComponent(std::string assetName, GameObject *ownerObj
 {
     if(!ownerObject)
     {
-        qDebug() << "Trying to add Component to non-existing GameObject";
+        mLogger->logText("Trying to add Component to non-existing GameObject", LColor::DAMNERROR);
         return false;
     }
 
@@ -88,7 +92,6 @@ bool GameObjectManager::addComponent(std::string assetName, GameObject *ownerObj
             ownerObject->mSoundComponent = makeSoundComponent(assetName);
             break;
     }
-
     return true;
 }
 
@@ -111,18 +114,20 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
     int soundIndex{-1};
     WaveRawData *waveData{nullptr};
 
+    //check if asset is made
     auto result = mSoundBufferMap.find(assetName);
 
+    //If already made
     if (result != mSoundBufferMap.end())
     {
         soundIndex = result->second;
     }
-    else
+    else //Not made, make new
     {
         waveData = SoundHandler::loadWave(assetName);
         if (!waveData)
         {
-            qDebug() << "Error loading wave file!";
+            mLogger->logText("Error loading wave file!", LColor::DAMNERROR);
             return nullptr;
         }
         mWaveBuffers.emplace_back(*waveData);
@@ -140,8 +145,32 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
 
 void GameObjectManager::setUpAllTextures()
 {
+    //Making default texture
     mTextureHandler->makeTexture();
-    mTextureHandler->makeTexture("Hund.bmp");
+
+    //Regular .bmp textures read from file
+    QDir tempDir((gsl::TextureFilePath).c_str());
+    if(tempDir.exists())
+    {
+        QStringList filters;
+        filters << "*.bmp";
+        tempDir.setNameFilters(filters);
+        mLogger->logText( std::to_string(tempDir.entryInfoList().size()) +
+                          " - .bmp textures will be read from " + gsl::TextureFilePath);
+
+
+        //read all regular textures
+        for(QFileInfo &var : tempDir.entryInfoList())
+        {
+            mLogger->logText("Texture name: " + var.fileName().toStdString());
+            mTextureHandler->makeTexture(var.fileName().toStdString());
+        }
+    }
+    else
+    {
+        mLogger->logText("*** ERROR reading textures *** : Asset-folder " +
+                         gsl::TextureFilePath + " does not exist!", LColor::DAMNERROR);
+    }
 }
 
 void GameObjectManager::setUpAllSounds()
@@ -329,5 +358,20 @@ MeshData GameObjectManager::makeLineBox(std::string meshName)
 MeshData GameObjectManager::makeCircleSphere(float radius, bool rgbColor)
 {
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
+}
+
+MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
+{
+    int index{-1};
+    auto result = mMaterialMap.find(materialName);
+    if (result != mMaterialMap.end()) {        //found!!!
+        index = result->second;
+        return &mMaterials[index];
+    }
+    else
+    {
+        mLogger->logText("Material \"" + materialName + "\" not found. Using default.", LColor::WARNING);
+        return &mMaterials[0];
+    }
 }
 

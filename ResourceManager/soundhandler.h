@@ -34,6 +34,7 @@ struct WaveRawData
 class SoundHandler
 {
 public:
+    SoundHandler();
     /// Loads a given wave file, fills WaveRawData structure with wave data.
     /**
         \param File path relative to execution directory.

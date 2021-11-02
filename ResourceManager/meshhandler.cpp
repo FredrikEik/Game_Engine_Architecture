@@ -13,6 +13,7 @@ MeshHandler::MeshHandler()
     //This is a hack - to make sure my MeshComponens are not moved for now
     //Please fix
     mMeshes.reserve(gsl::MAX_MESHCOMPONENTS);
+    mLogger = Logger::getInstance();    //Have to do this, else program will crash
 }
 
 int MeshHandler::makeMesh(std::string meshName)
@@ -36,6 +37,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeAxis();
         if (meshName.find("triangle") != std::string::npos)
             meshIndex = makeTriangle();
+//        if (meshName.find("editorgrid") != std::string::npos)
+//            meshIndex = makeEditorGrid();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -62,7 +65,7 @@ int MeshHandler::readObj(std::string filename)
         if (lod == 0)     //original mesh - not reduced size
             tempName = filename;
         else
-            tempName = filename + "_L0" + std::to_string(lod);
+            tempName = filename + gsl::LODLevelPrefix + std::to_string(lod);
 
         tempName = gsl::MeshFilePath + tempName + ".obj";
         qDebug() << "Reading " << tempName.c_str();
@@ -70,8 +73,8 @@ int MeshHandler::readObj(std::string filename)
         fileIn.open (tempName, std::ifstream::in);
         if(!fileIn)
         {
-            qDebug() << "ERROR: Could not open file for reading: " << QString::fromStdString(filename);
-            qDebug() << "****** using arbitrary mesh as replacement!";
+            mLogger->logText("ERROR: Could not open file for reading: " + filename, LColor::DAMNERROR);
+            mLogger->logText("****** using arbitrary mesh as replacement!", LColor::DAMNERROR);
             return makeTriangle();    //returns triangle instead
         }
         //One line at a time-variable
@@ -210,12 +213,7 @@ int MeshHandler::readObj(std::string filename)
         initMesh(temp, lod);
     }
 
-    //calculate ca radius for collider - TODO: this is not correct:
-    float a = temp.mLowLeftBackCorner.length();
-    float b = temp.mUpRightFrontCorner.length();
-    temp.mColliderRadius = (a>b) ? a : b;
-
-    qDebug() << QString::fromStdString(filename) << "successfully loaded";
+    mLogger->logText(filename + " successfully loaded");
 
     return mMeshes.size()-1;    //returns index to last object
 }
@@ -234,6 +232,7 @@ int MeshHandler::makeAxis()
     temp.mVertices[0].push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
 
     temp.mDrawType = GL_LINES;
+    temp.mColliderRadius = 1.f; //Axis does not have a collider...
 
     //only LOD level 0
     initMesh(temp, 0);
@@ -251,6 +250,10 @@ int MeshHandler::makeTriangle()
     temp.mVertices[0].push_back(Vertex{0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.f}); // Top
 
     temp.mDrawType = GL_TRIANGLES;
+
+    //The 0, 0, 0 point of this triangle is not in center of visual triangle
+    //so this is a little bigger than it needs to
+    temp.mColliderRadius = 0.7071068f;  //sqrt(0.5);
 
     //only LOD level 0
     initMesh(temp, 0);

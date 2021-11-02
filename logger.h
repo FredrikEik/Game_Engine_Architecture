@@ -1,6 +1,8 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <string>
+
 enum class LColor
 {
     LOG = 0,
@@ -17,6 +19,7 @@ public:
     void setMainWindow(class MainWindow *mainWindowIn);
 
     void logText(std::string input, LColor colorIn = LColor::LOG);
+
 private:
     Logger();
     void operator=(Logger&){};

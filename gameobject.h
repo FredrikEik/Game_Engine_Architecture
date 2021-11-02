@@ -1,8 +1,7 @@
 ﻿#ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-class GameObject : public QOpenGLFunctions_4_1_Core
-{
+class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
     std::string mName{"DefaultName"};
 
@@ -13,4 +12,3 @@ public:
     PhysicsComponent* mPhysicsComponent{nullptr};
 };
 #endif // GAMEOBJECT_H
-

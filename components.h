@@ -13,9 +13,9 @@ struct TransformComponent
 
 struct MeshComponent
 {
-    GLuint mVAO[3]{0};
-    GLint mVertexCount[3]{-1};
-    GLint mIndexCount[3]{-1};
+    GLuint mVAO[3]{};
+    GLint mVertexCount[3]{-1, -1, -1};
+    GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f};
 };
@@ -30,9 +30,7 @@ struct MaterialComponent
 struct SoundListenerComponent
 {
     gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
-    //should be fetced from other component?
     gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
-    //should be fetced from other component?
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};
 };
 

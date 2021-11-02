@@ -1,6 +1,7 @@
 ﻿#ifndef GAMEOBJECTMANAGER_H
 #define GAMEOBJECTMANAGER_H
 
+
 #include <string>
 #include <map>
 #include <vector>
@@ -16,7 +17,7 @@ class TextureHandler;
 struct MeshData;
 class ShaderHandler;
 
-class GameObjectManager : public QOpenGLFunctions_4_1_Core
+class GameObjectManager //: public QOpenGLFunctions_4_1_Core
 {
 public:
     static GameObjectManager& getInstance();
@@ -30,6 +31,7 @@ public:
 
     void setUpAllMaterials();
     void setUpAllShaders();
+
 
     MeshData makeLineBox(std::string MeshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
@@ -54,6 +56,7 @@ private:
     gsl::AssetType findAssetType(std::string assetName);
 
     SoundComponent* makeSoundComponent(std::string assetName);
+
 
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;

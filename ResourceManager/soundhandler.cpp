@@ -7,11 +7,17 @@
 #include "constants.h"
 #include "logger.h"
 
+SoundHandler::SoundHandler()
+{
+    //Hm - functions are static, so can not use this pointer...
+    //mLogger = Logger::getInstance();    //Have to do this, else program will crash
+}
+
 WaveRawData *SoundHandler::loadWave(std::string fileName)
 {
     WaveRawData* wavePtr{nullptr};
 
-    qDebug() << "Loading " << fileName.c_str() << " from disk";
+    Logger::getInstance()->logText("Loading " + fileName + " from disk");
     FILE* fp = NULL;
     fp = std::fopen((gsl::SoundFilePath + fileName).c_str(), "rb");
     if (fp == NULL)
@@ -99,17 +105,20 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
 
     std::fclose(fp);
 
-    qDebug() << "Loading of wav file complete!";
+    Logger::getInstance()->logText("Loading of" + fileName + " file complete!");
 
     if(!makeALBuffer(wavePtr))
+    {
         delete wavePtr;
+        wavePtr = nullptr;
+    }
 
     return wavePtr;
 }
 
 bool SoundHandler::makeALBuffer(WaveRawData *waveData)
 {
-    qDebug() << "Making ALBuffer";
+    std::string tempText(" Making ALBuffer |");
     alGetError();   //empty error buffer before we use it
     alGenBuffers(1, &waveData->mALBuffer);
     if(!checkALError("alGenBuffers"))
@@ -125,11 +134,11 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
             switch (waveData->channels){
                 case 1:
                     format = AL_FORMAT_MONO8;
-                    qDebug() << "Format: 8bit Mono";
+                    tempText += "Format: 8bit Mono";
                     break;
                 case 2:
                     format = AL_FORMAT_STEREO8;
-                    qDebug() << "Format: 8bit Stereo";
+                    tempText += "Format: 8bit Stereo";
                     break;
                 default: break;
             }
@@ -138,11 +147,11 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
             switch (waveData->channels){
                 case 1:
                     format = AL_FORMAT_MONO16;
-                    qDebug() << "Format: 16bit Mono";
+                    tempText += "Format: 16bit Mono";
                     break;
                 case 2:
                     format = AL_FORMAT_STEREO16;
-                    qDebug() << "Format: 16bit Stereo";
+                    tempText += "Format: 16bit Stereo";
                     break;
                 default: break;
             }
@@ -152,7 +161,9 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
 
     std::ostringstream i2s;
     i2s << waveData->dataSize;
-    qDebug() << "DataSize: " << i2s.str().c_str() << " bytes";
+    tempText += "DataSize: " + i2s.str() + " bytes";
+
+    Logger::getInstance()->logText(tempText);
 
     alGetError();
     alBufferData(waveData->mALBuffer, format, waveData->audioData, waveData->dataSize, frequency);
@@ -162,7 +173,7 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
 //    alSourcei(mSource, AL_BUFFER, waveData->mALBuffer);
 //    checkALError("alSourcei (loadWave)");
 
-    qDebug() << "Making ALBuffer complete!";
+    Logger::getInstance()->logText("  Making ALBuffer complete!");
 
     //Should we delete the raw data from RAM?
 //    if (waveData->audioData)
@@ -186,7 +197,7 @@ int SoundHandler::makeALSource(ALuint bufferIn)
 
 bool SoundHandler::endOnFileReadError(std::string errmsg)
 {
-    qDebug() << errmsg.c_str();
+    Logger::getInstance()->logText(errmsg, LColor::DAMNERROR);
     return false;
 }
 
@@ -197,19 +208,19 @@ bool SoundHandler::checkALError(std::string name)
     case AL_NO_ERROR:
         break;
     case AL_INVALID_NAME:
-        qDebug() << "OpenAL Error: " << name.c_str() << ": Invalid name!";
+        Logger::getInstance()->logText("OpenAL Error: " + name + ": Invalid name!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_ENUM:
-        qDebug() << "OpenAL Error: " << name.c_str() << ": Invalid enum!";
+        Logger::getInstance()->logText("OpenAL Error: " + name + ": Invalid enum!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_VALUE:
-        qDebug() << "OpenAL Error: " << name.c_str() << ": Invalid value!";
+        Logger::getInstance()->logText("OpenAL Error: " + name + ": Invalid value!", LColor::DAMNERROR);
         return false;
     case AL_INVALID_OPERATION:
-        qDebug() << "OpenAL Error: " << name.c_str() << ": Invalid operation!";
+        Logger::getInstance()->logText("OpenAL Error: " + name + ": Invalid operation!", LColor::DAMNERROR);
         return false;
     case AL_OUT_OF_MEMORY:
-        qDebug() << "OpenAL Error: " << name.c_str() << ": Out of memory!";
+        Logger::getInstance()->logText("OpenAL Error: " + name + ": Out of memory!", LColor::DAMNERROR);
         return false;
     }
 
