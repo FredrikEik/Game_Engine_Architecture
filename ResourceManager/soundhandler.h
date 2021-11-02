@@ -7,7 +7,6 @@
 #include <cstdio>
 #include "altypes.h"
 
-
 /// Structure to contain WAVE file data.
 struct WaveRawData
 {
@@ -34,6 +33,7 @@ struct WaveRawData
 class SoundHandler
 {
 public:
+
     SoundHandler();
     /// Loads a given wave file, fills WaveRawData structure with wave data.
     /**

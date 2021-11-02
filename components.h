@@ -1,11 +1,15 @@
 ﻿#ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-//#include "gameobject.h"
+// Components try to hold only runtime relevant data, and as small as possible
 
 struct TransformComponent
 {
-    TransformComponent() {mMatrix.identity();};
+    TransformComponent()
+    {
+        mMatrix.identity();
+        mScale.setAlltoSame(1.0f);
+    };
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D mScale;
     gsl::Vector3D mRotation;
@@ -17,7 +21,7 @@ struct MeshComponent
     GLint mVertexCount[3]{-1, -1, -1};
     GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
-    float mColliderRadius{0.f};
+    float mColliderRadius{0.f}; //Used for frustum culling, so relevant for rendering
 };
 
 struct MaterialComponent

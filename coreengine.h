@@ -38,6 +38,7 @@ public:
 
     MainWindow *mMainWindow{nullptr};
 
+    //Two separate cameras to be able to render the frustum, etc for the game camera while in editor modus
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
 

@@ -40,9 +40,9 @@ void Logger::logText(std::string input, LColor colorIn)
                 textColor = Qt::darkGray;
     }
 
-//    QTextCharFormat textformat;
-//    textformat = mMainWindow->ui->outputlog->currentCharFormat();
-//    textformat.setForeground(QBrush((textColor)));
-//    mMainWindow->ui->outputLog->setCurrentCharFormat(textformat);
-//    mMainWindow->ui->outputLog->appendPlainText(input.c_str());
+    QTextCharFormat textformat;
+    textformat = mMainWindow->ui->outputLog->currentCharFormat();
+    textformat.setForeground(QBrush((textColor)));
+    mMainWindow->ui->outputLog->setCurrentCharFormat(textformat);
+    mMainWindow->ui->outputLog->appendPlainText(input.c_str());
 }

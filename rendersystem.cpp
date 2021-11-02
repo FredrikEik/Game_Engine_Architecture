@@ -127,7 +127,6 @@ void RenderSystem::render()
     for(int i{startObject}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
-
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
@@ -423,7 +422,8 @@ bool RenderSystem::frustumCulling(int gobIndex)
     (mGameCamAsFrustumCulling) ? cullCamera = mGameCamera : cullCamera = mEditorCamera;
 
     //Vector from position of cam to object;
-    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition();
+    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition()
+            - cullCamera->mPosition;
 
     //radius of object sphere
     float gobRadius = mGameObjects[gobIndex]->mMesh->mColliderRadius;
@@ -451,7 +451,17 @@ bool RenderSystem::frustumCulling(int gobIndex)
         return true;
 
     //left plane:
-    tempDistance = frustum.mLeftPlane * vectorToObject;
+    tempDistance = frustum.mBottomPlane * vectorToObject;
+    if(tempDistance > (gobRadius + padding))
+        return true;
+
+    //near plane:
+    tempDistance = frustum.mTopPlane * vectorToObject;
+    if(tempDistance > (gobRadius + padding))
+        return true;
+
+    //far plane:
+    tempDistance = frustum.mTopPlane * vectorToObject;
     if(tempDistance > (gobRadius + padding))
         return true;
 
@@ -566,6 +576,10 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
     {
         input.E = true;
     }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = true;
+    }
     if(event->key() == Qt::Key_Z)
     {
     }
@@ -623,6 +637,10 @@ void RenderSystem::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_E)
     {
         input.E = false;
+    }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = false;
     }
     if(event->key() == Qt::Key_Z)
     {

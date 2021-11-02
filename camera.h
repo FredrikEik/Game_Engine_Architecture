@@ -4,10 +4,10 @@
 struct Frustum
 {
     //Used to make the projection matrix
-    float mFarPlaneDistance{100.0f};
-    float mNearPlaneDistance{0.1f};
-    float mFOVvertical{45.0f};
-    float mAspectRatio{16/9};
+    float mFarPlaneDistance{100.0f};    //used to make projection matrix
+    float mNearPlaneDistance{0.1f};     //used to make projection matrix
+    float mFOVvertical{45.0f};          //used to make projection matrix
+    float mAspectRatio{1.7777778f};           //used to make projection matrix - set to 16/9 as default
 
     //Normals for the side planes - for frustum culling
     //Make sure these are stored normalized
@@ -15,7 +15,10 @@ struct Frustum
     gsl::Vector3D mLeftPlane;
     gsl::Vector3D mTopPlane;
     gsl::Vector3D mBottomPlane;
+
+    //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
 };
+
 
 class Camera
 {

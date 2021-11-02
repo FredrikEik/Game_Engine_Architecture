@@ -39,7 +39,6 @@ public:
 
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
-    //Camera *mCurrentCamera{nullptr};
 
     GameObjectManager *mGameObjectManager{nullptr};
 

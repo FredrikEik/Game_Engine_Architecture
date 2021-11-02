@@ -57,5 +57,6 @@ private:
     bool shouldPlaySounds{false};
 
     RenderSystem* mRenderSystem{nullptr};     //Should not be necessary
+    class Logger* mLogger{nullptr};
 };
 #endif

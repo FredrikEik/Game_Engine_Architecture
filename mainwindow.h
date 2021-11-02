@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
+//Forward declarations
 class QWidget;
 class QTreeWidgetItem;
 class QLayout;

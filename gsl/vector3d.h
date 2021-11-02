@@ -14,8 +14,10 @@ class Vector3D
 {
 public:
     //Constructors
-    Vector3D(GLfloat x_in = 0.f, GLfloat y_in = 0.f, GLfloat z_in = 0.f);
+    Vector3D();
+    Vector3D(GLfloat x_in, GLfloat y_in, GLfloat z_in);
     Vector3D(const int v);
+    Vector3D(const float v);
     Vector3D(const double v);
 
     //Copy constructor
@@ -35,9 +37,13 @@ public:
     GLfloat operator*(const Vector3D& rhs) const;       // v * v
 
     //Functions
+
+    //Returns length of vector in float
     GLfloat length() const;
     GLfloat lengthNoSqrt() const;
+    //normalize this vector
     void normalize();
+    //returns a normalized version of this vector, without normalizing this vector itself
     Vector3D normalized();
     static Vector3D cross(const Vector3D &v1, const Vector3D &v2);
     static GLfloat dot(const Vector3D &v1, const Vector3D &v2);
@@ -58,11 +64,15 @@ public:
     GLfloat getZ() const;
     void setZ(const GLfloat &value);
 
+    std::string getAsString() const;
+
     GLfloat *xP();
     GLfloat *yP();
     GLfloat *zP();
 
-    Vector3D getPosition3D();
+    void setAlltoSame(float valueIn);
+
+
 
     //Friend functions
     friend std::ostream& operator<<(std::ostream &output, const Vector3D &rhs )

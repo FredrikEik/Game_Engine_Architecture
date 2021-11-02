@@ -4,11 +4,17 @@
 
 namespace gsl
 {
+    Vector3D::Vector3D() : x{0.f}, y{0.f}, z{0.f}
+    {   }
+
     Vector3D::Vector3D(GLfloat x_in, GLfloat y_in, GLfloat z_in) : x{x_in}, y{y_in}, z{z_in}
     {    }
 
     Vector3D::Vector3D(const int v) : x{static_cast<float>(v)}, y{static_cast<float>(v)}, z{static_cast<float>(v)}
     {    }
+
+    Vector3D::Vector3D(const float v) : x{v}, y{v}, z{v}
+    {   }
 
     Vector3D::Vector3D(const double v) : x{static_cast<float>(v)}, y{static_cast<float>(v)}, z{static_cast<float>(v)}
     {    }
@@ -202,6 +208,11 @@ namespace gsl
         return &z;
     }
 
+    void Vector3D::setAlltoSame(float valueIn)
+    {
+        x = valueIn; y = valueIn; z = valueIn;
+    }
+
     GLfloat Vector3D::getX() const
     {
         return x;
@@ -230,5 +241,10 @@ namespace gsl
     void Vector3D::setZ(const GLfloat &value)
     {
         z = value;
+    }
+
+    std::string Vector3D::getAsString() const
+    {
+        return std::string(" x: " + std::to_string(x) + ", y: " + std::to_string(y) + ", z: " + std::to_string(z));
     }
 } //namespace
