@@ -9,7 +9,7 @@ public:
     RenderSystem();
     //virtual ~RenderSystem();
     void init(MeshComponent* mMesh);
-    void init(std::vector<Vertex> vertexData, GLuint VAO, GLuint VBO = 0);
+    void init(std::vector<Vertex> * vertexData, GLuint * VAO, GLuint * VBO = 0);
   //  void initData(meshData * obj);
     void draw(MeshComponent* mMesh);
     void draw(MeshComponent* mMesh,

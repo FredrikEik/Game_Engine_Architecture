@@ -77,7 +77,7 @@ void RenderSystem::init(MeshComponent *mMesh)
     */
 }
 
-void RenderSystem::init(std::vector<Vertex> vertexData, GLuint VAO, GLuint VBO)
+void RenderSystem::init(std::vector<Vertex> * vertexData, GLuint * VAO, GLuint * VBO)
 {
         //must call this to use OpenGL functions?
         initializeOpenGLFunctions();
@@ -85,16 +85,16 @@ void RenderSystem::init(std::vector<Vertex> vertexData, GLuint VAO, GLuint VBO)
 
         qDebug() << "Initialized: VAO Index" <<  VAO;
         //Vertex Array Object - VAO
-        glGenVertexArrays( 1, &VAO);
-        glBindVertexArray( VAO );
+        glGenVertexArrays( 1, VAO);
+        glBindVertexArray( *VAO );
         qDebug() << "Initialized: VAO Index" <<  VAO;
         //Vertex Buffer Object to hold vertices - VBO
-        glGenBuffers( 1, &VBO );
-        glBindBuffer( GL_ARRAY_BUFFER, VBO );
+        glGenBuffers( 1, VBO );
+        glBindBuffer( GL_ARRAY_BUFFER, *VBO );
 
         //Vertex Buffer Object to hold vertices - VBO
-        glBufferData( GL_ARRAY_BUFFER, vertexData.size()*sizeof( Vertex ),
-                      vertexData.data(), GL_STATIC_DRAW );
+        glBufferData( GL_ARRAY_BUFFER, vertexData->size()*sizeof( Vertex ),
+                      vertexData->data(), GL_STATIC_DRAW );
 
         // 1rst attribute buffer : vertices
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0  );          // array buffer offset
@@ -150,6 +150,7 @@ void RenderSystem::draw(MeshComponent* mMesh)
     glDrawArrays(GL_TRIANGLES, 0, mMesh->mVertices.size());
     glBindVertexArray(0);
 }
+
 
 void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,TransformComponent* mTrasform, GLint viewMatrix, GLint projectionMatrix, GLint modelMatrix,Camera* camera )
 {

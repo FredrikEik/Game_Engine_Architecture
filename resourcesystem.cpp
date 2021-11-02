@@ -251,7 +251,7 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
     qDebug() << "-------------------------------------------Loading Model Assets---------------------------------";
     for(int i = 0; i < (int)meshDataContainer.size(); i++){
         qDebug() << "Loaded Mesh: " << QString::fromStdString(meshDataContainer[i].first);
-        rendSys->init(meshDataContainer[i].second.meshVert, meshDataContainer[i].second.VAO, meshDataContainer[i].second.VBO);
+        rendSys->init(&meshDataContainer[i].second.meshVert, &meshDataContainer[i].second.VAO, &meshDataContainer[i].second.VBO);
         qDebug() << "Initialized: " << QString::fromStdString(meshDataContainer[i].first) << "VAO Index" <<  QString::fromStdString(std::to_string(meshDataContainer[i].second.VAO));
     }
     qDebug() << "-----------------------------------------------Completed----------------------------------------";

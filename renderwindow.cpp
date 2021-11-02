@@ -284,6 +284,7 @@ void RenderWindow::render()
                             projectionMatrix,
                             modelMatrix,
                             mCurrentCamera);
+
             /*//----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
@@ -316,8 +317,6 @@ void RenderWindow::render()
             }
         }
     }
-    
-    
     
     
     
