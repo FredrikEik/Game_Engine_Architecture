@@ -56,17 +56,17 @@ private:
 	uint32 RTSSelectionEntity{};
 
 
-	float windowWidth = 800.f;
-	float windowHeight = 600.f;
+	static float windowWidth;
+	static float windowHeight;
 
+	class SweepAndPrune* CollisionBroadphaseDatastructure{};
+
+	class Viewport* viewport;
 public:
 	float getWindowWidth() const { return windowWidth; }
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
 
-	class SweepAndPrune* CollisionBroadphaseDatastructure{};
-
-	class Viewport* viewport;
 
 };

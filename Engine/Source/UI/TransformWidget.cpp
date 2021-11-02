@@ -10,9 +10,9 @@ TransformWidget::TransformWidget(std::string inWindowName, ECSManager* inECS)
 {
 }
 
-void TransformWidget::begin(Viewport* inViewport)
+void TransformWidget::begin(Viewport* inViewport, int32 inReservedEntities)
 {
-	Window::begin(inViewport);
+	Window::begin(inViewport, inReservedEntities);
 }
 
 void TransformWidget::update(int32 entityID)
@@ -20,7 +20,7 @@ void TransformWidget::update(int32 entityID)
 	//ImGui::Begin("TransformWidget");
 	//ImGui::BeginChild("TransformWidget");
 
-	if (!entityID == 0)
+	if (entityID >= reservedEntities)
 	{
 		glm::mat4x4& transform = ECS->getComponentManager<TransformComponent>()->getComponent(entityID).transform;
 		ImGui::DragFloat3("Position", &transform[3].x, 0.1f, -10000.f, 10000.f);

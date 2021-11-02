@@ -27,6 +27,11 @@ int32 ECSManager::getNumberOfEntities() const
 	return core::MAX_ENTITIES - availableEntityIDs.size();
 }
 
+bool ECSManager::entityExists(int32 entityID) const
+{
+	return entities[entityID].first;
+}
+
 std::vector<std::pair<std::type_index, uint32>> ECSManager::getEntity(int32 entityID)
 {
 	assert(entities[entityID].first);

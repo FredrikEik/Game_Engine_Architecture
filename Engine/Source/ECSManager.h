@@ -40,6 +40,7 @@ public:
 	class ComponentManager<T>* getComponentManager();
 
 	int32 getNumberOfEntities() const;
+	bool entityExists(int32 entityID) const;
 	std::vector<std::pair<std::type_index, uint32>> getEntity(int32 entityID);
 private:
 	ECSManager();

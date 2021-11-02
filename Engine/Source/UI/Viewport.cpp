@@ -18,6 +18,7 @@ Viewport::Viewport(ECSManager* InECS)
 	worldOutliner = new WorldOutliner("World Outliner", InECS);
 	details = new Details("Details", InECS);
 	playButtonText = "Play";
+
 }
 
 Viewport::~Viewport()
@@ -26,7 +27,7 @@ Viewport::~Viewport()
 	delete details;
 }
 
-void Viewport::begin(struct GLFWwindow* inWindow)
+void Viewport::begin(struct GLFWwindow* inWindow, int32 inReservedEntities)
 {
 	window = inWindow;
 	IMGUI_CHECKVERSION();
@@ -37,8 +38,9 @@ void Viewport::begin(struct GLFWwindow* inWindow)
 	ImGui_ImplOpenGL3_Init("#version 460 core");
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
-	worldOutliner->begin(&Viewport::setCurrentEntity, this);
-	details->begin(this);
+	reservedEntities = inReservedEntities;
+	worldOutliner->begin(this, reservedEntities);
+	details->begin(this, reservedEntities);
 }
 
 void Viewport::render()
@@ -50,12 +52,12 @@ void Viewport::render()
 	ImGui::BeginGroup();
 
 	ImGui::Begin("Demo window");
-	if (ImGui::Button("Play"))
+	if (ImGui::Button(playButtonText.c_str()))
 	{
 		togglePlay();
 	}
 
-	if (ImGui::Button(playButtonText.c_str()))
+	if (ImGui::Button("New Entity"))
 	{
 		uint32 entity = ECS->newEntity();
 		//ECS->loadAsset(entity, DefaultAsset::CUBE);
@@ -68,7 +70,7 @@ void Viewport::render()
 
 	if (ImGui::Button("Destroy selected entity"))
 	{
-		if(selectedEntity > 0)
+		if(selectedEntity >= reservedEntities)
 			ECS->destroyEntity(selectedEntity);
 	}
 	ImGui::End();
@@ -88,6 +90,7 @@ void Viewport::render()
 	worldOutliner->update();
 	ImGui::End();
 	ImGui::Begin("Details Panel");
+	if (selectedEntity >= reservedEntities)
 	details->update(selectedEntity);
 	ImGui::End();
 	ImGui::EndGroup();

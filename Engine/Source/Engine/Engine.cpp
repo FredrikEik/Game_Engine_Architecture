@@ -50,6 +50,9 @@ Engine::~Engine()
 	delete viewport;
 }
 
+float Engine::windowWidth = 800.f;
+float Engine::windowHeight = 600.f;
+
 void Engine::start()
 {
 	init();
@@ -120,7 +123,7 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
 	CameraSystem::setPerspective(editorCameraEntity, ECS, 
-		glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f));
+		glm::perspective(glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
 
 	// Setup Dear ImGui context
 	//IMGUI_CHECKVERSION();
@@ -131,7 +134,7 @@ void Engine::init()
 	//ImGui_ImplOpenGL3_Init("#version 460 core");
 	//// Setup Dear ImGui style
 	//ImGui::StyleColorsDark();
-	viewport->begin(window);
+	viewport->begin(window, ECS->getNumberOfEntities());
 }
 
 int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
@@ -143,7 +146,9 @@ void Engine::loop()
 		//// input
 		processInput(window);
 
-
+		// TODO: Make this not happen every frame
+		CameraSystem::setPerspective(editorCameraEntity, ECS,
+			glm::perspective(glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
@@ -437,6 +442,8 @@ void Engine::mouseButton_callback(GLFWwindow* window, int button, int action, in
 
 void Engine::windowSize_callback(GLFWwindow* window, int x, int y)
 {
+	windowWidth = x;
+	windowHeight = y;
 }
 
 void Engine::GLClearError()

@@ -8,7 +8,7 @@ class Details : public Window
 public:
 	Details(std::string inWindowName, class ECSManager* inECS);
 
-	virtual void begin(class Viewport* inViewport) override;
+	virtual void begin(class Viewport* inViewport, int32 inReservedEntities) override;
 	virtual void update(int32 inEntityID);
 	virtual void end() override;
 protected:

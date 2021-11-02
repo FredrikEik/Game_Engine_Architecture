@@ -9,11 +9,11 @@ WorldOutliner::WorldOutliner(std::string inWindowName, ECSManager* inECS)
 {
 }
 
-void WorldOutliner::begin(void (Viewport::* inCallBack)(int32), class Viewport* inViewport)
+void WorldOutliner::begin(class Viewport* inViewport, int32 inReservedEntities)
 {
-	callBack = inCallBack;
+	//callBack = inCallBack;
 	viewport = inViewport;
-
+	reservedEntities = inReservedEntities;
 	//context = ImGui::CreateContext();
 
 	//ImGui::Begin(windowName.c_str());
@@ -26,8 +26,9 @@ void WorldOutliner::update()
 	int32 numberOfEntities = ECS->getNumberOfEntities();
 	int currentItem{};
 
+	// TODO: Make it so that this does not break when an entity is removed
 	ImGui::BeginChild("Entities");
-	for (int32 i{1}; i < numberOfEntities; ++i)
+	for (int32 i{ reservedEntities }; i < numberOfEntities; ++i)
 	{
 		//ImGui::Text("%04d: Some text", i);
 		std::string str = "Entity ";

@@ -10,14 +10,14 @@ Details::Details(std::string inWindowName, ECSManager* inECS)
 {
 }
 
-void Details::begin(Viewport* inViewport)
+void Details::begin(Viewport* inViewport, int32 inReservedEntities)
 {
-	Window::begin(inViewport);
+	Window::begin(inViewport, inReservedEntities);
 }
 
 void Details::update(int32 inEntityID)
 {
-	if (inEntityID <= 0)
+	if (inEntityID <= reservedEntities || !ECS->entityExists(inEntityID))
 		return;
 
 	entityID = inEntityID;
@@ -28,7 +28,7 @@ void Details::update(int32 inEntityID)
 		if (it.first == std::type_index(typeid(TransformComponent)))
 		{
 			TransformWidget* transformWidget = new TransformWidget(windowName, ECS);
-			transformWidget->begin(viewport);
+			transformWidget->begin(viewport, reservedEntities);
 			transformWidget->update(entityID);
 			transformWidget->end();
 			delete transformWidget;
