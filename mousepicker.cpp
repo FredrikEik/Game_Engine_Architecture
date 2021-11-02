@@ -42,11 +42,11 @@ tog::vec4 MousePicker::toEyeCoords(tog::vec4 clipCoords)
     projectionMatrix = camera->mProjectionMatrix;
     gsl::Matrix4x4 invertedProjectionMatrix = projectionMatrix;
     invertedProjectionMatrix.inverse();
-    qDebug() << "projectionMatrix: copy";
-    qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
-    qDebug() << projectionMatrix.getFloat(4) << projectionMatrix.getFloat(5) << projectionMatrix.getFloat(6) << projectionMatrix.getFloat(7);
-    qDebug() << projectionMatrix.getFloat(8) << projectionMatrix.getFloat(9) << projectionMatrix.getFloat(10) << projectionMatrix.getFloat(11);
-    qDebug() << projectionMatrix.getFloat(12) << projectionMatrix.getFloat(13) << projectionMatrix.getFloat(14) << projectionMatrix.getFloat(15);
+    //qDebug() << "projectionMatrix: copy";
+    //qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
+    //qDebug() << projectionMatrix.getFloat(4) << projectionMatrix.getFloat(5) << projectionMatrix.getFloat(6) << projectionMatrix.getFloat(7);
+    //qDebug() << projectionMatrix.getFloat(8) << projectionMatrix.getFloat(9) << projectionMatrix.getFloat(10) << projectionMatrix.getFloat(11);
+    //qDebug() << projectionMatrix.getFloat(12) << projectionMatrix.getFloat(13) << projectionMatrix.getFloat(14) << projectionMatrix.getFloat(15);
     tog::vec4 eyeCoords = tog::Transform(invertedProjectionMatrix, clipCoords);
     return tog::vec4(eyeCoords.x, eyeCoords.y, -1.f, 0.f);
 }
