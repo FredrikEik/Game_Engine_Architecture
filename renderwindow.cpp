@@ -183,13 +183,11 @@ void RenderWindow::init()
     
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
-    
-    int eSize = entities.size();
-    for(int i = 0; i < eSize; i++)
-    {
-            if(meshCompVec[i]->entity == 3)
-            {
-                Physics->InitPhysicsSystem(meshCompVec[i],ResSys->getVertexDataByVAO("bowlSurface.obj"));
+    //send in the necessary data to physics engine
+    int eSize = (int)entities.size();
+    for(int i = 0; i < eSize; i++){
+            if(meshCompVec[i]->entity == 3){
+                Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("bowlSurface.obj"));
                 break;
             }
     }
