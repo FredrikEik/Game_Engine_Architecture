@@ -146,9 +146,9 @@ void RenderWindow::init()
     
     
     //Suzannes - using default material:
-    for(int i{-50}; i < 20; i++)
+    for(int i{0}; i < 30; i++)
     {
-        for(int j{0}; j < 5; j++)
+        for(int j{0}; j < 30; j++)
         {
             entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),0,0);
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
@@ -650,6 +650,22 @@ bool RenderWindow::frustumCulling(int Index)
     float padding{0.2f}; //
 
     //Project vector down to frustum normals:
+
+    //top plane:
+    tempDistance = frustum.mToptPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding))
+    {
+        meshCompVec[Index]->isDrawable = false;
+        return true;
+    }
+
+    //bottom plane:
+    tempDistance = frustum.mBottomPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding))
+    {
+        meshCompVec[Index]->isDrawable = false;
+        return true;
+    }
     //Right plane:
     tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
     if(tempDistance > (gobRadius + padding))
@@ -658,6 +674,7 @@ bool RenderWindow::frustumCulling(int Index)
         return true;
 
     }
+
 
     //Left plane:
     tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product

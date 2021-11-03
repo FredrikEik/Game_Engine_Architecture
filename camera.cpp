@@ -132,6 +132,7 @@ void Camera::calculateFrustumVectors()
     float halfHwidth = halfVheight * mFrustum.mAspectRatio;
 
     float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, mFrustum.mFarPlaneDistance)));
+    float verticalHalfAngle = abs(gsl::rad2degf(atan2f(halfVheight, mFrustum.mFarPlaneDistance)));
 
     gsl::Vector3D tempVector;
     //rightplane vector = mRight rotated by FOV around camera up
@@ -143,5 +144,15 @@ void Camera::calculateFrustumVectors()
     tempVector = Cam.mRight;
     tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, Cam.mUp);
     mFrustum.mLeftPlane = tempVector.normalized();
+
+    //rightplane vector = mRight rotated by FOV around camera up
+    tempVector = Cam.mUp;
+    tempVector.axisAngleRotation(verticalHalfAngle, Cam.mRight);
+    mFrustum.mToptPlane = tempVector.normalized();
+
+    //leftPlane vector = mRight rotated by FOV+180 around camera up
+    tempVector = Cam.mUp;
+    tempVector.axisAngleRotation(-verticalHalfAngle - 180.f,Cam.mRight);
+    mFrustum.mBottomPlane = tempVector.normalized();
 
 }

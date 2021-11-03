@@ -6,13 +6,13 @@ resourceSystem::resourceSystem()
 }
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh){
-        qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
-        qDebug() << "INPUT: " << QString::fromStdString(input);
-        qDebug() << "meshDataContainer Size: " << meshDataContainer.size();
+//        //qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
+//        //qDebug() << "INPUT: " << QString::fromStdString(input);
+//        //qDebug() << "meshDataContainer Size: " << meshDataContainer.size();
         for(int i = 0; i < (int)meshDataContainer.size(); i++){
-            qDebug() << "Comparing: " << QString::fromStdString(input) << " to: " << QString::fromStdString(meshDataContainer[i].first);
+            //qDebug() << "Comparing: " << QString::fromStdString(input) << " to: " << QString::fromStdString(meshDataContainer[i].first);
             if(input == meshDataContainer[i].first){
-                qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
+                //qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
                 mesh->collisionRadius = meshDataContainer[i].second.collisionRadius;
                 mesh->mVAO[0] = meshDataContainer[i].second.VAO;
                 mesh->mVBO[0] = meshDataContainer[i].second.VBO;
@@ -21,31 +21,31 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                 //mesh->mIndices = meshDataContainer[i].second.meshIndic;
                 mesh->LODEnabled = CheckLOD12Presence(meshDataContainer[i].first);
                 if(mesh->LODEnabled){
-                    qDebug() << "LOD Enabled";
+                    //qDebug() << "LOD Enabled";
                     std::string sLOD1 = getPureName(meshDataContainer[i].first) + "_L01.obj", sLOD2 = getPureName(meshDataContainer[i].first) + "_L02.obj";
-                    qDebug() << "LOD1 Name: " << QString::fromStdString(sLOD1) << " LOD2 Name: "  << QString::fromStdString(sLOD2);
+                    //qDebug() << "LOD1 Name: " << QString::fromStdString(sLOD1) << " LOD2 Name: "  << QString::fromStdString(sLOD2);
                     for(int k = 0; k < (int)meshDataContainer.size(); k++){
                         if(sLOD1 == meshDataContainer[k].first){
-                            qDebug() << "FOUND LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
+                            //qDebug() << "FOUND LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
                             mesh->mVAO[1] = meshDataContainer[k].second.VAO;
                             mesh->mVBO[1] = meshDataContainer[k].second.VBO;
                             mesh->VertexSize[1] = meshDataContainer[k].second.meshVert.size();
-                            qDebug() << "SET LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
+                            //qDebug() << "SET LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
                         }
                         if(sLOD2 == meshDataContainer[k].first){
-                            qDebug() << "FOUND LOD 2: " << QString::fromStdString(meshDataContainer[i].first);
+                            //qDebug() << "FOUND LOD 2: " << QString::fromStdString(meshDataContainer[i].first);
                             mesh->mVAO[2] = meshDataContainer[k].second.VAO;
                             mesh->mVBO[2] = meshDataContainer[k].second.VBO;
                             mesh->VertexSize[2] = meshDataContainer[k].second.meshVert.size();
-                            qDebug() << "SET LOD 2: " << QString::fromStdString(meshDataContainer[k].first);
+                            //qDebug() << "SET LOD 2: " << QString::fromStdString(meshDataContainer[k].first);
                         }
                     }
                 }
-                qDebug() << "Query for " << QString::fromStdString(input) << " is completed...";
+                //qDebug() << "Query for " << QString::fromStdString(input) << " is completed...";
                 break;
             }
         }
-        qDebug() << "--------------------------------------------------------Complete------------------------------------------------";
+        //qDebug() << "--------------------------------------------------------Complete------------------------------------------------";
 }
 
 //void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh)
@@ -70,7 +70,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //        std::ifstream fileIn;
 //        fileIn.open (filename, std::ifstream::in);
 //        if(!fileIn)
-//            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
+//            //qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
 //        //One line at a time-variable
 //        std::string oneLine;
@@ -102,18 +102,18 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //            if (oneWord == "#")
 //            {
 //                //Ignore this line
-//                //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+//                //            //qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
 //                continue;
 //            }
 //            if (oneWord == "")
 //            {
 //                //Ignore this line
-//                //            qDebug() << "Line is blank ";
+//                //            //qDebug() << "Line is blank ";
 //                continue;
 //            }
 //            if (oneWord == "v")
 //            {
-//                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+//                //            //qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
 //                QVector3D tempVertex;
 //                sStream >> oneWord;
 //                tempVertex.setX(std::stof(oneWord));
@@ -135,7 +135,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //            }
 //            if (oneWord == "vt")
 //            {
-//                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+//                //            //qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
 //                QVector2D tempUV;
 //                sStream >> oneWord;
 //                tempUV.setX( std::stof(oneWord));
@@ -149,7 +149,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //            }
 //            if (oneWord == "vn")
 //            {
-//                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+//                //            //qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
 //                QVector3D tempNormal;
 //                sStream >> oneWord;
 //                tempNormal.setX( std::stof(oneWord));
@@ -166,7 +166,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //            }
 //            if (oneWord == "f")
 //            {
-//                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+//                //            //qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
 //                //int slash; //used to get the / from the v/t/n - format
 //                int index, normal, uv;
 //                for(int i = 0; i < 3; i++)
@@ -184,7 +184,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //                        uv = std::stoi(segmentArray[1]);
 //                    else
 //                    {
-//                        //qDebug() << "No uvs in mesh";       //uv not present
+//                        ////qDebug() << "No uvs in mesh";       //uv not present
 //                        uv = 0;                             //this will become -1 in a couple of lines
 //                    }
 //                    normal = std::stoi(segmentArray[2]);    //third is normal
@@ -245,7 +245,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 
 
 
-//    qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
+//    //qDebug() << "size of radius object: "  << mesh->collisionRadius << " \n";
 //    mesh->entity = 0;
 //    mesh->mDrawType = GL_TRIANGLES;
 //}
@@ -254,7 +254,7 @@ std::vector<std::string> resourceSystem::GetAllMeshesInAssetsDirectory()
 {
     std::vector<std::string> assetNames;
     std::string dir = gsl::ModelFilePath;
-    qDebug() << "-------------------------------------------Checking Model Assets--------------------------------";
+    //qDebug() << "-------------------------------------------Checking Model Assets--------------------------------";
     QDirIterator iterator("../GEA2021/Assets/Models/", QDirIterator::Subdirectories);
     while (iterator.hasNext()) {
         QFile file(iterator.next());
@@ -263,14 +263,14 @@ std::vector<std::string> resourceSystem::GetAllMeshesInAssetsDirectory()
             QString qFN = fileInf.fileName();
             std::string fn = qFN.toStdString();
             if(fn.find("_L0") != std::string::npos){
-                qDebug() << "Detected LOD Model :" << fileInf.fileName();
+                //qDebug() << "Detected LOD Model :" << fileInf.fileName();
             }else{
-                qDebug() << "Detected Model :" << fileInf.fileName();
+                //qDebug() << "Detected Model :" << fileInf.fileName();
             }
             assetNames.push_back(fn);
         }
     }
-    qDebug() << "-----------------------------------------------Completed----------------------------------------";
+    //qDebug() << "-----------------------------------------------Completed----------------------------------------";
 
     return assetNames;
 }
@@ -279,13 +279,13 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
 {
     rendSys = inRendSys;
     SetMeshDataContainer();
-    qDebug() << "-------------------------------------------Loading Model Assets---------------------------------";
+    //qDebug() << "-------------------------------------------Loading Model Assets---------------------------------";
     for(int i = 0; i < (int)meshDataContainer.size(); i++){
-        qDebug() << "Loaded Mesh: " << QString::fromStdString(meshDataContainer[i].first);
+        //qDebug() << "Loaded Mesh: " << QString::fromStdString(meshDataContainer[i].first);
         rendSys->init(&meshDataContainer[i].second.meshVert, &meshDataContainer[i].second.VAO, &meshDataContainer[i].second.VBO);
-        qDebug() << "Initialized: " << QString::fromStdString(meshDataContainer[i].first) << "VAO Index" <<  QString::fromStdString(std::to_string(meshDataContainer[i].second.VAO));
+        //qDebug() << "Initialized: " << QString::fromStdString(meshDataContainer[i].first) << "VAO Index" <<  QString::fromStdString(std::to_string(meshDataContainer[i].second.VAO));
     }
-    qDebug() << "-----------------------------------------------Completed----------------------------------------";
+    //qDebug() << "-----------------------------------------------Completed----------------------------------------";
 }
 
 void resourceSystem::SetMeshDataContainer()
@@ -318,7 +318,7 @@ void resourceSystem::SetMeshDataContainer()
         std::ifstream fileIn;
         fileIn.open (filename, std::ifstream::in);
         if(!fileIn)
-            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
+           qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
         //One line at a time-variable
         std::string oneLine;
@@ -350,18 +350,18 @@ void resourceSystem::SetMeshDataContainer()
             if (oneWord == "#")
             {
                 //Ignore this line
-                //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+                //            //qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
                 continue;
             }
             if (oneWord == "")
             {
                 //Ignore this line
-                //            qDebug() << "Line is blank ";
+                //            //qDebug() << "Line is blank ";
                 continue;
             }
             if (oneWord == "v")
             {
-                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+                //            //qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
                 QVector3D tempVertex;
                 sStream >> oneWord;
                 tempVertex.setX(std::stof(oneWord));
@@ -383,7 +383,7 @@ void resourceSystem::SetMeshDataContainer()
             }
             if (oneWord == "vt")
             {
-                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+                //            //qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
                 QVector2D tempUV;
                 sStream >> oneWord;
                 tempUV.setX( std::stof(oneWord));
@@ -397,7 +397,7 @@ void resourceSystem::SetMeshDataContainer()
             }
             if (oneWord == "vn")
             {
-                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+                //            //qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
                 QVector3D tempNormal;
                 sStream >> oneWord;
                 tempNormal.setX( std::stof(oneWord));
@@ -414,7 +414,7 @@ void resourceSystem::SetMeshDataContainer()
             }
             if (oneWord == "f")
             {
-                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+                //            //qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
                 //int slash; //used to get the / from the v/t/n - format
                 int index, normal, uv;
                 for(int i = 0; i < 3; i++)
@@ -432,7 +432,7 @@ void resourceSystem::SetMeshDataContainer()
                         uv = std::stoi(segmentArray[1]);
                     else
                     {
-                        //qDebug() << "No uvs in mesh";       //uv not present
+                        ////qDebug() << "No uvs in mesh";       //uv not present
                         uv = 0;                             //this will become -1 in a couple of lines
                     }
                     normal = std::stoi(segmentArray[2]);    //third is normal
@@ -491,18 +491,18 @@ bool resourceSystem::CheckLOD12Presence(std::string meshName)
     for(int i = 0; i < (int)meshDataContainer.size(); i++){
         if(sLOD1 == meshDataContainer[i].first){
             bLOD1 = true;
-            qDebug()<<"LOD1 DETECTED:" << QString::fromStdString(sLOD1);
+            //qDebug()<<"LOD1 DETECTED:" << QString::fromStdString(sLOD1);
         }
         if(sLOD2 == meshDataContainer[i].first){
-            qDebug()<<"LOD2 DETECTED:" << QString::fromStdString(sLOD2);
+            //qDebug()<<"LOD2 DETECTED:" << QString::fromStdString(sLOD2);
             bLOD2 = true;
         }
     }
     if(bLOD1 == true && bLOD2 == true){
-        qDebug()<<"LOD REQUIREMENTS MET FOR " << QString::fromStdString(meshName);
+        //qDebug()<<"LOD REQUIREMENTS MET FOR " << QString::fromStdString(meshName);
         return true;
     }else{
-        qDebug()<<"LOD REQUIREMENTS NOT MET FOR" << QString::fromStdString(meshName) << " @ " << QString::fromStdString(sLOD1) << " AND " << QString::fromStdString(sLOD2);
+        //qDebug()<<"LOD REQUIREMENTS NOT MET FOR" << QString::fromStdString(meshName) << " @ " << QString::fromStdString(sLOD1) << " AND " << QString::fromStdString(sLOD2);
     }
     return false;
 }
