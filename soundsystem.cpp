@@ -127,14 +127,14 @@ void SoundSystem::togglePlaySounds(bool shouldPlay)
     }
 }
 
-//SoundSource* SoundSystem::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
-//{
-//    SoundSource* tempPtr = new SoundSource(name, loop, gain);
-//    tempPtr->setPosition(pos);
-//    if (fileName != "")
-//        tempPtr->loadWave(fileName);
-//    return tempPtr;
-//}
+SoundSource* SoundSystem::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
+{
+    SoundSource* tempPtr = new SoundSource(name, loop, gain);
+    tempPtr->setPosition(pos);
+    if (fileName != "")
+        tempPtr->loadWave(fileName);
+    return tempPtr;
+}
 
 void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up)
 {

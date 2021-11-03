@@ -60,6 +60,7 @@ SOURCES += main.cpp \
     gsl/vector4d.cpp \
     logger.cpp \
     rendersystem.cpp \
+    soundsource.cpp \
     soundsystem.cpp \
     camera.cpp \
     gsl/matrix3x3.cpp \
@@ -84,6 +85,7 @@ HEADERS += \
     logger.h \
     pch.h \
     rendersystem.h \
+    soundsource.h \
     soundsystem.h \
     camera.h \
     components.h \

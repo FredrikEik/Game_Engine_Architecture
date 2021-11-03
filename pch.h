@@ -21,9 +21,9 @@
 #include <QWidget>
 #include <QDebug>
 #include <QSurfaceFormat>
-#include <QScreen>  //for resizing the program at start
-#include <QMessageBox>  //For Help menu messages
-#include <QTreeWidgetItem> //Scene Outliner
+#include <QScreen>          //for resizing the program at start
+#include <QMessageBox>      //For Help menu messages
+#include <QTreeWidgetItem>  //Scene Outliner
 #include <QStatusBar>
 #include <QKeyEvent>
 #include <QColorDialog>
