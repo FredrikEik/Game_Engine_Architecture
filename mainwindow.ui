@@ -87,7 +87,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed.</string>
+       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. When playing click mouse once to activate camera controll.</string>
       </property>
      </widget>
     </item>

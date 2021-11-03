@@ -63,6 +63,8 @@ public:
 
     float mRaidus{0};
 
+    QVector3D mVelocity{0,0,0};
+
     bool bShowCollisionBox{false};
 };
 

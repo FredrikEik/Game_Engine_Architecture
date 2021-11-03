@@ -168,6 +168,7 @@ void GameEngine::HandleInput()
     float cameraSpeed = mRenderwindow->getCameraSpeed();
     Camera *currentCamera = mRenderwindow->mCurrentCamera;
     float camSpeedMultiplyer{2};
+    mPlayer->mCollisionComp->mVelocity;
 
     UpdateGameCameraFollow();
 
@@ -188,31 +189,115 @@ void GameEngine::HandleInput()
     }
     if(bIsPlaying)
     {
-        if(mInput.W && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+//        if(mInput.W && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+//        {
+//            mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+//            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+//        }
+//        if(mInput.S /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
+//        {
+//            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+//            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+//        }
+//        if(mInput.D && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+//        {
+//            mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
+//            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+//        }
+//        if(mInput.A && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+//        {
+//            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
+//            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+//        }
+
+
+        QVector3D currentPos{mPlayer->mTransformComp->mMatrix.getPosition().x,
+                    mPlayer->mTransformComp->mMatrix.getPosition().y,
+                    mPlayer->mTransformComp->mMatrix.getPosition().z};
+        if(mInput.W /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
-            mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+            QVector3D nextPos{currentPos.x() + currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer,
+                        0,
+                        currentPos.z() + currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer};
+            qDebug() << "Curpos: " << currentPos;
+            qDebug() << "NextPose: " << nextPos;
+//            mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+//            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+
+            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(0);
+                mPlayer->mCollisionComp->mVelocity.setZ(0);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }else
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mCollisionComp->mVelocity.setZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }
         }
-        if(mInput.S /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
+        if(mInput.S)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
-            mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+            QVector3D nextPos{currentPos.x() - currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer,
+                        0,
+                        currentPos.z() - currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer};
+            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(0);
+                mPlayer->mCollisionComp->mVelocity.setZ(0);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }else
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(-currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mCollisionComp->mVelocity.setZ(-currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }
         }
-        if(mInput.D && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+        if(mInput.D /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
-            mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+            QVector3D nextPos{currentPos.x() + currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer,
+                        0,
+                        currentPos.z() + currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer};
+            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(0);
+                mPlayer->mCollisionComp->mVelocity.setZ(0);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }else
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mCollisionComp->mVelocity.setZ(currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }
         }
-        if(mInput.A && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
+        if(mInput.A /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
         {
-            mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
-            mPlayer->mTransformComp->mMatrix.translateY(0);
-            mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+            QVector3D nextPos{currentPos.x() - currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer,
+                        0,
+                        currentPos.z() - currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer};
+            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(0);
+                mPlayer->mCollisionComp->mVelocity.setZ(0);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }else
+            {
+                mPlayer->mCollisionComp->mVelocity.setX(-currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mCollisionComp->mVelocity.setZ(-currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mTransformComp->mMatrix.translateX(mPlayer->mCollisionComp->mVelocity.x());
+                mPlayer->mTransformComp->mMatrix.translateZ(mPlayer->mCollisionComp->mVelocity.z());
+            }
         }
+
     }
+   // qDebug() << mPlayer->mCollisionComp->mVelocity;
 }
 
 void GameEngine::togglePlay(bool bInIsPlaying)
