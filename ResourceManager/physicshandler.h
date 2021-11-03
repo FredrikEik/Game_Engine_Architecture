@@ -4,6 +4,7 @@
 //Forward declaration
 class GameObject;
 class RenderSystem;
+class MeshData;
 
 
 class PhysicsHandler
@@ -14,6 +15,9 @@ public:
     void movePhysicsObject(std::vector<GameObject*> mGameObjects);
 
     RenderSystem *mRenderSystem{nullptr};
+
+//    std::map<std::string, unsigned int> mMeshMap; //Trying to get access to vertex data in physicssimulations
+//    std::vector<MeshData> mMeshes;
 
 private:
     class Logger *mLogger{nullptr};
