@@ -14,12 +14,12 @@ void RenderSystem::init(MeshComponent *mMesh)
 
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mMesh->mVAO );
-    glBindVertexArray( mMesh->mVAO );
+    glGenVertexArrays( 1, &mMesh->mVAO[0] );
+    glBindVertexArray( mMesh->mVAO[0] );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mMesh->mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO );
+    glGenBuffers( 1, &mMesh->mVBO[0] );
+    glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO[0] );
 
     //Vertex Buffer Object to hold vertices - VBO
     glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof( Vertex ),
@@ -146,8 +146,8 @@ void RenderSystem::initData(meshData * obj)
 
 void RenderSystem::draw(MeshComponent* mMesh)
 {
-    glBindVertexArray( mMesh->mVAO );
-    glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize);
+    glBindVertexArray( mMesh->mVAO[0] );
+    glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize[0]);
     glBindVertexArray(0);
 }
 
@@ -162,8 +162,8 @@ void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,Trans
        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, camera->Cam.mProjectionMatrix.constData());
        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE,mTrasform->mMatrix.constData());
        //draw the object
-       glBindVertexArray( mMesh->mVAO );
-       glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize);
+       glBindVertexArray( mMesh->mVAO[mMesh->LODLevel] );
+       glDrawArrays(mMesh->mDrawType, 0, mMesh->VertexSize[mMesh->LODLevel]);
        glBindVertexArray(0);
     }
 

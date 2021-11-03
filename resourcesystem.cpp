@@ -27,11 +27,33 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
             if(input == meshDataContainer[i].first){
                 qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
                 mesh->collisionRadius = meshDataContainer[i].second.collisionRadius;
-                mesh->mVAO = meshDataContainer[i].second.VAO;
-                mesh->mVBO = meshDataContainer[i].second.VBO;
-                mesh->VertexSize = meshDataContainer[i].second.meshVert.size();
+                mesh->mVAO[0] = meshDataContainer[i].second.VAO;
+                mesh->mVBO[0] = meshDataContainer[i].second.VBO;
+                mesh->VertexSize[0] = meshDataContainer[i].second.meshVert.size();
                 mesh->mVertices = meshDataContainer[i].second.meshVert;
                 mesh->mIndices = meshDataContainer[i].second.meshIndic;
+                mesh->LODEnabled = CheckLOD12Presence(meshDataContainer[i].first);
+                if(mesh->LODEnabled){
+                    qDebug() << "LOD Enabled";
+                    std::string sLOD1 = getPureName(meshDataContainer[i].first) + "_L01.obj", sLOD2 = getPureName(meshDataContainer[i].first) + "_L02.obj";
+                    qDebug() << "LOD1 Name: " << QString::fromStdString(sLOD1) << " LOD2 Name: "  << QString::fromStdString(sLOD2);
+                    for(int k = 0; k < (int)meshDataContainer.size(); k++){
+                        if(sLOD1 == meshDataContainer[k].first){
+                            qDebug() << "FOUND LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
+                            mesh->mVAO[1] = meshDataContainer[k].second.VAO;
+                            mesh->mVBO[1] = meshDataContainer[k].second.VBO;
+                            mesh->VertexSize[1] = meshDataContainer[k].second.meshVert.size();
+                            qDebug() << "SET LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
+                        }
+                        if(sLOD2 == meshDataContainer[k].first){
+                            qDebug() << "FOUND LOD 2: " << QString::fromStdString(meshDataContainer[i].first);
+                            mesh->mVAO[2] = meshDataContainer[k].second.VAO;
+                            mesh->mVBO[2] = meshDataContainer[k].second.VBO;
+                            mesh->VertexSize[2] = meshDataContainer[k].second.meshVert.size();
+                            qDebug() << "SET LOD 2: " << QString::fromStdString(meshDataContainer[k].first);
+                        }
+                    }
+                }
                 qDebug() << "Query for " << QString::fromStdString(input) << " is completed...";
                 break;
             }
@@ -459,6 +481,45 @@ std::vector<Vertex> resourceSystem::getVertexDataByVAO(std::string meshName)
         }
     }
 }
+
+bool resourceSystem::CheckLOD12Presence(std::string meshName)
+{
+    std::string modifiedMeshName = getPureName(meshName);
+    bool bLOD1 = false, bLOD2 = false;
+    std::string sLOD1 = modifiedMeshName+"_L01.obj", sLOD2 = modifiedMeshName+"_L02.obj";
+    for(int i = 0; i < (int)meshDataContainer.size(); i++){
+        if(sLOD1 == meshDataContainer[i].first){
+            bLOD1 = true;
+            qDebug()<<"LOD1 DETECTED:" << QString::fromStdString(sLOD1);
+        }
+        if(sLOD2 == meshDataContainer[i].first){
+            qDebug()<<"LOD2 DETECTED:" << QString::fromStdString(sLOD2);
+            bLOD2 = true;
+        }
+    }
+    if(bLOD1 == true && bLOD2 == true){
+        qDebug()<<"LOD REQUIREMENTS MET FOR " << QString::fromStdString(meshName);
+        return true;
+    }else{
+        qDebug()<<"LOD REQUIREMENTS NOT MET FOR" << QString::fromStdString(meshName) << " @ " << QString::fromStdString(sLOD1) << " AND " << QString::fromStdString(sLOD2);
+    }
+    return false;
+}
+
+std::string resourceSystem::getPureName(std::string objMeshName)
+{
+    std::string modifiedMeshName;
+    for(int i = 0; i < (int)objMeshName.size(); i++){
+        if(objMeshName[i] != '.'){
+            modifiedMeshName += objMeshName[i];
+        }else{
+            break;
+        }
+    }
+    return modifiedMeshName;
+}
+
+
 
 meshData* resourceSystem::makeFrustum(const Frustum &frustumIn, RenderSystem * inRendSys)
 {

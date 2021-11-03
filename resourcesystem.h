@@ -40,6 +40,8 @@ public:
     void ResourceSystemInit(RenderSystem * inRendSys);
     void SetMeshDataContainer();
     std::vector<Vertex> getVertexDataByVAO(std::string meshName);
+    bool CheckLOD12Presence(std::string meshName);
+    std::string getPureName(std::string objMeshName);
 
     RenderSystem * rendSys;
 
