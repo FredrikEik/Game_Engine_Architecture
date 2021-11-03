@@ -56,7 +56,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 //Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
-    //qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
+    //qDebug() << "Ballposition3d: X" << ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
 
 
