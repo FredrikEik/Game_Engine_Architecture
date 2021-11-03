@@ -3,6 +3,10 @@
 
 #include <string>
 
+#define MAX_ENTITIES 65535
+#define MAX_ENTITIES_TYPE unsigned short    //have to hold MAX_ENTITIES !!!
+#define MAX_COMPONENTS 100                  //could be made dynamic by using std::vectors
+
 namespace gsl  //Game School Lib
 {
     const std::string ProjectFolderName{"../GEA2021/"};

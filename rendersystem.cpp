@@ -116,6 +116,7 @@ void RenderSystem::init()
 
     setupPlainShader(0);
     setupTextureShader(1);
+//    setupMousepickerShader(2);
 
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
@@ -145,6 +146,103 @@ void RenderSystem::render()
     if(mMainWindow->renderMousePick)
     {
         mousePicking();
+
+        for(int i{0}; i< mGameObjects.size(); i++)
+        {
+            gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
+            gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+            gsl::Vector3D distanceVector = gobPos -cameraPos;
+
+            float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+            if(angle > mFOVangle)
+                continue;   //don't draw object
+
+            //LOD calculation
+            float length = distanceVector.length();
+
+            glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+
+            int viewMatrix{-1};
+            int projectionMatrix{-1};
+            int modelMatrix{-1};
+
+            if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
+            {
+                viewMatrix = vMatrixUniform;
+                projectionMatrix = pMatrixUniform;
+                modelMatrix = mMatrixUniform;
+            }
+            else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
+            {
+                viewMatrix = vMatrixUniform2;
+                projectionMatrix = pMatrixUniform2;
+                modelMatrix = mMatrixUniform2;
+
+                //Now mMaterial component holds texture slot directly - probably should be changed
+                glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            }
+            /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
+
+            //send data to shader
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
+
+            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+            {
+                if (length < 4)
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                    mObjectsDrawn++;
+                }
+                else if(length < 6)
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+                    mObjectsDrawn++;
+                }
+                else
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+                    mObjectsDrawn++;
+                }
+            }
+            else    //no LOD exists
+            {
+                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                mObjectsDrawn++;
+            }
+
+            //Quick hack test to check if linebox/circle works:
+            if(i == 1)
+            {
+                MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
+                MeshData circle = CoreEngine::getInstance()->mResourceManager->
+                        makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
+    //            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
+                glBindVertexArray( lineBox.mVAO[0] );
+                glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+                glBindVertexArray( circle.mVAO[0] );
+                glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+            }
+            glBindVertexArray(0);
+
+
+                if(CoreEngine::getInstance()->mResourceManager->checkCollision(
+                mGameObjects[1], mGameObjects[2]))
+                {
+                    mGameObjects[2]->mTransform->mMatrix.rotateX(1);
+                    //CoreEngine::getInstance()->mResourceManager->Collided = true;
+                    //mGameObjects[2]->mMesh->collided = true;
+                }
+        }
     }
 
 
@@ -268,6 +366,7 @@ void RenderSystem::render()
 
     }
 
+
     //Moves the dog triangle - should be made another way!!!!
 //    if(isPlaying)
 //        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
@@ -306,7 +405,9 @@ void RenderSystem::setupTextureShader(int shaderIndex)
 void RenderSystem::setPickedObject(int pickedID)
 {
     cancelPickedObject();
-    mPickedObject = mGameObjects[pickedID];
+    mPickedObject = &mCoreEngine->mGameObject[pickedID];
+    qDebug() << "objekt ble plukket: " << mPickedObject;
+
 }
 
 void RenderSystem::cancelPickedObject()
@@ -362,17 +463,17 @@ void RenderSystem::mousePicking()
             data[1] * 256 +
             data[2] * 256*256;
 
-
     if (pickedID < 100000)
     {
-
         qDebug() << "Mesh ID" << pickedID;
+        mMainWindow->selectObjectByName(mGameObjects.at(pickedID)->mName.c_str());
         setPickedObject(pickedID);
 
     }
     else
     {
-       // qDebug() << "nothing happened";
+//        qDebug() << "nothing happened";
+        mMainWindow->selectObjectByName("");
         cancelPickedObject();
     }
 }

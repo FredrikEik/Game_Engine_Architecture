@@ -48,7 +48,7 @@ private:
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
 
-    SoundListenerComponent mListener;
+    ecs::SoundListenerComponent mListener;
 };
 
 #endif // CAMERA_H

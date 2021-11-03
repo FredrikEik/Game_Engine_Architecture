@@ -16,6 +16,7 @@
 #include "soundhandler.h"
 #include "meshhandler.h"
 #include "texturehandler.h"
+#include "coreengine.h"
 
 ResourceManager::ResourceManager()
 {
@@ -39,7 +40,7 @@ GameObject *ResourceManager::addObject(std::string meshName)
     GameObject* tempObject = new GameObject();
 
     //Add standard components to GameObject
-    MeshComponent* tempMesh = new MeshComponent();
+    ecs::MeshComponent* tempMesh = new ecs::MeshComponent();
 
     //run through all potential LOD levels:
     for(int i{0}; i<3; i++)
@@ -53,8 +54,8 @@ GameObject *ResourceManager::addObject(std::string meshName)
     tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
     tempObject->mMesh = tempMesh;
 
-    tempObject->mMaterial = new MaterialComponent();
-    tempObject->mTransform = new TransformComponent();
+    tempObject->mMaterial = new ecs::MaterialComponent();
+    tempObject->mTransform = new ecs::TransformComponent();
     return tempObject; //temporary to get to compile
 }
 bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
@@ -123,7 +124,7 @@ gsl::AssetType ResourceManager::findAssetType(std::string assetName)
     return gsl::NOASSETTYPE;
 }
 
-SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
+ecs::SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
 {
     int soundIndex{-1};
     WaveRawData* waveData{nullptr}; //will be instansiated inside loadWave
@@ -148,7 +149,7 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
         mSoundBufferMap.emplace(assetName, soundIndex);
     }
 
-    SoundComponet *tempSource = new SoundComponet();
+    ecs::SoundComponet *tempSource = new ecs::SoundComponet();
     if(waveData)
     {
         tempSource->mSource = SoundHandler::makeALSource(mWaveBuffers.at(soundIndex).mALBuffer);

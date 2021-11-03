@@ -229,21 +229,7 @@ int MeshHandler::readObj(std::string filename)
 
 }
 
-void MeshHandler::renderMousepicker(GLint matrixUniform, GLint colourUniform)
-{
-    for(unsigned int i{0}; i <mMeshes.size(); i++ )
-    {
-        int j = i*20;   //just to make the color more visible for debug - remove when working!
-        int r = (j & 0x000000FF) >>  0;
-        int g = (j & 0x0000FF00) >>  8;
-        int b = (j & 0x00FF0000) >> 16;
 
-        gsl::Matrix4x4 tempTransform;
-        tempTransform.setToIdentity();
-        glUniformMatrix4fv(matrixUniform, 1, GL_TRUE, tempTransform.constData());
-        glUniform3f(colourUniform, r/255.f, g/255.f, b/255.f);
-    }
-}
 
 int MeshHandler::makeAxis()
 {

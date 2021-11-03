@@ -36,7 +36,6 @@ public:
     ///Makes a sphere of 3 circles with given radius.
     /// Color option for rgb or pink
     MeshData makeCircleSphere(float radius = 1, bool rgbColor = true);
-    void renderMousepicker(GLint matrixUniform, GLint colourUniform);
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;

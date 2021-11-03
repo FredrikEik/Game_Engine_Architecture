@@ -7,6 +7,8 @@
 #include "gltypes.h"
 #include "altypes.h"
 
+namespace ecs {
+
 struct TransformComponent
 {
     TransformComponent() {mMatrix.identity();};
@@ -27,6 +29,11 @@ struct MaterialComponent
 {
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
+};
+struct MaterialID
+{
+    MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
+    unsigned short mMaterialIndex{0};        //Material 0 = default material - should always exist!
 };
 
 struct SoundListenerComponent
@@ -49,5 +56,7 @@ struct SoundComponet
     bool looping{false};
 
 };
+
+} //namespace ends
 
 #endif // COMPONENTS_H

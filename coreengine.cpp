@@ -2,10 +2,14 @@
 
 #include "resourcemanager.h"
 #include "soundsystem.h"
-
+#include "shaderhandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
+#include  "meshhandler.h"
+#include "entity.h"
+#include "matrix4x4.h"
+
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
@@ -89,6 +93,7 @@ void CoreEngine::setUpScene()
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
 }
+
 
 void CoreEngine::handleInput()
 {

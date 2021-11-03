@@ -10,6 +10,7 @@ class SoundSystem;
 class RenderSystem;
 class Camera;
 class QTimer;
+class GameObject;
 //coreengine
 //Made from QObject to use a Qt slots...
 class CoreEngine : public QObject
@@ -36,6 +37,9 @@ public:
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+    GameObject *mGameObject{nullptr};
+
+
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

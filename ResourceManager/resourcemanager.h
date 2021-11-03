@@ -35,6 +35,7 @@ public:
 
 
 
+
 private:
     ResourceManager();  //singleton
     void operator=(ResourceManager&){};           //Assignment operator
@@ -42,7 +43,7 @@ private:
 
     gsl::AssetType findAssetType(std::string assetName);
 
-    SoundComponet* makeSoundComponent(std::string assetName);
+    ecs::SoundComponet* makeSoundComponent(std::string assetName);
 
     //Should these belong to other class - like in MeshHandler?
     std::map<std::string, unsigned int> mSoundBufferMap;

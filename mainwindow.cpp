@@ -3,16 +3,24 @@
 
 #include <QSurfaceFormat>
 #include <QDebug>
-#include <QScreen>  //for resizing the program at start
+#include <QScreen>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLDebugLogger>
+#include <QMessageBox>
+#include <QTreeWidgetItem>
+#include <QDebug>
+#include <QScreen>
+#include <QString>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
 #include "resourcemanager.h"
 #include "coreengine.h"
 #include "meshhandler.h"
+#include "entity.h"
+#include "texturehandler.h"
+#include "gameobject.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -89,8 +97,47 @@ void MainWindow::init()
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
+void MainWindow::updateUI(const std::vector<class CoreEngine> &GameObjectData)
+{
+    ui->treeWidgetSceneOutliner->clear();
+    QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidgetSceneOutliner);
+    root->setText(0, mCoreEngine->mGameObject->mName.c_str());
+    ui->treeWidgetSceneOutliner->addTopLevelItem(root);
+    ui->treeWidgetSceneOutliner->expandAll();
+
+    for(unsigned i = 0; i<GameObjectData.size(); i++)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem(root);
+        item->setText(0, mCoreEngine->mGameObject->mName.c_str());
+    }
+}
+
+void MainWindow::on_treeWidgetSceneOutliner_itemClicked(QTreeWidgetItem *item, int)
+{
+    clearLayout(ui->verticalLayoutDetails);
+
+    if(!item || item->text(0) == mCoreEngine->mGameObject->mName.c_str())
+    {
+        mRenderSystem->cancelPickedObject();
+        ui->lineEditGOName->setText("no selection");
+        return;
+    }
+    mCurrentEditItem = item;
+    ui->lineEditGOName->setText(mCurrentEditItem->text(0));
+    item->setSelected(true);
 
 
+}
+void MainWindow::selectObjectByName(QString nameIn)
+{
+    if(nameIn== "")
+        on_treeWidgetSceneOutliner_itemClicked(nullptr, 0);
+    else
+    {
+        QList<QTreeWidgetItem *> list = ui->treeWidgetSceneOutliner->findItems(nameIn, Qt::MatchFixedString|Qt::MatchRecursive);
+        on_treeWidgetSceneOutliner_itemClicked(list.first(), 0);
+    }
+}
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
@@ -112,10 +159,22 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
         ui->pb_toggleWireframe->setText("Show Solid");
     else
         ui->pb_toggleWireframe->setText("Show Wireframe");
+
 }
 void MainWindow::on_actionRender_MousePick_toggled(bool arg1)
 {
     renderMousePick = arg1;
+}
+void MainWindow::clearLayout(class QLayout *layout)
+{
+    QLayoutItem *item;
+    while((item = layout->takeAt(0))){
+        if (item->widget()){
+            delete item->widget();
+        }
+        delete item;
+    }
+    ui->treeWidgetSceneOutliner->clearSelection();
 }
 
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
@@ -126,5 +185,6 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
         ui->pb_togglePlay->setText("Stop (R)");
     else
         ui->pb_togglePlay->setText("Play (R)");
+
 }
 

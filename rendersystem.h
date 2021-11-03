@@ -9,13 +9,16 @@
 #include "input.h"
 #include "constants.h"
 #include "vector3d.h"
+#include "components.h"
 
 class QOpenGLContext;
 class ShaderHandler;
 class MainWindow;
 class GameObject;
+class CoreEngine;
 class Camera;
 class TextureHandler;
+class Entity;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -45,6 +48,10 @@ public:
     void setPickedObject(int pickedID);
     void cancelPickedObject();
 
+    ecs::MaterialID *mMaterialIDs;
+
+//    Entity *mPickedObject{nullptr};
+//    Entity *mPickedObjectMarker{nullptr};
 
 private:
     void init();
@@ -66,6 +73,11 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    void setupMousepickerShader(int shaderIndex);
+    GLint mMatrixUniform2{-1};
+    GLint vMatrixUniform2{-1};
+    GLint pMatrixUniform2{-1};
+
 
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
@@ -73,7 +85,7 @@ private:
 
     float mAspectratio{1.f};
     qreal mRetinaScale{1};  //used on "double pixle/retina" displays
-    GameObject *mPickedObjectMarker{nullptr}; //The box around the picked object
+    GameObject *mPickedObjectMarker{nullptr};
     GameObject *mPickedObject{nullptr};
 
     int mMouseXlast{0};
@@ -84,6 +96,7 @@ private:
 
     float mFOVangle{45};
 
+    CoreEngine *mCoreEngine{nullptr};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
