@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QPixmap>
 #include <QApplication>
 #include <QSplashScreen>
 
@@ -10,17 +11,20 @@ int main(int argc, char *argv[])
 
     //Makes an Qt application
     QApplication a(argc, argv);
+    QPixmap pixmap(":/splash.png");
+    QSplashScreen splash(pixmap);
+    splash.show();
+    splash.showMessage("Loading");
+    QCoreApplication::processEvents();
 
-    QSplashScreen *mSplash = new QSplashScreen;
-    mSplash->setPixmap(QPixmap(":/splashscreen.png")); // splash picture
-    mSplash->show();
 
     //Makes the Qt MainWindow and shows it.
     MainWindow w;
 
     w.move(10, 10);     //Moves the program at start. Nice if you have large screen and editor on one side.
     w.show();
-    mSplash->hide();
+    //splash.hide();
+    splash.finish(&w);
 
     return a.exec();
 }
