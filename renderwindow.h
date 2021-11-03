@@ -43,7 +43,7 @@ public:
     void createObjectbutton(std::string objectName);
     void playPausebutton();
     bool bPause = true;
-
+    bool freeFly = true;
     Factory *getFactory(){return factory;};
 
     SoundSource* mClick{};
@@ -104,6 +104,7 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
+    float mouseSpeed = 0.05;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

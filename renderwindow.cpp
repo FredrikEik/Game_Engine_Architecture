@@ -594,8 +594,27 @@ void RenderWindow::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
+    if(freeFly)
     {
+    if(mInput.RMB) //Sett in character movement HER!
+    {
+        if(mInput.W)
+            mCurrentCamera->setSpeed(-mCameraSpeed);
+        if(mInput.S)
+            mCurrentCamera->setSpeed(mCameraSpeed);
+        if(mInput.D)
+            mCurrentCamera->moveRight(mCameraSpeed);
+        if(mInput.A)
+            mCurrentCamera->moveRight(-mCameraSpeed);
+        if(mInput.Q)
+            mCurrentCamera->updateHeigth(-mCameraSpeed);
+        if(mInput.E)
+            mCurrentCamera->updateHeigth(mCameraSpeed);
+    }
+    }
+    else if(!freeFly)
+    {
+        //FREE FLY
         if(mInput.W)
             mCurrentCamera->setSpeed(-mCameraSpeed);
         if(mInput.S)
@@ -810,6 +829,12 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_O)
     {
     }
+    if (event->key() == Qt::Key_Tab)
+
+    {
+        bool check = !bPause;
+        mMainWindow->on_PlayPause_clicked(check);
+    }
 }
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
@@ -854,6 +879,10 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
+    QCursor c = mMainWindow->cursor();
+    if (freeFly)
+    {
+
     if (mInput.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
@@ -867,4 +896,26 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     }
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
+    c.setShape(Qt::ArrowCursor);
+    setCursor(c);
+    }
+    else if(!freeFly) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
+    {
+            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
+                                mMainWindow->y() + mMainWindow->height() / 2);
+
+            //Using mMouseXYlast as deltaXY so we don't need extra variables
+
+            mMouseXlast = windowCenter.x() - c.pos().x();
+            mMouseYlast = windowCenter.y() - c.pos().y();
+
+             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
+             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
+             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
+             c.setShape(Qt::BlankCursor);
+             setCursor(c);
+
+    }
+
+
 }

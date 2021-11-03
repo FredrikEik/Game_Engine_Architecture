@@ -36,9 +36,12 @@ private slots:
 
     void on_outliner_itemClicked(QTreeWidgetItem *item, int column);
 
-    void on_PlayPause_clicked(bool checked);
 
     void on_toggleFrustumCulling_clicked(bool checked);
+
+public slots:
+
+    void on_PlayPause_clicked(bool checked);
 
 private:
     void init();

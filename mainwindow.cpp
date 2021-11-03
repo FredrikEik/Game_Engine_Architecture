@@ -220,12 +220,17 @@ void MainWindow::on_PlayPause_clicked(bool checked)
     if(checked)
     {
         ui->PlayPause->setText("Pause");
+        mRenderWindow->freeFly = true;
+        mRenderWindow->bPause = false;
     }
     else if (!checked)
     {
         ui->PlayPause->setText("Play");
+        mRenderWindow->freeFly = false;
+        mRenderWindow->bPause = true;
     }
     mRenderWindow->playPausebutton();
+
 }
 
 void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
