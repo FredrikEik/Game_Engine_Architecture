@@ -30,9 +30,9 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
     mGameLoopTimer = new QTimer(this);
 
     //Make the cameras for the scene
-    mEditorCamera = new Camera(50.0f, 0.1f, 1000.f);
+    mEditorCamera = new Camera(30.0f, 0.1f, 1000.f);
     mEditorCamera->mName = "Editor";
-    mGameCamera = new Camera(50.0f, 0.1f, 300.f);
+    mGameCamera = new Camera(30.0f, 0.1f, 300.f);
     mGameCamera->mName = "Game";
 }
 
@@ -102,7 +102,7 @@ void CoreEngine::setUpScene()
         temp = mGameObjectManager->addObject("Ball.obj");
         temp->mTransform->mMatrix.translate(0.0f, 0.0f, -10.0f);
         temp->mTransform->mMatrix.scale(0.5f);
-        temp->mName = "Rullendeball";
+        temp->mName = "RollingBall";
         mGameObjectManager->addComponent("PhysicsComponent", temp);
         mRenderSystem->mGameObjects.push_back(temp);
 
