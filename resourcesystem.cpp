@@ -3,19 +3,6 @@
 resourceSystem::resourceSystem()
 {
 
-    meshData obj;
-    std::vector<Vertex> mVertices;
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
-    mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
-    obj.meshVert = mVertices;
-    obj.internalIndex = 0;
-
-    meshDataContainer.push_back(std::make_pair("XYZ", obj));
-
 }
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh){
@@ -304,6 +291,20 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
 void resourceSystem::SetMeshDataContainer()
 {
     meshDataContainer.clear();
+    meshData obj;
+    std::vector<Vertex> mVertices;
+    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+    obj.meshVert = mVertices;
+    obj.DrawType = GL_LINES;
+    obj.VAO = 0;
+    obj.internalIndex = 0;
+    meshDataContainer.push_back(std::make_pair("XYZ", obj));
+
     std::vector<std::string> assetNames = GetAllMeshesInAssetsDirectory();
 
     for(int i = 0; i < (int)assetNames.size(); i++){

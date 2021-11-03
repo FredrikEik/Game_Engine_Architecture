@@ -146,9 +146,9 @@ void RenderWindow::init()
     
     
     //Suzannes - using default material:
-    for(int i{-50}; i < 100; i++)
+    for(int i{-50}; i < 20; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 5; j++)
         {
             entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),0,0);
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
