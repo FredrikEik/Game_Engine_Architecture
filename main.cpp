@@ -11,13 +11,17 @@ int main(int argc, char *argv[])
     //Makes an Qt application
     QApplication a(argc, argv);
 
-    QPixmap pixmap(":/splashscreen.ico");
-    QSplashScreen splash(pixmap);
-    splash.show();
+    QSplashScreen *mSplash = new QSplashScreen;
+    mSplash->setPixmap(QPixmap(":/splashscreen.png")); // splash picture
+    mSplash->show();
 
     //Makes the Qt MainWindow and shows it.
     MainWindow w;
+
+    w.move(10, 10);     //Moves the program at start. Nice if you have large screen and editor on one side.
     w.show();
+    mSplash->hide();
 
     return a.exec();
 }
+
