@@ -473,7 +473,7 @@ void resourceSystem::SetMeshDataContainer()
 }
 
 /// Returns vertex data for a specific mesh.
-std::vector<Vertex> resourceSystem::getVertexDataByVAO(std::string meshName)
+std::vector<Vertex> resourceSystem::getVertexDataByName(std::string meshName)
 {
     for(int i = 0; i < (int)meshDataContainer.size(); i++){
         if(meshName == meshDataContainer[i].first){

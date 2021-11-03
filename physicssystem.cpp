@@ -70,12 +70,12 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     posBall.setY( Transf->mMatrix.getPosition().getY());
     posBall.setZ( Transf->mMatrix.getPosition().getZ());
     //every third triangle is our triangle.
-    for(int i = 0; i < mSurfaceData->mVertices.size() ; i = i + 3) // sum mad sketch movement in array
+    for(int i = 0; i < vertexData.size() ; i = i + 3) // sum mad sketch movement in array
     {
         //the vertex positions are flipped because of us using blender for the surface.
-        p1 = MakeQvec3D(mSurfaceData->mVertices[i + 0].getVertex());//1
-        p3 = MakeQvec3D(mSurfaceData->mVertices[i + 1].getVertex());//3
-        p2 = MakeQvec3D(mSurfaceData->mVertices[i + 2].getVertex());//2
+        p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
+        p3 = MakeQvec3D(vertexData[i + 1].getVertex());//3
+        p2 = MakeQvec3D(vertexData[i + 2].getVertex());//2
         //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
         Baryc = Barysentric( p1 , p2 , p3 , posBall );
