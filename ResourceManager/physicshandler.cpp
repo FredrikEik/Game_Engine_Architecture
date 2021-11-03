@@ -1,10 +1,40 @@
 #include "ResourceManager/physicshandler.h"
+#include "gameobject.h"
+#include "rendersystem.h"
 
-void PhysicsHandler::movePhysicsObject()
+PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
+    mLogger = Logger::getInstance();
+}
+
+void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
+{
+
+    //Get all GameObjects in an mGameObjectsArray.
+    mGameObjects = mRenderSystem->getAllGameObjects();
+
+    //Create a reference to the gameObject the ball will roll on.
+    GameObject groundObject = {};
+
+    //Create a string to search for the groundobject i need
+    std::string name = "TriangleSurface";
+
+    //Loop though all the gameobjects
+    for(int i = 0; i > mGameObjects.size(); i++)
+    {
+        if(mGameObjects[i]->mName == name)
+        {
+          mLogger->logText(mGameObjects[i]->mName, LColor::LOG);
+          groundObject.mName = mGameObjects[i]->mName;
+        }
+    }
+
+    //How many vertices are there in TriangleSurface?
+//    qDebug() << groundObject.mMesh->mVertexCount[0];
+
     //Get the surface the physicsobject is going to interact with.
-//    std::vector<Vertex>& triangleVertices = dynamic_cast<GameObject*>(mGameObject->mName = "TriangleSurface")->get_vertices();
-    //Getting a reference to the GameObject that is the trianglesurface?
+    //int triangleVertices = mGameObjects.mName->("TriangleSurface")->mMesh->getVertexCount;
+    //Use MeshComponent to get mVertexCounts
 
 //    mMatrix = mPosition * mScale;
 

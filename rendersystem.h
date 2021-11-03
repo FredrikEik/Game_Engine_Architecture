@@ -50,6 +50,9 @@ public:
     bool mDrawAxis{true};
     bool mDrawGrid{true};
 
+    std::vector<GameObject*> getAllGameObjects();
+    std::vector<GameObject*> getGameObjectOfName(std::string meshName);
+
 private:
     void init();
 

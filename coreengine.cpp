@@ -114,12 +114,12 @@ void CoreEngine::setUpScene()
         mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(0.f, 4.f, 4.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.0f, 0.0f, 20.0f);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     //mGameObjectManager->setUpAllTextures();
 
-    mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 0.0f);
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 0.0f, 20.0f);
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:
@@ -181,7 +181,9 @@ void CoreEngine::gameLoop()
     //SoundSystem::getInstance()->update(mRenderSystem);
 
     //Update PhysicsObjects in scene
-    PhysicsHandler ph;
-    ph.movePhysicsObject();
+    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
+    PhysicsHandler ph(mRenderSystem);
+    ph.movePhysicsObject(mGameObjects);
+
     mRenderSystem->render();
 }

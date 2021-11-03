@@ -1,9 +1,11 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
+#include "soundsource.h"
+
 //Forward declaration
 class RenderSystem;
-class SoundSource;
+//class SoundSource;
 
 /// Class handling OpenAL setup and plays sound sources.
 /**

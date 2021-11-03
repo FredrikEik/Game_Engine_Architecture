@@ -35,7 +35,6 @@ public:
     GameObjectManager *mGameObjectManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
-
     MainWindow *mMainWindow{nullptr};
 
     //Two separate cameras to be able to render the frustum, etc for the game camera while in editor modus

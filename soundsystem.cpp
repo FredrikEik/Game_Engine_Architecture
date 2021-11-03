@@ -144,11 +144,11 @@ void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Ve
     ALfloat headVec[6]{dir.x, dir.y, dir.z, up.x, up.y, up.z};
     alListenerfv(AL_ORIENTATION, headVec);
 
-    //    gsl::Vector3D vel
-    //    ALfloat velVec[3];,
-    //    velVec[0] = vel.x;
-    //    velVec[1] = vel.y;
-    //    velVec[2] = vel.z;
-    //    alListenerfv(AL_VELOCITY, velVec);
+    gsl::Vector3D vel;
+    ALfloat velVec[3];
+    velVec[0] = vel.x;
+    velVec[1] = vel.y;
+    velVec[2] = vel.z;
+    alListenerfv(AL_VELOCITY, velVec);
 
 }

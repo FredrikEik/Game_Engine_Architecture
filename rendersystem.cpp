@@ -738,3 +738,20 @@ void RenderSystem::mouseMoveEvent(QMouseEvent *event)
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
 }
+
+
+std::vector<GameObject*> RenderSystem::getAllGameObjects()
+{
+    return mGameObjects;
+}
+
+//std::vector<GameObject*> RenderSystem::getGameObjectOfName(std::string name)
+//{
+//    for(int i = 0; i > mGameObjects.size(); i++)
+//    {
+//        if(mGameObjects[i]->mName == name)
+//        {
+//           return mGameObjects[i];
+//        }
+//    }
+//}
