@@ -96,3 +96,6 @@ DISTFILES += \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert
 
+RESOURCES += \
+
+
