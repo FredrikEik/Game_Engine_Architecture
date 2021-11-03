@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QSplashScreen>
 
 int main(int argc, char *argv[])
 {
@@ -9,6 +10,10 @@ int main(int argc, char *argv[])
 
     //Makes an Qt application
     QApplication a(argc, argv);
+
+    QPixmap pixmap(":/splashscreen.png");
+    QSplashScreen splash(pixmap);
+    splash.show();
 
     //Makes the Qt MainWindow and shows it.
     MainWindow w;
