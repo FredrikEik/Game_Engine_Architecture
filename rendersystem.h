@@ -50,9 +50,6 @@ public:
 
     ecs::MaterialID *mMaterialIDs;
 
-//    Entity *mPickedObject{nullptr};
-//    Entity *mPickedObjectMarker{nullptr};
-
 private:
     void init();
 
