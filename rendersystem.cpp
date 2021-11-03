@@ -745,13 +745,20 @@ std::vector<GameObject*> RenderSystem::getAllGameObjects()
     return mGameObjects;
 }
 
-//std::vector<GameObject*> RenderSystem::getGameObjectOfName(std::string name)
-//{
-//    for(int i = 0; i > mGameObjects.size(); i++)
-//    {
-//        if(mGameObjects[i]->mName == name)
-//        {
-//           return mGameObjects[i];
-//        }
-//    }
-//}
+GameObject RenderSystem::getGameObjectOfName(std::string name)
+{
+    GameObject returnObject;
+
+    for(int i = 0; i < mGameObjects.size(); i++)
+    {
+        if(mGameObjects[i]->mName == name)
+        {
+            returnObject.mName = mGameObjects[i]->mName;
+            returnObject.mMesh->mVAO[i] = mGameObjects[i]->mMesh->mVAO[i];
+
+            return returnObject;
+        }
+    }
+    mLogger->logText("No gameobject by that name was found", LColor::DAMNERROR);
+    return returnObject;
+}

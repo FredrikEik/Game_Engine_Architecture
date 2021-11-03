@@ -9,28 +9,19 @@ PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {re
 
 void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 {
+//    mLogger->logText("mGameObject.size is" + mGameObjects.size(), LColor::LOG);
 
-    //Get all GameObjects in an mGameObjectsArray.
-    mGameObjects = mRenderSystem->getAllGameObjects();
+//    for(int i = 0; i < mGameObjects.size(); i++) //Used to check that all gameobjects are there.
+//    {
+//        mLogger->logText(mGameObjects[i]->mName);
+//    }
 
-    //Create a reference to the gameObject the ball will roll on.
-    GameObject groundObject = {};
-
-    //Create a string to search for the groundobject i need
+    //Search for the gameobject called name and create a reference to the GameObject the ball will roll on.
     std::string name = "TriangleSurface";
-
-    //Loop though all the gameobjects
-    for(int i = 0; i > mGameObjects.size(); i++)
-    {
-        if(mGameObjects[i]->mName == name)
-        {
-          mLogger->logText(mGameObjects[i]->mName, LColor::LOG);
-          groundObject.mName = mGameObjects[i]->mName;
-        }
-    }
+    //GameObject groundObject = {mRenderSystem->getGameObjectOfName(name)};
 
     //How many vertices are there in TriangleSurface?
-//    qDebug() << groundObject.mMesh->mVertexCount[0];
+    //mLogger->logText(groundObject.mMesh->mVertexCount);
 
     //Get the surface the physicsobject is going to interact with.
     //int triangleVertices = mGameObjects.mName->("TriangleSurface")->mMesh->getVertexCount;

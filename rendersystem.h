@@ -51,7 +51,7 @@ public:
     bool mDrawGrid{true};
 
     std::vector<GameObject*> getAllGameObjects();
-    std::vector<GameObject*> getGameObjectOfName(std::string meshName);
+    GameObject getGameObjectOfName(std::string name);
 
 private:
     void init();
