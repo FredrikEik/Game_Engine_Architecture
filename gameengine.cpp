@@ -194,19 +194,19 @@ void GameEngine::HandleInput()
             mPlayer->mTransformComp->mMatrix.translateY(0);
             mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
         }
-        if(mInput.S)
+        if(mInput.S /*&& !CollisionSystem::isColliding(mRenderwindow->mGameObjects)*/)
         {
             mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
             mPlayer->mTransformComp->mMatrix.translateZ(-currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
         }
-        if(mInput.D)
+        if(mInput.D && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
         {
             mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
             mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getRightVector().z*cameraSpeed*camSpeedMultiplyer);
         }
-        if(mInput.A)
+        if(mInput.A && !CollisionSystem::isColliding(mRenderwindow->mGameObjects))
         {
             mPlayer->mTransformComp->mMatrix.translateX(-currentCamera->getRightVector().x*cameraSpeed*camSpeedMultiplyer);
             mPlayer->mTransformComp->mMatrix.translateY(0);
