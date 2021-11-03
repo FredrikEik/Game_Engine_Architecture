@@ -175,7 +175,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
     
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(50.f, 0.1f,300.f);
+    mCurrentCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
     mSong->play();

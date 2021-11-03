@@ -140,7 +140,7 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Len
         temp = LineVec*Length + CameraPos;
         fromvector = Vertex(temp.x(), temp.y(), temp.z(),  1,1, 1,0.f, 0.f); //white edges
 
-
+        MeshComp->IsRay =true;
         MeshComp->mVertices.push_back(fromvector);
         MeshComp->entity = EntityId;
         MeshComp->mDrawType = GL_LINES;
