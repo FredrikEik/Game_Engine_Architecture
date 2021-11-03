@@ -30,8 +30,8 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                 mesh->mVAO[0] = meshDataContainer[i].second.VAO;
                 mesh->mVBO[0] = meshDataContainer[i].second.VBO;
                 mesh->VertexSize[0] = meshDataContainer[i].second.meshVert.size();
-                mesh->mVertices = meshDataContainer[i].second.meshVert;
-                mesh->mIndices = meshDataContainer[i].second.meshIndic;
+                //mesh->mVertices = meshDataContainer[i].second.meshVert;
+                //mesh->mIndices = meshDataContainer[i].second.meshIndic;
                 mesh->LODEnabled = CheckLOD12Presence(meshDataContainer[i].first);
                 if(mesh->LODEnabled){
                     qDebug() << "LOD Enabled";

@@ -22,7 +22,7 @@ void RenderSystem::init(MeshComponent *mMesh)
     glBindBuffer( GL_ARRAY_BUFFER, mMesh->mVBO[0] );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glBufferData( GL_ARRAY_BUFFER, mMesh->mVertices.size()*sizeof( Vertex ),
+    glBufferData( GL_ARRAY_BUFFER, mMesh->VertexSize[0]*sizeof( Vertex ),
                   mMesh->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices

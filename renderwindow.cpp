@@ -146,15 +146,15 @@ void RenderWindow::init()
     
     
     //Suzannes - using default material:
-    /*for(int i{-50}; i < 100; i++)
+    for(int i{-50}; i < 100; i++)
     {
         for(int j{0}; j < 10; j++)
         {
-            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),1,1);
+            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),0,0);
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
 
         }
-    }*/
+    }
 
 
     SoundManager::getInstance()->init();
@@ -221,47 +221,9 @@ void RenderWindow::render()
     
     
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
-    /*
-    //LOD SWITCHER - OLE PLS DONT HATE
-    //calc length between obj and camera.
-    //use length to switch LOD level
-    //use length and LOD level to switch only one time
-    gsl::Vector3D LODlength = transformCompVec[2]->mMatrix.getPosition() - mCurrentCamera->position();
-    
-    if((LODlength.length() < 5.0f) && (meshCompVec[2]->LOD0 == false) && meshCompVec[2]->LODLevel != 0)
-    {
-        qDebug() << "LOD level 0";
-        //LOD LEVEL 0
-        meshCompVec[2]->LODLevel = 0;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = true;
-        meshCompVec[2]->LOD1 = false;
-        meshCompVec[2]->LOD2 = false;
-    }
-    else if((LODlength.length() >= 5.0f && LODlength.length() < 10.0f) && (meshCompVec[2]->LOD1 == false) && meshCompVec[2]->LODLevel != 1)
-    {
-        qDebug() << "LOD level 1";
-        //LOD LEVEL 1
-        meshCompVec[2]->LODLevel = 1;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = false;
-        meshCompVec[2]->LOD1 = true;
-        meshCompVec[2]->LOD2 = false;
-    }
-    else if((LODlength.length() >= 10.0f && LODlength.length() < 20.0f) && (meshCompVec[2]->LOD2 == false) && meshCompVec[2]->LODLevel != 2)
-    {
-        qDebug() << "LOD level 2";
-        //LOD LEVEL 2
-        meshCompVec[2]->LODLevel = 2;
-        entitySys->LODSuzanneSwithcer(meshCompVec[2]);
-        RenderSys->init(meshCompVec[2]);
-        meshCompVec[2]->LOD0 = false;
-        meshCompVec[2]->LOD1 = false;
-        meshCompVec[2]->LOD2 = true;
-    }
-*/
+
+
+
     
     
     
@@ -290,6 +252,35 @@ void RenderWindow::render()
                 //Now mMaterial component holds texture slot directly - probably should be changed
                 glUniform1i(mTextureUniform, MaterialCompVec[i]->mTextureUnit);
             }
+            if(meshCompVec[i]->LODEnabled){
+                //LOD SWITCHER
+                //calc length between obj and camera.
+                //use length to switch LOD level
+                //use length and LOD level to switch only one time
+                gsl::Vector3D LODlength = transformCompVec[i]->mMatrix.getPosition() - mCurrentCamera->position();
+
+                if(LODlength.length() < 10.0f)
+                {
+                    //qDebug() << "LOD level 0";
+                    //LOD LEVEL 0
+                    meshCompVec[i]->LODLevel = 0;
+                }
+                else if(LODlength.length() < 20.0f)
+                {
+                    //qDebug() << "LOD level 1";
+                    //LOD LEVEL 1
+                    meshCompVec[i]->LODLevel = 1;
+                }
+                else if(LODlength.length() > 20.0f)
+                {
+                    //qDebug() << "LOD level 2";
+                    //LOD LEVEL 2
+                    meshCompVec[i]->LODLevel = 2;
+                }
+            }else{
+                meshCompVec[i]->LODLevel = 0;
+            }
+
             RenderSys->draw(meshCompVec[i],
                             MaterialCompVec[i],
                             transformCompVec[i],

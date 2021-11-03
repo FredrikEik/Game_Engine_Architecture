@@ -24,9 +24,8 @@ struct TransformComponent
 
 struct MeshComponent
 {
-    std::vector<Vertex> mVertices; // to be deleted if resource management works
-    std::vector<GLuint> mIndices; // to be deleted if resource management works
-    //****^ All of these are marked for deletion. Our physics system currently relies on them being existent, but we are changing that.
+    std::vector<Vertex> mVertices; // Always Empty unless used in other systems we forgot to implement support for
+    std::vector<GLuint> mIndices; // Always Empty unless used in other systems we forgot to implement support for
 
     int entity{0};
     //GLuint mVAO{0};

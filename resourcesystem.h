@@ -39,7 +39,7 @@ public:
     std::vector<std::string> GetAllMeshesInAssetsDirectory();
     void ResourceSystemInit(RenderSystem * inRendSys);
     void SetMeshDataContainer();
-    std::vector<Vertex> getVertexDataByVAO(std::string meshName);
+    std::vector<Vertex> getVertexDataByName(std::string meshName);
     bool CheckLOD12Presence(std::string meshName);
     std::string getPureName(std::string objMeshName);
 
