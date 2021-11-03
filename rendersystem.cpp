@@ -588,75 +588,59 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
 
 void RenderSystem::mousePicking(QMouseEvent *event)
 {
-    int mouseXPixel = event->pos().x();
-    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+    float accuracy = .6f;
+    int mouseXpos = event->pos().x();
+    int mouseYpos = event->pos().y();
 
-    //Since we are going to invert these, I make a copy
+
     gsl::Matrix4x4 projectionMatrix = mCurrentCamera->mProjectionMatrix;
     gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
 
-    //step 1
-    float x = (2.0f * mouseXPixel) / width() - 1.0f;
-    float y = 1.0f - (2.0f * mouseYPixel) / height();
+
+    float x = (2.0f * mouseXpos) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouseYpos) / height();
     float z = 1.0f;
     gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
 
-    //step 2
     gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
 
-    //step 3
     projectionMatrix.inverse();
     gsl::Vector4D ray_eye = projectionMatrix * ray_clip;
     ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
 
-    //step 4
+
     viewMatrix.inverse();
-    gsl::Vector4D temp = viewMatrix * ray_eye; //temp save the result
+    gsl::Vector4D temp = viewMatrix * ray_eye;
     gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
-    // don't forget to normalise the vector at some point
     ray_wor.normalize();
-
-
-    /************************************************************************/
-    //Collision detection - in world space coordinates:
-    //Writing here as a quick test - probably should be in a CollisionSystem class
-
-    //This is ray vs bounding sphere collision
 
     for(unsigned int i{0}; i < mGameObjects.size(); i++)
     {
-        //making the vector from camera to object we test against
+        //vektor mellom objekt og kamera
         gsl::Vector3D tempObject = mGameObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->mPosition;
+        //lage normalen av ray i forhold til tempobjects vektor
+        // krossprodukt
+        gsl::Vector3D planeNormal = gsl::Vector3D::cross(ray_wor, tempObject);
 
-        //making the normal of the ray - in relation to the camToObject vector
-        //this is the normal of the surface the camToObject and ray_wor makes:
-        gsl::Vector3D planeNormal = ray_wor ^ tempObject;    //^ gives the cross product
-
-        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
         gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
         rayNormal.normalize();
 
+        //dot produkt
+        float distance = gsl::Vector3D::dot(tempObject, rayNormal);
 
-
-        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray using dot product:
-        float distance = tempObject * rayNormal;   //* gives the dot product
-
-        //we are interested in the absolute distance, so fixes any negative numbers
+        //absolutt verdi, ikke intresert i negative resultater
         distance = abs(distance);
 
-        //if distance to ray < objects bounding sphere == we have a collision
-        if(distance < 0.5f)
+        //sjekker kollisjon
+        if(distance < accuracy)
         {
-            qDebug() << "Item picked " << i << distance << "meters away from ray";
+            qDebug() << "Item picked " << i;
+            //Legge til funskjonalitet får oppdatere item lista i ui
             mIndexToPickedObject = i;
-            mMainWindow->selectObjectByIndex(mIndexToPickedObject);
-
-            //factory->mGameObjects[i]->move(1000.f,0,0);
-            break;  //breaking out of for loop - does not check if ray touch several objects
-
-
+            break;
         }
+        else
+            mIndexToPickedObject = -1;
 
     }
 }
