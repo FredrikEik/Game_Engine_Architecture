@@ -4,7 +4,7 @@
 #include "constants.h"
 #include <QDebug>
 
-#define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
+#define EXISTS(x) mMeshMap.find(x) != mMeshMap.end()
 
 Factory::Factory()
 {
@@ -23,7 +23,9 @@ GameObject* Factory::createObject(std::string objectName)
     {
         if(EXISTS("Cube")) //If cube mesh exists
         {
-        objectToCreate->meshComp = storedMeshes["Cube"];
+        uint32_t index = mMeshMap["Cube"];
+        objectToCreate->meshComp = storedMeshes[index];
+        }
         objectToCreate->materialComp.mShaderProgram = 1;
         objectToCreate->materialComp.mTextureUnit = 1;
         objectToCreate->sphereCollisionComp.center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
@@ -36,7 +38,8 @@ GameObject* Factory::createObject(std::string objectName)
     {
         if(EXISTS("Plane")) //If Plane mesh exists
         {
-        objectToCreate->meshComp = storedMeshes["Plane"];
+            uint32_t index = mMeshMap["Cube"];
+            objectToCreate->meshComp = storedMeshes[index];
         }
         objectToCreate->materialComp.mShaderProgram = 1;
         objectToCreate->materialComp.mTextureUnit = 1;
@@ -48,7 +51,8 @@ GameObject* Factory::createObject(std::string objectName)
     {
         if(EXISTS("Triangle")) //If Triangle mesh exists
         {
-        objectToCreate->meshComp = storedMeshes["Triangle"];
+            uint32_t index = mMeshMap["Cube"];
+            objectToCreate->meshComp = storedMeshes[index];
         }
         objectToCreate->materialComp.mShaderProgram = 1;
         objectToCreate->materialComp.mTextureUnit = 1;
@@ -60,7 +64,8 @@ GameObject* Factory::createObject(std::string objectName)
     {
         if(EXISTS("MarioCube")) //If MarioCube mesh exists
         {
-        objectToCreate->meshComp = storedMeshes["MarioCube"];
+            uint32_t index = mMeshMap["Cube"];
+            objectToCreate->meshComp = storedMeshes[index];
         }
         objectToCreate->materialComp.mShaderProgram = 1;
         objectToCreate->materialComp.mTextureUnit = 1;
@@ -74,7 +79,8 @@ GameObject* Factory::createObject(std::string objectName)
     {
         if(EXISTS("Sphere")) //If Sphere mesh exists
         {
-        objectToCreate->meshComp = storedMeshes["Sphere"];
+            uint32_t index = mMeshMap["Cube"];
+            objectToCreate->meshComp = storedMeshes[index];
         }
         objectToCreate->materialComp.mShaderProgram = 1;
         objectToCreate->materialComp.mTextureUnit = 1;
@@ -90,14 +96,13 @@ GameObject* Factory::createObject(std::string objectName)
     //    objectToCreate.getMaterialComponent()->mShaderProgram = 0;
     //    objectToCreate.getMaterialComponent()->mTextureUnit = 0;
     //}
-    }
     else
     {
         //Default
-        objectToCreate->meshComp = storedMeshes["Cube"];
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
-        objectToCreate->mObjectName = "Default ";
+//        objectToCreate->meshComp = storedMeshes["Cube"];
+//        objectToCreate->materialComp.mShaderProgram = 1;
+//        objectToCreate->materialComp.mTextureUnit = 1;
+//        objectToCreate->mObjectName = "Default ";
     }
 
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
@@ -109,7 +114,8 @@ GameObject* Factory::createObject(std::string objectName)
 
 void Factory::saveMesh(std::string fileName, std::string nickName)
 {
-    if(EXISTS(nickName)){
+    if(EXISTS(nickName))
+    {
         qDebug() << "Mesh already exists";
     }
     else
@@ -127,15 +133,17 @@ void Factory::saveMesh(std::string fileName, std::string nickName)
         newMesh.mIndexCount = tempIndices.size();
         initMesh(tempVertices, tempIndices, newMesh);
 
-        qDebug() << "vertices & indices" << QString::number(tempVertices.size()) << QString::number(tempIndices.size());
-        //Insert it into the stored meshes map with a nickname
-        storedMeshes.insert(std::pair<std::string, MeshComponent>{nickName, newMesh});
+        //qDebug() << "vertices & indices" << QString::number(tempVertices.size()) << QString::number(tempIndices.size());
+
+        storedMeshes.emplace_back(newMesh);
+        mMeshMap.insert(std::pair<std::string, uint32_t>{nickName, storedMeshes.size()-1});
     }
 }
 
 void Factory::saveMesh(std::vector<Vertex> vertices, std::string nickName)
 {
-    if(EXISTS(nickName)){
+    if(EXISTS(nickName))
+    {
         qDebug() << "Mesh already exists";
     }
     else
@@ -145,7 +153,8 @@ void Factory::saveMesh(std::vector<Vertex> vertices, std::string nickName)
         newMesh.mDrawType = GL_TRIANGLES;
         initMesh(vertices, newMesh);
 
-        storedMeshes.insert(std::pair<std::string, MeshComponent>{nickName, newMesh});
+        storedMeshes.emplace_back(newMesh);
+        mMeshMap.insert(std::pair<std::string, uint32_t>{nickName, storedMeshes.size()-1});
     }
 }
 

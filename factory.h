@@ -33,7 +33,9 @@ public:
 
 
 private:
-    std::unordered_map<std::string, MeshComponent> storedMeshes;
+    std::map<std::string, uint32_t> mMeshMap;
+    std::vector<MeshComponent> storedMeshes;
+
     std::queue<std::uint32_t> mAvailableIDs;
 
 
