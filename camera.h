@@ -9,7 +9,7 @@
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
  */
-class Camera : public GameObject
+class Camera : public QOpenGLFunctions_4_1_Core
 {
 public:
     Camera(float fieldOfView, float aspectRatio);
@@ -19,9 +19,9 @@ public:
     void updateRightVector();
     void updateForwardVector();
     void update();
-    void init() override;
-    void draw() override;
-    void move(float x, float y, float z) override;
+    void init(std::vector<Vertex> vertices);
+    void draw();
+    void move(float x, float y, float z);
 
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;

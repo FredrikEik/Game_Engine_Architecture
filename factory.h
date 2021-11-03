@@ -5,7 +5,9 @@
 #include "gameobject.h"
 #include <unordered_map>
 #include <queue>
-class Factory
+#include <QOpenGLFunctions_4_1_Core>
+
+class Factory : public QOpenGLFunctions_4_1_Core
 {
 public:
     Factory();
@@ -19,11 +21,19 @@ public:
 
     GameObject* createObject(std::string objectName);
 
+    //Make mesh from .obj file
     void saveMesh(std::string fileName, std::string nickName);
+    //Make mesh from vertices
+    void saveMesh(std::vector<Vertex> vertices, std::string nickName);
+
+    //Initialize mesh with vertices and indices
+    void initMesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, MeshComponent &mesh);
+    //Initialize mesh with only vertices
+    void initMesh(std::vector<Vertex> vertices, MeshComponent &mesh);
 
 
 private:
-    std::unordered_map<std::string, MeshComponent*> storedMeshes;
+    std::unordered_map<std::string, MeshComponent> storedMeshes;
     std::queue<std::uint32_t> mAvailableIDs;
 
 

@@ -1,9 +1,5 @@
 #include "components.h"
 
-//Components::Components()
-//{
-
-//}
 
 TransformComponent::TransformComponent()
 {
@@ -19,4 +15,3 @@ MaterialComponent::MaterialComponent()
 {
 
 }
-

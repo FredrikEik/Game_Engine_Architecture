@@ -13,12 +13,6 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "gameobject.h"
-#include "xyz.h"
-#include "cube.h"
-#include "plane.h"
-#include "triangle.h"
-#include "mariocube.h"
-#include "sphere.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -31,6 +25,7 @@
 #include "quadtree.cpp"
 #include "vector4d.h"
 #include "matrix4x4.h"
+#include "codedmeshes.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -137,42 +132,26 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
+    //********************** Read meshes from mesh folder **********************
+    // Maybe loop this later in some way
+    CodedMeshes hardCodedMeshes;
+    hardCodedMeshes.makeAll();
+    {
+        factory->saveMesh(hardCodedMeshes.cubeVertices, "Cube");
+        factory->saveMesh(hardCodedMeshes.triangleVertices, "Triangle");
+        factory->saveMesh(hardCodedMeshes.planeVertices, "Plane");
+        factory->saveMesh("../GEA2021/Assets/Meshes/MarioCube.obj", "MarioCube");
+        factory->saveMesh("../GEA2021/Assets/Meshes/Sphere.obj", "Sphere");
 
-    //factory->createObject("Plane");
-    //factory->createObject("Triangle");
-    //factory->createObject("Cube");
-    //factory->createObject("MarioCube");
-
-    /*
-    GameObject *marioCube = new MarioCube();
-    marioCube->init();
-    mGameObjects.push_back(marioCube);
-
-    GameObject *plane = new Plane();
-    plane->init();
-    mGameObjects.push_back(plane);
-
-    GameObject *cube = new Cube();
-    cube->init();
-    mGameObjects.push_back(cube);
-
-    GameObject *triangle = new Triangle();
-    triangle->init();
-    mGameObjects.push_back(triangle);
-    */
-
-
+    }
 
     //********************** Set up camera **********************
     glDisable(GL_CULL_FACE);
     mTestFrustumCamera = new Camera(45.0f, 4/3);
-    mTestFrustumCamera->init();
     mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mTestFrustumCamera->updateFrustumPos(45.0f, 4/3);
 
     mCurrentCamera = new Camera(45.0f, 4/3);
-    mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mCurrentCamera->updateFrustumPos(45.0f, 4/3);
 
@@ -217,37 +196,24 @@ void RenderWindow::init()
     //mVideoGameLand->play();
     //mVideoGameLand2->play();
 
-
-
-
-
     //mMario->play(); //doesnt work
     //mExplosionSound->play();
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
 
-
-
-
-
-    //**********************************************************
-
-    //megatemp
-
-
-
-GameObject *temp=nullptr;
+        GameObject* temp;
         for(int i{0}; i < 50; i++)
         {
             for(int j{0}; j < 10; j++)
             {
                 temp = factory->createObject("Cube");
-                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
-                temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+                temp->transformComp.mMatrix.setPosition(2.f*i,0.f,2.f*j);
+                temp->sphereCollisionComp.center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
-                mMainWindow->updateOutliner(factory->mGameObjects);
+
             }
         }
+        mMainWindow->updateOutliner(factory->mGameObjects);
 
 }
 
@@ -268,29 +234,27 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
-    //Draws the objects
 
     //mCurrentCamera->draw();
     //mTestFrustumCamera->draw();
 
-    //This should be in a loop! <- Ja vi må loope dette :/
+    //Draws the objects
     if(factory->mGameObjects.size() > 0)
     {
 
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
-            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+            unsigned int shaderProgramIndex = factory->mGameObjects[i]->materialComp.mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->materialComp.mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
-            //factory->mGameObjects[i]->draw();
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->transformComp.mMatrix.constData());
             if(!bPause)
             {
                 factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
@@ -298,29 +262,29 @@ void RenderWindow::render()
 
             if(toggleFrustumCulling)
 			{
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->sphereCollisionComp.center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
-            if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+            if(rightPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
             {
-                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
-                if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                if(leftPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
                 {
-                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->sphereCollisionComp.center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
-                    if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                    if(nearPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
                     {
-                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
                         float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, mCurrentCamera->farPlaneNormal);
-                        if(farPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                        if(farPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
                         {
-                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - factory->mGameObjects[i]->sphereCollisionComp.center;
                             float topPlaneHeightToObject = gsl::Vector3D::dot(topPlaneToObjectVector, mCurrentCamera->topPlaneNormal);
-                            if(topPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                            if(topPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
                             {
-                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
-                                if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                                if(bottomPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
                                 {
                                     factory->mGameObjects[i]->draw();
                                 }
@@ -329,41 +293,17 @@ void RenderWindow::render()
                     }
                 }
             }
-            if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
+            }
+            else
             {
                 factory->mGameObjects[i]->draw();
             }
-			}
-            else{
-                factory->mGameObjects[i]->draw();
-            }
+//            if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
+//            {
+//                factory->mGameObjects[i]->draw();
+//            }
 
-            //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
-            /*
-            for (unsigned int y=0; y<factory->mGameObjects.size(); y++)
-            {
-               if(factory->mGameObjects[i] != factory->mGameObjects[y])
-               {
-                   //Check if both are cubes
-                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Cube*>(factory->mGameObjects[y]) != nullptr)
-                   {
-                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
-                                               *dynamic_cast<Cube*>(factory->mGameObjects[y])->getBoxCollisionComponent());
-                       qDebug() << "Box " << i << "colliding with box" << y << " = " << test;
-                   }
-
-                   //Check if one is sphere and one is cube
-                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Sphere*>(factory->mGameObjects[y]) != nullptr)
-                   {
-                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
-                                               *dynamic_cast<Sphere*>(factory->mGameObjects[y])->getSphereCollisionComponent());
-                       qDebug() << "Box " << i << "colliding with sphere" << y << " = " << test;
-                   }
-               }
-            }
-            */
          }
-
     }
 
 
@@ -485,18 +425,12 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
-    if(objectName == "MarioCube" || objectName == "Sphere")
-    {
-    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
-    }
     GameObject* newObject = factory->createObject(objectName);
-
-    gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
+    gsl::Vector3D position = newObject->transformComp.mMatrix.getPosition();
     gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
     uint32_t id = newObject->ID;
-
     mQuadtree.insert(position2D, id, newObject);
-      mMainWindow->updateOutliner(factory->mGameObjects);
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 void RenderWindow::playPausebutton()
@@ -651,7 +585,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         for(int i{0}; i < factory->mGameObjects.size(); i++)
         {
             //making the vector from camera to object we test against
-            gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mCurrentCamera->position();
+            gsl::Vector3D camToObject = factory->mGameObjects[i]->transformComp.mMatrix.getPosition() - mCurrentCamera->position();
 
             //making the normal of the ray - in relation to the camToObject vector
             //this is the normal of the surface the camToObject and ray_wor makes:

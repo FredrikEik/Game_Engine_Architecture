@@ -18,12 +18,14 @@ struct MeshComponent
 {
 public:
     MeshComponent();
-    std::vector<Vertex> mVertices;
-    std::vector<GLuint> mIndices;
+    //std::vector<Vertex> mVertices;
+    //std::vector<GLuint> mIndices;
 
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
+    GLint mVertexCount {-1};
+    GLint mIndexCount{-1};
 
     GLenum mDrawType{GL_TRIANGLES};
     GLint mMatrixUniform{0};

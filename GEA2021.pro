@@ -24,39 +24,34 @@ win32 {
 
 SOURCES += main.cpp \
     camera.cpp \
+    codedmeshes.cpp \
     components.cpp \
-    cube.cpp \
     detailswidget.cpp \
     factory.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
-    mariocube.cpp \
     objreader.cpp \
-    plane.cpp \
     quadtree.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
-    sphere.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     SoundCode/scr/vector3.cpp \
     vertex.cpp \
     SoundCode/scr/wavfilehandler.cpp \
-    xyz.cpp \
-    triangle.cpp
 
 
 HEADERS += \
     camera.h \
+    codedmeshes.h \
     components.h \
     constants.h \
-    cube.h \
     detailswidget.h \
     factory.h \
     gameobject.h \
@@ -66,20 +61,15 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
-    mariocube.h \
     objreader.h \
-    plane.h \
     quadtree.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
-    sphere.h \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
     vertex.h \
-    xyz.h \
-    triangle.h \
     SoundCode/h/vector3.h \
     SoundCode/h/wavfilehandler.h \
     SoundCode/h/soundmanager.h \
