@@ -219,13 +219,18 @@ void MainWindow::on_PlayPause_clicked(bool checked)
 {
     if(checked)
     {
-        ui->PlayPause->setText("Pause");
+        ui->PlayPause->setText("Play (TAB)");
+        mRenderWindow->freeFly = true;
+        mRenderWindow->bPause = false;
     }
     else if (!checked)
     {
-        ui->PlayPause->setText("Play");
+        ui->PlayPause->setText("Pause (TAB)");
+        mRenderWindow->freeFly = false;
+        mRenderWindow->bPause = true;
     }
     mRenderWindow->playPausebutton();
+
 }
 
 void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
