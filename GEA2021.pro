@@ -9,7 +9,8 @@ INCLUDEPATH += \
     ./gsl \
     ./SoundCode/h \
     ./SoundCode/scr \
-    ./Shaders
+    ./Shaders \
+    ./Assets
 
 
 mac {
@@ -94,3 +95,4 @@ DISTFILES += \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert
+

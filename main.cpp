@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     //Makes an Qt application
     QApplication a(argc, argv);
-    QPixmap pixmap(":/splash.png");
+    QPixmap pixmap(":/Assets/splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
     splash.showMessage("Loading");
