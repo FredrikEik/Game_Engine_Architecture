@@ -231,21 +231,36 @@ void Matrix4x4::setRotation(GLfloat x, GLfloat y, GLfloat z)
 Vector3D Matrix4x4::getRotation()
 {
 
-  return gsl::Vector3D();
+  return gsl::Vector3D(-inverseRotation.x, -inverseRotation.y, -inverseRotation.z);
 }
 
 void Matrix4x4::setScale(GLfloat x, GLfloat y, GLfloat z)
-{
-    //scale(inverseScale);
+{   if (x==0){
+        x=0.1;
+    }
+    if (y==0){
+        y=0.1;
+    }
+    if (z==0){
+        z=0.1;
+    }
+   // if (oldScale.x < x || oldScale.y < y || oldScale.z< z){
+   //     scale(x,y,z);
+   // }
+   // else if (oldScale.x > x )
+
+    scale(1/oldScale.x,1/oldScale.y,1/oldScale.z);
 
     scale(x,y,z);
 
-    //inverseScale = {-x,-y,-z};
+    oldScale = {x,y,z};
 }
 
 Vector3D Matrix4x4::getScale()
 {
-return gsl::Vector3D();
+
+
+return gsl::Vector3D(oldScale.x,oldScale.y,oldScale.z);
 }
 
 void Matrix4x4::rotateX(GLfloat degrees)

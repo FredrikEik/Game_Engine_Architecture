@@ -25,7 +25,7 @@ void DetailsWidget::init(Factory *factory, int index)
     inSceneArrayIndex = index;
     readPosition();
     readRotation();
-    //readScale();
+    readScale();
     clearFocus();
 }
 
@@ -39,7 +39,7 @@ void DetailsWidget::readPosition()
 
 void DetailsWidget::readRotation()
 {
-     position = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getRotation();
+     rotation = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getRotation();
      ui->DoubleSpinBoxXRotation->setValue(rotation.x);
      ui->DoubleSpinBoxYRotation->setValue(rotation.y);
      ui->DoubleSpinBoxZRotation->setValue(rotation.z);
