@@ -131,7 +131,7 @@ SoundComponent *GameObjectManager::makeSoundComponent(std::string assetName)
         mSoundBufferMap.emplace(assetName, soundIndex);
     }
     SoundComponent *tempSource = new SoundComponent();
-    if (waveData)
+    if (soundIndex)
     {
         tempSource->mSource = SoundHandler::makeALSource(mWaveBuffers.at(soundIndex).mALBuffer);
     }

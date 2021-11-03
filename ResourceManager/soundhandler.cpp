@@ -22,7 +22,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     fp = std::fopen((gsl::SoundFilePath + fileName).c_str(), "rb");
     if (fp == NULL)
     {
-        endOnFileReadError("FileHandler error: Wav-file not found.");
+        endOnFileReadError("Sound file error: Wav-file not found.");
         return wavePtr;
     }
 
@@ -31,7 +31,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     std::fread(type, sizeof(char), 4, fp);
     if (type[0] != 'R' || type[1] != 'I' || type[2] != 'F' || type[3] != 'F')
     {
-        endOnFileReadError("FileHandler error: RIFF header missing or invalid.");
+        endOnFileReadError("Sound file error: RIFF header missing or invalid.");
         return wavePtr;
     }
 
@@ -45,7 +45,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: WAVE header missing or invalid.");
+        endOnFileReadError("Sound file error: WAVE header missing or invalid.");
         return wavePtr;
     }
 
@@ -54,7 +54,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: fmt header missing or invalid.");
+        endOnFileReadError("Sound file error: fmt header missing or invalid.");
         return wavePtr;
     }
 
@@ -71,7 +71,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: data header missing or invalid.");
+        endOnFileReadError("Sound file error: data header missing or invalid.");
         return wavePtr;
     }
 
@@ -83,7 +83,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: fread result mismatch.");
+        endOnFileReadError("Sound file error: fread result mismatch.");
         return wavePtr;
     }
 
@@ -91,7 +91,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: fstream error.");
+        endOnFileReadError("Sound file error: fstream error.");
         return wavePtr;
     }
 
@@ -99,7 +99,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     {
         delete wavePtr;
         wavePtr = nullptr;
-        endOnFileReadError("FileHandler error: Wave Data pointer is NULL.");
+        endOnFileReadError("Sound file error: Wave Data pointer is NULL.");
         return wavePtr;
     }
 

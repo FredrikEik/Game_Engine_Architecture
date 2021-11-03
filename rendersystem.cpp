@@ -455,15 +455,16 @@ bool RenderSystem::frustumCulling(int gobIndex)
     if(tempDistance > (gobRadius + padding))
         return true;
 
-    //near plane:
-    tempDistance = frustum.mTopPlane * vectorToObject;
-    if(tempDistance > (gobRadius + padding))
-        return true;
+    //Tried adding these as suggested, but it had no effect on culling?
+//    //near plane:
+//    tempDistance = frustum.mTopPlane * vectorToObject;
+//    if(tempDistance > (gobRadius + padding))
+//        return true;
 
-    //far plane:
-    tempDistance = frustum.mTopPlane * vectorToObject;
-    if(tempDistance > (gobRadius + padding))
-        return true;
+//    //far plane:
+//    tempDistance = frustum.mTopPlane * vectorToObject;
+//    if(tempDistance > (gobRadius + padding))
+//        return true;
 
     return false;
 }

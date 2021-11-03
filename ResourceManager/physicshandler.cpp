@@ -13,7 +13,7 @@ void PhysicsHandler::movePhysicsObject()
     //qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
 //    qDebug() << triangleVertices.size();
-    qDebug() << "Physicshandler";
+//    qDebug() << "Physicshandler";
 
 //Find the distance between the balls position and vertices of the trianglesurface
 //    gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.

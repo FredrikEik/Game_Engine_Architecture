@@ -12,9 +12,8 @@ CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
                     : mRenderSystem{renderSystemIn}, mMainWindow{mainWindowIn}
 {
+    //Create and send logger to main
     mLogger = Logger::getInstance();
-
-
     mLogger->setMainWindow(mMainWindow);
 
     time_t now = time(0);
@@ -30,7 +29,7 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
     //Make the gameloop timer:
     mGameLoopTimer = new QTimer(this);
 
-
+    //Make the cameras for the scene
     mEditorCamera = new Camera(50.0f, 0.1f, 1000.f);
     mEditorCamera->mName = "Editor";
     mGameCamera = new Camera(50.0f, 0.1f, 300.f);
@@ -86,7 +85,9 @@ void CoreEngine::setUpScene()
         {
             temp = mGameObjectManager->addObject("suzanne.obj");
             temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
-            temp->mTransform->mMatrix.scale(1.0f);
+            temp->mTransform->mMatrix.scale(0.5f);
+            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
+            temp->mTransform->mScale.setAlltoSame(0.5f);
             temp->mName = "Monkey " + std::to_string((i*10)+j+1);
             mRenderSystem->mGameObjects.push_back(temp);
         }
@@ -113,7 +114,7 @@ void CoreEngine::setUpScene()
         mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.f, 4.f, 4.f);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     //mGameObjectManager->setUpAllTextures();
