@@ -1,7 +1,6 @@
 #include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
-#include "meshhandler.h"
 
 PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
@@ -10,72 +9,39 @@ PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {re
 
 void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 {
-    //Search for the gameobject called "name" and create a reference to the GameObject the ball will roll on.
+//    mLogger->logText("mGameObject.size is" + mGameObjects.size(), LColor::LOG);
+
+//    for(int i = 0; i < mGameObjects.size(); i++) //Used to check that all gameobjects are there.
+//    {
+//        mLogger->logText(mGameObjects[i]->mName);
+//    }
+
+    //Search for the gameobject called name and create a reference to the GameObject the ball will roll on.
     std::string name = "TriangleSurface";
-    GameObject groundObject;
+    //GameObject groundObject = {mRenderSystem->getGameObjectOfName(name)};
 
-//Get the details of the plane the physicsobject is going to interact with.
-    for(int i = 0; i < mGameObjects.size(); i++)
-    {
-        if(mGameObjects[i]->mName == name) //If string name matches - copy all the info from mGameObjects into groundObject
-        {
-            groundObject.mName = mGameObjects[i]->mName;
-            groundObject.mMesh = mGameObjects[i]->mMesh;
-            groundObject.mMaterial = mGameObjects[i]->mMaterial;
-            groundObject.mTransform = mGameObjects[i]->mTransform;
-            groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
-        }
-    }
-    name.clear();
-    //mLogger->logText(std::to_string(groundObject.mMesh->mVertexCount[0])); //How many vertices are there in TriangleSurface?
+    //How many vertices are there in TriangleSurface?
+    //mLogger->logText(groundObject.mMesh->mVertexCount);
 
+    //Get the surface the physicsobject is going to interact with.
+    //int triangleVertices = mGameObjects.mName->("TriangleSurface")->mMesh->getVertexCount;
+    //Use MeshComponent to get mVertexCounts
 
-//Get the details of the ball
-    name = "RollingBall";
-    GameObject physicsBall;
+//    mMatrix = mPosition * mScale;
 
-    for(int i = 0; i < mGameObjects.size(); i++)
-    {
-        if(mGameObjects[i]->mName == name) //If string name matches - copy all the info from mGameObjects into physicsBall
-        {
-            physicsBall.mName = mGameObjects[i]->mName;
-            physicsBall.mMesh = mGameObjects[i]->mMesh;
-            physicsBall.mMaterial = mGameObjects[i]->mMaterial;
-            physicsBall.mTransform = mGameObjects[i]->mTransform;
-            physicsBall.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
-        }
-    }
-    //mLogger->logText(physicsBall.mName, LColor::LOG);
-
-
-    //So far this works, but struggeling to "translate" variables into ones i can use.
-
-//    mMeshes.emplace_back(MeshData());
-//    MeshData &groundObjectVerts = mMeshes.back();
-
-
-//Find the vector3d position of the ball
-    gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
+//Find the three vector3d of the closest triangle
+    //gsl::Vector3D ballPosition3d = mMatrix.getPosition();
     //qDebug() << "Ballposition3d:            X" <<  ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
 
-
-
-//Find the vector3d position of the ground
-    //gsl::Vector3D groundPosition3d = {groundObject.mTransform->mMatrix.getPosition()};
-    //qDebug() << "Groundposition:" << groundObject.mTransform->mMatrix.getPosition();
-
-
-    //This is getting really un-elegant.
-    //gsl::Vector3D triangleVertices = groundObjectVerts.mVertices[0].data()->getXYZ();
-
-
+//    qDebug() << triangleVertices.size();
+//    qDebug() << "Physicshandler";
 
 //Find the distance between the balls position and vertices of the trianglesurface
-    //gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.
+//    gsl::Vector3D distanceBetweenBallAndVert[6]; //using vertices.size() instead of hardcoding 6 would be better.
 
-//    for (int i = 0; i < mGameObjects.size(); i++)
+//    for (int i = 0; i < triangleVertices.size(); i++)
 //    {
-//        distanceBetweenBallAndVert[i] = groundObjectVerts.mVertices[i] - ballPosition3d;
+//        distanceBetweenBallAndVert[i] = triangleVertices[i].mMatrix.getPosition() - ballPosition3d;
 
 //        //if the distance is a negative number, flip it. This makes sure that the lowest physical distance is selected, not the lowest number.
 //        if (distanceBetweenBallAndVert[i].x < 0)
@@ -88,9 +54,9 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 //                { distanceBetweenBallAndVert[i].z *= -1.0f; }
 
 
-    //qDebug() << "Vert nr                 " << i+1 << "X" << physicsBall.mTransform->mMatrix.getPosition().x << "Y" << physicsBall.mTransform->mMatrix.getPosition().y << "Z" << physicsBall.mTransform->mMatrix.getPosition().z;
-    //qDebug() << "Distance ball to vert nr" << i+1 << "X" << distanceBetweenBallAndVert[i].x << "Y" << distanceBetweenBallAndVert[i].y << "Z" << distanceBetweenBallAndVert[i].z;
-//    }
+//    //qDebug() << "Vert nr                 " << i+1 << "X" << triangleVertices[i].getXYZ().x << "Y" << triangleVertices[i].getXYZ().y << "Z" << triangleVertices[i].getXYZ().z;
+//    //qDebug() << "Distance ball to vert nr" << i+1 << "X" << distanceBetweenBallAndVert[i].x << "Y" << distanceBetweenBallAndVert[i].y << "Z" << distanceBetweenBallAndVert[i].z;
+    }
 
 
 
@@ -179,4 +145,4 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 //        //qDebug() << "ball is falling";
 //    }
 
-}
+//}
