@@ -50,6 +50,8 @@ private:
     void readRotation();
     void readScale();
     void setPosition();
+    void setRotation();
+    void setScale();
 
     float mPositionPace{1.f};
     float mRotationPace{1.f};
@@ -58,7 +60,7 @@ private:
     int inSceneArrayIndex{-1};
     Factory *mfactory{nullptr};
     gsl::Vector3D position;
-    gsl::Vector3D rotation = (0,0,0);
+    gsl::Vector3D rotation;
     gsl::Vector3D scale;
 
 };
