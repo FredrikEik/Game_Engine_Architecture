@@ -77,6 +77,7 @@ private:
 
     void setupPlainShader(int shaderIndex);
     void setupTextureShader(int shaderIndex);
+    void setupLightShader(int shaderIndex);
 
     GLint mTextureUniform{-1};
 

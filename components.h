@@ -59,6 +59,11 @@ public:
 
 };
 
+struct LightComponent
+{
+    gsl::Vector3D lightColor();
+};
+
 struct BoxCollisionComponent
 {
 public:

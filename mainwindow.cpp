@@ -110,6 +110,7 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("MarioCube");
     ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
+    ui->createDropDownBox->addItem("Light");
     ui->PlayPause->setText("Play");
 
 

@@ -134,8 +134,15 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "lighShader.frag").c_str());
+    qDebug() << "Light shader shader program id: " << mShaderPrograms[2]->getProgram();
+
+
+
     setupPlainShader(0);
     setupTextureShader(1);
+    setupLightShader(2);
 
     //********************** Making the object to be drawn **********************
 
@@ -185,9 +192,14 @@ void RenderWindow::init()
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
                                      qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "lightShader.frag").c_str());
+                                     qDebug() << "Light shader program id: " << mShaderPrograms[2]->getProgram();
+
 
     setupPlainShader(0);
     setupTextureShader(1);
+    setupLightShader(2);
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -407,6 +419,14 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupLightShader(int shaderIndex)
+{
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    //mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 //This function is called from Qt when window is exposed (shown)

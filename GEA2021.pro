@@ -32,6 +32,7 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
+    light.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    light.h \
     mariocube.h \
     objreader.h \
     plane.h \
@@ -90,6 +92,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/lightShader.frag \
+    Shaders/lightShader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
