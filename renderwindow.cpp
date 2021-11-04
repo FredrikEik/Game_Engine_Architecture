@@ -30,6 +30,7 @@
 #include "vector3.h"
 #include "quadtree.cpp"
 #include "vector4d.h"
+#include "level.h"
 #include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -227,28 +228,23 @@ void RenderWindow::init()
 
 
 
-
-
-
-    //**********************************************************
-
-    //megatemp
-
-
-
 GameObject *temp=nullptr;
-        for(int i{0}; i < 50; i++)
+    for(int i{0}; i < 50; i++)
+    {
+        for(int j{0}; j < 10; j++)
         {
-            for(int j{0}; j < 10; j++)
-            {
-                temp = factory->createObject("Cube");
-                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
-                temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
-                //TODO: Scaling have to be made easier and more automatic than this!
-
-            }
+            temp = factory->createObject("Cube");
+            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+            //TODO: Scaling have to be made easier and more automatic than this!
         }
-            mMainWindow->updateOutliner(factory->mGameObjects);
+    }
+    /*
+    Level *testLevel = new Level(*factory);
+    testLevel->spawnObjectAtLocation("Cube", gsl::Vector3D(0.0f, 0.0f, 0.0f));
+    */
+
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 // Called each frame - doing the rendering

@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QJSEngine>
 #include "gameobject.h"
 #include "factory.h"
 #include "input.h"
@@ -48,6 +49,9 @@ public:
 
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
+
+    //Javascript engine
+    QJSEngine engine;
 
 
 private slots:

@@ -1,5 +1,5 @@
-QT          += core gui widgets opengl
-
+QT          += core gui widgets opengl \
+            core qml
 TEMPLATE    = app
 CONFIG      += c++17
 
@@ -32,6 +32,7 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
+    level.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    level.h \
     mariocube.h \
     objreader.h \
     plane.h \
@@ -90,6 +92,7 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Scripts/levelscript.js \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
