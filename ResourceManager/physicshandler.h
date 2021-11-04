@@ -1,4 +1,4 @@
-#ifndef PHYSICSHANDLER_H
+﻿#ifndef PHYSICSHANDLER_H
 #define PHYSICSHANDLER_H
 
 //Forward declaration
@@ -16,8 +16,8 @@ public:
 
     RenderSystem *mRenderSystem{nullptr};
 
-//    std::map<std::string, unsigned int> mMeshMap; //Trying to get access to vertex data in physicssimulations
-//    std::vector<MeshData> mMeshes;
+    std::map<std::string, unsigned int> mMeshMap; //Trying to get access to vertex data in physicssimulations
+    std::vector<MeshData> mMeshes;
 
 private:
     class Logger *mLogger{nullptr};

@@ -1,4 +1,4 @@
-#include "ResourceManager/physicshandler.h"
+﻿#include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "meshhandler.h"
@@ -50,8 +50,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
     //So far this works, but struggeling to "translate" variables into ones i can use.
 
-//    mMeshes.emplace_back(MeshData());
-//    MeshData &groundObjectVerts = mMeshes.back();
+    mMeshes.emplace_back(MeshData());
+    MeshData &groundObjectVerts = mMeshes.back();
 
 
 //Find the vector3d position of the ball
@@ -66,7 +66,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 
     //This is getting really un-elegant.
-    //gsl::Vector3D triangleVertices = groundObjectVerts.mVertices[0].data()->getXYZ();
+    gsl::Vector3D triangleVertices = groundObjectVerts.mVertices[0].data()->getXYZ(groundObjectVerts);
 
 
 
