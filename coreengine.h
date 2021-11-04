@@ -60,9 +60,12 @@ private:
     SoundManager *mSoundManager{nullptr};
     ResourceManager* mResourceManager{nullptr};
     RenderWindow *mRenderWindow{nullptr};
+    Frustum *frustum{nullptr};
 
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
+
+    GameObject *mGameCameraMesh{nullptr};
 
     SoundSource* mStereoSound{nullptr};
 

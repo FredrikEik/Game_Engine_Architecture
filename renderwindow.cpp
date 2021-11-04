@@ -37,6 +37,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
+
+    frustum = new Frustum();
 }
 
 RenderWindow::~RenderWindow()
@@ -147,46 +149,15 @@ void RenderWindow::render()
     //Draws the objects
     for( int i = 0; i < mGameObjects.size(); i++)
     {
-        if(mGameObjects[i]->mName == "cube.obj"){
+    /** Cube stuff */
+        if(mGameObjects[i]->mName == "cube.obj")
+        {
             checkForCollisions(mGameObjects[i]);
             mGameObjects[i]->move(moveX, moveY, moveZ);
             setPlayerMovement(0,0,0); //resets movement. (stops constant movement after buttonpress)
         }
-    /** FRUSTUM */
 
-        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
-
-        //Check if mForward.x = 0. This fixes the problem where nothing renders at the start
-        //This happened because all "objDistanceFromPlane" floats = 0, because vectors multiplied by 0.
-        if(bFrustumEnabled && mCurrentCamera->getmForward().x != 0.f)
-        {
-            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
-
-            gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
-            leftPlaneNormal.rotateY(45.f);
-            float ObjDistanceFromLeftPlane = (CameraToObject*leftPlaneNormal) / leftPlaneNormal.length();
-
-            if(ObjDistanceFromLeftPlane > 0) continue;
-
-            gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
-            rightPlaneNormal.rotateY(-45.f);
-            float ObjDistanceFromRightPlane = (CameraToObject*rightPlaneNormal) / rightPlaneNormal.length();
-
-            if(ObjDistanceFromRightPlane > 0) continue;
-
-            gsl::Vector3D topPlaneNormal = -mCurrentCamera->getmForward();
-            topPlaneNormal.rotateX(-45.f);
-            float ObjDistanceFromTopPlane = (CameraToObject*topPlaneNormal) / topPlaneNormal.length();
-
-            if(ObjDistanceFromTopPlane > 0) continue;
-
-            gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
-            bottomPlaneNormal.rotateX(45.f);
-            float ObjDistanceFromBottomPlane = (CameraToObject*bottomPlaneNormal) / bottomPlaneNormal.length();
-
-            if(ObjDistanceFromBottomPlane > 0) continue;
-        }
-    /**  */
+    /** Shader Program */
         glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
 
         if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
@@ -202,6 +173,103 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
+
+
+    /** Calculate FRUSTUM */
+
+        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+
+        //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
+        //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
+
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" &&
+            (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))
+        {
+            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+
+
+            float distanceFromFarPlane = (CameraToObject * mCurrentCamera->getmForward()) / mCurrentCamera->getmForward().length();
+
+            if(distanceFromFarPlane > frustum->farPlane) continue;
+
+            gsl::Vector3D leftPlaneNormal = -mCurrentCamera->getmRight();
+            leftPlaneNormal.rotateY(frustum->FOV);
+            float ObjDistanceFromLeftPlane = (CameraToObject * leftPlaneNormal) / leftPlaneNormal.length();
+
+            if(ObjDistanceFromLeftPlane > 0) continue;
+
+            gsl::Vector3D rightPlaneNormal = mCurrentCamera->getmRight();
+            rightPlaneNormal.rotateY(-frustum->FOV);
+            float ObjDistanceFromRightPlane = (CameraToObject * rightPlaneNormal) / rightPlaneNormal.length();
+
+            if(ObjDistanceFromRightPlane > 0) continue;
+
+            gsl::Vector3D topPlaneNormal = -mCurrentCamera->getmForward();
+            topPlaneNormal.rotateX(-frustum->FOV);
+            float ObjDistanceFromTopPlane = (CameraToObject * topPlaneNormal) / topPlaneNormal.length();
+
+            if(ObjDistanceFromTopPlane > 0) continue;
+
+            gsl::Vector3D bottomPlaneNormal = -mCurrentCamera->getmForward();
+            bottomPlaneNormal.rotateX(frustum->FOV);
+            float ObjDistanceFromBottomPlane = (CameraToObject * bottomPlaneNormal) / bottomPlaneNormal.length();
+
+            if(ObjDistanceFromBottomPlane > 0) continue;
+        }
+
+    /** Draw FRUSTUM */
+        if(mGameObjects[i]->mName == "camera.obj" && bFrustumEnabled) //Frustum needs to be drawn after camera is drawn.
+        {                                                             //(So the frustum starts in the same position as the camera)
+            float tanFOV = tanf(frustum->FOV/2);
+            float widthNear = tanFOV * frustum->nearPlane;
+            float widthFar = tanFOV * frustum->farPlane;
+
+            float heightNear = widthNear / mAspectratio;
+            float heightFar = widthFar / mAspectratio;
+
+            gsl::Vector3D topRightNear = gsl::Vector3D(widthNear, heightNear, -frustum->nearPlane);
+            gsl::Vector3D topLeftNear = gsl::Vector3D(-widthNear, heightNear, -frustum->nearPlane);
+            gsl::Vector3D bottomRightNear = gsl::Vector3D(widthNear, -heightNear, -frustum->nearPlane);
+            gsl::Vector3D bottomLeftNear = gsl::Vector3D(-widthNear, -heightNear, -frustum->nearPlane);
+
+            gsl::Vector3D topRightFar = gsl::Vector3D(widthFar, heightFar, -frustum->farPlane);
+            gsl::Vector3D topLeftFar = gsl::Vector3D(-widthFar, heightFar, -frustum->farPlane);
+            gsl::Vector3D bottomRightFar = gsl::Vector3D(widthFar, -heightFar, -frustum->farPlane);
+            gsl::Vector3D bottomLeftFar = gsl::Vector3D(-widthFar, -heightFar, -frustum->farPlane);
+
+
+            Mesh frustumLines;
+
+            frustumLines.mVertices[0].insert( frustumLines.mVertices[0].end(),
+            {  //Nearplane vertexes:
+               Vertex{ bottomLeftNear.x,  bottomLeftNear.y,  bottomLeftNear.z,  1, 0, 0,   0.f, 0.f},
+               Vertex{ bottomRightNear.x, bottomRightNear.y, bottomRightNear.z, 1, 0, 0,   0.f, 0.f},
+               Vertex{ topRightNear.x,    topRightNear.y,    topRightNear.z,    1, 0, 0,   0.f, 0.f},
+               Vertex{ topLeftNear.x,     topLeftNear.y,     topLeftNear.z,     1, 0, 0,   0.f, 0.f},
+               //Farplane vertexes:
+               Vertex{ bottomLeftFar.x,   bottomLeftFar.y,   bottomLeftFar.z,   1, 0, 0,   0.f, 0.f},
+               Vertex{ bottomRightFar.x,  bottomRightFar.y,  bottomRightFar.z,  1, 0, 0,   0.f, 0.f},
+               Vertex{ topRightFar.x,     topRightFar.y,     topRightFar.z,     1, 0, 0,   0.f, 0.f},
+               Vertex{ topLeftFar.x,      topLeftFar.y,      topLeftFar.z,      1, 0, 0,   0.f, 0.f},
+            });
+
+            frustumLines.mIndices[0].insert( frustumLines.mIndices[0].end(),
+            {
+                0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+                4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+                0, 4, 3, 7,                   //leftside lines
+                1, 5, 2, 6                    //rightside lines
+            });
+
+            frustumLines.mDrawType = GL_LINES;
+
+            mResourceManager->init(frustumLines, 0);
+
+            glBindVertexArray(frustumLines.mVAO[0]);
+            glDrawElements(frustumLines.mDrawType, frustumLines.mIndices[0].size(), GL_UNSIGNED_INT, nullptr);
+        }
+
+    /** LOD */
         float  distanceToObject = (ObjectPos - mCurrentCamera->position()).length();
 
         //first: LOD for each object enabled? Second: is LOD enabled in general? (is it toggled in mainwindow)
@@ -237,6 +305,11 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0);
+}
+
+int RenderWindow::getIndexToPickedObject()
+{
+    return indexToPickedObject;
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -278,8 +351,6 @@ void RenderWindow::mousePicking(QMouseEvent *event)
     gsl::Vector3D ray_wor{temp.x, temp.y, temp.z};
     ray_wor.normalize();
 
-//    qDebug() << ray_wor;
-
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
@@ -300,7 +371,12 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         if(distance < mGameObjects[i]->mesh->sphereRadius)
         {
             qDebug() << "You clicked" << QString::fromStdString(mGameObjects[i]->mName) << "in gameObjects[" << i << "]";
-            indexToPickedObject = i;
+
+            if(mGameObjects[i]->mName == "camera.obj")
+                indexToPickedObject = -1;
+            else
+                indexToPickedObject = i;
+
 
         /** Put arrow above selected object */
             gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
@@ -308,9 +384,9 @@ void RenderWindow::mousePicking(QMouseEvent *event)
 
             break;  //breaking out of for loop - does not check if the ray is touching several objects
         }
-        else //if no object is selected, move arrow out of sight.
-            mCoreEngine->MoveSelectionArrow(gsl::Vector3D{9999,9999,9999});
+        else{ //if no object is selected, move arrow out of sight.
             indexToPickedObject = -1;
+        }
     }
 
 }
@@ -436,7 +512,7 @@ void RenderWindow::checkForCollisions(GameObject* player) //Checks all other obj
 
     gsl::Vector3D objToPlayer{0,0,0};
     for( int i = 0; i < mGameObjects.size(); i++){
-        if(mGameObjects[i] != player)
+        if(mGameObjects[i] != player && mGameObjects[i]->mesh->collisionsEnabled == true)
         {
             objToPlayer = mGameObjects[i]->transform->mMatrix.getPosition() - player->transform->mMatrix.getPosition();
 
@@ -519,8 +595,6 @@ Camera *RenderWindow::getCurrentCamera()
 {
     return mCurrentCamera;
 }
-
-
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {

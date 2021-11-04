@@ -36,7 +36,16 @@ struct Mesh
     int lodLevel{0};
     bool bLodEnabled{true};
 
+    bool collisionsEnabled{true};
+
     GLenum mDrawType{GL_TRIANGLES};
+};
+
+struct Frustum
+{
+    float FOV = 45.f;
+    float farPlane = 150.f;
+    float nearPlane = 0.5f;
 };
 
 struct SoundListener

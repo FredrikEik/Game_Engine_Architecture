@@ -8,6 +8,7 @@
 
 #include "input.h"
 #include "constants.h"
+#include "Components.h"
 
 class QVector3D;
 class QOpenGLContext;
@@ -55,6 +56,9 @@ public:
     void render();
 
     bool bPlayerColliding{false};
+
+    int getIndexToPickedObject();
+
 
 private:
     void init();
@@ -113,6 +117,8 @@ private:
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
     class ResourceManager *mResourceManager{nullptr};
     class CoreEngine *mCoreEngine{nullptr};
+
+    Frustum *frustum{nullptr};
 
     void mousePicking(QMouseEvent *event);
 

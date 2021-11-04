@@ -11,7 +11,7 @@ GameObject* ResourceManager::CreateMainCharacter(std::string filename)
 {
     //makeMainCharacter
     object = CreateObject(filename);
-    object->transform->mMatrix.translate(57.f, -1.f, 6.f);
+    object->transform->mMatrix.translate(57.f, -1.f, 6.f); //Input character start position.
 
     return object;
 }
@@ -39,15 +39,14 @@ GameObject* ResourceManager::CreateObject(std::string filename)
         if(filename.find(".obj") != std::string::npos)
             meshIndex = readObj(gsl::MeshFilePath + filename);
         else
-            qDebug() << "Entered else statement in ResourceManager::CreateObject"; //for testing
+            qDebug() << "Entered else statement in ResourceManager::CreateObject(). (Could not find '.obj' in filename)"; //for testing
 
         mMeshIndexMap.emplace(filename, meshIndex);
         mMeshComponents[meshIndex] = *object->mesh;
     }
 
-    if(meshIndex == -1){
+    if(meshIndex == -1)
         std::cout << "Error: meshIndex is -1 (no mesh)";
-    }
 
     if(object->mesh->mVertices[1].size() == 0) //If this is true, the object has no LOD variants
         object->mesh->bLodEnabled = false;
@@ -135,9 +134,6 @@ int ResourceManager::readObj(std::string filename) //Ole's obj reader code
             std::vector<gsl::Vector3D> tempVertecies;
             std::vector<gsl::Vector3D> tempNormals;
             std::vector<gsl::Vector2D> tempUVs;
-
-            //    std::vector<Vertex> mVertices;    //made in VisualObject
-            //    std::vector<GLushort> mIndices;   //made in VisualObject
 
             // Varible for constructing the indices vector
             unsigned int temp_index = 0;

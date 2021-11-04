@@ -19,6 +19,7 @@ public:
     Mesh* mesh{nullptr};             //MeshComponent
     Material* material{nullptr};     //MaterialComponent
     Transform* transform{nullptr};   //TransformComponent
+    Frustum* frustum{nullptr};
 
     void move(float dx, float dy, float dz);
 

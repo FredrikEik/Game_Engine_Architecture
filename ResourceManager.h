@@ -19,12 +19,13 @@ public:
     class GameObject* CreateObject(std::string filename);
 
     static ResourceManager& getInstance();
+    void init(Mesh &mesh, int lod);
 
 private:
     /** Functions */
     ResourceManager();
 
-    void init(Mesh &mesh, int lod);
+
     void makeSphereRadius(Mesh* meshIn, gsl::Vector3D &vertexIn);
 
     int readObj(std::string filename);

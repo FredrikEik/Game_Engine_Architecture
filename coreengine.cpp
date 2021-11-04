@@ -14,6 +14,8 @@ CoreEngine::CoreEngine(RenderWindow *renderWindow)
     mGameLoopTimer = new QTimer(this);
     mEditorCamera = new Camera();
     mGameCamera = new Camera();
+    mGameCameraMesh = new GameObject();
+    frustum = new Frustum();
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -37,6 +39,12 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.scale(0.2f);
     mRenderWindow->addToGameObjects(temp);
 
+    mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
+    mGameCameraMesh->transform->mMatrix.translate(gsl::Vector3D(57.f, .5f, 9.f));
+    mGameCameraMesh->transform->mMatrix.rotateX(20);
+    mGameCameraMesh->mesh->collisionsEnabled = false;
+    mRenderWindow->addToGameObjects(mGameCameraMesh);
+
     temp = mResourceManager->CreateObject("suzanne.obj");
     temp->transform->mMatrix.translate(gsl::Vector3D(57.f, -1.f, 0.f));
     mRenderWindow->addToGameObjects(temp);
@@ -44,7 +52,10 @@ void CoreEngine::SetUpScene()
     temp = mResourceManager->CreateObject("arrow.obj");
     temp->transform->mMatrix.translate(9999,9999,9999);
     temp->transform->mMatrix.scale(0.3f);
+    temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
+
+
 
 
     for(int i{0}; i < 40; i++)
@@ -52,7 +63,7 @@ void CoreEngine::SetUpScene()
        for(int j{0}; j < 40; j++)
        {
            temp = mResourceManager->CreateObject("suzanne.obj");
-           temp->transform->mMatrix.translate(3.f*(i), -5.f, -3.f*(j));
+           temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
            mRenderWindow->addToGameObjects(temp);
        }
    }
@@ -61,7 +72,7 @@ void CoreEngine::SetUpScene()
     mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));
     mGameCamera->pitch(20); //tilt the camera down
 
-    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera->setPosition(gsl::Vector3D(25.f, .5f, 4.f));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
@@ -104,6 +115,9 @@ void CoreEngine::PlayerInput()
     }
     mRenderWindow->setPlayerMovement(move.x, move.y, move.z);
     mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(move.x/5, move.y/5, move.z/5));
+
+    move = (move/5) + mGameCameraMesh->transform->mMatrix.getPosition();
+    mGameCameraMesh->transform->mMatrix.setPosition(move.x, move.y, move.z);
 }
 
 void CoreEngine::EditorCameraInput()
@@ -140,7 +154,15 @@ void CoreEngine::MoveSelectionArrow(gsl::Vector3D pos)
     for(auto i : mRenderWindow->getGameObjects())
     {
         if(i->mName == "arrow.obj")
+        {
+            if(mRenderWindow->getIndexToPickedObject() == -1)
+            {
+                i->transform->mMatrix.setPosition(9999, 9999, 9999);
+                return;
+            }
             i->transform->mMatrix.setPosition(pos.x, pos.y + i->mesh->sphereRadius/3, pos.z);
+        }
+
     }
 }
 
@@ -159,8 +181,8 @@ void CoreEngine::swapCurrentCamera()
 
 void CoreEngine::initCameraProjectionMatrixes(float mAspectRatio)
 {
-    mEditorCamera->mProjectionMatrix.perspective(45.f, mAspectRatio, 0.1f, 100.f);
-    mGameCamera->mProjectionMatrix.perspective(45.f, mAspectRatio, 0.1f, 100.f);
+    mEditorCamera->mProjectionMatrix.perspective(frustum->FOV, mAspectRatio, frustum->nearPlane, frustum->farPlane);
+    mGameCamera->mProjectionMatrix.perspective(frustum->FOV, mAspectRatio, frustum->nearPlane, frustum->farPlane);
 }
 
 void CoreEngine::playStartGameSound()
