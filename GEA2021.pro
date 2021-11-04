@@ -59,6 +59,7 @@ SOURCES += main.cpp \
     coreengine.cpp \
     gsl/vector4d.cpp \
     logger.cpp \
+    pch.cpp \
     rendersystem.cpp \
     soundsource.cpp \
     soundsystem.cpp \
