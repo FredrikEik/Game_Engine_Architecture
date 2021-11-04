@@ -50,3 +50,13 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+#Visual Studio spam
+.vs/*
+debug/*
+release/*
+*.vcxproj*
+*_resource.rc
+*.aps
+*.sln
+

@@ -21,7 +21,7 @@ public:
     VisualObject* createMonkey();
 private:
     std::map<string, int> myObjs;
-    int ObjStartID = 4;
+    int mCounter = 0;
     std::vector<VisualObject*> myShapes;
     bool doOnce[4]{false};
     VisualObject* myMonkey;

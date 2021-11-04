@@ -167,6 +167,14 @@ void RenderWindow::initObject()
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
 
+    temp = mShapeFactory.createShape("Pacman.obj");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(4.f, 2.f, .5f);
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    mNameComps.push_back(temp->mNameComp);
+
     mPlayer = new Player();
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
@@ -178,22 +186,27 @@ void RenderWindow::initObject()
     temp = new XYZ();
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
-    mVisualObjects.push_back(temp);
 
     mFrustumSystem = new FrustumSystem();
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
-    mVisualObjects.push_back(mFrustumSystem);
+    //    mVisualObjects.push_back(mFrustumSystem);
 
     for(int i=0; i<10; i++)
     {
         for(int y=0; y<10; y++)
         {
+            std::string a = to_string(shapeCounter);
             temp = mShapeFactory.createMonkey();
             temp->init();
             temp->move((i-y), 0.5, y-5);
+            temp->mNameComp->mName = "Monkey_" + a;
+            temp->mNameComp->objectID = shapeCounter + 7;
             temp->mMaterial->mShaderProgram = 0;    //plain shader
+            mTransComps.push_back(temp->mTransform);
+            mNameComps.push_back(temp->mNameComp);
             mVisualObjects.push_back(temp);
+            shapeCounter++;
         }
     }
 
@@ -246,19 +259,14 @@ void RenderWindow::drawObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        if(i<7){
-            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
-            glBindVertexArray(0);}
-        else if(i==7 && playM==false){
-            glBindVertexArray( mFrustumSystem->mMesh->mVAO );
-            glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
-            glBindVertexArray(0);}
-        else{
-            glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-            glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
-            glBindVertexArray(0);}
+        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
+        glBindVertexArray(0);
     }
+    if(playM==false){
+        glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+        glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+        glBindVertexArray(0);}
 }
 
 // Called each frame - doing the rendering
@@ -405,11 +413,17 @@ void RenderWindow::playMode(bool p)
 
 void RenderWindow::createShapes(string shapeID)
 {
+    std::string a = to_string(shapeCounter);
     VisualObject* temp = mShapeFactory.createShape(shapeID);
     temp->init();
     temp->move(1,1,0.5);
     temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->mNameComp->mName = shapeID + a;
+    temp->mNameComp->objectID = shapeCounter + 7;
+    mTransComps.push_back(temp->mTransform);
+    mNameComps.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
+    shapeCounter++;
 }
 
 
@@ -608,7 +622,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 
     qDebug() << ray_wor;
 
-    for(int i{0}; i < 6; i++)
+    for(int i{0}; i < shapeCounter + 7; i++)
 
     {      //making the vector from camera to object we test against
         gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();

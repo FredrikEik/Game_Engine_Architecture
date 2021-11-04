@@ -16,7 +16,7 @@ Player::Player() : mx{0.0f}, my{0.0f}, mz{0.0f}
     mInputComp = new InputComponent;
     mNameComp = new NameComponent();
     mNameComp->mName = "Player";
-    mNameComp->objectID = 5;
+    mNameComp->objectID = 6;
 
 
 }

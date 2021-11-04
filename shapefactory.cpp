@@ -223,12 +223,14 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         if(doOnce[0] == false){
             temp = new Circle;
             temp->mNameComp->mName = shapeName;
-            temp->mNameComp->objectID = 0;
+            temp->mNameComp->objectID = mCounter;
             myShapes.push_back(temp);
             doOnce[0] = true;
             return temp;}
         else{
-            return myShapes[0];}}
+            temp = myShapes[0];
+            temp->mNameComp->mName = shapeName;
+            return temp;}}
     else if(shapeName == "Square"){
         if(doOnce[1] == false){
             myShapes.push_back(new Square);
@@ -276,8 +278,8 @@ VisualObject* ShapeFactory::createShape(string shapeName)
                 myObjs[shapeName] = ObjStartID;
                 myShapes[ObjStartID]->mNameComp->mName = shapeName;
                 myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
-                return myShapes[ObjStartID];
-                ObjStartID++;}
+                ObjStartID++;
+                return myShapes[ObjStartID-1];}
         }
         else{
             myShapes.push_back(new ObjMesh(fileStr));
@@ -285,11 +287,11 @@ VisualObject* ShapeFactory::createShape(string shapeName)
             myObjs[shapeName] = ObjStartID;
             myShapes[ObjStartID]->mNameComp->mName = shapeName;
             myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
-            return myShapes[ObjStartID];
-            ObjStartID++;}
+            ObjStartID++;
+            return myShapes[ObjStartID-1];}
     }
     else{
-        std::cout << "invalid string" << std::endl;
+        qDebug() << "createShape: invalid string";
         return nullptr;}
 }
 
