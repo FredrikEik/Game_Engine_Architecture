@@ -32,6 +32,8 @@ public:
 
     void pitch(float degrees);
     void yaw(float degrees);
+    void setPitch(float pitch);
+    void setYaw(float yaw);
     void updateRightVector();
     void updateForwardVector();
     void update();

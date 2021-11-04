@@ -33,6 +33,18 @@ void Camera::yaw(float degrees)
     updateForwardVector();
 }
 
+void Camera::setPitch(float pitch)
+{
+    mPitch = pitch;
+    updateForwardVector();
+}
+
+void Camera::setYaw(float yaw)
+{
+    mYaw = yaw;
+    updateForwardVector();
+}
+
 void Camera::updateRightVector()
 {
     mRight = mForward^mUp;

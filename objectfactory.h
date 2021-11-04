@@ -4,7 +4,6 @@
 #include "iostream"
 #include "gameobject.h"
 #include "objimport.h"
-#include <unordered_map>
 #include <map>
 
 class ObjectFactory
@@ -21,7 +20,6 @@ public:
 
     private:
         std::map<std::string, MeshComponent*> storedMeshes;
-        std::unordered_map<std::string, MeshComponent> storedMeshes1;
 
         int OBJindex;
 
