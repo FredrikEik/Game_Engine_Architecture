@@ -85,10 +85,12 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mGameObjects.push_back(temp);
 
-    //Suzannes - using default material:
+    //Suzannes:
+
+    bool useTexture{true};      //quick test to force stupid material change when rendering
     for(int i{-50}; i < 100; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 30; j++)
         {
             temp = mResourceManager->addObject("suzanne.obj");
             temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
@@ -97,6 +99,10 @@ void CoreEngine::setUpScene()
             temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
             temp->mTransform->mScale.setAlltoSame(0.3f);
             temp->mName = "monkey " + std::to_string((i*10)+j+1);
+
+            if(useTexture)
+                temp->mMaterial = mResourceManager->getMaterial("Texture");
+            useTexture = !useTexture;
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
@@ -121,7 +127,7 @@ void CoreEngine::setUpScene()
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-    mGameLoopTimer->start(16);
+    mGameLoopTimer->start(20);
 }
 
 void CoreEngine::handleInput()

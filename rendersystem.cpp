@@ -121,6 +121,14 @@ void RenderSystem::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
+
+    //Testing if not updating this if shader does not change will be faster
+    int viewMatrix{-1};
+    int projectionMatrix{-1};
+    int modelMatrix{-1};
+    int shaderIndex{-1};
+    unsigned int vaoInUse{9999};
+
     //Draws the objects        
     int cullSafe = mIsPlaying ? -1 : 1;      //cullSafe editor objects - always placed in start of array
     int startObject = mIsPlaying ? 2 : 0;    //avoid editor objects when playing
@@ -143,70 +151,79 @@ void RenderSystem::render()
         //First object - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
-        ShaderHandler *tempShader = mResourceManager->mShaders[shaderIndex];
-        glUseProgram(tempShader->mProgram);
 
-        //This block sets up the uniforms for the shader used in the material
-        //Also sets up texture if needed.
-        int viewMatrix{-1};
-        int projectionMatrix{-1};
-        int modelMatrix{-1};
+        //*****************************testing to not set shader if it is the same as last object***********************************
+        ShaderHandler *tempShader{nullptr};
+//        if(shaderIndex != mGameObjects[i]->mMaterial->mShaderProgram)
+//        {
+            shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
+            tempShader = mResourceManager->mShaders[shaderIndex];
+            glUseProgram(tempShader->mProgram);
 
-        viewMatrix = tempShader->vMatrixUniform;
-        projectionMatrix = tempShader->pMatrixUniform;
-        modelMatrix = tempShader->mMatrixUniform;
+            //This block sets up the uniforms for the shader used in the material
+            //Also sets up texture if needed.
 
-        if(tempShader->mTextureUniform > -1)
-        {
-            //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
-        }
 
-        //send data to shader
-        if(mIsPlaying) {
-            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
-        }
-        else {
-            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
-        }
+            viewMatrix = tempShader->vMatrixUniform;
+            projectionMatrix = tempShader->pMatrixUniform;
+            modelMatrix = tempShader->mMatrixUniform;
+
+            if(tempShader->mTextureUniform > -1)
+            {
+                //Now mMaterial component holds texture slot directly - probably should be changed
+                glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            }
+
+            //send data to shader
+            if(mIsPlaying) {
+                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
+            }
+            else {
+                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+            }
+//        }
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
         //draw the object
         //***Quick hack*** LOD test:
-        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
-        {
-            gsl::Vector3D distanceVector = gobPos - cameraPos;
-            //LOD calculation
-            float length = distanceVector.length();
+//        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+//        {
+//            gsl::Vector3D distanceVector = gobPos - cameraPos;
+//            //LOD calculation
+//            float length = distanceVector.length();
 
-            if (length < 5)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
-                mObjectsDrawn++;
-            }
-            else if(length < 20)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
-                mObjectsDrawn++;
-            }
-            else
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
-                mObjectsDrawn++;
-            }
-        }
-        else    //no LOD exists
+//            if (length < 5)
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+//                mObjectsDrawn++;
+//            }
+//            else if(length < 20)
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+//                mObjectsDrawn++;
+//            }
+//            else
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+//                mObjectsDrawn++;
+//            }
+//        }
+//        else    //no LOD exists
         {
-            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            //********************** No need to activate VAO if it is the same as last used.**************************************
+//            if(vaoInUse != mGameObjects[i]->mMesh->mVAO[0])
+//            {
+//                vaoInUse = mGameObjects[i]->mMesh->mVAO[0];
+                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+//            }
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
@@ -228,7 +245,7 @@ void RenderSystem::render()
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
-        glBindVertexArray(0);
+//        glBindVertexArray(0);
     }
 
     //Quick hack test to check if frustum line mesh is OK
