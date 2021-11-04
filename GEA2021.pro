@@ -40,6 +40,7 @@ HEADERS += \
     ECS/systembase.h \
     ECS/systemmanager.h \
     ECS/ECScoordinator.h \
+    Plugins/OBJ_Loader.h \
     Shaders/cubemapshader.h \
     Shaders/phongshader.h \
     Shaders/plainshader.h \
