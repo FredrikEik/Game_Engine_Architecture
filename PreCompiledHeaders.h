@@ -35,7 +35,10 @@
 #include <sstream>
 #include "detailswidget.h"
 #include "ui_detailswidget.h"
-
-
+#include <cstdint>
+#include <cstdio>
+#include "soundmanager.h"
+#include "wavfilehandler.h"
+#include "soundsource.h"
 
 #endif
