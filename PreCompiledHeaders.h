@@ -1,6 +1,3 @@
-#ifndef PRECOMPILEDHEADERS_H
-#define PRECOMPILEDHEADERS_H
-
 #if defined __cplusplus
 /* Add C++ includes here */
 
@@ -42,4 +39,3 @@
 
 
 #endif
-#endif // PRECOMPILEDHEADERS_H

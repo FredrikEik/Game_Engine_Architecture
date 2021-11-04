@@ -2,6 +2,7 @@ QT          += core gui widgets opengl
 
 TEMPLATE    = app
 CONFIG      += c++17
+CONFIG      += precompile_header
 
 # Use Precompiled headers (PCH)
 PRECOMPILED_HEADER  = PreCompiledHeaders.h
