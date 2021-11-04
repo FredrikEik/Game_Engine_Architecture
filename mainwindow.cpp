@@ -69,6 +69,12 @@ void MainWindow::setID(int ID)
     listWidget->setCurrentRow(ID);
 }
 
+void MainWindow::clean()
+{
+    GameObjects.clear();
+    listWidget->clear();
+}
+
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into

@@ -47,6 +47,7 @@ public:
     void CreateSuzanne();
 
     GameObject* mPlayer{nullptr};
+    gsl::Vector3D initPlayerPos{0,0,0};
 private slots:
     void GameLoop();
 
@@ -74,6 +75,8 @@ private:
 
     QTimer *mGameLoopRenderTimer{nullptr};
     void UpdateGameCameraFollow();
+
+    std::vector<GameObject*> objBeforePlaying;
 
 };
 

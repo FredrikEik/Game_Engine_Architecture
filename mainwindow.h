@@ -25,6 +25,7 @@ public:
     void updateList();
     void refreshList();
     void setID(int ID);
+    void clean();
 
 public slots:
 

@@ -38,8 +38,10 @@ void GameEngine::SetUpScene()
 
 
 
+
     SetUpObjects();
 
+    objBeforePlaying = mRenderwindow->mGameObjects;
     //TODO SetupTextures
 
 
@@ -64,6 +66,7 @@ void GameEngine::SetUpObjects()
 
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
     mPlayer->mTransformComp->mMatrix.translate(0,-1.8f,-8);
+    initPlayerPos = {0,-1.8f,-8};
     mPlayer->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mPlayer);
 
@@ -305,9 +308,17 @@ void GameEngine::togglePlay(bool bInIsPlaying)
     bIsPlaying = bInIsPlaying;
     if(bInIsPlaying)
     {
+        initPlayerPos = mPlayer->mTransformComp->mMatrix.getPosition();
         mRenderwindow->mCurrentCamera = mGameCamera;
-    }else
-         mRenderwindow->mCurrentCamera = mEditorCamera;
+    }else{
+
+        mRenderwindow->mCurrentCamera = mEditorCamera;
+        mPlayer->mTransformComp->mMatrix.setPosition(initPlayerPos.x,initPlayerPos.y,initPlayerPos.z);
+
+//        mRenderwindow->mGameObjects.clear();
+//        mMainWindow->clean();
+//        SetUpScene();
+    }
 }
 
 void GameEngine::UpdateGameCameraFollow()
