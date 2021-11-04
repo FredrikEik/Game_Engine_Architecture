@@ -32,6 +32,15 @@ Makefile*
 *.qm
 *.prl
 
+#Visual Studio spam
+.vs/*
+debug/*
+release/*
+*.vcxproj*
+*_resource.rc
+*.aps
+*.sln
+
 # Qt unit tests
 target_wrapper.*
 
