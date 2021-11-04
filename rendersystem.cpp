@@ -106,6 +106,39 @@ void RenderSystem::init()
     //Done in CoreEngine->setUpScene
 }
 
+void RenderSystem::instancing(int vaoIn)
+{
+    //Testing instance rendering
+
+    gsl::Vector3D translations[1500];
+    int index{0};
+    for(int i{-50}; i < 100; i++)
+    {
+        for(int j{0}; j < 10; j++)
+        {
+            gsl::Vector3D translation(1.f*i, 0.f, -2.f*j);
+            translations[index++] = translation;
+        }
+    }
+
+    glBindVertexArray(vaoIn);
+
+    unsigned int instanceVBO;
+
+    glGenBuffers(1, &instanceVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(gsl::Vector3D) * 1500, &translations[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribDivisor(3, 1);
+
+    glBindVertexArray(0);
+}
+
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderSystem::render()
 {
@@ -124,6 +157,7 @@ void RenderSystem::render()
     //Draws the objects        
     int cullSafe = mIsPlaying ? -1 : 1;      //cullSafe editor objects - always placed in start of array
     int startObject = mIsPlaying ? 2 : 0;    //avoid editor objects when playing
+
     for(int i{startObject}; i < mGameObjects.size(); i++)
     {
         /************** LOD and Frustum culling stuff ***********************/
@@ -131,12 +165,12 @@ void RenderSystem::render()
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
-        if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
-        {
-            //if frustum cull is true - object is outside of frustum == don't draw
-            if(frustumCulling(i))
-                continue;
-        }
+//        if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
+//        {
+//            //if frustum cull is true - object is outside of frustum == don't draw
+//            if(frustumCulling(i))
+//                continue;
+//        }
 
         /*************************************/
 
@@ -176,41 +210,55 @@ void RenderSystem::render()
 
         //draw the object
         //***Quick hack*** LOD test:
-        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
-        {
-            gsl::Vector3D distanceVector = gobPos - cameraPos;
-            //LOD calculation
-            float length = distanceVector.length();
+//        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+//        {
+//            gsl::Vector3D distanceVector = gobPos - cameraPos;
+//            //LOD calculation
+//            float length = distanceVector.length();
 
-            if (length < 5)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
-                mObjectsDrawn++;
-            }
-            else if(length < 20)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
-                mObjectsDrawn++;
-            }
-            else
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
-                mObjectsDrawn++;
-            }
-        }
-        else    //no LOD exists
-        {
+//            if (length < 5)
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+//                mObjectsDrawn++;
+//            }
+//            else if(length < 20)
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+//                mObjectsDrawn++;
+//            }
+//            else
+//            {
+//                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+//                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+//                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+//                mObjectsDrawn++;
+//            }
+//        }
+//        else    //no LOD exists
+//        bool renderInstanced{true};
+
+        if(i <3){
             glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
         }
+        //Instanced rendering test
+        else
+        {
+            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            glDrawArraysInstanced(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0], 1500);
+//            mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+//            mObjectsDrawn++;
+        }
+
+
+
+
 
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)

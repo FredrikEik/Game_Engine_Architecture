@@ -47,6 +47,8 @@ public:
 
     void render();
 
+    void instancing(int vaoIn);
+
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 

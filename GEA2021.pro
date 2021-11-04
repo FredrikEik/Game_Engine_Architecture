@@ -112,6 +112,8 @@ FORMS += \
     widgetmaterial.ui
 
 DISTFILES += \
+    Shaders/plainshaderinstanced.frag \
+    Shaders/plainshaderinstanced.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainshader.frag \

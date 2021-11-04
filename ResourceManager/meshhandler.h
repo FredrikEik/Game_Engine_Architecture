@@ -18,9 +18,10 @@ struct MeshData
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];
-    //AABB Collider box: (the largest of these will be the radius for a Bounding sphere)
+    //AABB Collider box:
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
+    //BoundingSphere:
     float mColliderRadius{0};
 };
 
@@ -50,6 +51,7 @@ public:
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
+
 private:
     int readObj(std::string filename);
     int makeAxis();
