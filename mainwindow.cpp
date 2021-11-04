@@ -189,6 +189,11 @@ void MainWindow::on_pb_toggleCollisionBox_toggled(bool checked)
 
 void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 {
+    if(bCurrentlyDeleting)
+    {
+        lastIndex = currentRow-1;
+        return;
+    }
     ObjectListIndex = currentRow;
     ui->TranslateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().x);
     ui->TranslateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
@@ -204,7 +209,6 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 
 
     // --Visible Selection in 3D window--
-
     // Turn off collision box of the last selected
     GameObjects[lastIndex]->mCollisionComp->bShowCollisionBox = false;
 
@@ -293,9 +297,12 @@ void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 
 void MainWindow::on_actionDelete_Selected_triggered()
 {
+    bCurrentlyDeleting = true;
     mRenderWindow->deleteGameObjectAt(ObjectListIndex);
     GameObjects.erase(GameObjects.begin() + ObjectListIndex);
     listWidget->takeItem(listWidget->currentRow());
+
+    bCurrentlyDeleting = false;
     //listWidget->removeItemWidget(listWidget->currentItem());
 
     //refreshList();
@@ -304,7 +311,7 @@ void MainWindow::on_actionDelete_Selected_triggered()
 
 void MainWindow::on_actionGetCurrentRow_triggered()
 {
-        qDebug() << listWidget->currentRow();
+        qDebug() << "currentRow" << listWidget->currentRow();
         qDebug() << "objIndex: " << ObjectListIndex;
 }
 

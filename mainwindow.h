@@ -78,6 +78,8 @@ private:
     int lastXrot{0};
     int xcounter{0};
 
+    bool bCurrentlyDeleting = false;
+
 
     QWidget *mRenderWindowContainer{nullptr};
     RenderWindow *mRenderWindow{nullptr};
