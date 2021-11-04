@@ -82,6 +82,9 @@
     <addaction name="actionAdd_Square"/>
     <addaction name="actionAdd_Circle"/>
     <addaction name="actionAdd_Monkey"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_BigWall"/>
+    <addaction name="actionAdd_SmallWall"/>
    </widget>
    <addaction name="menuAdd_Objects"/>
   </widget>
@@ -190,45 +193,66 @@
            <string>Rotate</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="1" column="1">
-            <widget class="QPushButton" name="RotateY">
+           <item row="4" column="1">
+            <widget class="QPushButton" name="RotateZP">
              <property name="text">
-              <string>Rotate</string>
+              <string>Z+</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_6">
+           <item row="3" column="1">
+            <widget class="QPushButton" name="RotateYM">
              <property name="text">
-              <string>Y</string>
+              <string>Y-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="RotateYP">
+             <property name="text">
+              <string>Y+</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="RotateXP">
+             <property name="text">
+              <string>X+</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="RoatetXM">
+             <property name="text">
+              <string>X-</string>
              </property>
             </widget>
            </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>X</string>
+              <string>Rotate X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QPushButton" name="RotateZM">
+             <property name="text">
+              <string>Z-</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Rotate Z</string>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_7">
+            <widget class="QLabel" name="label_6">
              <property name="text">
-              <string>Z</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="RotateX">
-             <property name="text">
-              <string>Rotate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="RotateZ">
-             <property name="text">
-              <string>Rotate</string>
+              <string>Rotate Y</string>
              </property>
             </widget>
            </item>
@@ -282,6 +306,16 @@
   <action name="actionAdd_Monkey">
    <property name="text">
     <string>Add Monkey</string>
+   </property>
+  </action>
+  <action name="actionAdd_BigWall">
+   <property name="text">
+    <string>Add BigWall</string>
+   </property>
+  </action>
+  <action name="actionAdd_SmallWall">
+   <property name="text">
+    <string>Add SmallWall</string>
    </property>
   </action>
  </widget>

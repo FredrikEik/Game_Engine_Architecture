@@ -102,23 +102,54 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 
 void MainWindow::on_actionAdd_Triangle_triggered()
 {
-    mRenderWindow->createShapes("Triangle");
+    std::string a = mRenderWindow->createShapes("Triangle");
+    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    QString temp;
+    item->setText(0, temp.fromStdString(a));
 }
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-    mRenderWindow->createShapes("Circle");
+    std::string a = mRenderWindow->createShapes("Circle");
+    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    QString temp;
+    item->setText(0, temp.fromStdString(a));
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
-   mRenderWindow->createShapes("Square");
+   std::string a = mRenderWindow->createShapes("Square");
+   QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+   QString temp;
+   item->setText(0, temp.fromStdString(a));
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
-    mRenderWindow->createShapes("Monkey.obj");
+    std::string a = mRenderWindow->createShapes("Monkey.obj");
+    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    QString temp;
+    item->setText(0, temp.fromStdString(a));
 }
+
+void MainWindow::on_actionAdd_BigWall_triggered()
+{
+    std::string a = mRenderWindow->createShapes("BigWall");
+    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    QString temp;
+    item->setText(0, temp.fromStdString(a));
+}
+
+
+
+void MainWindow::on_actionAdd_SmallWall_triggered()
+{
+    std::string a = mRenderWindow->createShapes("SmallWall");
+    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    QString temp;
+    item->setText(0, temp.fromStdString(a));
+}
+
 
 
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
@@ -126,7 +157,7 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
     ui->DetailGroupBox->setTitle("Details: "+itemName);
-    for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID; i++){
+    for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID+1; i++){
         if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
         {
 
@@ -196,19 +227,19 @@ void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
 
 
 
-void MainWindow::on_RotateX_clicked()
+void MainWindow::on_RotateXP_clicked()
 {
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateX(5.f);
 }
 
 
-void MainWindow::on_RotateY_clicked()
+void MainWindow::on_RotateYP_clicked()
 {
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateY(5.f);
 }
 
 
-void MainWindow::on_RotateZ_clicked()
+void MainWindow::on_RotateZP_clicked()
 {
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateZ(5.f);
 }
@@ -225,6 +256,23 @@ void MainWindow::on_ScaleM_clicked()
     mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.50f);
 }
 
+
+void MainWindow::on_RotateYM_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateY(-5.f);
+}
+
+
+void MainWindow::on_RotateZM_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateZ(-5.f);
+}
+
+
+void MainWindow::on_RoatetXM_clicked()
+{
+    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateX(-5.f);
+}
 
 
 

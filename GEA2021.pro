@@ -20,6 +20,7 @@ SOURCES += main.cpp \
     enemy.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
+    light.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     player.cpp \
@@ -27,6 +28,7 @@ SOURCES += main.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
+    skybox.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
@@ -48,6 +50,7 @@ HEADERS += \
     input.h \
     inputcomponent.h \
     inputsystem.h \
+    light.h \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
@@ -56,8 +59,10 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     shapefactory.h \
+    skybox.h \
     soundmanager.h \
     soundsource.h \
+    stb_image.h \
     texture.h \
     vector2d.h \
     vector3d.h \
@@ -71,6 +76,10 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/phongfragment.frag \
+    Shaders/phongvertex.vert \
+    Shaders/skyboxfragment.frag \
+    Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

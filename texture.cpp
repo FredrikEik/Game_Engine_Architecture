@@ -53,6 +53,21 @@ Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_
     }
 }
 
+int Texture::getColumns()
+{
+    return mColumns;
+}
+
+int Texture::getRows()
+{
+    return mRows;
+}
+
+unsigned char *Texture::getMap()
+{
+    return mBitmap;
+}
+
 float Texture::getHeightFromIndex(int i)
 {
     if (i > mColumns * mRows || i < 0)

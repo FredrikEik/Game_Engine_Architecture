@@ -16,8 +16,11 @@ public:
     float getHeightFromIndex(int i);
     std::string mTextureFilename;
 
+    int getColumns();
+    int getRows();
     int mColumns{};
     int mRows{};
+    unsigned char* getMap();
     unsigned char *mBitmap{nullptr};
     ///If this is a cubemap, this will be an array of 6 mBitmaps
     unsigned char *mCubemap[6]{nullptr};

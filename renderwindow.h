@@ -13,14 +13,20 @@
 #include "shapefactory.h"
 #include "obj.h"
 #include "playerinputcomponent.h"
+#include "vector4d.h"
+#include "matrix4x4.h"
+#include "collisionsystem.h"
+#include "skybox.h"
+#include "light.h"
+
 #include "soundsource.h"
 #include "soundmanager.h"
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
-#include "vector4d.h"
-#include "matrix4x4.h"
-#include "collisionsystem.h"
+
+
 #include <math.h>       /* sqrt */
+
 
 
 
@@ -49,7 +55,7 @@ public:
 
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
-    void createShapes(string shapeID);
+    std::string createShapes(string shapeID);
     void playMode(bool p);
 
     std::vector<NameComponent*> mNameComp;
@@ -73,6 +79,10 @@ private:
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
+    Skybox *mSkyBox;
+    Light * mLight{nullptr};
+
+
     static const int nrOfShapes = 5;
     bool playM = false;
 
@@ -106,6 +116,29 @@ private:
     GLint vMatrixUniform1{-1};
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
+
+    void setupSkyboxShader(int shaderIndex);
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+    GLint mTextureUniform3{-1};
+
+    void setupPhongShader(int shaderIndex);
+    GLint mMatrixUniform2{-1};
+    GLint vMatrixUniform2{-1};
+    GLint pMatrixUniform2{-1};
+    GLint mTextureUniformPhong{-1};
+
+    //light shader variables
+    GLint mLightColorUniform{-1};
+    GLint mObjectColorUniform{-1};
+    GLint mAmbientLightStrengthUniform{-1};
+    GLint mLightPositionUniform{-1};
+    GLint mCameraPositionUniform{-1};
+    GLint mSpecularStrengthUniform{-1};
+    GLint mSpecularExponentUniform{-1};
+    GLint mLightPowerUniform{-1};
+
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 

@@ -51,20 +51,33 @@ private slots:
     void on_treeWidget_viewportEntered();
 
 
-    void on_RotateX_clicked();
+    void on_RotateXP_clicked();
 
-    void on_RotateY_clicked();
+    void on_RotateYP_clicked();
 
-    void on_RotateZ_clicked();
+    void on_RotateZP_clicked();
+
 
     void on_ScaleP_clicked();
 
     void on_ScaleM_clicked();
 
+
+    void on_RotateYM_clicked();
+
+    void on_RotateZM_clicked();
+
+    void on_RoatetXM_clicked();
+
+    void on_actionAdd_BigWall_triggered();
+
+    void on_actionAdd_SmallWall_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;
     QWidget *mRenderWindowContainer;
+    QTreeWidgetItem *Widgetitem{nullptr};
     ShapeFactory *mShapefactory;
     RenderWindow *mRenderWindow;
     VisualObject *mVisualObject;
