@@ -11,6 +11,8 @@ struct MaterialComponent;
 class GameObject : public QOpenGLFunctions_4_1_Core
 {
 public:
+    GameObject();
+
     TransformComponent* m_Transform{nullptr};
     MeshComponent* m_Mesh{nullptr};
     MaterialComponent* m_Material{nullptr};

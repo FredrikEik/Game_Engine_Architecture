@@ -1,5 +1,5 @@
-#include "resourcemanager.h"
-#include "meshsystem.h"
+#include "ECS/ResourceManager/resourcemanager.h"
+#include "ECS/ResourceManager/meshsystem.h"
 
 ResourceManager::ResourceManager()
 {
@@ -8,7 +8,7 @@ ResourceManager::ResourceManager()
 
 int ResourceManager::ReadAsset(std::string AssetName)
 {
-
+    return 0;
 }
 
 gsl::AssetType ResourceManager::FindAssetType(std::string AssetName)

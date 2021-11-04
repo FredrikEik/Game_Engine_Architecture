@@ -5,6 +5,8 @@
 #include "components.h"
 #include "constants.h"
 
+#include "ECS/ResourceManager/meshsystem.h"
+
 class ResourceManager
 {
     friend class ECScoordinator;
@@ -24,7 +26,7 @@ private:
     std::unordered_map<std::string, class Texture*> m_textureMap;
 
     //Pointers for object systems.
-    std::unique_ptr<class MeshSystem> m_MeshHandler;
+    std::unique_ptr<MeshSystem> m_MeshHandler;
 };
 
 #endif // RESOURCEMANAGER_H
