@@ -9,7 +9,6 @@ SOURCES += main.cpp \
     ECS/ResourceManager/meshsystem.cpp \
     ECS/ResourceManager/resourcemanager.cpp \
     ECS/entitymanager.cpp \
-    ECS/resourcemanager.cpp \
     Shaders/cubemapshader.cpp \
     Shaders/phongshader.cpp \
     Shaders/plainshader.cpp \
@@ -36,7 +35,6 @@ HEADERS += \
     ECS/compmanager.h \
     ECS/componentarray.h \
     ECS/entitymanager.h \
-    ECS/resourcemanager.h \
     ECS/systembase.h \
     ECS/systemmanager.h \
     ECS/ECScoordinator.h \
