@@ -58,7 +58,7 @@ void DetailsWidget::readScale()
 void DetailsWidget::setPosition()
 {
         mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
-        //mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
+        mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
 void DetailsWidget::setRotation()
