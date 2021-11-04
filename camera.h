@@ -29,6 +29,7 @@ public:
     void calculateFrustumVectors();
     void makeFrustumLines();
     void updateFrustumPos(gsl::Vector3D cameraPos);
+    bool insideFrustum(gsl::Vector3D pos);
     FrustumComponent mFrustum;
 
 private:

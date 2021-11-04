@@ -4,38 +4,185 @@ Circle::Circle()
 {
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    makeVerticies();
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
 }
 
-void Circle::makeVerticies()
+Triangle::Triangle()
 {
-    mMesh->mDrawType = GL_TRIANGLES;
-    mMesh->mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
-    mCollision = new CollisionComponent;
-    circleUnit(mCollision);
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
 }
 
-void Circle::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n)
+Square::Square()
 {
-    if(n>0)
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+}
+
+Plain::Plain()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+}
+
+ObjMesh::ObjMesh()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+}
+
+VisualObject* ShapeFactory::createShape(string shapeName)
+{
+    string obj{"obj"};
+    string fileStr{"../GEA2021/Assets/" + shapeName};
+    VisualObject* temp = nullptr;
+    if(mCounter == 6) //Fordi player har ID 6 i egen klasse,
+        mCounter++;   //så vi hopper over den her
+    std::string a = to_string(mCounter-6); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
+
+    if (shapeName == "Circle")
     {
-        gsl::Vector3D v1 = a+b; v1.normalize();
-        gsl::Vector3D v2 = a+c; v2.normalize();
-        gsl::Vector3D v3 = c+b; v3.normalize();
-        subDivide(a, v1, v2, n-1);
-        subDivide(c, v2, v3, n-1);
-        subDivide(b, v3, v1, n-1);
-        subDivide(v3, v2, v1, n-1);
-    }else{
-        makeTriangle(a, b, c);
+        temp = new Circle;
+        temp->mMesh = myMeshes[0];
+        temp->mCollision = myCollis[0];
+        temp->mCollision->setBoundingSphere(0.5, temp->mTransform->mPosition);
+
+        if(doOnce[0] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[0] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
     }
+    else if(shapeName == "Square")
+    {
+        temp = new Square;
+        temp->mMesh = myMeshes[1];
+        temp->mCollision = myCollis[1];
+        temp->mCollision->setBoundingSphere(0.25, gsl::Vector3D(temp->mTransform->mPosition.x + 0.25, temp->mTransform->mPosition.y + 0.25,  temp->mTransform->mPosition.z + 0.25));
+
+        if(doOnce[1] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[1] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
+    }
+    else if(shapeName == "Triangle")
+    {
+        temp = new Triangle;
+        temp->mMesh = myMeshes[2];
+        temp->mCollision = myCollis[2];
+        temp->mCollision->setBoundingSphere(0.3266, temp->mTransform->mPosition);
+
+        if(doOnce[2] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[2] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
+    }
+    else if(shapeName == "Plain")
+    {
+        temp = new Plain;
+        temp->mMesh = myMeshes[3];
+        temp->mCollision = myCollis[3];
+        temp->mCollision->setBoundingSphere(0.01, temp->mTransform->mPosition);
+
+        if(doOnce[3] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[3] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
+    }
+    else if(shapeName.find(obj) != std::string::npos)
+    {
+        temp = nullptr;
+        if(myObjs.size()>=1)
+        {
+            for(auto om = myObjs.begin(); om != myObjs.end(); om++)
+            {
+                if (shapeName.find(om->first) != std::string::npos)
+                {
+                    temp = new ObjMesh();
+                    temp->mMesh = myMeshes[om->second];
+                    temp->mCollision = myCollis[om->second];
+                    temp->mCollision->setBoundingSphere(temp->mCollision->radius, temp->mTransform->mPosition);
+                    temp->mNameComp->mName = om->first + "_" + a;
+                    temp->mNameComp->objectID = mCounter;
+                    mCounter++;
+                }
+            }
+            if(temp!=nullptr)
+                return temp;
+            else{
+                temp = new ObjMesh();
+                temp->mMesh = myMeshes[mCounter];
+                temp->mCollision = myCollis[mCounter];
+                temp->mCollision->setBoundingSphere(temp->mCollision->radius, temp->mTransform->mPosition);
+                shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+                myObjs[shapeName] = mCounter;
+                temp->mNameComp->mName = shapeName;
+                temp->mNameComp->objectID = mCounter;
+                mCounter++;
+                return temp;}
+        }
+        else{
+            temp = new ObjMesh();
+            temp->mMesh = myMeshes[mCounter];
+            temp->mCollision = myCollis[mCounter];
+            temp->mCollision->setBoundingSphere(temp->mCollision->radius, temp->mTransform->mPosition);
+            shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+            myObjs[shapeName] = mCounter;
+            temp->mNameComp->mName = shapeName;
+            temp->mNameComp->objectID = mCounter;
+            mCounter++;
+            return temp;}
+    }
+    else{
+        qDebug() << "createShape: invalid string";
+        return nullptr;}
 }
 
-void Circle::circleUnit(CollisionComponent* dCollision)
+void ShapeFactory::makeVertices()
 {
+    MeshComponent* m = nullptr;
+    CollisionComponent* c = nullptr;
+    int m_rekursjoner = 3;
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+    m->mDrawType = GL_TRIANGLES;
+    m->mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
     float a = 1;
     gsl::Vector3D v0{0, 0, a};
     gsl::Vector3D v1{a, 0, 0};
@@ -53,258 +200,288 @@ void Circle::circleUnit(CollisionComponent* dCollision)
     subDivide(v5, v4, v3, m_rekursjoner);
     subDivide(v5, v1, v4, m_rekursjoner);
 
-    dCollision->setBoundingSphere(a/2, mTransform->mPosition);
-}
-void Circle::makeTriangle(const gsl::Vector3D &v1, const gsl::Vector3D &v2, const gsl::Vector3D &v3)
-{
-    Vertex v{v1.x, v1.y, v1.z, v1.x, v1.y, v1.z};
-    mMesh->mVertices.push_back(v);
-    v = Vertex{v2.x, v2.y, v2.z, v2.x, v2.y, v2.z};
-    mMesh->mVertices.push_back(v);
-    v = Vertex{v3.x, v3.y, v3.z, v3.x, v3.y, v3.z};
-    mMesh->mVertices.push_back(v);
-}
+    m = new MeshComponent;
+    c = new CollisionComponent;
 
-Triangle::Triangle()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    mCollision = new CollisionComponent;
-    makeVerticies();
-    mCollision->setBoundingSphere(0.3266, mTransform->mPosition);
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
+    m->mDrawType = GL_TRIANGLES;
 
-void Triangle::makeVerticies()
-{
-    mMesh->mDrawType = GL_TRIANGLES;
+    m->mVertices.push_back(Vertex{0,0,0, 1,0,0});
+    m->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
 
-    // Positions            // Colors       //UV
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
 
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
 
-    mMesh->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{0.5,0,0.5,  1,0,1});
 
-    mMesh->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-    mMesh->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 0.0,0.0,1.0});
+    m->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
 
-    gsl::Vector3D min(-0.9, 0,0);
-    gsl::Vector3D max(-0.1,0.6532, 0.6532);
+    m->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0.5,0,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
 
-    mCollision->setBoundingBox(min, max);
-}
+    m->mVertices.push_back(Vertex{0,0,0.5,  1,0,0});
+    m->mVertices.push_back(Vertex{0,0,0,  1,0,0});       //left surface
+    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
 
-Square::Square()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    mCollision = new CollisionComponent;
-    makeVerticies(mMesh, mCollision);
-    mCollision->setBoundingSphere(0.25, gsl::Vector3D(mTransform->mPosition.x + 0.25, mTransform->mPosition.y + 0.25,  mTransform->mPosition.z + 0.25));
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
+    m->mVertices.push_back(Vertex{0,0,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
 
-void Square::makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision)
-{
-    dMesh->mDrawType = GL_TRIANGLES;
+    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
 
-    dMesh->mVertices.push_back(Vertex{0,0,0, 1,0,0});
-    dMesh->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
-    dMesh->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
-
-    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,0});
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,0});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
-
-    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});       // right surface
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-
-    dMesh->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,0,1});
-
-    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,1,0});       // top surface
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
-
-    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-    dMesh->mVertices.push_back(Vertex{0.5,0,0.5,  1,1,0});
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
-
-    dMesh->mVertices.push_back(Vertex{0,0,0.5,  1,0,0});
-    dMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});       //left surface
-    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
-
-    dMesh->mVertices.push_back(Vertex{0,0,0,  1,0,0});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
-
-    dMesh->mVertices.push_back(Vertex{0,0.5,0,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});   // back surface
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
-
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-    dMesh->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
 
     gsl::Vector3D min(0,0,0);
     gsl::Vector3D max(0.5, 0.5, 0.5);
 
-    dCollision->setBoundingBox(min, max);
-}
+    c->setBoundingBox(min, max);
 
-Plain::Plain()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mCollision = new CollisionComponent;
-    mMesh = new MeshComponent();
-    makeVerticies(mMesh);
-    mCollision->setBoundingSphere(0.01, mTransform->mPosition);
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
 
-void Plain::makeVerticies(MeshComponent* dMesh)
-{
-    dMesh->mDrawType = GL_TRIANGLES;
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    m->mDrawType = GL_TRIANGLES;
+
+    // Positions            // Colors       //UV
+    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
+    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+
+    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+
+    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
+    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 0.0,1.0,0.0});
+    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
+
+    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
+    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
+    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 0.0,0.0,1.0});
+
+    min = gsl::Vector3D(-0.9, 0,0);
+    max = gsl::Vector3D(-0.1,0.6532, 0.6532);
+
+    c->setBoundingBox(min, max);
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    m->mDrawType = GL_TRIANGLES;
 
     //24 x 18 fra -12 til +12 -9 til +9
-    mTransform->scale = 3;
-    float a = 4 * mTransform->scale;
-    float b = 3 * mTransform->scale;
-    dMesh->mVertices.push_back(Vertex{-a, 0.0,-b,  0.0, 0.3, 0.2});
-    dMesh->mVertices.push_back(Vertex{-a, 0.0, b,  0.0, 0.3, 0.2});
-    dMesh->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
+    int scale = 3;
+    a = 4 * scale;
+    float b = 3 * scale;
+    m->mVertices.push_back(Vertex{-a, 0.0,-b,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{-a, 0.0, b,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
 
-    dMesh->mVertices.push_back(Vertex{a,  0.0, b,  0.0, 0.3, 0.2});
-    dMesh->mVertices.push_back(Vertex{-a, 0.0, b, 0.0, 0.3, 0.2});
-    dMesh->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{a,  0.0, b,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{-a, 0.0, b, 0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    readFile(monkeyString, m);
+    m->mDrawType = GL_TRIANGLES;
+    c->radius = 0.2;
+
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    readFile(pacmanString, m);
+    m->mDrawType = GL_TRIANGLES;
+    c->radius = 0.5;
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
 }
 
-ObjMesh::ObjMesh(std::string filename)
+void ShapeFactory::readFile(std::string filename, MeshComponent* m)
 {
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMesh = new MeshComponent();
-    mCollision = new CollisionComponent;
-    mNameComp = new NameComponent();
+    //Open File
+    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
+    std::ifstream fileIn;
+    fileIn.open (filename, std::ifstream::in);
+    if(!fileIn)
+        qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
-    readFile(filename);
-    if(filename.find("Monkey") != std::string::npos)
-        mCollision->setBoundingSphere(0.2, mTransform->mPosition);
-    else
-        mCollision->setBoundingSphere(0.5, mTransform->mPosition);
+    //One line at a time-variable
+    std::string oneLine;
+    //One word at a time-variable
+    std::string oneWord;
 
+    std::vector <gsl::Vector3D> tempVertecies;
+    std::vector <gsl::Vector3D> tempNormals;
+    std::vector <gsl::Vector2D> tempUVs;
 
-    mMesh->mDrawType = GL_TRIANGLES;
-    mMaterial = new MaterialComponent();
-}
+    // Varible for constructing the indices vector
+    unsigned int temp_index = 0;
 
-VisualObject* ShapeFactory::createShape(string shapeName)
-{
-    string obj{"obj"};
-    string fileStr{"../GEA2021/Assets/" + shapeName};
-    VisualObject* temp = nullptr;
-    if (shapeName == "Circle"){
-        if(doOnce[0] == false){
-            temp = new Circle;
-            temp->mNameComp->mName = shapeName;
-            temp->mNameComp->objectID = mCounter;
-            myShapes.push_back(temp);
-            doOnce[0] = true;
-            return temp;}
-        else{
-            temp = myShapes[0];
-            temp->mNameComp->mName = shapeName;
-            return temp;}}
-    else if(shapeName == "Square"){
-        if(doOnce[1] == false){
-            myShapes.push_back(new Square);
-            myShapes[1]->mNameComp->mName = shapeName;
-            myShapes[1]->mNameComp->objectID = 1;
-            doOnce[1] = true;
-            return myShapes[1];}
-        else{
-            return myShapes[1];}}
-    else if(shapeName == "Triangle"){
-        if(doOnce[2] == false){
-            myShapes.push_back(new Triangle);
-            myShapes[2]->mNameComp->mName = shapeName;
-            myShapes[2]->mNameComp->objectID = 2;
-            doOnce[2] = true;
-            return myShapes[2];}
-        else{
-            return myShapes[2];}}
-    else if(shapeName == "Plain"){
-        if(doOnce[3] == false){
-            myShapes.push_back(new Plain);
-            myShapes[3]->mNameComp->mName = shapeName;
-            myShapes[3]->mNameComp->objectID = 3;
-            doOnce[3] = true;
-            return myShapes[3];}
-        else{
-            return myShapes[3];}}
-    else if(shapeName.find(obj) != std::string::npos)
+    //Reading one line at a time from file to oneLine
+    while(std::getline(fileIn, oneLine))
     {
-        temp = nullptr;
-        if(myObjs.size()>=1)
+        //Doing a trick to get one word at a time
+        std::stringstream sStream;
+        //Pushing line into stream
+        sStream << oneLine;
+        //Streaming one word out of line
+        oneWord = ""; //resetting the value or else the last value might survive!
+        sStream >> oneWord;
+
+        if (oneWord == "#")
         {
-            for(auto a = myObjs.begin(); a != myObjs.end(); a++)
-            {
-                if (shapeName.find(a->first) != std::string::npos)
-                {
-                    temp = myShapes[a->second];
-                }
-            }
-            if(temp!=nullptr)
-                return temp;
-            else{
-                myShapes.push_back(new ObjMesh(fileStr));
-                shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-                myObjs[shapeName] = ObjStartID;
-                myShapes[ObjStartID]->mNameComp->mName = shapeName;
-                myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
-                ObjStartID++;
-                return myShapes[ObjStartID-1];}
+            //Ignore this line
+            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+            continue;
         }
-        else{
-            myShapes.push_back(new ObjMesh(fileStr));
-            shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-            myObjs[shapeName] = ObjStartID;
-            myShapes[ObjStartID]->mNameComp->mName = shapeName;
-            myShapes[ObjStartID]->mNameComp->objectID = ObjStartID;
-            ObjStartID++;
-            return myShapes[ObjStartID-1];}
+        if (oneWord == "")
+        {
+            //Ignore this line
+            //            qDebug() << "Line is blank ";
+            continue;
+        }
+        if (oneWord == "v")
+        {
+            //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+            gsl::Vector3D tempVertex;
+            sStream >> oneWord;
+            tempVertex.setX (std::stof(oneWord));
+            sStream >> oneWord;
+            tempVertex.setY(std::stof(oneWord));
+            sStream >> oneWord;
+            tempVertex.setZ  (std::stof(oneWord));
+
+            //Vertex made - pushing it into vertex-vector
+
+            tempVertecies.push_back(tempVertex);
+
+            continue;
+        }
+        if (oneWord == "vt")
+        {
+            //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+            gsl::Vector2D tempUV;
+            sStream >> oneWord;
+            tempUV.setX  (std::stof(oneWord));
+            sStream >> oneWord;
+            tempUV.setY  (std::stof(oneWord));
+
+            //UV made - pushing it into UV-vector
+            tempUVs.push_back(tempUV);
+
+            continue;
+        }
+        if (oneWord == "vn")
+        {
+            //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+            gsl::Vector3D tempNormal;
+            sStream >> oneWord;
+            tempNormal.setX (std::stof(oneWord));
+            sStream >> oneWord;
+            tempNormal.setY  (std::stof(oneWord));
+            sStream >> oneWord;
+            tempNormal.setZ (std::stof(oneWord));
+
+            //Vertex made - pushing it into vertex-vector
+            tempNormals.push_back(tempNormal);
+            continue;
+        }
+        if (oneWord == "f")
+        {
+            //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+            //int slash; //used to get the / from the v/t/n - format
+            int index, normal, uv;
+            for(int i = 0; i < 3; i++)
+            {
+                sStream >> oneWord;     //one word read
+                std::stringstream tempWord(oneWord);    //to use getline on this one word
+                std::string segment;    //the numbers in the f-line
+                std::vector<std::string> segmentArray;  //temp array of the numbers
+                while(std::getline(tempWord, segment, '/')) //splitting word in segments
+                {
+                    segmentArray.push_back(segment);
+                }
+                index = std::stoi(segmentArray[0]);     //first is vertex
+                if (segmentArray[1] != "")              //second is uv
+                    uv = std::stoi(segmentArray[1]);
+                else
+                {
+                    //qDebug() << "No uvs in mesh";       //uv not present
+                    uv = 0;                             //this will become -1 in a couple of lines
+                }
+                normal = std::stoi(segmentArray[2]);    //third is normal
+
+                //Fixing the indexes
+                //because obj f-lines starts with 1, not 0
+                --index;
+                --uv;
+                --normal;
+
+                if (uv > -1)    //uv present!
+                {
+                    Vertex tempVert(tempVertecies[index], tempNormals[normal], tempUVs[uv]);
+                    m->mVertices.push_back(tempVert);
+                }
+                else            //no uv in mesh data, use 0, 0 as uv
+                {
+                    Vertex tempVert(tempVertecies[index], tempNormals[normal], gsl::Vector2D(0.0f, 0.0f));
+                    m->mVertices.push_back(tempVert);
+                }
+                m->mIndices.push_back(temp_index++);
+            }
+            continue;
+        }
     }
-    else{
-        qDebug() << "createShape: invalid string";
-        return nullptr;}
+    fileIn.close();
 }
 
-
-
-VisualObject* ShapeFactory::createMonkey()
+void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n)
 {
-    if(doOncee == false)
+    if(n>0)
     {
-        myMonkey = new ObjMesh(monkeyString);
-        return myMonkey;
-        doOncee = true;
+        gsl::Vector3D v1 = a+b; v1.normalize();
+        gsl::Vector3D v2 = a+c; v2.normalize();
+        gsl::Vector3D v3 = c+b; v3.normalize();
+        subDivide(a, v1, v2, n-1);
+        subDivide(c, v2, v3, n-1);
+        subDivide(b, v3, v1, n-1);
+        subDivide(v3, v2, v1, n-1);
+    }else{
+        Vertex v{a.x, a.y, a.z, a.x, a.y, a.z};
+        myMeshes[0]->mVertices.push_back(v);
+        v = Vertex{b.x, b.y, b.z, b.x, b.y, b.z};
+        myMeshes[0]->mVertices.push_back(v);
+        v = Vertex{c.x, c.y, c.z, c.x, c.y, c.z};
+        myMeshes[0]->mVertices.push_back(v);
     }
-    else
-        return myMonkey;
 }
+

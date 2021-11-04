@@ -128,6 +128,8 @@ void RenderWindow::initObject()
 {
     //********************** Making the object to be drawn **********************
 
+    mShapeFactory.makeVertices();
+
     VisualObject* temp = mShapeFactory.createShape("Circle");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
@@ -196,17 +198,13 @@ void RenderWindow::initObject()
     {
         for(int y=0; y<10; y++)
         {
-            std::string a = to_string(shapeCounter);
-            temp = mShapeFactory.createMonkey();
+            temp = mShapeFactory.createShape("Monkey.obj");
             temp->init();
             temp->move((i-y), 0.5, y-5);
-            temp->mNameComp->mName = "Monkey_" + a;
-            temp->mNameComp->objectID = shapeCounter + 7;
             temp->mMaterial->mShaderProgram = 0;    //plain shader
             mTransComps.push_back(temp->mTransform);
             mNameComps.push_back(temp->mNameComp);
             mVisualObjects.push_back(temp);
-            shapeCounter++;
         }
     }
 
@@ -413,17 +411,13 @@ void RenderWindow::playMode(bool p)
 
 void RenderWindow::createShapes(string shapeID)
 {
-    std::string a = to_string(shapeCounter);
     VisualObject* temp = mShapeFactory.createShape(shapeID);
     temp->init();
     temp->move(1,1,0.5);
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->mNameComp->mName = shapeID + a;
-    temp->mNameComp->objectID = shapeCounter + 7;
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
-    shapeCounter++;
 }
 
 
@@ -622,7 +616,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 
     qDebug() << ray_wor;
 
-    for(int i{0}; i < shapeCounter + 7; i++)
+    for(int i{0}; i < mVisualObjects.size(); i++)
 
     {      //making the vector from camera to object we test against
         gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();

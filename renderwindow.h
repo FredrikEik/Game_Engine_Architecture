@@ -37,8 +37,6 @@ private:
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
-    //static const int nrOfShapes = 5;
-    int shapeCounter = 0;
     Input mInput;
     Player* mPlayer;
     bool playM = false;

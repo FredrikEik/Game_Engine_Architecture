@@ -18,40 +18,30 @@ class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
-    VisualObject* createMonkey();
+    void makeVertices();
 private:
+    void readFile(std::string filename, MeshComponent* m);
+    void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
     std::map<string, int> myObjs;
+    std::vector<MeshComponent*> myMeshes;
+    std::vector<CollisionComponent*> myCollis;
     int mCounter = 0;
-    std::vector<VisualObject*> myShapes;
     bool doOnce[4]{false};
-    VisualObject* myMonkey;
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
-    bool doOncee = false;
 };
 
 class Circle : public VisualObject
 {
 public:
     Circle();
-    void makeVerticies();
     ~Circle(){}
-private:
-    void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
-    void circleUnit(CollisionComponent* dCollision);
-    void makeTriangle(const gsl::Vector3D& v1, const gsl::Vector3D& v2, const gsl::Vector3D& v3);
-    int m_rekursjoner;
-    int m_index;
-
 };
-
-
 
 class Square : public VisualObject
 {
 public:
     Square();
-    void makeVerticies(MeshComponent* dMesh, CollisionComponent* dCollision);
     ~Square() {}
 };
 
@@ -59,7 +49,6 @@ class Triangle : public VisualObject
 {
 public:
     Triangle();
-    void makeVerticies();
     ~Triangle() {};
 };
 
@@ -67,14 +56,13 @@ class Plain : public VisualObject
 {
 public:
     Plain();
-    void makeVerticies(MeshComponent* dMesh);
     ~Plain(){};
 };
 
 class ObjMesh : public VisualObject
 {
 public:
-    ObjMesh(std::string filename);
+    ObjMesh();
     ~ObjMesh(){};
 };
 

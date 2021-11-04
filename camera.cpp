@@ -213,6 +213,24 @@ void FrustumSystem::makeFrustumLines()
     mMesh->mVertices.push_back(Vertex{mLeftBotFar,   pink, uv});
 }
 
+//bool FrustumSystem::insideFrustum(gsl::Vector3D pos)
+//{
+//    gsl::Vector3D U = mRightBotFar - mRightBotNear;
+//    gsl::Vector3D V = mRightTopFar - mRightBotNear;
+
+//    gsl::Vector3D Right_normal = U ^ V;
+
+//    gsl::Vector3D xRBN = pos - mRightBotNear;
+
+//    //double distancePastFrontPlane = xRBN * Right_normal;
+//    if(xRBN * Right_normal < 0)
+//    {
+//        return false;
+//    }
+
+//}
+
+
 void FrustumSystem::init()
 {
 
