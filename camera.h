@@ -62,11 +62,12 @@ public:
 
     std::string mName{"none"};
 
+    void calculateFrustumVectors();
+
 private:
     float mPitch{0.f};
     float mYaw{0.f};
 
-    void calculateFrustumVectors();
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;
