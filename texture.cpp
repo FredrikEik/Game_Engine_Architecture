@@ -175,3 +175,18 @@ void Texture::setCubemapTexture()
              << mGLTextureID << "| bytes pr pixel:" << mBytesPrPixel << "| using alpha:" << mAlphaUsed
              << "| w:" << mColumns << "|h:" << mRows;
 }
+
+int Texture::getColumns()
+{
+    return mColumns;
+}
+
+int Texture::getRows()
+{
+    return mRows;
+}
+
+unsigned char *Texture::getMap()
+{
+    return mBitmap;
+}

@@ -15,6 +15,9 @@ public:
     Texture(const std::string &filename, bool cubeMap = false);
     float getHeightFromIndex(int i);
     std::string mTextureFilename;
+    unsigned char* getMap();
+    int getColumns();
+    int getRows();
 
     int mColumns{};
     int mRows{};

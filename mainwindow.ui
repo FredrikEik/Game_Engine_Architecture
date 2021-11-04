@@ -79,6 +79,8 @@
     <addaction name="actionAdd_Circle"/>
     <addaction name="actionAdd_Square"/>
     <addaction name="actionAdd_Monkey"/>
+    <addaction name="actionAdd_Big_Wall"/>
+    <addaction name="actionAdd_Small_Wall"/>
    </widget>
    <addaction name="menuAdd_Object"/>
   </widget>
@@ -266,7 +268,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Toggle Triangle</string>
+    <string>Add Triangle</string>
    </property>
   </action>
   <action name="actionAdd_Circle">
@@ -274,7 +276,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Toggle Circle</string>
+    <string>Add Circle</string>
    </property>
   </action>
   <action name="actionAdd_Square">
@@ -282,7 +284,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Toggle Square</string>
+    <string>Add Square</string>
    </property>
   </action>
   <action name="actionAdd_Monkey">
@@ -290,7 +292,17 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Toggle Monkey</string>
+    <string>Add Monkey</string>
+   </property>
+  </action>
+  <action name="actionAdd_Big_Wall">
+   <property name="text">
+    <string>Add Big Wall</string>
+   </property>
+  </action>
+  <action name="actionAdd_Small_Wall">
+   <property name="text">
+    <string>Add Small Wall</string>
    </property>
   </action>
  </widget>

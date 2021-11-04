@@ -32,6 +32,22 @@ Plain::Plain()
     mNameComp = new NameComponent();
 }
 
+BigWall::BigWall()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+}
+
+SmallWall::SmallWall()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+}
+
 ObjMesh::ObjMesh()
 {
     mTransform = new TransformComponent();
@@ -45,9 +61,9 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     string obj{"obj"};
     string fileStr{"../GEA2021/Assets/" + shapeName};
     VisualObject* temp = nullptr;
-    if(mCounter == 6) //Fordi player har ID 6 i egen klasse,
+    if(mCounter == 8) //Fordi player har ID 6 i egen klasse,
         mCounter++;   //så vi hopper over den her
-    std::string a = to_string(mCounter-6); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
+    std::string a = to_string(mCounter-8); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
 
     if (shapeName == "Circle")
     {
@@ -113,6 +129,42 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         if(doOnce[3] == false){
             temp->mNameComp->mName = shapeName;
             doOnce[3] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
+    }
+    else if(shapeName == "BigWall")
+    {
+        temp = new BigWall;
+        temp->mMesh = myMeshes[4];
+        temp->mCollision = myCollis[4];
+        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
+
+        if(doOnce[4] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[4] = true;}
+        else
+            temp->mNameComp->mName = shapeName + a;
+
+        temp->mNameComp->objectID = mCounter;
+        mCounter++;
+
+        return temp;
+    }
+    else if(shapeName == "SmallWall")
+    {
+        temp = new SmallWall;
+        temp->mMesh = myMeshes[5];
+        temp->mCollision = myCollis[5];
+        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
+
+        if(doOnce[5] == false){
+            temp->mNameComp->mName = shapeName;
+            doOnce[5] = true;}
         else
             temp->mNameComp->mName = shapeName + a;
 
@@ -306,6 +358,113 @@ void ShapeFactory::makeVertices()
     m = new MeshComponent;
     c = new CollisionComponent;
 
+    m->mDrawType = GL_TRIANGLES;
+
+    m->mVertices.push_back(Vertex{0,0,0,   1,0,0});
+    m->mVertices.push_back(Vertex{8.5,0,0, 1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{0,1.5,0, 1,0,0});
+
+    m->mVertices.push_back(Vertex{8.5,0,0,    1,0,0});
+    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0,  1.5,0,  1,0,0});
+
+    m->mVertices.push_back(Vertex{8.5,0,0,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,0,1});
+
+    m->mVertices.push_back(Vertex{8.5,0,0,1,    0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,0,  1.5,  1,0,1});
+
+    m->mVertices.push_back(Vertex{0,0,1.5,1,    1,0});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,1,0});
+
+    m->mVertices.push_back(Vertex{0,  0,1.5,1,    1,0});
+    m->mVertices.push_back(Vertex{8.5,0,  1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,1,0});
+
+    m->mVertices.push_back(Vertex{0,0,1.5,1,  0,0});
+    m->mVertices.push_back(Vertex{0,0,0,  1,  0,0});       //left surface
+    m->mVertices.push_back(Vertex{0,1.5,  1.5, 1,0,0});
+
+    m->mVertices.push_back(Vertex{0,0,  0,     1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0,   1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,1.5, 1,0,0});
+
+    m->mVertices.push_back(Vertex{0,  1.5,0,    1,0,1});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});
+
+    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,1.5,1,0,1});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});
+
+
+    min = gsl::Vector3D(0,0,0);
+    max = gsl::Vector3D(8.5, 1.5, 1.5);
+
+    c->setBoundingBox(min, max);
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    m->mDrawType = GL_TRIANGLES;
+
+    m->mVertices.push_back(Vertex{0,0,0,   1,0,0});
+    m->mVertices.push_back(Vertex{4.5,0,0, 1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{0,1.5,0, 1,0,0});
+
+    m->mVertices.push_back(Vertex{4.5,0,0,    1,0,0});
+    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0,  1.5,0,  1,0,0});
+
+    m->mVertices.push_back(Vertex{4.5,0,0,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,0,1});
+
+    m->mVertices.push_back(Vertex{4.5,0,0,1,    0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,0,  1.5,  1,0,1});
+
+    m->mVertices.push_back(Vertex{0,0,1.5,1,    1,0});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,1,0});
+
+    m->mVertices.push_back(Vertex{0,  0,1.5,1,    1,0});
+    m->mVertices.push_back(Vertex{4.5,0,  1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,1,0});
+
+    m->mVertices.push_back(Vertex{0,0,1.5,1,  0,0});
+    m->mVertices.push_back(Vertex{0,0,0,  1,  0,0});       //left surface
+    m->mVertices.push_back(Vertex{0,1.5,  1.5, 1,0,0});
+
+    m->mVertices.push_back(Vertex{0,0,  0,     1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0,   1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,1.5, 1,0,0});
+
+    m->mVertices.push_back(Vertex{0,  1.5,0,    1,0,1});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});
+
+    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,1.5,1,0,1});
+    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});
+
+    min = gsl::Vector3D(0,0,0);
+    max = gsl::Vector3D(4.5, 1.5, 1.5);
+
+    c->setBoundingBox(min, max);
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
     readFile(monkeyString, m);
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.2;
@@ -484,4 +643,3 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
         myMeshes[0]->mVertices.push_back(v);
     }
 }
-

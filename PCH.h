@@ -28,6 +28,8 @@
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
+#include "skybox.h"
+#include "light.h"
 
 class QOpenGLContext;
 class Shader;

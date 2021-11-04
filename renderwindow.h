@@ -20,7 +20,7 @@ public:
 
     void toggleWireframe(bool buttonState);
     void playMode(bool p);
-    void createShapes(string shapeID);
+    std::string createShapes(string shapeID);
     void setCameraSpeed(float value);
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -54,6 +54,30 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
+
+    Skybox *mSkyBox;
+    Light * mLight{nullptr};
+    void setupSkyboxShader(int shaderIndex);
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+    GLint mTextureUniform3{-1};
+
+    void setupPhongShader(int shaderIndex);
+    GLint mMatrixUniform2{-1};
+    GLint vMatrixUniform2{-1};
+    GLint pMatrixUniform2{-1};
+    GLint mTextureUniformPhong{-1};
+
+    //light shader variables
+    GLint mLightColorUniform{-1};
+    GLint mObjectColorUniform{-1};
+    GLint mAmbientLightStrengthUniform{-1};
+    GLint mLightPositionUniform{-1};
+    GLint mCameraPositionUniform{-1};
+    GLint mSpecularStrengthUniform{-1};
+    GLint mSpecularExponentUniform{-1};
+    GLint mLightPowerUniform{-1};
 
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};

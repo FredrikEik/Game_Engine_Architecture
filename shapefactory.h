@@ -26,7 +26,7 @@ private:
     std::vector<MeshComponent*> myMeshes;
     std::vector<CollisionComponent*> myCollis;
     int mCounter = 0;
-    bool doOnce[4]{false};
+    bool doOnce[6]{false};
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
 };
@@ -59,18 +59,24 @@ public:
     ~Plain(){};
 };
 
+class BigWall : public VisualObject
+{
+public:
+    BigWall();
+    ~BigWall(){};
+};
+
+class SmallWall : public VisualObject
+{
+public:
+    SmallWall();
+    ~SmallWall(){};
+};
+
 class ObjMesh : public VisualObject
 {
 public:
     ObjMesh();
     ~ObjMesh(){};
-};
-
-class Line : public VisualObject
-{
-public:
-        Line(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght, gsl::Vector3D colorIn);
-        ~Line() {};
-private:
 };
 #endif // SHAPEFACTORY_H

@@ -56,12 +56,16 @@ private slots:
 
     void on_ScaleMinus_clicked();
 
+    void on_actionAdd_Big_Wall_triggered();
+
+    void on_actionAdd_Small_Wall_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;
     VisualObject *mVisualObject;
     int Objects = 0;
-    QTreeWidgetItem *QTWI{nullptr};
+    QTreeWidgetItem *Widgetitem{nullptr};
     QTreeWidgetItem *mQTWItem{nullptr};
 
     QWidget *mRenderWindowContainer;

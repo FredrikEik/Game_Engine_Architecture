@@ -103,8 +103,18 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "phongvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongfragment.frag").c_str());
+    qDebug() << "Phong shader program id: " << mShaderPrograms[2]->getProgram();
+
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
+    qDebug() << "Phong shader program id: " << mShaderPrograms[3]->getProgram();
+
     setupPlainShader(0);
     setupTextureShader(1);
+    setupPhongShader(2);
+    setupSkyboxShader(3);
 
     initObject();
 
@@ -162,6 +172,22 @@ void RenderWindow::initObject()
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
 
+    temp = mShapeFactory.createShape("BigWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-3.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    mNameComps.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-2.f, 2.f, .5f);
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    mNameComps.push_back(temp->mNameComp);
+
     temp = mShapeFactory.createShape("Monkey.obj");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
@@ -192,7 +218,21 @@ void RenderWindow::initObject()
     mFrustumSystem = new FrustumSystem();
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
-    //    mVisualObjects.push_back(mFrustumSystem);
+
+    //------------------------Skybox----------------------//
+    mSkyBox = new Skybox();
+    mSkyBox->setTexture();
+    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
+    mSkyBox->init();
+    mVisualObjects.push_back(mSkyBox);
+
+    //------------------------Light----------------------//
+    mLight = new Light;
+    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
+    mLight->move(0.f, 0.f, 6.f);
+    mLight->init();
+    mVisualObjects.push_back(mLight);
+
 
     for(int i=0; i<10; i++)
     {
@@ -207,6 +247,8 @@ void RenderWindow::initObject()
             mVisualObjects.push_back(temp);
         }
     }
+
+
 
     //makes the soundmanager
     //it is a Singleton!!!
@@ -235,20 +277,35 @@ void RenderWindow::drawObject()
         int projectionMatrix{-1};
         int modelMatrix{-1};
 
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0)
+        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0) //PlainShader
         {
             viewMatrix = vMatrixUniform;
             projectionMatrix = pMatrixUniform;
             modelMatrix = mMatrixUniform;
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)//TextureShader
         {
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
-
-            //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 2)//PhongShader
+        {
+            viewMatrix = vMatrixUniform2;
+            projectionMatrix = pMatrixUniform2;
+            modelMatrix = mMatrixUniform2;
+            glUniform3f(mLightPositionUniform, mLight->mTransform->mMatrix.getPosition().x, mLight->mTransform->mMatrix.getPosition().y, mLight->mTransform->mMatrix.getPosition().y);
+            glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
+            glUniform3f(mLightColorUniform, mLight->mLightColor.x(), mLight->mLightColor.y(), mLight->mLightColor.z());
+        }
+        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 3)//SkyboxShader
+        {
+            viewMatrix = vMatrixUniform3;
+            projectionMatrix = pMatrixUniform3;
+            modelMatrix = mMatrixUniform3;
+
+            glUniform1i(mTextureUniform3, mVisualObjects[i]->mMaterial->mTextureUnit);
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
@@ -261,6 +318,15 @@ void RenderWindow::drawObject()
         glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
         glBindVertexArray(0);
     }
+
+    glBindVertexArray(mLight->mMesh->mVAO );
+    glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
+    glBindVertexArray(0);
+
+    glBindVertexArray(mSkyBox->mMesh->mVAO );
+    glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
+    glBindVertexArray(0);
+
     if(playM==false){
         glBindVertexArray( mFrustumSystem->mMesh->mVAO );
         glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
@@ -317,6 +383,31 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupPhongShader(int shaderIndex)
+{
+    mMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+
+    mLightColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightColor" );
+    mObjectColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "objectColor" );
+    mAmbientLightStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientStrengt" );
+    mLightPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPosition" );
+    mSpecularStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularStrength" );
+    mSpecularExponentUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularExponent" );
+    mLightPowerUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightStrengt" );
+    mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
+    mTextureUniformPhong = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupSkyboxShader(int shaderIndex)
+{
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform3 = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mTextureUniform3 = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "skybox");
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -409,8 +500,8 @@ void RenderWindow::playMode(bool p)
     }
 }
 
-void RenderWindow::createShapes(string shapeID)
-{
+std::string RenderWindow::createShapes(string shapeID)
+{   
     VisualObject* temp = mShapeFactory.createShape(shapeID);
     temp->init();
     temp->move(1,1,0.5);
@@ -418,6 +509,7 @@ void RenderWindow::createShapes(string shapeID)
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
+    return temp->mNameComp->mName;
 }
 
 
@@ -564,25 +656,28 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 int RenderWindow::levelOfDetail(int i)
 {
 
-    //making the vector from camera to object we test against
-    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+    if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
+        //making the vector from camera to object we test against
+        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
 
-    if(camToObject.length()<5)
-    {
-        return mVisualObjects[i]->mMesh->mVertices.size();
-    }
-    else if(camToObject.length()<20)
-    {
-        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
-            return mVisualObjects[i]->mMesh->mVertices.size()/2;
-        else
+        if(camToObject.length()<5)
+        {
             return mVisualObjects[i]->mMesh->mVertices.size();
-    }
+        }
+        else if(camToObject.length()<20)
+        {
+            if(mVisualObjects[i]->mMesh->mVertices.size()>30)
+                return mVisualObjects[i]->mMesh->mVertices.size()/2;
+            else
+                return mVisualObjects[i]->mMesh->mVertices.size();
+        }
+        else
+            if(mVisualObjects[i]->mMesh->mVertices.size()>30)
+                return mVisualObjects[i]->mMesh->mVertices.size()/4;
+            else
+                return mVisualObjects[i]->mMesh->mVertices.size();}
     else
-        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
-            return mVisualObjects[i]->mMesh->mVertices.size()/4;
-        else
-            return mVisualObjects[i]->mMesh->mVertices.size();
+        return mVisualObjects[i]->mMesh->mVertices.size();
 
 }
 
