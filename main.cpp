@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include <QPixmap>
 #include <QApplication>
-#include <Qt>
 #include <QSplashScreen>
 
 

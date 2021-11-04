@@ -3,6 +3,9 @@ QT          += core gui widgets opengl
 TEMPLATE    = app
 CONFIG      += c++17
 
+# Use Precompiled headers (PCH)
+PRECOMPILED_HEADER  = PreCompiledHeaders.h
+
 TARGET      = GEA2021
 
 INCLUDEPATH += \
@@ -53,6 +56,7 @@ SOURCES += main.cpp \
 
 
 HEADERS += \
+    PreCompiledHeaders.h \
     camera.h \
     components.h \
     constants.h \
