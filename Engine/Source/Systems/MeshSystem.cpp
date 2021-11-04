@@ -11,7 +11,7 @@
 #include "../ECSManager.h"
 #include "../Shader.h"
 #include "CameraSystem.h"
-
+#include "../Input/Input.h"
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
 {
     assert(readObj(filePath, meshComponent));
@@ -116,7 +116,9 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     glm::vec3 right(CameraSystem::getRightVector(forward));
     glm::vec3 up(CameraSystem::getUpVector(forward, right));
     
-    glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
+    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
+    glm::mat4x4 viewProjectionMatrix = transformManager->getComponent(cameraEntity).transform *  camera->m_viewMatrix *  camera->m_projectionMatrix;
+    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix;
 
     glm::vec4 leftPlane{};
     leftPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
@@ -155,12 +157,59 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;
 
 
+    ///// EXPERIMENTS
+ /*   glm::vec4 leftPlane{};
+    leftPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[0].x;
+    leftPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[0].y;
+    leftPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[0].z;
+    leftPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[0].w;
+
+    glm::vec4 rightPlane{};
+    rightPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
+    rightPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[0].y;
+    rightPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[0].z;
+    rightPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[0].w;
+
+    glm::vec4 topPlane{};
+    topPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[1].x;
+    topPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[1].y;
+    topPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[1].z;
+    topPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[1].w;
+
+    glm::vec4 bottomPlane{};
+    bottomPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[1].x;
+    bottomPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[1].y;
+    bottomPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[1].z;
+    bottomPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[1].w;
+
+    glm::vec4 nearPlane{};
+    nearPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[2].x;
+    nearPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[2].y;
+    nearPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[2].z;
+    nearPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[2].w;
+
+    glm::vec4 farPlane{};
+    farPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[2].x;
+    farPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[2].y;
+    farPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[2].z;
+    farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;*/
+
     CameraSystem::normalizePlane(leftPlane);
     CameraSystem::normalizePlane(rightPlane);
     CameraSystem::normalizePlane(topPlane);
     CameraSystem::normalizePlane(bottomPlane);
     CameraSystem::normalizePlane(nearPlane);
     CameraSystem::normalizePlane(farPlane);
+
+    //std::cout << "  LeftPlane x: " << leftPlane.x << " y: " << leftPlane.y << " z: " << leftPlane.z << " w: " << leftPlane.w << "\n";
+    //std::cout << " rightPlane x: " << rightPlane.x << " y: " << rightPlane.y << " z: " << rightPlane.z << " w: " << rightPlane.w << "\n";
+    //std::cout << "   topPlane x: " << topPlane.x << " y: " << topPlane.y << " z: " << topPlane.z << " w: " << topPlane.w << "\n";
+    //std::cout << "bottomPlane x: " << bottomPlane.x << " y: " << bottomPlane.y << " z: " << bottomPlane.z << " w: " << bottomPlane.w << "\n";
+    //std::cout << "  nearPlane x: " << nearPlane.x << " y: " << nearPlane.y << " z: " << nearPlane.z << " w: " << nearPlane.w << "\n";
+    //std::cout << "   farPlane x: " << farPlane.x << " y: " << farPlane.y << " z: " << farPlane.z << " w: " << farPlane.w << "\n";
+    //
+    //if (!Input::getInstance()->getMouseKeyState(KEY_RMB).bHeld)
+    //    _sleep(500);
 
     std::vector<uint32> meshesToRender;
     uint32 count{};
@@ -170,10 +219,16 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
         const auto& sphereComp = sphereManager->getComponent(it.entityID);
         glm::vec3 center = sphereComp.center + glm::vec3(transformComp.transform[3]);
         const float& radius = sphereComp.radius;
-        if (CameraSystem::isPointInPlane(leftPlane, center, radius) &&
-            CameraSystem::isPointInPlane(rightPlane, center, radius) &&
-            CameraSystem::isPointInPlane(topPlane, center, radius) &&
-            CameraSystem::isPointInPlane(bottomPlane, center, radius))
+        //if (CameraSystem::isPointInPlane(leftPlane, center, radius) &&
+        //    CameraSystem::isPointInPlane(rightPlane, center, radius) &&
+        //    CameraSystem::isPointInPlane(topPlane, center, radius) &&
+        //    CameraSystem::isPointInPlane(bottomPlane, center, radius))
+        //    meshesToRender.push_back(count);
+
+        if (CameraSystem::isPointInPlane(leftPlane, center, radius) > -radius &&
+            CameraSystem::isPointInPlane(rightPlane, center, radius) <= radius &&
+            CameraSystem::isPointInPlane(topPlane, center, radius) > -radius &&
+            CameraSystem::isPointInPlane(bottomPlane, center, radius) <= radius)
             meshesToRender.push_back(count);
 
         //std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)

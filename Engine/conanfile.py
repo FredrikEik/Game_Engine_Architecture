@@ -8,7 +8,7 @@ class ConanPackage(ConanFile):
         ('glad/0.1.34'),
         ('glfw/3.3.4'),
 		('glm/0.9.9.8'),
-        ('imgui/1.83'),
+        #('imgui/1.83'),
 		('openal/1.21.1')
     ]
 	generators = {

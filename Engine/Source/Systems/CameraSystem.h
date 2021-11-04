@@ -22,7 +22,7 @@ public:
 	static glm::vec3 getRightVector(const glm::vec3& forwardVector);
 	static glm::vec3 getUpVector(const glm::vec3& forwardVector, const glm::vec3& upVector);
 	static void normalizePlane(glm::vec4& OUTplane);
-	static bool isPointInPlane(const glm::vec4& plane, const glm::vec3& point, float radius);
+	static float isPointInPlane(const glm::vec4& plane, const glm::vec3& point, float radius);
 	// Add functionality to update forward/right/up vector
 	// Add pitching
 
