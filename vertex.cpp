@@ -97,8 +97,6 @@ gsl::Vector3D Vertex::getXYZ(GLfloat *xyz) const
     return gsl::Vector3D{xyz[0], xyz[1], xyz[2]};
 }
 
-
-
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";

@@ -5,6 +5,7 @@
 
 PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
+    mMeshHandler = new MeshHandler();
     mLogger = Logger::getInstance();
 }
 
@@ -50,8 +51,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
     //So far this works, but struggeling to "translate" variables into ones i can use.
 
-    mMeshes.emplace_back(MeshData());
-    MeshData &groundObjectVerts = mMeshes.back();
+//    mMeshes.emplace_back(MeshData());
+//    MeshData &groundObjectVerts = mMeshes.back();
 
 
 //Find the vector3d position of the ball
@@ -61,13 +62,22 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 
 //Find the vector3d position of the ground
-    //gsl::Vector3D groundPosition3d = {groundObject.mTransform->mMatrix.getPosition()};
+    gsl::Vector3D groundPosition3d = {groundObject.mTransform->mMatrix.getPosition()};
     //qDebug() << "Groundposition:" << groundObject.mTransform->mMatrix.getPosition();
 
 
-    //This is getting really un-elegant.
-    gsl::Vector3D triangleVertices = groundObjectVerts.mVertices[0].data()->getXYZ(groundObjectVerts);
+//Get the vertices of the trianglesurface
+    std::vector<gsl::Vector3D*> triangleVertices;
 
+    int meshIndex = mMeshHandler->makeMesh("TriangleSurface");
+
+//    for (int i = 0; i < triangleVertices.size(); i++)
+//    {
+         mMeshHandler->mMeshes.at(meshIndex).mVertices;
+
+        //triangleVertices.push_back(groundObject.mVertices[i].data()->getXYZ());
+        qDebug() << mMeshHandler->mMeshes.at(meshIndex).mVertices;
+//    }
 
 
 //Find the distance between the balls position and vertices of the trianglesurface

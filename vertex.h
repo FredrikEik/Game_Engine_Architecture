@@ -1,4 +1,4 @@
-#ifndef VERTEX_H
+﻿#ifndef VERTEX_H
 #define VERTEX_H
 
 #include "vector3d.h"
@@ -32,8 +32,9 @@ public:
 
     gsl::Vector3D getXYZ(GLfloat *xyz) const;
 
-private:
     gsl::Vector3D mXYZ;
+
+private:
     gsl::Vector3D mNormal;
     gsl::Vector2D mST;
 };
