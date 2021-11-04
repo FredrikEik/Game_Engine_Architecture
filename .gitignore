@@ -10,6 +10,15 @@
 *.dll
 *.dylib
 
+#Visual Studio spam
+.vs/*
+debug/*
+release/*
+*.vcxproj*
+*_resource.rc
+*.aps
+*.sln
+
 # Qt-es
 object_script.*.Release
 object_script.*.Debug
