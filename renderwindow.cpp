@@ -148,6 +148,12 @@ void RenderWindow::init()
     mMousePicker = new MousePicker(mCurrentCamera);
     mMainWindow->setMouseTracking(true);
 
+    ObjFactory->createObject("Goat");
+    mMainWindow->addObjectToWorldList("Player");
+    ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
+    ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
+    mPlayer = new player(ObjFactory->mGameObject.back());
+
     MapSpawner = new Spawner(ObjFactory, mMainWindow);
     //MapSpawner->SpawnRow();
     MapSpawner->SpawnRow(5);
@@ -655,6 +661,8 @@ void RenderWindow::toggleGameMode()
         bPlayGame = true;
         ObjFactory->setOBJindex(-1);
         mCurrentCamera->setPosition(gsl::Vector3D(3.f, 2.f, 5.f));
+        mCurrentCamera->setPitch(0.f);
+        mCurrentCamera->setYaw(0.f);
         playSound();
         mMainWindow->disableWorldObjects(true);
     }
@@ -787,9 +795,12 @@ void RenderWindow::handleInput()
     }
 
     //Player
-    if (bPlayGame)
+    if (bPlayGame && mPlayer)
     {
-
+        if(mInput.A)
+            mPlayer->Move(-0.1f * (mTimeStart.nsecsElapsed() / 10000000.f));
+        if(mInput.D)
+            mPlayer->Move(0.1f * (mTimeStart.nsecsElapsed() / 10000000.f));
     }
 }
 

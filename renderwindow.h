@@ -13,6 +13,7 @@
 #include "soundmanager.h"
 #include "mousepicker.h"
 #include "spawner.h"
+#include "player.h"
 
 
 class QOpenGLContext;
@@ -46,6 +47,8 @@ public:
 
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};
+
+    player* mPlayer { nullptr };
 
     void playSound();
     void pauseSound();
