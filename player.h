@@ -12,9 +12,16 @@ public:
 
     GameObject* mMesh { nullptr };
 
+    void update(float deltaTime);
+
     void Move(float dt);
+    void Jump();
 
 private:
+    bool bCanJump { true };
+    float mVelocity { 0.f };
+    float mHeight { 0.51f };
+    float mDt { 0.f };
 
 };
 

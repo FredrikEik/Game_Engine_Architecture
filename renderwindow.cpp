@@ -388,6 +388,8 @@ void RenderWindow::render()
         }
     }
 
+    mPlayer->update(mTimeStart.nsecsElapsed() / 1000000.f);
+
     calculateFramerate();
 
     checkForGLerrors();
@@ -801,6 +803,9 @@ void RenderWindow::handleInput()
             mPlayer->Move(-0.1f * (mTimeStart.nsecsElapsed() / 10000000.f));
         if(mInput.D)
             mPlayer->Move(0.1f * (mTimeStart.nsecsElapsed() / 10000000.f));
+        if(mInput.SPACE){
+            mPlayer->Jump();
+        }
     }
 }
 
@@ -864,6 +869,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_O)
     {
     }
+    if(event->key() == Qt::Key_Space)
+    {
+        mInput.SPACE = true;
+    }
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
@@ -919,6 +928,10 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_O)
     {
+    }
+    if(event->key() == Qt::Key_Space)
+    {
+        mInput.SPACE = false;
     }
 }
 
