@@ -86,6 +86,21 @@ private:
     GLint pMatrixUniform2{-1};
     GLint mPickingMatrixUniform{-1};
 
+    void setupPhongShader(int shaderIndex);
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+
+    GLint mLightColorUniform{-1};
+    GLint mObjectColorUniform{-1};
+    GLint mAmbientLightStrengthUniform{-1};
+    GLint mLightPositionUniform{-1};
+    GLint mCameraPositionUniform{-1};
+    GLint mSpecularStrengthUniform{-1};
+    GLint mSpecularExponentUniform{-1};
+    GLint mLightPowerUniform{-1};
+    GLint mPhongTextureUniform{-1};
+
     class ResourceManager *mResourceManager{nullptr};
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures

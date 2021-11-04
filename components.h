@@ -23,6 +23,12 @@ public:
     gsl::Matrix4x4 mMatrix;
 //    gsl::Vector3D rotationDeg{0.f,0.f,0.f};
 //    gsl::Vector3D scale{0.f,0.f,0.f};
+
+    // Shoud not be in tranformComponent, but needed to be here for the moment
+    // Normaly it is in collisioncomponent, but since meny enteties shares the same
+    // collisionComp it shows all collisionboxes with the same collisioncomp,
+    // every entity has its own transformComp, thats why its here for now....
+    bool bShowCollisionBox{false};
 };
 
 class MeshComponent
@@ -54,18 +60,9 @@ public:
 
     QVector3D maxCorner{0,0,0};
     QVector3D minCorner{0,0,0};
-//    float xMin{0};
-//    float xMax{0};
-//    float yMin{0};
-//    float yMax{0};
-//    float zMin{0};
-//    float zMax{0};
 
     float mRaidus{0};
 
-    QVector3D mVelocity{0,0,0};
-
-    bool bShowCollisionBox{false};
 };
 
 //class BallPhysicsComponent

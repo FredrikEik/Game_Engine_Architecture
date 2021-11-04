@@ -48,6 +48,8 @@ public:
 
     GameObject* mPlayer{nullptr};
     gsl::Vector3D initPlayerPos{0,0,0};
+
+    GameObject* mLight{nullptr};
 private slots:
     void GameLoop();
 

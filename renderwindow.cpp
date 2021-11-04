@@ -127,9 +127,14 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "mousepickingfragment.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[3]->getProgram();
+
     setupPlainShader(0);
     setupTextureShader(1);
     setupMousPickingShader(2);
+    setupPhongShader(3);
 
     GameEngine::getInstance()->SetUpScene();
 
@@ -230,14 +235,14 @@ void RenderWindow::render()
 //            continue;
 //        }
 
-        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterialComp->mShaderProgram]->getProgram() );
+
 
         // MousePicking_
         GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
 
-        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && isMousePicking)
+        if(isMousePicking)
         {
-
+            glUseProgram(mShaderPrograms[2]->getProgram() );
 
             int id = i; // +50 for å se rød nyansen
             int r = (id & 0x000000FF) >>  0;
@@ -299,7 +304,6 @@ void RenderWindow::render()
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-            //mContext->swapBuffers(this);
         }
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
@@ -308,6 +312,19 @@ void RenderWindow::render()
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+        }
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 3)
+        {
+        //send data to shader
+            glUseProgram(mShaderPrograms[3]->getProgram() );
+            GameObject* light = GameEngine::getInstance()->mLight;
+            gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
+            gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
+
+            glUniform1i(mPhongTextureUniform,1);
+            glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
+            glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
+            glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);
         }
         // need to fix [] for LOD
         //qDebug() << "Distacne: " << distanceToFrontObject;
@@ -352,7 +369,7 @@ void RenderWindow::render()
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
-        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox && !isPlaying)
+        if( mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
@@ -399,6 +416,24 @@ void RenderWindow::setupMousPickingShader(int shaderIndex)
     mMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+}
+
+void RenderWindow::setupPhongShader(int shaderIndex)
+{
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+
+    mPhongTextureUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+
+    mLightColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightColor" );
+    mObjectColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "objectColor" );
+    mAmbientLightStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientStrength" );
+    mLightPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPosition" );
+    mSpecularStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularStrength" );
+    mSpecularExponentUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularExponent" );
+    mLightPowerUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPower" );
+    mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
 }
 
 float RenderWindow::getCameraSpeed() const

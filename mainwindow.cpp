@@ -216,9 +216,9 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 
     // --Visible Selection in 3D window--
     // Turn off collision box of the last selected
-    GameObjects[lastIndex]->mCollisionComp->bShowCollisionBox = false;
+    GameObjects[lastIndex]->mTransformComp->bShowCollisionBox = false;
 
-    GameObjects[ObjectListIndex]->mCollisionComp->bShowCollisionBox = true;
+    GameObjects[ObjectListIndex]->mTransformComp->bShowCollisionBox = true;
     lastIndex = currentRow;
 }
 

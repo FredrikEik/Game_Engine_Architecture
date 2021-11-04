@@ -64,6 +64,8 @@ FORMS += \
 DISTFILES += \
     Shaders/mousepickingfragment.frag \
     Shaders/mousepickingvertex.vert \
+    Shaders/phongshader.frag \
+    Shaders/phongshader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

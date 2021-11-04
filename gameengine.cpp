@@ -68,6 +68,7 @@ void GameEngine::SetUpObjects()
     mPlayer->mTransformComp->mMatrix.translate(0,-1.8f,-8);
     initPlayerPos = {0,-1.8f,-8};
     mPlayer->mMaterialComp->mShaderProgram = 2;
+//    mPlayer->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(mPlayer);
 
 
@@ -99,10 +100,16 @@ void GameEngine::SetUpObjects()
 //    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
+    mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
+    mLight->mTransformComp->mMatrix.translate(-1,3,5);
+    mLight->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(mLight);
+
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
+
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-3,-1,-5);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
@@ -120,17 +127,17 @@ void GameEngine::SetUpObjects()
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-5,2.5,0);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mMaterialComp->mShaderProgram = 3;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(-12,0.5,-13);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mMaterialComp->mShaderProgram = 3;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(3,-1,-3);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mTransformComp->mMatrix.translate(3,-0.5f,-3);
+    tempGameObject->mMaterialComp->mShaderProgram = 3;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
@@ -181,7 +188,6 @@ void GameEngine::HandleInput()
     float cameraSpeed = mRenderwindow->getCameraSpeed();
     Camera *currentCamera = mRenderwindow->mCurrentCamera;
     float camSpeedMultiplyer{2};
-    mPlayer->mCollisionComp->mVelocity;
 
     UpdateGameCameraFollow();
 
