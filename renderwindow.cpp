@@ -121,7 +121,7 @@ void RenderWindow::init()
     //********************** Set up camera **********************
 
     //mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    mPlayCamera.setPosition(gsl::Vector3D(1.f, 20.f, 9.f));
+    mPlayCamera.setPosition(gsl::Vector3D(1.f, 10.f, 9.f));
     mPlayCamera.pitch(70);
 
 
@@ -339,7 +339,7 @@ void RenderWindow::render()
     // HandleInput();
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
-    mFrustumSystem->updateFrustumPos(mEditorCamera.position());
+    mFrustumSystem->updateFrustumPos(mPlayCamera.position());
     if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[1]->mCollision))
         qDebug() <<"Collision detected"; //testing collision
 
@@ -437,7 +437,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //mEditorCamera.calculateFrustumVectors();
     //calculate aspect ration and set projection matrix
-    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
+    mPlayCamera.mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
     mPlayCamera.calculateProjectionMatrix();
     mEditorCamera.calculateProjectionMatrix();

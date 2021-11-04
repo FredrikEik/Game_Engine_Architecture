@@ -66,7 +66,7 @@ private:
     VisualObject *mVisualObject;
     int Objects = 0;
     QTreeWidgetItem *Widgetitem{nullptr};
-    QTreeWidgetItem *mQTWItem{nullptr};
+    //QTreeWidgetItem *mQTWItem{nullptr};
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
