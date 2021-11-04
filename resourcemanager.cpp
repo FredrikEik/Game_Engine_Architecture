@@ -49,7 +49,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     tempGO->mMaterialComp = new MaterialComponent();
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
-    tempGO->mCollisionComp = new CollisionComponent();
+
 
 
     auto foundAtIndex = mObjectsMap.find(filepath);
@@ -57,12 +57,14 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
 
     if(foundAtIndex != mObjectsMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
+        tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
         mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
+        tempGO->mCollisionComp = new CollisionComponent();
         mObjectsMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {

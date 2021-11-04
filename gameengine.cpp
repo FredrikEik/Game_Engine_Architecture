@@ -100,6 +100,10 @@ void GameEngine::SetUpObjects()
     tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(-3,-1,-5);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
     tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
@@ -120,6 +124,12 @@ void GameEngine::SetUpObjects()
     tempGameObject->mTransformComp->mMatrix.translate(-12,0.5,-13);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
+
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    tempGameObject->mTransformComp->mMatrix.translate(3,-1,-3);
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+
 
 
 
@@ -189,6 +199,7 @@ void GameEngine::HandleInput()
     }
     if(bIsPlaying)
     {
+        //qDebug() << "nr of obj: " << mRenderwindow->mGameObjects.size();
         QVector3D currentPos{mPlayer->mTransformComp->mMatrix.getPosition().x,
                     mPlayer->mTransformComp->mMatrix.getPosition().y,
                     mPlayer->mTransformComp->mMatrix.getPosition().z};

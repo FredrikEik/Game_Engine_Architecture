@@ -34,9 +34,12 @@ bool CollisionSystem::isColliding(std::vector<GameObject*> objects, QVector3D pl
                 otherPos.z() + otherMinCorner.z() < playerPos.z() + playerMaxCorner.z();
         bool yAxis =playerPos.y() + playerMinCorner.y() <= otherPos.y() + otherMaxCorner.y() &&
                 otherPos.y() + otherMinCorner.y() <= playerPos.y() + playerMaxCorner.y();
-
+        qDebug() << "obj nr: " << i;
+   qDebug() << "max: " << otherPos + otherMaxCorner << "min: " << otherPos + otherMinCorner;
+   qDebug() << "pos: " << otherPos;
         if(xAxis && zAxis && yAxis)
         {
+            qDebug() << i;
             return true;
         }
     }
