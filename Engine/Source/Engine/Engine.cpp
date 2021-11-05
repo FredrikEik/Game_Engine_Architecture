@@ -88,7 +88,7 @@ void Engine::init()
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(1); // VSYNC turn off for more fps 
 	
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{

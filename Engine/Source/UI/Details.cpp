@@ -20,8 +20,15 @@ void Details::begin(Viewport* inViewport, int32 inReservedEntities)
 
 void Details::update(int32 inEntityID)
 {
-	if (inEntityID < reservedEntities || !ECS->entityExists(inEntityID))
+	if (inEntityID < reservedEntities/* || !ECS->entityExists(inEntityID)*/)
 		return;
+
+	//while (!ECS->entityExists(inEntityID))
+	//{
+	//	inEntityID++;
+	//	if (inEntityID > core::MAX_ENTITIES)
+	//		inEntityID = 0;
+	//}
 
 	entityID = inEntityID;
 	entity = ECS->getEntity(entityID);

@@ -32,7 +32,7 @@ void CameraSystem::updateGameCamera(uint32 entity, class ECSManager* ECS, float 
 	CameraComponent* currentCamera{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity) };
 	assert(currentCamera);
 
-	currentCamera->pitch = -70.f;
+	currentCamera->pitch = -50.f;
 	currentCamera->yaw = 0.f;
 	TransformSystem::setHeight(entity, 20.f, ECS);
 	processGameMouseInput(*currentCamera, ECS, deltaTime);
@@ -74,15 +74,24 @@ void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSMana
 	//std::cout << "x " << right.x << " y " << right.y << " z " << right.z << std::endl;
 
 	glm::vec3 deltaMovement{};
+	//if (mousePosition.x < 50)
+	//	deltaMovement -= right * 5.f * deltaTime;
+	//if (mousePosition.y < 50)
+	//	deltaMovement += forward * 5.f * deltaTime;
+	//if (mousePosition.y > (screenHeight-50))
+	//	deltaMovement -= forward * 5.f * deltaTime;
+	//if (mousePosition.x > (screenWidth-50))
+	//	deltaMovement += right * 5.f * deltaTime;
+
 	if (mousePosition.x < 50)
-		deltaMovement -= right * 5.f * deltaTime;
+		deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime;
 	if (mousePosition.y < 50)
-		deltaMovement += forward * 5.f * deltaTime;
-	if (mousePosition.y > (screenHeight-50))
-		deltaMovement -= forward * 5.f * deltaTime;
-	if (mousePosition.x > (screenWidth-50))
-		deltaMovement += right * 5.f * deltaTime;
-	
+		deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime;
+	if (mousePosition.y > (screenHeight - 50))
+		deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime;
+	if (mousePosition.x > (screenWidth - 50))
+		deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime;
+
 	TransformSystem::move(currentCamera.entityID, deltaMovement, ECS);
 }
 
