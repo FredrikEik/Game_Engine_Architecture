@@ -11,7 +11,7 @@ Spawner::Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow)
 
 void Spawner::SpawnRow(int rowLength)
 {
-    for(int i = 0; i < rowLength; i++)
+    for(int i = 0; i < rowLength; i+=5)
     {
         //FLOOR OF MAP
         ObjSpawnFactory->createObject("Cube");
@@ -22,7 +22,7 @@ void Spawner::SpawnRow(int rowLength)
             SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
             SpawnedObject->getTransformComp()->Scal.setX(7.f);
             SpawnedObject->getTransformComp()->Scal.setY(1.f);
-            SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+            SpawnedObject->getTransformComp()->Scal.setZ(5.f);
             SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
             SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
                                                              SpawnedObject->getTransformComp()->Scal.getY(),
@@ -39,7 +39,7 @@ void Spawner::SpawnRow(int rowLength)
             SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
             SpawnedObject->getTransformComp()->Scal.setX(1.f);
             SpawnedObject->getTransformComp()->Scal.setY(5.f);
-            SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+            SpawnedObject->getTransformComp()->Scal.setZ(5.f);
             SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
             SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
                                                              SpawnedObject->getTransformComp()->Scal.getY(),
@@ -57,7 +57,7 @@ void Spawner::SpawnRow(int rowLength)
             SpawnedObject->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
             SpawnedObject->getTransformComp()->Scal.setX(1.f);
             SpawnedObject->getTransformComp()->Scal.setY(5.f);
-            SpawnedObject->getTransformComp()->Scal.setZ(1.f);
+            SpawnedObject->getTransformComp()->Scal.setZ(5.f);
             SpawnedObject->getTransformComp()->mMatrix = SpawnedObject->getTransformComp()->mTrueScaleMatrix;
             SpawnedObject->getTransformComp()->mMatrix.scale(SpawnedObject->getTransformComp()->Scal.getX(),
                                                              SpawnedObject->getTransformComp()->Scal.getY(),
