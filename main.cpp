@@ -15,8 +15,9 @@ int main(int argc, char *argv[])
     QPixmap pixmap("../GEA2021/splash.png");
     QSplashScreen splash(pixmap);
     splash.show();
-    splash.showMessage("Loading...");
+
     splash.raise();
+    splash.showMessage("Loading...");
     QCoreApplication::processEvents();
 
     //Makes the Qt MainWindow and shows it.
@@ -25,6 +26,8 @@ int main(int argc, char *argv[])
     w.move(10, 10);     //Moves the program at start. Nice if you have large screen and editor on one side.
     w.show();
     splash.raise();
+    splash.showMessage("BRØS");
+
     //splash.hide();
     splash.finish(&w);
 

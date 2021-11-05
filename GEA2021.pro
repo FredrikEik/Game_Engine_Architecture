@@ -45,6 +45,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    skybox.cpp \
     sphere.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    skybox.h \
     sphere.h \
     texture.h \
     gsl/vector2d.h \
