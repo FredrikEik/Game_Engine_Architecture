@@ -90,7 +90,7 @@ private:
 
     float mAspectratio{1.f};
 
-    class Factory* factory = new Factory;
+    class Factory *factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
 
 

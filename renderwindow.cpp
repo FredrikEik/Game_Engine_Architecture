@@ -363,19 +363,31 @@ void RenderWindow::render()
             }
             */
 
-            if (i == mIndexToPickedObject) {
+            if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.
-//                GameObject *hjelpeObjekt=nullptr;
-//                gsl::Vector3D tempPosition;
-//            hjelpeObjekt = factory->createObject("Cube");
-//            tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
-//            hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+                GameObject *hjelpeObjekt=nullptr;
+                MeshComponent *hjelpeObjektMesh= nullptr;
+                gsl::Vector3D tempPosition;
+                gsl::Vector3D tempScale;
 
-                factory->mGameObjects[i]->glDrawArrays(GL_LINE, 0 , factory->mGameObjects[i]->getMeshComponent()->mVertices.size());
-                glBindVertexArray(0);
+            hjelpeObjekt = factory->createObject("Cube");
+            hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
+            hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
+            hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+            tempPosition = factory->mGameObjects[mIndexToPickedObject]->getTransformComponent()->mMatrix.getPosition();
+            hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+            tempScale = factory->mGameObjects[mIndexToPickedObject]->getTransformComponent()->mMatrix.getScale();
+            hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.1f, tempScale.y*1.1f, tempScale.z*1.1f);
+
+
+                    //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+
             }
+
+
          }
+
 
 
     }
@@ -696,7 +708,9 @@ void RenderWindow::mousePicking(QMouseEvent *event)
 
             }
 
+
         }
+
 
 }
 void RenderWindow::setPickedObject(int pickedID)

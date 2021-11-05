@@ -109,7 +109,7 @@ void Cube::move(float x, float y, float z)
 void Cube::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    glDrawArrays(getMeshComponent()->mDrawType, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
 
