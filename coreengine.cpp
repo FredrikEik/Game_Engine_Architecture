@@ -1,4 +1,4 @@
-#include "coreengine.h"
+﻿#include "coreengine.h"
 #include "gameobjectmanager.h"
 #include "soundsystem.h"
 #include "gameobject.h"
@@ -130,7 +130,7 @@ void CoreEngine::setUpScene()
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-    mGameLoopTimer->start(16);
+    mGameLoopTimer->start(7); //Edited to 7 ms, this gives an fps of about 143fps
 }
 
 void CoreEngine::handleInput()
