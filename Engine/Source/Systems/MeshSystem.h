@@ -31,6 +31,10 @@ private:
 	static bool readObj(const std::filesystem::path& filePath, struct MeshComponent& meshComponent);
     static std::vector<uint32> getMeshesToDraw(class ECSManager* ECS,
         const std::vector<class MeshComponent>& allMeshes, uint32 cameraEntity);
+
+    static std::vector<uint32> GetMeshesToDrawAABB(class ECSManager* ECS,
+        const std::vector<class MeshComponent>& allMeshes, uint32 cameraEntity);
+
     //static void loadCube(class MeshComponent& meshComponent);
 
 

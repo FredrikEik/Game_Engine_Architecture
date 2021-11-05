@@ -23,6 +23,10 @@ public:
 	static glm::vec3 getUpVector(const glm::vec3& forwardVector, const glm::vec3& upVector);
 	static void normalizePlane(glm::vec4& OUTplane);
 	static float isPointInPlane(const glm::vec4& plane, const glm::vec3& point, float radius);
+	
+	static bool WithinFrustum(const float& a, const float& b, const float& c) { return a <= b && b <= c; }
+
+
 	// Add functionality to update forward/right/up vector
 	// Add pitching
 

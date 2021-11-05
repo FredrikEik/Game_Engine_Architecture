@@ -25,7 +25,7 @@ void SphereSystem::construct(uint32 entityID, ECSManager* ECS)
 	min *= scale;
 	max *= scale;
 
-
+	
 	glm::vec3 center = glm::vec3((max.x - min.x) / 2.f,
 		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
 	collisionComponent->center = center;

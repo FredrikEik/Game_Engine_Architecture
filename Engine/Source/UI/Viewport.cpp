@@ -95,7 +95,6 @@ void Viewport::render()
 
 
 	ImGui::BeginGroup();
-
 	ImGui::Begin("Demo window");
 	if (ImGui::Button(playButtonText.c_str()))
 	{

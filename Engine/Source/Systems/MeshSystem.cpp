@@ -44,12 +44,14 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         return;
     
 
-    auto meshesToRender = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity); // Frustum culling, a bit buggy, thus not used atm
+    //auto meshesToRender = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity); // Frustum culling, a bit buggy, thus not used atm
     auto& meshArray = meshManager->getComponentArray();
+    auto meshesToRender = GetMeshesToDrawAABB(manager, meshArray, cameraEntity);
     shader->use();
-    for (auto& meshComp : meshArray)
+    std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
+    for (auto& it : meshesToRender)
     {
-        //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
+        MeshComponent& meshComp = meshArray[it];
         // skip transulenct objects
         if (meshComp.bIsTranslucent == true) 
             continue;
@@ -116,8 +118,10 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     glm::vec3 right(CameraSystem::getRightVector(forward));
     glm::vec3 up(CameraSystem::getUpVector(forward, right));
     
-    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
-    glm::mat4x4 viewProjectionMatrix = transformManager->getComponent(cameraEntity).transform *  camera->m_viewMatrix *  camera->m_projectionMatrix;
+    glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
+    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix;
+    //glm::mat4x4 viewProjectionMatrix = transformManager->getComponent(cameraEntity).transform *  
+    //    camera->m_viewMatrix *  camera->m_projectionMatrix;
     //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix;
 
     glm::vec4 leftPlane{};
@@ -155,6 +159,26 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     farPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[2].y;
     farPlane.z = viewProjectionMatrix[3].z - viewProjectionMatrix[2].z;
     farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;
+
+    //glm::vec4 leftPlane{};
+    //leftPlane = viewProjectionMatrix[3] + viewProjectionMatrix[0];
+
+    //glm::vec4 rightPlane{};
+    //rightPlane = viewProjectionMatrix[3] - viewProjectionMatrix[0];
+
+    //glm::vec4 topPlane{};
+    //topPlane = viewProjectionMatrix[3] + viewProjectionMatrix[1];
+
+    //glm::vec4 bottomPlane{};
+    //bottomPlane = viewProjectionMatrix[3] - viewProjectionMatrix[1];
+
+    //glm::vec4 nearPlane{};
+    //nearPlane = viewProjectionMatrix[3] + viewProjectionMatrix[2];
+
+    //glm::vec4 farPlane{};
+    //farPlane = viewProjectionMatrix[3] - viewProjectionMatrix[2];
+
+
 
 
     ///// EXPERIMENTS
@@ -225,19 +249,79 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
         //    CameraSystem::isPointInPlane(bottomPlane, center, radius))
         //    meshesToRender.push_back(count);
 
+        //if (CameraSystem::isPointInPlane(leftPlane, center, radius) > -radius &&
+        //    CameraSystem::isPointInPlane(rightPlane, center, radius) <= radius &&
+        //    CameraSystem::isPointInPlane(topPlane, center, radius) > -radius &&
+        //    CameraSystem::isPointInPlane(bottomPlane, center, radius) <= radius)
+        //    meshesToRender.push_back(count);
+
         if (CameraSystem::isPointInPlane(leftPlane, center, radius) > -radius &&
-            CameraSystem::isPointInPlane(rightPlane, center, radius) <= radius &&
+            CameraSystem::isPointInPlane(rightPlane, center, radius) > -radius &&
             CameraSystem::isPointInPlane(topPlane, center, radius) > -radius &&
-            CameraSystem::isPointInPlane(bottomPlane, center, radius) <= radius)
+            CameraSystem::isPointInPlane(bottomPlane, center, radius) > -radius)
             meshesToRender.push_back(count);
+
 
         //std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)
         //    << " top " << CameraSystem::isPointInPlane(topPlane, center, radius) << " bottom " << CameraSystem::isPointInPlane(bottomPlane, center, radius) <<
         //    " near "<<CameraSystem::isPointInPlane(nearPlane, center, radius) <<" far " << CameraSystem::isPointInPlane(farPlane, center, radius) << '\n';
 
+            //   std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)
+            //<< " top " << CameraSystem::isPointInPlane(topPlane, center, radius) << " bottom " << CameraSystem::isPointInPlane(bottomPlane, center, radius) << '\n';
+
         ++count;
     }
     
+    return meshesToRender;
+}
+
+std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::vector<class MeshComponent>& allMeshes, uint32 cameraEntity)
+{
+    ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
+    ComponentManager<AxisAlignedBoxComponent>* AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
+    CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
+    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
+
+    std::vector<uint32> meshesToRender;
+    meshesToRender.reserve(allMeshes.size()*0.7);
+    uint32 count{};
+    for (const auto& it : allMeshes)
+    {
+        AxisAlignedBoxComponent* AABB = AABBManager->getComponentChecked(it.entityID);
+        TransformComponent* transform = transformManager->getComponentChecked(it.entityID);
+        glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transform->transform;
+
+
+        bool isInside = false;
+        glm::vec3 min = AABB->minScaled; //+glm::vec3(transform->transform[3]);
+        glm::vec3 max = AABB->maxScaled; //+glm::vec3(transform->transform[3]);
+        glm::vec4 corners[8] =
+        {
+                glm::vec4(min.x, min.y, min.z, 1.f),
+                glm::vec4(max.x, min.y, min.z, 1.f),
+                glm::vec4(min.x, max.y, min.z, 1.f),
+                glm::vec4(max.x, max.y, min.z, 1.f),
+
+                glm::vec4(min.x, min.y, max.z, 1.f),
+                glm::vec4(max.x, min.y, max.z, 1.f),
+                glm::vec4(min.x, max.y, max.z, 1.f),
+                glm::vec4(max.x, max.y, max.z, 1.f),
+        };
+
+        for (int32 i{}; i < 8; ++i)
+        {
+            glm::vec4 corner = viewProjectionMatrix * corners[i];
+            isInside |= CameraSystem::WithinFrustum(-corner.w, corner.x, corner.w) &&
+                CameraSystem::WithinFrustum(-corner.w, corner.y, corner.w) &&
+                CameraSystem::WithinFrustum(0.f, corner.z, corner.w);
+        }
+        if (isInside)
+        {
+            meshesToRender.push_back(count);
+        }
+        count++;
+    }
+
     return meshesToRender;
 }
 

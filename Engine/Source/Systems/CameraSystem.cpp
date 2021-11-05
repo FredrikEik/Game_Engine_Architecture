@@ -210,6 +210,7 @@ void CameraSystem::normalizePlane(glm::vec4& plane)
 
 float CameraSystem::isPointInPlane(const glm::vec4& plane, const glm::vec3& point, float radius)
 {
+	//(frustum_planes.x * pos.x + frustum_planes.y * pos.y + frustum_planes.z * pos.z + frustum_planes.w <= -radius)
 	//return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) >= -radius;
 	//return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) <=0.f;
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w);
