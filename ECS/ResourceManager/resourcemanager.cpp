@@ -1,14 +1,29 @@
 #include "ECS/ResourceManager/resourcemanager.h"
-#include "ECS/ResourceManager/meshsystem.h"
 
 ResourceManager::ResourceManager()
 {
-    m_MeshHandler = std::make_unique<MeshSystem>();
+    m_Loader = std::make_unique<objl::Loader>();
 }
 
-int ResourceManager::ReadAsset(std::string AssetName)
+//Returns index for place in the appropriate data container. -1 if invalid/failed.
+int ResourceManager::LoadAsset(std::string Filepath)
 {
-    return 0;
+    gsl::AssetType type = FindAssetType(Filepath);
+
+
+    if(type == gsl::OBJ)
+    {
+        m_Loader->LoadFile(Filepath);
+        return m_Loader->LoadedMeshes.size()-1;
+    }
+    else if(type == gsl::BMP)
+    {
+        return -1; //Not implemented yet.
+    }
+    else if(type == gsl::WAV)
+        return -1; //Not implemented yet.
+
+    return -1;
 }
 
 gsl::AssetType ResourceManager::FindAssetType(std::string AssetName)

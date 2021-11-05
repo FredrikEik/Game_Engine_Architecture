@@ -6,7 +6,6 @@ CONFIG      += c++17
 TARGET      = GEA2021
 
 SOURCES += main.cpp \
-    ECS/ResourceManager/meshsystem.cpp \
     ECS/ResourceManager/resourcemanager.cpp \
     ECS/entitymanager.cpp \
     Shaders/cubemapshader.cpp \
@@ -30,7 +29,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     ECS/ECScoordinator.h \
-    ECS/ResourceManager/meshsystem.h \
     ECS/ResourceManager/resourcemanager.h \
     ECS/compmanager.h \
     ECS/componentarray.h \
@@ -67,6 +65,9 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Assets/Meshes/suzanne.obj \
+    Assets/Meshes/suzanne_L01.obj \
+    Assets/Meshes/suzanne_L02.obj \
     Assets/Skybox/1.bmp \
     Assets/Skybox/2.bmp \
     Assets/Skybox/3.bmp \
