@@ -156,7 +156,7 @@ void RenderWindow::init()
 
     MapSpawner = new Spawner(ObjFactory, mMainWindow);
     //MapSpawner->SpawnRow();
-    MapSpawner->SpawnRow(5);
+    MapSpawner->SpawnRow(100);
     //MapSpawner->addObjectToEditor(object);
 }
 

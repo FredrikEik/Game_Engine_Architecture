@@ -40,8 +40,8 @@ void player::update(float deltaTime)
             mDt = 0.f;
         }
 
-        mMesh->getTransformComp()->mTrueScaleMatrix.setPosition(position.x + mDt, mHeight, position.z);
-        mMesh->getTransformComp()->mMatrix.setPosition(position.x + mDt, mHeight, position.z);
+        mMesh->getTransformComp()->mTrueScaleMatrix.setPosition(position.x + mDt, mHeight, position.z + (-1 /  deltaTime));
+        mMesh->getTransformComp()->mMatrix.setPosition(position.x + mDt, mHeight, position.z + (-1 /  deltaTime));
         mDt = 0.f;
     }
 }
