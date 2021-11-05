@@ -125,7 +125,7 @@ void CoreEngine::setUpScene()
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-    mGameLoopTimer->start(16);
+    mGameLoopTimer->start(20);
 }
 
 void CoreEngine::handleInput()

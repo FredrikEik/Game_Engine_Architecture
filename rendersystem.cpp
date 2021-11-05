@@ -110,11 +110,11 @@ void RenderSystem::instancing(int vaoIn)
 {
     //Testing instance rendering
 
-    gsl::Vector3D translations[1500];
+    gsl::Vector3D translations[4500];
     int index{0};
     for(int i{-50}; i < 100; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 30; j++)
         {
             gsl::Vector3D translation(1.f*i, 0.f, -2.f*j);
             translations[index++] = translation;
@@ -127,7 +127,7 @@ void RenderSystem::instancing(int vaoIn)
 
     glGenBuffers(1, &instanceVBO);
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gsl::Vector3D) * 1500, &translations[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(gsl::Vector3D) * 4500, &translations[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glEnableVertexAttribArray(3);
@@ -251,7 +251,7 @@ void RenderSystem::render()
         else
         {
             glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-            glDrawArraysInstanced(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0], 1500);
+            glDrawArraysInstanced(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0], 4500);
 //            mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
 //            mObjectsDrawn++;
         }
