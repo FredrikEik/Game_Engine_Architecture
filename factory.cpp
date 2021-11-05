@@ -110,7 +110,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Light"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         lightCounter++;
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
     }

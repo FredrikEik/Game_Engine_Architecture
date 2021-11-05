@@ -126,7 +126,7 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+/*    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                 (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
@@ -143,7 +143,7 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
-
+*/
     //********************** Making the object to be drawn **********************
 
     //factory->createObject("Plane");
@@ -280,6 +280,8 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
+
+
     //Draws the objects
 
     //mCurrentCamera->draw();
@@ -295,10 +297,8 @@ void RenderWindow::render()
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
-            if(shaderProgramIndex == 1)
-            {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            }
+
+            glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
@@ -341,12 +341,13 @@ void RenderWindow::render()
                     }
                 }
             }
-            if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
-            {
-                factory->mGameObjects[i]->draw();
-            }
+                if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
+                {
+                    factory->mGameObjects[i]->draw();
+                }
 			}
-            else{
+            else
+            {
                 factory->mGameObjects[i]->draw();
             }
 
@@ -404,6 +405,7 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -418,7 +420,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 void RenderWindow::setupLightShader(int shaderIndex)
@@ -426,7 +428,7 @@ void RenderWindow::setupLightShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    //mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 //This function is called from Qt when window is exposed (shown)

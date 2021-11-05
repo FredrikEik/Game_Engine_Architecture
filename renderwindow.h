@@ -79,7 +79,7 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
 
-    GLint mTextureUniform{-1};
+    GLint mTextureUniform[3];
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 

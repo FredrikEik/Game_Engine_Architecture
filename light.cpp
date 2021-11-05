@@ -38,53 +38,20 @@ Light::Light()
 //    3250        1.0	       0.0014	 0.000007
 
     // Vertices
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
+    getMeshComponent()-> mVertices.insert( getMeshComponent()-> mVertices.end(),
+    {
+        Vertex(-0.25f, -0.25f,  0.25f,    0.8f, 0.8f, 0.3f,     0.f,  0.f),   //Left low
+        Vertex( 0.25f, -0.25f,  0.25f,    0.8f, 0.8f, 0.3f,     1.f,  0.f),   //Right low
+        Vertex( 0.0f,  0.25f,  0.0f,      0.8f, 0.8f, 0.3f,     0.5f, 0.5f),  //Top
+        Vertex( 0.0f, -0.25f, -0.25f,     0.8f, 0.8f, 0.3f,     0.5f, 0.5f)   //Back low
+    });
 
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f, -0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, -0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f, -0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f, -0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f,  0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f, -0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f, -0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f,  0.5f,    0.3f, 0.0f, 0.5f,    0.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f, -0.5f,    0.7f, 0.0f, 0.3f,    1.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{-0.5f,  0.5f, -0.5f,    0.5f, 0.2f, 0.6f,    0.0f, 1.0f});
-    getMeshComponent()->mVertices.push_back(Vertex{ 0.5f,  0.5f,  0.5f,    0.5f, 0.2f, 0.6f,    1.0f, 0.0f});
+    getMeshComponent()-> mIndices.insert( getMeshComponent()-> mIndices.end(),
+    { 0, 1, 2,
+      1, 3, 2,
+      3, 0, 2,
+      0, 3, 1
+    });
 }
 
 Light::~Light()
@@ -106,45 +73,47 @@ void Light::init()
        //mMaterial->setActiveTextureSlot(2);
        //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
-       glGenVertexArrays( 1, &getMeshComponent()->mVAO );
-       glBindVertexArray( getMeshComponent()->mVAO );
+    //Vertex Array Object - VAO
+    glGenVertexArrays( 1, &getMeshComponent()->mVAO );
+    glBindVertexArray( getMeshComponent()->mVAO );
 
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers( 1, &getMeshComponent()->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, getMeshComponent()->mVBO );
 
-       glGenBuffers( 1, &getMeshComponent()->mVBO );
-       glBindBuffer( GL_ARRAY_BUFFER, getMeshComponent()->mVBO );
+    glBufferData( GL_ARRAY_BUFFER, getMeshComponent()->mVertices.size()*sizeof(Vertex), getMeshComponent()->mVertices.data(), GL_STATIC_DRAW );
 
-       glBufferData( GL_ARRAY_BUFFER,                     //what buffer type
-                     getMeshComponent()->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
-                     getMeshComponent()->mVertices.data(),                    //the actual vertices
-                     GL_STATIC_DRAW                       //should the buffer be updated on the GPU
-                     );
+    // 1rst attribute buffer : vertices
+    glBindBuffer(GL_ARRAY_BUFFER, getMeshComponent()->mVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
 
-       glBindBuffer(GL_ARRAY_BUFFER, getMeshComponent()->mVBO);
+    // 2nd attribute buffer : colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(1);
 
-       // 1rst attribute buffer : coordinates
+    // 3rd attribute buffer : uvs
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glEnableVertexAttribArray(2);
 
-       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
-       glEnableVertexAttribArray(0);
+    //Second buffer - holds the indices (Element Array Buffer - EAB):
+    glGenBuffers(1, &getMeshComponent()->mEAB);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mEAB);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mIndices.size() * sizeof(GLuint), getMeshComponent()->mIndices.data(), GL_STATIC_DRAW);
 
-       // 2nd attribute buffer : colors
-       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(1);
-
-       // 3rd attribute buffer : uvs
-       glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(2);
-
-       glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void Light::draw()
 {
-    glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
-    glBindVertexArray(0);
+//    glUseProgram(mMaterial.mShader->getProgram());
+    glBindVertexArray(getMeshComponent()-> mVAO );
+//    mMaterial.mShader->transmitUniformData(&mMatrix, &mMaterial);
+    glUniformMatrix4fv(getMeshComponent()-> mMatrixUniform, 1, GL_FALSE, getTransformComponent()-> mMatrix.constData());
+    glDrawElements(GL_TRIANGLES, getMeshComponent()-> mIndices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 void Light::move(float x, float y, float z)
 {
-    getTransformComponent()->mMatrix.translate(x,y,z);
+    //getTransformComponent()->mMatrix.translate(x,y,z);
 }

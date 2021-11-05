@@ -7,20 +7,20 @@ in vec2 UV;
 
 uniform sampler2D textureSampler;
 
-uniform vec3 lightPosition;
+uniform vec3 lightPosition = vec3(0.0,0.0,0.0);
 uniform vec3 cameraPosition;
 
-uniform float ambientStrengt;
-uniform vec3 ambientColor;
-uniform float lightStrengt;
-uniform vec3 lightColor;
-uniform float specularStrength;
-uniform int specularExponent;
-uniform float constant;
-uniform float linear;
-uniform float quadratic;
+uniform float ambientStrengt = 0.15f;
+uniform vec3 ambientColor = vec3(0.8f, 0.8f, 0.15f);
+uniform float lightStrengt = 1.5f;
+uniform vec3 lightColor = vec3(0.5f, 0.5f, 0.0f);
+uniform float specularStrength = 0.7f;
+uniform int specularExponent = 32;
+uniform float constant = 1.0f;
+uniform float linear = 0.14f;
+uniform float quadratic = 0.07f;
 
-uniform vec3 objectColor = vec3(0.8, 0.8, 0.8); //grey
+uniform vec3 objectColor = vec3(0.2, 0.5, 0.3); //grey
 
 void main() {
     // Attenuation
