@@ -54,7 +54,7 @@ void GameEngine::SetUpScene()
 
     //Gameloop
     connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
-    mGameLoopRenderTimer->start(16);
+    mGameLoopRenderTimer->start(7);// original value 16, 7 is for 144 hz
 
     mMainWindow->initList();
 }
@@ -105,9 +105,21 @@ void GameEngine::SetUpObjects()
     mLight->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mLight);
 
+//    mLight2 = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
+//    mLight2->mTransformComp->mMatrix.translate(-1,3,-5);
+//    mLight2->mMaterialComp->mShaderProgram = 2;
+//    mRenderwindow->mGameObjects.push_back(mLight2);
+
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cacodemon2.obj");
+    tempGameObject->mTransformComp->mMatrix.translate(2,-3,2);
+    tempGameObject->mMaterialComp->mShaderProgram = 3;
+    tempGameObject->mMaterialComp->mTextureUnit = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
     tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");

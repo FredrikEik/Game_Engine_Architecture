@@ -91,12 +91,15 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("cocademon2.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -190,7 +193,7 @@ void RenderWindow::render()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // For GameObjects
-    for(int i{0}; i < mGameObjects.size(); i++)
+    for(unsigned long long i{0}; i < mGameObjects.size(); i++)
     {
         // ----- Should be fixed in camera class ----
         mCurrentCamera->mProjectionMatrix.perspective(FOV, mAspectratio, mNearPlane , mFarPlane);
@@ -316,15 +319,21 @@ void RenderWindow::render()
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 3)
         {
         //send data to shader
+
             glUseProgram(mShaderPrograms[3]->getProgram() );
+            glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
             GameObject* light = GameEngine::getInstance()->mLight;
             gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
             gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
 
-            glUniform1i(mPhongTextureUniform,1);
+            glUniform1i(mPhongTextureUniform,3);
             glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);
+
+
         }
         // need to fix [] for LOD
         //qDebug() << "Distacne: " << distanceToFrontObject;
