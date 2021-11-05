@@ -281,6 +281,7 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before rendering
 
 
+    //Light* lightRef = static_cast<Light*>(factory->mGameObjects["Light"]);
 
     //Draws the objects
 
