@@ -362,7 +362,21 @@ void RenderWindow::render()
                }
             }
             */
+
+            if (i == mIndexToPickedObject) {
+
+                //driver å må lage noe hjelpe objekt.
+//                GameObject *hjelpeObjekt=nullptr;
+//                gsl::Vector3D tempPosition;
+//            hjelpeObjekt = factory->createObject("Cube");
+//            tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
+//            hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+
+                factory->mGameObjects[i]->glDrawArrays(GL_LINE, 0 , factory->mGameObjects[i]->getMeshComponent()->mVertices.size());
+                glBindVertexArray(0);
+            }
          }
+
 
     }
 
@@ -392,6 +406,8 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+
+
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
