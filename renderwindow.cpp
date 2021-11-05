@@ -2,7 +2,6 @@
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
-
 {
     //This is sent to QWindow:
     setSurfaceType(QWindow::OpenGLSurface);
@@ -21,10 +20,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 }
 
-RenderWindow::~RenderWindow()
-{
-
-}
+RenderWindow::~RenderWindow(){}
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
@@ -116,11 +112,9 @@ void RenderWindow::init()
     setupPhongShader(2);
     setupSkyboxShader(3);
 
-    initObject();
-
     //********************** Set up camera **********************
 
-    //mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     mPlayCamera.setPosition(gsl::Vector3D(1.f, 10.f, 9.f));
     mPlayCamera.pitch(70);
 
@@ -132,6 +126,8 @@ void RenderWindow::init()
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
+
+    initObject();
 }
 
 void RenderWindow::initObject()
@@ -215,9 +211,10 @@ void RenderWindow::initObject()
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
 
-    mFrustumSystem = new FrustumSystem();
+    mFrustumSystem = new FrustumSystem(&mPlayCamera);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
+    mFrustumSystem->move(mPlayCamera.position().x, mPlayCamera.position().y, mPlayCamera.position().z);
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox();
@@ -339,7 +336,7 @@ void RenderWindow::render()
     // HandleInput();
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
-    mFrustumSystem->updateFrustumPos(mPlayCamera.position());
+    //mFrustumSystem->updateFrustumPos();
     if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[1]->mCollision))
         qDebug() <<"Collision detected"; //testing collision
 
@@ -501,7 +498,7 @@ void RenderWindow::playMode(bool p)
 }
 
 std::string RenderWindow::createShapes(string shapeID)
-{   
+{
     VisualObject* temp = mShapeFactory.createShape(shapeID);
     temp->init();
     temp->move(1,1,0.5);
@@ -511,8 +508,6 @@ std::string RenderWindow::createShapes(string shapeID)
     mVisualObjects.push_back(temp);
     return temp->mNameComp->mName;
 }
-
-
 
 //Uses QOpenGLDebugLogger if this is present
 //Reverts to glGetError() if not
@@ -553,8 +548,6 @@ void RenderWindow::startOpenGLDebugger()
         }
     }
 }
-
-
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -785,7 +778,6 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();
 }
-
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {
