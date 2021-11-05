@@ -132,7 +132,10 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera();
+    mGameCamera = new Camera();
+    mEditorCamera = new Camera();
+
+    mCurrentCamera = mEditorCamera;
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     SoundManager::getInstance()->init();
@@ -291,7 +294,8 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
         //qDebug() << mAspectratio;
-    mCurrentCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mGameCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    mEditorCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     gsl::Matrix4x4 projectionMatrix =  mCurrentCamera->mProjectionMatrix;
     //qDebug() << "projectionMatrix: true";
     //qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
@@ -507,12 +511,19 @@ void RenderWindow::toggleGameMode()
 {
     if (bPlayGame) {
         bPlayGame = false;
+        mCurrentCamera = mEditorCamera;
+        if (mPlayer)
+        {
+            mPlayer->mMesh->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
+            mPlayer->mMesh->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
+        }
         stopSound();
         mMainWindow->disableWorldObjects(false);
     }
     else {
         bPlayGame = true;
         ObjFactory->setOBJindex(-1);
+        mCurrentCamera = mGameCamera;
         mCurrentCamera->setPosition(gsl::Vector3D(3.f, 2.f, 5.f));
         mCurrentCamera->setPitch(0.f);
         mCurrentCamera->setYaw(0.f);
@@ -695,16 +706,19 @@ void RenderWindow::handleInput()
     //Player
     if (bPlayGame && mPlayer)
     {
+        float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
         if(mInput.A){
-            mPlayer->Move(-1.7f / (mTimeStart.nsecsElapsed() / 1000000.f));
-            qDebug() << "velocity: " << 1.7 << " deltaTime: " << mTimeStart.nsecsElapsed() / 1000000.f << " = " << 1.7 / mTimeStart.nsecsElapsed() / 1000000.f;
+            mPlayer->Move(-1.7f / deltaTime);
+            qDebug() << "velocity: " << 1.7 << " deltaTime: " << deltaTime << " = " << 1.7 / deltaTime;
         }
         if(mInput.D)
-            mPlayer->Move(1.7f / (mTimeStart.nsecsElapsed() / 1000000.f));
+            mPlayer->Move(1.7f / deltaTime);
         if(mInput.SPACE){
             mPlayer->Jump();
         }
         mPlayer->update(mTimeStart.nsecsElapsed() / 1000000.f);
+        gsl::Vector3D position = mCurrentCamera->getPosition();
+        mCurrentCamera->setPosition(gsl::Vector3D(position.x, position.y, position.z + (-4 / deltaTime)));
     }
 }
 
