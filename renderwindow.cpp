@@ -179,170 +179,10 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    mCurrentCamera->calculateFrustumVectors();
 
-
-        //Drawing forward vector of gameCam
-/*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
-        MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
-                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-        glBindVertexArray( forwardVector.mVAO[0] );
-        temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
-
-        //Drawing FOV vector of gameCam on right side
-        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
-        MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
-                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-        glBindVertexArray( frustumCullRightVector.mVAO[0] );
-        temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
-        */
-
-        //Draws the objects
-        /*int cullSafe = mIsPlaying ? -1 : 1;      //cullSafe editor objects - always placed in start of array
-        int startObject = mIsPlaying ? 2 : 0;    //avoid editor objects when playing
-        for(int i{startObject}; i < mGameObjects.size(); i++)
-        {*/
-            /************** LOD and Frustum culling stuff ***********************/
-            //Do this early to avoid unnecessary work if mesh is not to be drawn
-            /*gsl::Vector3D cameraPos = mEditorCamera->mPosition;
-            gsl::Vector3D gobPos = mGameObjects[i]->TransformComp->mMatrix.getPosition();
-
-            if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
-            {
-                //if frustum cull is true - object is outside of frustum == don't draw
-                if(frustumCulling(i))
-                    continue;
-            }
-
-
-            //First object - xyz
-            //what shader to use
-            //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-            int shaderIndex = mGameObjects[i]->MaterialComp->mShaderProgram;
-            ShaderHandler *tempShader = mResourceManager->mShaders[shaderIndex];
-            glUseProgram(tempShader->mProgram);
-
-            //This block sets up the uniforms for the shader used in the material
-            //Also sets up texture if needed.
-            int viewMatrix{-1};
-            int projectionMatrix{-1};
-            int modelMatrix{-1};
-
-            viewMatrix = tempShader->vMatrixUniform;
-            projectionMatrix = tempShader->pMatrixUniform;
-            modelMatrix = tempShader->mMatrixUniform;
-
-            if(tempShader->mTextureUniform > -1)
-            {
-                //Now mMaterial component holds texture slot directly - probably should be changed
-                glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->MaterialComp->mTextureUnit);
-            }
-
-            //send data to shader
-            if(mIsPlaying) {
-                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
-                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
-            }
-            else {
-                glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
-                glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
-            }
-            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->TransformComp->mMatrix.constData());
-
-            //draw the object
-            //Quick hack*** LOD test:
-            if(mGameObjects[i]->MeshComp->mVertexCount[1] > 0) //mesh has LODs
-            {
-                gsl::Vector3D distanceVector = gobPos - cameraPos;
-                //LOD calculation
-                float length = distanceVector.length();
-
-                if (length < 5)
-                {
-                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[0] );
-                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[0]);
-                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[0];
-                    mObjectsDrawn++;
-                }
-                else if(length < 20)
-                {
-                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[1] );
-                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[1]);
-                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[1];
-                    mObjectsDrawn++;
-                }
-                else
-                {
-                    glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[2] );
-                    glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[2]);
-                    mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[2];
-                    mObjectsDrawn++;
-                }
-            }
-            else    //no LOD exists
-            {
-                glBindVertexArray( mGameObjects[i]->MeshComp->mVAO[0] );
-                glDrawArrays(mGameObjects[i]->MeshComp->mDrawType, 0, mGameObjects[i]->MeshComp->mVertexCount[0]);
-                mVerticesDrawn += mGameObjects[i]->MeshComp->mVertexCount[0];
-                mObjectsDrawn++;
-            }*/
-
-            //Quick hack test to check if linebox/circle works:
-            /*if(i == mIndexToPickedObject)
-            {
-                tempShader = mResourceManager->mShaders[0];
-    //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
-                MeshData circle = CoreEngine::getInstance()->mResourceManager->
-                        makeCircleSphere(mGameObjects[i]->MeshComp->mColliderRadius, false);
-                //Hackety hack - have to get rid of scale in the objects model matrix
-                gsl::Matrix4x4 temp(true);
-                temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
-                glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
-    //            glBindVertexArray( lineBox.mVAO[0] );
-    //            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-                glBindVertexArray( circle.mVAO[0] );
-                glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-            }
-            glBindVertexArray(0);
-        }*/
-
-        //Quick hack test to check if frustum line mesh is OK
-        /*if(true)
-        {
-            ShaderHandler* tempShader = mResourceManager->mShaders[0];
-            glUseProgram(tempShader->mProgram);
-            MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(mGameCamera->mFrustum);
-            gsl::Matrix4x4 temp(true);
-            temp.translate(mGameCamera->mPosition);
-            temp.rotateY(-mGameCamera->mYaw);
-            temp.rotateX(mGameCamera->mPitch);
-
-            glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
-            glBindVertexArray( frustum.mVAO[0] );
-            glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);*/
-
-            //Drawing forward vector of gameCam
-    /*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
-            MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
-                    makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-            glBindVertexArray( forwardVector.mVAO[0] );
-            temp.setToIdentity();
-            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-            glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
-
-            //Drawing FOV vector of gameCam on right side
-            tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
-            MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->MeshCompHandler->
-                    makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-            glBindVertexArray( frustumCullRightVector.mVAO[0] );
-            temp.setToIdentity();
-            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-            glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
-
-        }*/
+    /*qDebug() << "Top Plane: "<< mCurrentCamera->mFrustum.mToptPlane << "  Bottom Plane: " << mCurrentCamera->mFrustum.mBottomPlane
+             << "  Left Plane: " << mCurrentCamera->mFrustum.mLeftPlane << "  Right Plane: " << mCurrentCamera->mFrustum.mRightPlane;*/
 
     //This should be in a loop!
 //    {
@@ -357,6 +197,14 @@ void RenderWindow::render()
 //        //draw the object
 //        mVisualObjects[0]->draw();
 
+    unsigned int cullSafe;
+    if(bPlayGame)
+        cullSafe = -1;
+    else
+    {
+        cullSafe = 1;
+    }
+
     if(ObjFactory->mGameObject.size() > 0)
     {
         glUseProgram(mShaderPrograms[0]->getProgram() );
@@ -367,6 +215,11 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
+            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0)
+            {
+                if(frustumCulling(i))
+                    continue;
+            }
             ObjFactory->mGameObject[i]->draw();
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(0.5f);
@@ -696,6 +549,51 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
         test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 100.f));
         qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
+}
+
+bool RenderWindow::frustumCulling(int gameObjectIndex)
+{
+    Camera *cullCamera{nullptr};
+    cullCamera = mCurrentCamera;
+
+    //vector from position of cam to object;
+    gsl::Vector3D vectorToObject = ObjFactory->mGameObject[gameObjectIndex]->TransformComp->mMatrix.getPosition()
+            - cullCamera->mPosition;
+
+    //radius of object sphere
+    float gobRadius = 0.5f;
+    //Mesh data is not scaled so have to calculate for that
+    //TODO: The system will break if scaling is not uniform...
+    gobRadius *= ObjFactory->mGameObject[gameObjectIndex]->TransformComp->Scal.x;
+
+    //if radius is not set == very small
+    if(gobRadius <= 0.000001f)
+        return false;
+
+    //length of vectorToObject onto frustum normal
+    float tempDistance{0.f};
+
+    //shortcut to frustum
+    Frustum &frustum = cullCamera->mFrustum;
+
+    //the collider sphere seems to be a little to small, so adding this
+    //padding to not cull them to early
+    float padding{0.2f}; //
+
+    //Project vector down to frustum normals:
+    //Right plane:
+    tempDistance = frustum.mRightPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding)) //comment out gobRadius inside this to test frustum culling by clipping length
+        return true;
+
+    //Left plane:
+    tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
+    if(tempDistance > (gobRadius + padding)) //comment out gobRadius inside this to test frustum culling by clipping length
+        return true;
+
+    //insert the rest of planes here
+
+    return false;
 }
 
 void RenderWindow::ObjectButton(std::string object)
