@@ -207,8 +207,8 @@ void RenderWindow::init()
             for(int j{0}; j < 10; j++)
             {
                 temp = factory->createObject("Cube");
-                temp->transformComp.mMatrix.setPosition(2.f*i,0.f,2.f*j);
-                temp->sphereCollisionComp.center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+                temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
 
             }
@@ -245,16 +245,16 @@ void RenderWindow::render()
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
-            unsigned int shaderProgramIndex = factory->mGameObjects[i]->materialComp.mShaderProgram;
+            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->materialComp.mTextureUnit);
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->transformComp.mMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
             if(!bPause)
             {
                 factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
@@ -262,29 +262,29 @@ void RenderWindow::render()
 
             if(toggleFrustumCulling)
 			{
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->sphereCollisionComp.center;
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
-            if(rightPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+            if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
             {
-                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
+                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
-                if(leftPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+                if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                 {
-                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->sphereCollisionComp.center;
+                    gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
-                    if(nearPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+                    if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                     {
-                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
+                        gsl::Vector3D farPlaneToObjectVector = mCurrentCamera->farPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                         float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, mCurrentCamera->farPlaneNormal);
-                        if(farPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+                        if(farPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                         {
-                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - factory->mGameObjects[i]->sphereCollisionComp.center;
+                            gsl::Vector3D topPlaneToObjectVector = mCurrentCamera->nearPlaneTopRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                             float topPlaneHeightToObject = gsl::Vector3D::dot(topPlaneToObjectVector, mCurrentCamera->topPlaneNormal);
-                            if(topPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+                            if(topPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                             {
-                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->sphereCollisionComp.center;
+                                gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
-                                if(bottomPlaneHeightToObject + factory->mGameObjects[i]->sphereCollisionComp.radius >= 0)
+                                if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                                 {
                                     factory->mGameObjects[i]->draw();
                                 }
@@ -426,7 +426,7 @@ void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
     GameObject* newObject = factory->createObject(objectName);
-    gsl::Vector3D position = newObject->transformComp.mMatrix.getPosition();
+    gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
     gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
     uint32_t id = newObject->ID;
     mQuadtree.insert(position2D, id, newObject);
@@ -585,7 +585,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         for(int i{0}; i < factory->mGameObjects.size(); i++)
         {
             //making the vector from camera to object we test against
-            gsl::Vector3D camToObject = factory->mGameObjects[i]->transformComp.mMatrix.getPosition() - mCurrentCamera->position();
+            gsl::Vector3D camToObject = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() - mCurrentCamera->position();
 
             //making the normal of the ray - in relation to the camToObject vector
             //this is the normal of the surface the camToObject and ray_wor makes:

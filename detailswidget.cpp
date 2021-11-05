@@ -31,7 +31,7 @@ void DetailsWidget::init(Factory *factory, int index)
 
 void DetailsWidget::readPosition()
 {
-    gsl::Vector3D position = mfactory->mGameObjects[inSceneArrayIndex]->transformComp.mMatrix.getPosition();
+    gsl::Vector3D position = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
     ui->DoubleSpinBoxXPosition->setValue(position.x);
     ui->DoubleSpinBoxYPosition->setValue(position.y);
     ui->DoubleSpinBoxZPosition->setValue(position.z);
@@ -53,8 +53,8 @@ void DetailsWidget::setPosition()
         position.x = ui->DoubleSpinBoxXPosition->value();
         position.y = ui->DoubleSpinBoxYPosition->value();
         position.z = ui->DoubleSpinBoxZPosition->value();
-        mfactory->mGameObjects[inSceneArrayIndex]->transformComp.mMatrix.setPosition(position.x,position.y,position.z);
-        mfactory->mGameObjects[inSceneArrayIndex]->sphereCollisionComp.center = position;
+        mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
+        mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)

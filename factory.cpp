@@ -24,12 +24,12 @@ GameObject* Factory::createObject(std::string objectName)
         if(EXISTS("Cube")) //If cube mesh exists
         {
         uint32_t index = mMeshMap["Cube"];
-        objectToCreate->meshComp = storedMeshes[index];
+        objectToCreate->setMeshComponent(storedMeshes[index]);
         }
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
-        objectToCreate->sphereCollisionComp.center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
-        objectToCreate->sphereCollisionComp.radius = 0.5;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         cubecounter++;
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
     }
@@ -39,10 +39,10 @@ GameObject* Factory::createObject(std::string objectName)
         if(EXISTS("Plane")) //If Plane mesh exists
         {
             uint32_t index = mMeshMap["Cube"];
-            objectToCreate->meshComp = storedMeshes[index];
+            objectToCreate->setMeshComponent(storedMeshes[index]);
         }
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         planecounter++;
         objectToCreate->mObjectName = "Plane " + std::to_string(planecounter);
     }
@@ -52,10 +52,10 @@ GameObject* Factory::createObject(std::string objectName)
         if(EXISTS("Triangle")) //If Triangle mesh exists
         {
             uint32_t index = mMeshMap["Cube"];
-            objectToCreate->meshComp = storedMeshes[index];
+            objectToCreate->setMeshComponent(storedMeshes[index]);
         }
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         trianglecounter++;
         objectToCreate->mObjectName = "Triangle " + std::to_string(trianglecounter);
     }
@@ -65,12 +65,12 @@ GameObject* Factory::createObject(std::string objectName)
         if(EXISTS("MarioCube")) //If MarioCube mesh exists
         {
             uint32_t index = mMeshMap["Cube"];
-            objectToCreate->meshComp = storedMeshes[index];
+            objectToCreate->setMeshComponent(storedMeshes[index]);
         }
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
-        objectToCreate->sphereCollisionComp.center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
-        objectToCreate->sphereCollisionComp.radius = 0.5;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         mariocounter++;
         objectToCreate->mObjectName = "MarioCube " + std::to_string(mariocounter);
     }
@@ -80,12 +80,12 @@ GameObject* Factory::createObject(std::string objectName)
         if(EXISTS("Sphere")) //If Sphere mesh exists
         {
             uint32_t index = mMeshMap["Cube"];
-            objectToCreate->meshComp = storedMeshes[index];
+            objectToCreate->setMeshComponent(storedMeshes[index]);
         }
-        objectToCreate->materialComp.mShaderProgram = 1;
-        objectToCreate->materialComp.mTextureUnit = 1;
-        objectToCreate->sphereCollisionComp.center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
-        objectToCreate->sphereCollisionComp.radius = 0.25;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.25;
         spherecounter++;
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
     }

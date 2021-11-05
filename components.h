@@ -24,8 +24,8 @@ public:
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0};
-    GLint mVertexCount {-1};
-    GLint mIndexCount{-1};
+    GLint mVertexCount {0};
+    GLint mIndexCount{0};
 
     GLenum mDrawType{GL_TRIANGLES};
     GLint mMatrixUniform{0};
