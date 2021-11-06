@@ -16,6 +16,7 @@
 #include "xyz.h"
 #include "cube.h"
 #include "plane.h"
+#include "skybox.h"
 #include "triangle.h"
 #include "mariocube.h"
 #include "sphere.h"
@@ -102,12 +103,20 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("../GEA2021/Assets/Skybox/right.bmp",
+                               "../GEA2021/Assets/Skybox/left.bmp",
+                               "../GEA2021/Assets/Skybox/top.bmp",
+                               "../GEA2021/Assets/Skybox/bottom.bmp",
+                               "../GEA2021/Assets/Skybox/front.bmp",
+                               "../GEA2021/Assets/Skybox/back.bmp");
     //mTextures
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_3D, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -161,6 +170,14 @@ void RenderWindow::init()
     triangle->init();
     mGameObjects.push_back(triangle);
     */
+    factory->createObject("Skybox");
+
+
+    //GameObject *skybox = new Skybox("../GEA2021/Assets/skybox.obj");
+
+
+
+
 
 
 
@@ -185,6 +202,11 @@ void RenderWindow::init()
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
                                      qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvert").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxfragment").c_str());
+    //mMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[skyboxfragment]->getProgram(), "mMatrix" );
+    //vMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[SKYBOX_SHADER]->getProgram(), "vMatrix" );
+    //pMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[SKYBOX_SHADER]->getProgram(), "pMatrix" );
 
     setupPlainShader(0);
     setupTextureShader(1);

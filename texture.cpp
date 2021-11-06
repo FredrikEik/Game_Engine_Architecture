@@ -36,6 +36,19 @@ Texture::Texture()
 
     mTextureFilename = "Basic Texture";
 }
+Texture::Texture(const std::string &right,
+                 const std::string &left,
+                 const std::string &top,
+                 const std::string &bottom,
+                 const std::string &front,
+                 const std::string &back
+                 ): QOpenGLFunctions_4_1_Core()
+{
+    //Cubemap constructor
+    initializeOpenGLFunctions();
+    readCubemap(right, left, top, bottom, front, back);       //reads the BMPs into memory
+    setCubemapTexture();                                      //set cubemap texture up for OpenGL
+}
 
 Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_1_Core()
 {
@@ -120,6 +133,8 @@ void Texture::readCubeMap()
     }
 }
 
+
+
 //Set up texture for use in OpenGL
 void Texture::setTexture()
 {
@@ -148,7 +163,7 @@ void Texture::setTexture()
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void Texture::setCubemapTexture()
+/*void Texture::setCubemapTexture()
 {
     glGenTextures(1, &mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
@@ -174,4 +189,65 @@ void Texture::setCubemapTexture()
     qDebug() << "Cubemap Texture" << mTextureFilename.c_str() << "successfully read | id = "
              << mGLTextureID << "| bytes pr pixel:" << mBytesPrPixel << "| using alpha:" << mAlphaUsed
              << "| w:" << mColumns << "|h:" << mRows;
+}*/
+
+void Texture::readCubemap(const std::string &right,
+                          const std::string &left,
+                          const std::string &top,
+                          const std::string &bottom,
+                          const std::string &front,
+                          const std::string &back)
+{
+
+        readBitmap(right);
+        mCubemap[0] = mBitmap;
+        readBitmap(left);
+        mCubemap[1] = mBitmap;
+        readBitmap(bottom);
+        mCubemap[2] = mBitmap;
+        readBitmap(top);
+        mCubemap[3] = mBitmap;
+        readBitmap(front);
+        mCubemap[4] = mBitmap;
+        readBitmap(back);
+        mCubemap[5] = mBitmap;
+
+}
+
+void Texture::setCubemapTexture()
+{
+    //Reads the cubemap array of 6 bitmaps to one cubemap texture.
+    glGenTextures(1, &mId);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mId);
+    qDebug()
+        << "Cubemap texture"
+        << "successfully read | id = " << mId
+        << "| bytes pr pixel:" << mBytesPrPixel
+        << "| using alpha:" << mAlphaUsed
+        << "| Columns:" << mColumns
+        << "| Rows:" << mRows;
+
+
+    if(!mAlphaUsed)
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            //GL_TEXTURE_CUBE_MAP_POSITIVE_X is the first of the cubemap enums, therefore we can iterate with i
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, mColumns, mRows, 0, GL_BGR, GL_UNSIGNED_BYTE, mCubemap[i]);
+        }
+    }
+    else
+    {
+        qDebug() << "Skybox has alpha, weird";
+    }
+
+    //Cubemap texture parameters
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
 }

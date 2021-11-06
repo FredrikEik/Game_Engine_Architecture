@@ -10,9 +10,12 @@ public:
     Skybox(std::string filename);
     ~Skybox() override;
 
-    void init(GLint matrixUniform[4]);
+    void draw() override;
+    void init() override;
+    //void init(GLint matrixUniform[4]);
+    void move(float x, float y, float z) override;
     void readFile(std::string filename);
-    void draw();
+
 };
 
 #endif // SKYBOX_H

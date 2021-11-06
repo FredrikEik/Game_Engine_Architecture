@@ -48,6 +48,7 @@ public:
 
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
+    GameObject* skybox;
 
 
 private slots:

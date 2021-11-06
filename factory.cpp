@@ -7,6 +7,7 @@
 #include "factory.h"
 #include "objreader.h"
 #include "constants.h"
+#include "skybox.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -101,6 +102,15 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
     }
+    else if(objectName == "Skybox")
+    {
+        objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
+        objectToCreate->getMeshComponent();
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+
+    }
+
     else{return nullptr;}
 
     objectToCreate->init();

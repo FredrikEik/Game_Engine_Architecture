@@ -13,6 +13,12 @@ class Texture : protected QOpenGLFunctions_4_1_Core
 public:
     Texture();  //basic texture from code
     Texture(const std::string &filename, bool cubeMap = false);
+    Texture(const std::string& front,
+            const std::string& back,
+            const std::string& top,
+            const std::string& bottom,
+            const std::string& left,
+            const std::string& right);
     float getHeightFromIndex(int i);
     std::string mTextureFilename;
 
@@ -29,8 +35,15 @@ private:
     bool mAlphaUsed{false};
     void readBitmap(const std::string &filename);
     void readCubeMap();
+    void readCubemap(const std::string &right,
+                              const std::string &left,
+                              const std::string &top,
+                              const std::string &bottom,
+                              const std::string &front,
+                              const std::string &back);
     void setTexture();
     void setCubemapTexture();
+    GLuint mId{0};
 
     //this is put inside this class to avoid spamming the main namespace
     //with stuff that only is used inside this class

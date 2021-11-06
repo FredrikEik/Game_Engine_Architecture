@@ -97,6 +97,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/skyboxfragment.frag \
+    Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \

@@ -20,7 +20,7 @@ Skybox::~Skybox()
 
 }
 
-void Skybox::init(GLint matrixUniform[4])
+void Skybox::init()//(GLint matrixUniform[4])
 {
 
     //must call this to use OpenGL functions
@@ -211,4 +211,9 @@ void Skybox::draw()
    // glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
+}
+
+void Skybox::move(float x, float y, float z)
+{
+
 }
