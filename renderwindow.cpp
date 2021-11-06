@@ -351,6 +351,10 @@ void RenderWindow::makeObject()
     glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
     glBindVertexArray(0);
 
+//    glBindVertexArray( mFrustumSystem->mMesh->mVAO );
+//    glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+//    glBindVertexArray(0);
+
     if(playM==false){
         glBindVertexArray( mFrustumSystem->mMesh->mVAO );
         glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
@@ -377,7 +381,7 @@ void RenderWindow::render()
     // HandleInput();
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
-    mFrustumSystem->updateFrustumPos(mPlayCamera.position());
+    //mFrustumSystem->updateFrustumPos(mPlayCamera.position());
     //Check Collision
     //    for(int i{0}; i < mVisualObjects.size(); i++)
 

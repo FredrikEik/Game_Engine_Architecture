@@ -6,6 +6,8 @@ CONFIG      += c++17
 INCLUDEPATH += .
 INCLUDEPATH += ./include
 
+PRECOMPILED_HEADER = PCH.h
+
 TARGET      = GEA2021
 
 win32 {
@@ -41,6 +43,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    PCH.h \
     camera.h \
     collisionsystem.h \
     component.h \

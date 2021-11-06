@@ -28,12 +28,12 @@ public:
     void init() override;
     void calculateFrustumVectors();
     void makeFrustumLines();
-    void updateFrustumPos(gsl::Vector3D cameraPos);
-    FrustumComponent* mFrustum;
-    Camera *mCam;
-
+    void updateFrustumPos();
+    bool insideFrustum(gsl::Vector3D pos);
 
 private:
+    Camera* mCam;
+    FrustumComponent* mFrustum;
     gsl::Vector3D mNearPlane;
     gsl::Vector3D mFarPlane;
 
@@ -52,7 +52,7 @@ class Camera
 {
 public:
     Camera();
-
+    ~Camera();
     void pitch(float degrees);
     void yaw(float degrees);
     void updateRightVector();
@@ -69,17 +69,17 @@ public:
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
 
+    InputComponent* mInputComp;
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
     gsl::Vector3D right() const;
-    InputComponent* mInputComp;
 
 private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
-    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
 
+    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
     float mPitch{0.f};
     float mYaw{0.f};
 
