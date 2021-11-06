@@ -12,9 +12,17 @@
 #include "constants.h"
 #include "logger.h"
 
+TextureHandler* TextureHandler::mInstance = nullptr;    //static pointer to instance
+
 TextureHandler::TextureHandler()
 {
     mLogger = Logger::getInstance();    //Have to do this, else program will crash
+    mInstance = this;
+}
+
+TextureHandler* TextureHandler::getInstance()
+{
+    return mInstance;
 }
 
 int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)

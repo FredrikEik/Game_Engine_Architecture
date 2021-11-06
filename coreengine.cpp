@@ -32,9 +32,9 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
 
     //Make EditorCamera:
     mEditorCamera = new Camera(50.f, 0.1f, 1000.f);
-    mEditorCamera->mName = "Editor";
+    mEditorCamera->mName = "EditorCam";
     mGameCamera = new Camera(50.f, 0.1f, 300.f);
-    mGameCamera->mName = "Game";
+    mGameCamera->mName = "GameCam";
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -85,34 +85,38 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mGameObjects.push_back(temp);
 
+    //terrain
+    temp = mResourceManager->addObject("terrain");
+    temp->mName = "Terrain";
+    mRenderSystem->mGameObjects.push_back(temp);
+
     //Suzannes:
+//    bool useTexture{true};      //quick test to force stupid material change when rendering
+//    for(int i{-50}; i < 100; i++)
+//    {
+//        for(int j{0}; j < 30; j++)
+//        {
+//            temp = mResourceManager->addObject("suzanne.obj");
+//            temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
+//            //TODO: Scaling have to be made easier and more automatic than this!
+//            temp->mTransform->mMatrix.scale(0.3f);
+//            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
+//            temp->mTransform->mScale.setAlltoSame(0.3f);
+//            temp->mName = "monkey " + std::to_string((i*10)+j+1);
 
-    bool useTexture{true};      //quick test to force stupid material change when rendering
-    for(int i{-50}; i < 100; i++)
-    {
-        for(int j{0}; j < 30; j++)
-        {
-            temp = mResourceManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
-            //TODO: Scaling have to be made easier and more automatic than this!
-            temp->mTransform->mMatrix.scale(0.3f);
-            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
-            temp->mTransform->mScale.setAlltoSame(0.3f);
-            temp->mName = "monkey " + std::to_string((i*10)+j+1);
-
-            if(useTexture)
-                temp->mMaterial = mResourceManager->getMaterial("Texture");
-            useTexture = !useTexture;
-            mRenderSystem->mGameObjects.push_back(temp);
-        }
-    }
+//            if(useTexture)
+//                temp->mMaterial = mResourceManager->getMaterial("Texture");
+//            useTexture = !useTexture;
+//            mRenderSystem->mGameObjects.push_back(temp);
+//        }
+//    }
 
 //    temp = mResourceManager->addObject("suzanne.obj");
 //    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-    mEditorCamera->mPosition = gsl::Vector3D(0.f, 4.f, 4.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.5f, 1.f, 4.f);
 //    mEditorCamera->pitch(-20);
     mRenderSystem->mEditorCamera = mEditorCamera;
 

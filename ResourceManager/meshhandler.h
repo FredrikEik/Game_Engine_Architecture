@@ -5,6 +5,10 @@
 #include "vertex.h"
 #include "gltypes.h"
 
+//forward declare
+struct Texture;
+
+///This struct actually hods the vertices, indices and gl buffers for the read mesh
 struct MeshData
 {
     //according to https://www.learncpp.com/cpp-tutorial/arrays-part-ii/
@@ -18,9 +22,10 @@ struct MeshData
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];
-    //AABB Collider box: (the largest of these will be the radius for a Bounding sphere)
+    //AABB Collider box
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
+    //BoundingSphere
     float mColliderRadius{0};
 };
 
@@ -47,6 +52,8 @@ public:
 
     ///Makes a line for debug drawing.
     MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
+
+    int makeTerrain(std::string heightMapName);
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;

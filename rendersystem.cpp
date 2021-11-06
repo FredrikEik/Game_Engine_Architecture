@@ -224,7 +224,13 @@ void RenderSystem::render()
 //                vaoInUse = mGameObjects[i]->mMesh->mVAO[0];
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
 //            }
-            glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+
+            //Testing if indexCount have value - if so use DrawElements
+            if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)
+                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+            else
+                glDrawElements(mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
         }
@@ -249,7 +255,7 @@ void RenderSystem::render()
     }
 
     //Quick hack test to check if frustum line mesh is OK
-    if(true)
+    if(false)
     {
         ShaderHandler* tempShader = mResourceManager->mShaders[0];
         glUseProgram(tempShader->mProgram);

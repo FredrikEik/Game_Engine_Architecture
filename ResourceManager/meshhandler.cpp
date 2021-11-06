@@ -7,6 +7,7 @@
 #include "math_constants.h"
 #include "camera.h"
 #include "logger.h"
+#include "texturehandler.h"
 
 MeshHandler::MeshHandler()
 {
@@ -39,6 +40,9 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
         if (meshName.find("editorgrid") != std::string::npos)
             meshIndex = makeEditorGrid();
+        if (meshName.find("terrain") != std::string::npos)
+            meshIndex = makeTerrain("terrain.bmp");
+
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -360,6 +364,87 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, floa
     initMesh(tempMesh, 0);
 
     return tempMesh;
+}
+
+int MeshHandler::makeTerrain(std::string heightMapName)
+{
+    //should check if this object is new before this!
+    mMeshes.emplace_back(MeshData());
+    MeshData &tempMesh = mMeshes.back();
+
+    //getting the heightmap texture for the terrain
+    TextureHandler* textureHandler = TextureHandler::getInstance();
+    int textureIndex =  textureHandler->mTextureMap.find(heightMapName)->second;
+    Texture &heighMap = textureHandler->mTextures.at(textureIndex);
+
+    //Default normal pointing straight up - should be calculated correctly for lights to work!!!
+    gsl::Vector3D normal{0.f, 1.f, 0.f};
+
+    //how many meters between each vertex in both x and z direction
+    float horisontalSpacing{.5f};
+    //scaling the height read from the heightmap. 0 + 255 meters if this is set to 1
+    float heightSpacing{.02f};
+     //offset the whole terrain in y (height) axis
+    float heightPlacement{-5.f};
+
+    //Getting the scale of the heightmap
+    unsigned short width = heighMap.mColumns;   //Width - x-axis
+    unsigned short depth = heighMap.mRows;      //Depth - z-axis
+
+    //temp variables for creating the mesh
+    float vertexXStart{0.f - width*horisontalSpacing/2};
+    float vertexZStart{0.f + depth*horisontalSpacing/2};
+
+    //loop making the mesh from the values read from the heightmap
+    for(int d{0}; d < depth; ++d)
+    {
+        for(int w{0}; w < width; ++w)
+        {
+            //heightmap is actually stored as an one dimentional array - so calculating the correct index for column and row
+            //and scale it according to variables
+            float heightFromBitmap = heighMap.getHeightFromIndex(w + d*depth) * heightSpacing + heightPlacement;
+            tempMesh.mVertices[0].emplace_back(gsl::Vector3D{vertexXStart + (w * horisontalSpacing), heightFromBitmap,
+                                                             vertexZStart - (d * horisontalSpacing)}, normal, gsl::Vector2D{w / (width-1.f), d / (depth-1.f)});
+            //Making bounding box - not tested if correct
+            if(heightFromBitmap < tempMesh.mLowLeftBackCorner.y)
+                tempMesh.mLowLeftBackCorner.y = heightFromBitmap;
+            if(heightFromBitmap > tempMesh.mUpRightFrontCorner.y)
+                tempMesh.mUpRightFrontCorner.y = heightFromBitmap;
+        }
+    }
+
+    // The mesh(grid) is drawn in quads with diagonals from lower left to upper right
+    //          _ _
+    //         |/|/|
+    //          - -
+    //         |/|/|
+    //          - -
+    //Making the indices for this mesh:
+    for(int d{0}; d < depth-1; ++d)        //depth - 1 because we draw the last quad from depth - 1 and in negative z direction
+    {
+        for(int w{0}; w < width-1; ++w)    //width - 1 because we draw the last quad from width - 1 and in positive x direction
+        {
+            tempMesh.mIndices[0].emplace_back(w + d * width);               // 0 + 0 * mWidth               = 0
+            tempMesh.mIndices[0].emplace_back(w + d * width + width + 1);   // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+            tempMesh.mIndices[0].emplace_back(w + d * width + width);       // 0 + 0 * mWidth + mWidth      = mWidth
+            tempMesh.mIndices[0].emplace_back(w + d * width);               // 0 + 0 * mWidth               = 0
+            tempMesh.mIndices[0].emplace_back(w + d * width + 1);           // 0 + 0 * mWidth + 1           = 1
+            tempMesh.mIndices[0].emplace_back(w + d * width + width + 1);   // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+        }
+    }
+
+    //    calculateNormals();
+
+    float totalWidthMeters = (width - 1) * horisontalSpacing;
+
+    Logger::getInstance()->logText("Ground made | Total Width in Meters " + std::to_string(totalWidthMeters) + "| Size: " + std::to_string(width) + ", " +
+                    std::to_string(depth) + "| VertexXStart:" + std::to_string(vertexXStart) + "| VertexZStart" + std::to_string(vertexZStart));
+
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return mMeshes.size()-1;    //returns index to last object
 }
 
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
