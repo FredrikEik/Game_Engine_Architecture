@@ -30,9 +30,10 @@ public:
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
 
-private:
     gsl::Vector3D mXYZ;
     gsl::Vector3D mNormal;
+
+private:
     gsl::Vector2D mST;
 };
 

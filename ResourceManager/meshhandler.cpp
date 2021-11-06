@@ -433,13 +433,12 @@ int MeshHandler::makeTerrain(std::string heightMapName)
         }
     }
 
-    //    calculateNormals();
-
     float totalWidthMeters = (width - 1) * horisontalSpacing;
 
     Logger::getInstance()->logText("Ground made | Total Width in Meters " + std::to_string(totalWidthMeters) + "| Size: " + std::to_string(width) + ", " +
                     std::to_string(depth) + "| VertexXStart:" + std::to_string(vertexXStart) + "| VertexZStart" + std::to_string(vertexZStart));
 
+    calculateHeighMapNormals(width, depth, tempMesh);
 
     //only LOD level 0
     initMesh(tempMesh, 0);
@@ -688,5 +687,139 @@ void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
 
     tempMesh.mIndexCount[lodLevel] = tempMesh.mIndices[lodLevel].size();
     tempMesh.mVertexCount[lodLevel] = tempMesh.mVertices[lodLevel].size();
+}
+
+void MeshHandler::calculateHeighMapNormals(int width, int depth, MeshData &mesh)
+{
+    //TODO: This can be optimized and calculated while heightMap is read in
+
+    //not tested for non square textures:
+    if (width != depth)
+    {
+        Logger::getInstance()->logText("Normals for ground not calclulated! Use square texture!");
+        return;
+    }
+
+    unsigned short resolutionSquared= width * depth;
+
+    //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+    //************************* Special case - bottom row has no vertices below **********************************
+    for(unsigned short i{0}; i < width; i++)
+    {
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = mesh.mVertices[0].at(i).mXYZ;
+
+        gsl::Vector3D first{};  //first vector will be crossed with
+        gsl::Vector3D second{}; //second vector - check right hand rule!
+
+        // a: first = north, second = west
+        //check if we are to the left, if so - skip:
+        //If first vertex - skip - already (0, 1, 0)
+        if(i != 0)
+        {
+            first = mesh.mVertices[0].at(i+ width).mXYZ - center;
+            second = mesh.mVertices[0].at(i-1).mXYZ - center;
+            surroundingNormals[0] = first ^ second;
+        }
+        // b: first and second flips so we don't have to calculate a vector we already have!!
+        // second = north east, first = north
+        //check if we are at left, if so - skip
+        if( ((i + 1) % width) == false)
+        {
+            second = mesh.mVertices[0].at(i + width + 1).mXYZ - center;
+            //first = mVertices.at(i+ mWidth).mXYZ - center;
+            surroundingNormals[1] = second ^ first;
+
+            //c: first = east, second = north east
+            first = mesh.mVertices[0].at(i+1).mXYZ - center;
+            //second = mVertices.at(i + mWidth + 1).mXYZ - center;
+            surroundingNormals[2] = first ^ second;
+        }
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+//        qDebug() << result;
+        mesh.mVertices[0].at(i).mNormal = result;
+    }
+
+    //calculate each of the triangles normal - omitting the outer vertices
+    //starting av mWidth + 1 == the second vertex on the second row
+    //ending each row at second to last vertex, to not hit the outer edge
+    //ending at resolutionSquared - mWidth - 2 == second to last vertex on the second to last row
+    for(unsigned short i = width + 1 ; i < resolutionSquared - width - 2; i++)
+    {
+        //if at the end of a row, jump to next
+        if( (i + 2) % width == 0)
+        {   i += 2; //have to add 2 to get to the next correct index
+            continue;
+        }
+        //goes in a counter clockwise direction
+        //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = mesh.mVertices[0].at(i).mXYZ;
+
+        //first and second vector flips each time because second
+        //is the "first" at the next calculation.
+        //We don't want to calculate again!
+        gsl::Vector3D first{};
+        gsl::Vector3D second{};
+
+        // a 0: first = north, second = west
+        //check if we are to the left, if so - skip:
+        first = mesh.mVertices[0].at(i+ width).mXYZ - center;
+        second = mesh.mVertices[0].at(i-1).mXYZ - center;
+        surroundingNormals[0] = first ^ second;
+
+        // b 1: first = south west, second = west
+        first = mesh.mVertices[0].at(i - width - 1).mXYZ - center;
+        surroundingNormals[1] = second ^ first;
+
+        //c 2: first = south west, second = south
+        second = mesh.mVertices[0].at(i - width).mXYZ - center;
+        surroundingNormals[2] = first ^ second;
+
+        //d 3: second = south, first = east
+        //check if we are to the left, if so - skip
+        first = mesh.mVertices[0].at(i + 1).mXYZ - center;
+        surroundingNormals[3] = second ^ first;
+
+        //e 4: first = east, second = north east
+        second = mesh.mVertices[0].at(i + width +1).mXYZ - center;
+        surroundingNormals[4] = first ^ second;
+
+        //f 5: second = north east, first = north
+        first = mesh.mVertices[0].at(i + width).mXYZ - center;
+        surroundingNormals[5] = second ^ first;
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+//        qDebug() << result;
+        mesh.mVertices[0].at(i).mNormal = result;
+    }
+    Logger::getInstance()->logText("Normals for ground calclulated", LColor::HIGHLIGHT);
 }
 

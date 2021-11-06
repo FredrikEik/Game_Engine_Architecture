@@ -88,6 +88,7 @@ void CoreEngine::setUpScene()
     //terrain
     temp = mResourceManager->addObject("terrain");
     temp->mName = "Terrain";
+    temp->mMaterial = mResourceManager->getMaterial("Texture");
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes:
