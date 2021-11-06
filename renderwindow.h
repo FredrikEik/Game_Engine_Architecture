@@ -94,6 +94,7 @@ private:
     void makeObject();
     void HandleInput();
     void SoundHandler();
+    void makeMap();
 
 
 

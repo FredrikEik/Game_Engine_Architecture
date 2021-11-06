@@ -23,13 +23,14 @@ class Camera;
 class FrustumSystem : public VisualObject
 {
 public:
-    FrustumSystem();
+    FrustumSystem(Camera* C);
     ~FrustumSystem();
     void init() override;
     void calculateFrustumVectors();
     void makeFrustumLines();
     void updateFrustumPos(gsl::Vector3D cameraPos);
-    FrustumComponent mFrustum;
+    FrustumComponent* mFrustum;
+    Camera *mCam;
 
 
 private:

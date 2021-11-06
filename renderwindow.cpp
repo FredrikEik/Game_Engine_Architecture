@@ -136,10 +136,9 @@ void RenderWindow::init()
     setupSkyboxShader(3);
 
 
-    initObjects();
     //********************** Set up camera **********************
-    //mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    mPlayCamera.setPosition(gsl::Vector3D(1.f, 18.f, 7.5));
+    mEditorCamera.setPosition(gsl::Vector3D(1.f, 5.f, 8.f));
+    mPlayCamera.setPosition(gsl::Vector3D(0.f, 10.f, 9.f));
     mPlayCamera.pitch(70);
 
     mCurrentCamera = &mEditorCamera;
@@ -150,6 +149,10 @@ void RenderWindow::init()
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
     SoundHandler();
+    initObjects();
+
+    makeMap();
+
 
 
 
@@ -163,52 +166,56 @@ void RenderWindow::initObjects()
 
     mShapeFactory.makeVertices();
 
-    VisualObject* temp = mShapeFactory.createShape("Circle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(2.f, 1.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransformComp.push_back(temp->mTransform);
-    mNameComp.push_back(temp->mNameComp);
+//    VisualObject* temp = mShapeFactory.createShape("Circle");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(2.f, 1.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransformComp.push_back(temp->mTransform);
+//    mNameComp.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Square");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-2.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransformComp.push_back(temp->mTransform);
-    mNameComp.push_back(temp->mNameComp);
+//    temp = mShapeFactory.createShape("Square");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(-2.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransformComp.push_back(temp->mTransform);
+//    mNameComp.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Triangle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->move(3.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransformComp.push_back(temp->mTransform);
-    mNameComp.push_back(temp->mNameComp);
+//    temp = mShapeFactory.createShape("Triangle");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
+//    temp->move(3.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransformComp.push_back(temp->mTransform);
+//    mNameComp.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Plain");
+    VisualObject* temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
 
+
     temp = mShapeFactory.createShape("BigWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-3.f, 0.f, .5f);
+    temp->move(-4.f, 0.f, 7.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
 
+
+
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-2.f, 2.f, .5f);
+    temp->move(-13.f, 0.f, -2.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
     mNameComp.push_back(temp->mNameComp);
 
     temp = mShapeFactory.createShape("Monkey.obj");
@@ -227,7 +234,7 @@ void RenderWindow::initObjects()
     mNameComp.push_back(temp->mNameComp);
 
     mPlayer = new Player();
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+    mPlayer->mMaterial->mShaderProgram = 2; //plain shader
     mPlayer->init();
     mPlayer->move(0,1,0);
     mVisualObjects.push_back(mPlayer);
@@ -238,38 +245,39 @@ void RenderWindow::initObjects()
     temp->mMaterial->mShaderProgram = 0; //plain shader
     temp->init();
 
-    mFrustumSystem = new FrustumSystem();
+    mFrustumSystem = new FrustumSystem(&mPlayCamera);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
+    //mVisualObjects.push_back(mFrustumSystem);
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox();
     mSkyBox->setTexture();
     mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
     mSkyBox->init();
-    mVisualObjects.push_back(mSkyBox);
+    //mVisualObjects.push_back(mSkyBox);
 
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 2;    //Phongshader
-    mLight->move(0.f, 0.f, 6.f);
+    mLight->move(0.f, 6.f, 0.f);
     mLight->init();
-    mVisualObjects.push_back(mLight);
+    //mVisualObjects.push_back(mLight);
 
 
-    for(int i=0; i<10; i++)
-    {
-        for(int y=0; y<10; y++)
-        {
-            temp = mShapeFactory.createShape("Monkey.obj");
-            temp->init();
-            temp->move((i-y), 0.5, y-5);
-            temp->mMaterial->mShaderProgram = 0;    //plain shader
-            mTransformComp.push_back(temp->mTransform);
-            mNameComp.push_back(temp->mNameComp);
-            mVisualObjects.push_back(temp);
-        }
-    }
+//    for(int i=0; i<10; i++)
+//    {
+//        for(int y=0; y<10; y++)
+//        {
+//            temp = mShapeFactory.createShape("Monkey.obj");
+//            temp->init();
+//            temp->move((i-y), 0.5, y-5);
+//            temp->mMaterial->mShaderProgram = 0;    //plain shader
+//            mTransformComp.push_back(temp->mTransform);
+//            mNameComp.push_back(temp->mNameComp);
+//            mVisualObjects.push_back(temp);
+//        }
+//    }
 
 
 
@@ -331,7 +339,7 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
 
         glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, Lod(i));
+        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size()/*Lod(i)*/);
         glBindVertexArray(0);
     }
 
@@ -369,7 +377,7 @@ void RenderWindow::render()
     // HandleInput();
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
-    mFrustumSystem->updateFrustumPos(mEditorCamera.position());
+    mFrustumSystem->updateFrustumPos(mPlayCamera.position());
     //Check Collision
     //    for(int i{0}; i < mVisualObjects.size(); i++)
 
@@ -387,6 +395,7 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     makeObject();
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -407,7 +416,7 @@ void RenderWindow::render()
 int RenderWindow::Lod(int i)
 {
 
-    if(i!=9 && i!=10)
+    if(i!=8 && i!=9 )
     {
         gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
         //Testing lenght from cam to object
@@ -497,13 +506,13 @@ void RenderWindow::playMode(bool p)
     if(p)
     {
         mCurrentCamera = &mPlayCamera;
-        mLaserSound->play();
+        //mLaserSound->play();
         playM = true;
     }
     else
     {
         mCurrentCamera = &mEditorCamera;
-        mLaserSound->stop();
+        //mLaserSound->stop();
         playM = false;
     }
 }
@@ -540,6 +549,117 @@ void RenderWindow::SoundHandler()
     mLaserSound->play();
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     mLaserSound->stop();
+}
+
+void RenderWindow::makeMap()
+{
+
+    VisualObject* temp = mShapeFactory.createShape("BigWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-4.f, 0.f, -7.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    mNameComp.push_back(temp->mNameComp);
+
+//    temp = mShapeFactory.createShape("BigWall");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(-4.f, 0.f, 7.5f);
+//    mVisualObjects.push_back(temp);
+//    mTransformComp.push_back(temp->mTransform);
+//    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("BigWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-17.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("BigWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(10.f, 0.f, .5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    mNameComp.push_back(temp->mNameComp);
+
+
+
+//    temp = mShapeFactory.createShape("SmallWall");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(-13.f, 0.f, -2.5f);
+//    mVisualObjects.push_back(temp);
+//    mTransformComp.push_back(temp->mTransform);
+//    temp->mTransform->mMatrix.rotateY(90.f);
+//    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-9.f, 0.f, -8.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(9.f, 0.f, -8.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(13.f, 0.f, -2.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-12.f, 0.f, 4.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-7.f, 0.f, 8.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(-9.f, 0.f, 13.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
+
+    temp = mShapeFactory.createShape("SmallWall");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;    //plain shader
+    temp->move(14.f, 0.f, 4.5f);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mTransform->mMatrix.rotateY(90.f);
+    mNameComp.push_back(temp->mNameComp);
 }
 
 
@@ -771,7 +891,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     }
 
     //calculate aspect ration and set projection matrix
-    mCurrentCamera->mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
+    mPlayCamera.mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
 
     mPlayCamera.calculateProjectionMatrix();

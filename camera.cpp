@@ -63,13 +63,13 @@ void Camera::update()
 
 void FrustumSystem::updateFrustumPos(gsl::Vector3D cameraPos)
 {
-    move(cameraPos.x, cameraPos.y, cameraPos.z);
-    mFarPlane.x  = tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance;
-    mFarPlane.y  = (tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance)/mFrustum.mAspectRatio;
-    mFarPlane.z  = mFrustum.mFarPlaneDistance;
-    mNearPlane.x = tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance;
-    mNearPlane.y = (tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance)/mFrustum.mAspectRatio;
-    mNearPlane.z = mFrustum.mNearPlaneDistance;
+   // move(cameraPos.x, cameraPos.y, cameraPos.z);
+    mFarPlane.x  = tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance;
+    mFarPlane.y  = (tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance)/mFrustum->mAspectRatio;
+    mFarPlane.z  = mFrustum->mFarPlaneDistance;
+    mNearPlane.x = tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance;
+    mNearPlane.y = (tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance)/mFrustum->mAspectRatio;
+    mNearPlane.z = mFrustum->mNearPlaneDistance;
 
     mRightTopFar     = gsl::Vector3D(mFarPlane.x, mFarPlane.y, -mFarPlane.z);
     mRightBotFar  = gsl::Vector3D(mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
@@ -127,19 +127,22 @@ gsl::Vector3D Camera::right() const
     return mRight;
 }
 
-FrustumSystem::FrustumSystem()
+FrustumSystem::FrustumSystem(Camera* C)
 {
+    mCam = C;
+    mFrustum = &C->mFrustumComp;
     mTransform = new TransformComponent;
     mTransform->mMatrix.setToIdentity();
     mMesh = new MeshComponent;
     mCollision = new CollisionComponent;
+    mMesh->mDrawType = GL_LINES;
+    mMaterial = new MaterialComponent;
 
     calculateFrustumVectors();
     makeFrustumLines();
     mCollision->setBoundingSphere(0.01, mTransform->mPosition);
 
-    mMesh->mDrawType = GL_LINES;
-    mMaterial = new MaterialComponent;
+
 }
 
 FrustumSystem::~FrustumSystem()
@@ -152,15 +155,15 @@ void FrustumSystem::calculateFrustumVectors()
     gsl::Vector3D tempVector;
 
     //nearplane vector = using pythagoras
-    tempVector.setX(tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance); //horisontal opposite
-    tempVector.setY((tan(mFrustum.mFOV)*mFrustum.mNearPlaneDistance)/mFrustum.mAspectRatio); //horisontal opposite/aspect ratio
-    tempVector.setZ(-mFrustum.mNearPlaneDistance); //nearplane distance
+    tempVector.setX(tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance); //horisontal opposite
+    tempVector.setY((tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance)/mFrustum->mAspectRatio); //horisontal opposite/aspect ratio
+    tempVector.setZ(-mFrustum->mNearPlaneDistance); //nearplane distance
     mNearPlane = tempVector;
 
     //farplane vector = using pythagoras
-    tempVector.setX(tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance); //horisontal opposite
-    tempVector.setY((tan(mFrustum.mFOV)*mFrustum.mFarPlaneDistance)/mFrustum.mAspectRatio); //horisontal opposite/aspect ratio
-    tempVector.setZ(-mFrustum.mFarPlaneDistance); //farplane distance
+    tempVector.setX(tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance); //horisontal opposite
+    tempVector.setY((tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance)/mFrustum->mAspectRatio); //horisontal opposite/aspect ratio
+    tempVector.setZ(-mFrustum->mFarPlaneDistance); //farplane distance
     mFarPlane = tempVector;
 
     mRightTopNear=(gsl::Vector3D(mNearPlane.x , mNearPlane.y,  mNearPlane.z));
