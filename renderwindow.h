@@ -46,6 +46,7 @@ public:
 
     void addToGameObjects(GameObject *obj);
     std::vector<GameObject*> getGameObjects();
+    std::vector<GameObject*>* getGameObjectsPtr();
 
     double getVertexCount();
     int getSelectedObject();
@@ -58,7 +59,6 @@ public:
     bool bPlayerColliding{false};
 
     int getIndexToPickedObject();
-
 
 private:
     void init();

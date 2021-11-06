@@ -27,6 +27,9 @@ public:
     static CoreEngine *getInstance();
 
     void SetUpScene();
+    void resetScene();
+
+    void startGameLoopTimer();
 
     void HandleInput();
     void PlayerInput();

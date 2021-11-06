@@ -129,6 +129,7 @@ void RenderWindow::init()
     setupTextureShader(1);
 
     CoreEngine::getInstance()->SetUpScene();
+    CoreEngine::getInstance()->startGameLoopTimer();
 
     mMainWindow->makeObjList(mGameObjects);
 }
@@ -562,6 +563,11 @@ void RenderWindow::addToGameObjects(GameObject *obj)
 std::vector<GameObject*> RenderWindow::getGameObjects()
 {
     return mGameObjects;
+}
+
+std::vector<GameObject*>* RenderWindow::getGameObjectsPtr()
+{
+    return &mGameObjects;
 }
 
 double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt riktig..

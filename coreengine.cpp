@@ -16,6 +16,8 @@ CoreEngine::CoreEngine(RenderWindow *renderWindow)
     mGameCamera = new Camera();
     mGameCameraMesh = new GameObject();
     frustum = new Frustum();
+
+    mGameCamera->pitch(20); //tilt the camera down
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -70,7 +72,6 @@ void CoreEngine::SetUpScene()
 
     //********************** Set up cameras **********************
     mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));
-    mGameCamera->pitch(20); //tilt the camera down
 
     mEditorCamera->setPosition(gsl::Vector3D(25.f, .5f, 4.f));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
@@ -78,6 +79,19 @@ void CoreEngine::SetUpScene()
 
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                                                             "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
+}
+
+void CoreEngine::resetScene()
+{
+    std::vector<GameObject*>* gameObjects = mRenderWindow->getGameObjectsPtr();
+
+    gameObjects->clear();
+
+    SetUpScene();
+}
+
+void CoreEngine::startGameLoopTimer()
+{
     //Connect the gameloop timer to the render function:
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
     //This timer runs the actual MainLoop

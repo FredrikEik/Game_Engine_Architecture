@@ -121,6 +121,7 @@ void MainWindow::on_startGameButton_toggled(bool checked)
     }
     else{
         ui->startGameButton->setText("Start Game");
+        mCoreEngine->resetScene();
     }
 
     ui->pushButton->setText("Show Wireframe");
