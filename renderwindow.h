@@ -49,6 +49,14 @@ public:
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
 
+    GameObject *hjelpeObjekt=nullptr;
+    MeshComponent *hjelpeObjektMesh= nullptr;
+
+    void spawnHelpObject();
+
+    void moveHelpObjectToSelected();
+
+
 
 private slots:
     void render();
@@ -70,7 +78,6 @@ private:
 
     void handleInput();
 
-
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];
     GLint pMatrixUniform[4];
@@ -90,7 +97,7 @@ private:
 
     float mAspectratio{1.f};
 
-    class Factory *factory = new Factory;
+    class Factory* factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;
 
 

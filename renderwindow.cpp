@@ -249,6 +249,7 @@ GameObject *temp=nullptr;
             }
         }
             mMainWindow->updateOutliner(factory->mGameObjects);
+             hjelpeObjekt = factory->createObject("Cube");
 }
 
 // Called each frame - doing the rendering
@@ -363,25 +364,25 @@ void RenderWindow::render()
             }
             */
 
+
             if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.
-                GameObject *hjelpeObjekt=nullptr;
-                MeshComponent *hjelpeObjektMesh= nullptr;
-                gsl::Vector3D tempPosition;
-                gsl::Vector3D tempScale;
 
-            hjelpeObjekt = factory->createObject("Cube");
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
-            hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
+            hjelpeObjektMesh->mDrawType = GL_LINES;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
-            tempPosition = factory->mGameObjects[mIndexToPickedObject]->getTransformComponent()->mMatrix.getPosition();
+
+            gsl::Vector3D tempPosition;
+            gsl::Vector3D tempScale;
+            tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
             hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
-            tempScale = factory->mGameObjects[mIndexToPickedObject]->getTransformComponent()->mMatrix.getScale();
-            hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.1f, tempScale.y*1.1f, tempScale.z*1.1f);
+            tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
+            hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
 
 
                     //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+
 
             }
 
@@ -403,6 +404,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
             glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
         }*/
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -639,6 +641,17 @@ void RenderWindow::handleInput()
     }
 }
 
+void RenderWindow::spawnHelpObject()
+{
+
+
+}
+
+void RenderWindow::moveHelpObjectToSelected()
+{
+
+}
+
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
         int mouseXPixel = event->pos().x();
@@ -703,15 +716,14 @@ void RenderWindow::mousePicking(QMouseEvent *event)
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
                 //factory->mGameObjects[i]->move(1000.f,0,0);
-                break;  //breaking out of for loop - does not check if ray touch several objects
 
+                break;  //breaking out of for loop - does not check if ray touch several objects
 
             }
 
 
+
         }
-
-
 }
 void RenderWindow::setPickedObject(int pickedID)
 {
