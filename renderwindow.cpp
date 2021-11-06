@@ -136,32 +136,32 @@ void RenderWindow::initObject()
 
     mShapeFactory.makeVertices();
 
-    VisualObject* temp = mShapeFactory.createShape("Circle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(2.f, 1.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
+//    VisualObject* temp = mShapeFactory.createShape("Circle");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(2.f, 1.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransComps.push_back(temp->mTransform);
+//    mNameComps.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Square");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-2.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
+//    temp = mShapeFactory.createShape("Square");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    temp->move(-2.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransComps.push_back(temp->mTransform);
+//    mNameComps.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Triangle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    temp->move(3.f, 0.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
+//    temp = mShapeFactory.createShape("Triangle");
+//    temp->init();
+//    temp->mMaterial->mShaderProgram = 0;    //plain shader
+//    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
+//    temp->move(3.f, 0.f, .5f);
+//    mVisualObjects.push_back(temp);
+//    mTransComps.push_back(temp->mTransform);
+//    mNameComps.push_back(temp->mNameComp);
 
-    temp = mShapeFactory.createShape("Plain");
+    VisualObject* temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
     mVisualObjects.push_back(temp);
@@ -214,21 +214,21 @@ void RenderWindow::initObject()
     mFrustumSystem = new FrustumSystem(&mPlayCamera);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
     mFrustumSystem->init();
-    mFrustumSystem->move(mPlayCamera.position().x, mPlayCamera.position().y, mPlayCamera.position().z);
+    //mFrustumSystem->move(mPlayCamera.position().x, mPlayCamera.position().y, mPlayCamera.position().z);
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox();
     mSkyBox->setTexture();
     mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
     mSkyBox->init();
-    mVisualObjects.push_back(mSkyBox);
+    //mVisualObjects.push_back(mSkyBox);
 
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 2;    //Phongshader
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
-    mVisualObjects.push_back(mLight);
+    //mVisualObjects.push_back(mLight);
 
 
     for(int i=0; i<10; i++)
@@ -649,7 +649,7 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 int RenderWindow::levelOfDetail(int i)
 {
 
-    if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
+    //if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
         //making the vector from camera to object we test against
         gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
 
@@ -665,12 +665,14 @@ int RenderWindow::levelOfDetail(int i)
                 return mVisualObjects[i]->mMesh->mVertices.size();
         }
         else
+        {
             if(mVisualObjects[i]->mMesh->mVertices.size()>30)
                 return mVisualObjects[i]->mMesh->mVertices.size()/4;
             else
-                return mVisualObjects[i]->mMesh->mVertices.size();}
-    else
-        return mVisualObjects[i]->mMesh->mVertices.size();
+                return mVisualObjects[i]->mMesh->mVertices.size();
+        }
+    //else
+    //    return mVisualObjects[i]->mMesh->mVertices.size();
 
 }
 
