@@ -178,7 +178,19 @@ void RenderSystem::render()
             if(tempShader->mName == "PhongShader")
             {
                 //Send over camera position - should also send over a lot of other parameters about the light
-                glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
+                glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x,
+                            mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
+                glUniform3f(tempShader->mLightPosition, mLightPosition->mMatrix.getPosition().x,
+                            mLightPosition->mMatrix.getPosition().y, mLightPosition->mMatrix.getPosition().z);
+//                glUniform3f(tempShader->mLightDirection, mLight->mDirection.x, mLight->mDirection.y, mLight->mDirection.z);
+                glUniform3f(tempShader->mLightColor, mLight->mColor.x, mLight->mColor.y, mLight->mColor.z);
+                glUniform1f(tempShader->mAmbientStrengt, mLight->mAmbientStrength);
+                glUniform3f(tempShader->mAmbientColor, mLight->mAmbientColor.x, mLight->mAmbientColor.y, mLight->mAmbientColor.z);
+                glUniform1f(tempShader->mLightStrengt, mLight->mLightStrenght);
+                glUniform1f(tempShader->mSpecularStrength, mLight->mSpecularStrength);
+                glUniform1i(tempShader->mSpecularExponent, mLight->mSpecularExponent);
+                glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x, mGameObjects[i]->mMaterial->mColor.y,
+                            mGameObjects[i]->mMaterial->mColor.z);
             }
 
             //send data to shader

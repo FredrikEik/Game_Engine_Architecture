@@ -68,6 +68,7 @@ SOURCES += main.cpp \
     soundsystem.cpp \
     vertex.cpp \
     gameobject.cpp \
+    widgetlight.cpp \
     widgettransform.cpp \
     widgetmaterial.cpp
 
@@ -97,11 +98,13 @@ HEADERS += \
     soundsystem.h \
     vertex.h \
     gameobject.h \
+    widgetlight.h \
     widgettransform.h \
     widgetmaterial.h
 
 FORMS += \
     mainwindow.ui \
+    widgetlight.ui \
     widgettransform.ui \
     widgetmaterial.ui
 

@@ -9,6 +9,7 @@ public:
     MeshComponent* mMesh{nullptr};
     MaterialComponent* mMaterial{nullptr};
     SoundComponet* mSoundComponent{nullptr};
+    LightComponet* mLightComponent{nullptr};
 };
 #endif // VISUALOBJECT_H
 

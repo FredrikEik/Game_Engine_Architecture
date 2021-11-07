@@ -13,16 +13,15 @@ public:
     explicit WidgetMaterial(QWidget *parent = nullptr);
     ~WidgetMaterial();
 
-    void readMaterialData();
+    void readMaterialData(int currentObject, class RenderSystem *renderSystem);
 
     void fillShaders();
     void fillTextures();
 
-    int indexInSceneArray{-1};
-    class Scene* mCurrentScene{nullptr};
+//    int indexInSceneArray{-1};
+//    class Scene* mCurrentScene{nullptr};
 
-    class Material *mCurrentMaterial{nullptr};
-
+    struct MaterialComponent *mCurrentMaterial{nullptr};
     bool fillTexturesDone{false};
 
 private slots:

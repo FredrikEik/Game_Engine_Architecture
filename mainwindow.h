@@ -74,6 +74,7 @@ private:
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr}; //pointer to root of sceneOutliner
     class WidgetTransform* mTransformWidget{nullptr};
     class WidgetMaterial* mMaterialWidget{nullptr};
+    class WidgetLight* mLightWidget{nullptr};
 
     //default steps when using transform widget
     float mPositionStep{1.f};

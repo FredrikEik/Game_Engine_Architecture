@@ -53,6 +53,10 @@ public:
     bool mDrawAxis{true};
     bool mDrawGrid{true};
 
+    //Only one light can be used at the moment - the value of this is set from CoreEngine::setUpScene();
+    struct LightComponet* mLight{nullptr};
+    struct TransformComponent *mLightPosition{nullptr};
+
 private:
     void init();
 

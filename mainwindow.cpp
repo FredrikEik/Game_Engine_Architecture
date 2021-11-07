@@ -9,6 +9,7 @@
 #include "gameobject.h"
 #include "widgettransform.h"
 #include "widgetmaterial.h"
+#include "widgetlight.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -246,7 +247,15 @@ void MainWindow::on_twSceneOutliner_itemClicked(QTreeWidgetItem *item, int colum
     ui->blDetailsContainer->addWidget(mMaterialWidget);    //add to details pane
 //    mMaterialWidget->indexInSceneArray = mCurrentEditItemIndex;
 //    mMaterialWidget->mCurrentScene = mRenderWindow->mScene1;
-    mMaterialWidget->readMaterialData();
+    mMaterialWidget->readMaterialData(mCurrentEditItemIndex, mRenderSystem);
+
+    //Light widget:
+    if(mRenderSystem->mGameObjects.at(mCurrentEditItemIndex)->mLightComponent)
+    {
+        mLightWidget = new WidgetLight(this);
+        mLightWidget->readLightData(mRenderSystem);
+        ui->blDetailsContainer->addWidget(mLightWidget);    //add to details pane
+    }
 }
 
 void MainWindow::clearLayout(QLayout *layout) {

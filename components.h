@@ -2,6 +2,7 @@
 #define COMPONENTS_H
 
 //Components try to hold only runtime relevant data, and as small as possible
+#include "constants.h"
 
 struct TransformComponent
 {
@@ -50,6 +51,19 @@ struct SoundComponet
 //    bool isPlaying{false};
     bool looping{false};
 
+};
+
+struct LightComponet
+{
+//    gsl::Vector3D mPosition{10.f, 10.f, -5.f};    //given in the game object
+    gsl::LightTypes mType{gsl::POINT};      //only POINT is supported for now
+    gsl::Vector3D mDirection{0.f, -1.f, 0.f};   //not used in POINT
+    gsl::Vector3D mColor{0.9f};
+    float mLightStrenght{1.0f};
+    gsl::Vector3D mAmbientColor{0.5f};
+    float mAmbientStrength{0.5f};
+    float mSpecularStrength{0.3f};
+    short mSpecularExponent{32};
 };
 
 #endif // COMPONENTS_H

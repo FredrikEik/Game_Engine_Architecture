@@ -79,6 +79,10 @@ void CoreEngine::setUpScene()
     //Adds sound to moving triangle:
     mResourceManager->addComponent("caravan_mono.wav", temp);
 
+    //Ads light to this mesh - RenderSystem only supports one light at the moment:
+    //Also this is so simple now, that I just make the component on the spot
+    temp->mLightComponent = new LightComponet();
+
     //Hack to test sound system
     if(temp->mSoundComponent)
         temp->mSoundComponent->shouldPlay = true;
@@ -126,6 +130,18 @@ void CoreEngine::setUpScene()
 
     //update SceneOutliner to show all objects:
     mMainWindow->updateOutliner(mRenderSystem->mGameObjects);
+
+    //Copy data from GameObject that has lightcomponent
+    //The last one in list will be used
+    //because I only support one light
+    for(auto gob : mRenderSystem->mGameObjects)
+    {
+        if(gob->mLightComponent)
+        {
+            mRenderSystem->mLight = gob->mLightComponent;
+            mRenderSystem->mLightPosition = gob->mTransform;
+        }
+    }
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop

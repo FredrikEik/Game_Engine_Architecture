@@ -8,6 +8,7 @@
 #include "texturehandler.h"
 #include "resourcemanager.h"
 #include "shaderhandler.h"
+#include "gameobject.h"
 
 WidgetMaterial::WidgetMaterial(QWidget *parent) :
     QWidget(parent),
@@ -21,8 +22,9 @@ WidgetMaterial::~WidgetMaterial()
     delete ui;
 }
 
-void WidgetMaterial::readMaterialData()
+void WidgetMaterial::readMaterialData(int currentObject, RenderSystem *renderSystem)
 {
+    mCurrentMaterial = renderSystem->mGameObjects.at(currentObject)->mMaterial;
 //    unsigned short tempMaterialID = mCurrentScene->mEntities[indexInSceneArray].mMaterialIDIndex;
 //    qDebug() << mCurrentScene->mEntities[indexInSceneArray].mName.c_str();
 //    mCurrentMaterial = ResourceManager::getInstance().mMaterial[tempMaterialID];
@@ -38,10 +40,10 @@ void WidgetMaterial::readMaterialData()
 
 //    ui->textureComboBox->setCurrentIndex(tempTextureIndex);
 
-//    QPalette pal;
-//    QColor tempColor(mCurrentMaterial->mColor.x*255, mCurrentMaterial->mColor.y*255, mCurrentMaterial->mColor.z*255);
-//    pal.setColor(QPalette::Window, tempColor);
-//    ui->colorLabel->setPalette(pal);
+    QPalette pal;
+    QColor tempColor(mCurrentMaterial->mColor.x*255, mCurrentMaterial->mColor.y*255, mCurrentMaterial->mColor.z*255);
+    pal.setColor(QPalette::Window, tempColor);
+    ui->colorLabel->setPalette(pal);
 
 //    ui->specularStrength->setValue(mCurrentMaterial->mSpecularStrenght);
 //    ui->specularExponent->setValue(mCurrentMaterial->mSpecularExponent);
@@ -74,16 +76,16 @@ void WidgetMaterial::on_specularExponent_valueChanged(int arg1)
 
 void WidgetMaterial::on_colorButton_clicked()
 {
-    QColor currentColor; //mCurrentMaterial->mColor.x*255, mCurrentMaterial->mColor.y*255, mCurrentMaterial->mColor.z*255);
+    QColor currentColor(mCurrentMaterial->mColor.x*255, mCurrentMaterial->mColor.y*255, mCurrentMaterial->mColor.z*255);
     QColor newColor = QColorDialog::getColor(currentColor, this, "Select New Color");
 
     if (newColor.isValid()) {
         QPalette pal;
         pal.setColor(QPalette::Window, newColor);
         ui->colorLabel->setPalette(pal);
-//        mCurrentMaterial->mColor.x = newColor.red()/255.f;  //maybe use QColor.redF instead?
-//        mCurrentMaterial->mColor.y = newColor.green()/255.f;
-//        mCurrentMaterial->mColor.z = newColor.blue()/255.f;
+        mCurrentMaterial->mColor.x = newColor.redF();
+        mCurrentMaterial->mColor.y = newColor.greenF();
+        mCurrentMaterial->mColor.z = newColor.blueF();
     }
 }
 

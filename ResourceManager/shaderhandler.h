@@ -23,9 +23,12 @@ public:
 
     GLint mLightPosition{-1};
 
+    GLint mLightDirection{-1};
+
     GLint mLightColor{-1};
     GLint mObjectColor{-1};
 
+    GLint mAmbientColor{-1};
     GLint mAmbientStrengt{-1};
     GLint mLightStrengt{-1};
     GLint mSpecularStrength{-1};
