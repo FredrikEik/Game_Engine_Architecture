@@ -177,31 +177,31 @@ void Camera::update(float fieldOfView, float aspectRatio)
 
     //Update frustum
     frustumComp->mMatrix.setToIdentity();
-    frustumComp->mMatrix.rotateX(mPitch);
-    frustumComp->mMatrix.rotateY(mYaw);
     frustumComp->mMatrix.setPosition(mPosition.x, mPosition.y, mPosition.z);
-    //qDebug() << frustumComp->mMatrix.getPosition().x;
+    frustumComp->mMatrix.setRotation(mPitch, mYaw, 0);
+    qDebug() << "FrustumRotation: ";
+    qDebug() << frustumComp->mMatrix.getRotation();
 
 
-    farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength + frustumComp->mMatrix.getPosition().x;
-    farplaneY  = (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio + frustumComp->mMatrix.getPosition().y;
-    farplaneZ  = frustumComp->farPlaneLength + frustumComp->mMatrix.getPosition().z;
-    nearplaneX = tan(fieldOfView)*frustumComp->nearPlaneLength + frustumComp->mMatrix.getPosition().x;
-    nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio + frustumComp->mMatrix.getPosition().y;
-    nearplaneZ = frustumComp->nearPlaneLength + frustumComp->mMatrix.getPosition().z;
+    farplaneX  = farplaneX  + frustumComp->mMatrix.getPosition().x;
+    farplaneY  = farplaneY  + frustumComp->mMatrix.getPosition().y;
+    farplaneZ  = farplaneZ  + frustumComp->mMatrix.getPosition().z;
+    nearplaneX = nearplaneX + frustumComp->mMatrix.getPosition().x;
+    nearplaneY = nearplaneY + frustumComp->mMatrix.getPosition().y;
+    nearplaneZ = nearplaneZ + frustumComp->mMatrix.getPosition().z;
 
-    qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
-    qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
+    //qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
+    //qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
 
     nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ);
     nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ);
     nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
     nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ);
 
-    farPlaneTopRight    = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
-    farPlaneTopLeft     = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
-    farPlaneBottomLeft  = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
-    farPlaneBottomRight = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
+    farPlaneTopRight     = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
+    farPlaneTopLeft      = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
+    farPlaneBottomLeft   = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
+    farPlaneBottomRight  = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
 
 
 
@@ -228,6 +228,7 @@ void Camera::update(float fieldOfView, float aspectRatio)
     nearPlaneNormal.normalize();
     farPlaneNormal.normalize();
 
+    /*
     qDebug() << "rightPlaneNormal: " << rightPlaneNormal;
     qDebug() << "leftPlaneNormal: " << leftPlaneNormal;
 
@@ -236,7 +237,7 @@ void Camera::update(float fieldOfView, float aspectRatio)
 
     qDebug() << "nearPlaneNormal: " << nearPlaneNormal;
     qDebug() << "farPlaneNormal: " << farPlaneNormal;
-
+    */
     qDebug() << "Camera position: ";
     qDebug() << mPosition;
     qDebug() << "Frustum position: ";
