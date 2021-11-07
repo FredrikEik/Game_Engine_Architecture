@@ -211,8 +211,9 @@ void RenderWindow::render()
     if(ObjFactory->mGameObject.size() > 0)
     {
         glUseProgram(mShaderPrograms[1]->getProgram());
+        glUniform1i(mTextureUniform, 1); // chooses texture slot 1
 
-        for (unsigned int i=0; i<ObjFactory->mGameObject.size(); i++){
+        for (unsigned int i = 0; i < ObjFactory->mGameObject.size(); i++){
             //send data to shader
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
