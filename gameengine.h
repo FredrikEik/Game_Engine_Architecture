@@ -21,10 +21,13 @@ class GameEngine : public QObject
 {
     Q_OBJECT
 
+private slots:
+    void GameLoop();
 public:
     GameEngine();
     void SetUpScene();
     void SetUpObjects();
+    void saveGame();
     void HandleInput();
     void togglePlay(bool bInIsPlaying);
 
@@ -46,14 +49,15 @@ public:
     void CreateSphere();
     void CreateSuzanne();
 
+
     GameObject* mPlayer{nullptr};
     gsl::Vector3D initPlayerPos{0,0,0};
 
     GameObject* mLight{nullptr};
     GameObject* mLight2{nullptr};
-private slots:
-    void GameLoop();
-
+    void rotateLight();
+    
+    std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
 private:
     //TODO InputHandler
 

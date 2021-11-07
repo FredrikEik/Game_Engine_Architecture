@@ -91,7 +91,7 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
-    mTextures[2] = new Texture("cocademon2.bmp");
+    mTextures[2] = new Texture("cocademon3.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);

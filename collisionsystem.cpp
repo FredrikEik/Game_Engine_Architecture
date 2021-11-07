@@ -39,7 +39,7 @@ bool CollisionSystem::isColliding(std::vector<GameObject*> objects, QVector3D pl
 //   qDebug() << "pos: " << otherPos;
         if(xAxis && zAxis && yAxis)
         {
-            qDebug() << i;
+            //qDebug() << i;
             return true;
         }
     }

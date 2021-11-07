@@ -11,8 +11,8 @@ uniform vec3 lightPosition;
 uniform vec3 cameraPosition;
 
 
-uniform float ambientStrength = 0.05;
-uniform float lightStrength = 0.5;
+uniform float ambientStrength = -0.4;
+uniform float lightStrength = 0.8;
 uniform vec3 lightColor = vec3(0.8, 0.8, 0.3);  //yellowish
 uniform float specularStrength = 0.2;
 uniform int specularExponent = 16;

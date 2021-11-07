@@ -1,4 +1,4 @@
-#include "gameengine.h"
+﻿#include "gameengine.h"
 
 #include <QKeyEvent>
 
@@ -11,6 +11,11 @@
 #include "mainwindow.h"
 #include "collisionsystem.h"
 
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <QJsonDocument>
+
 
 // Make Singelton
 GameEngine* GameEngine::mInstance = nullptr;
@@ -18,6 +23,22 @@ GameEngine* GameEngine::mInstance = nullptr;
 //TODO: endre slik at constructoren blir kalt
 GameEngine::GameEngine()
 {
+}
+
+void GameEngine::GameLoop()
+{
+    //mPhysicsBallSystem->update(*mPhysicsBall);
+
+    rotateLight();
+
+    HandleInput();
+
+    //mCurrentCameraUPDATE??
+    mEditorCamera->update();
+    mGameCamera->update();
+
+    mRenderwindow->render();
+
 }
 
 void GameEngine::SetUpScene()
@@ -48,7 +69,7 @@ void GameEngine::SetUpScene()
     // Sound startup stuff
     mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                gsl::SoundFilePath + "funnyhaha.wav", false, 1.0f);
+                gsl::SoundFilePath + "rock_background.wav", false, 1.0f);
 
     //mStereoSound->play();
 
@@ -59,11 +80,9 @@ void GameEngine::SetUpScene()
     mMainWindow->initList();
 }
 
-
-
 void GameEngine::SetUpObjects()
 {
-
+                                          //(gsl::MeshFilePath + "player.obj", gsl::TextureFilePath + "playerTexture")
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
     mPlayer->mTransformComp->mMatrix.translate(0,-1.8f,-8);
     initPlayerPos = {0,-1.8f,-8};
@@ -101,7 +120,7 @@ void GameEngine::SetUpObjects()
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
-    mLight->mTransformComp->mMatrix.translate(-1,3,5);
+    mLight->mTransformComp->mMatrix.translate(-20,3,-10);
     mLight->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mLight);
 
@@ -111,7 +130,7 @@ void GameEngine::SetUpObjects()
 //    mRenderwindow->mGameObjects.push_back(mLight2);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cacodemon2.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(2,-3,2);
+    tempGameObject->mTransformComp->mMatrix.translate(5,0,-7);
     tempGameObject->mMaterialComp->mShaderProgram = 3;
     tempGameObject->mMaterialComp->mTextureUnit = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
@@ -192,6 +211,42 @@ void GameEngine::SetUpObjects()
 //    tempGameObject->mTransformComp->mMatrix.translate(0,-15,0);
 //    tempGameObject->mMaterialComp->mShaderProgram = 2;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
+
+    //saveGame();
+}
+
+void GameEngine::saveGame()
+{
+    if(mLevels.empty())
+    {
+        mLevels.push_back(std::pair<QString,std::vector<GameObject*>>("level1",mRenderwindow->mGameObjects));
+    }
+    QFile saveFile(QStringLiteral("save.json"));
+
+    // open file
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return;
+    }
+    QJsonObject coreJsonObject;
+
+    QJsonArray levelArray;
+    for(unsigned long long i = 0; i < mLevels.size();i++)
+    {
+        QJsonObject level;
+        QJsonArray objectarray;
+        level["levelname"] = mLevels[i].first;
+        for(auto it : mRenderwindow->mGameObjects)
+        {
+            QJsonObject levelObjects;
+            levelObjects["ID"] = it->id;
+            // transform
+//            levelObjects["T"] = it->mTransformComp->mMatrix.getPosition();
+//            levelObjects["mesh"] = it.mMesh;
+//            levelObjects["position"] = it.mPosition;
+//            objectarray.append(levelObjects);
+        }
+    }
 }
 
 void GameEngine::HandleInput()
@@ -199,7 +254,7 @@ void GameEngine::HandleInput()
     mRenderwindow->mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     float cameraSpeed = mRenderwindow->getCameraSpeed();
     Camera *currentCamera = mRenderwindow->mCurrentCamera;
-    float camSpeedMultiplyer{2};
+    float camSpeedMultiplyer{1.2f};
 
     UpdateGameCameraFollow();
 
@@ -344,18 +399,11 @@ void GameEngine::UpdateGameCameraFollow()
     mGameCamera->setPosition(mPlayer->mTransformComp->mMatrix.getPosition() + gsl::Vector3D(0,2,0));
 }
 
-void GameEngine::GameLoop()
+void GameEngine::rotateLight()
 {
-    //mPhysicsBallSystem->update(*mPhysicsBall);
-
-    HandleInput();
-
-    //mCurrentCameraUPDATE??
-    mEditorCamera->update();
-    mGameCamera->update();
-
-    mRenderwindow->render();
-
+    static float rotate{0.f};
+    mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
+    rotate+=0.01f;
 }
 
 void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)
@@ -405,8 +453,6 @@ void GameEngine::CreateSuzanne()
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
-
-
 
 GameEngine * GameEngine::getInstance()
 {
