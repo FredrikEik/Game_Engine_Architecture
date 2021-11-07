@@ -208,10 +208,13 @@ void Skybox::draw()
     //Disables depth masking temporarily while drawing skybox
     glDepthMask(GL_FALSE);
     glBindVertexArray(getMeshComponent()->mVAO);
-   // glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
+    glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, getTransformComponent()->mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
+
+
 }
+
 
 void Skybox::move(float x, float y, float z)
 {

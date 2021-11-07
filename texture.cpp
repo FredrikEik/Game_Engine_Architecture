@@ -23,7 +23,7 @@ Texture::Texture()
     mBitmap[4] = 255;
     mBitmap[8] = 255;
     mBitmap[9] = 255;
-    mBitmap[10] = 255;
+    mBitmap[10]= 255;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 

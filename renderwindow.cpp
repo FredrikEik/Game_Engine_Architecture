@@ -103,12 +103,12 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
-    mTextures[2] = new Texture("../GEA2021/Assets/Skybox/right.bmp",
-                               "../GEA2021/Assets/Skybox/left.bmp",
-                               "../GEA2021/Assets/Skybox/top.bmp",
-                               "../GEA2021/Assets/Skybox/bottom.bmp",
-                               "../GEA2021/Assets/Skybox/front.bmp",
-                               "../GEA2021/Assets/Skybox/back.bmp");
+    mTextures[2] = new Texture("right.bmp",
+                               "left.bmp",
+                               "top.bmp",
+                               "bottom.bmp",
+                               "front.bmp",
+                               "back.bmp");
     //mTextures
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -135,7 +135,7 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+    /*mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                 (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
@@ -144,7 +144,7 @@ void RenderWindow::init()
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
     setupPlainShader(0);
-    setupTextureShader(1);
+    setupTextureShader(1);*/
 
     //********************** Making the object to be drawn **********************
 
@@ -170,7 +170,7 @@ void RenderWindow::init()
     triangle->init();
     mGameObjects.push_back(triangle);
     */
-    factory->createObject("Skybox");
+
 
 
     //GameObject *skybox = new Skybox("../GEA2021/Assets/skybox.obj");
@@ -192,24 +192,24 @@ void RenderWindow::init()
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mCurrentCamera->updateFrustumPos(45.0f, 4/3);
-
+    //***********************************************************
 
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
                                      qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
                                      qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvert").c_str(),
-                                    (gsl::ShaderFilePath + "skyboxfragment").c_str());
-    //mMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[skyboxfragment]->getProgram(), "mMatrix" );
-    //vMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[SKYBOX_SHADER]->getProgram(), "vMatrix" );
-    //pMatrixUniform[SKYBOX_SHADER] = glGetUniformLocation( mShaderProgram[SKYBOX_SHADER]->getProgram(), "pMatrix" );
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert ").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
+
 
     setupPlainShader(0);
     setupTextureShader(1);
+    setupSkyboxShader(2);
+
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -257,9 +257,10 @@ void RenderWindow::init()
     //megatemp
 
 
+    factory->createObject("Skybox");
 
 GameObject *temp=nullptr;
-        for(int i{0}; i < 50; i++)
+        for(int i{0}; i < 500; i++)
         {
             for(int j{0}; j < 10; j++)
             {
@@ -424,6 +425,14 @@ void RenderWindow::setupPlainShader(int shaderIndex)
 }
 
 void RenderWindow::setupTextureShader(int shaderIndex)
+{
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupSkyboxShader(int shaderIndex)
 {
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );

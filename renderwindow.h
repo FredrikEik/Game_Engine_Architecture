@@ -78,6 +78,7 @@ private:
 
     void setupPlainShader(int shaderIndex);
     void setupTextureShader(int shaderIndex);
+    void setupSkyboxShader(int shaderIndex);
 
     GLint mTextureUniform{-1};
 
