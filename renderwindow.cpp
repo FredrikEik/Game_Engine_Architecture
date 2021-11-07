@@ -85,7 +85,7 @@ void RenderWindow::init()
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
-    int textureUnits;
+    int textureUnits = 2;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
     std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
@@ -202,7 +202,7 @@ void RenderWindow::render()
 
     unsigned int cullSafe;
     if(bPlayGame)
-        cullSafe = -1;
+        cullSafe = 0; // original -1
     else
     {
         cullSafe = 1;
@@ -210,13 +210,13 @@ void RenderWindow::render()
 
     if(ObjFactory->mGameObject.size() > 0)
     {
-        glUseProgram(mShaderPrograms[0]->getProgram() );
+        glUseProgram(mShaderPrograms[1]->getProgram());
 
         for (unsigned int i=0; i<ObjFactory->mGameObject.size(); i++){
             //send data to shader
-            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
             if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0)
             {
