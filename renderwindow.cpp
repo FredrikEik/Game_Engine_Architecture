@@ -317,7 +317,7 @@ void RenderWindow::render()
                 gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
                 if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
-                {
+                /*{
                     gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
                     if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
@@ -333,15 +333,16 @@ void RenderWindow::render()
                                 gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
                                 if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                                */
                                 {
-                                    qDebug() << "Object inside frustum";
+                                   // qDebug() << "Object inside frustum";
                                     factory->mGameObjects[i]->draw();
                                 }
                             }
-                        }
+                        /*}
                     }
                 }
-            }
+            }*/
                 if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
                 {
                     factory->mGameObjects[i]->draw();

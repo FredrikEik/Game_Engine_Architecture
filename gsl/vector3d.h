@@ -45,6 +45,8 @@ public:
     void rotateY(GLfloat angle);
     void rotateZ(GLfloat angle);
 
+    void axisAngleRotation(float angle, Vector3D axis);
+
     //Getters and setters
     GLfloat getX() const;
     void setX(const GLfloat &value);
