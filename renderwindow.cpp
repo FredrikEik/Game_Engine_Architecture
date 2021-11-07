@@ -98,6 +98,22 @@ void RenderWindow::init()
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
     std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
 
+
+    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
+    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
+
+
+                                     setupPlainShader(0);
+                                     setupTextureShader(1);
+                                     setupSkyboxShader(2);
+
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
@@ -109,6 +125,7 @@ void RenderWindow::init()
                                "bottom.bmp",
                                "front.bmp",
                                "back.bmp");
+
     //mTextures
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -116,7 +133,7 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_3D, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -195,20 +212,7 @@ void RenderWindow::init()
     //***********************************************************
 
 
-    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert ").c_str(),
-                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
-                                     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
-
-    setupPlainShader(0);
-    setupTextureShader(1);
-    setupSkyboxShader(2);
 
 
     //********************** Set up quadtree *******************
@@ -257,10 +261,10 @@ void RenderWindow::init()
     //megatemp
 
 
-    factory->createObject("Skybox");
 
+    factory->createObject("Skybox");
 GameObject *temp=nullptr;
-        for(int i{0}; i < 500; i++)
+        for(int i{0}; i < 50; i++)
         {
             for(int j{0}; j < 10; j++)
             {
@@ -308,7 +312,12 @@ void RenderWindow::render()
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+              glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+             //glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            }
+            if(shaderProgramIndex == 2)
+            {
+               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
@@ -430,6 +439,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+   // factory->mGameObjects[shaderIndex]->getMaterialComponent()->mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)
@@ -437,7 +447,8 @@ void RenderWindow::setupSkyboxShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    //mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
+    mSkyboxUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
 }
 
 //This function is called from Qt when window is exposed (shown)

@@ -108,8 +108,8 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
-        skyboxcounter++;
-        objectToCreate->mObjectName = "Skybox " + std::to_string(skyboxcounter);
+        //skyboxcounter++;
+        objectToCreate->mObjectName = "Skybox ";
     }
 
     else{return nullptr;}

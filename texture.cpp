@@ -163,7 +163,7 @@ void Texture::setTexture()
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-/*void Texture::setCubemapTexture()
+void Texture::setCubemapTexture()
 {
     glGenTextures(1, &mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
@@ -189,7 +189,7 @@ void Texture::setTexture()
     qDebug() << "Cubemap Texture" << mTextureFilename.c_str() << "successfully read | id = "
              << mGLTextureID << "| bytes pr pixel:" << mBytesPrPixel << "| using alpha:" << mAlphaUsed
              << "| w:" << mColumns << "|h:" << mRows;
-}*/
+}
 
 void Texture::readCubemap(const std::string &right,
                           const std::string &left,
@@ -214,14 +214,14 @@ void Texture::readCubemap(const std::string &right,
 
 }
 
-void Texture::setCubemapTexture()
+/*void Texture::setCubemapTexture()
 {
     //Reads the cubemap array of 6 bitmaps to one cubemap texture.
-    glGenTextures(1, &mId);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mId);
+    glGenTextures(1, &mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
     qDebug()
         << "Cubemap texture"
-        << "successfully read | id = " << mId
+        << "successfully read | id = " << mGLTextureID
         << "| bytes pr pixel:" << mBytesPrPixel
         << "| using alpha:" << mAlphaUsed
         << "| Columns:" << mColumns
@@ -250,4 +250,4 @@ void Texture::setCubemapTexture()
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-}
+}*/

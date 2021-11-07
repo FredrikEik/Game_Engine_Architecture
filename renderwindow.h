@@ -80,11 +80,29 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
 
-    GLint mTextureUniform{-1};
-
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
+
+    GLint mTextureUniform{-1};
+
+    // Skybox shader uniforms
+    GLint mSkyboxUniform{-1};
+
+    // Phong shader uniforms
+    GLint mLightColorUniform{-1};
+    GLint mObjectColorUniform{-1};
+    GLint mAmbientLightStrengthUniform{-1};
+    GLint mAmbientColor{-1};
+    GLint mLightPositionUniform{-1};
+    GLint mCameraPositionUniform{-1};
+    GLint mSpecularStrengthUniform{-1};
+    GLint mSpecularExponentUniform{-1};
+    GLint mLightPowerUniform{-1};
+    GLint mConstantUniform{-1};
+    GLint mLinearUniform{-1};
+    GLint mQuadraticUniform{-1};
+    GLint mPhongTextureUniform{-1};
 
     Camera* mCurrentCamera{nullptr};
     Camera* mTestFrustumCamera{nullptr};
@@ -106,7 +124,7 @@ private:
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-    float mouseSpeed = 0.05;
+    double mouseSpeed = 0.05;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

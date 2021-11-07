@@ -36,26 +36,7 @@ public:
     GLuint mShaderProgram;
     GLint mTextureUnit;
 
-    // Texture shader uniforms
-    GLint mTextureUniform{-1};
 
-    // Skybox shader uniforms
-    GLint mSkyboxUniform{-1};
-
-    // Phong shader uniforms
-    GLint mLightColorUniform{-1};
-    GLint mObjectColorUniform{-1};
-    GLint mAmbientLightStrengthUniform{-1};
-    GLint mAmbientColor{-1};
-    GLint mLightPositionUniform{-1};
-    GLint mCameraPositionUniform{-1};
-    GLint mSpecularStrengthUniform{-1};
-    GLint mSpecularExponentUniform{-1};
-    GLint mLightPowerUniform{-1};
-    GLint mConstantUniform{-1};
-    GLint mLinearUniform{-1};
-    GLint mQuadraticUniform{-1};
-    GLint mPhongTextureUniform{-1};
 
 };
 
