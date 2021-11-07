@@ -11,7 +11,7 @@
 
 struct Material
 {
-    GLuint mShaderProgram{0};
+    GLuint mShaderProgram{2};
     GLint mTextureUnit{0};
 };
 

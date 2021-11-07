@@ -47,7 +47,7 @@ void CoreEngine::SetUpScene()
     mGameCameraMesh->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(mGameCameraMesh);
 
-    temp = mResourceManager->CreateObject("suzanne.obj");
+    temp = mResourceManager->CreateObject("bullet.obj");
     temp->transform->mMatrix.translate(gsl::Vector3D(57.f, -1.f, 0.f));
     mRenderWindow->addToGameObjects(temp);
 
@@ -85,9 +85,9 @@ void CoreEngine::resetScene()
 {
     std::vector<GameObject*>* gameObjects = mRenderWindow->getGameObjectsPtr();
 
-    gameObjects->clear();
+    gameObjects->clear(); //Removes and deletes all GameObjects
 
-    SetUpScene();
+    SetUpScene(); //Scene setup: adds objects back in, with default parameters (e.g. Position reset)
 }
 
 void CoreEngine::startGameLoopTimer()
