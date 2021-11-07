@@ -66,13 +66,10 @@ SOURCES += main.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     soundsystem.cpp \
-    soundsource.cpp \
-    triangle.cpp \
     vertex.cpp \
     gameobject.cpp \
     widgettransform.cpp \
-    widgetmaterial.cpp \
-    xyz.cpp
+    widgetmaterial.cpp
 
 HEADERS += \
     altypes.h \
@@ -98,13 +95,10 @@ HEADERS += \
     rendersystem.h \
     mainwindow.h \
     soundsystem.h \
-    soundsource.h \
-    triangle.h \
     vertex.h \
     gameobject.h \
     widgettransform.h \
-    widgetmaterial.h \
-    xyz.h
+    widgetmaterial.h
 
 FORMS += \
     mainwindow.ui \

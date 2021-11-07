@@ -49,10 +49,10 @@ private:
     /**
         Checks for and outputs OpenAL errors.
     **/
-    bool checkError();
+    bool checkForALerrors();
 
-    ALCdevice* mDevice;                 ///< Pointer to the ALC Device.
-    ALCcontext* mContext;               ///< Pointer to the ALC Context.
+    ALCdevice* mDevice{nullptr};                 ///< Pointer to the ALC Device.
+    ALCcontext* mContext{nullptr};               ///< Pointer to the ALC Context.
 
     bool shouldPlaySounds{false};
 

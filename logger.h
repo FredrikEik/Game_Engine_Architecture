@@ -1,7 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <string>
+//#include <string>
 
 enum class LColor
 {
@@ -22,7 +22,7 @@ public:
 
 private:
     Logger();
-    void operator=(Logger&){};           //Assignment operator
+    void operator=(Logger&){};  //Assignment operator
     Logger(const Logger&){};    //Copy constructor
 
     class MainWindow* mMainWindow{nullptr};

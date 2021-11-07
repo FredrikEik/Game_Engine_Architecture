@@ -4,16 +4,18 @@
 //STL
 #include <string>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <cstdint>    //does not work well on mac?
+#include <cstdio>
 
 //Qt
 #include <QObject>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QMainWindow>
 #include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLFunctions>
 #include <QTimer>
 #include <QElapsedTimer>
@@ -22,11 +24,11 @@
 #include <QSurfaceFormat>
 #include <QScreen>  //for resizing the program at start
 #include <QMessageBox>  //For Help menu messages
-#include <QTreeWidgetItem> //Scene Outliner
 #include <QStatusBar>
 #include <QKeyEvent>
 #include <QColorDialog>
 #include <QTreeWidget>
+#include <QTreeWidgetItem> //Scene Outliner
 
 //own
 #include "input.h"

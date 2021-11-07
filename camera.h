@@ -22,7 +22,6 @@ struct Frustum
     //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
 };
 
-
 class Camera
 {
 public:

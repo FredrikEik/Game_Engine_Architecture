@@ -2,9 +2,9 @@
 #define RESOURCEMANAGER_H
 
 //#include <QOpenGLFunctions_4_1_Core>
-#include <string>
-#include <map>
-#include <vector>
+//#include <string>
+//#include <map>
+//#include <vector>
 
 #include "components.h"
 #include "constants.h"

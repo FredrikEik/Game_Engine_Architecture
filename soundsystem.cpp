@@ -87,12 +87,12 @@ void SoundSystem::update(RenderSystem *renderWindowIn)
                         alSourcePlay(gob->mSoundComponent->mSource);
                 }
             }
-            checkError();
+            checkForALerrors();
         }
     }
 }
 
-bool SoundSystem::checkError()
+bool SoundSystem::checkForALerrors()
 {
     switch (alGetError())
     {
@@ -135,7 +135,7 @@ void SoundSystem::togglePlaySounds(bool shouldPlay)
                     alSourcePause(gob->mSoundComponent->mSource);
                 }
             }
-            checkError();
+            checkForALerrors();
         }
     }
 }

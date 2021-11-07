@@ -35,7 +35,7 @@ private slots:
     void on_textureComboBox_currentIndexChanged(int index);
 
 private:
-    Ui::WidgetMaterial *ui;
+    Ui::WidgetMaterial *ui{nullptr};
 };
 
 #endif // WIDGETMATERIAL_H
