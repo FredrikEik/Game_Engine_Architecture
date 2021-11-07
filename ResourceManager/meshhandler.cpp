@@ -439,6 +439,7 @@ int MeshHandler::makeTerrain(std::string heightMapName)
                     std::to_string(depth) + "| VertexXStart:" + std::to_string(vertexXStart) + "| VertexZStart" + std::to_string(vertexZStart));
 
     calculateHeighMapNormals(width, depth, tempMesh);
+    tempMesh.mColliderRadius = 1.f;
 
     //only LOD level 0
     initMesh(tempMesh, 0);

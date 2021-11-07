@@ -258,9 +258,13 @@ void RenderSystem::render()
         if(i == mIndexToPickedObject)
         {
             tempShader = mResourceManager->mShaders[0];
+            glUseProgram(tempShader->mProgram);
 //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
             MeshData circle = CoreEngine::getInstance()->mResourceManager->
                     makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
+
+            glUniformMatrix4fv( tempShader->vMatrixUniform, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( tempShader->pMatrixUniform, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
             //Hackety hack - have to get rid of scale in the objects model matrix
             gsl::Matrix4x4 temp(true);
             temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
@@ -270,7 +274,6 @@ void RenderSystem::render()
             glBindVertexArray( circle.mVAO[0] );
             glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
-//        glBindVertexArray(0);
     }
 
     //Quick hack test to check if frustum line mesh is OK
@@ -323,9 +326,9 @@ void RenderSystem::render()
     //Testing gameCam now
     if(mIsPlaying)
     {
-//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-        mGameCamera->yaw(0.07f);
-        mGameCamera->update();
+        mGameObjects[2]->mTransform->mMatrix.translate(-.09f, .0f, -.05f); //just to move the triangle each frame
+//        mGameCamera->yaw(-0.07f);
+//        mGameCamera->update();
         mUseFrustumCulling = true;
         mGameCamAsFrustumCulling = true;
     }
