@@ -18,7 +18,7 @@ public:
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
-    void update();
+    void update(float fieldOfView, float aspectRatio);
     void init() override;
     void draw() override;
     void move(float x, float y, float z) override;

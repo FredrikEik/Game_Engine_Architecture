@@ -2,6 +2,7 @@
 
 #include "light.h"
 #include "components.h"
+#include "renderwindow.h"
 
 Light::Light()
 {

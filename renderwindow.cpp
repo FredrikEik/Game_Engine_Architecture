@@ -173,17 +173,15 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     glDisable(GL_CULL_FACE);
-    mTestFrustumCamera = new Camera(45.0f, 4/3);
+    /*mTestFrustumCamera = new Camera(45.0f, 4/3);
     mTestFrustumCamera->init();
     mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mTestFrustumCamera->updateFrustumPos(45.0f, 4/3);
-
+*/
     mCurrentCamera = new Camera(45.0f, 4/3);
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
     mCurrentCamera->updateFrustumPos(45.0f, 4/3);
-
-
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
@@ -269,7 +267,8 @@ void RenderWindow::render()
     //Keyboard / mouse input
     handleInput();
 
-    mCurrentCamera->update();
+    mCurrentCamera->update(45.0f, 4/3);
+    mCurrentCamera->updateFrustumPos(45.0f, 4/3);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -335,6 +334,7 @@ void RenderWindow::render()
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
                                 if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                                 {
+                                    qDebug() << "Object inside frustum";
                                     factory->mGameObjects[i]->draw();
                                 }
                             }

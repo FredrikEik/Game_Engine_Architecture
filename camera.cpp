@@ -15,6 +15,7 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
     frustumComp = new FrustumCollisionComponent();
+    frustumComp->mMatrix.setToIdentity();
     frustumComp->farPlaneLength  = 50.0f;
     frustumComp->nearPlaneLength = 10.0f;
 
@@ -161,7 +162,7 @@ void Camera::updateForwardVector()
     updateRightVector();
 }
 
-void Camera::update()
+void Camera::update(float fieldOfView, float aspectRatio)
 {
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
@@ -173,6 +174,74 @@ void Camera::update()
 
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
+
+    //Update frustum
+    frustumComp->mMatrix.setToIdentity();
+    frustumComp->mMatrix.rotateX(mPitch);
+    frustumComp->mMatrix.rotateY(mYaw);
+    frustumComp->mMatrix.setPosition(mPosition.x, mPosition.y, mPosition.z);
+    //qDebug() << frustumComp->mMatrix.getPosition().x;
+
+
+    farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength + frustumComp->mMatrix.getPosition().x;
+    farplaneY  = (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio + frustumComp->mMatrix.getPosition().y;
+    farplaneZ  = frustumComp->farPlaneLength + frustumComp->mMatrix.getPosition().z;
+    nearplaneX = tan(fieldOfView)*frustumComp->nearPlaneLength + frustumComp->mMatrix.getPosition().x;
+    nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio + frustumComp->mMatrix.getPosition().y;
+    nearplaneZ = frustumComp->nearPlaneLength + frustumComp->mMatrix.getPosition().z;
+
+    qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
+    qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
+
+    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ);
+    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
+    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ);
+
+    farPlaneTopRight    = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
+    farPlaneTopLeft     = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
+    farPlaneBottomLeft  = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
+    farPlaneBottomRight = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
+
+
+
+    rightPlaneNormal   = gsl::Vector3D::cross(nearPlaneBottomRight - farPlaneBottomRight
+                                             ,nearPlaneBottomRight - nearPlaneTopRight);
+    leftPlaneNormal    = gsl::Vector3D::cross(nearPlaneTopLeft - farPlaneTopLeft
+                                             ,nearPlaneTopLeft - nearPlaneBottomLeft);
+    topPlaneNormal     = gsl::Vector3D::cross(nearPlaneTopRight - farPlaneTopRight
+                                             ,nearPlaneTopRight - nearPlaneTopLeft);
+    bottomPlaneNormal  = gsl::Vector3D::cross(nearPlaneBottomLeft - farPlaneBottomLeft
+                                             ,nearPlaneBottomLeft - nearPlaneBottomRight);
+    nearPlaneNormal    = gsl::Vector3D::cross(nearPlaneBottomRight - nearPlaneTopRight
+                                             ,nearPlaneBottomRight - nearPlaneBottomLeft);
+    farPlaneNormal     = gsl::Vector3D::cross(farPlaneBottomLeft - farPlaneTopLeft
+                                             ,farPlaneBottomLeft - farPlaneBottomRight);
+
+    //qDebug() << rightPlaneNormal;
+    //qDebug() << leftPlaneNormal;
+
+    rightPlaneNormal.normalize();
+    leftPlaneNormal.normalize();
+    topPlaneNormal.normalize();
+    bottomPlaneNormal.normalize();
+    nearPlaneNormal.normalize();
+    farPlaneNormal.normalize();
+
+    qDebug() << "rightPlaneNormal: " << rightPlaneNormal;
+    qDebug() << "leftPlaneNormal: " << leftPlaneNormal;
+
+    qDebug() << "topPlaneNormal: " << topPlaneNormal;
+    qDebug() << "bottomPlaneNormal: " << bottomPlaneNormal;
+
+    qDebug() << "nearPlaneNormal: " << nearPlaneNormal;
+    qDebug() << "farPlaneNormal: " << farPlaneNormal;
+
+    qDebug() << "Camera position: ";
+    qDebug() << mPosition;
+    qDebug() << "Frustum position: ";
+    qDebug() << frustumComp->mMatrix.getPosition();
+
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
@@ -202,12 +271,12 @@ void Camera::moveRight(float delta)
 
 void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 {
-    farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength;
-    farplaneY  = (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio;
-    farplaneZ  = frustumComp->farPlaneLength;
-    nearplaneX = tan(fieldOfView)*frustumComp->nearPlaneLength;
-    nearplaneY = (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
-    nearplaneZ = frustumComp->nearPlaneLength;
+ /*   farplaneX  = this->mPosition.x + tan(fieldOfView)*frustumComp->farPlaneLength;
+    farplaneY  = this->mPosition.y + (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio;
+    farplaneZ  = this->mPosition.z + frustumComp->farPlaneLength;
+    nearplaneX = this->mPosition.x + tan(fieldOfView)*frustumComp->nearPlaneLength;
+    nearplaneY = this->mPosition.y + (tan(fieldOfView)*frustumComp->nearPlaneLength)/aspectRatio;
+    nearplaneZ = this->mPosition.z + frustumComp->nearPlaneLength;
 
     frustumComp->rightTopFar     = gsl::Vector3D(farplaneX, farplaneY, -farplaneZ);
     frustumComp->rightBottomFar  = gsl::Vector3D(farplaneX, -farplaneY, -farplaneZ);
@@ -218,7 +287,7 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     frustumComp->rightBottomNear = gsl::Vector3D(nearplaneX, -nearplaneY, -nearplaneZ);
     frustumComp->leftTopNear     = gsl::Vector3D(-nearplaneX, nearplaneY, -nearplaneZ);
     frustumComp->leftBottomNear  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
-
+*/
 }
 
 gsl::Vector3D Camera::position() const
@@ -281,5 +350,6 @@ void Camera::draw()
 void Camera::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
+    getFrustumComponent()->mMatrix.translate(x,y,z);
 }
 

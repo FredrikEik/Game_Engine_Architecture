@@ -29,7 +29,7 @@ public:
     GLint mMatrixUniform{0};
 };
 
-struct MaterialComponent
+class MaterialComponent
 {
 public:
     MaterialComponent();
@@ -56,6 +56,9 @@ public:
     GLint mLinearUniform{-1};
     GLint mQuadraticUniform{-1};
     GLint mPhongTextureUniform{-1};
+
+    void setupUniforms();
+
 
 };
 
@@ -94,6 +97,11 @@ public:
     gsl::Vector3D rightBottomFar;
     gsl::Vector3D leftTopFar;
     gsl::Vector3D rightTopFar;
+
+    gsl::Matrix4x4 mMatrix;
+    gsl::Matrix4x4 mYawMatrix;
+    gsl::Matrix4x4 mPitchMatrix;
+    gsl::Matrix4x4 mViewMatrix;
 };
 
 #endif // COMPONENTS_H

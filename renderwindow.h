@@ -11,6 +11,7 @@
 #include "constants.h"
 #include "soundmanager.h"
 #include "quadtree.h"
+#include "light.h"
 
 class QOpenGLContext;
 class Shader;
@@ -81,12 +82,15 @@ private:
 
     GLint mTextureUniform[3];
 
+
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     Camera* mCurrentCamera{nullptr};
-    Camera* mTestFrustumCamera{nullptr};
+    GameObject* mTestFrustumCamera{nullptr};
+
+    GameObject* mLightSource{nullptr};
 
 
     float mAspectratio{1.f};
