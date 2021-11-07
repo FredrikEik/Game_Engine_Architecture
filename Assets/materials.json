@@ -12,6 +12,12 @@
             "shader": "texture",
             "texture": "Hund.bmp", 
             "color": [0.2, 0.4, 0.4]
+        },
+        {
+            "name": "Phong",
+            "shader": "phong",
+            "texture": "Hund.bmp",
+            "color": [0.2, 0.4, 0.4]
         }
   ]
 }

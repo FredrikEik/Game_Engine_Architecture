@@ -328,7 +328,7 @@ void ResourceManager::setUpAllShaders()
     tempShader->mName = "PlainShader";
     mShaders.push_back(tempShader);
     std::string tempString;
-    tempString += "Plain shader program id: " + std::to_string(mShaders[0]->mProgram);
+    tempString += "Plain shader program id: " + std::to_string(mShaders.back()->mProgram);
     mLogger->logText(tempString);
     mShaders.back()->setupShader(false);
 
@@ -339,10 +339,21 @@ void ResourceManager::setUpAllShaders()
     tempShader->mName = "TextureShader";
     mShaders.push_back(tempShader);
     tempString.clear();
-    tempString += "Texture shader program id: " + std::to_string(mShaders[1]->mProgram);
+    tempString += "Texture shader program id: " + std::to_string(mShaders.back()->mProgram);
     mLogger->logText(tempString);
-    mShaders[1]->setupShader(true);
+    mShaders.back()->setupShader(true);
     mShaderMap.emplace("texture", 1);
+
+    tempShader = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    tempShader->mName = "PhongShader";
+    mShaders.push_back(tempShader);
+    tempString.clear();
+    tempString += "Phong shader program id: " + std::to_string(mShaders.back()->mProgram);
+    mLogger->logText(tempString);
+    mShaders.back()->setupShader(true, true);
+    mShaderMap.emplace("phong", 2);
+
 }
 
 MeshData ResourceManager::makeLineBox(std::string meshName)

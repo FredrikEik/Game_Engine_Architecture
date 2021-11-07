@@ -112,6 +112,8 @@ FORMS += \
     widgetmaterial.ui
 
 DISTFILES += \
+    Shaders/phongshader.frag \
+    Shaders/phongshader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainshader.frag \

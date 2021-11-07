@@ -75,7 +75,7 @@ void CoreEngine::setUpScene()
     temp->mName = "DogTriangle";
     temp->mMaterial = mResourceManager->getMaterial("Texture");
 
-    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    temp->mTransform->mMatrix.translate(5.f, 2.f, -2.f);
     //Adds sound to moving triangle:
     mResourceManager->addComponent("caravan_mono.wav", temp);
 
@@ -88,7 +88,7 @@ void CoreEngine::setUpScene()
     //terrain
     temp = mResourceManager->addObject("terrain");
     temp->mName = "Terrain";
-    temp->mMaterial = mResourceManager->getMaterial("Texture");
+    temp->mMaterial = mResourceManager->getMaterial("Phong");
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes:

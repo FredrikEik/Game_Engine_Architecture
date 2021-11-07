@@ -137,7 +137,7 @@ void RenderSystem::render()
         /************** LOD and Frustum culling stuff ***********************/
         //Do this early to avoid unnecessary work if mesh is not to be drawn
         gsl::Vector3D cameraPos = mEditorCamera->mPosition;
-        gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+//        gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
 
         if(mUseFrustumCulling && i > cullSafe) //don't cull editor objects
         {
@@ -172,6 +172,13 @@ void RenderSystem::render()
             {
                 //Now mMaterial component holds texture slot directly - probably should be changed
                 glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            }
+
+            //Testing Phong shader
+            if(tempShader->mName == "PhongShader")
+            {
+                //Send over camera position - should also send over a lot of other parameters about the light
+                glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
             }
 
             //send data to shader

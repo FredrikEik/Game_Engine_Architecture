@@ -10,12 +10,26 @@ public:
     // Constructor generates the shader on the fly
     ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
 
-    void setupShader(bool useTexture);
+    ///gets the uniforms from the shader
+    void setupShader(bool useTexture = false, bool useLight = false);
 
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
+
     GLint mTextureUniform{-1};
+
+    GLint mCameraPosition{-1};
+
+    GLint mLightPosition{-1};
+
+    GLint mLightColor{-1};
+    GLint mObjectColor{-1};
+
+    GLint mAmbientStrengt{-1};
+    GLint mLightStrengt{-1};
+    GLint mSpecularStrength{-1};
+    GLint mSpecularExponent{-1};
 
     ///OpenGL program ID for this shader
     GLuint mProgram;
