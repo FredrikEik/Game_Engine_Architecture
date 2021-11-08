@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
+    skybox.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     spawner.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    skybox.h \
     soundmanager.h \
     soundsource.h \
     spawner.h \

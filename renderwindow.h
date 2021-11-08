@@ -14,7 +14,7 @@
 #include "mousepicker.h"
 #include "spawner.h"
 #include "player.h"
-
+#include "skybox.h"
 
 class QOpenGLContext;
 class Shader;
@@ -125,6 +125,7 @@ private:
     SoundSource* mStereoSound;
     SoundSource* mPop;  
     class Spawner* MapSpawner;
+    class SkyBox* skyBox { nullptr };
 
     Input mInput;
     float mCameraSpeed{0.05f};

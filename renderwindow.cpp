@@ -161,6 +161,17 @@ void RenderWindow::init()
     //MapSpawner->SpawnRow();
     MapSpawner->SpawnRow(100);
     //MapSpawner->addObjectToEditor(object);
+
+    skyBox = new SkyBox();
+    skyBox->init();
+    skyBox->mName = "skybox";
+    ObjFactory->mGameObject.push_back(skyBox);
+    mMainWindow->addObjectToWorldList("SkyBox");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(100);
+    setScaleY(100);
+    setScaleZ(100);
+    ObjFactory->setOBJindex(-1);
 }
 
 // Called each frame - doing the rendering
@@ -200,6 +211,8 @@ void RenderWindow::render()
 //        //draw the object
 //        mVisualObjects[0]->draw();
 
+    skyBox->Update(mCurrentCamera->getPosition());
+
     unsigned int cullSafe;
     if(bPlayGame)
         cullSafe = 0; // original -1
@@ -219,7 +232,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
-            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0)
+            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
             {
                 if(frustumCulling(i))
                     continue;
