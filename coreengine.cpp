@@ -11,6 +11,7 @@
 #include <QtQml>
 #include <QJSEngine>
 #include <QFile>
+#include <QDebug>
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
@@ -79,6 +80,12 @@ void CoreEngine::readJSScene()
 
     //Load the script into script engine, filename is used to report bugs in the file
     engine.evaluate(contents, fileName);
+
+
+    //Read a variable value from the script file
+    QJSValue mString = engine.evaluate("myVariable");
+    qDebug() << mString.toString();
+
 }
 
 void CoreEngine::setUpScene()
