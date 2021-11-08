@@ -14,6 +14,7 @@ public:
     virtual void draw()=0;
 
     std::string mName;
+    int mTexture = 0;
 
 //    MeshComponent* MeshComp = nullptr;
     MeshComponent* getMeshComp(){return MeshComp;}

@@ -21,11 +21,13 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new Cube;
         willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
         willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
+        willCreateObject->mTexture = 2;
     }
 
     else if (objectName == "Triangle")
     {
         willCreateObject = new Triangle;
+        willCreateObject->mTexture = 1;
     }
 
     else if (objectName == "Goat")
@@ -42,7 +44,7 @@ void ObjectFactory::createObject(std::string objectName)
             storedMeshes.insert(std::pair("Goat", willCreateObject->getMeshComp()));
             qDebug() << "goat mesh saved";
         }
-
+        willCreateObject->mTexture = 3;
     }
     else
         return;

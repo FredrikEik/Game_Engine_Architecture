@@ -83,6 +83,8 @@ public:
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 
+    int mTextureIndex = 0;
+
 private slots:
     void render();
 

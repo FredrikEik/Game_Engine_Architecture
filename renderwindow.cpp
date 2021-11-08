@@ -85,7 +85,7 @@ void RenderWindow::init()
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
-    int textureUnits = 2;
+    int textureUnits = 5;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
     std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
@@ -96,12 +96,21 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("cobbleStone.bmp");
+    mTextures[3] = new Texture("whitefur.bmp");
+    mTextures[4] = new Texture("TOG.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -165,6 +174,7 @@ void RenderWindow::init()
     skyBox = new SkyBox();
     skyBox->init();
     skyBox->mName = "skybox";
+    skyBox->mTexture = 4;
     ObjFactory->mGameObject.push_back(skyBox);
     mMainWindow->addObjectToWorldList("SkyBox");
     ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
@@ -224,10 +234,16 @@ void RenderWindow::render()
     if(ObjFactory->mGameObject.size() > 0)
     {
         glUseProgram(mShaderPrograms[1]->getProgram());
-        glUniform1i(mTextureUniform, 1); // chooses texture slot 1
+        glUniform1i(mTextureUniform, 0); // chooses texture slot 0
 
         for (unsigned int i = 0; i < ObjFactory->mGameObject.size(); i++){
             //send data to shader
+            if (mTextureIndex != ObjFactory->mGameObject[i]->mTexture)
+            {
+                mTextureIndex = ObjFactory->mGameObject[i]->mTexture;
+                glUniform1i(mTextureUniform, mTextureIndex);
+            }
+
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
