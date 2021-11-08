@@ -24,7 +24,8 @@ public:
     //void readObj(std::string &filename, MeshComponent *MeshComp);
 //    void init(MeshComponent &MeshComp);
 
-    void savegame(std::vector<GameObject*> &objects);
+    void saveScene(std::vector<GameObject*> &objects);
+    void loadScene(std::vector<GameObject *> &objects,GameObject* &player, GameObject* &light);
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
 
 private:

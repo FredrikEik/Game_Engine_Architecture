@@ -56,7 +56,7 @@ void MainWindow::refreshList()
     {
         GameObjects.clear();
         GameObjects = mRenderWindow->getAllGameObject();
-
+        listWidget->clear();
         for(auto it : GameObjects)
         {
             new QListWidgetItem(tr((*it).name.c_str()), listWidget);
@@ -319,5 +319,19 @@ void MainWindow::on_actionGetCurrentRow_triggered()
 {
         qDebug() << "currentRow" << listWidget->currentRow();
         qDebug() << "objIndex: " << ObjectListIndex;
+}
+
+
+void MainWindow::on_saveScene_clicked()
+{
+    GameEngine::getInstance()->saveScene();
+}
+
+
+void MainWindow::on_loadScene_clicked()
+{
+    GameEngine::getInstance()->loadScene();
+    refreshList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 

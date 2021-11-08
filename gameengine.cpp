@@ -79,6 +79,7 @@ void GameEngine::SetUpScene()
 
 void GameEngine::SetUpObjects()
 {
+//    mResourceManager->loadScene(mRenderwindow->mGameObjects, mPlayer,mLight);
                                           //(gsl::MeshFilePath + "player.obj", gsl::TextureFilePath + "playerTexture")
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
     mPlayer->mTransformComp->mMatrix.setPosition(0,-1.8f,-8);
@@ -134,6 +135,7 @@ void GameEngine::SetUpObjects()
 
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
+
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
     tempGameObject->mTransformComp->mMatrix.setPosition(-1,-1,-5);
     tempGameObject->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
@@ -173,7 +175,7 @@ void GameEngine::SetUpObjects()
 
 
 
-    mResourceManager->savegame(mRenderwindow->mGameObjects);
+    //mResourceManager->saveScene(mRenderwindow->mGameObjects);
 
 
 
@@ -371,6 +373,16 @@ void GameEngine::rotateLight()
     static float rotate{0.f};
     mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
     rotate+=0.01f;
+}
+
+void GameEngine::saveScene()
+{
+    mResourceManager->saveScene(mRenderwindow->mGameObjects);
+}
+
+void GameEngine::loadScene()
+{
+    mResourceManager->loadScene(mRenderwindow->mGameObjects,mPlayer, mLight);
 }
 
 void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)

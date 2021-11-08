@@ -57,6 +57,8 @@ public:
     void rotateLight();
     
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
+    void saveScene();
+    void loadScene();
 private:
     //TODO InputHandler
 

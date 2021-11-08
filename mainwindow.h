@@ -70,6 +70,10 @@ private slots:
 
     void on_actionGetCurrentRow_triggered();
 
+    void on_saveScene_clicked();
+
+    void on_loadScene_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

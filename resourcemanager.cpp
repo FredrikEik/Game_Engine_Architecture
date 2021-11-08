@@ -9,6 +9,8 @@
 #include <vertex.h>
 #include "gameobject.h"
 #include "meshhandler.h"
+#include "constants.h"
+
 #include <QOpenGLFunctions>
 
 #include <QJsonObject>
@@ -116,7 +118,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     return tempGO;
 }
 
-void ResourceManager::savegame(std::vector<GameObject *> &objects)
+void ResourceManager::saveScene(std::vector<GameObject *> &objects)
 {
     if(mLevels.empty())
     {
@@ -143,7 +145,7 @@ void ResourceManager::savegame(std::vector<GameObject *> &objects)
             levelObjects["filepath"] = it->filepath.c_str();
             // transform
             levelObjects["positionx"] = double(it->mTransformComp->mMatrix.getPosition().x);
-            levelObjects["positionyx"] = double(it->mTransformComp->mMatrix.getPosition().y);
+            levelObjects["positiony"] = double(it->mTransformComp->mMatrix.getPosition().y);
             levelObjects["positionz"] = double(it->mTransformComp->mMatrix.getPosition().z);
 
             levelObjects["shader"] = int(it->mMaterialComp->mShaderProgram);
@@ -156,6 +158,88 @@ void ResourceManager::savegame(std::vector<GameObject *> &objects)
     coreJsonObject["levels"] = levelArray;
     saveFile.write(QJsonDocument(coreJsonObject).toJson());
     saveFile.close();
+}
+
+void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* &player, GameObject* &light)
+{
+    QFile loadFile(QStringLiteral("save.json"));
+
+    // open file
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        qWarning("Couldn't open save file.");
+    }
+    // levelarray
+    QByteArray saveData = loadFile.readAll();
+
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
+
+    // CoreObject
+    QJsonObject loadDocJsonObject = loadDoc.object();
+
+
+    if (loadDocJsonObject.contains("levels") && loadDocJsonObject["levels"].isArray())
+    {
+        QJsonArray levelArray = loadDocJsonObject["levels"].toArray();
+        mLevels.clear();
+        for(int levelindex = 0; levelindex < levelArray.size();levelindex++)
+        {
+            QJsonObject levelObjectsJsonObject = levelArray[levelindex].toObject();
+            QString levelname;
+
+            if (levelObjectsJsonObject.contains("levelname") && levelObjectsJsonObject["levelname"].isString())
+                levelname = levelObjectsJsonObject["levelname"].toString();
+
+            if (levelObjectsJsonObject.contains("objects") && levelObjectsJsonObject["objects"].isArray())
+            {
+                QJsonArray objectsArray = levelObjectsJsonObject["objects"].toArray();
+                objects.clear();
+
+                for(int objectindex = 0; objectindex < objectsArray.size();objectindex++)
+                {
+                    QJsonObject singleObject = objectsArray[objectindex].toObject();
+                    GameObject *gameObj {nullptr};
+                    float x = 0,y = 0,z = 0;
+
+                    if (singleObject.contains("filepath") && singleObject["filepath"].isString())
+                    {
+                        gameObj = CreateObject(singleObject["filepath"].toString().toStdString());
+
+                        //might not need this
+                        gameObj->filepath = singleObject["filepath"].toString().toStdString();
+
+                    }
+
+                    if (singleObject.contains("positionx") && singleObject["positionx"].isDouble())
+                        x = float(singleObject["positionx"].toDouble());
+
+                    if (singleObject.contains("positiony") && singleObject["positiony"].isDouble())
+                        y = float(singleObject["positiony"].toDouble());
+
+                    if (singleObject.contains("positionz") && singleObject["positionz"].isDouble())
+                        z = float(singleObject["positionz"].toDouble());
+
+                    gameObj->mTransformComp->mMatrix.setPosition(x,y,z);
+
+                    if (singleObject.contains("shader") && singleObject["shader"].isDouble())
+                    {
+                        //gameObj->mMaterialComp->mShaderProgram = gsl::Shaders(singleObject["shader"].toString().toInt());
+                        gameObj->mMaterialComp->mShaderProgram = singleObject["shader"].toInt();
+                    }
+
+                    if(objectindex == 0)
+                    {
+                        player = gameObj;
+                    }
+                    if(objectindex == 1)
+                        light = gameObj;
+
+                    objects.push_back(gameObj);
+                }
+                mLevels.push_back(std::pair<QString,std::vector<GameObject*>>(levelname,objects));
+            }
+        }
+    }
+    loadFile.close();
 }
 
 ResourceManager &ResourceManager::getInstance()

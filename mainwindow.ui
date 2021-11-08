@@ -70,6 +70,20 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="saveScene">
+        <property name="text">
+         <string>Save Scene</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="loadScene">
+        <property name="text">
+         <string>Load Scene</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
