@@ -57,6 +57,7 @@ SOURCES += main.cpp \
     ResourceManager/gameobjectmanager.cpp \
     ResourceManager/physicshandler.cpp \
     coreengine.cpp \
+    gameplaymechanics.cpp \
     gsl/vector4d.cpp \
     logger.cpp \
     pch.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
     ResourceManager/gameobjectmanager.h \
     altypes.h \
     coreengine.h \
+    gameplaymechanics.h \
     gsl/vector4d.h \
     logger.h \
     pch.h \
