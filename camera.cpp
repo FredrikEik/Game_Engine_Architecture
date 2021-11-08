@@ -20,6 +20,9 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     frustumComp->farPlaneLength  = 50.0f;
     frustumComp->nearPlaneLength = 10.0f;
 
+    aRatio = 4/3;
+    FOV = 90;
+
     farplaneX  = tan(fieldOfView)*frustumComp->farPlaneLength;
     farplaneY  = (tan(fieldOfView)*frustumComp->farPlaneLength)/aspectRatio;
     farplaneZ  = frustumComp->farPlaneLength;
@@ -125,6 +128,11 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
     getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
 
+    qDebug() << rightPlaneNormal;
+
+    updateForwardVector();
+    updateFrustumPos(FOV, aRatio);
+
 }
 
 
@@ -176,7 +184,7 @@ void Camera::update(float fieldOfView, float aspectRatio)
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
 
-    updateFrustumPos(40, 4/3);
+    updateFrustumPos(aRatio, FOV);
 
 }
 
@@ -261,7 +269,7 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     gsl::Vector3D tempVector;
     //rightplane vector = mRight rotated by FOV around camera up
     tempVector = mRight;
-    tempVector.axisAngleRotation(horisontalHalfAngle + 180, mUp);
+    tempVector.axisAngleRotation(-horisontalHalfAngle, mUp);
     rightPlaneNormal = tempVector.normalized();
 
     //leftPlane vector = mRight rotated by FOV+180 around camera up
@@ -279,8 +287,9 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     */
 
 
-    qDebug() << "Normals: ";
+    qDebug() << "RightplaneNormal: ";
     qDebug() << rightPlaneNormal;
+    qDebug() << "LeftplaneNormal: ";
     qDebug() << leftPlaneNormal;
 
     /*

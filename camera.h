@@ -41,6 +41,9 @@ public:
     MaterialComponent* getMaterialComponent(){return materialComp;}
     FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
 
+    float aRatio;
+    float FOV;
+
     float farplaneX;
     float farplaneY;
     float farplaneZ;

@@ -181,7 +181,6 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(45.0f, 4/3);
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-    mCurrentCamera->updateFrustumPos(45.0f, 4/3);
 
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
@@ -267,8 +266,7 @@ void RenderWindow::render()
     //Keyboard / mouse input
     handleInput();
 
-    mCurrentCamera->update(45.0f, 4/3);
-    mCurrentCamera->updateFrustumPos(45.0f, 4/3);
+    mCurrentCamera->update(mCurrentCamera->FOV, mCurrentCamera->aRatio);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
