@@ -234,16 +234,18 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 */
     //qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
     //qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
+    gsl::Matrix3x3 temp = frustumComp->mMatrix.toMatrix3();
 
-    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
-    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
-    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
-    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
+    nearPlaneTopRight    = (gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition());
+    nearPlaneTopLeft     = (gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition());
+    nearPlaneBottomLeft  = (gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition());
+    nearPlaneBottomRight = (gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition());
 
-    farPlaneTopRight     = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
-    farPlaneTopLeft      = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
-    farPlaneBottomLeft   = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
-    farPlaneBottomRight  = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
+    farPlaneTopRight     = (gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition());
+    farPlaneTopLeft      = (gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition());
+    farPlaneBottomLeft   = (gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition());
+    farPlaneBottomRight  = (gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition());
+
 
 
 
@@ -261,13 +263,14 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
                                              ,farPlaneBottomLeft - farPlaneBottomRight);
     //qDebug() << rightPlaneNormal;
     //qDebug() << leftPlaneNormal;
-    gsl::Matrix3x3 temp = frustumComp->mMatrix.toMatrix3();
+
     rightPlaneNormal = temp*rightPlaneNormal;
     leftPlaneNormal  = temp*leftPlaneNormal;
     topPlaneNormal = temp*topPlaneNormal;
     bottomPlaneNormal = temp*bottomPlaneNormal;
     nearPlaneNormal = temp*nearPlaneNormal;
     farPlaneNormal = temp*farPlaneNormal;
+
 /*
     float halfVheight = frustumComp->farPlaneLength * tanf(gsl::deg2rad(fieldOfView)); //calculate the lenght of the opposite
     float halfHwidth = halfVheight * (aspectRatio);

@@ -175,10 +175,9 @@ void RenderWindow::init()
     glDisable(GL_CULL_FACE);
     /*mTestFrustumCamera = new Camera(45.0f, 4/3);
     mTestFrustumCamera->init();
-    mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-    mTestFrustumCamera->updateFrustumPos(45.0f, 4/3);
+    //mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
 */
-    mCurrentCamera = new Camera(45.0f, 4/3);
+    mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
 
@@ -308,11 +307,11 @@ void RenderWindow::render()
 
             if(toggleFrustumCulling)
 			{
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->rightPlaneNormal - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
             if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
             {
-                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->leftPlaneNormal - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
                 if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                 /*{
