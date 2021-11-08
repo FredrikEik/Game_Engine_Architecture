@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "math.h"
+#include "matrix3x3.h"
 #include "math_constants.h"
 #include <QDebug>
 
@@ -234,15 +235,15 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     //qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
     //qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
 
-    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ);
-    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ);
-    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ);
-    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ);
+    nearPlaneTopRight    = gsl::Vector3D( nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
+    nearPlaneTopLeft     = gsl::Vector3D(-nearplaneX,  nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
+    nearPlaneBottomLeft  = gsl::Vector3D(-nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
+    nearPlaneBottomRight = gsl::Vector3D( nearplaneX, -nearplaneY, -nearplaneZ) + frustumComp->mMatrix.getPosition();
 
-    farPlaneTopRight     = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ);
-    farPlaneTopLeft      = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ);
-    farPlaneBottomLeft   = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ);
-    farPlaneBottomRight  = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ);
+    farPlaneTopRight     = gsl::Vector3D( farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
+    farPlaneTopLeft      = gsl::Vector3D(-farplaneX,  farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
+    farPlaneBottomLeft   = gsl::Vector3D(-farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
+    farPlaneBottomRight  = gsl::Vector3D( farplaneX, -farplaneY, -farplaneZ) + frustumComp->mMatrix.getPosition();
 
 
 
@@ -260,7 +261,14 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
                                              ,farPlaneBottomLeft - farPlaneBottomRight);
     //qDebug() << rightPlaneNormal;
     //qDebug() << leftPlaneNormal;
-
+    gsl::Matrix3x3 temp = frustumComp->mMatrix.toMatrix3();
+    rightPlaneNormal = temp*rightPlaneNormal;
+    leftPlaneNormal  = temp*leftPlaneNormal;
+    topPlaneNormal = temp*topPlaneNormal;
+    bottomPlaneNormal = temp*bottomPlaneNormal;
+    nearPlaneNormal = temp*nearPlaneNormal;
+    farPlaneNormal = temp*farPlaneNormal;
+/*
     float halfVheight = frustumComp->farPlaneLength * tanf(gsl::deg2rad(fieldOfView)); //calculate the lenght of the opposite
     float halfHwidth = halfVheight * (aspectRatio);
 
@@ -276,15 +284,15 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     tempVector = mRight;
     tempVector.axisAngleRotation(horisontalHalfAngle - 180, mUp);
     leftPlaneNormal = tempVector.normalized();
+*/
 
-    /*
     rightPlaneNormal.normalize();
     leftPlaneNormal.normalize();
     topPlaneNormal.normalize();
     bottomPlaneNormal.normalize();
     nearPlaneNormal.normalize();
     farPlaneNormal.normalize();
-    */
+
 
 
     qDebug() << "RightplaneNormal: ";
