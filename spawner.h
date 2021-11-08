@@ -16,6 +16,7 @@ public:
     //void addObjectToEditor(std::string object);
 
     void update(float z);
+    void resetSpawner();
 
 private:
     MainWindow *mMainWindow {nullptr};

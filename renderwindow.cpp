@@ -549,6 +549,10 @@ void RenderWindow::toggleGameMode()
             mPlayer->mMesh->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
             mPlayer->mMesh->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
         }
+        if (MapSpawner)
+        {
+            MapSpawner->resetSpawner();
+        }
         stopSound();
         mMainWindow->disableWorldObjects(false);
     }
