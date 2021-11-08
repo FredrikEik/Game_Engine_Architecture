@@ -34,6 +34,7 @@ RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 RenderSystem::~RenderSystem()
 {
+    qDebug() << "RenderSystem destructor";
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
@@ -102,6 +103,8 @@ void RenderSystem::init()
     //Getting pointer to ResourceManager
     mResourceManager = &ResourceManager::getInstance();
 
+    gsl::Matrix3x3 temp = mEditorCamera->mViewMatrix.toMatrix3();
+
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
 }
@@ -109,6 +112,7 @@ void RenderSystem::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderSystem::render()
 {
+    gsl::Matrix3x3 temp = mEditorCamera->mViewMatrix.toMatrix3();
     mTimeStart.restart();   //restart FPS clock
     mVerticesDrawn = 0;     //reset vertex counter
     mObjectsDrawn = 0;      //reset object counter
@@ -187,10 +191,11 @@ void RenderSystem::render()
                 glUniform1f(tempShader->mAmbientStrengt, mLight->mAmbientStrength);
                 glUniform3f(tempShader->mAmbientColor, mLight->mAmbientColor.x, mLight->mAmbientColor.y, mLight->mAmbientColor.z);
                 glUniform1f(tempShader->mLightStrengt, mLight->mLightStrenght);
-                glUniform1f(tempShader->mSpecularStrength, mLight->mSpecularStrength);
-                glUniform1i(tempShader->mSpecularExponent, mLight->mSpecularExponent);
-                glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x, mGameObjects[i]->mMaterial->mColor.y,
-                            mGameObjects[i]->mMaterial->mColor.z);
+                glUniform1f(tempShader->mSpecularStrength, mGameObjects[i]->mMaterial->mSpecularStrength);
+                glUniform1i(tempShader->mSpecularExponent, mGameObjects[i]->mMaterial->mSpecularExponent);
+                if(mGameObjects[i]->mMaterial->mUseColor)
+                    glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x,
+                                mGameObjects[i]->mMaterial->mColor.y, mGameObjects[i]->mMaterial->mColor.z);
             }
 
             //send data to shader

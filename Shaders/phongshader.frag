@@ -42,7 +42,7 @@ void main() {
     vec3 specular = spec * lightColor * specularStrength;
 
     vec3 lights = ambient + diffuse + specular;
-    vec4 result = vec4(lights, 1) * texture(textureSampler, UV); // * vec4(objectColor, 1);
+    vec4 result = vec4(lights, 1) * texture(textureSampler, UV) * vec4(objectColor, 1);
     fragmentColor = vec4(result);
 }
 

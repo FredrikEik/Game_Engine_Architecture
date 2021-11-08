@@ -33,10 +33,6 @@ private slots:
 
     void on_ambientStrength_valueChanged(double arg1);
 
-    void on_specularExponent_valueChanged(int arg1);
-
-    void on_specularStrenght_valueChanged(double arg1);
-
 private:
     Ui::WidgetLight *ui;
 };

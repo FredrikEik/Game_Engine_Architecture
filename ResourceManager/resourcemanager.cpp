@@ -239,7 +239,7 @@ void ResourceManager::setUpAllMaterials()
 
     //First material is hardcoded to be like this and called "Default"
     MaterialComponent defaultMaterial;
-    auto result = mShaderMap.find("plain");
+    auto result = mShaderMap.find("plainshader");
     if (result != mShaderMap.end()) {        //found!!!
         defaultMaterial.mShaderProgram = result->second;
     }
@@ -305,6 +305,22 @@ void ResourceManager::setUpAllMaterials()
                 if (colorArray[2].isDouble())
                     temp.mColor.z = colorArray[2].toDouble();
             }
+            if (materialObject.contains("useColor") && materialObject["useColor"].isBool())
+            {
+                bool useColor = materialObject["useColor"].toBool();
+                temp.mUseColor = useColor;
+            }
+            if (materialObject.contains("specularStrength") && materialObject["specularStrength"].isDouble())
+            {
+                float specularStrenght = materialObject["specularStrength"].toDouble();
+                temp.mSpecularStrength = specularStrenght;
+            }
+            if (materialObject.contains("specularExponent") && materialObject["specularExponent"].isDouble())
+            {
+                int specularExponent = materialObject["specularExponent"].toDouble();
+                temp.mSpecularExponent = specularExponent;
+            }
+
             mMaterials.push_back(temp); //this should performe a copy...
             mMaterialMap.emplace(name.toStdString(), materialIndex + 1);
         }
@@ -332,7 +348,7 @@ void ResourceManager::setUpAllShaders()
     mLogger->logText(tempString);
     mShaders.back()->setupShader(false);
 
-    mShaderMap.emplace("plain", 0);
+    mShaderMap.emplace("plainshader", 0);
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
@@ -342,7 +358,7 @@ void ResourceManager::setUpAllShaders()
     tempString += "Texture shader program id: " + std::to_string(mShaders.back()->mProgram);
     mLogger->logText(tempString);
     mShaders.back()->setupShader(true);
-    mShaderMap.emplace("texture", 1);
+    mShaderMap.emplace("textureshader", 1);
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "phongshader.frag").c_str());
@@ -352,7 +368,7 @@ void ResourceManager::setUpAllShaders()
     tempString += "Phong shader program id: " + std::to_string(mShaders.back()->mProgram);
     mLogger->logText(tempString);
     mShaders.back()->setupShader(true, true);
-    mShaderMap.emplace("phong", 2);
+    mShaderMap.emplace("phongshader", 2);
 
 }
 

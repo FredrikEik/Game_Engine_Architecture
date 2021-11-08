@@ -29,7 +29,10 @@ struct MaterialComponent
 {
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};  //this holds standard texture
-    gsl::Vector3D mColor{0.4f};
+    gsl::Vector3D mColor{1.0f}; //white
+    float mSpecularStrength{0.0f};
+    short mSpecularExponent{0};
+    bool mUseColor{false};
 };
 
 struct SoundListenerComponent
@@ -62,8 +65,6 @@ struct LightComponet
     float mLightStrenght{1.0f};
     gsl::Vector3D mAmbientColor{0.5f};
     float mAmbientStrength{0.5f};
-    float mSpecularStrength{0.3f};
-    short mSpecularExponent{32};
 };
 
 #endif // COMPONENTS_H

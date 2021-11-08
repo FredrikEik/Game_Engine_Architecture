@@ -95,14 +95,3 @@ void WidgetLight::on_ambientStrength_valueChanged(double arg1)
      mCurrentLight->mAmbientStrength = arg1;
 }
 
-void WidgetLight::on_specularExponent_valueChanged(int arg1)
-{
-    mCurrentLight->mSpecularExponent = arg1;
-}
-
-
-void WidgetLight::on_specularStrenght_valueChanged(double arg1)
-{
-    mCurrentLight->mSpecularStrength = arg1;
-}
-

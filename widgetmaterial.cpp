@@ -45,8 +45,9 @@ void WidgetMaterial::readMaterialData(int currentObject, RenderSystem *renderSys
     pal.setColor(QPalette::Window, tempColor);
     ui->colorLabel->setPalette(pal);
 
-//    ui->specularStrength->setValue(mCurrentMaterial->mSpecularStrenght);
-//    ui->specularExponent->setValue(mCurrentMaterial->mSpecularExponent);
+    ui->specularStrength->setValue(mCurrentMaterial->mSpecularStrength);
+    ui->specularExponent->setValue(mCurrentMaterial->mSpecularExponent);
+    ui->useColor->setChecked(mCurrentMaterial->mUseColor);
 }
 
 void WidgetMaterial::fillShaders()
@@ -66,12 +67,12 @@ void WidgetMaterial::fillTextures()
 
 void WidgetMaterial::on_specularStrength_valueChanged(double arg1)
 {
-//    mCurrentMaterial->mSpecularStrenght = arg1;
+    mCurrentMaterial->mSpecularStrength = arg1;
 }
 
 void WidgetMaterial::on_specularExponent_valueChanged(int arg1)
 {
-//    mCurrentMaterial->mSpecularExponent = arg1;
+    mCurrentMaterial->mSpecularExponent = arg1;
 }
 
 void WidgetMaterial::on_colorButton_clicked()
@@ -97,3 +98,9 @@ void WidgetMaterial::on_textureComboBox_currentIndexChanged(int index)
 //        mCurrentMaterial->mGLTextureID = ResourceManager::getInstance().mTexture[index]->mGLTextureID;
 //    }
 }
+
+void WidgetMaterial::on_useColor_toggled(bool checked)
+{
+    mCurrentMaterial->mUseColor = checked;
+}
+

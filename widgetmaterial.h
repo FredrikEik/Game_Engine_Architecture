@@ -33,6 +33,8 @@ private slots:
 
     void on_textureComboBox_currentIndexChanged(int index);
 
+    void on_useColor_toggled(bool checked);
+
 private:
     Ui::WidgetMaterial *ui{nullptr};
 };
