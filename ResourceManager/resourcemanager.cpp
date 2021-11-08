@@ -61,6 +61,8 @@ GameObject *ResourceManager::addObject(std::string meshName)
 
 }
 
+
+
 bool ResourceManager::addCollider(std::string ColliderType, GameObject* obj)
 {
 
@@ -99,6 +101,13 @@ bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
              }
 
     }
+
+}
+
+void ResourceManager::update(const float dt)
+{
+    mMeshHandler->updateParticles(dt);
+    //qDebug() << "suppose to work";
 
 }
 bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)

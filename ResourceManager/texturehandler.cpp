@@ -149,7 +149,7 @@ void TextureHandler::setTexture(Texture &textureIn)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-/*int TextureHandler::readCubeMap(const std::string &filename)
+int TextureHandler::readCubeMap(const std::string &filename)
 {
     //TODO: This is not finished yet - will probably mess up mTextures vector
     Texture &tempTexture = mTextures.back();
@@ -202,18 +202,18 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
                 "| using alpha:" << textureIn.mAlphaUsed
              << "| w:" << textureIn.mColumns << "|h:" << textureIn.mRows;
 }
-*/
 
-/*float TextureHandler::getHeightFromIndex(int i)
-//{
-//    if (i > mColumns * mRows || i < 0)
-//        return 0;
 
-//    int r = mBitmap[i*3];
-//    int g = mBitmap[i*3+1];
-//    int b = mBitmap[i*3+2];
+float TextureHandler::getHeightFromIndex(int i)
+{
+    if (i > mColumns * mRows || i < 0)
+        return 0;
 
-//    float height = (r+g+b)/3.f;
+    int r = mBitmap[i*3];
+    int g = mBitmap[i*3+1];
+    int b = mBitmap[i*3+2];
 
-//    return height;
-//}*/
+    float height = (r+g+b)/3.f;
+
+    return height;
+}

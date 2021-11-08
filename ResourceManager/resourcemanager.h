@@ -36,6 +36,8 @@ public:
 
     bool checkCollision( GameObject* obj1, GameObject * obj2);
 
+    void update(const float dt);
+
     
     //CollisionHandler *mCollisionHandler{nullptr};
     //bool checkCollision(MeshData &linebox1, MeshData &linebox2);

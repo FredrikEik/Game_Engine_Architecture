@@ -44,6 +44,7 @@ SOURCES += main.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     scene.cpp \
+    simpleparticles.cpp \
     soundsystem.cpp \
     soundsource.cpp \
     transformwidget.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     rendersystem.h \
     mainwindow.h \
     scene.h \
+    simpleparticles.h \
     soundsystem.h \
     soundsource.h \
     transformwidget.h \

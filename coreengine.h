@@ -35,7 +35,8 @@ public:
     GameObject *axis;
     GameObject *enemy;
     GameObject *boss;
-
+    GameObject* mTerrain;
+    GameObject* mParticles;
 
     MeshData linebox;
     MeshData linebox2;

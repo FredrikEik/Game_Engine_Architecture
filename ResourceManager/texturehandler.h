@@ -24,18 +24,24 @@ public:
 
     int makeTexture(const std::string &filename = "none", bool cubeMap = false);
 
-//    float getHeightFromIndex(int i);
+    float getHeightFromIndex(int i);
 
     std::map<std::string, unsigned int> mTextureMap;
     std::vector<Texture> mTextures;
+
+    int mColumns;
+    int mRows;
+
+    unsigned char *mBitmap;
+    unsigned char *mCubemap[6]{nullptr};
 
 private:
     int makeDefault();
     int makeBMP(const std::string &filename, bool cubeMap = false);
     int readBitmap(const std::string &filename);
     void setTexture(Texture &textureIn);
-//    int readCubeMap(const std::string &filename);
-//    void setCubemapTexture(Texture &textureIn);
+    int readCubeMap(const std::string &filename);
+    void setCubemapTexture(Texture &textureIn);
 
     /*************************************/
     //this is put inside this class to avoid spamming the main namespace

@@ -5,7 +5,8 @@
 #include "vertex.h"
 #include "constants.h"
 #include "math_constants.h"
-
+#include <random>
+#include <stdlib.h>
 MeshHandler::MeshHandler()
 {
     //This is a hack - to make sure my MeshComponens are not moved for now
@@ -36,6 +37,10 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
         if (meshName.find("cube") != std::string::npos)
             meshIndex = makeCube();
+        if (meshName.find("terrain") != std::string::npos)
+            meshIndex = makeTerrain();
+        if (meshName.find("particle") != std::string::npos)
+            meshIndex = makeParticle();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -268,6 +273,72 @@ int MeshHandler::makeTriangle()
     return mMeshes.size()-1;    //returns index to last object
 }
 
+
+int MeshHandler::makeParticle()
+{
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+    particles.resize(10);
+    for ( uint i = 0 ; i < particles.size() ; ++i )
+    {
+
+        particles[i].position +=  0.05f;
+        particles[i].lifetime =  1.0f ;
+
+        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+
+        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
+
+
+        //temp.mTransform->mMatrix.translateX(.5);
+
+        // fikse randompos i 3dvector klassen asap
+
+    }
+
+
+
+    temp.mDrawType = GL_TRIANGLES;
+    initMesh(temp, 0);
+    return mMeshes.size()-1;
+}
+
+void MeshHandler::updateParticles(const float dt)
+{
+
+    //qDebug() << "number of particles " << mMeshes.size();
+    //MeshData &temp = mMeshes.back();
+    for ( uint i = 0 ; i < particles.size() ; ++i )
+    {
+        // subtract from the particles lifetime
+        particles[i].lifetime -= dt;
+
+        // if the lifetime is below 0 respawn the particle
+        if ( particles[i].lifetime <= 0.0f )
+        {
+            particles[i].position +=  0.05f;
+            particles[i].lifetime =  1.0f ;
+        }
+
+        // move the particle down depending on the delta time
+        particles[i].position -= gsl::Vector3D( 0.0f ,.0f ,  dt*2.0f );
+
+        // update the position buffer
+        positions[i*4+0] = particles[i].position[0];
+        positions[i*4+1] = particles[i].position[1];
+        positions[i*4+2] = particles[i].position[2];
+        positions[i*4+3] = particles[i].lifetime;
+        //qDebug() << "number of particles " << mMeshes.size();
+
+        //mMeshes[i].mTransform->mMatrix.setPosition(1.f);
+    }
+}
+
+
 int MeshHandler::makeCube()
 {
     //should check if this object is new before this!
@@ -417,6 +488,378 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 
     return tempMesh;
 }
+
+int MeshHandler::Heightmap(TextureHandler *texture, float horSpaceing, float verSpacing, float height)
+{
+    mTexture = texture;
+    mHorisontalSpacing = horSpaceing;
+    mHeightSpacing = verSpacing;
+    mHeightPlacement = height;
+
+    mWidth = mTexture->mColumns;
+    mDepth = mTexture->mRows;
+
+    //makeTerrain();
+
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+
+    gsl::Vector3D normal{0.f, 1.f, 0.f};
+
+
+    float totalWidthMeters = (mWidth-1) * mHorisontalSpacing;
+        vertexXStart = -totalWidthMeters / 2;
+        vertexZStart = totalWidthMeters / 2;
+
+            for(int d{0}; d < mDepth; ++d)
+            {
+                for(int w{0}; w < mWidth; ++w)
+                {
+                    float heightFromBitmap; //= mTexture->getHeightFromIndex(w + d*mDepth) * mHeightSpacing / 50.f + mHeightPlacement;
+                    temp.mVertices[0].emplace_back(gsl::Vector3D{vertexXStart + (w*mHorisontalSpacing), heightFromBitmap,
+                                                     vertexZStart - (d*mHorisontalSpacing)}, normal, gsl::Vector2D{w / (mWidth-1.f), d / (mDepth-1.f)});
+                }
+            }
+            // The grid is drawn in quads with diagonal from lower left to upper right
+            //          _ _
+            //         |/|/|
+            //          - -
+            //         |/|/|
+            //          - -
+            for(int d = 0; d < mDepth-1; ++d)        //mDepth - 1 because we draw the last quad from mDepth - 1 and in negative z direction
+            {
+                for(int w = 0; w < mWidth-1; ++w)    //mWidth - 1 because we draw the last quad from mWidth - 1 and in positive x direction
+                {
+
+                   temp.mIndices[0].emplace_back(w + d * mWidth);                  // 0 + 0 * mWidth               = 0
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth + 1);     // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth);         // 0 + 0 * mWidth + mWidth      = mWidth
+                   temp.mIndices[0].emplace_back(w + d * mWidth);                  // 0 + 0 * mWidth               = 0
+                   temp.mIndices[0].emplace_back(w + d * mWidth + 1);              // 0 + 0 * mWidth + 1           = 1
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth + 1);     // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+                }
+            }
+            //temp.mTransform->mMatrix.identity();
+
+        /* calculate normals */
+
+
+    //not tested for non square textures:
+    if (mWidth != mDepth)
+    {
+        qDebug() << "Normals for ground not calclulated! Use square texture!";
+
+    }
+    unsigned short resolutionSquared= mWidth * mDepth;
+
+    //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+    //************************* Special case - bottom row has no vertices below **********************************
+    for(unsigned short i{0}; i < mWidth; i++)
+    {
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = temp.mVertices[0].at(i).get_xyz();
+
+        gsl::Vector3D first{};  //first vector will be crossed with
+        gsl::Vector3D second{}; //second vector - check right hand rule!
+
+        // a: first = north, second = west
+        //check if we are to the left, if so - skip:
+        //If first vertex - skip - already (0, 1, 0)
+        if(i != 0)
+        {
+            first = temp.mVertices[0].at(i+ mWidth).get_xyz() - center;
+            second = temp.mVertices[0].at(i-1).get_xyz() - center;
+            surroundingNormals[0] = first ^ second;
+        }
+        // b: first and second flips so we don't have to calculate a vector we already have!!
+        // second = north east, first = north
+        //check if we are at left, if so - skip
+        if( ((i + 1) % mWidth) == false)
+        {
+            second = temp.mVertices[0].at(i + mWidth + 1).get_xyz() - center;
+            //first = mVertices.at(i+ mWidth).get_xyz() - center;
+            surroundingNormals[1] = second ^ first;
+
+            //c: first = east, second = north east
+            first = temp.mVertices[0].at(i+1).get_xyz() - center;
+            //second = mVertices.at(i + mWidth + 1).get_xyz() - center;
+            surroundingNormals[2] = first ^ second;
+        }
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+        temp.mVertices[0].at(i).set_normal(result.x, result.y, result.z);
+    }
+
+    //calculate each of the triangles normal - omitting the outer vertices
+    //starting at mWidth + 1 == the second vertex on the second row
+    //ending each row at second to last vertex, to not hit the outer edge
+    //ending at resolutionSquared - mWidth - 2 == second to last vertex on the second to last row
+    for(unsigned short i = mWidth + 1 ; i < resolutionSquared - mWidth - 2; i++)
+    {
+        //if at the end of a row, jump to next
+        if( (i + 2) % mWidth == 0)
+        {   i += 2; //have to add 2 to get to the next correct index
+            continue;
+        }
+        //goes in a counter clockwise direction
+        //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = temp.mVertices[0].at(i).get_xyz();
+
+        //first and second vector flips each time because second
+        //is the "first" at the next calculation.
+        //We don't want to calculate again!
+        gsl::Vector3D first{};
+        gsl::Vector3D second{};
+
+        // a 0: first = north, second = west
+        //check if we are to the left, if so - skip:
+        first = temp.mVertices[0].at(i+ mWidth).get_xyz() - center;
+        second = temp.mVertices[0].at(i-1).get_xyz() - center;
+        surroundingNormals[0] = first ^ second;
+
+        // b 1: first = south west, second = west
+        first = temp.mVertices[0].at(i - mWidth - 1).get_xyz() - center;
+        surroundingNormals[1] = second ^ first;
+
+        //c 2: first = south west, second = south
+        second = temp.mVertices[0].at(i - mWidth).get_xyz() - center;
+        surroundingNormals[2] = first ^ second;
+
+        //d 3: second = south, first = east
+        //check if we are to the left, if so - skip
+        first = temp.mVertices[0].at(i + 1).get_xyz() - center;
+        surroundingNormals[3] = second ^ first;
+
+        //e 4: first = east, second = north east
+        second = temp.mVertices[0].at(i + mWidth +1).get_xyz() - center;
+        surroundingNormals[4] = first ^ second;
+
+        //f 5: second = north east, first = north
+        first = temp.mVertices[0].at(i + mWidth).get_xyz() - center;
+        surroundingNormals[5] = second ^ first;
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+        temp.mVertices[0].at(i).set_normal(result.x, result.y, result.z);
+
+
+        /*   ---------------------------  */
+
+    }
+
+    temp.mDrawType = GL_TRIANGLES;
+    initMesh(temp, 0);
+
+    return mMeshes.size()-1;
+}
+
+int MeshHandler::makeTerrain()
+{
+    mMeshes.emplace_back(MeshData());
+    MeshData &temp = mMeshes.back();
+
+    gsl::Vector3D normal{0.f, 1.f, 0.f};
+
+
+    float totalWidthMeters = (mWidth-1) * mHorisontalSpacing;
+        vertexXStart = -totalWidthMeters / 2;
+        vertexZStart = totalWidthMeters / 2;
+
+            for(int d{0}; d < mDepth; ++d)
+            {
+                for(int w{0}; w < mWidth; ++w)
+                {
+                    float heightFromBitmap; //= mTexture->getHeightFromIndex(w + d*mDepth) * mHeightSpacing / 50.f + mHeightPlacement;
+                    temp.mVertices[0].emplace_back(gsl::Vector3D{vertexXStart + (w*mHorisontalSpacing), heightFromBitmap,
+                                                     vertexZStart - (d*mHorisontalSpacing)}, normal, gsl::Vector2D{w / (mWidth-1.f), d / (mDepth-1.f)});
+                }
+            }
+            // The grid is drawn in quads with diagonal from lower left to upper right
+            //          _ _
+            //         |/|/|
+            //          - -
+            //         |/|/|
+            //          - -
+            for(int d = 0; d < mDepth-1; ++d)        //mDepth - 1 because we draw the last quad from mDepth - 1 and in negative z direction
+            {
+                for(int w = 0; w < mWidth-1; ++w)    //mWidth - 1 because we draw the last quad from mWidth - 1 and in positive x direction
+                {
+
+                   temp.mIndices[0].emplace_back(w + d * mWidth);                  // 0 + 0 * mWidth               = 0
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth + 1);     // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth);         // 0 + 0 * mWidth + mWidth      = mWidth
+                   temp.mIndices[0].emplace_back(w + d * mWidth);                  // 0 + 0 * mWidth               = 0
+                   temp.mIndices[0].emplace_back(w + d * mWidth + 1);              // 0 + 0 * mWidth + 1           = 1
+                   temp.mIndices[0].emplace_back(w + d * mWidth + mWidth + 1);     // 0 + 0 * mWidth + mWidth + 1  = mWidth + 1
+                }
+            }
+            //temp.mTransform->mMatrix.identity();
+
+        /* calculate normals */
+
+
+    //not tested for non square textures:
+    if (mWidth != mDepth)
+    {
+        qDebug() << "Normals for ground not calclulated! Use square texture!";
+
+    }
+    unsigned short resolutionSquared= mWidth * mDepth;
+
+    //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+    //************************* Special case - bottom row has no vertices below **********************************
+    for(unsigned short i{0}; i < mWidth; i++)
+    {
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = temp.mVertices[0].at(i).get_xyz();
+
+        gsl::Vector3D first{};  //first vector will be crossed with
+        gsl::Vector3D second{}; //second vector - check right hand rule!
+
+        // a: first = north, second = west
+        //check if we are to the left, if so - skip:
+        //If first vertex - skip - already (0, 1, 0)
+        if(i != 0)
+        {
+            first = temp.mVertices[0].at(i+ mWidth).get_xyz() - center;
+            second = temp.mVertices[0].at(i-1).get_xyz() - center;
+            surroundingNormals[0] = first ^ second;
+        }
+        // b: first and second flips so we don't have to calculate a vector we already have!!
+        // second = north east, first = north
+        //check if we are at left, if so - skip
+        if( ((i + 1) % mWidth) == false)
+        {
+            second = temp.mVertices[0].at(i + mWidth + 1).get_xyz() - center;
+            //first = mVertices.at(i+ mWidth).get_xyz() - center;
+            surroundingNormals[1] = second ^ first;
+
+            //c: first = east, second = north east
+            first = temp.mVertices[0].at(i+1).get_xyz() - center;
+            //second = mVertices.at(i + mWidth + 1).get_xyz() - center;
+            surroundingNormals[2] = first ^ second;
+        }
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+        temp.mVertices[0].at(i).set_normal(result.x, result.y, result.z);
+    }
+
+    //calculate each of the triangles normal - omitting the outer vertices
+    //starting at mWidth + 1 == the second vertex on the second row
+    //ending each row at second to last vertex, to not hit the outer edge
+    //ending at resolutionSquared - mWidth - 2 == second to last vertex on the second to last row
+    for(unsigned short i = mWidth + 1 ; i < resolutionSquared - mWidth - 2; i++)
+    {
+        //if at the end of a row, jump to next
+        if( (i + 2) % mWidth == 0)
+        {   i += 2; //have to add 2 to get to the next correct index
+            continue;
+        }
+        //goes in a counter clockwise direction
+        //terrain has the diagonal of the quads pointing up and right, like |/| (not |\|)
+
+        //temporary normals for each of the 6 surrounding triangles
+        gsl::Vector3D surroundingNormals[6]{};
+
+        //the center vertex that we calculate the normal for
+        gsl::Vector3D center = temp.mVertices[0].at(i).get_xyz();
+
+        //first and second vector flips each time because second
+        //is the "first" at the next calculation.
+        //We don't want to calculate again!
+        gsl::Vector3D first{};
+        gsl::Vector3D second{};
+
+        // a 0: first = north, second = west
+        //check if we are to the left, if so - skip:
+        first = temp.mVertices[0].at(i+ mWidth).get_xyz() - center;
+        second = temp.mVertices[0].at(i-1).get_xyz() - center;
+        surroundingNormals[0] = first ^ second;
+
+        // b 1: first = south west, second = west
+        first = temp.mVertices[0].at(i - mWidth - 1).get_xyz() - center;
+        surroundingNormals[1] = second ^ first;
+
+        //c 2: first = south west, second = south
+        second = temp.mVertices[0].at(i - mWidth).get_xyz() - center;
+        surroundingNormals[2] = first ^ second;
+
+        //d 3: second = south, first = east
+        //check if we are to the left, if so - skip
+        first = temp.mVertices[0].at(i + 1).get_xyz() - center;
+        surroundingNormals[3] = second ^ first;
+
+        //e 4: first = east, second = north east
+        second = temp.mVertices[0].at(i + mWidth +1).get_xyz() - center;
+        surroundingNormals[4] = first ^ second;
+
+        //f 5: second = north east, first = north
+        first = temp.mVertices[0].at(i + mWidth).get_xyz() - center;
+        surroundingNormals[5] = second ^ first;
+
+        //add all vectors and normalize
+        gsl::Vector3D result{};
+        for(int i{0}; i < 6; i++)
+        {
+            surroundingNormals[i].normalize();
+            result += surroundingNormals[i];
+        }
+        result.normalize();
+
+        //put the normal into the vertex
+        temp.mVertices[0].at(i).set_normal(result.x, result.y, result.z);
+
+
+        /*   ---------------------------  */
+
+    }
+
+    temp.mDrawType = GL_TRIANGLES;
+    initMesh(temp, 0);
+
+    return mMeshes.size()-1;
+}
+
+
 
 
 MeshData MeshHandler::makeLineBox(std::string meshName)

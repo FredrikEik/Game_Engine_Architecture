@@ -48,6 +48,8 @@ public:
 
    void updatePickedObject();
 
+       const float dt = 1.f;
+
 
 
 private:
@@ -96,6 +98,8 @@ private:
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+
+
 
    // MeshData linebox;
     MeshData linebox2;

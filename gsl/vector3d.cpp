@@ -57,6 +57,19 @@ namespace gsl
         return x*rhs.getX() + y*rhs.getY() + z*rhs.getZ();
     }
 
+    GLfloat &Vector3D::operator [](int Index)
+
+    {
+        assert(Index >= 0 && Index <= 2);
+
+        if (Index == 0)
+            return x;
+        else if (Index == 1)
+            return y;
+        else if (Index == 2)
+            return z;
+    }
+
     Vector3D Vector3D::operator-() const
     {
         return {-x, -y, -z};
@@ -172,6 +185,13 @@ namespace gsl
         y = dir.getY();
         z = dir.getZ();
     }
+
+//    Vector3D Vector3D::RandomNumber(Vector3D *v1, Vector3D *v2)
+//    {
+//        Vector3D *temp;
+
+
+//    }
 
     GLfloat *Vector3D::xP()
     {

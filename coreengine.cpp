@@ -102,7 +102,23 @@ void CoreEngine::setUpScene()
     boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
+    mTerrain = mResourceManager->addObject("terrain");
+    mTerrain->mTransform->mMatrix.translateZ(-100.f);
+    mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
+
+    for(float i = 0; i < 4; i += 0.1)
+    {
+
+        mParticles = mResourceManager->addObject("particle");
+        mParticles->mMaterial->mShaderProgram = 0;
+        mParticles->mMaterial->mTextureUnit = 0;
+        mParticles->mTransform->mMatrix.setPosition(1.f *i, 1.f, 1.f*i);
+        mRenderSystem->mGameObjects.push_back(mParticles);
+    }
+
+
+
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
     mGameCamera->mViewMatrix.rotateY(30.f);
@@ -146,6 +162,8 @@ void CoreEngine::updateScene()
     //TODO:
 
     updateCamera();
+
+   // mResourceManager->update(mRenderSystem->dt);
 
     if(getInstance()->mResourceManager->checkCollision(
     player, enemy))
