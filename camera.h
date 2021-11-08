@@ -35,7 +35,7 @@ public:
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
-
+    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}
     MaterialComponent* getMaterialComponent(){return materialComp;}
@@ -71,7 +71,7 @@ private:
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 
-    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
+
     float mPitch{0.f};
     float mYaw{0.f};
 

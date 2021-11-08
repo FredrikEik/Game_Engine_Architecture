@@ -117,8 +117,11 @@ void RenderWindow::init()
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
+    glActiveTexture(GL_TEXTURE0);
     mTextures[0] = new Texture();
+    glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
+    glActiveTexture(GL_TEXTURE2);
     mTextures[2] = new Texture("right.bmp",
                                "left.bmp",
                                "top.bmp",
@@ -128,11 +131,9 @@ void RenderWindow::init()
 
     //mTextures
     //Set the textures loaded to a texture unit
-    glActiveTexture(GL_TEXTURE0);
+
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
 
 
@@ -207,7 +208,7 @@ void RenderWindow::init()
 
     mCurrentCamera = new Camera(45.0f, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 2.f, 0.f));
     mCurrentCamera->updateFrustumPos(45.0f, 4/3);
     //***********************************************************
 
@@ -307,13 +308,14 @@ void RenderWindow::render()
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
+
+
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             if(shaderProgramIndex == 1)
             {
               glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-             //glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
             if(shaderProgramIndex == 2)
             {
@@ -326,6 +328,12 @@ void RenderWindow::render()
             if(!bPause)
             {
                 factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
+            }
+
+            if(factory->mGameObjects[i]->mObjectName == "Skybox") //Makes skybox follow player
+            {
+
+                factory->mGameObjects[i]->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
             }
 
             if(toggleFrustumCulling)

@@ -4,6 +4,7 @@
 #include "gameobject.h"
 
 
+
 class Skybox : public GameObject
 {
 public:
@@ -15,7 +16,6 @@ public:
     //void init(GLint matrixUniform[4]);
     void move(float x, float y, float z) override;
     void readFile(std::string filename);
-
 };
 
 #endif // SKYBOX_H

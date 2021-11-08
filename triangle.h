@@ -15,6 +15,7 @@ public:
     void init() override;
     void draw() override;
     void move(float x, float y, float z) override;
+
 };
 
 #endif // TRIANGLE_H

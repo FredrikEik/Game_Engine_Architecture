@@ -67,3 +67,4 @@ void Plane::draw()
     glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
+

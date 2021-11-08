@@ -27,7 +27,7 @@ void Skybox::init()//(GLint matrixUniform[4])
     initializeOpenGLFunctions();
 
     //mMaterial->setActiveShader(ShaderType::SKYBOX_SHADER);
-    //mMaterial->setActiveTextureSlot(3);
+    //mMaterial->setActiveTextureSlot(2);
     //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
@@ -218,5 +218,6 @@ void Skybox::draw()
 
 void Skybox::move(float x, float y, float z)
 {
-
+    getTransformComponent()->mMatrix.translate(x,y,z);
 }
+

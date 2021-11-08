@@ -67,3 +67,4 @@ void Sphere::draw()
     glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
+
