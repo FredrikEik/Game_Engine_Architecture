@@ -223,6 +223,8 @@ void RenderWindow::render()
 
     skyBox->Update(mCurrentCamera->getPosition());
 
+    MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
+
     unsigned int cullSafe;
     if(bPlayGame)
         cullSafe = 0; // original -1

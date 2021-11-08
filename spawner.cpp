@@ -15,6 +15,7 @@ void Spawner::SpawnRow(int rowLength)
     {
         //FLOOR OF MAP
         ObjSpawnFactory->createObject("Cube");
+        spawnedObjects.push_back(ObjSpawnFactory->mGameObject.back());
         SpawnedObject = ObjSpawnFactory->mGameObject.back();
         if(SpawnedObject)
         {
@@ -32,6 +33,7 @@ void Spawner::SpawnRow(int rowLength)
 
         //LEFT ROW OF MAP
         ObjSpawnFactory->createObject("Cube");
+        spawnedObjects.push_back(ObjSpawnFactory->mGameObject.back());
         SpawnedObject = ObjSpawnFactory->mGameObject.back();
         if(SpawnedObject)
         {
@@ -49,6 +51,7 @@ void Spawner::SpawnRow(int rowLength)
 
         //RIGHT ROW OF MAP
         ObjSpawnFactory->createObject("Cube");
+        spawnedObjects.push_back(ObjSpawnFactory->mGameObject.back());
         SpawnedObject = ObjSpawnFactory->mGameObject.back();
         if(SpawnedObject)
         {
@@ -133,3 +136,16 @@ void Spawner::SpawnRow(int rowLength)
         mMainWindow->addObjectToWorldList(object);
     }
 }*/
+
+void Spawner::update(float z)
+{
+    for (int i = 0; i < spawnedObjects.size(); i++)
+    {
+        if (spawnedObjects[i]->TransformComp->mMatrix.getPosition().z - 5 > z)
+        {
+            gsl::Vector3D temp = spawnedObjects[i]->TransformComp->mMatrix.getPosition();
+            spawnedObjects[i]->TransformComp->mMatrix.setPosition(temp.x, temp.y, temp.z - ((spawnedObjects.size()/3) * 5));
+            spawnedObjects[i]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, temp.z - ((spawnedObjects.size()/3) * 5));
+        }
+    }
+}

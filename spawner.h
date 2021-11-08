@@ -15,12 +15,13 @@ public:
     void SpawnRow(int rowLength);
     //void addObjectToEditor(std::string object);
 
-private:
+    void update(float z);
 
+private:
     MainWindow *mMainWindow {nullptr};
     ObjectFactory* ObjSpawnFactory;
     GameObject* SpawnedObject {nullptr};
-
+    std::vector<GameObject*> spawnedObjects;
 
 };
 
