@@ -122,9 +122,16 @@ void RenderWindow::init()
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "phongvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongfragment.frag").c_str());
+    qDebug() << "Phong shader program id: " << mShaderPrograms[2]->getProgram();
+
     
     setupPlainShader(0);
     setupTextureShader(1);
+    setupPhongShader(2);
+
     
     //********************** Making the object to be drawn **********************
     
@@ -135,7 +142,7 @@ void RenderWindow::init()
     ResSys->ResourceSystemInit(RenderSys);
     
     ///PURE ECS TEST
-    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
+    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),1,0,-1,GL_LINES);
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
     entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
@@ -150,7 +157,7 @@ void RenderWindow::init()
     {
         for(int j{0}; j < 30; j++)
         {
-            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),0,0);
+            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),2,1);
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
 
         }
@@ -175,10 +182,10 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
     
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
-    mSong->play();
+    mSong->pause();
     mMainWindow->updateViewPort();
     
     //physics code
@@ -186,10 +193,10 @@ void RenderWindow::init()
     //send in the necessary data to physics engine
     int eSize = (int)entities.size();
     for(int i = 0; i < eSize; i++){
-            if(meshCompVec[i]->entity == 3){
-                Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("bowlSurface.obj"));
-                break;
-            }
+        if(meshCompVec[i]->entity == 3){
+            Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("bowlSurface.obj"));
+            break;
+        }
     }
     
     
@@ -224,9 +231,11 @@ void RenderWindow::render()
 
 
 
+    int viewMatrix{-1};
+    int projectionMatrix{-1};
+    int modelMatrix{-1};
     
-    
-    
+
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++)
     {
@@ -235,9 +244,7 @@ void RenderWindow::render()
             frustumCulling(i);
 
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
-            int viewMatrix{-1};
-            int projectionMatrix{-1};
-            int modelMatrix{-1};
+
             if (MaterialCompVec[i]->mShaderProgram == 0)
             {
                 viewMatrix = vMatrixUniform;
@@ -251,6 +258,17 @@ void RenderWindow::render()
                 modelMatrix = mMatrixUniform1;
                 //Now mMaterial component holds texture slot directly - probably should be changed
                 glUniform1i(mTextureUniform, MaterialCompVec[i]->mTextureUnit);
+            }
+            else if (MaterialCompVec[i]->mShaderProgram == 2)
+            {
+
+                viewMatrix = mVmatrixUniform2;
+                projectionMatrix = mPmatrixUniform2;
+                modelMatrix = mMmatrixUniform2;
+                glUniform1f(mUsingTextureUniform, true); // turns on texture
+                glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos camera
+                glUniform3f(mLightPositionUniform, 20.0f, 20.0f, -20.0f); // pos lightsource?
+                glUniform1i(mTextureUniform2,  MaterialCompVec[i]->mTextureUnit);
             }
             if(meshCompVec[i]->LODEnabled){
                 //LOD SWITCHER
@@ -324,6 +342,8 @@ void RenderWindow::render()
 
     if(mCurrentCamera->mFrustum.isDrawable)
     {
+
+         glUseProgram(mShaderPrograms[0]->getProgram()); // using plain shader program
         meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
         gsl::Matrix4x4 temp(true);
         temp.translate(mCurrentCamera->Cam.mPosition);
@@ -332,11 +352,11 @@ void RenderWindow::render()
 
         initializeOpenGLFunctions();    //must call this every frame it seems...
 
-       glUniformMatrix4fv(vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-       glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-       glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
 
-       //draw the object
+        //draw the object
         glBindVertexArray( frustum->VAO );
         glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
         glBindVertexArray(0);
@@ -387,9 +407,29 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
+void RenderWindow::setupPhongShader(int index)
+{
+    mTextureUniform2 = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "uTexture" );
+    mUsingTextureUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "usingTextures" );
+
+    mMmatrixUniform2 = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "mMatrix" );
+    mVmatrixUniform2 = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "vMatrix" );
+    mPmatrixUniform2 = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "pMatrix" );
+
+    mLightColorUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "lightColor" );
+    mObjectColorUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "objectColor" );
+    mAmbientLightStrengthUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "ambientStrength" );
+    mLightPositionUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "lightPosition" );
+    mSpecularStrengthUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "specularStrength" );
+    mSpecularExponentUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "specularExponent" );
+    mLightPowerUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "lightStrength" );
+    mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "cameraPosition" );
+
+}
+
 void RenderWindow::RayCasting(QMouseEvent *event)
 {
-///https://antongerdelan.net/opengl/raycasting.html - source - + help from laila and synnøve
+    ///https://antongerdelan.net/opengl/raycasting.html - source - + help from laila and synnøve
     int mouseXPixel = event->pos().x();
     int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
 
@@ -435,69 +475,69 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
     int eSize = entities.size();
     float lenght = 0;
     // work out components of quadratic
-     for(int i = 0; i < eSize; i++)
-     {
-         //get position vector into qvec3d
-         QVector3D position;
-         position.setX( transformCompVec[i]->mMatrix.getPosition().getX());
-         position.setY( transformCompVec[i]->mMatrix.getPosition().getY());
-         position.setZ( transformCompVec[i]->mMatrix.getPosition().getZ());
-         //find collision radius for object
-         for(int j = 0; j < eSize; j++)
-         {
-             if(transformCompVec[i]->entity == meshCompVec[j]->entity)
-             {
-                 radiusOfcollider = meshCompVec[j]->collisionRadius;
-             }
-         }
+    for(int i = 0; i < eSize; i++)
+    {
+        //get position vector into qvec3d
+        QVector3D position;
+        position.setX( transformCompVec[i]->mMatrix.getPosition().getX());
+        position.setY( transformCompVec[i]->mMatrix.getPosition().getY());
+        position.setZ( transformCompVec[i]->mMatrix.getPosition().getZ());
+        //find collision radius for object
+        for(int j = 0; j < eSize; j++)
+        {
+            if(transformCompVec[i]->entity == meshCompVec[j]->entity)
+            {
+                radiusOfcollider = meshCompVec[j]->collisionRadius;
+            }
+        }
 
-         QVector3D v = QVector3D(position.x(), position.y(),position.z()) - CamPos;
-         lenght = v.length();
-         long double a = QVector3D::dotProduct(RayVec,RayVec);
-         long double b = 2.0 * QVector3D::dotProduct(v, RayVec);
-         long double c = QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider;
-         long double b_squared_minus_4ac = b * b + (-4.0) * a * c;
+        QVector3D v = QVector3D(position.x(), position.y(),position.z()) - CamPos;
+        lenght = v.length();
+        long double a = QVector3D::dotProduct(RayVec,RayVec);
+        long double b = 2.0 * QVector3D::dotProduct(v, RayVec);
+        long double c = QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider;
+        long double b_squared_minus_4ac = b * b + (-4.0) * a * c;
 
-         if (b_squared_minus_4ac == 0)
-         {
-             // One real root //colliding
-             //return true;
-             mMainWindow->setSelectedItem(transformCompVec[i]->entity);
-             collided = true;
-             entitySys->construcRay(RayVec,CamPos,lenght);
-             qDebug() <<"COL1"<<CamPos;
-             break;
-         }
-         else if (b_squared_minus_4ac > 0)
-         {
-             // Two real roots  //colliding
-             long double x1 = (-b - sqrt(b_squared_minus_4ac)) / (2.0 * a);
-             long double x2 = (-b + sqrt(b_squared_minus_4ac)) / (2.0 * a);
+        if (b_squared_minus_4ac == 0)
+        {
+            // One real root //colliding
+            //return true;
+            mMainWindow->setSelectedItem(transformCompVec[i]->entity);
+            collided = true;
+            entitySys->construcRay(RayVec,CamPos,lenght);
+            qDebug() <<"COL1"<<CamPos;
+            break;
+        }
+        else if (b_squared_minus_4ac > 0)
+        {
+            // Two real roots  //colliding
+            long double x1 = (-b - sqrt(b_squared_minus_4ac)) / (2.0 * a);
+            long double x2 = (-b + sqrt(b_squared_minus_4ac)) / (2.0 * a);
 
-             if (x1 >= 0.0 || x2 >= 0.0)
-             {
-                 mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
-                 collided = true;
-                 entitySys->construcRay(RayVec,CamPos,lenght);
-                 qDebug() <<"COL2"<<CamPos;
-                 break;
-             }
-             if (x1 < 0.0 || x2 >= 0.0)
-             {
+            if (x1 >= 0.0 || x2 >= 0.0)
+            {
+                mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
+                collided = true;
+                entitySys->construcRay(RayVec,CamPos,lenght);
+                qDebug() <<"COL2"<<CamPos;
+                break;
+            }
+            if (x1 < 0.0 || x2 >= 0.0)
+            {
                 mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
                 collided = true;
                 entitySys->construcRay(RayVec,CamPos,lenght);
                 qDebug() <<"COL3"<<CamPos;
                 break;
-             }
-         }
-     }
+            }
+        }
+    }
 
-     if(!collided)
-     {qDebug() <<"NO COLLISION";}
-     entitySys->construcRay(RayVec,CamPos,lenght);
-        // No real roots //NOT colliding
-        //return false;
+    if(!collided)
+    {qDebug() <<"NO COLLISION";}
+    entitySys->construcRay(RayVec,CamPos,lenght);
+    // No real roots //NOT colliding
+    //return false;
 
 }
 

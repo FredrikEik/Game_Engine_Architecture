@@ -70,6 +70,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/phongfragment.frag \
+    Shaders/phongvertex.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \

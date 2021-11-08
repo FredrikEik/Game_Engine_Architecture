@@ -106,6 +106,25 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    //Phong Shader Variables
+    void setupPhongShader(int index);
+    GLint mTextureUniform2{-1};
+
+    GLint mMmatrixUniform2{-1};
+    GLint mVmatrixUniform2{-1};
+    GLint mPmatrixUniform2{-1};
+
+    //Light Shader Variables
+    GLint mLightColorUniform{-1};
+    GLint mObjectColorUniform{-1};
+    GLint mAmbientLightStrengthUniform{-1};
+    GLint mLightPositionUniform{-1};
+    GLint mCameraPositionUniform{-1};
+    GLint mSpecularStrengthUniform{-1};
+    GLint mSpecularExponentUniform{-1};
+    GLint mLightPowerUniform{-1};
+    GLint mUsingTextureUniform{-1};
+
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
