@@ -49,7 +49,7 @@ MainWindow::~MainWindow()
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
-    QSurfaceFormat format;
+
 
     //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this - sorry!)
     //you can try other versions, but then have to update RenderWindow and Shader
@@ -225,7 +225,7 @@ void MainWindow::on_PlayPause_clicked(bool checked)
     {
         ui->PlayPause->setText("Play");
     }
-    mRenderWindow->playPausebutton();
+    mRenderWindow->playPausebutton(format);
 }
 
 void MainWindow::on_toggleFrustumCulling_clicked(bool checked)

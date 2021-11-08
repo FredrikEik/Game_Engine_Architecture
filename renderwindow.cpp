@@ -369,6 +369,7 @@ void RenderWindow::render()
 
                 //driver å må lage noe hjelpe objekt.
 
+            hjelpeObjektMesh = new MeshComponent;
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
             hjelpeObjektMesh->mDrawType = GL_LINES;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
@@ -379,11 +380,14 @@ void RenderWindow::render()
             hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
+            if (tempScale.x > 50 || tempScale.y > 50 || tempScale.z > 50 ){
+
+                hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
 
 
-                    //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+            }
 
-
+                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
 
 
@@ -529,7 +533,7 @@ void RenderWindow::createObjectbutton(std::string objectName)
       mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
-void RenderWindow::playPausebutton()
+void RenderWindow::playPausebutton(const QSurfaceFormat &format)
 {
     bPause = !bPause;
 
@@ -538,11 +542,35 @@ void RenderWindow::playPausebutton()
     if(bPause)
     {
         mVideoGameLand->stop();
+        reset(format);
     }
     else
     {
-        mVideoGameLand->play();
+                mVideoGameLand->play();
+
+        if (mIndexToPickedObject > -1){
+        hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
+        hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
+        hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+        mIndexToPickedObject = -1;
+        }
+
+
     }
+}
+
+void RenderWindow::reset(const QSurfaceFormat &format)
+{
+//    factory->mGameObjects.clear();
+//    mRenderTimer->stop();
+
+
+//    //Make the gameloop timer:
+//    mRenderTimer = new QTimer(this);
+
+//    mMainWindow->init();
+
+//    mRenderTimer->start(16);    //starts the timer
 }
 
 
@@ -647,10 +675,10 @@ void RenderWindow::spawnHelpObject()
 
 }
 
-void RenderWindow::moveHelpObjectToSelected()
-{
+//void RenderWindow::moveHelpObjectToSelected()
+//{
 
-}
+//}
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
@@ -795,6 +823,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_O)
     {
+    }
+    if(event->key() == Qt::Key_R)
+    {
+         reset(format());
     }
 }
 

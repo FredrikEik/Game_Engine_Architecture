@@ -27,6 +27,10 @@ public:
 
     void selectObjectByIndex(int indexIn);
 
+    void init();
+
+    QSurfaceFormat format;
+
 private slots:
     void on_pushButton_toggled(bool checked);
 
@@ -41,7 +45,6 @@ private slots:
     void on_toggleFrustumCulling_clicked(bool checked);
 
 private:
-    void init();
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};
 

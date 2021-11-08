@@ -41,7 +41,8 @@ public:
     void cancelPickedObject();
 
     void createObjectbutton(std::string objectName);
-    void playPausebutton();
+    void playPausebutton(const QSurfaceFormat &format);
+    void reset(const QSurfaceFormat &format);
     bool bPause = true;
 
     Factory *getFactory(){return factory;};

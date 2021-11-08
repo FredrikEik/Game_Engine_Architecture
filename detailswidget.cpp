@@ -102,15 +102,13 @@ void DetailsWidget::on_DoubleSpinBoxXRotation_valueChanged(double arg1)
 
 void DetailsWidget::on_DoubleSpinBoxYRotation_valueChanged(double arg1)
 {
-    //mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.rotateY(-rotation.y);
     rotation.y = ui->DoubleSpinBoxYRotation->value();
     setRotation();
 }
 
 
 void DetailsWidget::on_DoubleSpinBoxZRotation_valueChanged(double arg1)
-{
-    //mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.rotateZ(-rotation.z);
+{ 
     rotation.z = ui->DoubleSpinBoxZRotation->value();
     setRotation();
 }
