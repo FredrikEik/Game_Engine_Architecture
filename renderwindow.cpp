@@ -644,7 +644,7 @@ void RenderWindow::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(freeFly)
+    if(editorMode)
     {
     if(mInput.RMB) //Sett in character movement HER!
     {
@@ -662,7 +662,7 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
     }
-    else if(!freeFly)
+    else if(!editorMode)
     {
         //FREE FLY
         if(mInput.W)
@@ -930,7 +930,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QCursor c = mMainWindow->cursor();
-    if (freeFly)
+    if (editorMode)
     {
 
     if (mInput.RMB)
@@ -949,7 +949,7 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     c.setShape(Qt::ArrowCursor);
     setCursor(c);
     }
-    else if(!freeFly) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
+    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
     {
             QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
                                 mMainWindow->y() + mMainWindow->height() / 2);

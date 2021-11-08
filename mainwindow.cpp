@@ -219,14 +219,14 @@ void MainWindow::on_PlayPause_clicked(bool checked)
 {
     if(checked)
     {
-        ui->PlayPause->setText("Play (TAB)");
-        mRenderWindow->freeFly = true;
+        ui->PlayPause->setText("Editor Mode On (TAB)");
+        mRenderWindow->editorMode = true;
         mRenderWindow->bPause = false;
     }
     else if (!checked)
     {
-        ui->PlayPause->setText("Pause (TAB)");
-        mRenderWindow->freeFly = false;
+        ui->PlayPause->setText("Playing (TAB)");
+        mRenderWindow->editorMode = false;
         mRenderWindow->bPause = true;
     }
     mRenderWindow->playPausebutton();

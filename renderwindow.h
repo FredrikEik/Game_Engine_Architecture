@@ -43,7 +43,7 @@ public:
     void createObjectbutton(std::string objectName);
     void playPausebutton();
     bool bPause = true;
-    bool freeFly = true;
+    bool editorMode = true;
     Factory *getFactory(){return factory;};
 
     SoundSource* mClick{};
