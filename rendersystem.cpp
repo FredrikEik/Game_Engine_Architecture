@@ -8,7 +8,8 @@
 #include <QDebug>
 
 #include <iostream>
-
+#include <cstdlib>
+#include <ctime>
 #include "shaderhandler.h"
 #include "mainwindow.h"
 #include "gameobject.h"
@@ -250,15 +251,36 @@ void RenderSystem::render()
 //            glDrawElements(circle2.mDrawType, circle2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
     //    }
-        glBindVertexArray(0);
 
+        srand( (float)time( NULL ) );
         if(CoreEngine::getInstance()->isPlaying == true)
+        {
             CoreEngine::getInstance()->updateScene();
 
+        }
+            for(unsigned int i{0}; i < mParticles.size(); i++)
+           {
+
+            glUseProgram(mShaderPrograms[mParticles[i]->mMaterial->mShaderProgram]->getProgram() );
+
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[i]->mTransform->mMatrix.constData());
+
+            glBindVertexArray( mParticles[i]->mMesh->mVAO[0] );
+            glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
+            mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
+            mParticlesDrawn ++;
+            if(CoreEngine::getInstance()->isPlaying == true)
+            {
+            mParticles[i]->mTransform->mMatrix.translate((float) rand()/(RAND_MAX / 1 ),(float) rand()/(RAND_MAX / 1),(float) rand()/(RAND_MAX / 1 ));
+            }
+
+        }
 
 
+        glBindVertexArray(0);
     }
-
 
 
 
@@ -344,7 +366,8 @@ void RenderSystem::calculateFramerate()
                                                   QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms  |  " +
                                                   "FPS (approximated): " + QString::number(1E9 / nsecElapsed, 'g', 5) +
                                                   "  |  Objects drawn: " + QString::number(mObjectsDrawn) +
-                                                  "  |  Vertices drawn: " + QString::number(mVerticesDrawn));                    ;
+                                                  "  |  Vertices drawn: " + QString::number(mVerticesDrawn) +
+                                                  "  |  Particles drawn: " + QString::number(mParticlesDrawn));                    ;
             frameCount = 0;     //reset to show a new message in 60 frames
         }
     }

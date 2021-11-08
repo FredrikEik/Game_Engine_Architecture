@@ -6,6 +6,10 @@
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
+#include <random>
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
@@ -106,15 +110,18 @@ void CoreEngine::setUpScene()
     mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
+    srand( (unsigned)time( NULL ) );
 
-    for(float i = 0; i < 4; i += 0.1)
+
+    for(float i = 0; i < 1; i += 0.005)
     {
 
-        mParticles = mResourceManager->addObject("particle");
-        mParticles->mMaterial->mShaderProgram = 0;
-        mParticles->mMaterial->mTextureUnit = 0;
-        mParticles->mTransform->mMatrix.setPosition(1.f *i, 1.f, 1.f*i);
-        mRenderSystem->mGameObjects.push_back(mParticles);
+        Particles = mResourceManager->addObject("particle");
+        Particles->mMaterial->mShaderProgram = 0;
+        Particles->mMaterial->mTextureUnit = 0;
+        Particles->mTransform->mMatrix.scale(.05);
+        Particles->mTransform->mMatrix.setPosition(1,1,1);
+        mRenderSystem->mParticles.push_back(Particles);
     }
 
 
@@ -160,7 +167,7 @@ void CoreEngine::updateCamera()
 void CoreEngine::updateScene()
 {
     //TODO:
-
+    //mParticles->move(0,1,0);
     updateCamera();
 
    // mResourceManager->update(mRenderSystem->dt);

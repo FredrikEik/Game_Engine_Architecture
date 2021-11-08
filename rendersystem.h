@@ -37,6 +37,7 @@ public:
 
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
+    std::vector<GameObject*> mParticles;
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
@@ -87,6 +88,7 @@ private:
 
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
+    int mParticlesDrawn{0};
 
     float mFOVangle{45};
 
