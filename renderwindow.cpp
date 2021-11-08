@@ -6,6 +6,9 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -31,6 +34,7 @@
 #include "vector3.h"
 #include "quadtree.cpp"
 #include "vector4d.h"
+#include "level.h"
 #include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -164,30 +168,10 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);*/
 
-    //********************** Making the object to be drawn **********************
+    //********************** Saving meshes to be drawn **********************
 
-    //factory->createObject("Plane");
-    //factory->createObject("Triangle");
-    //factory->createObject("Cube");
-    //factory->createObject("MarioCube");
-
-    /*
-    GameObject *marioCube = new MarioCube();
-    marioCube->init();
-    mGameObjects.push_back(marioCube);
-
-    GameObject *plane = new Plane();
-    plane->init();
-    mGameObjects.push_back(plane);
-
-    GameObject *cube = new Cube();
-    cube->init();
-    mGameObjects.push_back(cube);
-
-    GameObject *triangle = new Triangle();
-    triangle->init();
-    mGameObjects.push_back(triangle);
-    */
+    factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
+    factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
 
 
 
@@ -253,15 +237,39 @@ void RenderWindow::init()
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
 
+/*
+GameObject *temp=nullptr;
+    for(int i{0}; i < 50; i++)
+    {
+        for(int j{0}; j < 10; j++)
+        {
+            temp = factory->createObject("Cube");
+            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+            //TODO: Scaling have to be made easier and more automatic than this!
+        }
+    }
+    */
 
+    level.loadLevel("../GEA2021/Saves/testLevel.json");
 
-
-
-    //**********************************************************
-
-    //megatemp
-
-
+    //Save level test
+    /*
+    std::multimap<std::string, struct SpawnSettings> objectMap;
+    for(int i = 0; i < factory->mGameObjects.size(); i++)
+    {
+        SpawnSettings settings;
+        std::string objectType = factory->mGameObjects[i]->mObjectType;
+        settings.initialPos =  gsl::Vector3D{0,0,0};//factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
+        settings.initialScale = gsl::Vector3D{1,1,1};
+        settings.initialRot = gsl::Vector3D{0,0,0};
+        //gsl::Vector3D scale = t.mMatrix.getScale();
+        //gsl::Vector3D rot = t.mMatrix.getRotator();
+        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+    }
+    level.saveLevelAs("savedLevel", objectMap);
+    */
+    factory->openLevel(level);
 
     factory->createObject("Skybox");
 GameObject *temp=nullptr;
@@ -274,9 +282,7 @@ GameObject *temp=nullptr;
                 temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
 
-            }
-        }
-            mMainWindow->updateOutliner(factory->mGameObjects);
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 // Called each frame - doing the rendering
@@ -535,12 +541,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
-    if(objectName == "MarioCube" || objectName == "Sphere")
-    {
-    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
-    }
     GameObject* newObject = factory->createObject(objectName);
-
     gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
     gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
     uint32_t id = newObject->ID;

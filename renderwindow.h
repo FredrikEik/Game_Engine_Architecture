@@ -5,8 +5,10 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QJSEngine>
 #include "gameobject.h"
 #include "factory.h"
+#include "level.h"
 #include "input.h"
 #include "constants.h"
 #include "soundmanager.h"
@@ -49,6 +51,11 @@ public:
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
     GameObject* skybox;
+
+    //Javascript engine
+    QJSEngine engine;
+
+    Level level;
 
 
 private slots:

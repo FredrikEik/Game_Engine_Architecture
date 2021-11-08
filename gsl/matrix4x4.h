@@ -29,6 +29,9 @@ public:
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
     gsl::Vector3D getPosition();
 
+    gsl::Vector3D getScale();
+    gsl::Vector3D getRotation();
+
     //Rotate using EulerMatrix
     void rotateX(GLfloat degrees = 0.f);
     void rotateY(GLfloat degrees = 0.f);
@@ -63,6 +66,7 @@ public:
     GLfloat operator()(const int &y, const int &x) const;
 
     Matrix4x4 operator*(const Matrix4x4 &other);
+
 
     friend std::ostream& operator<<(std::ostream &output, const Matrix4x4 &mIn)
     {

@@ -1,0 +1,77 @@
+{
+    "Objects":
+    [
+        {
+            "objectType" : "Cube",
+            "position" : [0,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "position" : [0,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Cube",
+            "position" : [1,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "position" : [1,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Cube",
+            "position" : [2,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "position" : [0,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Cube",
+            "position" : [2,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "position" : [1,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Cube",
+            "position" : [2,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Triangle",
+            "position" : [0,1.5,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "Plane",
+            "position" : [0,1.5,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        },
+        {
+            "objectType" : "MarioCube",
+            "position" : [1,1.5,4],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
+        }
+    ]
+}
