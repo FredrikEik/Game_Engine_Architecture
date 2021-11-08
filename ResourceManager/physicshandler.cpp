@@ -1,11 +1,9 @@
 ﻿#include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
-#include "meshhandler.h"
 
 PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
-    mMeshHandler = new MeshHandler();
     mLogger = Logger::getInstance();
 }
 
@@ -51,9 +49,6 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
     //So far this works, but struggeling to "translate" variables into ones i can use.
 
-//    mMeshes.emplace_back(MeshData());
-//    MeshData &groundObjectVerts = mMeshes.back();
-
 
 //Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
@@ -69,11 +64,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 //Get the vertices of the trianglesurface
     std::vector<gsl::Vector3D*> triangleVertices;
 
-    int meshIndex = mMeshHandler->makeMesh("TriangleSurface");
-
 //    for (int i = 0; i < triangleVertices.size(); i++)
 //    {
-         mMeshHandler->mMeshes.at(meshIndex).mVertices;
 
         //triangleVertices.push_back(groundObject.mVertices[i].data()->getXYZ());
         //qDebug() << mMeshHandler->mMeshes.at(meshIndex).mVertices;
