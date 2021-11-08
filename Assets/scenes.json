@@ -1,0 +1,107 @@
+{
+    "levels": [
+        {
+            "levelname": "level1",
+            "objects": [
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/player.obj",
+                    "positionx": 0,
+                    "positiony": -1.7999999523162842,
+                    "positionz": -8,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/light.obj",
+                    "positionx": -18.87636375427246,
+                    "positiony": 3,
+                    "positionz": -12.51446533203125,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/cacodemon2.obj",
+                    "positionx": 5,
+                    "positiony": 0,
+                    "positionz": -7,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/cube.obj",
+                    "positionx": -1,
+                    "positiony": -1,
+                    "positionz": -5,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/cube.obj",
+                    "positionx": -3,
+                    "positiony": -1,
+                    "positionz": -5,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/sphere.obj",
+                    "positionx": 14,
+                    "positiony": 7,
+                    "positionz": -27,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/pyramid.obj",
+                    "positionx": -1,
+                    "positiony": 0.5,
+                    "positionz": -5,
+                    "shader": 0
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/sphere.obj",
+                    "positionx": -5,
+                    "positiony": 2.5,
+                    "positionz": 0,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": -12,
+                    "positiony": 0.5,
+                    "positionz": -13,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": 3,
+                    "positiony": -0.5,
+                    "positionz": -3,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 2.5,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/pyramid.obj",
+                    "positionx": 0,
+                    "positiony": -3.5,
+                    "positionz": 0,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": 0.5,
+                    "positiony": 0.20000000298023224,
+                    "positionz": -10.699999809265137,
+                    "shader": 2
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": -8.5,
+                    "positiony": 3.5999999046325684,
+                    "positionz": -16.899999618530273,
+                    "shader": 2
+                }
+            ]
+        }
+    ]
+}

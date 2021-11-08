@@ -124,7 +124,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects)
     {
         mLevels.push_back(std::pair<QString,std::vector<GameObject*>>("level1",objects));
     }
-    QFile saveFile(QStringLiteral("save.json"));
+    QFile saveFile(QString((gsl::AssetFilePath + "scenes.json").c_str()));
 
     // open file
     if (!saveFile.open(QIODevice::WriteOnly)) {
@@ -162,7 +162,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects)
 
 void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* &player, GameObject* &light)
 {
-    QFile loadFile(QStringLiteral("save.json"));
+    QFile loadFile(QString((gsl::AssetFilePath + "scenes.json").c_str()));
 
     // open file
     if (!loadFile.open(QIODevice::ReadOnly)) {

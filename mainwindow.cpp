@@ -37,6 +37,7 @@ void MainWindow::initList()
             new QListWidgetItem(tr((*it).name.c_str()), listWidget);
         }
     }
+    listWidget->setCurrentRow(0);
 
 }
 
@@ -56,11 +57,21 @@ void MainWindow::refreshList()
     {
         GameObjects.clear();
         GameObjects = mRenderWindow->getAllGameObject();
-        listWidget->clear();
+        //listWidget->setCurrentRow(-1);
+        for (int i = GameObjects.size(); i>0; i--) {
+            listWidget->takeItem(i);
+        }
+        static bool once {true};
         for(auto it : GameObjects)
         {
+            if(once)
+            {
+                once = false;
+                continue;
+            }
             new QListWidgetItem(tr((*it).name.c_str()), listWidget);
         }
+        once = true;
     }
 }
 
@@ -303,6 +314,11 @@ void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 
 void MainWindow::on_actionDelete_Selected_triggered()
 {
+    if(ObjectListIndex == 0)
+    {
+        qDebug() << "You can not delete the player!";
+        return;
+    }
     bCurrentlyDeleting = true;
     mRenderWindow->deleteGameObjectAt(ObjectListIndex);
     GameObjects.erase(GameObjects.begin() + ObjectListIndex);
@@ -332,6 +348,6 @@ void MainWindow::on_loadScene_clicked()
 {
     GameEngine::getInstance()->loadScene();
     refreshList();
-    listWidget->setCurrentRow(GameObjects.size()-1);
+    listWidget->setCurrentRow(0);
 }
 
