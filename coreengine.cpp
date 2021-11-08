@@ -82,7 +82,7 @@ void CoreEngine::setUpScene()
     enemy->mMaterial->mShaderProgram = 1;
     enemy->mMaterial->mTextureUnit = 2;
     enemy->mTransform->mMatrix.rotateY(180.f);
-    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
+    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
     enemy->mTransform->mMatrix.scale(0.5f);
 
     tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
@@ -116,7 +116,11 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
 
+
     projectile = mResourceManager->addObject("projectile");
+    projectile->mTransform->mMatrix.rotateY(180.f);
+    projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
+    mResourceManager->addCollider("sphere", projectile);
     //mRenderSystem->mGameObjects.push_back(projectile);
 
 
@@ -186,7 +190,7 @@ void CoreEngine::updateScene()
     if(!enemy->mCollider->objectsHasCollided)
     {
         if(getInstance()->mResourceManager->checkCollision(
-        player, enemy))
+        projectile, enemy))
         {
             qDebug() << "collided !";
             enemy->mTransform->mMatrix.rotateZ(90);
