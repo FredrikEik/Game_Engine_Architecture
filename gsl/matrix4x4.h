@@ -35,8 +35,8 @@ public:
     gsl::Vector3D getScale();
     gsl::Vector3D oldScale{1,1,1};
 
-    gsl::Vector3D getScale();
-    gsl::Vector3D getRotation();
+    //gsl::Vector3D getScale();
+    //gsl::Vector3D getRotation();
 
     //Rotate using EulerMatrix
     void rotateX(GLfloat degrees = 0.f);
