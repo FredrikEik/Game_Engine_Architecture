@@ -269,9 +269,10 @@ GameObject *temp=nullptr;
     }
     level.saveLevelAs("savedLevel", objectMap);
     */
+    factory->createObject("Skybox");
     factory->openLevel(level);
 
-    factory->createObject("Skybox");
+
 GameObject *temp=nullptr;
         for(int i{0}; i < 50; i++)
         {
