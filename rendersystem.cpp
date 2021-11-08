@@ -297,7 +297,10 @@ void RenderSystem::render()
             }
 
         }
-
+        if(CoreEngine::getInstance()->ProjectileSpawned)
+        {
+            CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(-.005f);
+        }
         this->updateDt();
         glBindVertexArray(0);
     }

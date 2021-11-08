@@ -197,7 +197,7 @@ void MainWindow::on_actionAdd_Player_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
-
+    CoreEngine::getInstance()->playerSpawned = true;
     mRenderSystem->mGameObjects.push_back(mCoreEngine->player);
     ui->listWidget->addItem(mCoreEngine->player->objName);
     }

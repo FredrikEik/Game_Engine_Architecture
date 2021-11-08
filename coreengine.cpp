@@ -116,6 +116,8 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
 
+    projectile = mResourceManager->addObject("projectile");
+    //mRenderSystem->mGameObjects.push_back(projectile);
 
 
 
@@ -223,6 +225,14 @@ void CoreEngine::handleInput()
             mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
         if(mInput.E)
             mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+    }
+    else if(mInput.LMB)
+    {
+        if(isPlaying && playerSpawned)
+        {
+            ProjectileSpawned = true;
+            mRenderSystem->mGameObjects.push_back(projectile);
+        }
     }
     else if(mInput.W)
     {

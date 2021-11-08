@@ -37,6 +37,10 @@ public:
     GameObject *boss;
     GameObject* mTerrain;
     GameObject* Particles;
+    GameObject* projectile;
+
+    bool playerSpawned = false;
+    bool ProjectileSpawned = false;
 
     float tempPosX{0};
     float tempPosY{0};

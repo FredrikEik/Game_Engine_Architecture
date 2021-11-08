@@ -70,6 +70,7 @@ private:
     int makeTriangle();
     int makeCube();
     int makeParticle();
+    int makeProjectile();
 
     float posX = 1.f;
     float posY = 1.f;
