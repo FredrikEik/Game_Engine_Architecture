@@ -2,11 +2,13 @@
 #define GAMEOBJECT_H
 
 #include "components.h"
+#include <qstring.h>
 
 class GameObject
 {
 public:
     std::string name{0};
+    std::string filepath{"-"};
     int id{0};
 
     TransformComponent* mTransformComp{nullptr};

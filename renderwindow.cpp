@@ -126,18 +126,19 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
-    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "mousepickingvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "mousepickingfragment.frag").c_str());
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
-    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "phongshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "mousepickingvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "mousepickingfragment.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[3]->getProgram();
+
 
     setupPlainShader(0);
     setupTextureShader(1);
-    setupMousPickingShader(2);
-    setupPhongShader(3);
+    setupPhongShader(2);
+    setupMousPickingShader(3);
 
     GameEngine::getInstance()->SetUpScene();
 
@@ -241,11 +242,11 @@ void RenderWindow::render()
 
 
         // MousePicking_
-        GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[2]->getProgram(), "PickingColor");
+        GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[3]->getProgram(), "PickingColor");
 
         if(isMousePicking)
         {
-            glUseProgram(mShaderPrograms[2]->getProgram() );
+            glUseProgram(mShaderPrograms[3]->getProgram() );
 
             int id = i; // +50 for å se rød nyansen
             int r = (id & 0x000000FF) >>  0;
@@ -301,7 +302,7 @@ void RenderWindow::render()
 
         }
 
-        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && !isMousePicking)
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0 && !isMousePicking)
         {
             glUseProgram(mShaderPrograms[0]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
@@ -311,23 +312,25 @@ void RenderWindow::render()
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
         //send data to shader
+            glUseProgram(mShaderPrograms[1]->getProgram() );
             glUniform1i(mTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
         }
-        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 3)
+        else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2)
         {
         //send data to shader
 
-            glUseProgram(mShaderPrograms[3]->getProgram() );
+            glUseProgram(mShaderPrograms[2]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
             GameObject* light = GameEngine::getInstance()->mLight;
             gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
             gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
-
+            // HARDCODET: til å bruke texture 3 atm
+            // TODO: texturehandler!!
             glUniform1i(mPhongTextureUniform,3);
             glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);

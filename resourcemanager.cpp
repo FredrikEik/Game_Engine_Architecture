@@ -11,6 +11,11 @@
 #include "meshhandler.h"
 #include <QOpenGLFunctions>
 
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <QJsonDocument>
+
 ResourceManager::ResourceManager()
 {
     // >> MAYBE I STILL NEED THIS
@@ -44,9 +49,12 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
 
     tempGO = new GameObject();
 
+    tempGO->filepath = filepath;
+
     //find the first version of the object, hence "1"vv
 
     tempGO->mMaterialComp = new MaterialComponent();
+    tempGO->mMaterialComp->mTextureUnit=0;
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
 
@@ -106,6 +114,48 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     //qDebug() << "Number of unique meshcomps:" << meshCompCounter;
     objectIDcounter++;
     return tempGO;
+}
+
+void ResourceManager::savegame(std::vector<GameObject *> &objects)
+{
+    if(mLevels.empty())
+    {
+        mLevels.push_back(std::pair<QString,std::vector<GameObject*>>("level1",objects));
+    }
+    QFile saveFile(QStringLiteral("save.json"));
+
+    // open file
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return;
+    }
+    QJsonObject coreJsonObject;
+
+    QJsonArray levelArray;
+    for(unsigned long long i = 0; i < mLevels.size();i++)
+    {
+        QJsonObject level;
+        QJsonArray objectarray;
+        level["levelname"] = mLevels[i].first;
+        for(auto it : objects)
+        {
+            QJsonObject levelObjects;
+            levelObjects["filepath"] = it->filepath.c_str();
+            // transform
+            levelObjects["positionx"] = double(it->mTransformComp->mMatrix.getPosition().x);
+            levelObjects["positionyx"] = double(it->mTransformComp->mMatrix.getPosition().y);
+            levelObjects["positionz"] = double(it->mTransformComp->mMatrix.getPosition().z);
+
+            levelObjects["shader"] = int(it->mMaterialComp->mShaderProgram);
+
+            objectarray.append(levelObjects);
+        }
+        level["objects"] = objectarray;
+        levelArray.append(level);
+    }
+    coreJsonObject["levels"] = levelArray;
+    saveFile.write(QJsonDocument(coreJsonObject).toJson());
+    saveFile.close();
 }
 
 ResourceManager &ResourceManager::getInstance()

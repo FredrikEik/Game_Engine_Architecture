@@ -27,7 +27,6 @@ public:
     GameEngine();
     void SetUpScene();
     void SetUpObjects();
-    void saveGame();
     void HandleInput();
     void togglePlay(bool bInIsPlaying);
 

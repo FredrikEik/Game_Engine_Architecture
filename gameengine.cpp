@@ -1,6 +1,7 @@
 ﻿#include "gameengine.h"
 
 #include <QKeyEvent>
+#include <QString>
 
 #include "resourcemanager.h"
 #include "gameobject.h"
@@ -10,11 +11,7 @@
 #include "physicsballsystem.h"
 #include "mainwindow.h"
 #include "collisionsystem.h"
-
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QFile>
-#include <QJsonDocument>
+#include "constants.h"
 
 
 // Make Singelton
@@ -84,10 +81,12 @@ void GameEngine::SetUpObjects()
 {
                                           //(gsl::MeshFilePath + "player.obj", gsl::TextureFilePath + "playerTexture")
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj");
-    mPlayer->mTransformComp->mMatrix.translate(0,-1.8f,-8);
+    mPlayer->mTransformComp->mMatrix.setPosition(0,-1.8f,-8);
     initPlayerPos = {0,-1.8f,-8};
-    mPlayer->mMaterialComp->mShaderProgram = 2;
-//    mPlayer->mMaterialComp->mTextureUnit = 1;
+    mPlayer->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
+
+    qDebug() << "PLAYER filepath: " << mPlayer->filepath.c_str();
+
     mRenderwindow->mGameObjects.push_back(mPlayer);
 
 
@@ -97,7 +96,7 @@ void GameEngine::SetUpObjects()
     //        for(int j{0}; j < 100; j++)
     //        {
     //            tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    //            tempGameObject->mTransformComp->mMatrix.translate(2.f*(i), -3.f, -2.f*(j));
+    //            tempGameObject->mTransformComp->mMatrix.setPosition(2.f*(i), -3.f, -2.f*(j));
     //            mRenderwindow->mGameObjects.push_back(tempGameObject);
     //        }
     //    }
@@ -111,69 +110,70 @@ void GameEngine::SetUpObjects()
 
 
 //    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-//    tempGameObject->mTransformComp->mMatrix.translate(4,0,-2);
+//    tempGameObject->mTransformComp->mMatrix.setPosition(4,0,-2);
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 //    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-//    tempGameObject->mTransformComp->mMatrix.translate(2,0,-10);
+//    tempGameObject->mTransformComp->mMatrix.setPosition(2,0,-10);
 //    // tempGameObject->mMeshComp->mDrawType=GL_LINES;
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
-    mLight->mTransformComp->mMatrix.translate(-20,3,-10);
-    mLight->mMaterialComp->mShaderProgram = 2;
+    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
+    mLight->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     mRenderwindow->mGameObjects.push_back(mLight);
 
 //    mLight2 = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
-//    mLight2->mTransformComp->mMatrix.translate(-1,3,-5);
-//    mLight2->mMaterialComp->mShaderProgram = 2;
+//    mLight2->mTransformComp->mMatrix.setPosition(-1,3,-5);
+//    mLight2->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
 //    mRenderwindow->mGameObjects.push_back(mLight2);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cacodemon2.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(5,0,-7);
-    tempGameObject->mMaterialComp->mShaderProgram = 3;
-    tempGameObject->mMaterialComp->mTextureUnit = 2;
+    tempGameObject->mTransformComp->mMatrix.setPosition(5,0,-7);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::PHONGSHADER;
+
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-1,-1,-5);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mTransformComp->mMatrix.setPosition(-1,-1,-5);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     tempGameObject->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
+
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-3,-1,-5);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mTransformComp->mMatrix.setPosition(-3,-1,-5);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(14,7,-27);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mTransformComp->mMatrix.setPosition(14,7,-27);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-1,0.5,-5);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    tempGameObject->mTransformComp->mMatrix.setPosition(-1,0.5,-5);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj");
-    tempGameObject->mTransformComp->mMatrix.translate(-5,2.5,0);
-    tempGameObject->mMaterialComp->mShaderProgram = 3;
+    tempGameObject->mTransformComp->mMatrix.setPosition(-5,2.5,0);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::PHONGSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(-12,0.5,-13);
-    tempGameObject->mMaterialComp->mShaderProgram = 3;
+    tempGameObject->mTransformComp->mMatrix.setPosition(-12,0.5,-13);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::PHONGSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
-    tempGameObject->mTransformComp->mMatrix.translate(3,-0.5f,-3);
-    tempGameObject->mMaterialComp->mShaderProgram = 3;
+    tempGameObject->mTransformComp->mMatrix.setPosition(3,-0.5f,-3);
+    tempGameObject->mMaterialComp->mShaderProgram = gsl::PHONGSHADER;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
 
-
+    mResourceManager->savegame(mRenderwindow->mGameObjects);
 
 
 
@@ -215,39 +215,6 @@ void GameEngine::SetUpObjects()
     //saveGame();
 }
 
-void GameEngine::saveGame()
-{
-    if(mLevels.empty())
-    {
-        mLevels.push_back(std::pair<QString,std::vector<GameObject*>>("level1",mRenderwindow->mGameObjects));
-    }
-    QFile saveFile(QStringLiteral("save.json"));
-
-    // open file
-    if (!saveFile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
-        return;
-    }
-    QJsonObject coreJsonObject;
-
-    QJsonArray levelArray;
-    for(unsigned long long i = 0; i < mLevels.size();i++)
-    {
-        QJsonObject level;
-        QJsonArray objectarray;
-        level["levelname"] = mLevels[i].first;
-        for(auto it : mRenderwindow->mGameObjects)
-        {
-            QJsonObject levelObjects;
-            levelObjects["ID"] = it->id;
-            // transform
-//            levelObjects["T"] = it->mTransformComp->mMatrix.getPosition();
-//            levelObjects["mesh"] = it.mMesh;
-//            levelObjects["position"] = it.mPosition;
-//            objectarray.append(levelObjects);
-        }
-    }
-}
 
 void GameEngine::HandleInput()
 {

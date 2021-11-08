@@ -23,6 +23,10 @@ public:
     GameObject *CreateObject(std::string filepath, bool UsingLOD = false);
     //void readObj(std::string &filename, MeshComponent *MeshComp);
 //    void init(MeshComponent &MeshComp);
+
+    void savegame(std::vector<GameObject*> &objects);
+    std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
+
 private:
     GameObject* tempGO;
     MeshHandler* mMeshHandler;
