@@ -227,6 +227,19 @@ void GameEngine::HandleInput()
 
     UpdateGameCameraFollow();
 
+    if(mInput.F && !bIsPlaying)
+    {
+        int tempListIndex = mMainWindow->getObjectListIndex();
+        gsl::Vector3D movePos {0,
+                    mRenderwindow->mGameObjects.at(tempListIndex)->mCollisionComp->mRaidus*3,
+                    mRenderwindow->mGameObjects.at(tempListIndex)->mCollisionComp->mRaidus*3};
+        mEditorCamera->setPosition(mRenderwindow->mGameObjects.at(tempListIndex)->mTransformComp->mMatrix.getPosition()+movePos);
+        mEditorCamera->setYaw(0);
+        mEditorCamera->setPitch(-45.f);
+        mEditorCamera->update();
+        mInput.F = false;
+    }
+
     if(mInput.RMB)
     {
         if(mInput.W)

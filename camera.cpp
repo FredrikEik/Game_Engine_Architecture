@@ -156,3 +156,13 @@ gsl::Vector3D Camera::up() const
 {
     return mUp;
 }
+
+void Camera::setYaw(float newYaw)
+{
+    mYaw = newYaw;
+}
+
+void Camera::setPitch(float newPitch)
+{
+    mPitch = newPitch;
+}

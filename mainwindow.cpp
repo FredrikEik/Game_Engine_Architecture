@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
 #include <QListWidget>
+#include <QStyleFactory>
 
 #include "renderwindow.h"
 #include "gameengine.h"
@@ -17,6 +18,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
     listWidget = ui->listWidget;
 
+    qApp->setStyle(QStyleFactory::create("Fusion"));
+
+    QPalette darkPalette;
+    darkPalette.setColor(QPalette::Window, QColor(53,53,53));
+    darkPalette.setColor(QPalette::WindowText, Qt::white);
+    darkPalette.setColor(QPalette::Base, QColor(25,25,25));
+    darkPalette.setColor(QPalette::AlternateBase, QColor(53,53,53));
+    darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
+    darkPalette.setColor(QPalette::ToolTipText, Qt::white);
+    darkPalette.setColor(QPalette::Text, Qt::white);
+    darkPalette.setColor(QPalette::Button, QColor(53,53,53));
+    darkPalette.setColor(QPalette::ButtonText, Qt::white);
+    darkPalette.setColor(QPalette::BrightText, Qt::red);
+    darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+
+    darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    darkPalette.setColor(QPalette::HighlightedText, Qt::black);
+
+    qApp->setPalette(darkPalette);
+
+    qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
     init();
 }
 
@@ -149,59 +171,24 @@ void MainWindow::init()
 
 }
 
+int MainWindow::getObjectListIndex() const
+{
+    return ObjectListIndex;
+}
+
 //Example of a slot called from the button on the top of the program.
-
-
-
-void MainWindow::on_ToggleLOD_toggled(bool checked)
-{
-    mRenderWindow->renderLOD(checked);
-    if(checked)
-        ui->ToggleLOD->setText("LOD OFF");
-    else
-        ui->ToggleLOD->setText("LOD ON");
-}
-
-
-void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
-{
-    mRenderWindow->toggleWireframe(checked);
-    if(checked)
-        ui->pb_toggleWireframe->setText("Show Solid");
-    else
-        ui->pb_toggleWireframe->setText("Show Wireframe");
-}
-
-
-void MainWindow::on_ToggleFrustumCulling_toggled(bool checked)
-{
-    mRenderWindow->toggleFrustumCulling(checked);
-    if(checked)
-        ui->ToggleFrustumCulling->setText("Frustum Culling OFF");
-    else
-        ui->ToggleFrustumCulling->setText("Frustum Culling ON");
-}
-
 
 void MainWindow::on_PlayStop_toggled(bool checked)
 {
         mGameEngine->getInstance()->togglePlay(checked);
-
         if(checked)
             ui->PlayStop->setText("Stop");
         else
+        {
             ui->PlayStop->setText("Play");
+            ui->PlayStop->setChecked(false);
+        }
 
-}
-
-
-void MainWindow::on_pb_toggleCollisionBox_toggled(bool checked)
-{
-    mRenderWindow->toggleShowCollsionBox(checked);
-    if(checked)
-        ui->pb_toggleCollisionBox->setText("Hide All Collision Boxes");
-    else
-        ui->pb_toggleCollisionBox->setText("Show All Collision Boxes");
 }
 
 void MainWindow::on_listWidget_currentRowChanged(int currentRow)
@@ -349,5 +336,40 @@ void MainWindow::on_loadScene_clicked()
     GameEngine::getInstance()->loadScene();
     refreshList();
     listWidget->setCurrentRow(0);
+}
+
+
+
+
+
+void MainWindow::on_actionLOD_toggle_toggled(bool arg1)
+{
+    mRenderWindow->renderLOD(!arg1);
+    if(arg1)
+        ui->actionLOD_toggle->setText("LOD ON");
+    else
+        ui->actionLOD_toggle->setText("LOD OFF");
+}
+
+
+void MainWindow::on_actionFrustum_Culling_toggle_toggled(bool arg1)
+{
+    mRenderWindow->toggleFrustumCulling(!arg1);
+    if(arg1)
+        ui->actionFrustum_Culling_toggle->setText("Frustum Culling ON");
+    else
+        ui->actionFrustum_Culling_toggle->setText("Frustum Culling OFF");
+}
+
+
+void MainWindow::on_actionShow_Wireframe_toggle_toggled(bool arg1)
+{
+    mRenderWindow->toggleWireframe(arg1);
+}
+
+
+void MainWindow::on_actionShow_All_Collision_Boxes_toggle_toggled(bool arg1)
+{
+    mRenderWindow->toggleShowCollsionBox(arg1);
 }
 

@@ -683,6 +683,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         input.E = true;
     }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = true;
+    }
     if(event->key() == Qt::Key_Z)
     {
     }
@@ -743,6 +747,10 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_E)
     {
         input.E = false;
+    }
+    if(event->key() == Qt::Key_F)
+    {
+        input.F = false;
     }
     if(event->key() == Qt::Key_Z)
     {

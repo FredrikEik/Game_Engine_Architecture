@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>OpenGL in Qt is great fun!</string>
+   <string>Tabo Engine</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -24,46 +24,6 @@
        <widget class="QPushButton" name="PlayStop">
         <property name="text">
          <string>Play</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="ToggleLOD">
-        <property name="text">
-         <string>LOD ON</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="ToggleFrustumCulling">
-        <property name="text">
-         <string>Frustum Culling ON</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_toggleWireframe">
-        <property name="text">
-         <string>Show Wireframe</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_toggleCollisionBox">
-        <property name="text">
-         <string>Show All Collsion Boxes</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -101,7 +61,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. When playing click mouse once to activate camera controll.</string>
+       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. When playing click mouse once to activate camera controll, and press escape to exit</string>
       </property>
      </widget>
     </item>
@@ -390,7 +350,24 @@
     <addaction name="actionDelete_Selected"/>
     <addaction name="actionGetCurrentRow"/>
    </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionLOD_toggle"/>
+    <addaction name="actionFrustum_Culling_toggle"/>
+    <addaction name="actionShow_Wireframe_toggle"/>
+    <addaction name="actionShow_All_Collision_Boxes_toggle"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionInfo"/>
+   </widget>
    <addaction name="menuAdd_Mesh"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -429,6 +406,49 @@
   <action name="actionGetCurrentRow">
    <property name="text">
     <string>GetCurrentRow</string>
+   </property>
+  </action>
+  <action name="actionLOD_toggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>LOD ON</string>
+   </property>
+  </action>
+  <action name="actionFrustum_Culling_toggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Frustum Culling ON</string>
+   </property>
+  </action>
+  <action name="actionShow_Wireframe_toggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Wireframe </string>
+   </property>
+  </action>
+  <action name="actionShow_All_Collision_Boxes_toggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show All Collision Boxes</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
    </property>
   </action>
  </widget>

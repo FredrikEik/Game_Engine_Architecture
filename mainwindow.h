@@ -27,20 +27,13 @@ public:
     void setID(int ID);
     void clean();
 
+    int getObjectListIndex() const;
+
 public slots:
 
     void on_PlayStop_toggled(bool checked);
 
 private slots:
-
-    void on_ToggleLOD_toggled(bool checked);
-
-    void on_pb_toggleWireframe_toggled(bool checked);
-
-    void on_ToggleFrustumCulling_toggled(bool checked);
-
-
-    void on_pb_toggleCollisionBox_toggled(bool checked);
 
 
     void on_listWidget_currentRowChanged(int currentRow);
@@ -73,6 +66,14 @@ private slots:
     void on_saveScene_clicked();
 
     void on_loadScene_clicked();
+
+    void on_actionLOD_toggle_toggled(bool arg1);
+
+    void on_actionFrustum_Culling_toggle_toggled(bool arg1);
+
+    void on_actionShow_Wireframe_toggle_toggled(bool arg1);
+
+    void on_actionShow_All_Collision_Boxes_toggle_toggled(bool arg1);
 
 private:
     void init();

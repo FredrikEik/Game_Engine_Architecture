@@ -37,6 +37,10 @@ public:
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
 
+    void setYaw(float newYaw);
+
+    void setPitch(float newPitch);
+
 private:
     // cam options
     float MoveSpeed;
