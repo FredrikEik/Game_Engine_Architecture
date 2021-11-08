@@ -6,7 +6,6 @@ in vec3 fragmentPosition;
 in vec3 vertexColors;
 in vec2 UV;       //for textures
 
-
 uniform bool usingTextures = false;
 uniform sampler2D uTexture;
 
@@ -22,6 +21,7 @@ uniform int specularExponent = 32;
 uniform vec3 objectColor = vec3(0.3, 0.7, 0.3); //grey
 
 void main() {
+
     //ambient
     float ambient = ambientStrength * lightStrength;
 

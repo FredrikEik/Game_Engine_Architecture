@@ -267,7 +267,7 @@ void RenderWindow::render()
                 modelMatrix = mMmatrixUniform2;
                 glUniform1f(mUsingTextureUniform, true); // turns on texture
                 glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos camera
-                glUniform3f(mLightPositionUniform, 20.0f, 20.0f, -20.0f); // pos lightsource?
+                glUniform3f(mLightPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos lightsource! booiiiii
                 glUniform1i(mTextureUniform2,  MaterialCompVec[i]->mTextureUnit);
             }
             if(meshCompVec[i]->LODEnabled){
