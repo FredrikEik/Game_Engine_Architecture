@@ -110,7 +110,7 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("MarioCube");
     ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
-    ui->PlayPause->setText("Play");
+    ui->PlayPause->setText("Editor Mode(TAB)");
 
 
 }
@@ -219,7 +219,7 @@ void MainWindow::on_PlayPause_clicked(bool checked)
 {
     if(checked)
     {
-        ui->PlayPause->setText("Editor Mode On (TAB)");
+        ui->PlayPause->setText("Editor Mode(TAB)");
         mRenderWindow->editorMode = true;
         mRenderWindow->bPause = false;
     }

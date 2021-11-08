@@ -738,7 +738,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
             distance = abs(distance);
 
             //if distance to ray < objects bounding sphere == we have a collision
-            if(distance < 0.5f)
+            if(distance < 0.5f && editorMode && factory->mGameObjects[i]->mObjectName != "Skybox")
             {
     //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
                 mIndexToPickedObject = i;

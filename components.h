@@ -6,7 +6,6 @@
 #include "vertex.h"
 #include "gltypes.h"
 
-
 struct TransformComponent
 {
 public:
