@@ -38,6 +38,7 @@ SOURCES += main.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
     level.cpp \
+    light.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
     level.h \
+    light.h \
     mariocube.h \
     objreader.h \
     plane.h \
@@ -103,6 +105,9 @@ DISTFILES += \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
 	Shaders/textureshader.frag \
+    Shaders/lightShader.frag \
+    Shaders/lightShader.vert \
+    Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert \

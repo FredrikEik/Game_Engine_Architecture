@@ -3,6 +3,7 @@
 
 #include "matrix4x4.h"
 #include "vector3d.h"
+#include "vector4d.h"
 #include "gameobject.h"
 #include "components.h"
 /**
@@ -18,7 +19,7 @@ public:
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
-    void update();
+    void update(float fieldOfView, float aspectRatio);
     void init() override;
     void draw() override;
     void move(float x, float y, float z) override;
@@ -35,11 +36,11 @@ public:
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
-    gsl::Vector3D mPosition{0.f, 0.f, 0.f};
-    TransformComponent* getTransformComponent(){return transformComp;}
-    MeshComponent* getMeshComponent(){return meshComp;}
-    MaterialComponent* getMaterialComponent(){return materialComp;}
+
     FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
+
+    float aRatio;
+    float FOV;
 
     float farplaneX;
     float farplaneY;
@@ -66,6 +67,9 @@ public:
     gsl::Vector3D nearPlaneNormal;
     gsl::Vector3D farPlaneNormal;
 
+    gsl::Vector4D rightPlaneNormal4D;
+    gsl::Vector4D leftPlaneNormal4D;
+
 private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
@@ -80,12 +84,6 @@ private:
 
     float mSpeed{0.f}; //camera will move by this speed along the mForward vector
 
-
-
-
-    TransformComponent* transformComp;
-    MeshComponent* meshComp;
-    MaterialComponent* materialComp;
     FrustumCollisionComponent* frustumComp;
 };
 

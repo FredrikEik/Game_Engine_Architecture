@@ -42,9 +42,10 @@ public:
                   "{" << mIn.matrix[6] << "\t, " << mIn.matrix[7] << "\t, " << mIn.matrix[8] << "}\n";
         return output;
     }
+    GLfloat matrix[9];
 
 private:
-    GLfloat matrix[9];
+
 };
 
 } //namespace

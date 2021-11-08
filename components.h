@@ -28,7 +28,7 @@ public:
     GLint mMatrixUniform{0};
 };
 
-struct MaterialComponent
+class MaterialComponent
 {
 public:
     MaterialComponent();
@@ -37,6 +37,14 @@ public:
 
 
 
+    void setupUniforms();
+
+
+};
+
+struct LightComponent
+{
+    gsl::Vector3D lightColor();
 };
 
 struct BoxCollisionComponent
@@ -69,6 +77,8 @@ public:
     gsl::Vector3D rightBottomFar;
     gsl::Vector3D leftTopFar;
     gsl::Vector3D rightTopFar;
+
+    gsl::Matrix4x4 mMatrix;
 };
 
 #endif // COMPONENTS_H

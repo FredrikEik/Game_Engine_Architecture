@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "soundmanager.h"
 #include "quadtree.h"
+#include "light.h"
 
 class QOpenGLContext;
 class Shader;
@@ -94,6 +95,9 @@ private:
     void setupPlainShader(int shaderIndex);
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
+    void setupLightShader(int shaderIndex);
+
+    GLint mTextureUniform[3];
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
@@ -120,7 +124,9 @@ private:
     GLint mPhongTextureUniform{-1};
 
     Camera* mCurrentCamera{nullptr};
-    Camera* mTestFrustumCamera{nullptr};
+    GameObject* mTestFrustumCamera{nullptr};
+
+    GameObject* mLightSource{nullptr};
 
 
     float mAspectratio{1.f};

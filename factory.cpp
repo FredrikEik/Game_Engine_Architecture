@@ -4,6 +4,7 @@
 #include "cube.h"
 #include "camera.h"
 #include "sphere.h"
+#include "light.h"
 #include "factory.h"
 #include "objreader.h"
 #include "constants.h"
@@ -32,7 +33,7 @@ GameObject* Factory::createObject(std::string objectName)
         {
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
@@ -121,6 +122,18 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectName = "Skybox";
     }
 
+    else if(objectName == "Light")
+    {
+        objectToCreate = new Light;
+        if(EXISTS("Light")) //If Light mesh exists
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Light"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        lightCounter++;
+        objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
+    }
     else{return nullptr;}
 
     objectToCreate->init();

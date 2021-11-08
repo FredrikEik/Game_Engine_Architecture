@@ -158,6 +158,7 @@ void RenderWindow::init()
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
     /*mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+/*    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                 (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
 
@@ -165,10 +166,19 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
 
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "lighShader.frag").c_str());
+    qDebug() << "Light shader shader program id: " << mShaderPrograms[2]->getProgram();
+
+
+
     setupPlainShader(0);
     setupTextureShader(1);*/
 
     //********************** Saving meshes to be drawn **********************
+    setupTextureShader(1);
+    setupLightShader(2);
+    //********************** Making the object to be drawn **********************
 
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
@@ -185,20 +195,25 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     glDisable(GL_CULL_FACE);
-    mTestFrustumCamera = new Camera(45.0f, 4/3);
+    /*mTestFrustumCamera = new Camera(45.0f, 4/3);
     mTestFrustumCamera->init();
-    mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-    mTestFrustumCamera->updateFrustumPos(45.0f, 4/3);
-
-    mCurrentCamera = new Camera(45.0f, 4/3);
+    //mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+*/
+    mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 2.f, 0.f));
-    mCurrentCamera->updateFrustumPos(45.0f, 4/3);
-    //***********************************************************
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+	
+    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "lightShader.frag").c_str());
+                                     qDebug() << "Light shader program id: " << mShaderPrograms[2]->getProgram();
 
 
-
-
+    setupPlainShader(0);
+    setupTextureShader(1);
+    setupLightShader(2);
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -296,7 +311,7 @@ void RenderWindow::render()
     //Keyboard / mouse input
     handleInput();
 
-    mCurrentCamera->update();
+    mCurrentCamera->update(mCurrentCamera->FOV, mCurrentCamera->aRatio);
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -306,6 +321,9 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
+
+
+    //Light* lightRef = static_cast<Light*>(factory->mGameObjects["Light"]);
 
     //Draws the objects
 
@@ -324,6 +342,7 @@ void RenderWindow::render()
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
 			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
+
             if(shaderProgramIndex == 1)
             {
               glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
@@ -332,6 +351,9 @@ void RenderWindow::render()
             {
                glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
+
+
+            glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
 			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
@@ -356,7 +378,7 @@ void RenderWindow::render()
                 gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                 float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
                 if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
-                {
+                /*{
                     gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
                     if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
@@ -372,20 +394,23 @@ void RenderWindow::render()
                                 gsl::Vector3D bottomPlaneToObjectVector = mCurrentCamera->nearPlaneBottomLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
                                 if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                                */
                                 {
+                                   // qDebug() << "Object inside frustum";
                                     factory->mGameObjects[i]->draw();
                                 }
                             }
-                        }
+                        /*}
                     }
                 }
-            }
-            if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
-            {
-                factory->mGameObjects[i]->draw();
-            }
+            }*/
+                if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
+                {
+                    factory->mGameObjects[i]->draw();
+                }
 			}
-            else{
+            else
+            {
                 factory->mGameObjects[i]->draw();
             }
 
@@ -479,7 +504,6 @@ void RenderWindow::render()
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 
-
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -499,12 +523,20 @@ void RenderWindow::setupTextureShader(int shaderIndex)
 }
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)
+
+    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupLightShader(int shaderIndex)
+
 {
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     //mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
     mSkyboxUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
+    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+
 }
 
 //This function is called from Qt when window is exposed (shown)

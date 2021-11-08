@@ -111,6 +111,8 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
     ui->PlayPause->setText("Editor Mode(TAB)");
+    ui->createDropDownBox->addItem("Light");
+    ui->PlayPause->setText("Play");
 
 
 }
