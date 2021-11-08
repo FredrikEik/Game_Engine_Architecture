@@ -9,7 +9,8 @@ INCLUDEPATH += \
     ./gsl \
     ./SoundCode/h \
     ./SoundCode/scr \
-    ./Shaders
+    ./Shaders \
+    ./Saves
 
 
 mac {
@@ -96,4 +97,5 @@ DISTFILES += \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
-    Shaders/plainvertex.vert
+    Shaders/plainvertex.vert \
+    Saves/testLevel.json

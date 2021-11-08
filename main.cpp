@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+    /*
     QString fileName = "../GEA2021/Scripts/levelscript.js";
     QFile scriptFile(fileName);
     if (!scriptFile.open(QIODevice::ReadOnly))
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
 
     QJSValue spawnAllFunc = jsEngine.evaluate("spawnObjectsFromLevel");
     spawnAllFunc.call();
-
+    */
 
     return a.exec();
 }

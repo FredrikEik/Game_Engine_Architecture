@@ -6,6 +6,9 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -138,30 +141,10 @@ void RenderWindow::init()
     setupPlainShader(0);
     setupTextureShader(1);
 
-    //********************** Making the object to be drawn **********************
+    //********************** Saving meshes to be drawn **********************
 
-    //factory->createObject("Plane");
-    //factory->createObject("Triangle");
-    //factory->createObject("Cube");
-    //factory->createObject("MarioCube");
-
-    /*
-    GameObject *marioCube = new MarioCube();
-    marioCube->init();
-    mGameObjects.push_back(marioCube);
-
-    GameObject *plane = new Plane();
-    plane->init();
-    mGameObjects.push_back(plane);
-
-    GameObject *cube = new Cube();
-    cube->init();
-    mGameObjects.push_back(cube);
-
-    GameObject *triangle = new Triangle();
-    triangle->init();
-    mGameObjects.push_back(triangle);
-    */
+    factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
+    factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
 
 
 
@@ -227,7 +210,7 @@ void RenderWindow::init()
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
 
-
+/*
 GameObject *temp=nullptr;
     for(int i{0}; i < 50; i++)
     {
@@ -239,10 +222,18 @@ GameObject *temp=nullptr;
             //TODO: Scaling have to be made easier and more automatic than this!
         }
     }
-    /*
-    Level *testLevel = new Level(*factory);
-    testLevel->spawnObjectAtLocation("Cube", gsl::Vector3D(0.0f, 0.0f, 0.0f));
     */
+    QFile loadFile(QString("../GEA2021/Saves/testLevel.json"));
+        if (!loadFile.open(QIODevice::ReadOnly))
+        {
+            qDebug() << "Could not load level";
+            return;
+        }
+        QByteArray saveData = loadFile.readAll();   //read whole file
+        QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //convert to json document
+        QJsonObject jsonObject = loadDoc.object();  //read first object == whole thing
+    level.read(jsonObject);
+    factory->openLevel(level);
 
     mMainWindow->updateOutliner(factory->mGameObjects);
 }
@@ -481,12 +472,7 @@ void RenderWindow::toggleWireframe(bool buttonState)
 void RenderWindow::createObjectbutton(std::string objectName)
 {
     mClick->play();
-    if(objectName == "MarioCube" || objectName == "Sphere")
-    {
-    factory->saveMesh("../GEA2021/Assets/Meshes/" + objectName + ".obj", objectName);   //   temporary fix since all objects are not .obj
-    }
     GameObject* newObject = factory->createObject(objectName);
-
     gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
     gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
     uint32_t id = newObject->ID;

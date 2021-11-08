@@ -8,6 +8,7 @@
 #include <QJSEngine>
 #include "gameobject.h"
 #include "factory.h"
+#include "level.h"
 #include "input.h"
 #include "constants.h"
 #include "soundmanager.h"
@@ -52,6 +53,8 @@ public:
 
     //Javascript engine
     QJSEngine engine;
+
+    Level level;
 
 
 private slots:

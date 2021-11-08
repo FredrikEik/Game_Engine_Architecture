@@ -4,20 +4,19 @@
 #include "factory.h"
 #include "gsl/vector3d.h"
 #include <vector>
-#include <QObject>
 
 //Level scripted from javascript
-class Level : public QObject
+class Level
 {
-    Q_OBJECT
 
 public:
-    Level(QObject *parent = nullptr);
-    Level(Factory& factory);
+    Level();
 
-    Q_INVOKABLE void spawnObjectAtLocation(std::string objectName, float x, float y, float z);
-    Factory* mFactory;
+    void write(QJsonObject &json);
 
+    void read(const QJsonObject &json);
+
+    std::multimap<std::string, gsl::Vector3D> objectsInLevel;
 
 };
 

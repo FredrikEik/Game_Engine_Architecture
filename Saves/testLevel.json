@@ -1,0 +1,53 @@
+{
+    "Objects":
+    [
+        {
+            "objectType" : "Cube",
+            "spawnPosition" : [0,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "spawnPosition" : [0,0,1]
+        },
+        {
+            "objectType" : "Cube",
+            "spawnPosition" : [1,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "spawnPosition" : [1,0,1]
+        },
+        {
+            "objectType" : "Cube",
+            "spawnPosition" : [2,0,0]
+        },
+        {
+            "objectType" : "Sphere",
+            "spawnPosition" : [0,0,2]
+        },
+        {
+            "objectType" : "Cube",
+            "spawnPosition" : [2,0,1]
+        },
+        {
+            "objectType" : "Sphere",
+            "spawnPosition" : [1,0,2]
+        },
+        {
+            "objectType" : "Cube",
+            "spawnPosition" : [2,0,2]
+        },
+        {
+            "objectType" : "Triangle",
+            "spawnPosition" : [0,1.5,0]
+        },
+        {
+            "objectType" : "Plane",
+            "spawnPosition" : [0,1.5,0]
+        },
+        {
+            "objectType" : "MarioCube",
+            "spawnPosition" : [1,1.5,4]
+        }
+    ]
+}

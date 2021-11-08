@@ -64,6 +64,7 @@ public:
 
     Matrix4x4 operator*(const Matrix4x4 &other);
 
+
     friend std::ostream& operator<<(std::ostream &output, const Matrix4x4 &mIn)
     {
         output << std::setprecision(4) <<
