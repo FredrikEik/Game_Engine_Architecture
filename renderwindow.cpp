@@ -227,6 +227,7 @@ GameObject *temp=nullptr;
     level.loadLevel("../GEA2021/Saves/testLevel.json");
 
     //Save level test
+    /*
     std::multimap<std::string, struct SpawnSettings> objectMap;
     for(int i = 0; i < factory->mGameObjects.size(); i++)
     {
@@ -240,8 +241,7 @@ GameObject *temp=nullptr;
         objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
     }
     level.saveLevelAs("savedLevel", objectMap);
-
-
+    */
     factory->openLevel(level);
 
 
