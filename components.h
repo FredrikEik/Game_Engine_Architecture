@@ -99,9 +99,6 @@ public:
     gsl::Vector3D rightTopFar;
 
     gsl::Matrix4x4 mMatrix;
-    gsl::Matrix4x4 mYawMatrix;
-    gsl::Matrix4x4 mPitchMatrix;
-    gsl::Matrix4x4 mViewMatrix;
 };
 
 #endif // COMPONENTS_H
