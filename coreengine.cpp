@@ -146,13 +146,13 @@ void CoreEngine::spawnParticles()
     srand( (unsigned)time( NULL ) );
 
 
-    for(float i = 0; i < 1; i += 0.005)
+    for(float i = 0; i < .5; i += 0.002)
     {
 
         Particles = mResourceManager->addObject("particle");
         Particles->mMaterial->mShaderProgram = 0;
         Particles->mMaterial->mTextureUnit = 0;
-        Particles->mTransform->mMatrix.scale(.05);
+        Particles->mTransform->mMatrix.scale(.02);
         Particles->mTransform->mMatrix.setPosition(tempPosX,tempPosY,tempPosZ);
         mRenderSystem->mParticles.push_back(Particles);
     }

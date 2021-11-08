@@ -285,11 +285,12 @@ void RenderSystem::render()
 
             if(CoreEngine::getInstance()->isPlaying == true)
             {
+                //float rand = (float) rand()/(RAND_MAX / 1
 
                 mParticles[i]->mTransform->mMatrix.translate(
-                                                             (float) rand()/(RAND_MAX / .5 ),
-                                                             (float) rand()/(RAND_MAX / .5),
-                                                             (float) rand()/(RAND_MAX / .5 )
+                                                             ((float) rand()/(RAND_MAX / 1 )) - .5f,
+                                                             ((float) rand()/(RAND_MAX / 1 )) - .5f,
+                                                             ((float) rand()/(RAND_MAX / 1 )) - .5f
                                                             );
 
 
