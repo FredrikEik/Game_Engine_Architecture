@@ -284,7 +284,10 @@ GameObject *temp=nullptr;
                 //TODO: Scaling have to be made easier and more automatic than this!
             }
         }
-    mMainWindow->updateOutliner(factory->mGameObjects);
+
+            mMainWindow->updateOutliner(factory->mGameObjects);
+             hjelpeObjekt = factory->createObject("Cube");
+
 }
 
 // Called each frame - doing the rendering
@@ -410,7 +413,41 @@ void RenderWindow::render()
                }
             }
             */
+
+
+            if (i==mIndexToPickedObject) {
+
+                //driver å må lage noe hjelpe objekt.
+
+            hjelpeObjektMesh = new MeshComponent;
+            hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
+            hjelpeObjektMesh->mDrawType = GL_LINES;
+            hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+
+            if (hjelpeObjekt != factory->mGameObjects[i]){
+            gsl::Vector3D tempPosition;
+            gsl::Vector3D tempScale;
+            tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
+            hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+            tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
+            hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
+            if (tempScale.x > 50 || tempScale.y > 50 || tempScale.z > 50 ){
+
+                hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
+
+              }
+            }
+            else if (hjelpeObjekt == factory->mGameObjects[i]){
+                mIndexToPickedObject = 0;
+            }
+
+                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+            }
+
+
          }
+
+
 
     }
 
@@ -426,6 +463,7 @@ void RenderWindow::render()
             glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
         }*/
 
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -440,6 +478,8 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+
+
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -552,7 +592,7 @@ void RenderWindow::createObjectbutton(std::string objectName)
       mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
-void RenderWindow::playPausebutton()
+void RenderWindow::playPausebutton(const QSurfaceFormat &format)
 {
     bPause = !bPause;
 
@@ -561,11 +601,35 @@ void RenderWindow::playPausebutton()
     if(bPause)
     {
         mVideoGameLand->stop();
+        reset(format);
     }
     else
     {
-        mVideoGameLand->play();
+                mVideoGameLand->play();
+
+        if (mIndexToPickedObject > -1){
+        hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
+        hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
+        hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+        mIndexToPickedObject = -1;
+        }
+
+
     }
+}
+
+void RenderWindow::reset(const QSurfaceFormat &format)
+{
+//    factory->mGameObjects.clear();
+//    mRenderTimer->stop();
+
+
+//    //Make the gameloop timer:
+//    mRenderTimer = new QTimer(this);
+
+//    mMainWindow->init();
+
+//    mRenderTimer->start(16);    //starts the timer
 }
 
 
@@ -683,6 +747,17 @@ void RenderWindow::handleInput()
     }
 }
 
+void RenderWindow::spawnHelpObject()
+{
+
+
+}
+
+//void RenderWindow::moveHelpObjectToSelected()
+//{
+
+//}
+
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
         int mouseXPixel = event->pos().x();
@@ -747,13 +822,14 @@ void RenderWindow::mousePicking(QMouseEvent *event)
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
                 //factory->mGameObjects[i]->move(1000.f,0,0);
-                break;  //breaking out of for loop - does not check if ray touch several objects
 
+                break;  //breaking out of for loop - does not check if ray touch several objects
 
             }
 
-        }
 
+
+        }
 }
 void RenderWindow::setPickedObject(int pickedID)
 {
@@ -825,6 +901,10 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_O)
     {
+    }
+    if(event->key() == Qt::Key_R)
+    {
+         reset(format());
     }
 }
 

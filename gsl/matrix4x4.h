@@ -28,6 +28,12 @@ public:
 
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
     gsl::Vector3D getPosition();
+    void setRotation(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
+    gsl::Vector3D getRotation();
+    gsl::Vector3D inverseRotation{0,0,0};
+    void setScale(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
+    gsl::Vector3D getScale();
+    gsl::Vector3D oldScale{1,1,1};
 
     gsl::Vector3D getScale();
     gsl::Vector3D getRotation();

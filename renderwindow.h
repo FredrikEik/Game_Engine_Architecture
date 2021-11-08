@@ -43,7 +43,8 @@ public:
     void cancelPickedObject();
 
     void createObjectbutton(std::string objectName);
-    void playPausebutton();
+    void playPausebutton(const QSurfaceFormat &format);
+    void reset(const QSurfaceFormat &format);
     bool bPause = true;
     bool editorMode = true;
     Factory *getFactory(){return factory;};
@@ -56,6 +57,14 @@ public:
     QJSEngine engine;
 
     Level level;
+
+    GameObject *hjelpeObjekt=nullptr;
+    MeshComponent *hjelpeObjektMesh= nullptr;
+
+    void spawnHelpObject();
+
+    void moveHelpObjectToSelected();
+
 
 
 private slots:
@@ -77,7 +86,6 @@ private:
     void setCameraSpeed(float value);
 
     void handleInput();
-
 
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];

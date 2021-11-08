@@ -26,8 +26,16 @@ public:
     void updateOutliner(std::vector <GameObject *> &GameObjectData);
 
     void selectObjectByIndex(int indexIn);
+	
+    void init();
+
+    QSurfaceFormat format;
+
 public slots:
     void on_PlayPause_clicked(bool checked);
+
+
+
 private slots:
     void on_pushButton_toggled(bool checked);
 
@@ -42,7 +50,6 @@ private slots:
     void on_toggleFrustumCulling_clicked(bool checked);
 
 private:
-    void init();
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};
 

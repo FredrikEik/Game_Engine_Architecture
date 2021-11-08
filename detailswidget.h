@@ -50,6 +50,8 @@ private:
     void readRotation();
     void readScale();
     void setPosition();
+    void setRotation();
+    void setScale();
 
     float mPositionPace{1.f};
     float mRotationPace{1.f};

@@ -212,9 +212,54 @@ Vector3D Matrix4x4::getPosition()
     return gsl::Vector3D(matrix[3], matrix[7], matrix[11]);
 }
 
+void Matrix4x4::setRotation(GLfloat x, GLfloat y, GLfloat z)
+{
+    rotateX(inverseRotation.x);
+    rotateY(inverseRotation.y);
+    rotateZ(inverseRotation.z);
+
+    rotateX(x);
+    rotateY(y);
+    rotateZ(z);
+
+    inverseRotation.x = -x;
+    inverseRotation.y = -y;
+    inverseRotation.z = -z;
+
+}
+
+Vector3D Matrix4x4::getRotation()
+{
+    qDebug () << -inverseRotation.x<< -inverseRotation.y<< -inverseRotation.z;
+  return gsl::Vector3D(-inverseRotation.x, -inverseRotation.y, -inverseRotation.z);
+}
+
+void Matrix4x4::setScale(GLfloat x, GLfloat y, GLfloat z)
+{   if (x==0){
+        x=0.1;
+    }
+    if (y==0){
+        y=0.1;
+    }
+    if (z==0){
+        z=0.1;
+    }
+
+    scale(1/oldScale.x,1/oldScale.y,1/oldScale.z);
+
+    scale(x,y,z);
+
+    oldScale = {x,y,z};
+}
+
+Vector3D Matrix4x4::getScale()
+{
+return gsl::Vector3D(oldScale.x,oldScale.y,oldScale.z);
+}
+
 void Matrix4x4::rotateX(GLfloat degrees)
 {
-    GLfloat rad = deg2radf(degrees);
+     GLfloat rad = deg2radf(degrees);
 
     Matrix4x4 temp =
     {
