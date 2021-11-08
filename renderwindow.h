@@ -103,8 +103,6 @@ private:
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-    GLint mTextureUniform{-1};
-
     // Skybox shader uniforms
     GLint mSkyboxUniform{-1};
 

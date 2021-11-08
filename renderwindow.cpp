@@ -345,7 +345,7 @@ void RenderWindow::render()
 
             if(shaderProgramIndex == 1)
             {
-              glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
             if(shaderProgramIndex == 2)
             {
@@ -518,12 +518,12 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
    // factory->mGameObjects[shaderIndex]->getMaterialComponent()->mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)
-
+{
     mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 

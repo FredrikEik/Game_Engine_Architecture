@@ -302,7 +302,7 @@ void Matrix4x4::rotateZ(GLfloat degrees)
     *this = (*this)*temp;
 }
 
-void Matrix4x4::setRotation(GLfloat x, GLfloat y, GLfloat z)
+/*void Matrix4x4::setRotation(GLfloat x, GLfloat y, GLfloat z)
 {
     //rotateX(-rotation.x);
     //rotateY(-rotation.y);
@@ -324,7 +324,7 @@ Vector3D Matrix4x4::getRotation()
     qDebug() << rotation.x << rotation.y << rotation.z;
     return gsl::Vector3D(rotation.x, rotation.y, rotation.z);
 }
-
+*/
 // Rotate around a given vector
 //void Matrix4x4::rotate(GLfloat angle, Vector3D vector)
 //{

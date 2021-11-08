@@ -36,7 +36,7 @@ public:
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
-
+    gsl::Vector3D mPosition;
     FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
 
     float aRatio;

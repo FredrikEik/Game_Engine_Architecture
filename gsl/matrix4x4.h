@@ -43,8 +43,8 @@ public:
     void rotateY(GLfloat degrees = 0.f);
     void rotateZ(GLfloat degrees = 0.f);
 
-    void setRotation(GLfloat x, GLfloat y, GLfloat z);
-    Vector3D getRotation();
+//    void setRotation(GLfloat x, GLfloat y, GLfloat z);
+//    Vector3D getRotation();
     Vector3D rotation {0.0,0.0,0.0};
 //    void rotate(GLfloat angle, Vector3D vector);
 //    void rotate(GLfloat angle, GLfloat xIn, GLfloat yIn, GLfloat zIn);
