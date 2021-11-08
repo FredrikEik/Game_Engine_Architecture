@@ -374,6 +374,7 @@ void RenderWindow::render()
             hjelpeObjektMesh->mDrawType = GL_LINES;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
 
+            if (hjelpeObjekt != factory->mGameObjects[i]){
             gsl::Vector3D tempPosition;
             gsl::Vector3D tempScale;
             tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
@@ -384,7 +385,10 @@ void RenderWindow::render()
 
                 hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
 
-
+              }
+            }
+            else if (hjelpeObjekt == factory->mGameObjects[i]){
+                mIndexToPickedObject = 0;
             }
 
                 //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
