@@ -142,7 +142,6 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -161,6 +160,14 @@ void RenderWindow::render()
             checkForCollisions(mGameObjects[i]);
             mGameObjects[i]->move(moveX, moveY, moveZ);
             setPlayerMovement(0,0,0); //resets movement. (stops constant movement after buttonpress)
+        }
+        else if(mGameObjects[i]->mName == "bullet.obj")
+        {
+            //This is temporary to push bullets forward
+            //TODO: Use the players vector to move bullets forward in relation
+            //      to the players forwardVector from when the bullet was shot.
+            gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
+            mGameObjects[i]->transform->mMatrix.setPosition(pos.x, pos.y, pos.z - 0.2f);
         }
 
     /** Shader Program */
@@ -196,6 +203,7 @@ void RenderWindow::render()
 
     /** Calculate FRUSTUM */
 
+
         gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
 
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
@@ -204,8 +212,9 @@ void RenderWindow::render()
         if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" &&
             (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))
         {
-            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+            mGameObjects[i]->mesh->renderObject = false;
 
+            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
             float distanceFromFarPlane = (CameraToObject * mCurrentCamera->getmForward()) / mCurrentCamera->getmForward().length();
 
@@ -234,6 +243,8 @@ void RenderWindow::render()
             float ObjDistanceFromBottomPlane = (CameraToObject * bottomPlaneNormal) / bottomPlaneNormal.length();
 
             if(ObjDistanceFromBottomPlane > 0) continue;
+
+            mGameObjects[i]->mesh->renderObject = true;
         }
 
     /** Draw FRUSTUM */
@@ -465,7 +476,7 @@ void RenderWindow::calculateFramerate()
         {
             //showing some statistics in status bar
             mMainWindow->statusBar()->showMessage(
-                    "Entities: " + QString::number(mGameObjects.size())+ "    |    " +
+                    "Entities rendered: " + QString::number(mGameObjects.size())+ "    |    " +
                     "Vertices: " + QString::number(getVertexCount()) + "    |    " +
                     "Player Colliding: " + QString::number(bPlayerColliding) + "    |    " +
                     " Time pr FrameDraw: " + QString::number(nsecElapsed/1000000.f, 'g', 4) + " ms    |    " +
@@ -609,14 +620,17 @@ double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt rikti
     int vertexCount = 0;
     for( int i = 0; i < mGameObjects.size(); i++)
     {
-        if(mGameObjects[i]->mesh->lodLevel == 0)
-            vertexCount += mGameObjects[i]->mesh->mVertices[0].size();
+        if(mGameObjects[i]->mesh->renderObject == true)
+        {
+            if(mGameObjects[i]->mesh->lodLevel == 0)
+                vertexCount += mGameObjects[i]->mesh->mVertices[0].size();
 
-        else if(mGameObjects[i]->mesh->lodLevel == 1)
-            vertexCount += mGameObjects[i]->mesh->mVertices[1].size();
+            else if(mGameObjects[i]->mesh->lodLevel == 1)
+                vertexCount += mGameObjects[i]->mesh->mVertices[1].size();
 
-        else if(mGameObjects[i]->mesh->lodLevel == 2)
-            vertexCount += mGameObjects[i]->mesh->mVertices[2].size();
+            else if(mGameObjects[i]->mesh->lodLevel == 2)
+                vertexCount += mGameObjects[i]->mesh->mVertices[2].size();
+        }
     }
     return vertexCount;
 }
@@ -766,7 +780,10 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.RMB = true;
     if (event->button() == Qt::LeftButton){
         mInput.LMB = true;
-        mousePicking(event);
+        if(!mCoreEngine->isPlaying())
+            mousePicking(event);
+        else
+            mCoreEngine->shootBullet();
     }
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;

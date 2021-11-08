@@ -38,6 +38,8 @@ struct Mesh
 
     bool collisionsEnabled{true};
 
+    bool renderObject{false};
+
     GLenum mDrawType{GL_TRIANGLES};
 };
 

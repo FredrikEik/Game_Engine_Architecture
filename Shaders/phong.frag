@@ -12,7 +12,7 @@ uniform vec3 cameraPosition;
 
 uniform vec3 objectColor = vec3(0.7, 0.7, 0.7); //gray
 uniform vec3 lightColor = vec3(0.93, 0.87, 0.5);  //yellow/white
-uniform float ambientStrength = 0.08;
+uniform float ambientStrength = 0.2;
 
 uniform float lightStrength = 1;
 uniform float specularStrength = 0.5;

@@ -38,12 +38,92 @@
       </item>
       <item>
        <property name="text">
-        <string>sphere</string>
+        <string>bullet</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>pyramid</string>
+        <string>1tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1deadTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1grass</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2deadTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>2grass</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>3tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>3forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>4tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>4forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>5tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>5forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>6tree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>6forestTree</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>New Item</string>
        </property>
       </item>
       <item>

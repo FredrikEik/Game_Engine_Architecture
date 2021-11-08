@@ -38,8 +38,9 @@ void CoreEngine::SetUpScene()
 {
 
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
-    temp->transform->mMatrix.scale(0.2f);
-    mRenderWindow->addToGameObjects(temp);
+    playerObject = temp;
+    playerObject->transform->mMatrix.scale(0.2f);
+    mRenderWindow->addToGameObjects(playerObject);
 
     mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
     mGameCameraMesh->transform->mMatrix.translate(gsl::Vector3D(57.f, .5f, 9.f));
@@ -47,8 +48,7 @@ void CoreEngine::SetUpScene()
     mGameCameraMesh->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(mGameCameraMesh);
 
-    temp = mResourceManager->CreateObject("bullet.obj");
-    temp->transform->mMatrix.translate(gsl::Vector3D(57.f, -1.f, 0.f));
+    temp = mResourceManager->CreateObject("suzanne.obj");
     mRenderWindow->addToGameObjects(temp);
 
     temp = mResourceManager->CreateObject("arrow.obj");
@@ -57,18 +57,18 @@ void CoreEngine::SetUpScene()
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
 
-
-
-
     for(int i{0}; i < 40; i++)
-   {
+    {
        for(int j{0}; j < 40; j++)
        {
-           temp = mResourceManager->CreateObject("suzanne.obj");
+           int b = floor(rand() % 5 + 9);
+
+           temp = mResourceManager->CreateObject(treeNames[b]);
            temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
+           temp->transform->mMatrix.scale(0.4);
            mRenderWindow->addToGameObjects(temp);
        }
-   }
+    }
 
     //********************** Set up cameras **********************
     mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));
@@ -152,7 +152,7 @@ void CoreEngine::EditorCameraInput()
         if(mRenderWindow->getInput().E)
             mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
 
-    }
+    }   
 }
 
 void CoreEngine::CreateObjectButton(std::string objName)
@@ -202,6 +202,16 @@ void CoreEngine::initCameraProjectionMatrixes(float mAspectRatio)
 void CoreEngine::playStartGameSound()
 {
     mStereoSound->play();
+}
+
+void CoreEngine::shootBullet()
+{
+    gsl::Vector3D playerPos = playerObject->transform->mMatrix.getPosition();
+
+     GameObject* temp = mResourceManager->CreateObject("bullet.obj");
+     temp->transform->mMatrix.setPosition(playerPos.x, playerPos.y, playerPos.z);
+     temp->transform->mMatrix.scale(0.1);
+     mRenderWindow->addToGameObjects(temp);
 }
 
 bool CoreEngine::isPlaying()

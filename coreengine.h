@@ -43,6 +43,8 @@ public:
 
     void playStartGameSound();
 
+    void shootBullet();
+
     Input mInput;
 
     bool isPlaying();
@@ -69,10 +71,15 @@ private:
     Camera *mGameCamera{nullptr};
 
     GameObject *mGameCameraMesh{nullptr};
+    GameObject *playerObject{nullptr};
 
     SoundSource* mStereoSound{nullptr};
 
-
+    std::string treeNames[14] = { //Temporary, will remove later.
+        "1tree.obj", "2tree.obj", "3tree.obj", "4tree.obj", "5tree.obj", "6tree.obj",
+        "1forestTree.obj", "2forestTree.obj", "3forestTree.obj", "4forestTree.obj", "5forestTree.obj", "6forestTree.obj",
+        "1deadTree.obj", "2deadTree.obj",
+    };
 };
 
 #endif // COREENGINE_H

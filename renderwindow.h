@@ -49,6 +49,7 @@ public:
     std::vector<GameObject*>* getGameObjectsPtr();
 
     double getVertexCount();
+
     int getSelectedObject();
 
     void setToCurrentCamera(Camera* cam);
