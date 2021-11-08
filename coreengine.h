@@ -38,8 +38,9 @@ public:
     GameObject* mTerrain;
     GameObject* Particles;
 
-
-
+    float tempPosX{0};
+    float tempPosY{0};
+    float tempPosZ{0};
 
     MeshData linebox;
     MeshData linebox2;
@@ -54,6 +55,8 @@ public:
     void setUpScene();
     void updateCamera();
     void updateScene();
+
+    void spawnParticles();
 
     void handleInput();
     ResourceManager *mResourceManager{nullptr};

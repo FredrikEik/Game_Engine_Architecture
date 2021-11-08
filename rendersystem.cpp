@@ -119,6 +119,12 @@ void RenderSystem::init()
     //Probably should be placed elsewhere
     CoreEngine::getInstance()->setUpScene();
 
+    this->dt = 0;
+    this->curTime = 0;
+    this->lastTime = 0;
+
+
+
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
 }
@@ -130,6 +136,7 @@ void RenderSystem::render()
     mVerticesDrawn = 0;     //reset vertex counter
     mObjectsDrawn = 0;      //reset object counter
 
+    timer.start();
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
@@ -258,6 +265,8 @@ void RenderSystem::render()
             CoreEngine::getInstance()->updateScene();
 
         }
+
+
             for(unsigned int i{0}; i < mParticles.size(); i++)
            {
 
@@ -271,14 +280,24 @@ void RenderSystem::render()
             glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
             mParticlesDrawn ++;
+
+
+
             if(CoreEngine::getInstance()->isPlaying == true)
             {
-            mParticles[i]->mTransform->mMatrix.translate((float) rand()/(RAND_MAX / 1 ),(float) rand()/(RAND_MAX / 1),(float) rand()/(RAND_MAX / 1 ));
+
+                mParticles[i]->mTransform->mMatrix.translate(
+                                                             (float) rand()/(RAND_MAX / .5 ),
+                                                             (float) rand()/(RAND_MAX / .5),
+                                                             (float) rand()/(RAND_MAX / .5 )
+                                                            );
+
+
             }
 
         }
 
-
+        this->updateDt();
         glBindVertexArray(0);
     }
 
@@ -300,6 +319,16 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
+void RenderSystem::updateDt()
+{
+    curTime = mTimeStart.nsecsElapsed()/1000000.f;
+    dt = curTime - lastTime;
+    lastTime = curTime;
+
+    //qDebug() << "deltatime: " << dt;
+
+}
+
 void RenderSystem::rotateObj(double val)
 {
     mGameObjects[1]->mTransform->mMatrix.rotateZ(val);
@@ -309,6 +338,8 @@ void RenderSystem::setPickedObject(int pickedID)
 {
 
 }
+
+
 
 void RenderSystem::setupPlainShader(int shaderIndex)
 {
@@ -324,6 +355,8 @@ void RenderSystem::setupTextureShader(int shaderIndex)
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
+
+
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized

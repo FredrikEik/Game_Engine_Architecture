@@ -84,6 +84,11 @@ void CoreEngine::setUpScene()
     enemy->mTransform->mMatrix.rotateY(180.f);
     enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 1.f/**j*/);
     enemy->mTransform->mMatrix.scale(0.5f);
+
+    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
+    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
+    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
+
     mResourceManager->addCollider("sphere", enemy);
     mResourceManager->addComponent("roblox_stereo.wav", enemy);
     enemy->mSoundComponent->shouldPlay = false;
@@ -110,19 +115,7 @@ void CoreEngine::setUpScene()
     mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
-    srand( (unsigned)time( NULL ) );
 
-
-    for(float i = 0; i < 1; i += 0.005)
-    {
-
-        Particles = mResourceManager->addObject("particle");
-        Particles->mMaterial->mShaderProgram = 0;
-        Particles->mMaterial->mTextureUnit = 0;
-        Particles->mTransform->mMatrix.scale(.05);
-        Particles->mTransform->mMatrix.setPosition(1,1,1);
-        mRenderSystem->mParticles.push_back(Particles);
-    }
 
 
 
@@ -148,6 +141,22 @@ void CoreEngine::setUpScene()
     mGameLoopTimer->start(16);
 }
 
+void CoreEngine::spawnParticles()
+{
+    srand( (unsigned)time( NULL ) );
+
+
+    for(float i = 0; i < 1; i += 0.005)
+    {
+
+        Particles = mResourceManager->addObject("particle");
+        Particles->mMaterial->mShaderProgram = 0;
+        Particles->mMaterial->mTextureUnit = 0;
+        Particles->mTransform->mMatrix.scale(.05);
+        Particles->mTransform->mMatrix.setPosition(tempPosX,tempPosY,tempPosZ);
+        mRenderSystem->mParticles.push_back(Particles);
+    }
+}
 void CoreEngine::updateCamera()
 {
     if (isPlaying)
@@ -172,17 +181,24 @@ void CoreEngine::updateScene()
 
    // mResourceManager->update(mRenderSystem->dt);
 
-    if(getInstance()->mResourceManager->checkCollision(
-    player, enemy))
+    if(!enemy->mCollider->objectsHasCollided)
     {
-        qDebug() << "collided !";
-        enemy->mTransform->mMatrix.rotateX(90);
-        enemy->mCollider->objectsHasCollided = true;
-        enemy->mSoundComponent->shouldPlay = true;
+        if(getInstance()->mResourceManager->checkCollision(
+        player, enemy))
+        {
+            qDebug() << "collided !";
+            enemy->mTransform->mMatrix.rotateZ(90);
+            enemy->mCollider->objectsHasCollided = true;
+            enemy->mSoundComponent->shouldPlay = true;
+            //enemy->mSoundComponent->looping = false;
+            spawnParticles();
+        }
+        else
+            enemy->mSoundComponent->shouldPlay = false;
 
     }
-    else
-        enemy->mSoundComponent->shouldPlay = false;
+    //else
+        //enemy->mSoundComponent->shouldPlay = false;
 
 
 }

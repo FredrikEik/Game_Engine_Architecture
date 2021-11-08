@@ -285,13 +285,13 @@ int MeshHandler::makeParticle()
         particles[i].position +=  0.05f;
         particles[i].lifetime =  1.0f ;
 
-        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
-        temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 1));
-        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
+        temp.mVertices[0].push_back(Vertex(0.5,-0.5,0.5    , 1, 0, 0));
+        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
 
-        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
-        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 1));
-        temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 1));
+        temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 0));
+        temp.mVertices[0].push_back(Vertex(0.5,0.5,0.5     , 1, 0, 0));
+        temp.mVertices[0].push_back(Vertex(-0.5,0.5,0.5    , 1, 0, 0));
 
 
         //temp.mTransform->mMatrix.translateX(.5);

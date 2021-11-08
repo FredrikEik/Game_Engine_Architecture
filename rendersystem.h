@@ -49,7 +49,9 @@ public:
 
    void updatePickedObject();
 
-       const float dt = 1.f;
+
+
+
 
 
 
@@ -76,6 +78,10 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    void updateDt();
+    float dt = 0;
+    float curTime = 0;
+    float lastTime = 0;
 
     class TextureHandler *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
@@ -90,12 +96,18 @@ private:
     int mObjectsDrawn{0};
     int mParticlesDrawn{0};
 
+    float translateX{1};
+    float translateY{1};
+    float translateZ{1};
+    gsl::Vector3D tempPos;
+
     float mFOVangle{45};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
+    QElapsedTimer timer;
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
