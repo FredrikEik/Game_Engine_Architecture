@@ -223,17 +223,41 @@ GameObject *temp=nullptr;
         }
     }
     */
-    QFile loadFile(QString("../GEA2021/Saves/testLevel.json"));
-        if (!loadFile.open(QIODevice::ReadOnly))
-        {
-            qDebug() << "Could not load level";
-            return;
-        }
-        QByteArray saveData = loadFile.readAll();   //read whole file
-        QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //convert to json document
-        QJsonObject jsonObject = loadDoc.object();  //read first object == whole thing
-    level.read(jsonObject);
+
+    level.loadLevel("../GEA2021/Saves/testLevel.json");
+
+    //Save level test
+    std::multimap<std::string, struct SpawnSettings> objectMap;
+    for(int i = 0; i < factory->mGameObjects.size(); i++)
+    {
+        SpawnSettings settings;
+        std::string objectType = factory->mGameObjects[i]->mObjectType;
+        settings.initialPos =  gsl::Vector3D{0,0,0};//factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
+        settings.initialScale = gsl::Vector3D{1,1,1};
+        settings.initialRot = gsl::Vector3D{0,0,0};
+        //gsl::Vector3D scale = t.mMatrix.getScale();
+        //gsl::Vector3D rot = t.mMatrix.getRotator();
+        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+    }
+    level.saveLevelAs("savedLevel", objectMap);
+
+
     factory->openLevel(level);
+
+
+
+
+    //Crunchy cola
+    /*
+    std::multimap<std::string, struct SpawnSettings> coomtest;
+    std::string brøs = "Cube";
+    SpawnSettings megatempcoom;
+    megatempcoom.initialPos   = gsl::Vector3D{2,2,2};
+    megatempcoom.initialRot   = gsl::Vector3D{-45, 0, 0};
+    megatempcoom.initialScale = gsl::Vector3D{2,2,2};
+    coomtest.insert(std::pair<std::string, struct SpawnSettings>(brøs, megatempcoom));
+    level.saveLevelAs("crunchy", coomtest);
+    */
 
     mMainWindow->updateOutliner(factory->mGameObjects);
 }

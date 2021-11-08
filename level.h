@@ -12,12 +12,19 @@ class Level
 public:
     Level();
 
-    void write(QJsonObject &json);
-
+    void saveLevelAs(QString levelName, std::multimap<std::string, struct SpawnSettings> objectMap);
+    void loadLevel(QString fileName);
+    void write(QJsonDocument document, QString fileName) const;
     void read(const QJsonObject &json);
 
-    std::multimap<std::string, gsl::Vector3D> objectsInLevel;
+    std::multimap<std::string, struct SpawnSettings> objectsInLevel;
 
+};
+struct SpawnSettings
+{
+    gsl::Vector3D initialPos;
+    gsl::Vector3D initialScale;
+    gsl::Vector3D initialRot;
 };
 
 #endif // LEVEL_H

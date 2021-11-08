@@ -3,51 +3,75 @@
     [
         {
             "objectType" : "Cube",
-            "spawnPosition" : [0,0,0]
+            "position" : [0,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Sphere",
-            "spawnPosition" : [0,0,1]
+            "position" : [0,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Cube",
-            "spawnPosition" : [1,0,0]
+            "position" : [1,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Sphere",
-            "spawnPosition" : [1,0,1]
+            "position" : [1,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Cube",
-            "spawnPosition" : [2,0,0]
+            "position" : [2,0,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Sphere",
-            "spawnPosition" : [0,0,2]
+            "position" : [0,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Cube",
-            "spawnPosition" : [2,0,1]
+            "position" : [2,0,1],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Sphere",
-            "spawnPosition" : [1,0,2]
+            "position" : [1,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Cube",
-            "spawnPosition" : [2,0,2]
+            "position" : [2,0,2],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Triangle",
-            "spawnPosition" : [0,1.5,0]
+            "position" : [0,1.5,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "Plane",
-            "spawnPosition" : [0,1.5,0]
+            "position" : [0,1.5,0],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         },
         {
             "objectType" : "MarioCube",
-            "spawnPosition" : [1,1.5,4]
+            "position" : [1,1.5,4],
+            "scale" : [1,1,1],
+            "rotation" : [0,0,0]
         }
     ]
 }

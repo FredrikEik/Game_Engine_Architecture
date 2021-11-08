@@ -36,6 +36,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         cubecounter++;
+        objectToCreate->mObjectType = "Cube";
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
     }
 
@@ -49,6 +50,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         planecounter++;
+        objectToCreate->mObjectType = "Plane";
         objectToCreate->mObjectName = "Plane " + std::to_string(planecounter);
     }
 
@@ -62,6 +64,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         trianglecounter++;
+        objectToCreate->mObjectType = "Triangle";
         objectToCreate->mObjectName = "Triangle " + std::to_string(trianglecounter);
     }
 
@@ -77,6 +80,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         mariocounter++;
+        objectToCreate->mObjectType = "MarioCube";
         objectToCreate->mObjectName = "MarioCube " + std::to_string(mariocounter);
     }
 
@@ -92,6 +96,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.25;
         spherecounter++;
+        objectToCreate->mObjectType = "Sphere";
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
     }
     else if(objectName == "Camera")
@@ -100,6 +105,9 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        cameracounter++;
+        objectToCreate->mObjectType = "Camera";
+        objectToCreate->mObjectName = "Camera " + std::to_string(cameracounter);
     }
     else{return nullptr;}
 
@@ -131,8 +139,16 @@ void Factory::openLevel(Level level)
     for (auto it = objects.begin(); it != objects.end(); it++)
     {
         GameObject* temp = createObject(it->first);
-        gsl::Vector3D spawnLoc = it->second;
-        temp->move(spawnLoc.getX(), spawnLoc.getY(), spawnLoc.getZ());
+
+        SpawnSettings settings = it->second;
+        //Set initial location
+        temp->move(settings.initialPos.getX(), settings.initialPos.getY(), settings.initialPos.getZ());
+        //Set initial scale
+        temp->getTransformComponent()->mMatrix.scale(settings.initialScale);
+        //Set initial rotation
+        temp->getTransformComponent()->mMatrix.rotateX(settings.initialRot.x);
+        temp->getTransformComponent()->mMatrix.rotateY(settings.initialRot.y);
+        temp->getTransformComponent()->mMatrix.rotateZ(settings.initialRot.z);
     }
 }
 

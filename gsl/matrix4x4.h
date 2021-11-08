@@ -29,6 +29,9 @@ public:
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
     gsl::Vector3D getPosition();
 
+    gsl::Vector3D getScale();
+    gsl::Vector3D getRotation();
+
     //Rotate using EulerMatrix
     void rotateX(GLfloat degrees = 0.f);
     void rotateY(GLfloat degrees = 0.f);

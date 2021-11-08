@@ -20,6 +20,7 @@ public:
     int trianglecounter=0;
     int spherecounter=0;
     int planecounter=0;
+    int cameracounter=0;
 
     GameObject* createObject(std::string objectName);
 
