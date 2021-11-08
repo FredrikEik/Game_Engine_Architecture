@@ -1,4 +1,4 @@
-QT          += core gui widgets opengl
+QT          += core gui widgets opengl qml
 
 TEMPLATE    = app
 CONFIG      += c++17 precomile_header
@@ -120,3 +120,6 @@ DISTFILES += \
 
 RESOURCES += \
     AppIconResources.qrc
+
+OTHER_FILES += \
+    SceneScript.js

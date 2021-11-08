@@ -47,6 +47,10 @@ public:
 
     Input mInput;
 
+    //Reads info from JavaScript about all objects in the scene
+    void readJSScene();
+
+
 private slots:
     void gameLoop();
 

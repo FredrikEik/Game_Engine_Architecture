@@ -14,7 +14,6 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QMainWindow>
 #include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
 #include <QOpenGLFunctions>
 #include <QTimer>
 #include <QElapsedTimer>

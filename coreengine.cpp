@@ -7,6 +7,11 @@
 #include "mainwindow.h"
 #include "physicshandler.h"
 
+//for JavaScript functionality
+#include <QtQml>
+#include <QJSEngine>
+#include <QFile>
+
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
 
 CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
@@ -34,6 +39,8 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
     mEditorCamera->mName = "Editor";
     mGameCamera = new Camera(30.0f, 0.1f, 300.f);
     mGameCamera->mName = "Game";
+
+    CoreEngine::readJSScene();
 }
 
 CoreEngine *CoreEngine::getInstance()
@@ -46,6 +53,32 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
     isPlaying = shouldPlay;
     SoundSystem::getInstance()->togglePlaySounds(isPlaying);
     mRenderSystem->mIsPlaying = isPlaying;
+}
+
+void CoreEngine::readJSScene()
+{
+    //Create script engine
+    QJSEngine engine;
+
+    //Make variable to this path
+    QString fileName = "../GEA2021/SceneScript.js";
+
+    //Make a QFile for the variable
+    QFile scriptFile(fileName);
+
+    //Try to open file and give error if something is wrong
+    if (!scriptFile.open(QIODevice::ReadOnly))
+        qDebug() << "Error - No file here: " << fileName;
+
+    //Read the file
+    QTextStream stream(&scriptFile);
+    QString contents = stream.readAll();
+
+    //Close the file
+    scriptFile.close();
+
+    //Load the script into script engine, filename is used to report bugs in the file
+    engine.evaluate(contents, fileName);
 }
 
 void CoreEngine::setUpScene()

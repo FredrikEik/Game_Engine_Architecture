@@ -76,7 +76,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
          mMeshHandler->mMeshes.at(meshIndex).mVertices;
 
         //triangleVertices.push_back(groundObject.mVertices[i].data()->getXYZ());
-        qDebug() << mMeshHandler->mMeshes.at(meshIndex).mVertices;
+        //qDebug() << mMeshHandler->mMeshes.at(meshIndex).mVertices;
 //    }
 
 
