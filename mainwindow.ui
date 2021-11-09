@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
+    <width>1344</width>
     <height>945</height>
    </rect>
   </property>
@@ -61,7 +61,7 @@
        </size>
       </property>
       <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. When playing click mouse once to activate camera controll, and press escape to exit</string>
+       <string>EDITOR: Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. GAME: Click mouse once to activate player WASD controll, and press escape to exit</string>
       </property>
      </widget>
     </item>
@@ -335,7 +335,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1052</width>
+     <width>1344</width>
      <height>20</height>
     </rect>
    </property>

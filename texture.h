@@ -8,6 +8,9 @@
     \author Dag Nylund
     \date 16/02/05
  */
+
+class MaterialComponent;
+
 class Texture : protected QOpenGLFunctions_4_1_Core
 {
 public:
@@ -23,6 +26,15 @@ public:
     unsigned char *mCubemap[6]{nullptr};
 
     GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called
+
+//    MaterialComponent *m;
+
+    MaterialComponent *createTexture(std::string textureFilepath);
+
+
+    MaterialComponent *tempComp;
+    std::map<std::string, MaterialComponent*> mTextureMap;
+    std::vector<Texture> mTextures;
 
 private:
     int mBytesPrPixel{};

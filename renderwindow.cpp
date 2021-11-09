@@ -89,17 +89,17 @@ void RenderWindow::init()
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
-    mTextures[0] = new Texture();
-    mTextures[1] = new Texture("hund.bmp");
-    mTextures[2] = new Texture("cocademon3.bmp");
+//    mTextures[0] = new Texture();
+//    mTextures[1] = new Texture("hund.bmp");
+//    mTextures[2] = new Texture("cocademon3.bmp");
 
     //Set the textures loaded to a texture unit
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+//    glActiveTexture(GL_TEXTURE3);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -329,9 +329,8 @@ void RenderWindow::render()
             GameObject* light = GameEngine::getInstance()->mLight;
             gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
             gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
-            // HARDCODET: til å bruke texture 3 atm
-            // TODO: texturehandler!!
-            glUniform1i(mPhongTextureUniform,3);
+
+            glUniform1i(mPhongTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
             glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);

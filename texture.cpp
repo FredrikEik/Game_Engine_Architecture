@@ -9,7 +9,9 @@
 #include <string>
 
 #include "texture.h"
+#include "gameobject.h"
 #include "constants.h"
+#include "components.h"
 
 Texture::Texture()
 {
@@ -66,6 +68,23 @@ float Texture::getHeightFromIndex(int i)
 
     return height;
 }
+
+//MaterialComponent *Texture::createTexture(std::string textureFilepath)
+//{
+//        auto foundMatIndex = mTextureMap.find(textureFilepath);
+
+//        if(foundMatIndex != mTextureMap.end()){
+//            tempComp = foundMatIndex->second;
+//            tempComp->mShaderProgram = 3;
+//        }else{
+//            if (textureFilepath.find(".bmp") != std::string::npos)
+//            {
+
+//            }
+//        }
+//        tempGO->mMaterialComp = new MaterialComponent();
+//        tempGO->mMaterialComp->mTextureUnit=0;
+//}
 
 //Read BMP into memory
 void Texture::readBitmap(const std::string &filename)

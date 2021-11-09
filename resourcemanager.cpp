@@ -9,7 +9,9 @@
 #include <vertex.h>
 #include "gameobject.h"
 #include "meshhandler.h"
+#include "components.h"
 #include "constants.h"
+#include "texture.h"
 
 #include <QOpenGLFunctions>
 
@@ -38,44 +40,44 @@ ResourceManager::ResourceManager()
     mMeshHandler = new MeshHandler();
 }
 
-GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
+GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, std::string textureFilepath)
 {
     // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
     // if it does not find it in the map, it will create a new object with a unique meshComp.
 
     // TO DO, fix the hardcoded matirial stuff.
 
-    // IMPORTANT Need to fix the map so it stores all of them, now it stores only the last one with same name.
-    // Change it to a vector maybe,
-
 
     tempGO = new GameObject();
 
     tempGO->filepath = filepath;
 
-    //find the first version of the object, hence "1"vv
-
-    tempGO->mMaterialComp = new MaterialComponent();
-    tempGO->mMaterialComp->mTextureUnit=0;
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
 
 
 
-    auto foundAtIndex = mObjectsMap.find(filepath);
+    tempGO->mMaterialComp = CreateMaterial(textureFilepath);
+    //shoud not hardcode
+//    tempGO->mMaterialComp->mTextureUnit=0;
 
 
-    if(foundAtIndex != mObjectsMap.end()){
+
+
+    auto foundAtIndex = mObjectsMeshesMap.find(filepath);
+
+    if(foundAtIndex != mObjectsMeshesMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
+        tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
-        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
+        mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
         tempGO->mCollisionComp = new CollisionComponent();
-        mObjectsMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
+        mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
@@ -95,8 +97,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD)
     }
 
     //Burde ikke hardkode dette
-    tempGO->mMaterialComp->mShaderProgram = 0;
-    tempGO->mMaterialComp->mTextureUnit = 0;
+//    tempGO->mMaterialComp->mShaderProgram = 0;
+//    tempGO->mMaterialComp->mTextureUnit = 0;
 
 
 
@@ -149,6 +151,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects)
             levelObjects["positionz"] = double(it->mTransformComp->mMatrix.getPosition().z);
 
             levelObjects["shader"] = int(it->mMaterialComp->mShaderProgram);
+            levelObjects["usingLOD"] = it->mMeshComp->bUsingLOD;
 
             objectarray.append(levelObjects);
         }
@@ -200,9 +203,18 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     GameObject *gameObj {nullptr};
                     float x = 0,y = 0,z = 0;
 
+
                     if (singleObject.contains("filepath") && singleObject["filepath"].isString())
                     {
-                        gameObj = CreateObject(singleObject["filepath"].toString().toStdString());
+                        if (singleObject.contains("usingLOD") && singleObject["usingLOD"].isBool())
+                        {
+                            gameObj = CreateObject(singleObject["filepath"].toString().toStdString(),singleObject["usingLOD"].toBool());
+
+                            gameObj->mMeshComp->bUsingLOD = singleObject["usingLOD"].toBool();
+                        }else{
+                            gameObj = CreateObject(singleObject["filepath"].toString().toStdString());
+                        }
+
 
                         //might not need this
                         gameObj->filepath = singleObject["filepath"].toString().toStdString();
@@ -226,6 +238,7 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                         gameObj->mMaterialComp->mShaderProgram = singleObject["shader"].toInt();
                     }
 
+
                     if(objectindex == 0)
                     {
                         player = gameObj;
@@ -240,6 +253,36 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
         }
     }
     loadFile.close();
+}
+
+MaterialComponent *ResourceManager::CreateMaterial(std::string textureFilepath)
+{
+    initializeOpenGLFunctions();
+    MaterialComponent *tempComp{nullptr};
+
+    auto foundMatIndex = mTextureMap.find(textureFilepath);
+    if(foundMatIndex != mTextureMap.end()){
+        tempComp = foundMatIndex->second;
+        //mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
+    }else{
+        if (textureFilepath.find(".bmp") != std::string::npos)
+        {
+            tempComp = new MaterialComponent();
+            //std::string tempName = textureFilepath.erase(0,25);
+            mTextures[textureIDcounter] = new Texture(textureFilepath);
+            glActiveTexture(GL_TEXTURE0 + textureIDcounter);
+            glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
+            tempComp->mShaderProgram = 2;
+            tempComp->mTextureUnit = textureIDcounter;
+            mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
+
+            textureIDcounter++;
+        }
+    }
+//    tempGO->mMaterialComp = new MaterialComponent();
+//    tempGO->mMaterialComp->mTextureUnit=0;
+
+    return tempComp;
 }
 
 ResourceManager &ResourceManager::getInstance()
