@@ -120,16 +120,16 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes:
-    for(int i{-50}; i < 100; i++)
+    for(int i{0}; i < 10; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 1; j++)
         {
             temp = mGameObjectManager->addObject("suzanne.obj");
             temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
             temp->mTransform->mMatrix.scale(0.5f);
             temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
             temp->mTransform->mScale.setAlltoSame(0.5f);
-            temp->mName = "Monkey " + std::to_string((i*10)+j+1);
+            temp->mName = "Monkey " + std::to_string(i+j);
             mRenderSystem->mGameObjects.push_back(temp);
         }
     }
