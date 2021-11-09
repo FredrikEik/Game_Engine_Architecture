@@ -139,6 +139,7 @@ private:
     //std::vector<VisualObject*> mVisualObjects;
 
 
+    //InputComponent* Input;
     Input mInput;
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};

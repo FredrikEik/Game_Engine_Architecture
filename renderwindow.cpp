@@ -641,7 +641,7 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
     if(bPause)
     {
         mVideoGameLand->stop();
-        //reset(format);
+        reset(format);
     }
     else
     {
@@ -670,6 +670,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
 //    mRenderTimer = new QTimer(this);
 
 //    mMainWindow->init();
+//    RenderWindow::init();
 
 //    mRenderTimer->start(16);    //starts the timer
 }
@@ -758,7 +759,7 @@ void RenderWindow::handleInput()
     if(mInput.RMB) //Sett in character movement HER!
     {
         if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
+            mCurrentCamera->setSpeed(-mCameraSpeed*2);
         if(mInput.S)
             mCurrentCamera->setSpeed(mCameraSpeed);
         if(mInput.D)

@@ -30,6 +30,7 @@ private:
     MeshComponent* meshComp;
     MaterialComponent* materialComp;
     SphereCollisionComponent* sphereCollisionComp;
+    InputComponent* inputComp;
 
 };
 #endif // GAMEOBJECT_H
