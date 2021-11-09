@@ -36,11 +36,12 @@ public:
     gsl::Vector3D getXYZ();
     gsl::Vector3D getNormals();
 
-
-private:
     gsl::Vector3D mXYZ;
     gsl::Vector3D mNormal;
     gsl::Vector2D mST;
+
+private:
+
 };
 
 #endif // VERTEX_H

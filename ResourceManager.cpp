@@ -115,8 +115,8 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     texture = new Texture("HamarHeightMap.bmp", false);
 
 
-    int rows = texture->mRows     /4;
-    int cols = texture->mColumns  /4;
+    int rows = texture->mRows;
+    int cols = texture->mColumns;
 
     unsigned char *mHeights = texture->getmHeights();
     int bytesPrPixel = texture->getBytesPerPixel();
@@ -133,7 +133,7 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     }
     //Pusher inn alle vertexene med riktig høyde
     for (int y = 0;y<cols;y++){
-        for (float x = 0;x<rows;x++)
+        for (int x = 0;x<rows;x++)
         {
             float z = float(mHeights[i]);
             meshComp->mVertices[0].push_back(Vertex{x*xyScale, y*xyScale, z*zScale, z/zColorScale, z/zColorScale, z/zColorScale,0,0});
@@ -151,7 +151,8 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     for(int y = 0;y<cols;y++){
         for(int x=0; x<rows;x++)
         {
-            meshComp->mVertices[0].at(indexCounter).set_st(XpartOfEight/7, YpartOfEight/7);
+            meshComp->mVertices[0][indexCounter].mST.x = XpartOfEight/7;
+            meshComp->mVertices[0][indexCounter].mST.y = YpartOfEight/7;
             indexCounter++;
             squareCounter++;
             XpartOfEight+=1;
@@ -191,34 +192,33 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
     gsl::Vector3D n0,n1,n2,n3,n4,n5;
 
+    std::vector<Vertex> vert = meshComp->mVertices[0];
+
     for(int i = 1;i<meshComp->mVertices[0].size()-rows;i++)
     {
-
-        //Får tak i alle punktene som trengs
-        std::vector<Vertex> vert = meshComp->mVertices[0];
-        gsl::Vector3D pos = meshComp->mVertices[0].at(i).getXYZ();
+        gsl::Vector3D pos = vert[i].mXYZ;
 
         if(pos.x > 0 && pos.y > 0 /*&& pos.z > 0*/)
         {
             pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
 
             //p0
-            p0 = gsl::Vector3D{vert.at(i-rows).getXYZ().x, vert.at(i-rows).getXYZ().y, vert.at(i-rows).getXYZ().z};
+            p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
 
             //p1
-            p1 = gsl::Vector3D{vert.at(i+1-rows).getXYZ().x, vert.at(i+1-rows).getXYZ().y, vert.at(i+1-rows).getXYZ().z};
+            p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
 
             //p2
-            p2 = gsl::Vector3D{vert.at(i+1).getXYZ().x, vert.at(i+1).getXYZ().y, vert.at(i+1).getXYZ().z};
+            p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
 
             //p3
-            p3 = gsl::Vector3D{vert.at(i+rows).getXYZ().x,vert.at(i+rows).getXYZ().y,vert.at(i+rows).getXYZ().z};
+            p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
 
             //p4
-            p4 = gsl::Vector3D{vert.at(i-1+rows).getXYZ().x, vert.at(i-1+rows).getXYZ().y, vert.at(i-1+rows).getXYZ().z};
+            p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
 
             //p5
-            p5 = gsl::Vector3D{vert.at(i-1).getXYZ().x, vert.at(i-1+rows).getXYZ().y, vert.at(i-1+rows).getXYZ().z};
+            p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
         }
         //lager vektorer til alle punktene
         gsl::Vector3D v0 = p0-pCenter;
