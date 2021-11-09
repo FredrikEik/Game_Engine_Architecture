@@ -63,6 +63,7 @@ struct SoundComponet
     bool shouldPlay{false};
 //    bool isPlaying{false};
     bool looping{false};
+    bool stop{false};
 
 };
 

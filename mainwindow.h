@@ -48,6 +48,8 @@ private slots:
     void on_actionAdd_XYZ_triggered();
 
 
+    void on_pushButton_2_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

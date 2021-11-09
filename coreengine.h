@@ -38,6 +38,7 @@ public:
     GameObject* mTerrain;
     GameObject* Particles;
     GameObject* projectile;
+    GameObject* skybox;
 
     bool playerSpawned = false;
     bool ProjectileSpawned = false;

@@ -61,6 +61,35 @@ GameObject *ResourceManager::addObject(std::string meshName)
 
 }
 
+GameObject *ResourceManager::addTerrain(TextureHandler *t, float horSpaceing, float verSpacing, float height)
+{
+    int meshIndex = mMeshHandler->Heightmap(t, horSpaceing, verSpacing, height);
+
+    //Make the GameObject
+    GameObject* tempObject = new GameObject();
+
+    //Add standard components to GameObject
+    MeshComponent* tempMesh = new MeshComponent();
+    //run through all potential LOD levels:
+    for(int i{0}; i<3; i++)
+    {
+        //Dangerous, because mMeshes vector can resize and will move pointers:
+        tempMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[i];
+        tempMesh->mVertexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[i];
+        tempMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[i];
+    }
+    tempMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
+    tempMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;
+    tempObject->mMesh = tempMesh;
+
+    tempObject->mMaterial = new MaterialComponent();
+    tempObject->mTransform = new TransformComponent();
+    tempObject->mCollider = new ColliderComponent();
+
+    return tempObject;
+
+}
+
 
 
 bool ResourceManager::addCollider(std::string ColliderType, GameObject* obj)
@@ -190,8 +219,10 @@ void ResourceManager::setUpAllTextures()
 {
     //should probably run thru all textures found in TextureFilePath
     mTextureHandler->makeTexture();
+    mTextureHandler->makeTexture("heightmap.bmp");
     mTextureHandler->makeTexture("hund.bmp");
     mTextureHandler->makeTexture("goat.bmp");
+    //mTextureHandler->makeTexture("skyrender000.bmp", true);
 }
 
 MeshData ResourceManager::makeLineBox(std::string meshName)

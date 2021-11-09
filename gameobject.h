@@ -16,6 +16,8 @@ public:
      MaterialComponent* mMaterial{nullptr};
      SoundComponet* mSoundComponent{nullptr};
 
+     bool isAlive = true;
+
      void move(float x, float y, float z);
 };
 #endif // VISUALOBJECT_H

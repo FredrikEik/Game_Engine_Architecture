@@ -31,9 +31,13 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
         mTextures.emplace_back(Texture());
         if (filename.find(".bmp") != std::string::npos)
         {
-//            if(cubeMap)
-//                textureIndex = readCubeMap(filename);
-//            else
+            if(cubeMap)
+            {
+
+                textureIndex = readCubeMap(filename);
+            }
+
+            else
                 textureIndex = readBitmap(filename);
         }
         if(filename == "none")
@@ -46,6 +50,7 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0 + textureIndex);
     glBindTexture(GL_TEXTURE_2D, mTextures.at(textureIndex).mGLTextureID);
+
 
     return textureIndex;
 }
@@ -162,7 +167,7 @@ int TextureHandler::readCubeMap(const std::string &filename)
     for(int i{0}; i< 6; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = justName + std::to_string(i+1) + ".bmp";
         readBitmap(temp);
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
     }

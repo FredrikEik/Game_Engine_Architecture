@@ -205,37 +205,41 @@ void RenderSystem::render()
 
         //draw the object
         //***Quick hack*** LOD test:
-        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+        if(mGameObjects[i]->isAlive)
         {
-            if (length < 8)
+            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+            {
+                if (length < 8)
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                    mObjectsDrawn++;
+                }
+                else if(length < 12)
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+                    mObjectsDrawn++;
+                }
+                else
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+                    mObjectsDrawn++;
+                }
+            }
+            else    //no LOD exists
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-            else if(length < 12)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
-                mObjectsDrawn++;
-            }
-            else
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
-                mObjectsDrawn++;
-            }
         }
-        else    //no LOD exists
-        {
-            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-            glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-            mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
-            mObjectsDrawn++;
-        }
+
 
         //test for linebox
         if(i == 1)
@@ -276,10 +280,14 @@ void RenderSystem::render()
             glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[i]->mTransform->mMatrix.constData());
 
-            glBindVertexArray( mParticles[i]->mMesh->mVAO[0] );
-            glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
-            mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
-            mParticlesDrawn ++;
+            //if(mParticles[i]->isAlive)
+            //{
+                glBindVertexArray( mParticles[i]->mMesh->mVAO[0] );
+                glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
+                mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
+                mParticlesDrawn ++;
+            //}
+
 
 
 
@@ -300,7 +308,7 @@ void RenderSystem::render()
         if(CoreEngine::getInstance()->ProjectileSpawned)
         {
 
-            CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.005f);
+            CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
         }
         this->updateDt();
         glBindVertexArray(0);

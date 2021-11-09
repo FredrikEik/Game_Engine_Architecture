@@ -24,6 +24,7 @@ public:
 
     ColliderComponent *mCollider = new ColliderComponent();
     GameObject* addObject(std::string meshName);
+    GameObject* addTerrain(TextureHandler* t,float horSpaceing, float verSpacing, float height);
     bool addCollider(std::string colliderType, GameObject* obj);
     bool addComponent(std::string assetName, GameObject* ownerObject);
 

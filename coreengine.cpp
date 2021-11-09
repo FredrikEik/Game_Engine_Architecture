@@ -92,6 +92,7 @@ void CoreEngine::setUpScene()
     mResourceManager->addCollider("sphere", enemy);
     mResourceManager->addComponent("roblox_stereo.wav", enemy);
     enemy->mSoundComponent->shouldPlay = false;
+    enemy->mSoundComponent->looping = false;
     enemy->objName = "enemy";
     //mRenderSystem->mGameObjects.push_back(enemy);
 
@@ -111,9 +112,9 @@ void CoreEngine::setUpScene()
     boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
-    mTerrain = mResourceManager->addObject("terrain");
-    mTerrain->mTransform->mMatrix.translateZ(-100.f);
-    mRenderSystem->mGameObjects.push_back(mTerrain);
+//    mTerrain = mResourceManager->addObject("terrain");
+//    mTerrain->mTransform->mMatrix.translateZ(-100.f);
+//    mRenderSystem->mGameObjects.push_back(mTerrain);
     //setup camera
 
 
@@ -121,9 +122,16 @@ void CoreEngine::setUpScene()
     projectile->mTransform->mMatrix.rotateY(180.f);
     projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
     mResourceManager->addCollider("sphere", projectile);
+    mResourceManager->addComponent("splat_stereo.wav", projectile);
+    projectile->mSoundComponent->shouldPlay = false;
+
     //mRenderSystem->mGameObjects.push_back(projectile);
 
-
+    skybox = mResourceManager->addObject("skybox");
+    skybox->mMaterial->mShaderProgram = 1;
+    skybox->mMaterial->mTextureUnit = 2;
+    skybox->mTransform->mMatrix.scale(40.f);
+    //mRenderSystem->mGameObjects.push_back(skybox);
 
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
@@ -198,13 +206,20 @@ void CoreEngine::updateScene()
             enemy->mSoundComponent->shouldPlay = true;
             //enemy->mSoundComponent->looping = false;
             spawnParticles();
+            projectile->mSoundComponent->shouldPlay = true;
+            projectile->isAlive = false;
+
+            //enemy->mSoundComponent->shouldPlay = false;
         }
-        else
-            enemy->mSoundComponent->shouldPlay = false;
+
 
     }
-    //else
+    else
+    {
         //enemy->mSoundComponent->shouldPlay = false;
+        //projectile->mSoundComponent->shouldPlay = false;
+
+    }
 
 
 }

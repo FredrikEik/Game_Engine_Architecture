@@ -65,17 +65,22 @@ void SoundSystem::update(RenderSystem *renderWindowIn)
             {
                 if(gob->mSoundComponent->shouldPlay)
                 {
-                    //set positions
-                    gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
-                    ALfloat temp[3] = {pos.x, pos.y, pos.z};
-                    alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
 
-                    //Start playing if not
-                    ALint value;
-                    alGetSourcei(gob->mSoundComponent->mSource, AL_SOURCE_STATE, &value);
-                    if (value != AL_PLAYING)
-                        alSourcePlay(gob->mSoundComponent->mSource);
+                        //set positions
+                        gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
+                        ALfloat temp[3] = {pos.x, pos.y, pos.z};
+                        alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
+
+                        //Start playing if not
+                        ALint value;
+                        alGetSourcei(gob->mSoundComponent->mSource, AL_SOURCE_STATE, &value);
+                        if (value != AL_PLAYING)
+                            alSourcePlay(gob->mSoundComponent->mSource);
+
+
+
                 }
+
             }
             checkError();
         }
