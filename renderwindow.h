@@ -46,6 +46,7 @@ public:
     void createObjectbutton(std::string objectName);
     void playPausebutton(const QSurfaceFormat &format);
     void reset(const QSurfaceFormat &format);
+    void clearLevel();
     bool bPause = true;
     bool editorMode = true;
     Factory *getFactory(){return factory;};
@@ -76,6 +77,7 @@ private slots:
 
 private:
     void init();
+    void initObjects();
 
     void checkForGLerrors();
 

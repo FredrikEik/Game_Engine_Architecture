@@ -209,6 +209,11 @@ void RenderWindow::init()
     //mExplosionSound->play();
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
+    initObjects();
+}
+
+void RenderWindow::initObjects()
+{
     skybox = factory->createObject("Skybox");
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
@@ -543,6 +548,25 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
 
 void RenderWindow::reset(const QSurfaceFormat &format)
 {
+    while(!factory->mGameObjects.empty())
+    {
+        factory->mGameObjects.pop_back();
+
+    }
+    for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
+    {
+        factory->mAvailableIDs.push(ID);
+    }
+    factory->mGameObjects.clear();
+    factory->cameracounter = 0;
+    factory->cubecounter = 0;
+    factory->lightCounter = 0;
+    factory->skyboxcounter = 0;
+    factory->mariocounter = 0;
+    factory->spherecounter = 0;
+    factory->trianglecounter = 0;
+
+    initObjects();
 //    factory->mGameObjects.clear();
 //    mRenderTimer->stop();
 
@@ -553,6 +577,26 @@ void RenderWindow::reset(const QSurfaceFormat &format)
 //    mMainWindow->init();
 
 //    mRenderTimer->start(16);    //starts the timer
+}
+void RenderWindow::clearLevel()
+{
+    while(!factory->mGameObjects.empty())
+    {
+        factory->mGameObjects.pop_back();
+
+    }
+    for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
+    {
+        factory->mAvailableIDs.push(ID);
+    }
+    factory->mGameObjects.clear();
+    factory->cameracounter = 0;
+    factory->cubecounter = 0;
+    factory->lightCounter = 0;
+    factory->skyboxcounter = 0;
+    factory->mariocounter = 0;
+    factory->spherecounter = 0;
+    factory->trianglecounter = 0;
 }
 
 
@@ -696,6 +740,8 @@ void RenderWindow::saveLevel()
 
 void RenderWindow::loadLevel()
 {
+    clearLevel();
+    reset(format());
     level.loadLevel("../GEA2021/Saves/savedLevel.json");
     factory->openLevel(level);
     mMainWindow->updateOutliner(factory->mGameObjects);

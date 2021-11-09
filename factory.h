@@ -28,11 +28,11 @@ public:
 
     void saveMesh(std::string fileName, std::string nickName);
 
-
+    std::queue<std::uint32_t> mAvailableIDs;
     void openLevel(Level level);
 private:
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
-    std::queue<std::uint32_t> mAvailableIDs;
+
 
 
 protected:
