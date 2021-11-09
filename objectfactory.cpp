@@ -45,6 +45,8 @@ void ObjectFactory::createObject(std::string objectName)
             qDebug() << "goat mesh saved";
         }
         willCreateObject->mTexture = 3;
+        willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.3f, 1.4f, 0.5f);
+        willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.3f, .1f, -0.5f);
     }
     else
         return;

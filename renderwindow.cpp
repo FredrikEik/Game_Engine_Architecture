@@ -166,11 +166,6 @@ void RenderWindow::init()
     ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
     mPlayer = new player(ObjFactory->mGameObject.back());
 
-    MapSpawner = new Spawner(ObjFactory, mMainWindow);
-    //MapSpawner->SpawnRow();
-    MapSpawner->SpawnRow(100);
-    //MapSpawner->addObjectToEditor(object);
-
     skyBox = new SkyBox();
     skyBox->init();
     skyBox->mName = "skybox";
@@ -182,6 +177,11 @@ void RenderWindow::init()
     setScaleY(100);
     setScaleZ(100);
     ObjFactory->setOBJindex(-1);
+
+    MapSpawner = new Spawner(ObjFactory, mMainWindow);
+    //MapSpawner->SpawnRow();
+    MapSpawner->SpawnRow(100);
+    //MapSpawner->addObjectToEditor(object);
 }
 
 // Called each frame - doing the rendering
@@ -262,7 +262,18 @@ void RenderWindow::render()
             //ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
             //ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
 
-            for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
+            if (i > 1)
+            {
+                bool test;
+                test = objectsColliding(*mPlayer->mMesh->CollisionComp, *ObjFactory->mGameObject[i]->getCollisionComp(),
+                                        *mPlayer->mMesh->TransformComp,
+                                        *ObjFactory->mGameObject[i]->getTransformComp());
+
+                if (test && bPlayGame)
+                    toggleGameMode();
+            }
+
+            /*for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
             {
                 if(ObjFactory->mGameObject[i] != ObjFactory->mGameObject[y])
                 {
@@ -272,7 +283,7 @@ void RenderWindow::render()
                                             *ObjFactory->mGameObject[y]->getTransformComp());
                     //qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
                 }
-            }
+            }*/
         }
     }
 
@@ -693,18 +704,30 @@ void RenderWindow::startOpenGLDebugger()
 
 bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans)
 {
-    gsl::Vector3D Box1min = gsl::Vector3D(Box1.min * Box1trans.Scal) + Box1trans.mTrueScaleMatrix.getPosition();
-    gsl::Vector3D Box1max = gsl::Vector3D(Box1.max * Box1trans.Scal) + Box1trans.mTrueScaleMatrix.getPosition();
-    gsl::Vector3D Box2min = gsl::Vector3D(Box2.min * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
-    gsl::Vector3D Box2max = gsl::Vector3D(Box2.max * Box2trans.Scal) + Box2trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box1Pos = Box1trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box2Pos = Box2trans.mTrueScaleMatrix.getPosition();
+    gsl::Vector3D Box1min = gsl::Vector3D(Box1.min.x * Box1trans.Scal.x, Box1.min.y * Box1trans.Scal.y, Box1.min.z * Box1trans.Scal.z);
+    gsl::Vector3D Box1max = gsl::Vector3D(Box1.max.x * Box1trans.Scal.x, Box1.max.y * Box1trans.Scal.y, Box1.max.z * Box1trans.Scal.z);
+    gsl::Vector3D Box2min = gsl::Vector3D(Box2.min.x * Box2trans.Scal.x, Box2.min.y * Box2trans.Scal.y, Box2.min.z * Box2trans.Scal.z);
+    gsl::Vector3D Box2max = gsl::Vector3D(Box2.max.x * Box2trans.Scal.x, Box2.max.y * Box2trans.Scal.y, Box2.max.z * Box2trans.Scal.z);
+    Box1min += Box1Pos;
+    Box1max += Box1Pos;
+    Box2min += Box2Pos;
+    Box2max += Box2Pos;
 
-    //qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
-    //qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
-    //qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
+    /*qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
+    if (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX())
+        qDebug() << "xCollision";
+    qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
+    if (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY())
+        qDebug() << "yCollision";
+    qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
+    if (Box1min.getZ() <= Box2max.getZ() && Box1max.getZ() >= Box2min.getZ())
+        qDebug() << "zCollision";*/
 
     return (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX()) &&
            (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY()) &&
-           (Box1min.getX() <= Box2max.getZ() && Box1max.getZ() >= Box2min.getZ());
+           (Box1min.getZ() <= Box2max.getZ() && Box1max.getZ() >= Box2min.getZ());
 
 }
 
