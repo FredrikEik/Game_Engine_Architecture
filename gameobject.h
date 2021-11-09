@@ -7,9 +7,11 @@
 
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
+
+     MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
      std::string mName{"NoName"};
 
-     MAX_ENTITIES_TYPE mMaterialIDIndex;
+
      ecs::MaterialID mMaterialID;
      ecs::TransformComponent* mTransform{nullptr};
      ecs::MeshComponent* mMesh{nullptr};

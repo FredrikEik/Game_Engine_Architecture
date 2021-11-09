@@ -44,6 +44,7 @@ SOURCES += main.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     scene.cpp \
+    scriptsystem.cpp \
     soundsystem.cpp \
     soundsource.cpp \
     triangle.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     rendersystem.h \
     mainwindow.h \
     scene.h \
+    scriptsystem.h \
     soundsystem.h \
     soundsource.h \
     triangle.h \

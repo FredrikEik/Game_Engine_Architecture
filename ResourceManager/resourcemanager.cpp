@@ -120,6 +120,8 @@ gsl::AssetType ResourceManager::findAssetType(std::string assetName)
        return gsl::BMP;
     if (assetName.find(".wav") != std::string::npos)
        return gsl::WAV;
+//    if(assetName.find(".js") != std::string::npos)
+//        return gsl::
 
     return gsl::NOASSETTYPE;
 }

@@ -56,6 +56,15 @@ struct SoundComponet
     bool looping{false};
 
 };
+struct Script
+{
+    std::string mName;
+
+    //player name
+    QString pName;
+    int pLevel;
+    double pHp;
+};
 
 } //namespace ends
 
