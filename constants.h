@@ -16,6 +16,7 @@ namespace gsl  //Game School Lib
    // const std::string MeshFilePath{AssetFilePath + "C:/Users/fes22/Documents/GitHub/GEA2021/Assets/Meshes/"};
     const std::string SoundFilePath{AssetFilePath + "Sounds/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
+    const std::string ScriptFilePath{AssetFilePath + "Scripts/"};
 
     const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
 
@@ -44,7 +45,8 @@ namespace gsl  //Game School Lib
         OBJ = 1,
         FBX = 2,
         BMP = 3,
-        WAV = 4
+        WAV = 4,
+        JS = 5
     };
 }
 #endif // CONSTANTS_H

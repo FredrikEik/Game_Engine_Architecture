@@ -105,6 +105,8 @@ bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObjec
     case gsl::WAV:
         ownerObject->mSoundComponent = makeSoundComponent(assetName);
         break;
+    case gsl::JS:
+        break;
     }
 
     return true;
@@ -120,8 +122,8 @@ gsl::AssetType ResourceManager::findAssetType(std::string assetName)
        return gsl::BMP;
     if (assetName.find(".wav") != std::string::npos)
        return gsl::WAV;
-//    if(assetName.find(".js") != std::string::npos)
-//        return gsl::
+    if(assetName.find(".js") != std::string::npos)
+        return gsl::JS;
 
     return gsl::NOASSETTYPE;
 }
