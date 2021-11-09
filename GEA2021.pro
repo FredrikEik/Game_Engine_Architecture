@@ -12,6 +12,7 @@ INCLUDEPATH += \
 
 
 win32 {
+    INCLUDEPATH += json/include/rapidjson
     INCLUDEPATH += $(OPENAL_HOME)\include\AL
     LIBS *= $(OPENAL_HOME)\libs\Win64\libOpenAL32.dll.a
 }

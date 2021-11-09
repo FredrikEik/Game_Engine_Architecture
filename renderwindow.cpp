@@ -6,8 +6,10 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
-
+#include "rapidjson.h"
 #include <iostream>
+
+
 
 #include "shader.h"
 #include "mainwindow.h"
