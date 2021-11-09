@@ -524,7 +524,10 @@ void RenderWindow::setupTextureShader(int shaderIndex)
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)
 {
-    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mSkyboxUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
 }
 
 void RenderWindow::setupLightShader(int shaderIndex)
