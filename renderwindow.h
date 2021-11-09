@@ -14,6 +14,7 @@
 #include "soundmanager.h"
 #include "quadtree.h"
 #include "light.h"
+#include "sphere.h"
 
 class QOpenGLContext;
 class Shader;
@@ -60,7 +61,7 @@ public:
     Level level;
 
     GameObject *hjelpeObjekt=nullptr;
-    GameObject *player=nullptr;
+    GameObject *playerSphere=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
 
     void spawnHelpObject();
@@ -138,9 +139,10 @@ private:
 
     //std::vector<VisualObject*> mVisualObjects;
 
+    Sphere* player;
+    InputComponent mInput;
+    //Input mInput;
 
-    //InputComponent* Input;
-    Input mInput;
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};

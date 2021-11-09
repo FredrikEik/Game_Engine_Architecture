@@ -59,6 +59,22 @@ void Sphere::move(float x, float y, float z)
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
 }
 
+void Sphere::movement()
+{
+    if(input.W)
+        move(-movementSpeed,0,0);
+    if(input.S)
+        move(movementSpeed,0,0);
+    if(input.D)
+        move(0,0,movementSpeed);
+    if(input.A)
+        move(0,0,-movementSpeed);
+//    if(input.Q)
+//        mCurrentCamera->updateHeigth(-mCameraSpeed);
+//    if(input.E)
+//        mCurrentCamera->updateHeigth(mCameraSpeed);
+}
+
 
 void Sphere::draw()
 {

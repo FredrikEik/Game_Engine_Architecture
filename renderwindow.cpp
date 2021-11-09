@@ -285,9 +285,9 @@ GameObject *temp=nullptr;
     level.saveLevelAs("savedLevel", objectMap);
     */
     factory->createObject("Skybox");
-    player = factory->createObject("Sphere");
-    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+    playerSphere = factory->createObject("Sphere");
+    playerSphere->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    playerSphere->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
 
 
     factory->openLevel(level);
@@ -759,7 +759,7 @@ void RenderWindow::handleInput()
     if(mInput.RMB) //editor
     {
         if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed*2);
+            mCurrentCamera->setSpeed(-mCameraSpeed);
         if(mInput.S)
             mCurrentCamera->setSpeed(mCameraSpeed);
         if(mInput.D)
@@ -774,18 +774,7 @@ void RenderWindow::handleInput()
     }
     else if(!editorMode) //karakter shit her
     {  
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
+        player->movement();
     }
 }
 
@@ -895,18 +884,26 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = true;
+        if (!editorMode)
+        player->input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = true;
+        if (!editorMode)
+        player->input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = true;
+        if (!editorMode)
+        player->input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = true;
+        if (!editorMode)
+        player->input.A = true;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -925,18 +922,26 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = true;
+        if (!editorMode)
+        player->input.UP = true;
     }
     if(event->key() == Qt::Key_Down)
     {
         mInput.DOWN = true;
+        if (!editorMode)
+        player->input.DOWN = true;
     }
     if(event->key() == Qt::Key_Left)
     {
         mInput.LEFT = true;
+        if (!editorMode)
+        player->input.LEFT = true;
     }
     if(event->key() == Qt::Key_Right)
     {
         mInput.RIGHT = true;
+        if (!editorMode)
+        player->input.RIGHT = true;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -955,18 +960,26 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
+        if (!editorMode)
+        player->input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = false;
+        if (!editorMode)
+        player->input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = false;
+        if (!editorMode)
+        player->input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = false;
+        if (!editorMode)
+        player->input.A = false;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -985,18 +998,26 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = false;
+        if (!editorMode)
+        player->input.UP = false;
     }
     if(event->key() == Qt::Key_Down)
     {
         mInput.DOWN = false;
+        if (!editorMode)
+        player->input.DOWN = false;
     }
     if(event->key() == Qt::Key_Left)
     {
         mInput.LEFT = false;
+        if (!editorMode)
+        player->input.LEFT = false;
     }
     if(event->key() == Qt::Key_Right)
     {
         mInput.RIGHT = false;
+        if (!editorMode)
+        player->input.RIGHT = false;
     }
     if(event->key() == Qt::Key_U)
     {
