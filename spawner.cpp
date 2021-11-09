@@ -290,14 +290,21 @@ void Spawner::update(float z)
         }
     }
 
-    /*for(int i = 0; i < spawnedHindrances.size(); i++)
+    for(int i = 0; i < spawnedHindrances.size(); i++)
     {
         if(spawnedHindrances[i]->TransformComp->mMatrix.getPosition().z - 5 > z)
         {
-            ObjSpawnFactory->mGameObject.erase(ObjSpawnFactory->mGameObject.begin());
-            mMainWindow->removeObjectFromWorldList();
+            for (int y = 0; y < ObjSpawnFactory->mGameObject.size(); y++)
+            {
+                if (ObjSpawnFactory->mGameObject[y] == spawnedHindrances[i])
+                {
+                    ObjSpawnFactory->mGameObject.erase(ObjSpawnFactory->mGameObject.begin() + y);
+                    mMainWindow->removeObjectFromWorldList(y);
+                    spawnedHindrances.erase(spawnedHindrances.begin() + i);
+                }
+            }
         }
-    }*/
+    }
 }
 
 void Spawner::resetSpawner()

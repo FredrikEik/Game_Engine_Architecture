@@ -409,13 +409,13 @@ void RenderWindow::stopSound()
 void RenderWindow::setSelectionIndex(int index)
 {
     ObjFactory->setOBJindex(index);
-    qDebug() << index;
+    //qDebug() << index;
 }
 
 void RenderWindow::deleteSelection()
 {
     int index = ObjFactory->getOBJindex();
-    qDebug() << index;
+    //qDebug() << index;
     if (index != -1)
     {
         ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin()+index);
@@ -769,16 +769,14 @@ void RenderWindow::handleInput()
     if (bPlayGame && mPlayer)
     {
         float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
-        if(mInput.A){
+        if(mInput.A)
             mPlayer->Move(-1.7f / deltaTime);
-            qDebug() << "velocity: " << 1.7 << " deltaTime: " << deltaTime << " = " << 1.7 / deltaTime;
-        }
         if(mInput.D)
             mPlayer->Move(1.7f / deltaTime);
         if(mInput.SPACE){
             mPlayer->Jump(mJump);
         }
-        mPlayer->update(mTimeStart.nsecsElapsed() / 1000000.f);
+        mPlayer->update(deltaTime);
         gsl::Vector3D position = mCurrentCamera->getPosition();
         mCurrentCamera->setPosition(gsl::Vector3D(position.x, position.y, position.z + (-4 / deltaTime)));
     }

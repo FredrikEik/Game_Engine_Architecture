@@ -14,7 +14,7 @@ void player::update(float deltaTime)
 {
     if (!bCanJump)
     {
-        qDebug() << "velocity: " << mVelocity << " deltaTime: " << deltaTime << " = " << mVelocity / deltaTime;
+        //qDebug() << "velocity: " << mVelocity << " deltaTime: " << deltaTime << " = " << mVelocity / deltaTime;
         mHeight += mVelocity / deltaTime;
         mVelocity -= 9.81f / deltaTime;
         //qDebug() << "velocity: " << mVelocity << " height: " << mHeight;

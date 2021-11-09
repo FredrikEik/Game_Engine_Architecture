@@ -96,6 +96,10 @@ void MainWindow::removeObjectFromWorldList()
 {
     delete ui->WorldObjects->takeItem(ui->WorldObjects->currentRow());
 }
+void MainWindow::removeObjectFromWorldList(int i)
+{
+    delete ui->WorldObjects->takeItem(i);
+}
 
 int MainWindow::getCurrentRow()
 {

@@ -22,6 +22,7 @@ public:
 
     void addObjectToWorldList(std::string name);
     void removeObjectFromWorldList();
+    void removeObjectFromWorldList(int i);
     int getCurrentRow();
 
     void displayCurrentTransform(int index);
