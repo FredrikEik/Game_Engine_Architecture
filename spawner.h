@@ -13,15 +13,19 @@ public:
     Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow);
 
     void SpawnRow(int rowLength);
+    void SpawnHindrances(int hindranceLength);
     //void addObjectToEditor(std::string object);
 
     void update(float z);
+    int HindranceType = 0;
 
 private:
     MainWindow *mMainWindow {nullptr};
     ObjectFactory* ObjSpawnFactory;
     GameObject* SpawnedObject {nullptr};
     std::vector<GameObject*> spawnedObjects;
+    GameObject* SpawnedHindrance {nullptr};
+    std::vector<GameObject*> spawnedHindrances;
 
 };
 
