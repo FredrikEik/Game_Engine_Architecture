@@ -14,8 +14,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
     GameObject* GameBlock = {};
     bool tetrominoCraftGrid[4][3] = {{0}};
 
-    switch (tetromino)
-    {
+switch (tetromino)
+{
     case 1:
     {
         //Create line
@@ -24,8 +24,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                            {1, 0, 0},
                            {1, 0, 0}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = line[i][j];
             }
@@ -41,8 +41,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                             {1, 1, 0},
                             {1, 1, 0}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = block[i][j];
             }
@@ -58,8 +58,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                              {1, 1, 0},
                              {0, 1, 1}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = sigzag[i][j];
             }
@@ -74,8 +74,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                                 {0, 1, 1},
                                 {1, 1, 0}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = revSigzag[i][j];
             }
@@ -90,8 +90,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                            {1, 0, 0},
                            {1, 1, 0}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = Lshape[i][j];
             }
@@ -106,8 +106,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                               {0, 0, 1},
                               {0, 1, 1}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = revLshape[i][j];
             }
@@ -122,8 +122,8 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
                              {0, 1, 0},
                              {1, 1, 1}};
 
-        for (int i = 0; i > 4; i++)
-            for (int j = 0; j > 3; j++)
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 3; j++)
             {
                 tetrominoCraftGrid[i][j] = tshape[i][j];
             }
@@ -132,13 +132,13 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
 
     default:
         qDebug() << "Invalid input to TetrominoMaker-Function";
-    }
+}
 
-    for (int i = 0; i > 4; i++)
-        for (int j = 0; j > 3; j++)
-        {
-            qDebug() << i << j << tetrominoCraftGrid[i][j];
-        }
+//    for (int i = 0; i < 4; i++)
+//        for (int j = 0; j < 3; j++)
+//        {
+//            std::cout << "position " << i << " and " << j << " is " << tetrominoCraftGrid[i][j] << "\n";
+//        }
 
     return GameBlock;
 }
@@ -146,17 +146,14 @@ GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
 int GamePlayMechanics::GetTetromino()
 {
     //Select a random block out of the seven tetrominos. Discard if equal to last one.
-    int oldTetromino, currentTetromino;
+    int currentTetromino = 0;
+    int oldTetromino = 0;
 
-    while (oldTetromino == currentTetromino)
+    while (currentTetromino == oldTetromino) //This needs reworking, but isnt important right now. Need to keep track of oldTetromino in a way that is "stored"
     {
-        currentTetromino = QRandomGenerator::global()->bounded(1, 8); //Include lowest, exclude largest
-        qDebug() << currentTetromino;
+        currentTetromino = QRandomGenerator::global()->bounded(1, 8); //Include lowest, exclude largest;
+        qDebug() << "current" << currentTetromino;
     }
-    oldTetromino = currentTetromino;
-
-    qDebug() << oldTetromino << currentTetromino;
-
     return currentTetromino;
 }
 

@@ -226,8 +226,8 @@ void CoreEngine::gameLoop()
     PhysicsHandler ph(mRenderSystem);
     ph.movePhysicsObject(mGameObjects);
 
-    int tetromino = 1;
     GamePlayMechanics tm;
+    int tetromino = tm.GetTetromino();
     GameObject* gameBlock = tm.TetrominoMaker(tetromino);
 
     mRenderSystem->render();
