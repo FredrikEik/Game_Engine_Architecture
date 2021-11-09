@@ -18,6 +18,8 @@
 #include "shapefactory.h"
 #include "soundmanager.h"
 #include "soundsource.h"
+#include "player.h"
+#include "enemy.h"
 
 #include <iostream>
 

@@ -341,9 +341,9 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
 
     //24 x 18 fra -12 til +12 -9 til +9
-    int scale = 3;
-    float a = 4 * scale;
-    float b = 3 * scale;
+
+    float a = 14;
+    float b = 11;
     m->mVertices.push_back(Vertex{-a, 0.0,-b,  0.0, 0.3, 0.2});
     m->mVertices.push_back(Vertex{-a, 0.0, b,  0.0, 0.3, 0.2});
     m->mVertices.push_back(Vertex{a,  0.0,-b,  0.0, 0.3, 0.2});
@@ -360,45 +360,47 @@ void ShapeFactory::makeVertices()
 
     m->mDrawType = GL_TRIANGLES;
 
-    m->mVertices.push_back(Vertex{0,0,0,   1,0,0});
-    m->mVertices.push_back(Vertex{8.5,0,0, 1,0,0});       // bottom surface
-    m->mVertices.push_back(Vertex{0,1.5,0, 1,0,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0, 1,0,0});
+    m->mVertices.push_back(Vertex{8.5,0  ,0, 1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{0  ,1.5,0, 1,0,0});
 
-    m->mVertices.push_back(Vertex{8.5,0,0,    1,0,0});
+    m->mVertices.push_back(Vertex{8.5,0  ,0,  1,0,0});
     m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,0});
-    m->mVertices.push_back(Vertex{0,  1.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0  ,1.5,0,  1,0,0});
 
-    m->mVertices.push_back(Vertex{8.5,0,0,  1,0,1});
-    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});       // right surface
-    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,0  ,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,0  ,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{8.5,1.5,0.5,  1,0,1});
 
-    m->mVertices.push_back(Vertex{8.5,0,0,1,    0,1});
-    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,0,1});
-    m->mVertices.push_back(Vertex{8.5,0,  1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,0  ,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,0  ,0.5,  1,0,1});
 
-    m->mVertices.push_back(Vertex{0,0,1.5,1,    1,0});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,1,0});       // top surface
-    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{8.5,1.5,0.5,  1,1,0});
 
-    m->mVertices.push_back(Vertex{0,  0,1.5,1,    1,0});
-    m->mVertices.push_back(Vertex{8.5,0,  1.5,  1,1,0});
-    m->mVertices.push_back(Vertex{8.5,1.5,1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{8.5,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{8.5,1.5,0.5,  1,1,0});
 
-    m->mVertices.push_back(Vertex{0,0,1.5,1,  0,0});
-    m->mVertices.push_back(Vertex{0,0,0,  1,  0,0});       //left surface
-    m->mVertices.push_back(Vertex{0,1.5,  1.5, 1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,0.5,    1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,0  ,    1,0,0});       //left surface
+    m->mVertices.push_back(Vertex{0,1.5,0.5,    1,0,0});
 
-    m->mVertices.push_back(Vertex{0,0,  0,     1,0,0});
-    m->mVertices.push_back(Vertex{0,1.5,0,   1,0,0});
-    m->mVertices.push_back(Vertex{0,1.5,1.5, 1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,  0,    1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0  ,    1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0.5,    1,0,0});
 
-    m->mVertices.push_back(Vertex{0,  1.5,0,    1,0,1});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});   // back surface
-    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{8.5,1.5,0  ,  1,0,1});
 
-    m->mVertices.push_back(Vertex{8.5,1.5,0,  1,0,1});
-    m->mVertices.push_back(Vertex{8.5,1.5,1.5,1,0,1});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{8.5,1.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,0,1});
+
+
 
 
     gsl::Vector3D min = gsl::Vector3D(0,0,0);
@@ -414,45 +416,45 @@ void ShapeFactory::makeVertices()
 
     m->mDrawType = GL_TRIANGLES;
 
-    m->mVertices.push_back(Vertex{0,0,0,   1,0,0});
-    m->mVertices.push_back(Vertex{4.5,0,0, 1,0,0});       // bottom surface
-    m->mVertices.push_back(Vertex{0,1.5,0, 1,0,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0, 1,0,0});
+    m->mVertices.push_back(Vertex{4.5,0  ,0, 1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{0  ,1.5,0, 1,0,0});
 
-    m->mVertices.push_back(Vertex{4.5,0,0,    1,0,0});
+    m->mVertices.push_back(Vertex{4.5,0  ,0,  1,0,0});
     m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,0});
-    m->mVertices.push_back(Vertex{0,  1.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{0  ,1.5,0,  1,0,0});
 
-    m->mVertices.push_back(Vertex{4.5,0,0,  1,0,1});
-    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});       // right surface
-    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,0  ,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,0  ,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{4.5,1.5,0.5,  1,0,1});
 
-    m->mVertices.push_back(Vertex{4.5,0,0,1,    0,1});
-    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,0,1});
-    m->mVertices.push_back(Vertex{4.5,0,  1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,0  ,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,0  ,0.5,  1,0,1});
 
-    m->mVertices.push_back(Vertex{0,0,1.5,1,    1,0});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,1,0});       // top surface
-    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{4.5,1.5,0.5,  1,1,0});
 
-    m->mVertices.push_back(Vertex{0,  0,1.5,1,    1,0});
-    m->mVertices.push_back(Vertex{4.5,0,  1.5,  1,1,0});
-    m->mVertices.push_back(Vertex{4.5,1.5,1.5,  1,1,0});
+    m->mVertices.push_back(Vertex{0  ,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{4.5,0  ,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{4.5,1.5,0.5,  1,1,0});
 
-    m->mVertices.push_back(Vertex{0,0,1.5,1,  0,0});
-    m->mVertices.push_back(Vertex{0,0,0,  1,  0,0});       //left surface
-    m->mVertices.push_back(Vertex{0,1.5,  1.5, 1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,0.5,    1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,0  ,    1,0,0});       //left surface
+    m->mVertices.push_back(Vertex{0,1.5,0.5,    1,0,0});
 
-    m->mVertices.push_back(Vertex{0,0,  0,     1,0,0});
-    m->mVertices.push_back(Vertex{0,1.5,0,   1,0,0});
-    m->mVertices.push_back(Vertex{0,1.5,1.5, 1,0,0});
+    m->mVertices.push_back(Vertex{0,0  ,  0,    1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0  ,    1,0,0});
+    m->mVertices.push_back(Vertex{0,1.5,0.5,    1,0,0});
 
-    m->mVertices.push_back(Vertex{0,  1.5,0,    1,0,1});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});   // back surface
-    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{4.5,1.5,0  ,  1,0,1});
 
-    m->mVertices.push_back(Vertex{4.5,1.5,0,  1,0,1});
-    m->mVertices.push_back(Vertex{4.5,1.5,1.5,1,0,1});
-    m->mVertices.push_back(Vertex{0,  1.5,1.5,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,0  ,  1,0,1});
+    m->mVertices.push_back(Vertex{4.5,1.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{0  ,1.5,0.5,  1,0,1});
 
     min = gsl::Vector3D(0,0,0);
     max = gsl::Vector3D(4.5, 1.5, 1.5);

@@ -154,9 +154,6 @@ void RenderWindow::init()
     makeMap();
 
 
-
-
-
 }
 
 
@@ -202,7 +199,7 @@ void RenderWindow::initObjects()
     temp = mShapeFactory.createShape("BigWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-4.f, 0.f, 7.5f);
+    temp->move(-14.f, 0.f, 0.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
@@ -212,7 +209,7 @@ void RenderWindow::initObjects()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-13.f, 0.f, -2.5f);
+    temp->move(-9.f, 0.f, -7.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -236,8 +233,9 @@ void RenderWindow::initObjects()
     mPlayer = new Player();
     mPlayer->mMaterial->mShaderProgram = 2; //plain shader
     mPlayer->init();
-    mPlayer->move(0,1,0);
+    mPlayer->move(4,0,0);
     mVisualObjects.push_back(mPlayer);
+    mPlayer->mTransform->mMatrix.scale(0.7);
     mTransformComp.push_back(mPlayer->mTransform);
     mNameComp.push_back(mPlayer->mNameComp);
 
@@ -252,7 +250,7 @@ void RenderWindow::initObjects()
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox();
-    mSkyBox->setTexture();
+    //mSkyBox->setTexture();
     mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
     mSkyBox->init();
     //mVisualObjects.push_back(mSkyBox);
@@ -262,6 +260,17 @@ void RenderWindow::initObjects()
     mLight->mMaterial->mShaderProgram = 2;    //Phongshader
     mLight->move(0.f, 6.f, 0.f);
     mLight->init();
+
+    mEnemy = new Enemy();
+    mEnemy->mMaterial->mShaderProgram = 0; //plain shader
+    mEnemy->init();
+    //mEnemy->move();
+    //mEnemy->move(0,0,0);
+    mEnemy->mTransform->mMatrix.scale(0.2);
+    mVisualObjects.push_back(mEnemy);
+    mTransformComp.push_back(mEnemy->mTransform);
+    mNameComp.push_back(mEnemy->mNameComp);
+
     //mVisualObjects.push_back(mLight);
 
 
@@ -285,6 +294,9 @@ void RenderWindow::initObjects()
 
 void RenderWindow::makeObject()
 {
+    int viewMatrix{-1};
+    int projectionMatrix{-1};
+    int modelMatrix{-1};
     //Draws the objects
     for(int i{0}; i < mVisualObjects.size(); i++)
     {
@@ -297,9 +309,7 @@ void RenderWindow::makeObject()
 
         //This block sets up the uniforms for the shader used in the material
         //Also sets up texture if needed.
-        int viewMatrix{-1};
-        int projectionMatrix{-1};
-        int modelMatrix{-1};
+
 
         if (mVisualObjects[i]->mMaterial->mShaderProgram == 0) //PlainShader
         {
@@ -314,7 +324,7 @@ void RenderWindow::makeObject()
             modelMatrix = mMatrixUniform1;
             glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 2)//PhongShader
+        else if (mLight->mMaterial->mShaderProgram == 2)//PhongShader
         {
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
@@ -323,7 +333,7 @@ void RenderWindow::makeObject()
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, mLight->mLightColor.x(), mLight->mLightColor.y(), mLight->mLightColor.z());
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 3)//SkyboxShader
+        else if (mSkyBox->mMaterial->mShaderProgram == 3)//SkyboxShader
         {
             viewMatrix = vMatrixUniform3;
             projectionMatrix = pMatrixUniform3;
@@ -341,12 +351,20 @@ void RenderWindow::makeObject()
         glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
         glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, mVisualObjects[i]->mMesh->mVertices.size()/*Lod(i)*/);
         glBindVertexArray(0);
+
+
     }
 
+//    glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//    glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLight->mTransform->mMatrix.constData());
     glBindVertexArray(mLight->mMesh->mVAO );
     glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
     glBindVertexArray(0);
 
+//    glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//    glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mSkyBox->mTransform->mMatrix.constData());
     glBindVertexArray(mSkyBox->mMesh->mVAO );
     glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
     glBindVertexArray(0);
@@ -356,6 +374,9 @@ void RenderWindow::makeObject()
 //    glBindVertexArray(0);
 
     if(playM==false){
+//        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mFrustumSystem->mTransform->mMatrix.constData());
         glBindVertexArray( mFrustumSystem->mMesh->mVAO );
         glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
         glBindVertexArray(0);}
@@ -381,6 +402,7 @@ void RenderWindow::render()
     // HandleInput();
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
+
     //mFrustumSystem->updateFrustumPos(mPlayCamera.position());
     //Check Collision
     //    for(int i{0}; i < mVisualObjects.size(); i++)
@@ -389,6 +411,7 @@ void RenderWindow::render()
     //        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[i]->mCollision))
     //            qDebug() <<"Collision detected";
     //    }
+
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
@@ -399,6 +422,17 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     makeObject();
+    mEnemy->move(mPlayer,mPlayer->mTransform->mPosition);
+
+
+    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemy->mCollision))
+    {
+        mEnemy->Checkmove = true;
+       // ResetGame();
+        qDebug() <<"Player hit detected";
+        //mEnemy->Checkmove = false;
+    }else mEnemy->Checkmove = false;
+
 
 
     //Calculate framerate before
@@ -413,6 +447,11 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
+}
+
+void RenderWindow::ResetGame()
+{
+
 }
 
 
@@ -566,18 +605,10 @@ void RenderWindow::makeMap()
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
 
-//    temp = mShapeFactory.createShape("BigWall");
-//    temp->init();
-//    temp->mMaterial->mShaderProgram = 0;    //plain shader
-//    temp->move(-4.f, 0.f, 7.5f);
-//    mVisualObjects.push_back(temp);
-//    mTransformComp.push_back(temp->mTransform);
-//    mNameComp.push_back(temp->mNameComp);
-
     temp = mShapeFactory.createShape("BigWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-17.f, 0.f, .5f);
+    temp->move(-4.f, 0.f, 7.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
@@ -585,26 +616,16 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("BigWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(10.f, 0.f, .5f);
+    temp->move(5.5f, 0.f, .5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
 
 
-
-//    temp = mShapeFactory.createShape("SmallWall");
-//    temp->init();
-//    temp->mMaterial->mShaderProgram = 0;    //plain shader
-//    temp->move(-13.f, 0.f, -2.5f);
-//    mVisualObjects.push_back(temp);
-//    mTransformComp.push_back(temp->mTransform);
-//    temp->mTransform->mMatrix.rotateY(90.f);
-//    mNameComp.push_back(temp->mNameComp);
-
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-9.f, 0.f, -8.5f);
+    temp->move(-5.f, 0.f, -3.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -613,7 +634,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(9.f, 0.f, -8.5f);
+    temp->move(-5.f, 0.f, 0.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -623,7 +644,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(13.f, 0.f, -2.5f);
+    temp->move(-9.f, 0.f, 4.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -632,7 +653,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-12.f, 0.f, 4.5f);
+    temp->move(6.f, 0.f, .5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -641,7 +662,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-7.f, 0.f, 8.5f);
+    temp->move(6.f, 0.f, -4.f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -650,7 +671,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-9.f, 0.f, 13.5f);
+    temp->move(10.f, 0.f, 4.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);
@@ -659,7 +680,7 @@ void RenderWindow::makeMap()
     temp = mShapeFactory.createShape("SmallWall");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(14.f, 0.f, 4.5f);
+    temp->move(10.f, 0.f, -7.5f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
     temp->mTransform->mMatrix.rotateY(90.f);

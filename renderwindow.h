@@ -6,25 +6,15 @@
 #include <QTimer>
 #include <QElapsedTimer>
 
-#include "input.h"
-#include "constants.h"
-#include "inputsystem.h"
-#include "component.h"
-#include "shapefactory.h"
+
 #include "obj.h"
-#include "playerinputcomponent.h"
 #include "vector4d.h"
 #include "matrix4x4.h"
 #include "collisionsystem.h"
-#include "skybox.h"
-#include "light.h"
 
-#include "soundsource.h"
-#include "soundmanager.h"
+
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
-
-
 #include <math.h>       /* sqrt */
 
 
@@ -80,7 +70,10 @@ private:
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
     Skybox *mSkyBox;
+    Enemy *mEnemy;
     Light * mLight{nullptr};
+
+    void ResetGame();
 
 
     static const int nrOfShapes = 5;

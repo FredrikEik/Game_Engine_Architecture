@@ -11,6 +11,7 @@ Skybox::Skybox()
     mMaterial = new MaterialComponent();
     mNameComp = new NameComponent();
     mNameComp->ObjectName = "SkyBox";
+    setTexture();
 }
 
 
