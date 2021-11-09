@@ -36,7 +36,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
-        objectToCreate->getSphereCollisionComponent()->radius = 0.5;
+        objectToCreate->getSphereCollisionComponent()->radius = 0.7;
         cubecounter++;
         objectToCreate->mObjectType = "Cube";
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
@@ -111,7 +111,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectType = "Camera";
         objectToCreate->mObjectName = "Camera " + std::to_string(cameracounter);
     }
-    else if(objectName == "Skybox")
+   /* else if(objectName == "Skybox")
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
@@ -121,7 +121,7 @@ GameObject* Factory::createObject(std::string objectName)
         //skyboxcounter++;
         objectToCreate->mObjectName = "Skybox";
     }
-
+*/
     else if(objectName == "Light")
     {
         objectToCreate = new Light;

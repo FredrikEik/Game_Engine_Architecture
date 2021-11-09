@@ -128,6 +128,7 @@ private:
 
 
     float mAspectratio{1.f};
+    int objectsDrawn{0};
 
     class Factory* factory = new Factory;
     class gsml::Quadtree<uint32_t, GameObject*> mQuadtree;

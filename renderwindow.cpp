@@ -294,7 +294,7 @@ GameObject *temp=nullptr;
             for(int j{0}; j < 10; j++)
             {
                 temp = factory->createObject("Cube");
-                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,-10.f,2.f*j);
                 temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
                 //TODO: Scaling have to be made easier and more automatic than this!
             }
@@ -398,21 +398,21 @@ void RenderWindow::render()
                                 {
                                    // qDebug() << "Object inside frustum";
                                     factory->mGameObjects[i]->draw();
+                                    objectsDrawn++;
+
+
                                 }
                             }
                         /*}
                     }
                 }
             }*/
-                if(dynamic_cast<Camera*>(factory->mGameObjects[i]) != nullptr)
-                {
-                    factory->mGameObjects[i]->draw();
-                }
 			}
-            else
+           /* else
             {
                 factory->mGameObjects[i]->draw();
-            }
+            }*/
+
 
             //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
             /*
@@ -503,6 +503,11 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+
+
+    qDebug() << "Rendered objects: ";
+    qDebug() << objectsDrawn;
+    objectsDrawn = 0;
 
 }
 
