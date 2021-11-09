@@ -58,7 +58,6 @@ private:
     static CoreEngine* mInstance;   //Not singleton, but can use static getInstance()
 
     class Logger *mLogger{nullptr};
-
 };
 
 #endif // COREENGINE_H

@@ -1,5 +1,6 @@
 #include "gameplaymechanics.h"
-#include <QRandomGenerator>
+#include "gameobjectmanager.h"
+#include <QRandomGenerator> //for random number generation
 
 //Create the rules and gameplay of tetris
 
@@ -7,28 +8,32 @@ GamePlayMechanics::GamePlayMechanics()
 {
     //Set up 2D array of squares of tetris
     bool gameField[6][9] = {};
+    mGameObjectManager = &GameObjectManager::getInstance();
 }
 
 GameObject* GamePlayMechanics::TetrominoMaker(int tetromino)
 {
-    GameObject* GameBlock = {};
-    bool tetrominoCraftGrid[4][3] = {{0}};
+//    bool tetrominoCraftGrid[4][3] = {{0}};
+    std::string GameBlockName = {};
 
+//Find the design of the seven tetrominos given the input from 1 to 7.
 switch (tetromino)
 {
     case 1:
     {
         //Create line
-        bool line[4][3] = {{1, 0, 0},
-                           {1, 0, 0},
-                           {1, 0, 0},
-                           {1, 0, 0}};
+        GameBlockName = "Line.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = line[i][j];
-            }
+//        bool line[4][3] = {{1, 0, 0}, //Tried being a bit fancy with the tetromino-creation,
+//                           {1, 0, 0}, //but i think its easier using 3d models and then using their vertices for collision
+//                           {1, 0, 0},
+//                           {1, 0, 0}};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = line[i][j];
+//            }
 
     break;
     }
@@ -36,16 +41,18 @@ switch (tetromino)
     case 2:
     {
         //Create 2x2 block
-        bool block[4][3] = {{0, 0, 0},
-                            {0, 0, 0},
-                            {1, 1, 0},
-                            {1, 1, 0}};
+        GameBlockName = "Cube.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = block[i][j];
-            }
+//        bool block[4][3] = {{1, 1, 0},
+//                            {1, 1, 0},
+//                            {0, 0, 0},
+//                            {0, 0, 0}};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = block[i][j];
+//            }
 
     break;
     }
@@ -53,80 +60,90 @@ switch (tetromino)
     case 3:
     {
         //Create sigzag
-        bool sigzag[4][3] = {{0, 0, 0},
-                             {0, 0, 0},
-                             {1, 1, 0},
-                             {0, 1, 1}};
+        GameBlockName = "ZigZag.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = sigzag[i][j];
-            }
+//        bool sigzag[4][3] = {{1, 1, 0},
+//                             {0, 1, 1},
+//                             {0, 0, 0},
+//                             {0, 0, 0};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = sigzag[i][j];
+//            }
     break;
     }
 
     case 4:
     {
         //create reverse sigzag
-        bool revSigzag[4][3] = {{0, 0, 0},
-                                {0, 0, 0},
-                                {0, 1, 1},
-                                {1, 1, 0}};
+        GameBlockName = "ZigZagL.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = revSigzag[i][j];
-            }
+//        bool revSigzag[4][3] = {{0, 1, 1},
+//                                {1, 1, 0},
+//                                {0, 0, 0},
+//                                {0, 0, 0};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = revSigzag[i][j];
+//            }
     break;
     }
 
     case 5:
     {
         //Create "L" shape
-        bool Lshape[4][3] = {{0, 0, 0},
-                           {1, 0, 0},
-                           {1, 0, 0},
-                           {1, 1, 0}};
+        GameBlockName = "L.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = Lshape[i][j];
-            }
+//        bool Lshape[4][3] = {{1, 0, 0},
+//                             {1, 0, 0},
+//                             {1, 1, 0},
+//                             {0, 0, 0}};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = Lshape[i][j];
+//            }
     break;
     }
 
     case 6:
     {
         //Create reverse "L" shape
-        bool revLshape[4][3] = {{0, 0, 0},
-                              {0, 0, 1},
-                              {0, 0, 1},
-                              {0, 1, 1}};
+        GameBlockName = "LR.obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = revLshape[i][j];
-            }
+//        bool revLshape[4][3] = {{0, 1, 0},
+//                                {0, 1, 0},
+//                                {1, 1, 0},
+//                                {0, 0, 0}};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = revLshape[i][j];
+//            }
        break;
     }
 
     case 7:
     {
         //Create "T" shape
-        bool tshape[4][3] = {{0, 0, 0},
-                             {0, 0, 0},
-                             {0, 1, 0},
-                             {1, 1, 1}};
+        GameBlockName = "T.Obj";
 
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                tetrominoCraftGrid[i][j] = tshape[i][j];
-            }
+//        bool tshape[4][3] = {{0, 1, 0},
+//                             {1, 1, 1},
+//                             {0, 0, 0},
+//                             {0, 0, 0};
+
+//        for (int i = 0; i < 4; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                tetrominoCraftGrid[i][j] = tshape[i][j];
+//            }
     break;
     }
 
@@ -134,14 +151,22 @@ switch (tetromino)
         qDebug() << "Invalid input to TetrominoMaker-Function";
 }
 
-//    for (int i = 0; i < 4; i++)
-//        for (int j = 0; j < 3; j++)
-//        {
-//            std::cout << "position " << i << " and " << j << " is " << tetrominoCraftGrid[i][j] << "\n";
-//        }
+//    for (int i = 0; i < 3; i++)
+//    {
+//        qDebug() << int(tetrominoCraftGrid[0][i]) << int(tetrominoCraftGrid[1][i]) << int(tetrominoCraftGrid[2][i]) << int(tetrominoCraftGrid[3][i]);
+//    }
+
+    GameObject *GameBlock;
+
+    GameBlock = mGameObjectManager->addObject(GameBlockName);
+    GameBlock->mTransform->mMatrix.translate(0.0f, 0.0f, 10.0f);
+//    GameBlock->mTransform->mMatrix.scale(0.5f);
+//    GameBlock->mName = "RollingBall";
+//    mRenderSystem->mGameObjects.push_back(GameBlock);
 
     return GameBlock;
 }
+
 
 int GamePlayMechanics::GetTetromino()
 {
@@ -149,10 +174,10 @@ int GamePlayMechanics::GetTetromino()
     int currentTetromino = 0;
     int oldTetromino = 0;
 
-    while (currentTetromino == oldTetromino) //This needs reworking, but isnt important right now. Need to keep track of oldTetromino in a way that is "stored"
+    while (currentTetromino == oldTetromino) //This needs reworking, but isnt important right now. Need to keep track of oldTetromino in a way that is "stored" between function calls
     {
         currentTetromino = QRandomGenerator::global()->bounded(1, 8); //Include lowest, exclude largest;
-        qDebug() << "current" << currentTetromino;
+        //qDebug() << "current" << currentTetromino;
     }
     return currentTetromino;
 }
