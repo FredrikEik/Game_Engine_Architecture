@@ -4,9 +4,9 @@
 #include <iostream>
 //#include "components.h"
 
-#include "entitymanager.h"
-#include "compmanager.h"
-#include "systemmanager.h"
+#include "ECS/entitymanager.h"
+#include "ECS/compmanager.h"
+#include "ECS/systemmanager.h"
 #include "ECS/ResourceManager/resourcemanager.h"
 
 class ECScoordinator
@@ -19,6 +19,10 @@ public:
         m_SystemManager = std::make_unique<SystemManager>();
         m_EntityManager = EntityManager::Create();
         m_ResourceManager = ResourceManager::Create();
+
+        RegisterComponent<TransformComponent>();
+        RegisterComponent<MeshComponent>();
+        RegisterComponent<MaterialComponent>();
     }
 
     //Entity functionality:
