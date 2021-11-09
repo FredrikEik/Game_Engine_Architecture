@@ -2,6 +2,9 @@
 #include "glm/glm.hpp"
 #include "../CoreMinimal.h"
 
+//#define DEBUG
+//#define DEBUG_BROADPHASE
+
 class Engine
 {
 public:
