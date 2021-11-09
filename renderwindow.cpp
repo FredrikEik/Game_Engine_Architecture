@@ -231,7 +231,7 @@ void RenderWindow::initObjects()
 
     */
 
-    //hjelpeObjekt = factory->createObject("Cube");
+    hjelpeObjekt = factory->createObject("Cube");
     mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
@@ -370,7 +370,7 @@ void RenderWindow::render()
                 mIndexToPickedObject = 0;
             }
 
-                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+                factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
         }
     }
