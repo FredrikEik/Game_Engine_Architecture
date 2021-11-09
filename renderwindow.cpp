@@ -1,4 +1,4 @@
-#include "renderwindow.h"
+﻿#include "renderwindow.h"
 #include <QTimer>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -102,22 +102,6 @@ void RenderWindow::init()
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
     std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
 
-
-    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-                                     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
-                                     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
-
-
-                                     setupPlainShader(0);
-                                     setupTextureShader(1);
-                                     setupSkyboxShader(2);
-
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
@@ -126,14 +110,14 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
-                               "left.bmp",
-                               "top.bmp",
-                               "bottom.bmp",
-                               "front.bmp",
-                               "back.bmp");
+    mTextures[2] = new Texture("right.bmp", //"left
+                               "left.bmp",  //"right
+                               "top.bmp",   //bottom
+                               "bottom.bmp",//top
+                               "front.bmp", //back
+                               "back.bmp"); //front
 
-    //mTextures
+
     //Set the textures loaded to a texture unit
 
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
@@ -153,36 +137,11 @@ void RenderWindow::init()
     //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-    //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
-    /*mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-/*    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-
-    mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-
-    mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "lighShader.frag").c_str());
-    qDebug() << "Light shader shader program id: " << mShaderPrograms[2]->getProgram();
-
-
-
-    setupPlainShader(0);
-    setupTextureShader(1);*/
-
-    //********************** Saving meshes to be drawn **********************
-    setupTextureShader(1);
-    setupLightShader(2);
     //********************** Making the object to be drawn **********************
 
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
-
+    factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
 
 
     //GameObject *skybox = new Skybox("../GEA2021/Assets/skybox.obj");
@@ -193,27 +152,39 @@ void RenderWindow::init()
 
 
 
-    //********************** Set up camera **********************
+    //********************** Set up camera **********************/
+    /*
     glDisable(GL_CULL_FACE);
-    /*mTestFrustumCamera = new Camera(45.0f, 4/3);
+    mTestFrustumCamera = new Camera(45.0f, 4/3);
     mTestFrustumCamera->init();
-    //mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-*/
+    mTestFrustumCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
     mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-	
+
+    //Compile shaders:
+        //NB: hardcoded path to files! You have to change this if you change directories for the project.
+        //Qt makes a build-folder besides the project folder. That is why we go down one directory
+        // (out of the build-folder) and then up into the project folder.
+    mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
+                                    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
                                      qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
     mShaderPrograms[2] = new Shader((gsl::ShaderFilePath + "lightShader.vert").c_str(),
                                     (gsl::ShaderFilePath + "lightShader.frag").c_str());
                                      qDebug() << "Light shader program id: " << mShaderPrograms[2]->getProgram();
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
+                                     qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
 
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
+    setupSkyboxShader(3);
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -266,43 +237,24 @@ GameObject *temp=nullptr;
     }
     */
 
-    level.loadLevel("../GEA2021/Saves/testLevel.json");
-
-    //Save level test
     /*
-    std::multimap<std::string, struct SpawnSettings> objectMap;
-    for(int i = 0; i < factory->mGameObjects.size(); i++)
+    GameObject *temp=nullptr;
+    for(int i{0}; i < 50; i++)
     {
-        SpawnSettings settings;
-        std::string objectType = factory->mGameObjects[i]->mObjectType;
-        settings.initialPos =  gsl::Vector3D{0,0,0};//factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
-        settings.initialScale = gsl::Vector3D{1,1,1};
-        settings.initialRot = gsl::Vector3D{0,0,0};
-        //gsl::Vector3D scale = t.mMatrix.getScale();
-        //gsl::Vector3D rot = t.mMatrix.getRotator();
-        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
-    }
-    level.saveLevelAs("savedLevel", objectMap);
-    */
-    factory->createObject("Skybox");
-    factory->openLevel(level);
-
-
-GameObject *temp=nullptr;
-        for(int i{0}; i < 50; i++)
+        for(int j{0}; j < 10; j++)
         {
-            for(int j{0}; j < 10; j++)
-            {
-                temp = factory->createObject("Cube");
-                temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
-                temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
-                //TODO: Scaling have to be made easier and more automatic than this!
-            }
+            temp = factory->createObject("Cube");
+            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+            //TODO: Scaling have to be made easier and more automatic than this!
         }
-
-            mMainWindow->updateOutliner(factory->mGameObjects);
-             hjelpeObjekt = factory->createObject("Cube");
-
+    }
+    */
+    skybox = factory->createObject("Skybox");
+    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
+    //sb->getTransformComponent()->mMatrix.setScale(25,25,25);
+    hjelpeObjekt = factory->createObject("Cube");
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 // Called each frame - doing the rendering
@@ -320,6 +272,7 @@ void RenderWindow::render()
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glEnable(GL_CULL_FACE);
     glUseProgram(0); //reset shader type before rendering
 
 
@@ -340,33 +293,29 @@ void RenderWindow::render()
 
 
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
-			glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
+            glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
-
+            qDebug() << shaderProgramIndex;
             if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
-            if(shaderProgramIndex == 2)
+            if(shaderProgramIndex == 3)
             {
-               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+               glUniform1i(mSkyboxUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
 
-
-            glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-			glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            //glUniform1i(mSkyboxUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            //glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
+
             //factory->mGameObjects[i]->draw();
+
             if(!bPause)
             {
                 factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
-            }
-
-            if(factory->mGameObjects[i]->mObjectName == "Skybox") //Makes skybox follow player
-            {
-
-                factory->mGameObjects[i]->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
             }
 
             if(toggleFrustumCulling)
@@ -413,40 +362,12 @@ void RenderWindow::render()
             {
                 factory->mGameObjects[i]->draw();
             }
-
-            //MEGA TEMP COOM COLLISION DEBUG TEST THINGY SUPER DUPER BAD
-            /*
-            for (unsigned int y=0; y<factory->mGameObjects.size(); y++)
-            {
-               if(factory->mGameObjects[i] != factory->mGameObjects[y])
-               {
-                   //Check if both are cubes
-                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Cube*>(factory->mGameObjects[y]) != nullptr)
-                   {
-                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
-                                               *dynamic_cast<Cube*>(factory->mGameObjects[y])->getBoxCollisionComponent());
-                       qDebug() << "Box " << i << "colliding with box" << y << " = " << test;
-                   }
-
-                   //Check if one is sphere and one is cube
-                   if(dynamic_cast<Cube*>(factory->mGameObjects[i]) != nullptr && dynamic_cast<Sphere*>(factory->mGameObjects[y]) != nullptr)
-                   {
-                       bool test = isColliding(*dynamic_cast<Cube*>(factory->mGameObjects[i])->getBoxCollisionComponent(),
-                                               *dynamic_cast<Sphere*>(factory->mGameObjects[y])->getSphereCollisionComponent());
-                       qDebug() << "Box " << i << "colliding with sphere" << y << " = " << test;
-                   }
-               }
-            }
-            */
-
-
             if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.
-
             hjelpeObjektMesh = new MeshComponent;
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
-            hjelpeObjektMesh->mDrawType = GL_LINES;
+            hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
 
             if (hjelpeObjekt != factory->mGameObjects[i]){
@@ -456,11 +377,11 @@ void RenderWindow::render()
             hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
-            if (tempScale.x > 50 || tempScale.y > 50 || tempScale.z > 50 ){
+//            if (tempScale.x > 50 || tempScale.y > 50 || tempScale.z > 50 ){
 
-                hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
+//                hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
 
-              }
+//              }
             }
             else if (hjelpeObjekt == factory->mGameObjects[i]){
                 mIndexToPickedObject = 0;
@@ -527,7 +448,7 @@ void RenderWindow::setupSkyboxShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mSkyboxUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
+    mSkyboxUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
 }
 
 void RenderWindow::setupLightShader(int shaderIndex)
@@ -536,10 +457,7 @@ void RenderWindow::setupLightShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    //mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
-    mSkyboxUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
     mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
-
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -780,12 +698,37 @@ void RenderWindow::handleInput()
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
+    skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
+
 }
 
 void RenderWindow::spawnHelpObject()
 {
 
 
+}
+
+void RenderWindow::saveLevel()
+{
+    std::multimap<std::string, struct SpawnSettings> objectMap;
+    for(int i = 0; i < factory->mGameObjects.size(); i++)
+    {
+        SpawnSettings settings;
+        std::string objectType = factory->mGameObjects[i]->mObjectType;
+        gsl::Matrix4x4 m = factory->mGameObjects[i]->getTransformComponent()->mMatrix;
+        settings.initialPos =  m.getPosition();
+        settings.initialScale = m.getScale();
+        settings.initialRot = m.getRotation();
+        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+    }
+    level.saveLevelAs("savedLevel", objectMap);
+}
+
+void RenderWindow::loadLevel()
+{
+    level.loadLevel("../GEA2021/Saves/savedLevel.json");
+    factory->openLevel(level);
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 //void RenderWindow::moveHelpObjectToSelected()

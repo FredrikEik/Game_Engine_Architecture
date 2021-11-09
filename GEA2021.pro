@@ -104,7 +104,7 @@ FORMS += \
 DISTFILES += \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
-	Shaders/textureshader.frag \
+    Shaders/textureshader.frag \
     Shaders/lightShader.frag \
     Shaders/lightShader.vert \
     Shaders/textureshader.frag \
@@ -112,4 +112,5 @@ DISTFILES += \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert \
     Scripts/levelscript.js \
-    Saves/testLevel.json
+    Saves/testLevel.json \
+    Saves/savedLevel.json

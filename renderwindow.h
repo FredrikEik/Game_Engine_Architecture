@@ -66,6 +66,9 @@ public:
 
     void moveHelpObjectToSelected();
 
+    void saveLevel();
+    void loadLevel();
+
 
 
 private slots:
@@ -97,14 +100,14 @@ private:
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
 
-    GLint mTextureUniform[3];
+    GLint mTextureUniform[4];
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
     // Skybox shader uniforms
-    GLint mSkyboxUniform{-1};
+    GLint mSkyboxUniform[4];
 
     // Phong shader uniforms
     GLint mLightColorUniform{-1};

@@ -27,12 +27,16 @@ public:
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;
 
+    GLint mVMatrixUniform{-1};
+    GLint mPMatrixUniform{-1};
+
     void setPosition(const gsl::Vector3D &position);
 
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
     void updateFrustumPos(float fieldOfView, float aspectRatio);
+    void updateUniforms(GLint pMatrixUniform, GLint vMatrixUniform);
 
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;

@@ -60,7 +60,7 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearPlaneNormal.normalize();
     farPlaneNormal.normalize();
 
-    qDebug() << " Normal x: " << rightPlaneNormal.x << " Normal y: " << rightPlaneNormal.y << " Normal z: "<< rightPlaneNormal.z;
+    //qDebug() << " Normal x: " << rightPlaneNormal.x << " Normal y: " << rightPlaneNormal.y << " Normal z: "<< rightPlaneNormal.z;
 
     //Nearplane right triangle
     getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});
@@ -127,7 +127,7 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
     getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
 
-    qDebug() << rightPlaneNormal;
+    //qDebug() << rightPlaneNormal;
 
     updateForwardVector();
     updateFrustumPos(FOV, aRatio);
@@ -218,8 +218,8 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     frustumComp->mMatrix.setToIdentity();
     frustumComp->mMatrix.setPosition(mPosition.x, mPosition.y, mPosition.z);
     frustumComp->mMatrix.setRotation(mPitch, mYaw, 0);
-    qDebug() << "FrustumRotation: ";
-    qDebug() << frustumComp->mMatrix.getRotation();
+    //qDebug() << "FrustumRotation: ";
+    //qDebug() << frustumComp->mMatrix.getRotation();
 
 
 /*    farplaneX  = farplaneX  + frustumComp->mMatrix.getPosition().x;
@@ -302,13 +302,13 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     farPlaneNormal.normalize();
 
 
-
+/*
     qDebug() << "RightplaneNormal: ";
     qDebug() << rightPlaneNormal;
     qDebug() << "LeftplaneNormal: ";
     qDebug() << leftPlaneNormal;
 
-    /*
+
     qDebug() << "rightPlaneNormal: " << rightPlaneNormal;
     qDebug() << "leftPlaneNormal: " << leftPlaneNormal;
 
@@ -317,14 +317,24 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 
     qDebug() << "nearPlaneNormal: " << nearPlaneNormal;
     qDebug() << "farPlaneNormal: " << farPlaneNormal;
-    */
+
     qDebug() << "Camera position: ";
     qDebug() << mPosition;
     qDebug() << "Frustum position: ";
     qDebug() << frustumComp->mMatrix.getPosition();
     qDebug() << "Rotation: ";
     qDebug() << frustumComp->mMatrix.getRotation();
+*/
 
+}
+
+void Camera::updateUniforms(GLint pMatrixUniform, GLint vMatrixUniform)
+{
+    initializeOpenGLFunctions();
+    mPMatrixUniform = pMatrixUniform;
+    mVMatrixUniform = vMatrixUniform;
+    glUniformMatrix4fv(mPMatrixUniform,1, GL_FALSE, mProjectionMatrix.constData());
+    glUniformMatrix4fv(mVMatrixUniform,1, GL_FALSE, mViewMatrix.constData());
 }
 
 gsl::Vector3D Camera::position() const
