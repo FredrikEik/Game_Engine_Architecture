@@ -18,6 +18,7 @@ public:
 
     void update(float z);
     int HindranceType = 0;
+    void resetSpawner();
 
 private:
     MainWindow *mMainWindow {nullptr};

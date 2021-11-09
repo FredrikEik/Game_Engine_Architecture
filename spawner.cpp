@@ -299,3 +299,20 @@ void Spawner::update(float z)
         }
     }
 }
+
+void Spawner::resetSpawner()
+{
+    for (int i = 0; i < spawnedObjects.size(); i += 3)
+    {
+        gsl::Vector3D temp;
+        temp = spawnedObjects[i]->TransformComp->mMatrix.getPosition();
+        spawnedObjects[i]->TransformComp->mMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+        spawnedObjects[i]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+        temp = spawnedObjects[i + 1]->TransformComp->mMatrix.getPosition();
+        spawnedObjects[i + 1]->TransformComp->mMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+        spawnedObjects[i + 1]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+        temp = spawnedObjects[i + 2]->TransformComp->mMatrix.getPosition();
+        spawnedObjects[i + 2]->TransformComp->mMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+        spawnedObjects[i + 2]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
+    }
+}
