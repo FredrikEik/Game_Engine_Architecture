@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "mainwindow.h"
 #include "physicshandler.h"
+#include "gameplaymechanics.h"
 
 //for JavaScript functionality
 #include <QtQml>
@@ -224,6 +225,10 @@ void CoreEngine::gameLoop()
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
     PhysicsHandler ph(mRenderSystem);
     ph.movePhysicsObject(mGameObjects);
+
+    int tetromino = 1;
+    GamePlayMechanics tm;
+    GameObject* gameBlock = tm.TetrominoMaker(tetromino);
 
     mRenderSystem->render();
 }
