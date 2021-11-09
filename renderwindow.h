@@ -60,6 +60,7 @@ public:
     Level level;
 
     GameObject *hjelpeObjekt=nullptr;
+    GameObject *player=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
 
     void spawnHelpObject();

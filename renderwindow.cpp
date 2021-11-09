@@ -285,6 +285,11 @@ GameObject *temp=nullptr;
     level.saveLevelAs("savedLevel", objectMap);
     */
     factory->createObject("Skybox");
+    player = factory->createObject("Sphere");
+    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+
+
     factory->openLevel(level);
 
 
@@ -636,7 +641,7 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
     if(bPause)
     {
         mVideoGameLand->stop();
-        reset(format);
+        //reset(format);
     }
     else
     {
@@ -648,6 +653,8 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
         hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
         mIndexToPickedObject = -1;
         }
+
+
 
 
     }
