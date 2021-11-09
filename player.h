@@ -8,7 +8,7 @@
 class Player : public VisualObject
 {
 public:
-    Player();
+    Player(ShapeFactory* f);
     ~Player();
     virtual void move(float dx, float dy, float dz) override;
     InputComponent* mInputComp;

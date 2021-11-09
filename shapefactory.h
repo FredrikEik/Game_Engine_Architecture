@@ -19,6 +19,8 @@ public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
     void makeVertices();
+    MeshComponent* getMesh(int i);
+    CollisionComponent* getColli(int i);
 private:
     void readFile(std::string filename, MeshComponent* m);
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);

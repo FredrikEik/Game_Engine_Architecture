@@ -199,7 +199,7 @@ void RenderWindow::initObject()
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
 
-    mPlayer = new Player();
+    mPlayer = new Player(&mShapeFactory);
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
     mPlayer->move(0,1,5);

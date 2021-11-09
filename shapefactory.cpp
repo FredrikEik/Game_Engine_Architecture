@@ -478,10 +478,20 @@ void ShapeFactory::makeVertices()
 
     readFile(pacmanString, m);
     m->mDrawType = GL_TRIANGLES;
-    c->radius = 0.5;
+    c->radius = 1;
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
+}
+
+MeshComponent* ShapeFactory::getMesh(int i)
+{
+    return myMeshes[i];
+}
+
+CollisionComponent* ShapeFactory::getColli(int i)
+{
+    return myCollis[i];
 }
 
 void ShapeFactory::readFile(std::string filename, MeshComponent* m)
