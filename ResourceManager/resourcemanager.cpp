@@ -160,6 +160,13 @@ ecs::SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
     }
     return tempSource;
 }
+//void ResourceManager::setScript(MAX_ENTITIES_TYPE entityID, std::string fileName)
+//{
+//    ecs::Script tempScript;
+//    tempScript.mName = fileName;
+//    mGameObject->mEn[entityID].mScript = tempScript;
+
+//}
 
 void ResourceManager::setUpAllTextures()
 {

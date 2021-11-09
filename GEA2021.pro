@@ -87,6 +87,7 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+#    Enemy.js \
     Shaders/mousepickershader.frag \
     Shaders/mousepickershader.vert \
     Shaders/textureshader.frag \
@@ -94,4 +95,9 @@ DISTFILES += \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert \
     mousepickershader.frag \
-    mousepickershader.vert
+    mousepickershader.vert \
+#    player.js
+
+OTHER_FILES += \
+    Enemy.js \
+    player.js

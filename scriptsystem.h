@@ -1,28 +1,57 @@
 #ifndef SCRIPTSYSTEM_H
 #define SCRIPTSYSTEM_H
 
-#include "math.h"
-#include "matrix3x3.h"
-#include "matrix4x4.h"
-#include "vector2d.h"
-#include "vector3d.h"
-#include "math_constants.h"
+
 #include "constants.h"
-#include "gltypes.h"
-#include "altypes.h"
 #include <string>
-#include <QJsonObject>
+#include <qjsonvalue.h>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QFile>
+//#include <QJSEngine>
 
-class scriptsystem
+#include <QObject>
+
+
+class scriptsystem : public QObject
 {
+    Q_OBJECT
+
+    Q_PROPERTY(float speed READ getSpeed WRITE setSpeed)
 public:
-    scriptsystem();
+    scriptsystem(QObject *parent = nullptr);
 
-    void readData(std::string scriptName);
+    void sendSignal();
 
-    void setData(MAX_ENTITIES_TYPE entityID, std::string scriptName);
+    Q_INVOKABLE int commonFunc();
 
-    QJsonObject mScriptEngine;
+    //Setter og getter for speed-variabelen
+    //navnene er de samme som i Q_PROPERTY over
+    float getSpeed() const;
+    void setSpeed(float value);
+
+signals:
+    void signalOne();
+
+public slots:
+//  en public slot kan kalles fra javascript, uten Q_INVOKABLE
+    void scriptFunction(float in);
+
+private:
+//  denne kan ikke kalles, fordi den er private
+    Q_INVOKABLE void privateFunc();
+
+//  denne har setters og getters som gjennom Q_PROPERTY kan brukes fra
+//  javascript - der den heter bare "speed" som angitt i Q_PROPERTY
+    float mSpeed{4.234f};
+
+//    void readData(std::string scriptName);
+
+//    void setData(MAX_ENTITIES_TYPE entityID, std::string scriptName);
+
+//    QJSEngine mScriptEngine;
+
+
 };
 
 #endif // SCRIPTSYSTEM_H

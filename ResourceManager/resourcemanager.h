@@ -33,8 +33,7 @@ public:
 
     bool checkCollision( GameObject* obj1, GameObject * obj2);
 
-
-
+//    void setScript(MAX_ENTITIES_TYPE entityID, std::string fileName);
 
 private:
     ResourceManager();  //singleton
@@ -50,6 +49,7 @@ private:
     std::vector<WaveRawData> mWaveBuffers;
 
     TextureHandler *mTextureHandler{nullptr};
+    class GameObject *mGameObject{nullptr};
 };
 
 #endif // RESOURCEMANAGER_H

@@ -12,6 +12,10 @@
 #include <QDebug>
 #include <QScreen>
 #include <QString>
+#include <QCoreApplication>
+#include <QDebug>       //Using qDebug
+#include <QFile>        //Reading from file
+//#include <QJSEngine>    //i get error message on QJSEngine
 
 #include "rendersystem.h"
 #include "soundsystem.h"
@@ -21,6 +25,8 @@
 #include "entity.h"
 #include "texturehandler.h"
 #include "gameobject.h"
+#include "scriptsystem.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -40,6 +46,36 @@ void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
     QSurfaceFormat format;
+
+    QCoreApplication app();
+
+//    QJSEngine engine; //can't run QJSEngine, because error on declaration
+
+    QString fileName = "../GEA2021/player.js";
+    QString fileName1 = "../GEA2021/enemy.js";
+
+    QFile scriptFile(fileName);
+
+    if (!scriptFile.open(QIODevice::ReadOnly))
+        qDebug() << "Error - NO FILE HERE: " << fileName;
+
+    //reads the file
+    QTextStream stream(&scriptFile);
+    QString contents = stream.readAll();
+    //now "contents" holds the whole JavaScript
+
+    //close the file, because we don't need it anymore
+    scriptFile.close();
+
+    //Loads the whole script into script engine:
+    //The important part! fileName is used to report bugs in the file
+//    engine.evaluate(contents, fileName); //again can't use, declaration error...
+
+//    scriptsystem *scriptsys = new scriptsystem;
+
+//    QJSValue objectTest = engine.newQObject(scriptsys);
+////    //Make a name for the object in the script engine
+//    engine.globalObject().setProperty("cObject", objectTest);
 
     //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this - sorry!)
     //you can try other versions, but then have to update RenderWindow and Shader
