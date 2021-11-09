@@ -1,5 +1,6 @@
 #include "plane.h"
 #include "mariocube.h"
+#include "mariocoin.h"
 #include "triangle.h"
 #include "cube.h"
 #include "camera.h"
@@ -133,6 +134,21 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         lightCounter++;
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
+    }
+    else if(objectName == "MarioCoin")
+    {
+        objectToCreate = new MarioCoin;
+        if(EXISTS("MarioCoin")) //If Light mesh exists
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["MarioCoin"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        objectToCreate->getSphereCollisionComponent()->radius = 0.25;
+        objectToCreate->getScriptComponent()->useScript = true;
+        mariocoinCounter++;
+        objectToCreate->mObjectName = "MarioCoin " + std::to_string(mariocoinCounter);
     }
     else{return nullptr;}
 

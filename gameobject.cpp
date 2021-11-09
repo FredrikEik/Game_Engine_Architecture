@@ -6,6 +6,8 @@ GameObject::GameObject()
     transformComp = new TransformComponent();
     materialComp = new MaterialComponent();
     sphereCollisionComp = new SphereCollisionComponent();
+    scriptComp = new JavaScriptComponent();
+
     transformComp->mMatrix.setToIdentity();
 }
 

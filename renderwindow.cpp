@@ -7,6 +7,7 @@
 #include <QStatusBar>
 #include <QDebug>
 #include <QFile>
+#include <QJSEngine>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <math.h>
@@ -142,6 +143,7 @@ void RenderWindow::init()
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
+    factory->saveMesh("../GEA2021/Assets/meshes/mariocoin.obj", "MarioCoin");
 
     //********************** Set up camera **********************/
     /*
@@ -224,10 +226,12 @@ void RenderWindow::init()
         }
     }
 
-
-
+    floatingCoin = factory->createObject("MarioCoin");
     hjelpeObjekt = factory->createObject("Cube");
     mMainWindow->updateOutliner(factory->mGameObjects);
+
+    testScriptManager = new ScriptManager(jsengine, floatingCoin);
+    testScriptManager->initScript();
 }
 
 // Called each frame - doing the rendering
@@ -248,6 +252,7 @@ void RenderWindow::render()
     //glEnable(GL_CULL_FACE);
     glUseProgram(0); //reset shader type before rendering
 
+    testScriptManager->tickScript();
 
     //Light* lightRef = static_cast<Light*>(factory->mGameObjects["Light"]);
 

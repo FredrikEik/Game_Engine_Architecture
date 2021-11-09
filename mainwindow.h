@@ -31,6 +31,8 @@ public:
 
     QSurfaceFormat format;
 
+    RenderWindow *mRenderWindow;
+
 public slots:
     void on_PlayPause_clicked(bool checked);
 
@@ -60,7 +62,6 @@ private:
     void clearLayout(QLayout *layout);
 
     QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
 

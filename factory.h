@@ -23,6 +23,7 @@ public:
     int skyboxcounter=0;
     int cameracounter=0;
     int lightCounter=0;
+    int mariocoinCounter=0;
 
     GameObject* createObject(std::string objectName);
 

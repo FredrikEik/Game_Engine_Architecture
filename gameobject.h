@@ -5,8 +5,10 @@
 #include <vector>
 #include "components.h"
 
-class GameObject: public QOpenGLFunctions_4_1_Core {
+class GameObject: public QOpenGLFunctions_4_1_Core{
+
 public:
+
     GameObject();
     virtual ~GameObject();
     virtual void init() = 0;
@@ -20,16 +22,18 @@ public:
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}
     MaterialComponent* getMaterialComponent(){return materialComp;}
+    SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
+    JavaScriptComponent* getScriptComponent() {return scriptComp;}
 
     void setMeshComponent(MeshComponent* newMeshComp){meshComp=newMeshComp;}
 
-    SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
-
 private:
+
     TransformComponent* transformComp;
     MeshComponent* meshComp;
     MaterialComponent* materialComp;
     SphereCollisionComponent* sphereCollisionComp;
+    JavaScriptComponent* scriptComp;
 
 };
 #endif // GAMEOBJECT_H

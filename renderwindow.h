@@ -12,6 +12,7 @@
 #include "input.h"
 #include "constants.h"
 #include "soundmanager.h"
+#include "scriptmanager.h"
 #include "quadtree.h"
 #include "light.h"
 
@@ -55,11 +56,14 @@ public:
     GameObject* skybox;
 
     //Javascript engine
-    QJSEngine engine;
+    QJSEngine* jsengine;
+    ScriptManager* testScriptManager;
+
 
     Level level;
 
-    GameObject *hjelpeObjekt=nullptr;
+    GameObject *floatingCoin = nullptr;
+    GameObject *hjelpeObjekt = nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
 
     void spawnHelpObject();

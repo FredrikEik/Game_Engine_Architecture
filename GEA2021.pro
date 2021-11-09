@@ -39,11 +39,13 @@ SOURCES += main.cpp \
     gsl/vector4d.cpp \
     level.cpp \
     light.cpp \
+    mariocoin.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
     quadtree.cpp \
     renderwindow.cpp \
+    scriptmanager.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
@@ -77,11 +79,13 @@ HEADERS += \
     gsl/matrix4x4.h \
     level.h \
     light.h \
+    mariocoin.h \
     mariocube.h \
     objreader.h \
     plane.h \
     quadtree.h \
     renderwindow.h \
+    scriptmanager.h \
     shader.h \
     mainwindow.h \
     skybox.h \
@@ -102,6 +106,7 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Scripts/floatingscript.js \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \
@@ -111,6 +116,5 @@ DISTFILES += \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \
     Shaders/plainvertex.vert \
-    Scripts/levelscript.js \
     Saves/testLevel.json \
     Saves/savedLevel.json

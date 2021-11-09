@@ -9,14 +9,12 @@
 struct TransformComponent
 {
 public:
-    TransformComponent();
     gsl::Matrix4x4 mMatrix;
 };
 
 struct MeshComponent
 {
 public:
-    MeshComponent();
     std::vector<Vertex> mVertices;
     std::vector<GLuint> mIndices;
 
@@ -28,18 +26,11 @@ public:
     GLint mMatrixUniform{0};
 };
 
-class MaterialComponent
+struct MaterialComponent
 {
 public:
-    MaterialComponent();
     GLuint mShaderProgram;
     GLint mTextureUnit;
-
-
-
-    void setupUniforms();
-
-
 };
 
 struct LightComponent
@@ -79,6 +70,11 @@ public:
     gsl::Vector3D rightTopFar;
 
     gsl::Matrix4x4 mMatrix;
+};
+struct JavaScriptComponent
+{
+    bool useScript{false};
+    std::string scriptToRun{"../GEA2021/Scripts/floatingscript.js"};
 };
 
 #endif // COMPONENTS_H
