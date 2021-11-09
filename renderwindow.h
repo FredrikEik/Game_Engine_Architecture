@@ -47,6 +47,7 @@ private:
     void init();
     void initObject();
     void drawObject();
+    void rePlay();
 
 
     void checkForGLerrors();
