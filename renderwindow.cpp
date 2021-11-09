@@ -756,7 +756,7 @@ void RenderWindow::handleInput()
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     if(editorMode)
     {
-    if(mInput.RMB) //Sett in character movement HER!
+    if(mInput.RMB) //editor
     {
         if(mInput.W)
             mCurrentCamera->setSpeed(-mCameraSpeed*2);
@@ -772,9 +772,8 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
     }
-    else if(!editorMode)
-    {
-        //FREE FLY
+    else if(!editorMode) //karakter shit her
+    {  
         if(mInput.W)
             mCurrentCamera->setSpeed(-mCameraSpeed);
         if(mInput.S)
