@@ -25,6 +25,10 @@ public:
 
     SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
 
+
+    void checkLodDistance(gsl::Vector3D distance, float cameraDistance);
+    bool BadLod{true};
+
 private:
     TransformComponent* transformComp;
     MeshComponent* meshComp;

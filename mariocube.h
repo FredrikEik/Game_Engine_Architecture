@@ -4,6 +4,7 @@
 #pragma once
 
 #include "gameobject.h"
+#include "cube.h"
 
 class MarioCube : public GameObject
 {
@@ -16,6 +17,7 @@ public:
     void move(float x, float y, float z) override;
 
     BoxCollisionComponent* getBoxCollisionComponent() {return boxCollisionComp;}
+    Cube* badLodMesh;
 
 private:
     BoxCollisionComponent* boxCollisionComp;

@@ -9,6 +9,10 @@ MarioCube::MarioCube()
    // objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
 
     //boxCollisionComp = new BoxCollisionComponent();
+
+    //LOD Cube Mesh
+    badLodMesh = new Cube;
+    badLodMesh->init();
 }
 
 MarioCube::~MarioCube() {}
@@ -69,8 +73,19 @@ void MarioCube::move(float x, float y, float z)
 
 void MarioCube::draw()
 {
-    glBindVertexArray( getMeshComponent()->mVAO );
-    //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
-    glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
-    glBindVertexArray(0);
+
+    if(BadLod)
+    {
+        badLodMesh->draw();
+    }
+    else
+    {
+        glBindVertexArray( getMeshComponent()->mVAO );
+        //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+        glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
+        glBindVertexArray(0);
+    }
+
+
+
 }
