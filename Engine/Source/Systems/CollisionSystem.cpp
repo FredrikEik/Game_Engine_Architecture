@@ -122,15 +122,15 @@ void CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* 
 	//assert(false); // Implement
 
 	auto AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
-#ifndef DEBUG
 	isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
-
-#endif // !Debug
-#ifdef DEBUG
-	if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
-		std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
-
-#endif // DEBUG
+//#ifndef DEBUG
+//
+//#endif // !Debug
+//#ifdef DEBUG
+//
+//#endif // DEBUG
+	//if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
+	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
 
 
 }

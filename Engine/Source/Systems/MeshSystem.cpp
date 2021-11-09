@@ -49,7 +49,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     shader->use();
     for (auto& meshComp : meshArray)
     {
-        //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
+        std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
         // skip transulenct objects
         if (meshComp.bIsTranslucent == true) 
             continue;

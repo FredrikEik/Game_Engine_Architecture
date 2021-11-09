@@ -91,9 +91,9 @@ void SweepAndPrune::sortAndSweep()
 			++CollisionsTested;
 
 		}
+		//std::cout << "tested " << CollisionsTested << " out of " << m_data.size() << " collisions before breaking\n";
 #ifdef DEBUG
 #ifdef DEBUG_BROADPHASE
-		std::cout << "tested " << CollisionsTested << " out of " << m_data.size() << " collisions before breaking\n";
 
 #endif // DEBUG_BROADPHASE
 

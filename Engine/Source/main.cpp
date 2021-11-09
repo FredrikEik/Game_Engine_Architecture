@@ -28,8 +28,7 @@
 #define GLCall(x) x
 #endif
 
-//#define DEBUG
-//#define DEBUG_BROADPHASE
+
 
 // glGetError is very slow, thus should only be used in debug builds
 static void GLClearError()
