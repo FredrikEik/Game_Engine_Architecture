@@ -51,6 +51,8 @@ public:
 
     Camera* getGameCamera();
 
+    gsl::Matrix4x4 getPlayerMatrix();
+
 private slots:
     void GameLoop();
 

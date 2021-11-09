@@ -8,6 +8,7 @@
 #include <string>
 #include "renderwindow.h"
 #include "coreengine.h"
+#include "texture.h"
 
 class CoreEngine;
 
@@ -25,6 +26,8 @@ private:
     /** Functions */
     ResourceManager();
 
+
+    int makeHeightMap(Mesh* meshComp);
 
     void makeSphereRadius(Mesh* meshIn, gsl::Vector3D &vertexIn);
 

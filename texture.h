@@ -14,6 +14,10 @@ public:
     Texture();  //basic texture from code
     Texture(const std::string &filename, bool cubeMap = false);
     float getHeightFromIndex(int i);
+    int getBytesPerPixel();
+
+    unsigned char *getmHeights();
+
     std::string mTextureFilename;
 
     int mColumns{};

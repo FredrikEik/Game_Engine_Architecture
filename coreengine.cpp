@@ -48,7 +48,7 @@ void CoreEngine::SetUpScene()
     mGameCameraMesh->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(mGameCameraMesh);
 
-    temp = mResourceManager->CreateObject("suzanne.obj");
+    temp = mResourceManager->CreateObject("heightMap");
     mRenderWindow->addToGameObjects(temp);
 
     temp = mResourceManager->CreateObject("arrow.obj");
@@ -61,7 +61,7 @@ void CoreEngine::SetUpScene()
     {
        for(int j{0}; j < 40; j++)
        {
-           int b = floor(rand() % 5 + 9);
+           int b = floor(rand() % 4 + 10);
 
            temp = mResourceManager->CreateObject(treeNames[b]);
            temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
@@ -222,4 +222,9 @@ bool CoreEngine::isPlaying()
 Camera *CoreEngine::getGameCamera()
 {
     return mGameCamera;
+}
+
+gsl::Matrix4x4 CoreEngine::getPlayerMatrix()
+{
+    return playerObject->transform->mMatrix;
 }

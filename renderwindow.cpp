@@ -195,9 +195,6 @@ void RenderWindow::render()
 
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightPositionUniform, -50.f, 50.f, 50.f);
-//            glUniform3f(mLightColorUniform, 0.93f, 0.87f, 0.5f);
-
-
         }
 
 
@@ -287,8 +284,8 @@ void RenderWindow::render()
             {
                 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
                 4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
-                0, 4, 3, 7,                   //leftside lines
-                1, 5, 2, 6                    //rightside lines
+                0, 4, 3, 7,                   //left side
+                1, 5, 2, 6                    //right side
             });
 
             frustumLines.mDrawType = GL_LINES;
@@ -375,66 +372,74 @@ void RenderWindow::setupPhongShader(int shaderIndex)
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
-//Currently using a similar solution to Ole_experiments. from Anton Gerdelan. https://antongerdelan.net/opengl/raycasting.html
-
-    int mousePixelX = event->pos().x();
-    int mousePixelY = event->pos().y();
-
-    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
-    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
-
-    float x = (2.0f * mousePixelX) / width() - 1.0f;
-    float y = 1.0f - (2.0f * mousePixelY) / height();
-
-    gsl::Vector4D ray_clip{x, y, -1.0, 1.0};
-
-    projMatrix.inverse();
-    gsl::Vector4D ray_eye = projMatrix * ray_clip;
-    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
-
-    viewMatrix.inverse();
-    gsl::Vector4D temp = viewMatrix * ray_eye;
-    gsl::Vector3D ray_wor{temp.x, temp.y, temp.z};
-    ray_wor.normalize();
-
-    for(int i{0}; i < mGameObjects.size(); i++)
+    if(mCoreEngine->isPlaying())
     {
-        gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
-        gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
+        //Should have some code to calculate the cubes forwardVector.
+        //Im not quite sure how to do it, and i've spent too much time trying to find out.
+        //Moving on for now, but this should be done before oblig 3 delivery.
 
-        gsl::Vector3D planeNormal = gsl::Vector3D::cross(ray_wor, CameraToObject); //Cross-product
-        gsl::Vector3D rayNormal = gsl::Vector3D::cross(planeNormal, ray_wor);      //Cross-product
-        rayNormal.normalize();
+        mCoreEngine->shootBullet(/* bulletDirection vector */);
 
-        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray:
-        float distance = gsl::Vector3D::dot(CameraToObject, rayNormal);
 
-        //Absolute distance
-        distance = abs(distance);
+    }
+    else // isplaying == true
+    {
+        int mousePixelX = event->pos().x();
+        int mousePixelY = event->pos().y();
 
-        //if distance to ray < objects bounding sphere == collision
-        if(distance < mGameObjects[i]->mesh->sphereRadius)
+        float x = (2.0f * mousePixelX) / width() - 1.0f;
+        float y = 1.0f - (2.0f * mousePixelY) / height();
+
+        gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+        gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+
+        gsl::Vector4D ray_clip{x, y, -1.0, 1.0};
+
+        projMatrix.inverse();
+        gsl::Vector4D ray_eye = projMatrix * ray_clip;
+        ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+
+        viewMatrix.inverse();
+        gsl::Vector4D temp = viewMatrix * ray_eye;
+        gsl::Vector3D ray_wor{temp.x, temp.y, temp.z};
+        ray_wor.normalize();
+
+        for(int i{0}; i < mGameObjects.size(); i++)
         {
-            qDebug() << "You clicked" << QString::fromStdString(mGameObjects[i]->mName) << "in gameObjects[" << i << "]";
+            gsl::Vector3D ObjectPos = mGameObjects[i]->transform->mMatrix.getPosition();
+            gsl::Vector3D CameraToObject = ObjectPos - mCurrentCamera->position();
 
-            if(mGameObjects[i]->mName == "camera.obj")
+            gsl::Vector3D planeNormal = gsl::Vector3D::cross(ray_wor, CameraToObject); //Cross-product
+            gsl::Vector3D rayNormal = gsl::Vector3D::cross(planeNormal, ray_wor);      //Cross-product
+            rayNormal.normalize();
+
+            float distance = gsl::Vector3D::dot(CameraToObject, rayNormal);
+
+            //Absolute distance
+            distance = abs(distance);
+
+            //if distance to ray < objects bounding sphere == collision
+            if(distance < mGameObjects[i]->mesh->sphereRadius)
+            {
+                qDebug() << "You clicked" << QString::fromStdString(mGameObjects[i]->mName) << "in gameObjects[" << i << "]";
+
+                if(mGameObjects[i]->mName == "camera.obj")
+                    indexToPickedObject = -1;
+                else
+                    indexToPickedObject = i;
+
+
+            /** Put arrow above selected object */
+                gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
+                mCoreEngine->MoveSelectionArrow(pos);
+
+                break;  //breaking out of for loop - does not check if the ray is touching several objects
+            }
+            else{ //if no object is selected, move arrow out of sight.
                 indexToPickedObject = -1;
-            else
-                indexToPickedObject = i;
-
-
-        /** Put arrow above selected object */
-            gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
-            mCoreEngine->MoveSelectionArrow(pos);
-
-            break;  //breaking out of for loop - does not check if the ray is touching several objects
-        }
-        else{ //if no object is selected, move arrow out of sight.
-            indexToPickedObject = -1;
+            }
         }
     }
-
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -780,10 +785,7 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.RMB = true;
     if (event->button() == Qt::LeftButton){
         mInput.LMB = true;
-        if(!mCoreEngine->isPlaying())
-            mousePicking(event);
-        else
-            mCoreEngine->shootBullet();
+        mousePicking(event);
     }
     if (event->button() == Qt::MiddleButton)
         mInput.MMB = true;

@@ -7,6 +7,7 @@ ResourceManager::ResourceManager()
 {
     mCoreEngine = CoreEngine::getInstance();
 }
+
 GameObject* ResourceManager::CreateMainCharacter(std::string filename)
 {
     //makeMainCharacter
@@ -38,8 +39,9 @@ GameObject* ResourceManager::CreateObject(std::string filename)
 
         if(filename.find(".obj") != std::string::npos)
             meshIndex = readObj(gsl::MeshFilePath + filename);
-        else
-            qDebug() << "Entered else statement in ResourceManager::CreateObject(). (Could not find '.obj' in filename)"; //for testing
+
+        if (filename.find("heightMap") != std::string::npos)
+            meshIndex = makeHeightMap(object->mesh);
 
         mMeshIndexMap.emplace(filename, meshIndex);
         mMeshComponents[meshIndex] = *object->mesh;
@@ -96,7 +98,169 @@ void ResourceManager::init(Mesh &meshComp, int lod)
 
     glBindVertexArray(0);
 }
+int ResourceManager::makeHeightMap(Mesh* meshComp)
+{
+//test mesh
+    // Front-1                           //Position           //RGB    //UV
+//    meshComp->mVertices[0].push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,   0,0});
+//    meshComp->mVertices[0].push_back(Vertex{ 0.1, -0.1,  0.1,     1,0,0,   1,0});
+//    meshComp->mVertices[0].push_back(Vertex{ 0.1,  0.1,  0.1,     1,0,0,   1,1});
+//    // Front-2
+//    meshComp->mVertices[0].push_back(Vertex{ 0.1,  0.1,  0.1,     1,0,0,   0,0});
+//    meshComp->mVertices[0].push_back(Vertex{-0.1,  0.1,  0.1,     1,0,0,   1,0});
+//    meshComp->mVertices[0].push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,   1,1});
 
+    Texture* texture;
+
+    texture = new Texture("HamarHeightMap.bmp", false);
+
+
+    int rows = texture->mRows     /4;
+    int cols = texture->mColumns  /4;
+
+    unsigned char *mHeights = texture->getmHeights();
+    int bytesPrPixel = texture->getBytesPerPixel();
+    float xyScale = .1f;
+    float zColorScale = 256.f;
+    float zScale = 0.02f;
+    int i = 0;
+    int j = 0;
+    float *sArrayHeights = new float[rows*cols];
+    if(!mHeights)
+    {
+        qDebug() << "FAIL"; //dette var bare "return;". Må kanskje flytte alt inn i void funksjon?
+        return NULL;
+    }
+    //Pusher inn alle vertexene med riktig høyde
+    for (int y = 0;y<cols;y++){
+        for (float x = 0;x<rows;x++)
+        {
+            float z = float(mHeights[i]);
+            meshComp->mVertices[0].push_back(Vertex{x*xyScale, y*xyScale, z*zScale, z/zColorScale, z/zColorScale, z/zColorScale,0,0});
+            //alle høydene i en array som jeg skal bruke til barysentriske kooridinater
+            sArrayHeights[j] = z;
+            j++;
+            i+=bytesPrPixel;
+        }
+    }
+
+    int squareCounter = 0;
+    int indexCounter = 0;
+    float XpartOfEight = 0;
+    float YpartOfEight = 0;
+    for(int y = 0;y<cols;y++){
+        for(int x=0; x<rows;x++)
+        {
+            meshComp->mVertices[0].at(indexCounter).set_st(XpartOfEight/7, YpartOfEight/7);
+            indexCounter++;
+            squareCounter++;
+            XpartOfEight+=1;
+            if(XpartOfEight>rows-1)
+            {
+                XpartOfEight = 0;
+            }
+        }
+        YpartOfEight+=1;
+        if(YpartOfEight>rows-1)
+        {
+            YpartOfEight = 0;
+        }
+    }
+
+    int c=0;
+    //Pusher inn indeksene i riktig rekkefølge slik at den tegner 1 quad av 2 trekanter per vertex, men ikke på den øverste raden.
+    for(GLuint i{}; i<meshComp->mVertices[0].size()-rows-1;i++)
+    {
+        //Sjekk for å ungå å tegne en utstrekt skrå quad fra slutten på raden til starten på neste rad
+        if(c == rows-1)
+        {
+            c=0;
+            continue;
+        }
+        meshComp->mIndices[0].push_back(i);
+        meshComp->mIndices[0].push_back(i+1);
+        meshComp->mIndices[0].push_back(i+rows);
+
+        meshComp->mIndices[0].push_back(i+rows);
+        meshComp->mIndices[0].push_back(i+1);
+        meshComp->mIndices[0].push_back(i+rows+1);
+        c++;
+    }
+
+    //Normals:
+    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
+    gsl::Vector3D n0,n1,n2,n3,n4,n5;
+
+    for(int i = 1;i<meshComp->mVertices[0].size()-rows;i++)
+    {
+
+        //Får tak i alle punktene som trengs
+        std::vector<Vertex> vert = meshComp->mVertices[0];
+        gsl::Vector3D pos = meshComp->mVertices[0].at(i).getXYZ();
+
+        if(pos.x > 0 && pos.y > 0 /*&& pos.z > 0*/)
+        {
+            pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
+
+            //p0
+            p0 = gsl::Vector3D{vert.at(i-rows).getXYZ().x, vert.at(i-rows).getXYZ().y, vert.at(i-rows).getXYZ().z};
+
+            //p1
+            p1 = gsl::Vector3D{vert.at(i+1-rows).getXYZ().x, vert.at(i+1-rows).getXYZ().y, vert.at(i+1-rows).getXYZ().z};
+
+            //p2
+            p2 = gsl::Vector3D{vert.at(i+1).getXYZ().x, vert.at(i+1).getXYZ().y, vert.at(i+1).getXYZ().z};
+
+            //p3
+            p3 = gsl::Vector3D{vert.at(i+rows).getXYZ().x,vert.at(i+rows).getXYZ().y,vert.at(i+rows).getXYZ().z};
+
+            //p4
+            p4 = gsl::Vector3D{vert.at(i-1+rows).getXYZ().x, vert.at(i-1+rows).getXYZ().y, vert.at(i-1+rows).getXYZ().z};
+
+            //p5
+            p5 = gsl::Vector3D{vert.at(i-1).getXYZ().x, vert.at(i-1+rows).getXYZ().y, vert.at(i-1+rows).getXYZ().z};
+        }
+        //lager vektorer til alle punktene
+        gsl::Vector3D v0 = p0-pCenter;
+        gsl::Vector3D v1 = p1-pCenter;
+        gsl::Vector3D v2 = p2-pCenter;
+        gsl::Vector3D v3 = p3-pCenter;
+        gsl::Vector3D v4 = p4-pCenter;
+        gsl::Vector3D v5 = p5-pCenter;
+
+        //Regner ut normalene til alle trekantene rundt punktet
+        //n0
+        n0 = v0.cross(v0,v1);
+        n0.normalize();
+        //n1
+        n1 = v1.cross(v1,v2);
+        n1.normalize();
+        //n2
+        n2 = v2.cross(v2,v3);
+        n2.normalize();
+        //n3
+        n3 = v3.cross(v3,v4);
+        n3.normalize();
+        //n4
+        n4 = v4.cross(v4,v5);
+        n4.normalize();
+        //n5
+        n5 = v5.cross(v5,v0);
+        n5.normalize();
+
+        gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+
+        vert.at(i).getNormals().setX(nV.getX());
+        vert.at(i).getNormals().setY(nV.getY());
+        vert.at(i).getNormals().setZ(nV.getZ());
+    }
+
+
+
+    init(*object->mesh, 0);
+
+    return mMeshComponents.size()-1;    //returns index to last object
+}
 void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
 {
     //making correct bounding sphere radius:

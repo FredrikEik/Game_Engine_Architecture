@@ -18,6 +18,7 @@ struct Material
 struct Transform
 {
     gsl::Matrix4x4 mMatrix;
+    gsl::Vector3D mForward = {0,0,-1};
 };
 
 struct Mesh

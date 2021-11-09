@@ -67,6 +67,16 @@ float Texture::getHeightFromIndex(int i)
     return height;
 }
 
+int Texture::getBytesPerPixel()
+{
+    return mBytesPrPixel;
+}
+
+unsigned char *Texture::getmHeights()
+{
+    return mBitmap;
+}
+
 //Read BMP into memory
 void Texture::readBitmap(const std::string &filename)
 {

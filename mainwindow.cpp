@@ -29,7 +29,8 @@ void MainWindow::makeObjList(std::vector<GameObject *> mGameObjects)
     std::string name;
     for(int i = 0; i<mGameObjects.size(); i++){
         name = mGameObjects[i]->mName;
-        name.erase(name.find(".obj"));
+        if(name.find(".obj") != std::string::npos)
+            name.erase(name.find(".obj"));
         ui->objList->addItem(QString::fromStdString(name));
     }
 }

@@ -33,6 +33,10 @@ public:
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
 
+    gsl::Vector3D getXYZ();
+    gsl::Vector3D getNormals();
+
+
 private:
     gsl::Vector3D mXYZ;
     gsl::Vector3D mNormal;
