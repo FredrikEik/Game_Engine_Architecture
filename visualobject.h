@@ -11,7 +11,6 @@ public:
     virtual ~VisualObject();
     virtual void init();
     virtual void move(float dx, float dy, float dz);
-    void readFile(std::string filename);
 
     CollisionComponent* mCollision{nullptr};
     struct TransformComponent* mTransform{nullptr};

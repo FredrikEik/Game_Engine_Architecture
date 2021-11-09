@@ -232,3 +232,8 @@ void MainWindow::on_ScaleMinus_clicked()
 {
     mRenderWindow->mTransComps[Objects]->mMatrix.scale(0.5f);
 }
+
+void MainWindow::createStatusBar()
+{
+    statusBar()->showMessage(tr("You died"), 2000);
+}

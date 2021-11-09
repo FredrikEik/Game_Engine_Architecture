@@ -48,6 +48,7 @@ private:
     void initObject();
     void makeMap();
     void drawObject();
+    void rePlay();
 
 
     void checkForGLerrors();

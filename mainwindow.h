@@ -22,6 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void selectWithMousePick(int index);
+    void createStatusBar();
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -59,6 +60,7 @@ private slots:
     void on_actionAdd_Big_Wall_triggered();
 
     void on_actionAdd_Small_Wall_triggered();
+
 
 private:
     void init();
