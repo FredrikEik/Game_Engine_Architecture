@@ -216,17 +216,18 @@ void Camera::moveRight(float delta)
 void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 {
     //Update frustum
-    //frustumComp->mMatrix.setToIdentity();
     frustumComp->mMatrix.setToIdentity();
+
     //frustumComp->mMatrix.rotateY(mYaw);
 
     frustumComp->mMatrix.translate(mPosition);
 
     frustumComp->mMatrix.setRotation(mPitch, -mYaw, 0);
-    qDebug() << mYaw;
-    qDebug() << "FrustumRotation: ";
-    qDebug() << frustumComp->mMatrix.getRotation();
-
+    //qDebug() << mYaw;
+    frustumComp->mMatrix.setPosition(mPosition.x, mPosition.y, mPosition.z);
+    frustumComp->mMatrix.setRotation(mPitch, mYaw, 0);
+    //qDebug() << "FrustumRotation: ";
+    //qDebug() << frustumComp->mMatrix.getRotation();
 
 /*    farplaneX  = farplaneX  + frustumComp->mMatrix.getPosition().x;
     farplaneY  = farplaneY  + frustumComp->mMatrix.getPosition().y;
@@ -298,13 +299,13 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     farPlaneNormal.normalize();
 
 
-
+/*
     qDebug() << "RightplaneNormal: ";
     qDebug() << rightPlaneNormal;
     qDebug() << "LeftplaneNormal: ";
     qDebug() << leftPlaneNormal;
 
-    /*
+
     qDebug() << "rightPlaneNormal: " << rightPlaneNormal;
     qDebug() << "leftPlaneNormal: " << leftPlaneNormal;
 
@@ -313,15 +314,25 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 
     qDebug() << "nearPlaneNormal: " << nearPlaneNormal;
     qDebug() << "farPlaneNormal: " << farPlaneNormal;
-    */
-    /*
+
     qDebug() << "Camera position: ";
     qDebug() << mPosition;
     qDebug() << "Frustum position: ";
     qDebug() << frustumComp->mMatrix.getPosition();
     qDebug() << "Rotation: ";
     qDebug() << frustumComp->mMatrix.getRotation();
-    */
+
+*/
+
+}
+
+void Camera::updateUniforms(GLint pMatrixUniform, GLint vMatrixUniform)
+{
+    initializeOpenGLFunctions();
+    mPMatrixUniform = pMatrixUniform;
+    mVMatrixUniform = vMatrixUniform;
+    glUniformMatrix4fv(mPMatrixUniform,1, GL_FALSE, mProjectionMatrix.constData());
+    glUniformMatrix4fv(mVMatrixUniform,1, GL_FALSE, mViewMatrix.constData());
 }
 
 gsl::Vector3D Camera::position() const

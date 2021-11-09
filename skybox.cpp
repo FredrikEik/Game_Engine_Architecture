@@ -64,7 +64,6 @@ void Skybox::init()//(GLint matrixUniform[4])
 void Skybox::readFile(std::string filename)
 {
     //Open File
-    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
     std::ifstream fileIn;
     fileIn.open (filename, std::ifstream::in);
     if(!fileIn)
@@ -205,14 +204,14 @@ void Skybox::readFile(std::string filename)
 
 void Skybox::draw()
 {
+    initializeOpenGLFunctions();
     //Disables depth masking temporarily while drawing skybox
     glDepthMask(GL_FALSE);
     glBindVertexArray(getMeshComponent()->mVAO);
     //glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, getTransformComponent()->mMatrix.constData());
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    //glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, &getMeshComponent()->mIndices);
     glDepthMask(GL_TRUE);
-
-
 }
 
 

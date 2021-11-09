@@ -54,6 +54,20 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="SaveLevel">
+        <property name="text">
+         <string>Save Level</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="LoadLevel">
+        <property name="text">
+         <string>Load Level</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="CreateObject">
         <property name="text">
          <string>Create Object</string>

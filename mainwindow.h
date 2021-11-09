@@ -49,6 +49,10 @@ private slots:
 
     void on_toggleFrustumCulling_clicked(bool checked);
 
+    void on_SaveLevel_clicked();
+
+    void on_LoadLevel_clicked();
+
 private:
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};

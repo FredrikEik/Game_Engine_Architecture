@@ -240,3 +240,15 @@ void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
     mRenderWindow->toggleFrustumCulling = checked;
 }
 
+void MainWindow::on_SaveLevel_clicked()
+{
+    mRenderWindow->saveLevel();
+    qDebug() << "Saving current level";
+}
+
+
+void MainWindow::on_LoadLevel_clicked()
+{
+    mRenderWindow->loadLevel();
+}
+

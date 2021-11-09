@@ -33,7 +33,7 @@ GameObject* Factory::createObject(std::string objectName)
         {
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Cube"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.7;
@@ -115,10 +115,11 @@ GameObject* Factory::createObject(std::string objectName)
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
-        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 3;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
 
         //skyboxcounter++;
+        objectToCreate->mObjectType = "Skybox";
         objectToCreate->mObjectName = "Skybox";
     }
 */
@@ -169,11 +170,9 @@ void Factory::openLevel(Level level)
         //Set initial location
         temp->move(settings.initialPos.getX(), settings.initialPos.getY(), settings.initialPos.getZ());
         //Set initial scale
-        temp->getTransformComponent()->mMatrix.scale(settings.initialScale);
+        temp->getTransformComponent()->mMatrix.setScale(settings.initialScale.x, settings.initialScale.y, settings.initialScale.z);
         //Set initial rotation
-        temp->getTransformComponent()->mMatrix.rotateX(settings.initialRot.x);
-        temp->getTransformComponent()->mMatrix.rotateY(settings.initialRot.y);
-        temp->getTransformComponent()->mMatrix.rotateZ(settings.initialRot.z);
+        temp->getTransformComponent()->mMatrix.setRotation(settings.initialRot.x, settings.initialRot.y, settings.initialRot.z);
     }
 }
 
