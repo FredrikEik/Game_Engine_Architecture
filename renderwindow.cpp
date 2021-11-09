@@ -155,6 +155,9 @@ void RenderWindow::init()
     mPop = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
                                                      gsl::SoundFilePath + "pop.wav", false, 1.0f);
 
+    mJump = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
+                                                      gsl::SoundFilePath + "jump.wav", false, 1.0f);
+
 //    mStereoSound->play();
 
     mMousePicker = new MousePicker(mCurrentCamera);
@@ -773,7 +776,7 @@ void RenderWindow::handleInput()
         if(mInput.D)
             mPlayer->Move(1.7f / deltaTime);
         if(mInput.SPACE){
-            mPlayer->Jump();
+            mPlayer->Jump(mJump);
         }
         mPlayer->update(mTimeStart.nsecsElapsed() / 1000000.f);
         gsl::Vector3D position = mCurrentCamera->getPosition();

@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include "objectfactory.h"
+#include "soundmanager.h"
+#include "soundsource.h"
 
 
 class player
@@ -15,7 +17,7 @@ public:
     void update(float deltaTime);
 
     void Move(float dt);
-    void Jump();
+    void Jump(SoundSource* sound);
 
 private:
     bool bCanJump { true };

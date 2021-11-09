@@ -51,11 +51,12 @@ void player::Move(float dt)
     mDt = dt;
 }
 
-void player::Jump()
+void player::Jump(SoundSource* sound)
 {
     if (bCanJump)
     {
         bCanJump = false;
         mVelocity = 6.f;
+        sound->play();
     }
 }

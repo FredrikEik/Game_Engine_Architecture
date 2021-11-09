@@ -125,7 +125,8 @@ private:
 
     ObjectFactory* ObjFactory = new ObjectFactory;
     SoundSource* mStereoSound;
-    SoundSource* mPop;  
+    SoundSource* mPop;
+    SoundSource* mJump;
     class Spawner* MapSpawner;
     class SkyBox* skyBox { nullptr };
 
