@@ -13,7 +13,7 @@ public:
     Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow);
 
     void SpawnRow(int rowLength);
-    void SpawnHindrances(int hindranceLength);
+    void SpawnHindrances();
     //void addObjectToEditor(std::string object);
 
     void update(float z);

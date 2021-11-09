@@ -98,7 +98,8 @@ void RenderWindow::init()
     mTextures[1] = new Texture("hund.bmp");
     mTextures[2] = new Texture("cobbleStone.bmp");
     mTextures[3] = new Texture("whitefur.bmp");
-    mTextures[4] = new Texture("TOG.bmp");
+    mTextures[4] = new Texture("firesky.bmp");
+    mTextures[5] = new Texture("lava.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -111,6 +112,8 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -184,6 +187,7 @@ void RenderWindow::init()
     MapSpawner = new Spawner(ObjFactory, mMainWindow);
     //MapSpawner->SpawnRow();
     MapSpawner->SpawnRow(100);
+    //MapSpawner->SpawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);
 }
 
