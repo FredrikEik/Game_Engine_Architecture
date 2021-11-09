@@ -276,6 +276,46 @@ void RenderSystem::render()
         mUseFrustumCulling = true;
         mGameCamAsFrustumCulling = true;
     }
+
+    //Immediatly this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
+    //Not using the resourcemanager to handle the skybox which could be a gameobject
+    //This seems based on code for using only a very limited amount of shaders, so i dont know how the rendersystem handles this.
+    //I know there are hard-coded integers for shaders somewhere, will look into.
+    //Seems like the rendersystem dont know about the skybox fragment and vertex shader
+    //Also how it interacts with the cubemap-functionality in texturehandler.
+
+
+//    //Draw cube
+//    shader->use();
+//    glm::mat4 model = glm::mat4(1.0f);
+//    glm::mat4 view = mEditorCamera->GetViewMatrix();
+//    glm::mat4 projection = glm::perspektive(glm::radians(mEditoreCamera.zoom), (float)SCR_HEIGHT, 0.1f, 100.0f);
+//    shader->setMatrix4x4("model", model); //Dont know if his matrix functionality is equal to the one in this project.
+//    shader->setMat4x4("view", view);
+//    shader->setMat4x4("projection", projection);
+//    //cubes
+//    glBindVertexArray(cubeVAO);
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glBindVertexArray(0);
+
+//    //Draw skybox last
+//    glDepthFunc(GL_LEQUAL);
+//    skyboxShader.use();
+//    view = glm::mat4(glm::mat3(mEditorCamera->GetViewMatrix()));
+//    skyboxShader.setMat4x4("model", model);
+//    skyboxShader.setMat4x4("view", view);
+//    skyboxShader.setMat4x4("projection", projection);
+//    //Skybox Cube
+//    glBindVertexArray(skyboxVAO);
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaptexture);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glBindVertexArray(0);
+//    glDepthFunc(GL_LESS);
+
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time

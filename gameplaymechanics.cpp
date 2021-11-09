@@ -161,7 +161,7 @@ switch (tetromino)
     GameBlock = mGameObjectManager->addObject(GameBlockName);
 //    GameBlock->mTransform->mMatrix.translate(0.0f, 0.0f, 10.0f);
 //    GameBlock->mTransform->mMatrix.scale(0.5f);
-//    GameBlock->mName = "RollingBall";
+//    GameBlock->mName = GameBlockName;
 //    mRenderSystem->mGameObjects.push_back(GameBlock);
 
     return GameBlock;

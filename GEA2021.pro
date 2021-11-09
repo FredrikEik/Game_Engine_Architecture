@@ -116,6 +116,8 @@ FORMS += \
 DISTFILES += \
     Shaders/plainshader.frag \
     Shaders/plainshader.vert \
+    Shaders/skybox.frag \
+    Shaders/skybox.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Assets/materials.json

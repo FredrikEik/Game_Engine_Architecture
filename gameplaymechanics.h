@@ -16,6 +16,7 @@ public:
     void ManageGameplayLines(bool gameField);
     GameObject* TetrominoMaker(int tetromino);
 
+
     GameObjectManager *mGameObjectManager{nullptr};
 };
 

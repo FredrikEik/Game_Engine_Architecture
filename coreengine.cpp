@@ -226,9 +226,11 @@ void CoreEngine::gameLoop()
     PhysicsHandler ph(mRenderSystem);
     ph.movePhysicsObject(mGameObjects);
 
+    //Fått basic valg av tetrominoer til å fungere.
     GamePlayMechanics tm;
-    int tetromino = tm.GetTetromino();
-    GameObject* gameBlock = tm.TetrominoMaker(tetromino);
+    int tetromino = tm.GetTetromino(); //Returnerer et tilfeldig tall mellom 1 og 7, brukes til å velge hvilken tetromino. Slår meg som overflødig, kan bruke QRand-overalt?
+    GameObject* gameBlock = tm.TetrominoMaker(tetromino); //Returnerer spill-objectet som skal brukes i scenen
+    //qDebug() << gameBlock->mName; //Krøll her også, ikke ferdig med tetrominoMaker funksjonen.
 
     mRenderSystem->render();
 }
