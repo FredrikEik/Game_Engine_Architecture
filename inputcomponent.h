@@ -7,7 +7,7 @@ struct InputComponent
 {
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
-    float mPlayerSpeed{0.1f};
+    float mPlayerSpeed{0.05f};
     int mMouseXlast{0};
     int mMouseYlast{0};
 };

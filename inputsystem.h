@@ -4,6 +4,8 @@
 #include "camera.h"
 #include "player.h"
 #include "inputcomponent.h"
+#include "collisionsystem.h"
+#include "shapefactory.h"
 
 class InputSystem
 {
@@ -13,6 +15,9 @@ public:
     void CheckActiveInput();
     void update(Camera *mCamera, Player* mPlayer, Input mInput);
     void setCameraSpeed(Camera *mCamera, float value);
+private:
+    CollisionSystem* mColSystem;
+    ShapeFactory* mFactory;
 };
 
 #endif // INPUTSYSTEM_H

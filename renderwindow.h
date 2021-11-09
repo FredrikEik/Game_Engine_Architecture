@@ -46,6 +46,7 @@ private:
 
     void init();
     void initObject();
+    void makeMap();
     void drawObject();
 
 

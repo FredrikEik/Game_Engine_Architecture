@@ -30,14 +30,17 @@ void InputSystem::update(Camera *mCamera, Player* mPlayer, Input mInput)
         i = mPlayer->mInputComp;
         //        mColSystem->CheckCollision(mPlayer->mCollision, mFactory->myShapes[1]->mCollision);
         if(mInput.W == true)
-            //            if(mColSystem->resultX)
-            mPlayer->move(0,0,-i->mPlayerSpeed);
+            //if(mColSystem->playerOnBwallY == false)
+                mPlayer->move(0,0,-i->mPlayerSpeed);
         if(mInput.S == true)
-            mPlayer->move(0,0, i->mPlayerSpeed);
+            //if(mColSystem->playerOnFwallY == false)
+                mPlayer->move(0,0, i->mPlayerSpeed);
         if(mInput.D == true)
-            mPlayer->move(i->mPlayerSpeed,0,0);
+            //if(mColSystem->playerOnRwallX == false)
+                mPlayer->move(i->mPlayerSpeed,0,0);
         if(mInput.A == true)
-            mPlayer->move(-i->mPlayerSpeed,0,0);
+            //if(mColSystem->playerOnLwallX == false)
+                mPlayer->move(-i->mPlayerSpeed,0,0);
     }
 
 }
