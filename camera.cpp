@@ -224,8 +224,6 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
 
     frustumComp->mMatrix.setRotation(mPitch, -mYaw, 0);
     //qDebug() << mYaw;
-    frustumComp->mMatrix.setPosition(mPosition.x, mPosition.y, mPosition.z);
-    frustumComp->mMatrix.setRotation(mPitch, mYaw, 0);
     //qDebug() << "FrustumRotation: ";
     //qDebug() << frustumComp->mMatrix.getRotation();
 

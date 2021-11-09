@@ -110,12 +110,12 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp", //"left
-                               "left.bmp",  //"right
-                               "top.bmp",   //bottom
-                               "bottom.bmp",//top
-                               "front.bmp", //back
-                               "back.bmp"); //front
+    mTextures[2] = new Texture("right.bmp",
+                               "left.bmp",
+                               "top.bmp",
+                               "bottom.bmp",
+                               "front.bmp",
+                               "back.bmp");
 
 
     //Set the textures loaded to a texture unit
@@ -142,15 +142,6 @@ void RenderWindow::init()
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
-
-
-    //GameObject *skybox = new Skybox("../GEA2021/Assets/skybox.obj");
-
-
-
-
-
-
 
     //********************** Set up camera **********************/
     /*
@@ -214,17 +205,14 @@ void RenderWindow::init()
     //mVideoGameLand->play();
     //mVideoGameLand2->play();
 
-
-
-
-
     //mMario->play(); //doesnt work
     //mExplosionSound->play();
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
-
-/*
-GameObject *temp=nullptr;
+    skybox = factory->createObject("Skybox");
+    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
+    skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
+    GameObject *temp=nullptr;
     for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
@@ -235,30 +223,9 @@ GameObject *temp=nullptr;
             //TODO: Scaling have to be made easier and more automatic than this!
         }
     }
-    */
 
-    /*
-    GameObject *temp=nullptr;
-    for(int i{0}; i < 50; i++)
-    {
-		for(int j{0}; j < 10; j++)
-		{
-			temp = factory->createObject("Cube");
-			temp->getTransformComponent()->mMatrix.setPosition(2.f*i,-10.f,2.f*j);
-			temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
-			//TODO: Scaling have to be made easier and more automatic than this!
-			}
-			
-            temp = factory->createObject("Cube");
-            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
-            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
-            //TODO: Scaling have to be made easier and more automatic than this!
-        }
-    }
-    */
-    skybox = factory->createObject("Skybox");
-    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
-    //sb->getTransformComponent()->mMatrix.setScale(25,25,25);
+
+
     hjelpeObjekt = factory->createObject("Cube");
     mMainWindow->updateOutliner(factory->mGameObjects);
 }
@@ -300,7 +267,7 @@ void RenderWindow::render()
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
-            qDebug() << shaderProgramIndex;
+            //qDebug() << shaderProgramIndex;
             if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
@@ -323,7 +290,7 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
             }
 
-            if(toggleFrustumCulling)
+            if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
 			{
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
@@ -351,12 +318,10 @@ void RenderWindow::render()
                                 */
                                 {
                                    // qDebug() << "Object inside frustum";
-                                    factory->mGameObjects[i]->draw();
-                                    objectsDrawn++;
-
-
+                                   factory->mGameObjects[i]->draw();
+                                   objectsDrawn++;
                                 }
-                            }
+            }
                         /*}
                     }
                 }
@@ -366,6 +331,7 @@ void RenderWindow::render()
             {
                 factory->mGameObjects[i]->draw();
             }
+
             if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.

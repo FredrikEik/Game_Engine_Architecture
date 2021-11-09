@@ -111,7 +111,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectType = "Camera";
         objectToCreate->mObjectName = "Camera " + std::to_string(cameracounter);
     }
-   /* else if(objectName == "Skybox")
+    else if(objectName == "Skybox")
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
@@ -122,7 +122,6 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectType = "Skybox";
         objectToCreate->mObjectName = "Skybox";
     }
-*/
     else if(objectName == "Light")
     {
         objectToCreate = new Light;
