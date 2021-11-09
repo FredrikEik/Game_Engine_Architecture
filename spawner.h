@@ -12,8 +12,9 @@ class Spawner
 public:
     Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow);
 
-    void SpawnRow(int rowLength);
-    void SpawnHindrances();
+    void spawnRow(int rowLength);
+    void spawnHindrances(int hindranceLength);
+    void updateHindrances();
     //void addObjectToEditor(std::string object);
 
     void update(float z);
@@ -27,6 +28,7 @@ private:
     std::vector<GameObject*> spawnedObjects;
     GameObject* SpawnedHindrance {nullptr};
     std::vector<GameObject*> spawnedHindrances;
+
 
 };
 
