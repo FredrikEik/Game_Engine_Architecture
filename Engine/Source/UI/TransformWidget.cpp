@@ -1,7 +1,10 @@
 #include "TransformWidget.h"
-#include <imgui.h>
-#include "../imgui/Bindings/imgui_impl_glfw.h"
-#include "../imgui/Bindings/imgui_impl_opengl3.h"
+//#include <imgui.h>
+//#include "../imgui/Bindings/imgui_impl_glfw.h"
+//#include "../imgui/Bindings/imgui_impl_opengl3.h"
+#include "../imgui/docking/imgui.h"
+#include "../imgui/docking/imgui_impl_opengl3.h"
+#include "../imgui/docking/imgui_impl_glfw.h"
 #include "../ECSManager.h"
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/transform.hpp>

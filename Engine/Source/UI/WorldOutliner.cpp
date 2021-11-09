@@ -1,7 +1,10 @@
 #include "WorldOutliner.h"
-#include <imgui.h>
-#include "../imgui/Bindings/imgui_impl_glfw.h"
-#include "../imgui/Bindings/imgui_impl_opengl3.h"
+//#include <imgui.h>
+//#include "../imgui/Bindings/imgui_impl_glfw.h"
+//#include "../imgui/Bindings/imgui_impl_opengl3.h"
+#include "../imgui/docking/imgui.h"
+#include "../imgui/docking/imgui_impl_opengl3.h"
+#include "../imgui/docking/imgui_impl_glfw.h"
 #include "../ECSManager.h"
 #include "Viewport.h"
 WorldOutliner::WorldOutliner(std::string inWindowName, ECSManager* inECS)

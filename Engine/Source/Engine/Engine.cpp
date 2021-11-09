@@ -2,9 +2,9 @@
 #include <iostream>
 
 
-#include <imgui.h>
-#include "../imgui/Bindings/imgui_impl_glfw.h"
-#include "../imgui/Bindings/imgui_impl_opengl3.h"
+//#include <imgui.h>
+//#include "../imgui/Bindings/imgui_impl_glfw.h"
+//#include "../imgui/Bindings/imgui_impl_opengl3.h"
 
 
 #include <glad/glad.h>
@@ -27,6 +27,10 @@
 #include "../Input/Input.h"
 #include "../Components/Components.h"
 #include "AL/al.h"
+
+#include "../imgui/docking/imgui.h"
+#include "../imgui/docking/imgui_impl_opengl3.h"
+#include "../imgui/docking/imgui_impl_glfw.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -212,8 +216,9 @@ void Engine::loop()
 		//ImGui::End();
 		//ImGui::EndGroup();
 		//ImGui::DestroyContext(Context);
+
 		//{
-		//	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+			//static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
 		//	// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		//	// because it would be confusing to have two docking targets within each others.
