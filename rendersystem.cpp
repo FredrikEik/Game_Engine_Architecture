@@ -184,8 +184,7 @@ void RenderSystem::render()
                 //Send over camera position - should also send over a lot of other parameters about the light
                 glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x,
                             mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
-                glUniform3f(tempShader->mLightPosition, mLightPosition->mMatrix.getPosition().x,
-                            mLightPosition->mMatrix.getPosition().y, mLightPosition->mMatrix.getPosition().z);
+                glUniform3f(tempShader->mLightPosition, mLightPosition->mPosition.x, mLightPosition->mPosition.y, mLightPosition->mPosition.z);
 //                glUniform3f(tempShader->mLightDirection, mLight->mDirection.x, mLight->mDirection.y, mLight->mDirection.z);
                 glUniform3f(tempShader->mLightColor, mLight->mColor.x, mLight->mColor.y, mLight->mColor.z);
                 glUniform1f(tempShader->mAmbientStrengt, mLight->mAmbientStrength);
@@ -208,7 +207,14 @@ void RenderSystem::render()
                 glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
             }
 //        }
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
+            gsl::Matrix4x4 gobMatrix{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+            gobMatrix.setPosition(mGameObjects[i]->mTransform->mPosition);
+            gobMatrix.rotateX(mGameObjects[i]->mTransform->mRotation.x);
+            gobMatrix.rotateY(mGameObjects[i]->mTransform->mRotation.y);
+            gobMatrix.rotateZ(mGameObjects[i]->mTransform->mRotation.z);
+            gobMatrix.scale(mGameObjects[i]->mTransform->mScale);
+
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gobMatrix.constData());
 
         //draw the object
         //***Quick hack*** LOD test:
@@ -272,7 +278,7 @@ void RenderSystem::render()
             glUniformMatrix4fv( tempShader->pMatrixUniform, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
             //Hackety hack - have to get rid of scale in the objects model matrix
             gsl::Matrix4x4 temp(true);
-            temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
+            temp.translate(mGameObjects[i]->mTransform->mPosition);
             glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
 //            glBindVertexArray( lineBox.mVAO[0] );
 //            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
@@ -331,7 +337,7 @@ void RenderSystem::render()
     //Testing gameCam now
     if(mIsPlaying)
     {
-        mGameObjects[2]->mTransform->mMatrix.translate(-.09f, .0f, -.05f); //just to move the triangle each frame
+        mGameObjects[2]->mTransform->mPosition += gsl::Vector3D(-.09f, .0f, -.05f); //just to move the triangle each frame
 //        mGameCamera->yaw(-0.07f);
 //        mGameCamera->update();
         mUseFrustumCulling = true;
@@ -486,7 +492,7 @@ bool RenderSystem::frustumCulling(int gobIndex)
     (mGameCamAsFrustumCulling) ? cullCamera = mGameCamera : cullCamera = mEditorCamera;
 
     //vector from position of cam to object;
-    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mMatrix.getPosition()
+    gsl::Vector3D vectorToObject = mGameObjects[gobIndex]->mTransform->mPosition
             - cullCamera->mPosition;
 
     //radius of object sphere
@@ -566,7 +572,7 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         //making the vector from camera to object we test against
-        gsl::Vector3D camToObject = mGameObjects[i]->mTransform->mMatrix.getPosition() - mEditorCamera->mPosition;
+        gsl::Vector3D camToObject = mGameObjects[i]->mTransform->mPosition - mEditorCamera->mPosition;
 
         //making the normal of the ray - in relation to the camToObject vector
         //this is the normal of the surface the camToObject and ray_wor makes:

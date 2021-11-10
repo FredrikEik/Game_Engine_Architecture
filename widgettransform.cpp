@@ -32,7 +32,7 @@ void WidgetTransform::init(RenderSystem *renderSystem, int index)
 void WidgetTransform::readPosition()
 {
     gsl::Vector3D position = mRenderSystem->mGameObjects[indexInSceneArray]->
-            mTransform->mMatrix.getPosition();
+            mTransform->mPosition;
     ui->doubleSpinBoxXPosition->setValue(position.x);
     ui->doubleSpinBoxYPosition->setValue(position.y);
     ui->doubleSpinBoxZPosition->setValue(position.z);
@@ -60,7 +60,7 @@ void WidgetTransform::setPosition()
     position.x = ui->doubleSpinBoxXPosition->value();
     position.y = ui->doubleSpinBoxYPosition->value();
     position.z = ui->doubleSpinBoxZPosition->value();
-    mRenderSystem->mGameObjects[indexInSceneArray]->mTransform->mMatrix.setPosition(position);
+    mRenderSystem->mGameObjects[indexInSceneArray]->mTransform->mPosition = position;
 }
 
 void WidgetTransform::setStepRates()

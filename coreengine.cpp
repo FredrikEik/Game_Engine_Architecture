@@ -60,6 +60,7 @@ void CoreEngine::setUpScene()
 
     //********************** Making the object to be drawn **********************
 
+    // *** Editor assets *** - always made
     //Axis
     GameObject *temp = mResourceManager->addObject("axis");
     temp->mName = "Axis";
@@ -70,12 +71,14 @@ void CoreEngine::setUpScene()
     temp->mName = "EditorGrid";
     mRenderSystem->mGameObjects.push_back(temp);
 
+//    readScene("scene1.json");
+
     //dog triangle
     temp = mResourceManager->addObject("triangle");
     temp->mName = "DogTriangle";
     temp->mMaterial = mResourceManager->getMaterial("Texture");
 
-    temp->mTransform->mMatrix.translate(5.f, 2.f, -2.f);
+    temp->mTransform->mPosition = gsl::Vector3D(5.f, 2.f, -2.f);
     //Adds sound to moving triangle:
     mResourceManager->addComponent("caravan_mono.wav", temp);
 
@@ -151,6 +154,89 @@ void CoreEngine::setUpScene()
     mGameLoopTimer->start(20);
 }
 
+/*void CoreEngine::readScene(std::string sceneName)
+{
+    mLogger->logText("Loading scene " + sceneName, LColor::HIGHLIGHT);
+
+    //****************** Read scene from json file **************************
+    //this code have a lot of checking code, so it is long.
+    //probably should be broken up into more functions
+    QFile loadFile(QString((gsl::AssetFilePath + sceneName).c_str()));
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        mLogger->logText("Couldn't open " + sceneName + " file for reading.", LColor::DAMNERROR);
+        return;
+    }
+    mLogger->logText(sceneName + " file opened for reading.");
+    QByteArray saveData = loadFile.readAll();   //read whole file
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //convert to json document
+    QJsonObject jsonObject = loadDoc.object();  //read first object == whole thing
+
+    //should contain Materials as first property and this should be an array
+    if (jsonObject.contains("Scene") && jsonObject["Scene"].isArray())
+    {
+        QJsonArray entityArray = jsonObject["Scene"].toArray();
+        //go through each entity in file
+        int entityIndex{0};   //used to print log afterwards
+        for ( ; entityIndex < entityArray.size(); ++entityIndex) {
+            GameObject *tempGOB{nullptr};
+            QString name;   //this is pushed as the key to the mEntityMap later ???? - maybe not
+
+            QJsonObject entityObject = entityArray[entityIndex].toObject();   //first entity as object
+
+            if (entityObject.contains("name") && entityObject["name"].isString())
+                name = entityObject["name"].toString();
+
+            if (entityObject.contains("mesh") && entityObject["mesh"].isString())
+            {
+                QString mesh = entityObject["mesh"].toString();
+                tempGOB = mResourceManager->addObject(mesh.toStdString());
+            }
+            if (entityObject.contains("position") && entityObject["position"].isArray())
+            {
+                QJsonArray positionArray = entityObject["position"].toArray();
+                if (positionArray[0].isDouble())
+                    tempGOB->mTransform->mColor.x = positionArray[0].toDouble();
+                if (positionArray[1].isDouble())
+                    tempGOB.mColor.y = positionArray[1].toDouble();
+                if (positionArray[2].isDouble())
+                    tempGOB.mColor.z = positionArray[2].toDouble();
+            }
+            if (entityObject.contains("color") && entityObject["color"].isArray())
+            {
+                QJsonArray colorArray = entityObject["color"].toArray();
+                if (colorArray[0].isDouble())
+                    temp.mColor.x = colorArray[0].toDouble();
+                if (colorArray[1].isDouble())
+                    temp.mColor.y = colorArray[1].toDouble();
+                if (colorArray[2].isDouble())
+                    temp.mColor.z = colorArray[2].toDouble();
+            }
+            if (entityObject.contains("useColor") && entityObject["useColor"].isBool())
+            {
+                bool useColor = entityObject["useColor"].toBool();
+                temp.mUseColor = useColor;
+            }
+            if (entityObject.contains("specularStrength") && entityObject["specularStrength"].isDouble())
+            {
+                float specularStrenght = entityObject["specularStrength"].toDouble();
+                temp.mSpecularStrength = specularStrenght;
+            }
+            if (entityObject.contains("specularExponent") && entityObject["specularExponent"].isDouble())
+            {
+                int specularExponent = entityObject["specularExponent"].toDouble();
+                temp.mSpecularExponent = specularExponent;
+            }
+
+            mMaterials.push_back(temp); //this should performe a copy...
+            mMaterialMap.emplace(name.toStdString(), materialIndex + 1);
+        }
+        mLogger->logText("  " + std::to_string(entityIndex) + " materials read from file");
+    }
+    else
+        mLogger->logText("materials.json file does not contain a Materials object", LColor::DAMNERROR);
+}
+*/
+
 void CoreEngine::handleInput()
 {
     //Camera
@@ -162,7 +248,7 @@ void CoreEngine::handleInput()
     if(mInput.F && mRenderSystem->mIndexToPickedObject >-1)
     {
         int tempIndex = mRenderSystem->mIndexToPickedObject;
-        mEditorCamera->mPosition = mRenderSystem->mGameObjects.at(tempIndex)->mTransform->mMatrix.getPosition();
+        mEditorCamera->mPosition = mRenderSystem->mGameObjects.at(tempIndex)->mTransform->mPosition;
         //dynamic distance to object
         mEditorCamera->mPosition.z += (mRenderSystem->mGameObjects.at(tempIndex)->mMesh->mColliderRadius)*7;
         //dynamic height placement

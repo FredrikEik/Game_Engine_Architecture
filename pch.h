@@ -29,6 +29,12 @@
 #include <QColorDialog>
 #include <QTreeWidget>
 #include <QTreeWidgetItem> //Scene Outliner
+//for reading json files:
+#include <QDir>
+#include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 //own
 #include "input.h"

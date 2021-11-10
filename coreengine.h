@@ -29,6 +29,8 @@ public:
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
+    /// Reads the specified scene-file and adds all entities within it
+//    void readScene(std::string sceneName);
 
     void handleInput();
 

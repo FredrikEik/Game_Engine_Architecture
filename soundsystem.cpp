@@ -76,7 +76,7 @@ void SoundSystem::update(RenderSystem *renderWindowIn)
                 if(gob->mSoundComponent->shouldPlay)
                 {
                     //set positions
-                    gsl::Vector3D pos= gob->mTransform->mMatrix.getPosition();
+                    gsl::Vector3D pos= gob->mTransform->mPosition;
                     ALfloat temp[3] = {pos.x, pos.y, pos.z};
                     alSourcefv(gob->mSoundComponent->mSource, AL_POSITION, temp);
 

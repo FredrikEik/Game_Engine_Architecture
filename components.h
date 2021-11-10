@@ -6,13 +6,8 @@
 
 struct TransformComponent
 {
-    TransformComponent()
-    {
-        mMatrix.identity();
-        mScale.setAlltoSame(1.f);
-    };
-    gsl::Matrix4x4 mMatrix;
-    gsl::Vector3D mScale;
+    gsl::Vector3D mPosition;
+    gsl::Vector3D mScale{1.f, 1.f, 1.f};
     gsl::Vector3D mRotation;
 };
 
@@ -53,7 +48,6 @@ struct SoundComponet
     bool shouldPlay{false};
 //    bool isPlaying{false};
     bool looping{false};
-
 };
 
 struct LightComponet
