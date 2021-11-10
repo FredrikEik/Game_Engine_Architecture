@@ -635,6 +635,7 @@ void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         input.LMB = false;
+        if(!CoreEngine::getInstance()->isPlaying)
         mousePicking(event);
     }
 

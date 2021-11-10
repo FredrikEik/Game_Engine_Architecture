@@ -85,9 +85,9 @@ void CoreEngine::setUpScene()
     enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
     enemy->mTransform->mMatrix.scale(0.5f);
 
-    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
-    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
-    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
+//    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
+//    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
+//    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
 
     mResourceManager->addCollider("sphere", enemy);
     mResourceManager->addComponent("roblox_stereo.wav", enemy);
@@ -217,6 +217,8 @@ void CoreEngine::updateScene()
     if(ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.02f);
 
+    if(enemySpawned && !goatDead)
+        enemy->mTransform->mMatrix.translateZ(-.01);
    // mResourceManager->update(mRenderSystem->dt);
 
     if(!enemy->mCollider->objectsHasCollided)
@@ -231,23 +233,36 @@ void CoreEngine::updateScene()
             //enemy->mSoundComponent->looping = false;
             spawnParticles();
             projectile->mSoundComponent->shouldPlay = true;
-
+            enemy->mTransform->mMatrix.translateZ(0);
             //velger om man skal drawe et object eller ikke
-
+            goatDead = true;
             //projectile->isAlive = false;
+            //enemy->isAlive = false;
 
             //enemy->mSoundComponent->shouldPlay = false;
         }
 
 
     }
-    else
+
+    if(player->isAlive)
     {
-        //enemy->mSoundComponent->shouldPlay = false;
-        //projectile->mSoundComponent->shouldPlay = false;
+        if(getInstance()->mResourceManager->checkCollision(
+        player, enemy))
+        {
+            qDebug() << "You died!";
+            player->mTransform->mMatrix.rotateZ(90);
+            //enemy->mCollider->objectsHasCollided = true;
+            enemy->mSoundComponent->shouldPlay = true;
+            //enemy->mSoundComponent->looping = false;
+            spawnParticles();
+            projectile->mSoundComponent->shouldPlay = true;
+
+            player->isAlive = false;
+
+        }
 
     }
-
 
 }
 

@@ -211,6 +211,7 @@ void MainWindow::on_actionAdd_Enemy_triggered()
 
     mRenderSystem->mGameObjects.push_back(mCoreEngine->enemy);
     ui->listWidget->addItem(mCoreEngine->enemy->objName);
+    CoreEngine::getInstance()->enemySpawned = true;
     }
 }
 
@@ -219,6 +220,9 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
+
+
+
 
     mRenderSystem->mGameObjects.push_back(mCoreEngine->axis);
     ui->listWidget->addItem(mCoreEngine->axis->objName);
