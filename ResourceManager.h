@@ -22,12 +22,15 @@ public:
     static ResourceManager& getInstance();
     void init(Mesh &mesh, int lod);
 
+    float getHeightMapHeight(const gsl::Vector2D& pos);
+
 private:
     /** Functions */
     ResourceManager();
 
-
     int makeHeightMap(Mesh* meshComp);
+    gsl::Vector3D barycentricCoordinates(const gsl::Vector2D& dette, const gsl::Vector2D& p1,
+                                         const gsl::Vector2D& p2, const gsl::Vector2D& p3);
 
     void makeSphereRadius(Mesh* meshIn, gsl::Vector3D &vertexIn);
 
@@ -45,6 +48,14 @@ private:
     Texture* texture{nullptr};
 
     CoreEngine* mCoreEngine{nullptr};
+
+    /** HeightMap Variables*/
+    gsl::Vector3D HeightMapPos{0,0,0};
+    float *sArrayHeights{nullptr};
+    float xyScale = .1f;
+    int rows{0};
+    int cols{0};
+
 };
 
 #endif // RESOURCEMANAGER_H

@@ -98,32 +98,64 @@ void ResourceManager::init(Mesh &meshComp, int lod)
 
     glBindVertexArray(0);
 }
+
+float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
+{
+    gsl::Matrix4x4 hmMatrix = mCoreEngine->getHeightMapMatrix();
+
+    float xPosOnTerrain = (pos.x - hmMatrix.getPosition().x);
+    float yPosOnTerrain = (pos.y - hmMatrix.getPosition().y);
+    float gridSquareSize = xyScale;
+    //hvilken grid spilleren er på
+    int gridXPos = int(floor(xPosOnTerrain / xyScale));
+    int gridYPos = int(floor(yPosOnTerrain / xyScale));
+    if(gridXPos >= 0 && gridYPos >= 0 && gridXPos < cols && gridYPos < rows)
+    {   //Koordinat grid
+        float xCoordInSquare = fmod(xPosOnTerrain,gridSquareSize)/gridSquareSize;
+        float yCoordInSquare = fmod(yPosOnTerrain,gridSquareSize)/gridSquareSize;
+        gsl::Vector3D uvw;
+        float answer;
+        gsl::Vector2D p1{0,0};
+        gsl::Vector2D p2{1,0};
+        gsl::Vector2D p3{0,1};
+        gsl::Vector2D p4{1,1};
+        float p1z = sArrayHeights[(gridYPos)*rows + (gridXPos)];
+        float p2z = sArrayHeights[(gridYPos+1)*rows + (gridXPos)];
+        float p3z = sArrayHeights[(gridYPos)*rows + (gridXPos+1)];
+        float p4z = sArrayHeights[(gridYPos+1)*rows + (gridXPos+1)];
+
+
+        //Finne hvilken av de to trekantene spilleren står på
+        if(xCoordInSquare <= (1-yCoordInSquare))
+        {
+            uvw = barycentricCoordinates(gsl::Vector2D{float(xCoordInSquare),float(yCoordInSquare)},p1,p2,p3);
+            answer = p1z*uvw.x+p2z*uvw.y+p3z*uvw.z;
+            return answer;
+        }
+        if(xCoordInSquare > (1-yCoordInSquare))
+        {   gsl::Vector2D posInsSquare{xCoordInSquare,yCoordInSquare};
+            uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
+            answer = p2z*uvw.x+p4z*uvw.y+p3z*uvw.z;
+            return answer;
+        }
+    }
+}
+
 int ResourceManager::makeHeightMap(Mesh* meshComp)
 {
-//test mesh
-    // Front-1                           //Position           //RGB    //UV
-//    meshComp->mVertices[0].push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,   0,0});
-//    meshComp->mVertices[0].push_back(Vertex{ 0.1, -0.1,  0.1,     1,0,0,   1,0});
-//    meshComp->mVertices[0].push_back(Vertex{ 0.1,  0.1,  0.1,     1,0,0,   1,1});
-//    // Front-2
-//    meshComp->mVertices[0].push_back(Vertex{ 0.1,  0.1,  0.1,     1,0,0,   0,0});
-//    meshComp->mVertices[0].push_back(Vertex{-0.1,  0.1,  0.1,     1,0,0,   1,0});
-//    meshComp->mVertices[0].push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,   1,1});
-
     texture = new Texture("HamarHeightMap.bmp", false);
 
 
-    int rows = texture->mRows;   //WARNING: only using half of the heightmap. (Because of lag issues)
-    int cols = texture->mColumns;
+    rows = texture->mRows;   //WARNING: only using half of the heightmap. (Because of lag issues)
+    cols = texture->mColumns;
 
     unsigned char *mHeights = texture->getmHeights();
     int bytesPrPixel = texture->getBytesPerPixel();
-    float xyScale = .1f;
     float zColorScale = 256.f;
     float zScale = 0.02f;
     int i = 0;
     int j = 0;
-    float *sArrayHeights = new float[rows*cols];
+    sArrayHeights = new float[rows*cols];
     if(!mHeights)
     {
         qDebug() << "'!mHeights' in ResourceManager::makeHeightMap";
@@ -258,7 +290,44 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     init(*object->mesh, 0);
 
     return mMeshComponents.size()-1;    //returns index to last object
-}
+    }
+
+    gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, const gsl::Vector2D &p1,
+                                                          const gsl::Vector2D &p2, const gsl::Vector2D &p3)
+    {
+        gsl::Vector2D p12a = p2-p1;
+        gsl::Vector2D p13a = p3-p1;
+        gsl::Vector3D p12{p12a.x, p12a.y, 0};
+        gsl::Vector3D p13{p13a.x, p13a.y, 0};
+        gsl::Vector3D n = gsl::Vector3D::cross(p12, p13);
+        float areal_123 = n.length(); // dobbelt areal
+        gsl::Vector3D baryc;
+        // u
+        gsl::Vector2D p0 = p2 - pos;
+        gsl::Vector2D q0 = p3 - pos;
+        gsl::Vector3D p{p0.x, p0.y, 0};
+        gsl::Vector3D q{q0.x, q0.y, 0};
+
+        n = gsl::Vector3D::cross(p,q);
+        baryc.setX(n.z/areal_123);
+        // v
+        p0 = p3 - pos;
+        q0 = p1 - pos;
+        p = gsl::Vector3D{p0.x, p0.y, 0};
+        q = gsl::Vector3D{q0.x, q0.y, 0};
+
+        n = gsl::Vector3D::cross(p,q);
+        baryc.setY(n.z/areal_123);
+        // w
+        p0 = p1 - pos;
+        q0 = p2 - pos;
+        p = gsl::Vector3D{p0.x, p0.y, 0};
+        q = gsl::Vector3D{q0.x, q0.y, 0};
+
+        n = gsl::Vector3D::cross(p,q);
+        baryc.setZ(n.z/areal_123);
+        return baryc;
+    }
 void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
 {
     //making correct bounding sphere radius:

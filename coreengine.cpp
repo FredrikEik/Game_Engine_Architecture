@@ -59,22 +59,21 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.rotateX(90);
     temp->transform->mMatrix.scale(2.5);
     temp->transform->mMatrix.translate(0,0,-4);
+    hmMatrix = temp->transform->mMatrix;
     mRenderWindow->addToGameObjects(temp);
 
+
+    float z = 0;
     for(int i{0}; i < 40; i++)
     {
         for(int j{0}; j < 40; j++)
         {
-            int a = floor(rand() % 3);
-
-            if(a == 1) // 1/5 chance of spawning tree.
-            {
-               int b = floor(rand() % 4 + 9);
-               temp = mResourceManager->CreateObject(treeNames[b]);
-               temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
-               temp->transform->mMatrix.scale(0.4);
-               mRenderWindow->addToGameObjects(temp);
-            }
+           int b = floor(rand() % 4 + 9);
+           temp = mResourceManager->CreateObject(treeNames[b]);
+           z = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
+           temp->transform->mMatrix.translate(3.f*i, z/100, -3.f*j);
+           temp->transform->mMatrix.scale(0.4);
+           mRenderWindow->addToGameObjects(temp);
         }
     }
 
@@ -230,6 +229,11 @@ bool CoreEngine::isPlaying()
 Camera *CoreEngine::getGameCamera()
 {
     return mGameCamera;
+}
+
+gsl::Matrix4x4 *CoreEngine::getHeightMapMatrix()
+{
+    return &hmMatrix;
 }
 
 gsl::Matrix4x4 CoreEngine::getPlayerMatrix()

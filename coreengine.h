@@ -51,7 +51,11 @@ public:
 
     Camera* getGameCamera();
 
+    gsl::Matrix4x4 *getHeightMapMatrix();
+
     gsl::Matrix4x4 getPlayerMatrix();
+
+
 
 private slots:
     void GameLoop();
@@ -74,6 +78,8 @@ private:
 
     GameObject *mGameCameraMesh{nullptr};
     GameObject *playerObject{nullptr};
+
+    gsl::Matrix4x4 hmMatrix;
 
     SoundSource* mStereoSound{nullptr};
 
