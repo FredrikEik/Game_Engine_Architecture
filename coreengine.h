@@ -42,6 +42,7 @@ public:
 
     bool playerSpawned = false;
     bool ProjectileSpawned = false;
+    bool particlesSpawned = false;
 
     float tempPosX{0};
     float tempPosY{0};
@@ -62,6 +63,7 @@ public:
     void updateScene();
 
     void spawnParticles();
+    void spawnProjectile();
 
     void handleInput();
     ResourceManager *mResourceManager{nullptr};

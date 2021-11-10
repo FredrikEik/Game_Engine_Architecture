@@ -159,6 +159,9 @@ void CoreEngine::spawnParticles()
 {
     srand( (unsigned)time( NULL ) );
 
+    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
+    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
+    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
 
     for(float i = 0; i < .5; i += 0.002)
     {
@@ -170,6 +173,20 @@ void CoreEngine::spawnParticles()
         Particles->mTransform->mMatrix.setPosition(tempPosX,tempPosY,tempPosZ);
         mRenderSystem->mParticles.push_back(Particles);
     }
+    particlesSpawned = true;
+}
+
+void CoreEngine::spawnProjectile()
+{
+    tempPosX = player->mTransform->mMatrix.getPosition().getX();
+    tempPosY = player->mTransform->mMatrix.getPosition().getY();
+    tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
+
+    projectile->mTransform->mMatrix.setPosition(tempPosX, tempPosY, tempPosZ);
+    ProjectileSpawned = true;
+    mRenderSystem->mGameObjects.push_back(projectile);
+
+
 }
 void CoreEngine::updateCamera()
 {
@@ -193,6 +210,13 @@ void CoreEngine::updateScene()
     //mParticles->move(0,1,0);
     updateCamera();
 
+    //projectile->mTransform->mMatrix.setPosition();
+
+    //prøve få particles til å spawne på enemy
+
+    if(ProjectileSpawned)
+    projectile->mTransform->mMatrix.translateZ(.02f);
+
    // mResourceManager->update(mRenderSystem->dt);
 
     if(!enemy->mCollider->objectsHasCollided)
@@ -207,7 +231,10 @@ void CoreEngine::updateScene()
             //enemy->mSoundComponent->looping = false;
             spawnParticles();
             projectile->mSoundComponent->shouldPlay = true;
-            projectile->isAlive = false;
+
+            //velger om man skal drawe et object eller ikke
+
+            //projectile->isAlive = false;
 
             //enemy->mSoundComponent->shouldPlay = false;
         }
@@ -249,8 +276,8 @@ void CoreEngine::handleInput()
     {
         if(isPlaying && playerSpawned)
         {
-            ProjectileSpawned = true;
-            mRenderSystem->mGameObjects.push_back(projectile);
+
+            spawnProjectile();
         }
     }
     else if(mInput.W)

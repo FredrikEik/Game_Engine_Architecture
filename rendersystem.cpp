@@ -255,7 +255,7 @@ void RenderSystem::render()
             linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
             glBindVertexArray( linebox2.mVAO[0] );
             glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-}
+        }
 //            circle2 = CoreEngine::getInstance()->mResourceManager->
 //            makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
 //            glBindVertexArray( circle2.mVAO[0] );
@@ -280,13 +280,13 @@ void RenderSystem::render()
             glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[i]->mTransform->mMatrix.constData());
 
-            //if(mParticles[i]->isAlive)
-            //{
+            if(mParticles[i]->isAlive)
+            {
                 glBindVertexArray( mParticles[i]->mMesh->mVAO[0] );
                 glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
                 mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
                 mParticlesDrawn ++;
-            //}
+            }
 
 
 
@@ -294,22 +294,28 @@ void RenderSystem::render()
             if(CoreEngine::getInstance()->isPlaying == true)
             {
                 //float rand = (float) rand()/(RAND_MAX / 1
+                if(CoreEngine::getInstance()->particlesSpawned == true)
+                {
 
-                mParticles[i]->mTransform->mMatrix.translate(
+                    mParticles[i]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f
                                                             );
+                }
+
 
 
             }
 
-        }
-        if(CoreEngine::getInstance()->ProjectileSpawned)
-        {
+            if(CoreEngine::getInstance()->ProjectileSpawned == true)
+            {
 
-            CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
+                CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
+            }
+
         }
+
         this->updateDt();
         glBindVertexArray(0);
     }
