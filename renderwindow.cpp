@@ -362,11 +362,6 @@ void RenderWindow::render()
             hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
-//            if (tempScale.x > 50 || tempScale.y > 50 || tempScale.z > 50 ){
-
-//                hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1.2f, 1.2f, 1.2f);
-
-//              }
             }
             else if (hjelpeObjekt == factory->mGameObjects[i]){
                 mIndexToPickedObject = 0;
@@ -382,18 +377,6 @@ void RenderWindow::render()
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
-
-
-        //debug mousePickingRay
-        /*if (mDrawMousePickRay)
-        {
-            gsl::Matrix4x4 temp(true);
-            glBindVertexArray( mDebugMousePickRay.mVAO[0] );
-            glUniformMatrix4fv( mShaderPrograms[0]->pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mShaderPrograms[0]->vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-            glDrawArrays(mDebugMousePickRay.mDrawType, 0, mDebugMousePickRay.mVertexCount[0]);
-        }*/
 
 
     //Calculate framerate before

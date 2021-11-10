@@ -136,7 +136,6 @@ void MainWindow::on_CreateObject_clicked()
 
 void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
 {
-  //qDebug() << "Tempcoom";
     //clear all current items
     ui->outliner->clear();
 
