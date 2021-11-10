@@ -173,12 +173,12 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
     
-    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 1,2);
-    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 1,3);
-    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 1,4);
-    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 1,5);
-    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 1,6);
-    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 1,7);
+    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
+    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
+    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
+    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
+    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
+    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
     /*
     //Suzannes - using default material:
@@ -358,7 +358,8 @@ void RenderWindow::render()
     }else{
         for(int i = 0; i < eSize; i++){
             if(transformCompVec[i]->entity == 2){
-                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+                gsl::Vector3D temppos = transformCompVec[i]->mMatrix.getPosition();
+                transformCompVec[i]->mMatrix.setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
                 //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
             }
             if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
