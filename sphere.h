@@ -15,7 +15,6 @@ public:
     void init() override;
     void move(float x, float y, float z) override;
 
-
 private:
 
 };

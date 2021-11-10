@@ -210,6 +210,7 @@ void RenderWindow::init()
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
     initObjects();
+	mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 void RenderWindow::initObjects()
@@ -230,9 +231,14 @@ void RenderWindow::initObjects()
     }
 
     */
+            mPlayer = factory->createObject("Player");
+            mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+            mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+            mMainWindow->updateOutliner(factory->mGameObjects);
 
-    hjelpeObjekt = factory->createObject("Cube");
-    mMainWindow->updateOutliner(factory->mGameObjects);
+
+             hjelpeObjekt = factory->createObject("Cube");
+
 }
 
 // Called each frame - doing the rendering
@@ -289,11 +295,6 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
             //factory->mGameObjects[i]->draw();
-
-            if(!bPause)
-            {
-                factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
-            }
 
             if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
 			{
@@ -373,6 +374,12 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
         }
+    }
+    if (!editorMode){
+       thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
+       inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
+       mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
+       mCurrentCamera->setPosition(thirdPersonPos);
     }
 
 
@@ -550,7 +557,6 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
         mIndexToPickedObject = -1;
         }
 
-
     }
 }
 
@@ -583,6 +589,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
 //    mRenderTimer = new QTimer(this);
 
 //    mMainWindow->init();
+//    RenderWindow::init();
 
 //    mRenderTimer->start(16);    //starts the timer
 }
@@ -688,7 +695,7 @@ void RenderWindow::handleInput()
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
     if(editorMode)
     {
-    if(mInput.RMB) //Sett in character movement HER!
+    if(mInput.RMB) //editor
     {
         if(mInput.W)
             mCurrentCamera->setSpeed(-mCameraSpeed);
@@ -704,30 +711,12 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
     }
-    else if(!editorMode)
-    {
-        //FREE FLY
-        if(mInput.W)
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-        if(mInput.S)
-            mCurrentCamera->setSpeed(mCameraSpeed);
-        if(mInput.D)
-            mCurrentCamera->moveRight(mCameraSpeed);
-        if(mInput.A)
-            mCurrentCamera->moveRight(-mCameraSpeed);
-        if(mInput.Q)
-            mCurrentCamera->updateHeigth(-mCameraSpeed);
-        if(mInput.E)
-            mCurrentCamera->updateHeigth(mCameraSpeed);
+
+    else if(!editorMode) //karakter shit her
+    {  
+      static_cast<Player*>(mPlayer)->movement();
     }
-    skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
-
-}
-
-void RenderWindow::spawnHelpObject()
-{
-
-
+	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
 }
 
 void RenderWindow::saveLevel()
@@ -754,11 +743,6 @@ void RenderWindow::loadLevel()
     factory->openLevel(level);
     mMainWindow->updateOutliner(factory->mGameObjects);
 }
-
-//void RenderWindow::moveHelpObjectToSelected()
-//{
-
-//}
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
@@ -855,18 +839,26 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = true;
+        //if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = true;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = true;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = true;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.A = true;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -915,18 +907,26 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
+        //if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = false;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = false;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = false;
+        if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.A = false;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -1034,23 +1034,23 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     c.setShape(Qt::ArrowCursor);
     setCursor(c);
     }
-    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
-    {
-            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
-                                mMainWindow->y() + mMainWindow->height() / 2);
+//    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
+//    {
+//            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
+//                                mMainWindow->y() + mMainWindow->height() / 2);
 
-            //Using mMouseXYlast as deltaXY so we don't need extra variables
+//            //Using mMouseXYlast as deltaXY so we don't need extra variables
 
-            mMouseXlast = windowCenter.x() - c.pos().x();
-            mMouseYlast = windowCenter.y() - c.pos().y();
+//            mMouseXlast = windowCenter.x() - c.pos().x();
+//            mMouseYlast = windowCenter.y() - c.pos().y();
 
-             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
-             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
-             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
-             c.setShape(Qt::BlankCursor);
-             setCursor(c);
+//             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
+//             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
+//             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
+//             c.setShape(Qt::BlankCursor);
+//             setCursor(c);
 
-    }
+//    }
 
 
 }

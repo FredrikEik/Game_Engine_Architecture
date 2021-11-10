@@ -333,9 +333,16 @@ void Camera::updateUniforms(GLint pMatrixUniform, GLint vMatrixUniform)
     glUniformMatrix4fv(mVMatrixUniform,1, GL_FALSE, mViewMatrix.constData());
 }
 
+void Camera::lookat(gsl::Vector3D &position, gsl::Vector3D &at, const gsl::Vector3D &up)
+{
+  mViewMatrix.lookAt(position,at,up);
+   mYaw = -90.f, mPitch = -30.f;
+}
+
 gsl::Vector3D Camera::position() const
 {
     return mPosition;
+
 }
 
 gsl::Vector3D Camera::up() const

@@ -30,6 +30,7 @@ public:
 
     std::queue<std::uint32_t> mAvailableIDs;
     void openLevel(Level level);
+    MeshComponent* getMeshFromMap(std::string name) {return storedMeshes[name];}
 private:
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
 
