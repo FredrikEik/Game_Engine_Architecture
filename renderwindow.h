@@ -14,7 +14,7 @@
 #include "soundmanager.h"
 #include "quadtree.h"
 #include "light.h"
-#include "sphere.h"
+#include "player.h"
 
 class QOpenGLContext;
 class Shader;
@@ -61,10 +61,7 @@ public:
     Level level;
 
     GameObject *hjelpeObjekt=nullptr;
-    GameObject *playerSphere=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
-
-    void spawnHelpObject();
 
     void moveHelpObjectToSelected();
 
@@ -137,11 +134,15 @@ private:
 
     int mIndexToPickedObject{-1};
 
+
     //std::vector<VisualObject*> mVisualObjects;
 
-    Sphere* player;
+
+    GameObject* mPlayer;
     InputComponent mInput;
-    //Input mInput;
+    gsl::Vector3D thirdPersonPos;
+    gsl::Vector3D inFrontOfPlayer;
+
 
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};

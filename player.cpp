@@ -1,14 +1,19 @@
-#include "Sphere.h"
-#include "objreader.h"
+#include "player.h"
 
 
-Sphere::Sphere()
+Player::Player()
+{
+
+    cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
+}
+
+Player::~Player()
 {
 
 }
-Sphere::~Sphere() {}
 
-void Sphere::init(/*GLint matrixUniform[4]*/)
+
+void Player::init()
 {
     initializeOpenGLFunctions();
 
@@ -53,18 +58,35 @@ void Sphere::init(/*GLint matrixUniform[4]*/)
        glBindVertexArray(0);
 }
 
-void Sphere::move(float x, float y, float z)
+
+void Player::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
+
+    cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
 }
 
+void Player::movement()
+{
+    if(input.W)
+        move(movementSpeed,0,0);
+    if(input.S)
+        move(-movementSpeed,0,0);
+    if(input.D)
+        move(0,0,movementSpeed);
+    if(input.A)
+        move(0,0,-movementSpeed);
 
-void Sphere::draw()
+}
+void Player::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
     //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
     glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
+
+
+
 

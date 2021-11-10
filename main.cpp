@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
     w.move(10, 10);     //Moves the program at start. Nice if you have large screen and editor on one side.
     w.show();
     splash.raise();
-    splash.showMessage("BRØS");
 
     //splash.hide();
     splash.finish(&w);

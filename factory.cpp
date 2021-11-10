@@ -9,6 +9,7 @@
 #include "objreader.h"
 #include "constants.h"
 #include "skybox.h"
+#include "player.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -133,6 +134,17 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         lightCounter++;
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
+    }
+    else if (objectName == "Player")
+    {
+        objectToCreate = new Player;
+        if(EXISTS("Sphere"))
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->mObjectName = "Player";
     }
     else{return nullptr;}
 

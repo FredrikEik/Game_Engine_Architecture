@@ -105,10 +105,6 @@ public:
     int MOUSEX{0};
     int MOUSEY{0};
 
-
-
-
-
 };
 
 #endif // COMPONENTS_H

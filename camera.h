@@ -33,10 +33,11 @@ public:
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
     void updateFrustumPos(float fieldOfView, float aspectRatio);
+    void lookat(gsl::Vector3D &position, gsl::Vector3D &at, const gsl::Vector3D &up);
 
     gsl::Vector3D position() const;
-    gsl::Vector3D up() const;
     gsl::Vector3D mPosition;
+    gsl::Vector3D up() const;
     FrustumCollisionComponent* getFrustumComponent(){return frustumComp;}
 
     float aRatio;

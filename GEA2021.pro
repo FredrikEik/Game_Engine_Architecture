@@ -42,6 +42,7 @@ SOURCES += main.cpp \
     mariocube.cpp \
     objreader.cpp \
     plane.cpp \
+    player.cpp \
     quadtree.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -80,6 +81,7 @@ HEADERS += \
     mariocube.h \
     objreader.h \
     plane.h \
+    player.h \
     quadtree.h \
     renderwindow.h \
     shader.h \

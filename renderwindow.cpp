@@ -285,11 +285,6 @@ GameObject *temp=nullptr;
     level.saveLevelAs("savedLevel", objectMap);
     */
     factory->createObject("Skybox");
-    playerSphere = factory->createObject("Sphere");
-    playerSphere->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-    playerSphere->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-
-
     factory->openLevel(level);
 
 
@@ -305,7 +300,13 @@ GameObject *temp=nullptr;
             }
         }
 
+
+            mPlayer = factory->createObject("Player");
+            mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+            mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
             mMainWindow->updateOutliner(factory->mGameObjects);
+
+
              hjelpeObjekt = factory->createObject("Cube");
 
 }
@@ -363,10 +364,6 @@ void RenderWindow::render()
 			glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
             //factory->mGameObjects[i]->draw();
-            if(!bPause)
-            {
-                factory->mGameObjects[i]->move(0.0f, 0.0f, -0.025f);
-            }
 
             if(factory->mGameObjects[i]->mObjectName == "Skybox") //Makes skybox follow player
             {
@@ -479,6 +476,12 @@ void RenderWindow::render()
 
 
 
+    }
+    if (!editorMode){
+       thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
+       inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
+       mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
+       mCurrentCamera->setPosition(thirdPersonPos);
     }
 
 
@@ -654,9 +657,6 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
         mIndexToPickedObject = -1;
         }
 
-
-
-
     }
 }
 
@@ -774,15 +774,22 @@ void RenderWindow::handleInput()
     }
     else if(!editorMode) //karakter shit her
     {  
-        player->movement();
+//        if(mInput.W)
+//            player->input.W=true;
+//        if(mInput.S)
+//             player->input.S=true;
+//        if(mInput.D)
+//             player->input.D=true;
+//        if(mInput.A)
+//             player->input.A=true;
+
+
+
+      static_cast<Player*>(mPlayer)->movement();
     }
 }
 
-void RenderWindow::spawnHelpObject()
-{
 
-
-}
 
 //void RenderWindow::moveHelpObjectToSelected()
 //{
@@ -884,26 +891,26 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = true;
-        if (!editorMode)
-        player->input.W = true;
+        //if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = true;
         if (!editorMode)
-        player->input.S = true;
+        static_cast<Player*>(mPlayer)->input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = true;
         if (!editorMode)
-        player->input.D = true;
+        static_cast<Player*>(mPlayer)->input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = true;
         if (!editorMode)
-        player->input.A = true;
+        static_cast<Player*>(mPlayer)->input.A = true;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -922,26 +929,18 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = true;
-        if (!editorMode)
-        player->input.UP = true;
     }
     if(event->key() == Qt::Key_Down)
     {
         mInput.DOWN = true;
-        if (!editorMode)
-        player->input.DOWN = true;
     }
     if(event->key() == Qt::Key_Left)
     {
         mInput.LEFT = true;
-        if (!editorMode)
-        player->input.LEFT = true;
     }
     if(event->key() == Qt::Key_Right)
     {
         mInput.RIGHT = true;
-        if (!editorMode)
-        player->input.RIGHT = true;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -960,26 +959,26 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
-        if (!editorMode)
-        player->input.W = false;
+        //if (!editorMode)
+        static_cast<Player*>(mPlayer)->input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = false;
         if (!editorMode)
-        player->input.S = false;
+        static_cast<Player*>(mPlayer)->input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = false;
         if (!editorMode)
-        player->input.D = false;
+        static_cast<Player*>(mPlayer)->input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = false;
         if (!editorMode)
-        player->input.A = false;
+        static_cast<Player*>(mPlayer)->input.A = false;
     }
     if(event->key() == Qt::Key_Q)
     {
@@ -998,26 +997,18 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Up)
     {
         mInput.UP = false;
-        if (!editorMode)
-        player->input.UP = false;
     }
     if(event->key() == Qt::Key_Down)
     {
         mInput.DOWN = false;
-        if (!editorMode)
-        player->input.DOWN = false;
     }
     if(event->key() == Qt::Key_Left)
     {
         mInput.LEFT = false;
-        if (!editorMode)
-        player->input.LEFT = false;
     }
     if(event->key() == Qt::Key_Right)
     {
         mInput.RIGHT = false;
-        if (!editorMode)
-        player->input.RIGHT = false;
     }
     if(event->key() == Qt::Key_U)
     {
@@ -1095,23 +1086,23 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     c.setShape(Qt::ArrowCursor);
     setCursor(c);
     }
-    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
-    {
-            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
-                                mMainWindow->y() + mMainWindow->height() / 2);
+//    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
+//    {
+//            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
+//                                mMainWindow->y() + mMainWindow->height() / 2);
 
-            //Using mMouseXYlast as deltaXY so we don't need extra variables
+//            //Using mMouseXYlast as deltaXY so we don't need extra variables
 
-            mMouseXlast = windowCenter.x() - c.pos().x();
-            mMouseYlast = windowCenter.y() - c.pos().y();
+//            mMouseXlast = windowCenter.x() - c.pos().x();
+//            mMouseYlast = windowCenter.y() - c.pos().y();
 
-             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
-             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
-             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
-             c.setShape(Qt::BlankCursor);
-             setCursor(c);
+//             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
+//             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
+//             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
+//             c.setShape(Qt::BlankCursor);
+//             setCursor(c);
 
-    }
+//    }
 
 
 }
