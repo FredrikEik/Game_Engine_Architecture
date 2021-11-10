@@ -592,6 +592,68 @@ meshData* resourceSystem::makeFrustum(const Frustum &frustumIn, RenderSystem * i
     return tempMesh;
 }
 
+meshData* resourceSystem::makeSkyBox( RenderSystem * inRendSys)
+{
+
+
+    meshData *tempMesh = new meshData();
+    //vertex for cube https://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_data
+    std::vector<Vertex> mVertices;
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
+    mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0f });
+    mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0f });
+    mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0f });
+    mVertices.push_back(Vertex{ 1.0f,  1.0f, -1.0f });
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
+
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+
+    mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f});
+    mVertices.push_back(Vertex{1.0f, -1.0f,  1.0f});
+    mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{1.0f,  1.0f, -1.0f});
+    mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f});
+
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
+    mVertices.push_back(Vertex{ 1.0f,  1.0f, -1.0f});
+    mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
+    mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
+
+    mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0});
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0});
+    mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0});
+    mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0});
+    mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0});
+    mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0});
+
+    tempMesh->meshVert = mVertices;
+
+
+    tempMesh->DrawType = GL_TRIANGLES;
+    tempMesh->VAO = 0;
+    tempMesh->VBO = 0;    //only LOD level 0
+    inRendSys->init(&tempMesh->meshVert, &tempMesh->VAO, &tempMesh->VBO);
+
+    //initMesh(tempMesh, 0);
+    tempMesh->internalIndex = tempMesh->meshIndic.size();
+    return tempMesh;
+}
+
 float resourceSystem::calculateLenght(QVector3D pos)
 {   //we assume that the center of the obj is at 0,0,0
     //sqrt(x^2        +         y^2        +         z^2      ) = length

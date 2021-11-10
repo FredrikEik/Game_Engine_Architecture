@@ -47,6 +47,8 @@ public:
 
     //frostum
     meshData* makeFrustum(const Frustum &frustumIn, RenderSystem * inRendSys);
+    //skybox
+        meshData* makeSkyBox( RenderSystem * inRendSys);
 private:
     std::vector < std::pair<std::string, std::vector<Vertex> > > meshContainer;
     std::vector < std::pair<std::string, std::vector<GLuint> > > meshIndiceContainer;

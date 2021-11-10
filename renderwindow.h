@@ -18,6 +18,7 @@
 #include "soundmanager.h"
 #include "soundsource.h"
 #include "vector3.h"
+#include "skybox.h"
 #include <ctime>    //for physics
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
@@ -124,6 +125,16 @@ private:
     GLint mSpecularExponentUniform{-1};
     GLint mLightPowerUniform{-1};
     GLint mUsingTextureUniform{-1};
+
+    //skybox
+    void setupSkyboxshader(int shaderIndex);
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+    GLint skyboxUniform3{-1};
+      class Texture *textures_faces[gsl::NumberOfTextures]{nullptr};//We can hold some textures ;
+    //skybox* SkyBox;
+
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 

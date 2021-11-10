@@ -20,6 +20,7 @@ public:
     void updateViewPort();
     void updateDetails();
     void setSelectedItem(int i);
+    QWidget *getQWidget(){return mRenderWindowContainer;};
 
 private slots:
     void on_pushButton_toggled(bool checked);

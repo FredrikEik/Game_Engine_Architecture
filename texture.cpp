@@ -44,6 +44,7 @@ Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_
     if(cubeMap) //Skybox - environment map
     {
         readCubeMap();
+        mAlphaUsed = false;
         setCubemapTexture();
     }
     else
@@ -109,12 +110,11 @@ void Texture::readCubeMap()
     std::string justName;
     std::stringstream sStream;
     sStream << mTextureFilename;
-    std::getline(sStream, justName, '.');   //deleting .bmp
-    justName.pop_back();    //removing 1
+
     for(int i{0}; i< 6; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp =  mTextureFilename + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         mCubemap[i] = mBitmap;
     }
@@ -154,7 +154,7 @@ void Texture::setCubemapTexture()
     glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);

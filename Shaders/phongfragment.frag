@@ -12,13 +12,13 @@ uniform sampler2D uTexture;
 uniform vec3 lightPosition;
 uniform vec3 cameraPosition;
 
-uniform float ambientStrength = 0.4;
-uniform float lightStrength = 0.8;
+uniform float ambientStrength = 0.5;
+uniform float lightStrength = 0.9;
 uniform vec3 lightColor = vec3(1, 1, 1);  //yellowish
 uniform float specularStrength = 0.9;
 uniform int specularExponent = 32;
 
-uniform vec3 objectColor = vec3(0.3, 0.7, 0.3); //grey
+uniform vec3 objectColor = vec3(1.3, 0.7, 0.3); //grey
 
 void main() {
 
@@ -44,7 +44,7 @@ void main() {
     //vec3 result = (ambient + diffuse + specular); //diffuse // + ;ambient
 
 
-    vec3 result = (ambient + diffuse + specular); //diffuse // + ;ambient
+    vec3 result = (ambient + diffuse + specular ); //diffuse // + ;ambient
 
     if(usingTextures == true){
         fragColor = texture2D(uTexture, UV) * vec4(result, 1.0);

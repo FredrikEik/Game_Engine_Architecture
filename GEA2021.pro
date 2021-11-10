@@ -35,6 +35,7 @@ SOURCES += main.cpp \
     resourcesystem.cpp \
     shader.cpp \
     mainwindow.cpp \
+    skybox.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     resourcesystem.h \
     shader.h \
     mainwindow.h \
+    skybox.h \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
@@ -71,6 +73,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/Skyboxshader.frag \
+    Shaders/Skyboxshader.vert \
     Shaders/phongfragment.frag \
     Shaders/phongvertex.vert \
     Shaders/textureshader.frag \

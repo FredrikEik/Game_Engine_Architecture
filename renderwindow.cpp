@@ -93,14 +93,30 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("SpaceInvaders1.bmp");
+    mTextures[3] = new Texture("SpaceInvaders2.bmp");
+    mTextures[4] = new Texture("SpaceInvaders3.bmp");
+    mTextures[5] = new Texture("SpaceInvaders4.bmp");
+    mTextures[6] = new Texture("SpaceInvaderBoss1.bmp");
+    mTextures[7] = new Texture("SpaceInvadersBoss2.bmp");
     
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    
-    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, mTextures[6]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE7);
+    glBindTexture(GL_TEXTURE_2D, mTextures[7]->mGLTextureID);
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
     //Supported on most Windows machines
@@ -129,12 +145,16 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "phongfragment.frag").c_str());
     qDebug() << "Phong shader program id: " << mShaderPrograms[2]->getProgram();
 
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "Skyboxshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "Skyboxshader.frag").c_str());
+    qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
     
     setupPlainShader(0);
     setupTextureShader(1);
     setupPhongShader(2);
-
+    setupSkyboxshader(3);
     
+
     //********************** Making the object to be drawn **********************
     
     /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
@@ -144,26 +164,34 @@ void RenderWindow::init()
     ResSys->ResourceSystemInit(RenderSys);
     
     ///PURE ECS TEST
-    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),1,0,-1,GL_LINES);
-    entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
-    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),0,0);
-    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
-    entitySys->construct("sphere.obj", QVector3D(5.0f,10.0f,-5.0f),0,0);
-    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),0,0);
+    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
+    entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
+    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
+    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(5.0f,10.0f,-5.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
-    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),0,0);
+    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
     
-    
+    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 1,2);
+    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 1,3);
+    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 1,4);
+    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 1,5);
+    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 1,6);
+    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 1,7);
+
+    /*
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
         for(int j{0}; j < 30; j++)
         {
-            entitySys->construct("Suzanne.obj", QVector3D(0.0f + 2*i ,0.0f,-2.f*j),2,1);
+            entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20*i ,0.0f,-20.f*j), 2,2);
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
 
         }
     }
+*/
 
 
     SoundManager::getInstance()->init();
@@ -187,9 +215,13 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
+
+
     mSong->pause();
     mMainWindow->updateViewPort();
     
+
+
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
@@ -200,9 +232,6 @@ void RenderWindow::init()
             break;
         }
     }
-    
-    
-    
 
 }
 
@@ -236,7 +265,6 @@ void RenderWindow::render()
     int viewMatrix{-1};
     int projectionMatrix{-1};
     int modelMatrix{-1};
-    
 
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++)
@@ -341,11 +369,11 @@ void RenderWindow::render()
             }
         }
     }
-
+    //frustum culling lines! This is a visualisation of frostum
     if(mCurrentCamera->mFrustum.isDrawable)
     {
 
-         glUseProgram(mShaderPrograms[0]->getProgram()); // using plain shader program
+        glUseProgram(mShaderPrograms[0]->getProgram()); // using plain shader program
         meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
         gsl::Matrix4x4 temp(true);
         temp.translate(mCurrentCamera->Cam.mPosition);
@@ -427,6 +455,15 @@ void RenderWindow::setupPhongShader(int index)
     mLightPowerUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "lightStrength" );
     mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "cameraPosition" );
 
+}
+
+void RenderWindow::setupSkyboxshader(int shaderIndex)
+{
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+
+    skyboxUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
 void RenderWindow::RayCasting(QMouseEvent *event)

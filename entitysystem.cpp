@@ -81,6 +81,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
     }
 }
 
+
 void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Length)
 {
     std::string ObjReader = "RayCast"; QVector3D StartPos =CameraPos;
@@ -158,6 +159,7 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Len
         inRW->RenderSys->init(MeshComp);
     }
 }
+
 
 void EntitySystem::constructCube()
 {
