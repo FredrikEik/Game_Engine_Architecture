@@ -142,6 +142,7 @@ void RenderWindow::init()
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
+    factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
 
     //********************** Set up camera **********************/
     /*

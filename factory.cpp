@@ -138,12 +138,12 @@ GameObject* Factory::createObject(std::string objectName)
     else if (objectName == "Player")
     {
         objectToCreate = new Player;
-        if(EXISTS("Sphere"))
+        if(EXISTS("Wario"))
         {
-        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Wario"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
     }
     else{return nullptr;}
