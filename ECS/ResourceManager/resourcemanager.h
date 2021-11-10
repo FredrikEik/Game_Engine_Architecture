@@ -5,7 +5,10 @@
 #include "components.h"
 #include "constants.h"
 
-#include "Plugins/OBJ_Loader.h"
+namespace objl
+{
+    class Loader;
+}
 
 class ResourceManager
 {
@@ -23,7 +26,8 @@ private:
     { return std::unique_ptr<ResourceManager>( new ResourceManager() ); }
 
     //Pointer to ".obj" loader.
-    std::unique_ptr<objl::Loader> m_Loader;
+    objl::Loader* m_Loader{nullptr};
+
 };
 
 #endif // RESOURCEMANAGER_H

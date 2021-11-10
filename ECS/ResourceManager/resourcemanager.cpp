@@ -1,8 +1,9 @@
 #include "ECS/ResourceManager/resourcemanager.h"
+#include "Plugins/OBJ_Loader.h"
 
 ResourceManager::ResourceManager()
 {
-    m_Loader = std::make_unique<objl::Loader>();
+    m_Loader = new objl::Loader();
 }
 
 //Returns index for place in the appropriate data container. -1 if invalid/failed.
