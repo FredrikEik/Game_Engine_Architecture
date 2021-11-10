@@ -364,6 +364,30 @@ void ResourceManager::setUpAllTextures()
     }
 }
 
+void ResourceManager::getAllMeshNames()
+{
+    QDir tempDir((gsl::MeshFilePath).c_str());
+    if(tempDir.exists())
+    {
+        QStringList filters;
+        filters << "*.obj";
+        tempDir.setNameFilters(filters);
+
+        //getting all the names
+        for(QFileInfo &var : tempDir.entryInfoList())
+        {
+            mMeshNames.push_back(var.fileName().toStdString());
+            qDebug () << "Reading texture: " << var.fileName();
+        }
+    }
+    else
+    {
+        qDebug() << "ERROR reading texure Failed";
+//        qDebug() << "*** ERROR reading textures *** : Asset-folder " <<
+//                         gsl::TextureFilePath << " does not exist!";
+    }
+}
+
 
 
 ResourceManager *ResourceManager::getInstance()

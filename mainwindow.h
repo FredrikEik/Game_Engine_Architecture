@@ -29,12 +29,14 @@ public:
     void clean();
 
     void initComboboxTexture(std::vector<std::string> &textureNames);
+    void initComboboxMeshes(std::vector<std::string> &meshNames);
 
     int getObjectListIndex() const;
 
 public slots:
 
     void on_PlayStop_toggled(bool checked);
+        void on_actionDelete_Selected_triggered();
 
 private slots:
 
@@ -62,7 +64,7 @@ private slots:
 
     void on_ScaleXspinBox_valueChanged(double arg1);
 
-    void on_actionDelete_Selected_triggered();
+
 
     void on_actionGetCurrentRow_triggered();
 
@@ -83,6 +85,8 @@ private slots:
 
     void on_addObject_released();
 
+    void on_comboBox_2_currentIndexChanged(int index);
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -100,11 +104,14 @@ private:
     GameEngine *mGameEngine{nullptr};
 
     QListWidget *listWidget{nullptr};
-    QComboBox *comboBox{nullptr};
+    QComboBox *textureComboBox{nullptr};
+    QComboBox *meshComboBox{nullptr};
 
     std::vector<GameObject*> GameObjects{nullptr};
     std::vector<std::string> allTextures;
+    std::vector<std::string> allMeshes;
     int currentTextureIndex{0};
+    int currentMeshIndex{0};
 
 
 };

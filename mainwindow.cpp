@@ -18,7 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     listWidget = ui->listWidget;
-    comboBox = ui->comboBox;
+    textureComboBox = ui->comboBox;
+    meshComboBox = ui->comboBox_2;
+
 
     qApp->setStyle(QStyleFactory::create("Fusion"));
 
@@ -117,7 +119,19 @@ void MainWindow::initComboboxTexture(std::vector<std::string> &textureNames)
         allTextures = textureNames;
         for(auto it : textureNames)
         {
-            comboBox->addItem(tr(it.c_str()));
+            textureComboBox->addItem(tr(it.c_str()));
+        }
+    }
+}
+
+void MainWindow::initComboboxMeshes(std::vector<std::string> &meshNames)
+{
+    if(mRenderWindow)
+    {
+        allMeshes = meshNames;
+        for(auto it : allMeshes)
+        {
+            meshComboBox->addItem(tr(it.c_str()));
         }
     }
 }
@@ -392,8 +406,14 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 
 void MainWindow::on_addObject_released()
 {
-    mGameEngine->getInstance()->CreateObject(gsl::MeshFilePath + "suzanne.obj", true,allTextures[currentTextureIndex]);
+    mGameEngine->getInstance()->CreateObject(gsl::MeshFilePath + allMeshes[currentMeshIndex], false ,allTextures[currentTextureIndex]);
     updateList();
     listWidget->setCurrentRow(GameObjects.size()-1);
+}
+
+
+void MainWindow::on_comboBox_2_currentIndexChanged(int index)
+{
+    currentMeshIndex = index;
 }
 

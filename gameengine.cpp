@@ -57,6 +57,7 @@ void GameEngine::SetUpScene()
     mGameCamera->yaw(180);
 
     mResourceManager->setUpAllTextures();
+    mResourceManager->getAllMeshNames();
 
 
 
@@ -81,6 +82,7 @@ void GameEngine::SetUpScene()
 
     mMainWindow->initList();
     mMainWindow->initComboboxTexture(mResourceManager->mTextureNames);
+    mMainWindow->initComboboxMeshes(mResourceManager->mMeshNames);
 }
 
 void GameEngine::SetUpObjects()

@@ -34,6 +34,9 @@
        <widget class="QComboBox" name="comboBox"/>
       </item>
       <item>
+       <widget class="QComboBox" name="comboBox_2"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="addObject">
         <property name="text">
          <string>Add Object</string>
@@ -71,7 +74,7 @@
        </size>
       </property>
       <property name="text">
-       <string>EDITOR: Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed. GAME: Click mouse once to activate player WASD controll, and press escape to exit</string>
+       <string>EDITOR: Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed, DEL to delete object. GAME: Click mouse once to activate player WASD controll, and press escape to exit</string>
       </property>
      </widget>
     </item>

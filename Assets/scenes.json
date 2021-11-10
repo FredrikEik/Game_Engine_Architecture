@@ -14,38 +14,38 @@
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/light.obj",
-                    "positionx": -19.55008888244629,
+                    "positionx": -3.827446222305298,
                     "positiony": 3,
-                    "positionz": -13.765631675720215,
+                    "positionz": 23.173551559448242,
                     "shader": 2,
                     "texturename": "cocademon3.bmp",
                     "usingLOD": false
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/cube.obj",
-                    "positionx": -1,
-                    "positiony": -1,
-                    "positionz": -5,
-                    "shader": 2,
-                    "texturename": "orange.bmp",
-                    "usingLOD": false
-                },
-                {
-                    "filepath": "../GEA2021/Assets/Meshes/cube.obj",
-                    "positionx": 0,
+                    "positionx": -3.299999952316284,
                     "positiony": 0,
                     "positionz": 0,
                     "shader": 2,
-                    "texturename": "orange.bmp",
+                    "texturename": "oldcocademon.bmp",
                     "usingLOD": false
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/pyramid.obj",
-                    "positionx": -1.7000000476837158,
+                    "positionx": 0.10000000149011612,
+                    "positiony": -1.5,
+                    "positionz": -13.600000381469727,
+                    "shader": 2,
+                    "texturename": "1Adefoult2.bmp",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/toTriangles2.obj",
+                    "positionx": 0,
                     "positiony": 0,
                     "positionz": 0,
                     "shader": 2,
-                    "texturename": "cocademon3.bmp",
+                    "texturename": "hund.bmp",
                     "usingLOD": false
                 }
             ]

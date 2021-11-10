@@ -31,8 +31,10 @@ public:
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
 
     void setUpAllTextures();
+    void getAllMeshNames();
 
     std::vector<std::string> mTextureNames;
+    std::vector<std::string> mMeshNames;
 private:
     int CreateMaterial(std::string textureName);
     GameObject* tempGO{nullptr};

@@ -718,6 +718,11 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_O)
     {
     }
+    if(event->key() == Qt::Key_Delete)
+    {
+        input.DEL = true;
+        mMainWindow->on_actionDelete_Selected_triggered();
+    }
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
@@ -778,6 +783,10 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_O)
     {
+    }
+    if(event->key() == Qt::Key_Delete)
+    {
+        input.DEL = false;
     }
 }
 

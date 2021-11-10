@@ -26,6 +26,7 @@ struct Input
     bool LMB{false};    //Mouse buttons
     bool RMB{false};
     bool MMB{false};
+    bool DEL{false};
     float MWHEEL{0.f};  //MouseWheel
     int MOUSEX{0};
     int MOUSEY{0};
