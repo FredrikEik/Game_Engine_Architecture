@@ -8,14 +8,6 @@ Circle::Circle()
     mNameComp = new NameComponent();
 }
 
-Triangle::Triangle()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
-
 Square::Square()
 {
     mTransform = new TransformComponent();
@@ -48,6 +40,14 @@ SmallWall::SmallWall()
     mNameComp = new NameComponent();
 }
 
+Enemy::Enemy()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+}
+
 ObjMesh::ObjMesh()
 {
     mTransform = new TransformComponent();
@@ -61,9 +61,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     string obj{"obj"};
     string fileStr{"../GEA2021/Assets/" + shapeName};
     VisualObject* temp = nullptr;
-    if(mCounter == 5) //Fordi player har ID 6 i egen klasse,
-        mCounter++;   //så vi hopper over den her
-    std::string a = to_string(mCounter-5); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
+    std::string a = to_string(mCounter-4); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
 
     if (shapeName == "Circle")
     {
@@ -88,7 +86,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         temp = new Square;
         temp->mMesh = myMeshes[1];
         temp->mCollision = myCollis[1];
-        temp->mCollision->setBoundingSphere(0.25, gsl::Vector3D(temp->mTransform->mPosition.x + 0.25, temp->mTransform->mPosition.y + 0.25,  temp->mTransform->mPosition.z + 0.25));
+        temp->mCollision->setBoundingSphere(0.5, temp->mTransform->mPosition);
 
         if(doOnce[1] == false){
             temp->mNameComp->mName = shapeName;
@@ -101,12 +99,12 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
         return temp;
     }
-    else if(shapeName == "Triangle")
+    else if(shapeName == "Plain")
     {
-        temp = new Triangle;
+        temp = new Plain;
         temp->mMesh = myMeshes[2];
         temp->mCollision = myCollis[2];
-        temp->mCollision->setBoundingSphere(0.3266, temp->mTransform->mPosition);
+        temp->mCollision->setBoundingSphere(0.01, temp->mTransform->mPosition);
 
         if(doOnce[2] == false){
             temp->mNameComp->mName = shapeName;
@@ -119,12 +117,13 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
         return temp;
     }
-    else if(shapeName == "Plain")
+    else if(shapeName == "Enemy")
     {
-        temp = new Plain;
-        temp->mMesh = myMeshes[0];
-        temp->mCollision = myCollis[0];
-        temp->mCollision->setBoundingSphere(0.01, temp->mTransform->mPosition);
+        temp = new Enemy;
+        temp->mMesh = myMeshes[5];
+        temp->mCollision = myCollis[5];
+        temp->mTransform->mMatrix.scale(0.2);
+        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
 
         if(doOnce[3] == false){
             temp->mNameComp->mName = shapeName;
@@ -137,42 +136,42 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
         return temp;
     }
-    else if(shapeName == "BigWall")
-    {
-        temp = new BigWall;
-        temp->mMesh = myMeshes[1];
-        temp->mCollision = myCollis[1];
-        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
+    //    else if(shapeName == "BigWall")
+    //    {
+    //        temp = new BigWall;
+    //        temp->mMesh = myMeshes[3];
+    //        temp->mCollision = myCollis[3];
+    //        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
 
-        if(doOnce[4] == false){
-            temp->mNameComp->mName = shapeName;
-            doOnce[4] = true;}
-        else
-            temp->mNameComp->mName = shapeName + a;
+    //        if(doOnce[3] == false){
+    //            temp->mNameComp->mName = shapeName;
+    //            doOnce[3] = true;}
+    //        else
+    //            temp->mNameComp->mName = shapeName + a;
 
-        temp->mNameComp->objectID = mCounter;
-        mCounter++;
+    //        temp->mNameComp->objectID = mCounter;
+    //        mCounter++;
 
-        return temp;
-    }
-    else if(shapeName == "SmallWall")
-    {
-        temp = new SmallWall;
-        temp->mMesh = myMeshes[2];
-        temp->mCollision = myCollis[2];
-        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
+    //        return temp;
+    //    }
+    //    else if(shapeName == "SmallWall")
+    //    {
+    //        temp = new SmallWall;
+    //        temp->mMesh = myMeshes[4];
+    //        temp->mCollision = myCollis[4];
+    //        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
 
-        if(doOnce[5] == false){
-            temp->mNameComp->mName = shapeName;
-            doOnce[5] = true;}
-        else
-            temp->mNameComp->mName = shapeName + a;
+    //        if(doOnce[4] == false){
+    //            temp->mNameComp->mName = shapeName;
+    //            doOnce[4] = true;}
+    //        else
+    //            temp->mNameComp->mName = shapeName + a;
 
-        temp->mNameComp->objectID = mCounter;
-        mCounter++;
+    //        temp->mNameComp->objectID = mCounter;
+    //        mCounter++;
 
-        return temp;
-    }
+    //        return temp;
+    //    }
     else if(shapeName.find(obj) != std::string::npos)
     {
         temp = nullptr;
@@ -227,114 +226,88 @@ void ShapeFactory::makeVertices()
     MeshComponent* m = nullptr;
     CollisionComponent* c = nullptr;
     float x, y, z;
-//    int m_rekursjoner = 3;
+    int m_rekursjoner = 3;
 
-//    m = new MeshComponent;
-//    c = new CollisionComponent;
-//    m->mDrawType = GL_TRIANGLES;
-//    m->mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
-//    myMeshes.push_back(m);
-//    myCollis.push_back(c);
+    m = new MeshComponent;
+    c = new CollisionComponent;
+    m->mDrawType = GL_TRIANGLES;
+    m->mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
 
-//    float a = 1;
-//    gsl::Vector3D v0{0, 0, a};
-//    gsl::Vector3D v1{a, 0, 0};
-//    gsl::Vector3D v2{0, a, 0};
-//    gsl::Vector3D v3{-a, 0, 0};
-//    gsl::Vector3D v4{0, -a, 0};
-//    gsl::Vector3D v5{0, 0, -a};
+    float a = 1;
+    gsl::Vector3D v0{0, 0, a};
+    gsl::Vector3D v1{a, 0, 0};
+    gsl::Vector3D v2{0, a, 0};
+    gsl::Vector3D v3{-a, 0, 0};
+    gsl::Vector3D v4{0, -a, 0};
+    gsl::Vector3D v5{0, 0, -a};
 
-//    subDivide(v0, v1, v2, m_rekursjoner);
-//    subDivide(v0, v2, v3, m_rekursjoner);
-//    subDivide(v0, v3, v4, m_rekursjoner);
-//    subDivide(v0, v4, v1, m_rekursjoner);
-//    subDivide(v5, v2, v1, m_rekursjoner);
-//    subDivide(v5, v3, v2, m_rekursjoner);
-//    subDivide(v5, v4, v3, m_rekursjoner);
-//    subDivide(v5, v1, v4, m_rekursjoner);
+    subDivide(v0, v1, v2, m_rekursjoner);
+    subDivide(v0, v2, v3, m_rekursjoner);
+    subDivide(v0, v3, v4, m_rekursjoner);
+    subDivide(v0, v4, v1, m_rekursjoner);
+    subDivide(v5, v2, v1, m_rekursjoner);
+    subDivide(v5, v3, v2, m_rekursjoner);
+    subDivide(v5, v4, v3, m_rekursjoner);
+    subDivide(v5, v1, v4, m_rekursjoner);
 
-//    m = new MeshComponent;
-//    c = new CollisionComponent;
+    m = new MeshComponent;
+    c = new CollisionComponent;
 
-//    m->mDrawType = GL_TRIANGLES;
+    x = 0.5;
+    y = 0.5;
+    z = 0.5;
 
-//    m->mVertices.push_back(Vertex{0,0,0, 1,0,0});
-//    m->mVertices.push_back(Vertex{0.5,0,0, 1,0,0});       // bottom surface
-//    m->mVertices.push_back(Vertex{0,0.5,0, 1,0,0});
+    m->mDrawType = GL_TRIANGLES;
 
-//    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,0});
-//    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,0});
-//    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
+    m->mVertices.push_back(Vertex{-x,-y,-z,  1,0,0});
+    m->mVertices.push_back(Vertex{ x,-y,-z,  1,0,0});       // bottom surface
+    m->mVertices.push_back(Vertex{-x, y,-z,  1,0,0});
 
-//    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-//    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});       // right surface
-//    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{ x,-y,-z,  1,0,0});
+    m->mVertices.push_back(Vertex{ x, y,-z,  1,0,0});
+    m->mVertices.push_back(Vertex{-x, y,-z,  1,0,0});
 
-//    m->mVertices.push_back(Vertex{0.5,0,0,  1,0,1});
-//    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-//    m->mVertices.push_back(Vertex{0.5,0,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{ x,-y,-z,  1,0,1});
+    m->mVertices.push_back(Vertex{ x, y,-z,  1,0,1});       // right surface
+    m->mVertices.push_back(Vertex{ x, y, z,  1,0,1});
 
-//    m->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-//    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,1,0});       // top surface
-//    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{ x,-y,-z,  1,0,1});
+    m->mVertices.push_back(Vertex{ x, y, z,  1,0,1});
+    m->mVertices.push_back(Vertex{ x,-y, z,  1,0,1});
 
-//    m->mVertices.push_back(Vertex{0,0,0.5,  1,1,0});
-//    m->mVertices.push_back(Vertex{0.5,0,0.5,  1,1,0});
-//    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,1,0});
+    m->mVertices.push_back(Vertex{-x,-y, z,  1,1,0});
+    m->mVertices.push_back(Vertex{-x, y, z,  1,1,0});       // top surface
+    m->mVertices.push_back(Vertex{ x, y, z,  1,1,0});
 
-//    m->mVertices.push_back(Vertex{0,0,0.5,  1,0,0});
-//    m->mVertices.push_back(Vertex{0,0,0,  1,0,0});       //left surface
-//    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
+    m->mVertices.push_back(Vertex{-x,-y, z,  1,1,0});
+    m->mVertices.push_back(Vertex{ x,-y, z,  1,1,0});
+    m->mVertices.push_back(Vertex{ x, y, z,  1,1,0});
 
-//    m->mVertices.push_back(Vertex{0,0,0,  1,0,0});
-//    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,0});
-//    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,0});
+    m->mVertices.push_back(Vertex{-x,-y, z,  1,0,0});
+    m->mVertices.push_back(Vertex{-x,-y,-z,  1,0,0});       //left surface
+    m->mVertices.push_back(Vertex{-x, y, z,  1,0,0});
 
-//    m->mVertices.push_back(Vertex{0,0.5,0,  1,0,1});
-//    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});   // back surface
-//    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
+    m->mVertices.push_back(Vertex{-x,-y,-z,  1,0,0});
+    m->mVertices.push_back(Vertex{-x, y,-z,  1,0,0});
+    m->mVertices.push_back(Vertex{-x, y, z,  1,0,0});
 
-//    m->mVertices.push_back(Vertex{0.5,0.5,0,  1,0,1});
-//    m->mVertices.push_back(Vertex{0.5,0.5,0.5,  1,0,1});
-//    m->mVertices.push_back(Vertex{0,0.5,0.5,  1,0,1});
+    m->mVertices.push_back(Vertex{-x, y,-z,  1,0,1});
+    m->mVertices.push_back(Vertex{-x, y, z,  1,0,1});   // back surface
+    m->mVertices.push_back(Vertex{ x, y,-z,  1,0,1});
 
-//    gsl::Vector3D min(0,0,0);
-//    gsl::Vector3D max(0.5, 0.5, 0.5);
+    m->mVertices.push_back(Vertex{ x, y,-z,  1,0,1});
+    m->mVertices.push_back(Vertex{ x, y, z,  1,0,1});
+    m->mVertices.push_back(Vertex{-x, y, z,  1,0,1});
 
-//    c->setBoundingBox(min, max);
+    gsl::Vector3D min(-x,-y,-z);
+    gsl::Vector3D max( x, y, z);
 
-//    myMeshes.push_back(m);
-//    myCollis.push_back(c);
+    c->setBoundingBox(min, max);
 
-//    m = new MeshComponent;
-//    c = new CollisionComponent;
-
-//    m->mDrawType = GL_TRIANGLES;
-
-//    // Positions            // Colors       //UV
-//    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-
-//    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-//    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
-
-//    m->mVertices.push_back(Vertex{-0.5,0.6532,0.0, 0.0,0.0,1.0});
-//    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 0.0,1.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 1.0,0.0,0.0});
-
-//    m->mVertices.push_back(Vertex{-0.9,0.0,0.0, 0.0,1.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.1,0.0,0.0, 1.0,0.0,0.0});
-//    m->mVertices.push_back(Vertex{-0.5,0.3266,0.6532, 0.0,0.0,1.0});
-
-//    min = gsl::Vector3D(-0.9, 0,0);
-//    max = gsl::Vector3D(-0.1,0.6532, 0.6532);
-
-//    c->setBoundingBox(min, max);
-
-//    myMeshes.push_back(m);
-//    myCollis.push_back(c);
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
 
     m = new MeshComponent;
     c = new CollisionComponent;
@@ -346,129 +319,129 @@ void ShapeFactory::makeVertices()
     z = 5;
     m->mVertices.push_back(Vertex{-x, 0.0,-z,  0.0, 0.3, 0.2});
     m->mVertices.push_back(Vertex{-x, 0.0, z,  0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{x,  0.0,-z,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.0, 0.3, 0.2});
 
-    m->mVertices.push_back(Vertex{x,  0.0, z,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0, z,  0.0, 0.3, 0.2});
     m->mVertices.push_back(Vertex{-x, 0.0, z, 0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{x,  0.0,-z,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.0, 0.3, 0.2});
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
-    m = new MeshComponent;
-    c = new CollisionComponent;
+//    m = new MeshComponent;
+//    c = new CollisionComponent;
 
-    m->mDrawType = GL_TRIANGLES;
+//    m->mDrawType = GL_TRIANGLES;
 
-    x = 4.25;
-    y = 0.75;
-    z = 0.25;
+//    x = 4.25;
+//    y = 0.75;
+//    z = 0.25;
 
-    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});
-    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,0});       // bottom surface
-    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,0});       // bottom surface
+//    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,0});
-    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,0});
-    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,1});
-    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});       // right surface
-    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});       // right surface
+//    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,1});
-    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
-    m->mVertices.push_back(Vertex{ x,-y, z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y, z,    1,0,1});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,    1,1,0});
-    m->mVertices.push_back(Vertex{-x, y, z,    1,1,0});       // top surface
-    m->mVertices.push_back(Vertex{ x, y, z,    1,1,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,    1,1,0});
+//    m->mVertices.push_back(Vertex{-x, y, z,    1,1,0});       // top surface
+//    m->mVertices.push_back(Vertex{ x, y, z,    1,1,0});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,    1,1,0});
-    m->mVertices.push_back(Vertex{ x,-y, z,    1,1,0});
-    m->mVertices.push_back(Vertex{ x, y, z,    1,1,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,    1,1,0});
+//    m->mVertices.push_back(Vertex{ x,-y, z,    1,1,0});
+//    m->mVertices.push_back(Vertex{ x, y, z,    1,1,0});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,    1,0,0});
-    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});       //left surface
-    m->mVertices.push_back(Vertex{-x, y, z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});       //left surface
+//    m->mVertices.push_back(Vertex{-x, y, z,    1,0,0});
 
-    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});
-    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
-    m->mVertices.push_back(Vertex{-x, y, z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y, z,    1,0,0});
 
-    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,1});
-    m->mVertices.push_back(Vertex{-x, y, z,    1,0,1});   // back surface
-    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y,-z,    1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y, z,    1,0,1});   // back surface
+//    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});
 
-    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});
-    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
-    m->mVertices.push_back(Vertex{-x, y, z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y,-z,    1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y, z,    1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y, z,    1,0,1});
 
 
-    gsl::Vector3D min = gsl::Vector3D(-x,-y,-z);
-    gsl::Vector3D max = gsl::Vector3D( x, y, z);
+//    min = gsl::Vector3D(-x,-y,-z);
+//    max = gsl::Vector3D( x, y, z);
 
-    c->setBoundingBox(min, max);
+//    c->setBoundingBox(min, max);
 
-    myMeshes.push_back(m);
-    myCollis.push_back(c);
+    //myMeshes.push_back(m);
+    //myCollis.push_back(c);
 
-    m = new MeshComponent;
-    c = new CollisionComponent;
+//    m = new MeshComponent;
+//    c = new CollisionComponent;
 
-    x = 2.25;
-    y = 0.75;
-    z = 0.25;
+//    x = 2.25;
+//    y = 0.75;
+//    z = 0.25;
 
-    m->mDrawType = GL_TRIANGLES;
+//    m->mDrawType = GL_TRIANGLES;
 
-    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});
-    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,0});       // bottom surface
-    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,0});       // bottom surface
+//    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,0});
-    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,0});
-    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,1});
-    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});       // right surface
-    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});       // right surface
+//    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
 
-    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,1});
-    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
-    m->mVertices.push_back(Vertex{ x,-y, z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y,-z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x,-y, z,   1,0,1});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,   1,1,0});
-    m->mVertices.push_back(Vertex{-x, y, z,   1,1,0});       // top surface
-    m->mVertices.push_back(Vertex{ x, y, z,   1,1,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,   1,1,0});
+//    m->mVertices.push_back(Vertex{-x, y, z,   1,1,0});       // top surface
+//    m->mVertices.push_back(Vertex{ x, y, z,   1,1,0});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,   1,1,0});
-    m->mVertices.push_back(Vertex{ x,-y, z,   1,1,0});
-    m->mVertices.push_back(Vertex{ x, y, z,   1,1,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,   1,1,0});
+//    m->mVertices.push_back(Vertex{ x,-y, z,   1,1,0});
+//    m->mVertices.push_back(Vertex{ x, y, z,   1,1,0});
 
-    m->mVertices.push_back(Vertex{-x,-y, z,   1,0,0});
-    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});       //left surface
-    m->mVertices.push_back(Vertex{-x, y, z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y, z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});       //left surface
+//    m->mVertices.push_back(Vertex{-x, y, z,   1,0,0});
 
-    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});
-    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
-    m->mVertices.push_back(Vertex{-x, y, z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x,-y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,0});
+//    m->mVertices.push_back(Vertex{-x, y, z,   1,0,0});
 
-    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,1});
-    m->mVertices.push_back(Vertex{-x, y, z,   1,0,1});   // back surface
-    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y,-z,   1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y, z,   1,0,1});   // back surface
+//    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});
 
-    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});
-    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
-    m->mVertices.push_back(Vertex{-x, y, z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y,-z,   1,0,1});
+//    m->mVertices.push_back(Vertex{ x, y, z,   1,0,1});
+//    m->mVertices.push_back(Vertex{-x, y, z,   1,0,1});
 
-    min = gsl::Vector3D(-x,-y,-z);
-    max = gsl::Vector3D( x, y, z);
+//    min = gsl::Vector3D(-x,-y,-z);
+//    max = gsl::Vector3D( x, y, z);
 
-    c->setBoundingBox(min, max);
+//    c->setBoundingBox(min, max);
 
-    myMeshes.push_back(m);
-    myCollis.push_back(c);
+    //myMeshes.push_back(m);
+    //myCollis.push_back(c);
 
     m = new MeshComponent;
     c = new CollisionComponent;
@@ -476,7 +449,6 @@ void ShapeFactory::makeVertices()
     readFile(monkeyString, m);
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.2;
-
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
@@ -490,6 +462,21 @@ void ShapeFactory::makeVertices()
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+    readFile(enemyString, m);
+    m->mDrawType = GL_TRIANGLES;
+    c->radius = 0.5;
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+}
+
+MeshComponent *ShapeFactory::getMesh(int i)
+{
+    return myMeshes[i];
 }
 
 CollisionComponent *ShapeFactory::getColli(int i)
@@ -656,3 +643,5 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
         myMeshes[0]->mVertices.push_back(v);
     }
 }
+
+

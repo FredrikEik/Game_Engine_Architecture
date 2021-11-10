@@ -19,6 +19,7 @@ public:
     virtual ~ShapeFactory() {}
     VisualObject* createShape(string shapeName);
     void makeVertices();
+    MeshComponent* getMesh(int i);
     CollisionComponent* getColli(int i);
 private:
     void readFile(std::string filename, MeshComponent* m);
@@ -26,11 +27,14 @@ private:
     std::map<string, int> myObjs;
     std::vector<MeshComponent*> myMeshes;
     std::vector<CollisionComponent*> myCollis;
-    int mCounter = 0;
+    int mCounter = 1;
     bool doOnce[6]{false};
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
+    string enemyString = "../GEA2021/Assets/Enemy.obj";
 };
+
+
 
 class Circle : public VisualObject
 {
@@ -44,13 +48,6 @@ class Square : public VisualObject
 public:
     Square();
     ~Square() {}
-};
-
-class Triangle : public VisualObject
-{
-public:
-    Triangle();
-    ~Triangle() {};
 };
 
 class Plain : public VisualObject
@@ -72,6 +69,13 @@ class SmallWall : public VisualObject
 public:
     SmallWall();
     ~SmallWall(){};
+};
+
+class Enemy : public VisualObject
+{
+public:
+    Enemy();
+    ~Enemy(){};
 };
 
 class ObjMesh : public VisualObject

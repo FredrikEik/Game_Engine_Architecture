@@ -114,234 +114,23 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
 
-    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    mPlayCamera.setPosition(gsl::Vector3D(1.f, 10.f, 9.f));
+    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 8.f));
+    mPlayCamera.setPosition(gsl::Vector3D(0.f, 8.f, 5.f));
     mPlayCamera.pitch(70);
 
-
     mCurrentCamera = &mEditorCamera;
-
 
     //********************** create input **********************
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
 
-    initObject();
-}
-
-void RenderWindow::initObject()
-{
-    //********************** Making the object to be drawn **********************
-
-    mShapeFactory.makeVertices();
-
-    //    VisualObject* temp = mShapeFactory.createShape("Circle");
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->move(2.f, 1.f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-    //    temp = mShapeFactory.createShape("Square");
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->move(-2.f, 0.f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-    //    temp = mShapeFactory.createShape("Triangle");
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    //    temp->mMaterial->mTextureUnit = 1;      //dog texture
-    //    temp->move(3.f, 0.f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-    VisualObject* temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;   //plain shader
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("BigWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-14.f, 0.75f, 0.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-9.f, 0.75f, -7.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("Monkey.obj");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("Pacman.obj");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(4.f, 2.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    mPlayer = new Player();
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mPlayer->move(0,1,0);
-    mVisualObjects.push_back(mPlayer);
-    mTransComps.push_back(mPlayer->mTransform);
-    mNameComps.push_back(mPlayer->mNameComp);
-
-    //    temp = new XYZ();
-    //    temp->mMaterial->mShaderProgram = 0; //plain shader
-    //    temp->init();
-
-    mFrustumSystem = new FrustumSystem(&mPlayCamera);
-    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
-    mFrustumSystem->init();
-
-    //------------------------Skybox----------------------//
-    mSkyBox = new Skybox();
-    mSkyBox->setTexture();
-    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
-    mSkyBox->init();
-    //mVisualObjects.push_back(mSkyBox);
-
-    //------------------------Light----------------------//
-    mLight = new Light;
-    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
-    mLight->move(0.f, 0.f, 6.f);
-    mLight->init();
-    //mVisualObjects.push_back(mLight);
-
-    makeMap();
-    //    for(int i=0; i<10; i++)
-    //    {
-    //        for(int y=0; y<10; y++)
-    //        {
-    //            temp = mShapeFactory.createShape("Monkey.obj");
-    //            temp->init();
-    //            temp->move((i-y), 0.5, y-5);
-    //            temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //            mTransComps.push_back(temp->mTransform);
-    //            mNameComps.push_back(temp->mNameComp);
-    //            mVisualObjects.push_back(temp);
-    //        }
-    //    }
-
-
-
-    //makes the soundmanager
-    //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
-}
-
-void RenderWindow::makeMap()
-{
-    VisualObject* temp = mShapeFactory.createShape("BigWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-4.f, 0.75f, -7.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("BigWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-4.f, 0.75f, 7.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("BigWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(5.5f, 0.75f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-5.f, 0.75f, -3.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-5.f, 0.75f, 0.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-9.f, 0.75f, 4.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(6.f, 0.75f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(6.f, 0.75f, -4.f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(10.f, 0.75f, 4.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("SmallWall");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(10.f, 0.75f, -7.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    temp->mTransform->mMatrix.rotateY(90.f);
-    mNameComps.push_back(temp->mNameComp);
+    mLvl = new Level(&mPlayCamera);
+    mSkyBox = mLvl->mSkyBox;
+    mLight = mLvl->mLight;
+    mPlayer = mLvl->mPlayer;
+    //initObject();
+    mMainWindow->run();
 }
 
 void RenderWindow::drawObject()
@@ -352,31 +141,24 @@ void RenderWindow::drawObject()
     int projectionMatrix{-1};
     int modelMatrix{-1};
     //Draws the objects
-    for(int i{0}; i < mVisualObjects.size(); i++)
+    for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
     {
-        //First objekct - xyz
-        //what shader to use
-        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+        glUseProgram(mShaderPrograms[mLvl->mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
-
-
-
-        if (mVisualObjects[i]->mMaterial->mShaderProgram == 0) //PlainShader
+        if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 0) //PlainShader
         {
             viewMatrix = vMatrixUniform;
             projectionMatrix = pMatrixUniform;
             modelMatrix = mMatrixUniform;
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 1)//TextureShader
+        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 1)//TextureShader
         {
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
-            glUniform1i(mTextureUniform, mVisualObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform, mLvl->mVisualObjects[i]->mMaterial->mTextureUnit);
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 2)//PhongShader
+        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 2)//PhongShader
         {
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
@@ -385,23 +167,22 @@ void RenderWindow::drawObject()
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, mLight->mLightColor.x(), mLight->mLightColor.y(), mLight->mLightColor.z());
         }
-        else if (mVisualObjects[i]->mMaterial->mShaderProgram == 3)//SkyboxShader
+        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 3)//SkyboxShader
         {
             viewMatrix = vMatrixUniform3;
             projectionMatrix = pMatrixUniform3;
             modelMatrix = mMatrixUniform3;
 
-            glUniform1i(mTextureUniform3, mVisualObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform3, mLvl->mVisualObjects[i]->mMaterial->mTextureUnit);
         }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
         //send data to shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mVisualObjects[i]->mTransform->mMatrix.constData());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        glBindVertexArray( mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
+        glBindVertexArray(mLvl->mVisualObjects[i]->mMesh->mVAO );
+        glDrawArrays(mLvl->mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
         glBindVertexArray(0);
     }
 
@@ -416,25 +197,10 @@ void RenderWindow::drawObject()
     glBindVertexArray(0);
 
     if(playM==false){
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mFrustumSystem->mTransform->mMatrix.constData());
-        glBindVertexArray( mFrustumSystem->mMesh->mVAO );
-        glDrawArrays(mFrustumSystem->mMesh->mDrawType, 0, mFrustumSystem->mMesh->mVertices.size());
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
+        glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
+        glDrawArrays(mLvl->mFrustumSystem->mMesh->mDrawType, 0, mLvl->mFrustumSystem->mMesh->mVertices.size());
         glBindVertexArray(0);}
-
-    for(int i{1}; i < mVisualObjects.size(); i++)
-    {
-        if(i<6 && i>2)
-            continue;
-        else{
-            if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[i]->mCollision))
-            {
-                qDebug() <<"Collision detected"; //testing collision
-                mPlayer->CheckPlayerWall(mVisualObjects[i]->mCollision);
-            }
-            //else
-                //mPlayer->noWall();
-        }
-    }
 }
 
 // Called each frame - doing the rendering
@@ -444,10 +210,13 @@ void RenderWindow::render()
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
 
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
+
+    checkCollision();
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -582,7 +351,29 @@ void RenderWindow::toggleWireframe(bool buttonState)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    //turn off wireframe mode
         //glEnable(GL_CULL_FACE);
     }
+}
 
+void RenderWindow::checkCollision()
+{
+    //kollisjon fungerer foreløpig ikke for flere objekter
+    //kollisjon mot vegger
+    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mLvl->mVisualObjects[2]->mCollision))
+    {
+        //qDebug() <<"Collision detected"; //testing collision
+        mPlayer->CheckPlayerWall(mLvl->mVisualObjects[2]->mCollision);
+    }
+    else
+        mPlayer->noWall(); //må finne en annen måte å gjøre dette på
+
+    //kollisjon mot trofeer
+    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[7]->mCollision))
+    {
+        qDebug() <<"Collision detected"; //testing collision
+        mLvl->trophies++; // for å senere sette win-condition
+        mLvl->mVisualObjects[7]->mNameComp->drawMe = false; //for å ikke tegne opplukket trofè
+    }
+    else
+        qDebug() << "No col";
 }
 
 void RenderWindow::playMode(bool p)
@@ -590,27 +381,15 @@ void RenderWindow::playMode(bool p)
     if(p)
     {
         mCurrentCamera = &mPlayCamera;
-        mLaserSound->play();
+        mLvl->mLaserSound->play();
         playM = true;
     }
     else
     {
         mCurrentCamera = &mEditorCamera;
-        mLaserSound->stop();
+        mLvl->mLaserSound->stop();
         playM = false;
     }
-}
-
-std::string RenderWindow::createShapes(string shapeID)
-{
-    VisualObject* temp = mShapeFactory.createShape(shapeID);
-    temp->init();
-    temp->move(1,1,0.5);
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-    mVisualObjects.push_back(temp);
-    return temp->mNameComp->mName;
 }
 
 //Uses QOpenGLDebugLogger if this is present
@@ -702,7 +481,6 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mInput.RIGHT = true;
     }
-
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
@@ -753,30 +531,31 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 int RenderWindow::levelOfDetail(int i)
 {
 
-    //if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
-    //making the vector from camera to object we test against
-    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+    //    //if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
+    //    //making the vector from camera to object we test against
+    //    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
 
-    if(camToObject.length()<5)
-    {
-        return mVisualObjects[i]->mMesh->mVertices.size();
-    }
-    else if(camToObject.length()<20)
-    {
-        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
-            return mVisualObjects[i]->mMesh->mVertices.size()/2;
-        else
-            return mVisualObjects[i]->mMesh->mVertices.size();
-    }
-    else
-    {
-        if(mVisualObjects[i]->mMesh->mVertices.size()>30)
-            return mVisualObjects[i]->mMesh->mVertices.size()/4;
-        else
-            return mVisualObjects[i]->mMesh->mVertices.size();
-    }
+    //    if(camToObject.length()<10)
+    //    {
+    //        return mVisualObjects[i]->mMesh->mVertices.size();
+    //    }
+    //    else if(camToObject.length()<30)
+    //    {
+    //        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
+    //            return mVisualObjects[i]->mMesh->mVertices.size()/2;
+    //        else
+    //            return mVisualObjects[i]->mMesh->mVertices.size();
+    //    }
+    //    else
+    //    {
+    //        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
+    //            return mVisualObjects[i]->mMesh->mVertices.size()/4;
+    //        else
+    //            return mVisualObjects[i]->mMesh->mVertices.size();
+    //    }
+
     //else
-    //    return mVisualObjects[i]->mMesh->mVertices.size();
+    return mLvl->mVisualObjects[i]->mMesh->mVertices.size();
 
 }
 
@@ -808,12 +587,12 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     ray_wor = {temp.x, temp.y, temp.z};
     ray_wor.normalize();
 
-    qDebug() << ray_wor;
+    //qDebug() << ray_wor;
 
-    for(int i{0}; i < mVisualObjects.size(); i++)
+    for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
 
     {      //making the vector from camera to object we test against
-        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+        gsl::Vector3D camToObject = mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
 
         //making the normal of the ray - in relation to the camToObject vector
         //this is the normal of the surface the camToObject and ray_wor makes:
@@ -830,7 +609,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
         //we are interested in the absolute distance, so fixes any negative numbers
         distance = abs(distance);
 
-        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
+        if(mCollisionSystem->CheckMousePickCollision(distance, mLvl->mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
         {
             mousePickCollide = true;
             mMainWindow->selectWithMousePick(i);

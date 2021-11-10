@@ -8,13 +8,14 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     mTransform->mPosition = gsl::Vector3D(mx,my,mz);
     mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(4);
+    //mTransform->mMatrix.scale(0.5);
     mColSystem = new CollisionSystem;
     mCollision->setBoundingSphere(1, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mInputComp = new InputComponent;
     mNameComp = new NameComponent();
     mNameComp->mName = "Player";
-    mNameComp->objectID = 5;
+    mNameComp->objectID = 0;
 }
 
 Player::~Player()
@@ -54,7 +55,7 @@ void Player::CheckPlayerWall(CollisionComponent *bCollision)
     auto xdiff = x - mCollision->center.getX();
     auto zdiff = z - mCollision->center.getZ();
 
-    qDebug() << mCollision->center;
+    //qDebug() << mCollision->center;
     auto distance = sqrt((x - mCollision->center.getX()) * (x - mCollision->center.getX()));
     if(distance < mCollision->radius)
     {

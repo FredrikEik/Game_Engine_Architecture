@@ -1,4 +1,5 @@
 QT          += core gui widgets opengl
+QT          += core gui widgets qml
 
 TEMPLATE    = app
 CONFIG      += c++17
@@ -24,6 +25,7 @@ SOURCES += main.cpp \
     collisionsystem.cpp \
     component.cpp \
     inputsystem.cpp \
+    level.cpp \
     light.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
@@ -41,8 +43,7 @@ SOURCES += main.cpp \
     vector4d.cpp \
     vertex.cpp \
     visualobject.cpp \
-    wavfilehandler.cpp \
-    xyz.cpp
+    wavfilehandler.cpp
 
 HEADERS += \
     PCH.h \
@@ -54,6 +55,7 @@ HEADERS += \
     input.h \
     inputcomponent.h \
     inputsystem.h \
+    level.h \
     light.h \
     math_constants.h \
     matrix3x3.h \
@@ -73,8 +75,7 @@ HEADERS += \
     vector4d.h \
     vertex.h \
     visualobject.h \
-    wavfilehandler.h \
-    xyz.h
+    wavfilehandler.h
 
 FORMS += \
     mainwindow.ui

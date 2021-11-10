@@ -13,7 +13,7 @@ struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D mPosition;
-    float scale = 1;
+    //float scale = 1;
 };
 
 struct MeshComponent
@@ -36,6 +36,7 @@ struct NameComponent
 {
     int objectID=0;
     std::string mName;
+    bool drawMe{true};
 };
 
 #endif // COMPONENT_H

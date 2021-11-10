@@ -1,8 +1,6 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-
-
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
 // We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
@@ -20,45 +18,34 @@ public:
 
     void toggleWireframe(bool buttonState);
     void playMode(bool p);
-    std::string createShapes(string shapeID);
     void setCameraSpeed(float value);
-    std::vector<NameComponent*> mNameComps;
-    std::vector<TransformComponent*> mTransComps;
     bool mousePickCollide = false;
     int MousePickindex = 0;
-
+    Level* mLvl;
 private slots:
     void render();
 
 private:
-    SoundSource* mLaserSound{};
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
     CollisionSystem* mCollisionSystem;
-    FrustumSystem* mFrustumSystem;
-    ShapeFactory mShapeFactory;
     Input mInput;
-    Player* mPlayer;
     bool playM = false;
     int levelOfDetail(int i);
     void mousePickingRay(QMouseEvent *event);
     gsl::Vector3D ray_wor;
 
     void init();
-    void initObject();
-    void makeMap();
     void drawObject();
-    void rePlay();
-
-
     void checkForGLerrors();
-
     void calculateFramerate();
-
     void startOpenGLDebugger();
+    void checkCollision();
+
 
     Skybox *mSkyBox;
     Light * mLight{nullptr};
+    Player* mPlayer;
     void setupSkyboxShader(int shaderIndex);
     GLint mMatrixUniform3{-1};
     GLint vMatrixUniform3{-1};
@@ -99,8 +86,6 @@ private:
     Camera *mCurrentCamera{nullptr};
     Camera mEditorCamera;
     Camera mPlayCamera;
-
-    std::vector<VisualObject*> mVisualObjects;
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;

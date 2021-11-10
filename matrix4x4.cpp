@@ -192,7 +192,6 @@ void Matrix4x4::translateY(GLfloat y)
     translate(0.f, y, 0.f);
 }
 
-
 void Matrix4x4::translateZ(GLfloat z)
 {
     translate(0.f, 0.f, z);

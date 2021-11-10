@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <iostream>
 
 #include "input.h"
 #include "constants.h"
@@ -19,17 +20,16 @@
 #include "soundmanager.h"
 #include "soundsource.h"
 
-#include <iostream>
-
 #include "shader.h"
 #include "mainwindow.h"
 #include "visualobject.h"
-#include "xyz.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
 #include "skybox.h"
 #include "light.h"
+#include "level.h"
+
 
 class QOpenGLContext;
 class Shader;

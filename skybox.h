@@ -19,12 +19,12 @@ private:
 
     std::string mFaces[6]
     {
-        "../GEA2021/Assets/skybox/right.bmp",
-        "../GEA2021/Assets/skybox/left.bmp",
-        "../GEA2021/Assets/skybox/bottom.bmp",
-        "../GEA2021/Assets/skybox/top.bmp",
-        "../GEA2021/Assets/skybox/front.bmp",
-        "../GEA2021/Assets/skybox/back.bmp"
+        "../Skybox/right.bmp",
+        "../Skybox/left.bmp",
+        "../Skybox/bottom.bmp",
+        "../Skybox/top.bmp",
+        "../Skybox/front.bmp",
+        "../Skybox/back.bmp"
     };
 };
 

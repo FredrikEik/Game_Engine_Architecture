@@ -23,6 +23,7 @@ public:
     ~MainWindow();
     void selectWithMousePick(int index);
     void createStatusBar();
+    void run();
 
 private slots:
     void on_pushButton_toggled(bool checked);
