@@ -71,6 +71,8 @@ public:
     //PHYSICS
     PhysicsSystem* Physics = new PhysicsSystem();
 
+    //player camera
+    void togglePlayerCamera();
 
 private slots:
     void render();
@@ -142,6 +144,13 @@ private:
 
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
+
+    //playerCamera switcher
+    Camera *mPlayerCamera{nullptr};
+    Camera *mEditorCamera{nullptr};
+    bool bIsPlayerCamera = false;
+
+
 
     Input mInput;
     float mCameraSpeed{0.15f};

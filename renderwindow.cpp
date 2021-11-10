@@ -215,7 +215,11 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
+    mPlayerCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mPlayerCamera->setPosition(gsl::Vector3D(1.f, 2.5f, 4.f));
 
+    mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
     mSong->pause();
     mMainWindow->updateViewPort();
@@ -465,6 +469,35 @@ void RenderWindow::setupSkyboxshader(int shaderIndex)
     pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 
     skyboxUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
+}
+
+void RenderWindow::togglePlayerCamera()
+{
+    if(mPlayerCamera && mEditorCamera)
+    {
+        if(bIsPlayerCamera)
+        {
+               mCurrentCamera = mPlayerCamera;
+               bIsPlayerCamera = false;
+               //calculate aspect ration and set projection matrix
+               mAspectratio = static_cast<float>(width()) / height();
+               //    qDebug() << mAspectratio;
+               mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+               //    qDebug() << mCamera.mProjectionMatrix;
+        }
+        else
+        {
+            mCurrentCamera = mEditorCamera;
+            bIsPlayerCamera = true;
+            //calculate aspect ration and set projection matrix
+            mAspectratio = static_cast<float>(width()) / height();
+            //    qDebug() << mAspectratio;
+            mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+            //    qDebug() << mCamera.mProjectionMatrix;
+
+        }
+
+    }
 }
 
 void RenderWindow::RayCasting(QMouseEvent *event)
