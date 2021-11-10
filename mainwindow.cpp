@@ -310,7 +310,7 @@ void MainWindow::on_actionDelete_Selected_triggered()
     mRenderWindow->deleteGameObjectAt(ObjectListIndex);
     GameObjects.erase(GameObjects.begin() + ObjectListIndex);
     listWidget->takeItem(listWidget->currentRow());
-
+    //listWidget->setCurrentRow(0);
     bCurrentlyDeleting = false;
     //listWidget->removeItemWidget(listWidget->currentItem());
 
@@ -333,14 +333,10 @@ void MainWindow::on_saveScene_clicked()
 
 void MainWindow::on_loadScene_clicked()
 {
+    listWidget->setCurrentRow(0);
     GameEngine::getInstance()->loadScene();
     refreshList();
-    listWidget->setCurrentRow(0);
 }
-
-
-
-
 
 void MainWindow::on_actionLOD_toggle_toggled(bool arg1)
 {

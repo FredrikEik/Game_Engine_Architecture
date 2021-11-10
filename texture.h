@@ -32,10 +32,6 @@ public:
     MaterialComponent *createTexture(std::string textureFilepath);
 
 
-    MaterialComponent *tempComp;
-    std::map<std::string, MaterialComponent*> mTextureMap;
-    std::vector<Texture> mTextures;
-
 private:
     int mBytesPrPixel{};
     bool mAlphaUsed{false};

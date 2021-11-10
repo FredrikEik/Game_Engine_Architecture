@@ -13,9 +13,9 @@
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/light.obj",
-                    "positionx": -26.69736671447754,
+                    "positionx": 3.120039463043213,
                     "positiony": 3,
-                    "positionz": -9.333701133728027,
+                    "positionz": -30.30433464050293,
                     "shader": 0,
                     "usingLOD": false
                 },
@@ -60,26 +60,10 @@
                     "usingLOD": false
                 },
                 {
-                    "filepath": "../GEA2021/Assets/Meshes/sphere.obj",
-                    "positionx": -5,
-                    "positiony": 2.5,
-                    "positionz": 0,
-                    "shader": 2,
-                    "usingLOD": true
-                },
-                {
                     "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
                     "positionx": -12,
                     "positiony": 0.5,
                     "positionz": -13,
-                    "shader": 2,
-                    "usingLOD": true
-                },
-                {
-                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
-                    "positionx": 3,
-                    "positiony": -0.5,
-                    "positionz": -3,
                     "shader": 2,
                     "usingLOD": true
                 },
@@ -92,28 +76,36 @@
                     "usingLOD": true
                 },
                 {
-                    "filepath": "../GEA2021/Assets/Meshes/pyramid.obj",
-                    "positionx": 0,
-                    "positiony": -3.5,
-                    "positionz": 0,
-                    "shader": 2,
-                    "usingLOD": false
-                },
-                {
-                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
-                    "positionx": 0.5,
-                    "positiony": 0.20000000298023224,
-                    "positionz": -10.699999809265137,
-                    "shader": 2,
-                    "usingLOD": true
-                },
-                {
                     "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
                     "positionx": -8.5,
                     "positiony": 3.5999999046325684,
                     "positionz": -16.899999618530273,
                     "shader": 2,
                     "usingLOD": true
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": -4.199999809265137,
+                    "positiony": -3.799999952316284,
+                    "positionz": -2.200000047683716,
+                    "shader": 2,
+                    "usingLOD": true
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/sphere.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "shader": 2,
+                    "usingLOD": true
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/pyramid.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "shader": 2,
+                    "usingLOD": false
                 }
             ]
         }

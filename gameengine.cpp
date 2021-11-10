@@ -26,7 +26,7 @@ void GameEngine::GameLoop()
 {
     //mPhysicsBallSystem->update(*mPhysicsBall);
 
-    //rotateLight();
+    rotateLight();
 
     HandleInput();
 
@@ -40,6 +40,8 @@ void GameEngine::GameLoop()
 
 void GameEngine::SetUpScene()
 {
+
+
     mResourceManager = new class ResourceManager();
     mPhysicsBallSystem = new PhysicsBallSystem();
     mInstance = this;
@@ -53,6 +55,8 @@ void GameEngine::SetUpScene()
     mGameCamera = new Camera();
     mGameCamera->setPosition(gsl::Vector3D(0,2,0));
     mGameCamera->yaw(180);
+
+    mResourceManager->setUpAllTextures();
 
 
 
@@ -85,6 +89,8 @@ void GameEngine::SetUpObjects()
 
     mPlayer->mTransformComp->mMatrix.setPosition(0,-1.8f,-8);
     initPlayerPos = {0,-1.8f,-8};
+    mPlayer->mMaterialComp->mShaderProgram = 2;
+//    mPlayer->mMaterialComp->mTextureUnit = 1;
     //mPlayer->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
 
     qDebug() << "PLAYER filepath: " << mPlayer->filepath.c_str();
@@ -119,7 +125,8 @@ void GameEngine::SetUpObjects()
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false, "cocademon3.bmp");
     mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
-
+    mLight->mMaterialComp->mShaderProgram = 2;
+//    mLight->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(mLight);
 
 //    mLight2 = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
@@ -133,9 +140,10 @@ void GameEngine::SetUpObjects()
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj",false, "hund.bmp");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj",false, "orange.bmp");
     tempGameObject->mTransformComp->mMatrix.setPosition(-1,-1,-5);
-
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+//    tempGameObject->mMaterialComp->mTextureUnit = 3;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 
@@ -284,7 +292,7 @@ void GameEngine::HandleInput()
                 }
             }else
             {
-                mPlayer->mTransformComp->mMatrix.translateX(mRenderwindow->mCurrentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
+                mPlayer->mTransformComp->mMatrix.translateX(currentCamera->getFowrardVector().x*cameraSpeed*camSpeedMultiplyer);
                 mPlayer->mTransformComp->mMatrix.translateZ(currentCamera->getFowrardVector().z*cameraSpeed*camSpeedMultiplyer);
             }
         }

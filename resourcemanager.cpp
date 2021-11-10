@@ -18,6 +18,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFile>
+#include <QDir>
 #include <QJsonDocument>
 
 ResourceManager::ResourceManager()
@@ -40,7 +41,7 @@ ResourceManager::ResourceManager()
     mMeshHandler = new MeshHandler();
 }
 
-GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, std::string textureFilepath)
+GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, std::string textureName)
 {
     // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
     // if it does not find it in the map, it will create a new object with a unique meshComp.
@@ -57,11 +58,14 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
 
 
-    tempGO->mMaterialComp = CreateMaterial(textureFilepath);
+    tempGO->mMaterialComp = new MaterialComponent();
+    tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
+    tempGO->mMaterialComp->mShaderProgram = 2;
+
     //shoud not hardcode
-//    tempGO->mMaterialComp->mTextureUnit=0;
+    //tempGO->mMaterialComp->mTextureUnit=0;
 
-
+    //CreateMaterial(textureFilepath);
 
 
     auto foundAtIndex = mObjectsMeshesMap.find(filepath);
@@ -255,35 +259,103 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
     loadFile.close();
 }
 
-MaterialComponent *ResourceManager::CreateMaterial(std::string textureFilepath)
+int ResourceManager::CreateMaterial(std::string textureName)
 {
     initializeOpenGLFunctions();
-    MaterialComponent *tempComp{nullptr};
 
-    auto foundMatIndex = mTextureMap.find(textureFilepath);
+//    mTextures[textureIDcounter] = new Texture("hund.bmp");
+//    glActiveTexture(GL_TEXTURE0 + textureIDcounter);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
+//    textureIDcounter++;
+//    mTextures[textureIDcounter] = new Texture("cocademon3.bmp");
+//    glActiveTexture(GL_TEXTURE0 + textureIDcounter);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
+//    textureIDcounter++;
+
+
+    int tempInt{-1};
+
+    auto foundMatIndex = mTextureMap.find(textureName);
     if(foundMatIndex != mTextureMap.end()){
-        tempComp = foundMatIndex->second;
+        tempInt = foundMatIndex->second;
         //mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
     }else{
-        if (textureFilepath.find(".bmp") != std::string::npos)
+        if (textureName.find(".bmp") != std::string::npos)
         {
-            tempComp = new MaterialComponent();
+            tempInt = textureIDcounter;
             //std::string tempName = textureFilepath.erase(0,25);
-            mTextures[textureIDcounter] = new Texture(textureFilepath);
-            glActiveTexture(GL_TEXTURE0 + textureIDcounter);
-            glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
-            tempComp->mShaderProgram = 2;
-            tempComp->mTextureUnit = textureIDcounter;
-            mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
 
+            mVectorTextures.push_back(new Texture(textureName));
+//            new Texture(textureFilepath);
+
+            glActiveTexture(GL_TEXTURE0 + textureIDcounter);
+            glBindTexture(GL_TEXTURE_2D, mVectorTextures.at(textureIDcounter)->mGLTextureID);
+            mTextureMap.insert(std::pair<std::string, int>{textureName,tempInt});
             textureIDcounter++;
         }
     }
+    return tempInt-1;
 //    tempGO->mMaterialComp = new MaterialComponent();
-//    tempGO->mMaterialComp->mTextureUnit=0;
-
-    return tempComp;
+    //    tempGO->mMaterialComp->mTextureUnit=0;
 }
+
+int ResourceManager::setMaterial(std::string textureName)
+{
+//    MaterialComponent *tempComp{nullptr};
+
+//    auto foundMatIndex = mTextureMap.find(textureName);
+//    if(foundMatIndex != mTextureMap.end()){
+//        tempComp = foundMatIndex->second;
+//        //mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
+//    }else{
+//        if (textureFilepath.find(".bmp") != std::string::npos)
+//        {
+//            tempComp = new MaterialComponent();
+//            //std::string tempName = textureFilepath.erase(0,25);
+//            mTextures[textureIDcounter] = new Texture(textureFilepath);
+//            glActiveTexture(GL_TEXTURE0 + textureIDcounter);
+//            glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
+//            tempComp->mShaderProgram = 2;
+//            tempComp->mTextureUnit = textureIDcounter;
+//            mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
+
+//            textureIDcounter++;
+//        }
+//    }
+return 0;
+}
+
+
+
+void ResourceManager::setUpAllTextures()
+{
+    //Making default texture
+//    CreateMaterial();
+
+    //Regular .bmp textures read from file
+    QDir tempDir((gsl::TextureFilePath).c_str());
+    if(tempDir.exists())
+    {
+        QStringList filters;
+        filters << "*.bmp";
+        tempDir.setNameFilters(filters);
+
+
+        //read all regular textures
+        for(QFileInfo &var : tempDir.entryInfoList())
+        {
+            CreateMaterial(var.fileName().toStdString());
+            qDebug () << "Reading texture: " << var.fileName();
+        }
+    }
+    else
+    {
+        qDebug() << "ERROR reading texure Failed";
+//        qDebug() << "*** ERROR reading textures *** : Asset-folder " <<
+//                         gsl::TextureFilePath << " does not exist!";
+    }
+}
+
 
 ResourceManager &ResourceManager::getInstance()
 {

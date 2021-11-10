@@ -30,20 +30,26 @@ public:
     void loadScene(std::vector<GameObject *> &objects,GameObject* &player, GameObject* &light);
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
 
+    void setUpAllTextures();
 private:
-    MaterialComponent *CreateMaterial(std::string textureFilepath);
+    int CreateMaterial(std::string textureName);
     GameObject* tempGO{nullptr};
     MeshHandler* mMeshHandler{nullptr};
 
+    int setMaterial(std::string textureName);
+
+
 //    MaterialComponent *tempComp{nullptr};
-    std::map<std::string, MaterialComponent*> mTextureMap;
+    std::map<std::string, int> mTextureMap;
+    std::map<std::string, MaterialComponent*> mMaterialMap;
     Texture *mTextures[gsl::NumberOfTextures]{nullptr};
+    std::vector<Texture*> mVectorTextures;
     unsigned int textureIDcounter{0};
 
     std::vector<GameObject*> mObjects;
     std::map<std::string, GameObject> mObjectsMeshesMap;
 
-    bool checkIfAllreadyExist(std::string &filename, MeshComponent *tempMesh);
+    //bool checkIfAllreadyExist(std::string &filename, MeshComponent *tempMesh);
     void createXYZ(MeshComponent *MeshComp);
 
 public:
