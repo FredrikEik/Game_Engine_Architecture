@@ -220,7 +220,7 @@ void RenderWindow::initObjects()
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
     GameObject *temp=nullptr;
-   /* for(int i{0}; i < 50; i++)
+    for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -231,7 +231,7 @@ void RenderWindow::initObjects()
         }
     }
 
-    */
+
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
@@ -395,8 +395,8 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 
 
-    //qDebug() << "Rendered objects: ";
-    //qDebug() << objectsDrawn;
+    qDebug() << "Rendered objects: ";
+    qDebug() << objectsDrawn;
     objectsDrawn = 0;
 
 }
