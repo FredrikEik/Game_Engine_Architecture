@@ -40,7 +40,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 RenderWindow::~RenderWindow()
 {
-
+    SoundManager::getInstance()->cleanUp();
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle

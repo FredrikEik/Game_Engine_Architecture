@@ -87,6 +87,10 @@ private slots:
 
     void on_comboBox_2_currentIndexChanged(int index);
 
+    void on_RotateYspinBox_valueChanged(double arg1);
+
+    void on_RotateZspinBox_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

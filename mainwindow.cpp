@@ -230,6 +230,9 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
     ui->TranslateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().x);
     ui->TranslateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().y);
     ui->TranslateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().z);
+    ui->RotateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotation.getX());
+    ui->RotateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotation.getY());
+    ui->RotateZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ());
 
 //    ui->RotateXspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.x);
 //    ui->RotateYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.y);
@@ -270,17 +273,24 @@ void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
 
 void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 {
-    // for the text in the editor
-    //GameObjects[ObjectListIndex]->mTransformComp->rotationDeg.x = arg1;
-
-
-
-    //lastrot needs to be pr object
-   //S GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX((arg1-lastXrot));
-    lastXrot = arg1;
+    float x = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getX();
+    GameObjects[ObjectListIndex]->mTransformComp->rotation.setX(x+GameObjects[ObjectListIndex]->mTransformComp->rotation.getX());
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX(x);
 }
 
+void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
+{
+    float y = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getY();
+    GameObjects[ObjectListIndex]->mTransformComp->rotation.setY(y+GameObjects[ObjectListIndex]->mTransformComp->rotation.getY());
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateY(y);
+}
 
+void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
+{
+    float z = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ();
+    GameObjects[ObjectListIndex]->mTransformComp->rotation.setZ(z+GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ());
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateZ(z);
+}
 void MainWindow::on_actionCube_triggered()
 {
     mGameEngine->getInstance()->CreateCube();
@@ -416,4 +426,5 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
 {
     currentMeshIndex = index;
 }
+
 

@@ -60,6 +60,8 @@ public:
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
     void saveScene();
     void loadScene();
+
+    void setRotationX(float value);
 private:
     //TODO InputHandler
 
@@ -77,6 +79,7 @@ private:
     Camera *mEditorCamera{nullptr};
 
     SoundSource* mStereoSound{nullptr};
+    SoundSource* m3DTestSound{nullptr};
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};

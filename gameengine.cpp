@@ -27,13 +27,13 @@ void GameEngine::GameLoop()
     //mPhysicsBallSystem->update(*mPhysicsBall);
 
     rotateLight();
-
+    m3DTestSound->setPosition(mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.getPosition());
+    mStereoSound->setPosition(gsl::Vector3D(0,0,0));
     HandleInput();
 
     //mCurrentCameraUPDATE??
     mEditorCamera->update();
     mGameCamera->update();
-
     mRenderwindow->render();
 
 }
@@ -44,6 +44,7 @@ void GameEngine::SetUpScene()
 
     mResourceManager = new class ResourceManager();
     mPhysicsBallSystem = new PhysicsBallSystem();
+    SoundManager::getInstance()->init();
     mInstance = this;
     mGameLoopRenderTimer = new QTimer(this);
 
@@ -71,10 +72,15 @@ void GameEngine::SetUpScene()
 
     // Sound startup stuff
     mStereoSound = SoundManager::getInstance()->createSource(
-                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                "dog", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                 gsl::SoundFilePath + "rock_background.wav", false, 1.0f);
 
-    //mStereoSound->play();
+    m3DTestSound = SoundManager::getInstance()->createSource(
+                "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                gsl::SoundFilePath + "rock_background_mono.wav", false, 1.0f);
+
+    //m3DTestSound->play();
+//    mStereoSound->play();
 
     //Gameloop
     connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
@@ -435,14 +441,14 @@ void GameEngine::resetWorld()
 // For the four funcitons under: temporary set the shader to 2 for mouspicking testing
 void GameEngine::CreateCube()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj", false, "orange.bmp");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj", false);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::CreatePyramid()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj",false, "cocademon3.bmp");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj",false);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
@@ -456,7 +462,7 @@ void GameEngine::CreateSphere()
 
 void GameEngine::CreateSuzanne()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true, "oldcocademon.bmp");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }

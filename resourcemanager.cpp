@@ -156,6 +156,10 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects)
             levelObjects["positiony"] = double(it->mTransformComp->mMatrix.getPosition().y);
             levelObjects["positionz"] = double(it->mTransformComp->mMatrix.getPosition().z);
 
+            levelObjects["rotationx"] = double(it->mTransformComp->rotation.getX());
+            levelObjects["rotationy"] = double(it->mTransformComp->rotation.getY());
+            levelObjects["rotationz"] = double(it->mTransformComp->rotation.getZ());
+
             levelObjects["shader"] = int(it->mMaterialComp->mShaderProgram);
             levelObjects["usingLOD"] = it->mMeshComp->bUsingLOD;
 
@@ -207,7 +211,7 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                 {
                     QJsonObject singleObject = objectsArray[objectindex].toObject();
                     GameObject *gameObj {nullptr};
-                    float x = 0,y = 0,z = 0;
+                    float x = 0,y = 0,z = 0, rotx = 0, roty = 0, rotz = 0;
 
 
                     if (singleObject.contains("filepath") && singleObject["filepath"].isString())
@@ -238,7 +242,33 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     if (singleObject.contains("positionz") && singleObject["positionz"].isDouble())
                         z = float(singleObject["positionz"].toDouble());
 
+                    if (singleObject.contains("rotationx") && singleObject["rotationx"].isDouble())
+                    {
+                        rotx = float(singleObject["rotationx"].toDouble());
+                        float x = rotx - gameObj->mTransformComp->rotation.getX();
+                        gameObj->mTransformComp->rotation.setX(x+gameObj->mTransformComp->rotation.getX());
+                        gameObj->mTransformComp->mMatrix.rotateX(x);
+                    }
+
+
+                    if (singleObject.contains("rotationy") && singleObject["rotationy"].isDouble())
+                    {
+                        roty = float(singleObject["rotationy"].toDouble());
+                        float y = roty - gameObj->mTransformComp->rotation.getY();
+                        gameObj->mTransformComp->rotation.setY(y+gameObj->mTransformComp->rotation.getY());
+                        gameObj->mTransformComp->mMatrix.rotateY(y);
+                    }
+
+                    if (singleObject.contains("rotationz") && singleObject["rotationz"].isDouble())
+                    {
+                        rotz = float(singleObject["rotationz"].toDouble());
+                        float z = rotz - gameObj->mTransformComp->rotation.getZ();
+                        gameObj->mTransformComp->rotation.setZ(z+gameObj->mTransformComp->rotation.getZ());
+                        gameObj->mTransformComp->mMatrix.rotateX(z);
+                    }
+
                     gameObj->mTransformComp->mMatrix.setPosition(x,y,z);
+
 
                     if (singleObject.contains("shader") && singleObject["shader"].isDouble())
                     {
