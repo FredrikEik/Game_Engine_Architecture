@@ -230,7 +230,7 @@ void Matrix4x4::setRotation(GLfloat x, GLfloat y, GLfloat z)
 
 Vector3D Matrix4x4::getRotation()
 {
-    qDebug () << -inverseRotation.x<< -inverseRotation.y<< -inverseRotation.z;
+    //qDebug () << -inverseRotation.x<< -inverseRotation.y<< -inverseRotation.z;
   return gsl::Vector3D(-inverseRotation.x, -inverseRotation.y, -inverseRotation.z);
 }
 

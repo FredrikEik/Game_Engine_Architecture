@@ -220,7 +220,7 @@ void RenderWindow::initObjects()
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
     GameObject *temp=nullptr;
-   /* for(int i{0}; i < 50; i++)
+    for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -231,7 +231,7 @@ void RenderWindow::initObjects()
         }
     }
 
-    */
+
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
@@ -349,13 +349,13 @@ void RenderWindow::render()
 
             if (i==mIndexToPickedObject) {
 
-                //driver å må lage noe hjelpe objekt.
+                //HjelpeObjekt
             hjelpeObjektMesh = new MeshComponent;
-            hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
+            hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();        //setter meshen til hjelpeobjektet til å være det samme som objektet valgt med mousepicking
             hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
 
-            if (hjelpeObjekt != factory->mGameObjects[i]){
+            if (hjelpeObjekt != factory->mGameObjects[i]){      //sjekker at hjelpeobjektet ikke har valgt seg selv, før den flytter og scaler
             gsl::Vector3D tempPosition;
             gsl::Vector3D tempScale;
             tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
@@ -363,8 +363,8 @@ void RenderWindow::render()
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
             }
-            else if (hjelpeObjekt == factory->mGameObjects[i]){
-                mIndexToPickedObject = 0;
+            else if (hjelpeObjekt == factory->mGameObjects[i]){     //forhindrer at hjelpeobjektet blir mousepicket
+                mIndexToPickedObject = 1;
             }
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
@@ -373,7 +373,7 @@ void RenderWindow::render()
     }
     if (!editorMode){
        thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
-       inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
+       inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();                  //gets the camera to follow the player
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
@@ -534,11 +534,8 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
     {
                 mVideoGameLand->play();
 
-        if (mIndexToPickedObject > -1){
-        hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
-        hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
-        hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
-        mIndexToPickedObject = -1;
+        if (mIndexToPickedObject < -1){
+        mIndexToPickedObject=0;
         }
 
     }
@@ -565,17 +562,6 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->trianglecounter = 0;
 
     initObjects();
-//    factory->mGameObjects.clear();
-//    mRenderTimer->stop();
-
-
-//    //Make the gameloop timer:
-//    mRenderTimer = new QTimer(this);
-
-//    mMainWindow->init();
-//    RenderWindow::init();
-
-//    mRenderTimer->start(16);    //starts the timer
 }
 void RenderWindow::clearLevel()
 {
@@ -696,7 +682,7 @@ void RenderWindow::handleInput()
     }
     }
 
-    else if(!editorMode) //karakter shit her
+    else if(!editorMode) //player movement
     {  
       static_cast<Player*>(mPlayer)->movement();
     }
@@ -789,15 +775,15 @@ void RenderWindow::mousePicking(QMouseEvent *event)
             if(distance < 0.5f && editorMode && factory->mGameObjects[i]->mObjectName != "Skybox")
             {
     //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+                if(mIndexToPickedObject != i){
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
+                }
                 //factory->mGameObjects[i]->move(1000.f,0,0);
 
                 break;  //breaking out of for loop - does not check if ray touch several objects
 
             }
-
-
 
         }
 }
@@ -823,25 +809,21 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = true;
-        //if (!editorMode)
         static_cast<Player*>(mPlayer)->input.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = true;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = true;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = true;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.A = true;
     }
     if(event->key() == Qt::Key_Q)
@@ -891,25 +873,21 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
-        //if (!editorMode)
         static_cast<Player*>(mPlayer)->input.W = false;
     }
     if(event->key() == Qt::Key_S)
     {
         mInput.S = false;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.S = false;
     }
     if(event->key() == Qt::Key_D)
     {
         mInput.D = false;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.D = false;
     }
     if(event->key() == Qt::Key_A)
     {
         mInput.A = false;
-        if (!editorMode)
         static_cast<Player*>(mPlayer)->input.A = false;
     }
     if(event->key() == Qt::Key_Q)

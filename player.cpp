@@ -4,7 +4,7 @@
 Player::Player()
 {
 
-    cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
+    cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;        //create cameraTarget
 }
 
 Player::~Player()
@@ -59,7 +59,7 @@ void Player::init()
 }
 
 
-void Player::move(float x, float y, float z)
+void Player::move(float x, float y, float z)        //move the player
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
@@ -67,7 +67,7 @@ void Player::move(float x, float y, float z)
     cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
 }
 
-void Player::movement()
+void Player::movement()     //set up movement
 {
     if(input.W)
         move(movementSpeed,0,0);

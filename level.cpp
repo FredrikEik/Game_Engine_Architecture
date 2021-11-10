@@ -17,7 +17,7 @@ void Level::saveLevelAs(QString levelName, std::multimap<std::string, SpawnSetti
     QJsonArray jsonArray;
     for(auto it = objectMap.begin(); it != objectMap.end(); it++)
     {
-        qDebug() << "loop iterator";
+        //qDebug() << "loop iterator";
         QJsonObject temp;
 
         std::string objType = it->first;
@@ -64,7 +64,7 @@ void Level::read(const QJsonObject &json)
         QJsonArray objectArray = json["Objects"].toArray();
         for (int i = 0; i < objectArray.size(); i++)
         {
-            qDebug() << objectArray.size();
+            //qDebug() << objectArray.size();
             QJsonObject jsonObject = objectArray[i].toObject();
             SpawnSettings settings;
 

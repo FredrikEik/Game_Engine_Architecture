@@ -37,7 +37,7 @@ void DetailsWidget::readPosition()
     ui->DoubleSpinBoxZPosition->setValue(position.z);
 }
 
-void DetailsWidget::readRotation()
+void DetailsWidget::readRotation()          //read the rotation of object then set the widget value to that
 {
      rotation = mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getRotation();
      ui->DoubleSpinBoxXRotation->setValue(rotation.x);
@@ -45,7 +45,7 @@ void DetailsWidget::readRotation()
      ui->DoubleSpinBoxZRotation->setValue(rotation.z);
 }
 
-void DetailsWidget::readScale()
+void DetailsWidget::readScale()            //read the scale of object then set the widget to that
 {
     // lagre en inverse av scale og rotation i matrix4x4, lag en set funksjon ved å først rotere/scale med inverse for å så bruke den nye verdien
     // til å rotere/scale
@@ -61,12 +61,12 @@ void DetailsWidget::setPosition()
         mfactory->mGameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
-void DetailsWidget::setRotation()
+void DetailsWidget::setRotation()       // set the rotation of the object
 {
     mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setRotation(rotation.x,rotation.y,rotation.z);
 }
 
-void DetailsWidget::setScale()
+void DetailsWidget::setScale()          // set the scale of the object
 {
     mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setScale(scale.x,scale.y,scale.z);
 }
@@ -92,7 +92,7 @@ void DetailsWidget::on_DoubleSpinBoxZPosition_valueChanged(double arg1)
 }
 
 
-void DetailsWidget::on_DoubleSpinBoxXRotation_valueChanged(double arg1)
+void DetailsWidget::on_DoubleSpinBoxXRotation_valueChanged(double arg1)         //rotate with the widget
 {
 
     rotation.x = ui->DoubleSpinBoxXRotation->value();
@@ -114,7 +114,7 @@ void DetailsWidget::on_DoubleSpinBoxZRotation_valueChanged(double arg1)
 }
 
 
-void DetailsWidget::on_DoubleSpinBoxXScale_valueChanged(double arg1)
+void DetailsWidget::on_DoubleSpinBoxXScale_valueChanged(double arg1)        //scale with the widget
 {
     scale.x = ui->DoubleSpinBoxXScale->value();
     setScale();
