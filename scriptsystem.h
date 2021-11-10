@@ -39,7 +39,7 @@ public slots:
 
 private:
 //  denne kan ikke kalles, fordi den er private
-    Q_INVOKABLE void privateFunc();
+//    Q_INVOKABLE void privateFunc();
 
 //  denne har setters og getters som gjennom Q_PROPERTY kan brukes fra
 //  javascript - der den heter bare "speed" som angitt i Q_PROPERTY

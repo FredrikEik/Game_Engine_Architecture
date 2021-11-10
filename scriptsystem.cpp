@@ -31,6 +31,9 @@ int scriptsystem::commonFunc()
     int a{234};
     return a;
 }
+
+
+
 //void scriptsystem::readData(std::string scriptName)
 //{
 //    std::string fileName = gsl::ScriptFilePath + scriptName;
