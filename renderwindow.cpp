@@ -180,7 +180,7 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
-    /*
+
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
@@ -191,7 +191,7 @@ void RenderWindow::init()
 
         }
     }
-*/
+
 
 
     SoundManager::getInstance()->init();
@@ -215,7 +215,7 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
-    mPlayerCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mPlayerCamera->setPosition(gsl::Vector3D(1.f, 10.f, 0.f));
 
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -825,27 +825,22 @@ void RenderWindow::handleInput()
         if(mInput.W)
         {
             mCurrentCamera->setSpeed(-mCameraSpeed);
-            PosZ = -1.0f;
-            CurrentPlayer->mMatrix.translateZ(PosZ);
+
         }
         if(mInput.S)
         {
             mCurrentCamera->setSpeed(mCameraSpeed);
-            PosZ = 1.0f;
-            CurrentPlayer->mMatrix.translateZ(PosZ);
+
 
         }
         if(mInput.D)
         {
-            posX = 1.0f;
-            CurrentPlayer->mMatrix.translateX(posX);
+
             mCurrentCamera->moveRight(mCameraSpeed);
 
         }
         if(mInput.A)
         {
-            posX = -1.0f;
-            CurrentPlayer->mMatrix.translateX(posX);
             mCurrentCamera->moveRight(-mCameraSpeed);
 
         }
@@ -855,33 +850,36 @@ void RenderWindow::handleInput()
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
     else
-         {
-        if(mInput.W)
+    {
+        if(bIsPlayerCamera)
         {
-            mCurrentCamera->setSpeed(-mCameraSpeed);
-            PosZ = -1.0f;
-            CurrentPlayer->mMatrix.translateZ(PosZ);
-        }
-        if(mInput.S)
-        {
-            mCurrentCamera->setSpeed(mCameraSpeed);
-            PosZ = 1.0f;
-            CurrentPlayer->mMatrix.translateZ(PosZ);
+            if(mInput.W)
+            {
+                mCurrentCamera->setSpeed(-mCameraSpeed);
+                PosZ = -1.0f;
+                CurrentPlayer->mMatrix.translateZ(PosZ);
+            }
+            if(mInput.S)
+            {
+                mCurrentCamera->setSpeed(mCameraSpeed);
+                PosZ = 1.0f;
+                CurrentPlayer->mMatrix.translateZ(PosZ);
 
-        }
-        if(mInput.D)
-        {
-            posX = 1.0f;
-            CurrentPlayer->mMatrix.translateX(posX);
-            mCurrentCamera->moveRight(mCameraSpeed);
+            }
+            if(mInput.D)
+            {
+                posX = 1.0f;
+                CurrentPlayer->mMatrix.translateX(posX);
+                mCurrentCamera->moveRight(mCameraSpeed);
 
-        }
-        if(mInput.A)
-        {
-            posX = -1.0f;
-            CurrentPlayer->mMatrix.translateX(posX);
-            mCurrentCamera->moveRight(-mCameraSpeed);
+            }
+            if(mInput.A)
+            {
+                posX = -1.0f;
+                CurrentPlayer->mMatrix.translateX(posX);
+                mCurrentCamera->moveRight(-mCameraSpeed);
 
+            }
         }
     }
 
