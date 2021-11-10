@@ -40,7 +40,8 @@ void CoreEngine::SetUpScene()
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
     playerObject = temp;
     playerObject->transform->mMatrix.scale(0.2f);
-    mRenderWindow->addToGameObjects(playerObject);
+    temp->mesh->collisionsEnabled = false;
+    mRenderWindow->addToGameObjects(playerObject); //57.f, -1.f, 6.f
 
     mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
     mGameCameraMesh->transform->mMatrix.translate(gsl::Vector3D(57.f, .5f, 9.f));
@@ -48,26 +49,33 @@ void CoreEngine::SetUpScene()
     mGameCameraMesh->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(mGameCameraMesh);
 
-    temp = mResourceManager->CreateObject("heightMap");
-    mRenderWindow->addToGameObjects(temp);
-
     temp = mResourceManager->CreateObject("arrow.obj");
     temp->transform->mMatrix.translate(9999,9999,9999);
     temp->transform->mMatrix.scale(0.3f);
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
 
+    temp = mResourceManager->CreateObject("heightMap");
+    temp->transform->mMatrix.rotateX(90);
+    temp->transform->mMatrix.scale(2.5);
+    temp->transform->mMatrix.translate(0,0,-4);
+    mRenderWindow->addToGameObjects(temp);
+
     for(int i{0}; i < 40; i++)
     {
-       for(int j{0}; j < 40; j++)
-       {
-           int b = floor(rand() % 4 + 10);
+        for(int j{0}; j < 40; j++)
+        {
+            int a = floor(rand() % 3);
 
-           temp = mResourceManager->CreateObject(treeNames[b]);
-           temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
-           temp->transform->mMatrix.scale(0.4);
-           mRenderWindow->addToGameObjects(temp);
-       }
+            if(a == 1) // 1/5 chance of spawning tree.
+            {
+               int b = floor(rand() % 4 + 9);
+               temp = mResourceManager->CreateObject(treeNames[b]);
+               temp->transform->mMatrix.translate(3.f*i, -5.f, -3.f*j);
+               temp->transform->mMatrix.scale(0.4);
+               mRenderWindow->addToGameObjects(temp);
+            }
+        }
     }
 
     //********************** Set up cameras **********************
@@ -159,7 +167,7 @@ void CoreEngine::CreateObjectButton(std::string objName)
 {
     GameObject *temp = mResourceManager->CreateObject(objName);
     temp->transform->mMatrix.scale(2);
-    temp->transform->mMatrix.setPosition(0, 0, -10.f);
+    temp->transform->mMatrix.setPosition(mEditorCamera->position().x, mEditorCamera->position().y, mEditorCamera->position().z -30);
     mRenderWindow->addToGameObjects(temp);
 }
 

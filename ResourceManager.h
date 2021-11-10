@@ -39,9 +39,10 @@ private:
     std::map<std::string, unsigned int> mMeshIndexMap;
     std::vector<Mesh> mMeshComponents;
 
-    Mesh* mesh;
-    Transform* transform;
-    Material* material;
+    Mesh* mesh{nullptr};
+    Transform* transform{nullptr};
+    Material* material{nullptr};
+    Texture* texture{nullptr};
 
     CoreEngine* mCoreEngine{nullptr};
 };

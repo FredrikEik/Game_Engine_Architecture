@@ -110,12 +110,10 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
 //    meshComp->mVertices[0].push_back(Vertex{-0.1,  0.1,  0.1,     1,0,0,   1,0});
 //    meshComp->mVertices[0].push_back(Vertex{-0.1, -0.1,  0.1,     1,0,0,   1,1});
 
-    Texture* texture;
-
     texture = new Texture("HamarHeightMap.bmp", false);
 
 
-    int rows = texture->mRows;
+    int rows = texture->mRows;   //WARNING: only using half of the heightmap. (Because of lag issues)
     int cols = texture->mColumns;
 
     unsigned char *mHeights = texture->getmHeights();
@@ -128,7 +126,7 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
     float *sArrayHeights = new float[rows*cols];
     if(!mHeights)
     {
-        qDebug() << "FAIL"; //dette var bare "return;". Må kanskje flytte alt inn i void funksjon?
+        qDebug() << "'!mHeights' in ResourceManager::makeHeightMap";
         return NULL;
     }
     //Pusher inn alle vertexene med riktig høyde
@@ -229,33 +227,33 @@ int ResourceManager::makeHeightMap(Mesh* meshComp)
         gsl::Vector3D v5 = p5-pCenter;
 
         //Regner ut normalene til alle trekantene rundt punktet
-        //n0
+
         n0 = v0.cross(v0,v1);
         n0.normalize();
-        //n1
+
         n1 = v1.cross(v1,v2);
         n1.normalize();
-        //n2
+
         n2 = v2.cross(v2,v3);
         n2.normalize();
-        //n3
+
         n3 = v3.cross(v3,v4);
         n3.normalize();
-        //n4
+
         n4 = v4.cross(v4,v5);
         n4.normalize();
-        //n5
+
         n5 = v5.cross(v5,v0);
         n5.normalize();
 
         gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
-        vert.at(i).getNormals().setX(nV.getX());
-        vert.at(i).getNormals().setY(nV.getY());
-        vert.at(i).getNormals().setZ(nV.getZ());
+        vert[i].mNormal.x = nV.x;
+        vert[i].mNormal.y = nV.y;
+        vert[i].mNormal.z = nV.z;
     }
 
-
+    object->mesh = meshComp;
 
     init(*object->mesh, 0);
 

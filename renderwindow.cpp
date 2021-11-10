@@ -171,22 +171,24 @@ void RenderWindow::render()
         }
 
     /** Shader Program */
-        glUseProgram(mShaderPrograms[mGameObjects[i]->material->mShaderProgram]->getProgram());
+        int shaderProgram = mGameObjects[i]->material->mShaderProgram;
 
-        if(mGameObjects[i]->material->mShaderProgram == 0) /** PlainShader */
+        glUseProgram(mShaderPrograms[shaderProgram]->getProgram());
+
+        if(shaderProgram == 0) /** PlainShader */
         {
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
-        else if(mGameObjects[i]->material->mShaderProgram == 1) /** TextureShader */
+        else if(shaderProgram == 1) /** TextureShader */
         {
             glUniform1i(mTextureUniform, mGameObjects[i]->material->mTextureUnit);
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
         }
-        else if(mGameObjects[i]->material->mShaderProgram == 2) /** PhongShader */
+        else if(shaderProgram == 2) /** PhongShader */
         {
 //            glUniform1i(mPhongTextureUniform,TextureIndex);
             glUniformMatrix4fv( vMatrixUniform2, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
@@ -206,8 +208,8 @@ void RenderWindow::render()
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
 
-        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" &&
-            (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "heightMap" && //These name checks are temporary.
+            (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))                  //Will find a better way later.
         {
             mGameObjects[i]->mesh->renderObject = false;
 
@@ -311,11 +313,17 @@ void RenderWindow::render()
         else
             mGameObjects[i]->mesh->lodLevel = 0;
 
-
-        int tempLod = mGameObjects[i]->mesh->lodLevel;
-        glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
-        glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
-        glBindVertexArray(0);
+        if(mGameObjects[i]->mesh->mIndices[0].size() > 0) /** I don't know if this works for all objects with indices */
+        {                                                 /** But fixed heightMap problems (Heightmap was not using indices)*/
+            glBindVertexArray( mGameObjects[i]->mesh->mVAO[0]);
+            glDrawElements(mGameObjects[i]->mesh->mDrawType, mGameObjects[i]->mesh->mIndices[0].size(), GL_UNSIGNED_INT, nullptr);
+        }
+        else{
+            int tempLod = mGameObjects[i]->mesh->lodLevel;
+            glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
+            glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());
+            glBindVertexArray(0);
+        }
     }
 
     //Calculate framerate before
@@ -563,7 +571,7 @@ void RenderWindow::checkForCollisions(GameObject* player) //Checks all other obj
 
     gsl::Vector3D objToPlayer{0,0,0};
     for( int i = 0; i < mGameObjects.size(); i++){
-        if(mGameObjects[i] != player && mGameObjects[i]->mesh->collisionsEnabled == true)
+        if(mGameObjects[i]->mesh->collisionsEnabled == true)
         {
             objToPlayer = mGameObjects[i]->transform->mMatrix.getPosition() - player->transform->mMatrix.getPosition();
 
