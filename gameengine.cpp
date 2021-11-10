@@ -61,6 +61,7 @@ void GameEngine::SetUpScene()
 
 
 
+
     SetUpObjects();
 
     objBeforePlaying = mRenderwindow->mGameObjects;
@@ -79,6 +80,7 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer->start(7);// original value 16, 7 is for 144 hz
 
     mMainWindow->initList();
+    mMainWindow->initComboboxTexture(mResourceManager->mTextureNames);
 }
 
 void GameEngine::SetUpObjects()
@@ -431,14 +433,14 @@ void GameEngine::resetWorld()
 // For the four funcitons under: temporary set the shader to 2 for mouspicking testing
 void GameEngine::CreateCube()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj", false, "orange.bmp");
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
 
 void GameEngine::CreatePyramid()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj");
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "pyramid.obj",false, "cocademon3.bmp");
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }
@@ -452,7 +454,14 @@ void GameEngine::CreateSphere()
 
 void GameEngine::CreateSuzanne()
 {
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true);
+    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "suzanne.obj", true, "oldcocademon.bmp");
+    tempGameObject->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(tempGameObject);
+}
+
+void GameEngine::CreateObject(std::string filePath, bool bUsingLOD, std::string textureName)
+{
+    tempGameObject = mResourceManager->CreateObject(filePath, bUsingLOD, textureName);
     tempGameObject->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(tempGameObject);
 }

@@ -7,6 +7,7 @@ class QWidget;
 class RenderWindow;
 class GameEngine;
 class QListWidget;
+class QComboBox;
 class GameObject;
 
 namespace Ui {
@@ -26,6 +27,8 @@ public:
     void refreshList();
     void setID(int ID);
     void clean();
+
+    void initComboboxTexture(std::vector<std::string> &textureNames);
 
     int getObjectListIndex() const;
 
@@ -75,6 +78,11 @@ private slots:
 
     void on_actionShow_All_Collision_Boxes_toggle_toggled(bool arg1);
 
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_addObject_released();
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -92,8 +100,11 @@ private:
     GameEngine *mGameEngine{nullptr};
 
     QListWidget *listWidget{nullptr};
+    QComboBox *comboBox{nullptr};
 
     std::vector<GameObject*> GameObjects{nullptr};
+    std::vector<std::string> allTextures;
+    int currentTextureIndex{0};
 
 
 };

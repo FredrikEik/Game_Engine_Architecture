@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QScreen>  //for resizing the program at start
 #include <QListWidget>
+#include <QComboBox>
 #include <QStyleFactory>
 
 #include "renderwindow.h"
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     listWidget = ui->listWidget;
+    comboBox = ui->comboBox;
 
     qApp->setStyle(QStyleFactory::create("Fusion"));
 
@@ -106,6 +108,18 @@ void MainWindow::clean()
 {
     GameObjects.clear();
     listWidget->clear();
+}
+
+void MainWindow::initComboboxTexture(std::vector<std::string> &textureNames)
+{
+    if(mRenderWindow)
+    {
+        allTextures = textureNames;
+        for(auto it : textureNames)
+        {
+            comboBox->addItem(tr(it.c_str()));
+        }
+    }
 }
 
 void MainWindow::init()
@@ -367,5 +381,19 @@ void MainWindow::on_actionShow_Wireframe_toggle_toggled(bool arg1)
 void MainWindow::on_actionShow_All_Collision_Boxes_toggle_toggled(bool arg1)
 {
     mRenderWindow->toggleShowCollsionBox(arg1);
+}
+
+
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    currentTextureIndex = index;
+}
+
+
+void MainWindow::on_addObject_released()
+{
+    mGameEngine->getInstance()->CreateObject(gsl::MeshFilePath + "suzanne.obj", true,allTextures[currentTextureIndex]);
+    updateList();
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 

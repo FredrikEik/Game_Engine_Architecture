@@ -20,7 +20,7 @@ public:
     ResourceManager();
 
 
-    ResourceManager &getInstance();
+    ResourceManager *getInstance();
     //class GameObject *CreateObject(std::string filepath);
     GameObject *CreateObject(std::string filepath, bool UsingLOD = false, std::string textureFilepath = " ");
     //void readObj(std::string &filename, MeshComponent *MeshComp);
@@ -31,16 +31,19 @@ public:
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
 
     void setUpAllTextures();
+
+    std::vector<std::string> mTextureNames;
 private:
     int CreateMaterial(std::string textureName);
     GameObject* tempGO{nullptr};
     MeshHandler* mMeshHandler{nullptr};
+    ResourceManager *mInstance{nullptr};
 
     int setMaterial(std::string textureName);
+    std::map<std::string, int> mTextureMap;
 
 
 //    MaterialComponent *tempComp{nullptr};
-    std::map<std::string, int> mTextureMap;
     std::map<std::string, MaterialComponent*> mMaterialMap;
     Texture *mTextures[gsl::NumberOfTextures]{nullptr};
     std::vector<Texture*> mVectorTextures;

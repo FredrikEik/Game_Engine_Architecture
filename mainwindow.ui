@@ -31,6 +31,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addObject">
+        <property name="text">
+         <string>Add Object</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="saveScene">
         <property name="text">
          <string>Save Scene</string>

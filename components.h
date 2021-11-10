@@ -52,6 +52,7 @@ public:
 //    MaterialComponent();
     GLuint mShaderProgram{};
     GLint mTextureUnit{};
+    std::string mTextureName;
 };
 
 class CollisionComponent

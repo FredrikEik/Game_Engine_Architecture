@@ -59,6 +59,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
 
     tempGO->mMaterialComp = new MaterialComponent();
+    tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
     tempGO->mMaterialComp->mShaderProgram = 2;
 
@@ -149,6 +150,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects)
         {
             QJsonObject levelObjects;
             levelObjects["filepath"] = it->filepath.c_str();
+            levelObjects["texturename"] = it->mMaterialComp->mTextureName.c_str();
             // transform
             levelObjects["positionx"] = double(it->mTransformComp->mMatrix.getPosition().x);
             levelObjects["positiony"] = double(it->mTransformComp->mMatrix.getPosition().y);
@@ -212,11 +214,13 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     {
                         if (singleObject.contains("usingLOD") && singleObject["usingLOD"].isBool())
                         {
-                            gameObj = CreateObject(singleObject["filepath"].toString().toStdString(),singleObject["usingLOD"].toBool());
+                            if(singleObject.contains("texturename") && singleObject["texturename"].isString())
+                            {
+
+                            gameObj = CreateObject(singleObject["filepath"].toString().toStdString(),singleObject["usingLOD"].toBool(),singleObject["texturename"].toString().toStdString());
 
                             gameObj->mMeshComp->bUsingLOD = singleObject["usingLOD"].toBool();
-                        }else{
-                            gameObj = CreateObject(singleObject["filepath"].toString().toStdString());
+                            }
                         }
 
 
@@ -284,7 +288,7 @@ int ResourceManager::CreateMaterial(std::string textureName)
         {
             tempInt = textureIDcounter;
             //std::string tempName = textureFilepath.erase(0,25);
-
+            mTextureNames.push_back(textureName);
             mVectorTextures.push_back(new Texture(textureName));
 //            new Texture(textureFilepath);
 
@@ -293,6 +297,10 @@ int ResourceManager::CreateMaterial(std::string textureName)
             mTextureMap.insert(std::pair<std::string, int>{textureName,tempInt});
             textureIDcounter++;
         }
+    }
+    if(tempInt == 0 || textureName == " ")
+    {
+        return 0;
     }
     return tempInt-1;
 //    tempGO->mMaterialComp = new MaterialComponent();
@@ -357,10 +365,14 @@ void ResourceManager::setUpAllTextures()
 }
 
 
-ResourceManager &ResourceManager::getInstance()
+
+ResourceManager *ResourceManager::getInstance()
 {
-    static ResourceManager *mInstance = new ResourceManager();
-    return *mInstance;
+    if(!mInstance)
+    {
+        mInstance = new ResourceManager();
+    }
+    return mInstance;
 }
 
 

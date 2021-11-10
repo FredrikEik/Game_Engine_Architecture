@@ -45,6 +45,7 @@ public:
     std::vector<GameObject*> mGameObjects;
 
 
+
 //    GameObject* RenderWindow::addObject(std::string assetName);
 
     void render();

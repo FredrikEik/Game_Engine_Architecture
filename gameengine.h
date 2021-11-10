@@ -47,6 +47,7 @@ public:
     void CreatePyramid();
     void CreateSphere();
     void CreateSuzanne();
+    void CreateObject(std::string filePath, bool bUsingLOD, std::string textureName);
 
 
     GameObject* mPlayer{nullptr};
