@@ -130,14 +130,14 @@ void MainWindow::on_pushButton_2_clicked()
     if(mRenderWindow->isPaused){
         ui->pushButton_2->setText("Pause");
         mRenderWindow->isPaused = false;
-        mRenderWindow->mSong->play();
+        mRenderWindow->mSong->pause();
         mRenderWindow->togglePlayerCamera();
 
 
     }else{
         ui->pushButton_2->setText("Play");
         mRenderWindow->isPaused = true;
-        mRenderWindow->mSong->pause();
+        mRenderWindow->mSong->play();
         mRenderWindow->togglePlayerCamera();
     }
 }

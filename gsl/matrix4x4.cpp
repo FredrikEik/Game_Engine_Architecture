@@ -471,7 +471,7 @@ Matrix3x3 Matrix4x4::toMatrix3() const
 QVector4D Matrix4x4::multiplyWithQVector4D(QVector4D vec4D)
 {
     return{
-                vec4D.x()*matrix[0] + vec4D.y()*matrix[1] + vec4D.z()*matrix[2] + vec4D.w()*matrix[3],
+        vec4D.x()*matrix[0] + vec4D.y()*matrix[1] + vec4D.z()*matrix[2] + vec4D.w()*matrix[3],
                 vec4D.x()*matrix[4] + vec4D.y()*matrix[5] + vec4D.z()*matrix[6] + vec4D.w()*matrix[7],
                 vec4D.x()*matrix[8] + vec4D.y()*matrix[9] + vec4D.z()*matrix[10] + vec4D.w()*matrix[11],
                 vec4D.x()*matrix[12] + vec4D.y()*matrix[13] + vec4D.z()*matrix[14] + vec4D.w()*matrix[15],

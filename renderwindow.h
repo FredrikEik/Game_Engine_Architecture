@@ -149,8 +149,9 @@ private:
     Camera *mPlayerCamera{nullptr};
     Camera *mEditorCamera{nullptr};
     bool bIsPlayerCamera = false;
-
-
+    TransformComponent* CurrentPlayer = new TransformComponent();
+    float posX = 0.0f;
+    float PosZ = 0.0f;
 
     Input mInput;
     float mCameraSpeed{0.15f};

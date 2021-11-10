@@ -185,12 +185,7 @@ void EntitySystem::constructSuzanne()
     if(inRW) construct("Suzanne.obj", LastPos,0,0);
 }
 
-void EntitySystem::DestroyEntity(int i)
-{
-   // inRW->DeetsVector.erase(inRW->DeetsVector.begin() + i);
 
-
-}
 
 void EntitySystem::LODSuzanneSwithcer(MeshComponent *mesh)
 {

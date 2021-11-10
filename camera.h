@@ -52,6 +52,9 @@ public:
     //frustum
     Frustum mFrustum;
     void calculateFrustumVectors();
+
+    //movement
+    void setLookAt(gsl::Vector3D lookAt);
 private:
     //frostum
 };

@@ -216,7 +216,7 @@ void RenderWindow::init()
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
     mPlayerCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
-    mPlayerCamera->setPosition(gsl::Vector3D(1.f, 2.5f, 4.f));
+    mPlayerCamera->setPosition(gsl::Vector3D(1.f, 10.f, 0.f));
 
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
@@ -236,6 +236,9 @@ void RenderWindow::init()
             break;
         }
     }
+
+    //player
+    CurrentPlayer = transformCompVec[8];
 
 }
 
@@ -356,14 +359,15 @@ void RenderWindow::render()
             */
         }
     }
-    
+
     if(isPaused){
         
     }else{
         for(int i = 0; i < eSize; i++){
-            if(transformCompVec[i]->entity == 2){
-                gsl::Vector3D temppos = transformCompVec[i]->mMatrix.getPosition();
-                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);//setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
+            if(transformCompVec[i]->entity == 2)
+            {
+                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+                //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
                 //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
             }
             if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
@@ -398,7 +402,10 @@ void RenderWindow::render()
 
     }
 
-    
+    if(bIsPlayerCamera)
+    {
+        mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));
+    }
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -477,23 +484,18 @@ void RenderWindow::togglePlayerCamera()
     {
         if(bIsPlayerCamera)
         {
-               mCurrentCamera = mPlayerCamera;
-               bIsPlayerCamera = false;
-               //calculate aspect ration and set projection matrix
-               mAspectratio = static_cast<float>(width()) / height();
-               //    qDebug() << mAspectratio;
-               mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-               //    qDebug() << mCamera.mProjectionMatrix;
+            mCurrentCamera = mPlayerCamera;
+            bIsPlayerCamera = false;
+            mAspectratio = static_cast<float>(width()) / height();
+            mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+
         }
         else
         {
             mCurrentCamera = mEditorCamera;
             bIsPlayerCamera = true;
-            //calculate aspect ration and set projection matrix
             mAspectratio = static_cast<float>(width()) / height();
-            //    qDebug() << mAspectratio;
             mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-            //    qDebug() << mCamera.mProjectionMatrix;
 
         }
 
@@ -818,21 +820,71 @@ void RenderWindow::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(mInput.RMB)
+    if(mInput.RMB && !bIsPlayerCamera)
     {
         if(mInput.W)
+        {
             mCurrentCamera->setSpeed(-mCameraSpeed);
+            PosZ = -1.0f;
+            CurrentPlayer->mMatrix.translateZ(PosZ);
+        }
         if(mInput.S)
+        {
             mCurrentCamera->setSpeed(mCameraSpeed);
+            PosZ = 1.0f;
+            CurrentPlayer->mMatrix.translateZ(PosZ);
+
+        }
         if(mInput.D)
+        {
+            posX = 1.0f;
+            CurrentPlayer->mMatrix.translateX(posX);
             mCurrentCamera->moveRight(mCameraSpeed);
+
+        }
         if(mInput.A)
+        {
+            posX = -1.0f;
+            CurrentPlayer->mMatrix.translateX(posX);
             mCurrentCamera->moveRight(-mCameraSpeed);
+
+        }
         if(mInput.Q)
             mCurrentCamera->updateHeigth(-mCameraSpeed);
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
+    else
+         {
+        if(mInput.W)
+        {
+            mCurrentCamera->setSpeed(-mCameraSpeed);
+            PosZ = -1.0f;
+            CurrentPlayer->mMatrix.translateZ(PosZ);
+        }
+        if(mInput.S)
+        {
+            mCurrentCamera->setSpeed(mCameraSpeed);
+            PosZ = 1.0f;
+            CurrentPlayer->mMatrix.translateZ(PosZ);
+
+        }
+        if(mInput.D)
+        {
+            posX = 1.0f;
+            CurrentPlayer->mMatrix.translateX(posX);
+            mCurrentCamera->moveRight(mCameraSpeed);
+
+        }
+        if(mInput.A)
+        {
+            posX = -1.0f;
+            CurrentPlayer->mMatrix.translateX(posX);
+            mCurrentCamera->moveRight(-mCameraSpeed);
+
+        }
+    }
+
 }
 
 
@@ -846,18 +898,23 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
+
+
         mInput.W = true;
     }
     if(event->key() == Qt::Key_S)
     {
+
         mInput.S = true;
     }
     if(event->key() == Qt::Key_D)
     {
+
         mInput.D = true;
     }
     if(event->key() == Qt::Key_A)
     {
+
         mInput.A = true;
     }
     if(event->key() == Qt::Key_Q)

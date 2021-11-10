@@ -156,3 +156,8 @@ void Camera::calculateFrustumVectors()
     mFrustum.mBottomPlane = tempVector.normalized();
 
 }
+
+void Camera::setLookAt(gsl::Vector3D lookAt)
+{
+    Cam.mPosition = lookAt;
+}
