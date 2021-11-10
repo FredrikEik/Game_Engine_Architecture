@@ -359,7 +359,7 @@ void RenderWindow::render()
         for(int i = 0; i < eSize; i++){
             if(transformCompVec[i]->entity == 2){
                 gsl::Vector3D temppos = transformCompVec[i]->mMatrix.getPosition();
-                transformCompVec[i]->mMatrix.setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
+                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);//setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
                 //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
             }
             if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball

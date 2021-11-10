@@ -430,6 +430,8 @@ void Matrix4x4::setRotationToVector(const Vector3D &direction, Vector3D up)
 
 void Matrix4x4::translate(GLfloat x, GLfloat y, GLfloat z)
 {
+    this->setPosition(this->getPosition().getX() + x ,this->getPosition().getY() + y ,this->getPosition().getZ() + z );
+    /*
     Matrix4x4 mat =
     {
         1.f, 0.f, 0.f, x,
@@ -439,10 +441,12 @@ void Matrix4x4::translate(GLfloat x, GLfloat y, GLfloat z)
     };
 
     *this = (*this)*mat;
+    * */
 }
 
 void Matrix4x4::translate(Vector3D positionIn)
 {
+
     Matrix4x4 mat =
     {
         1.f, 0.f, 0.f, positionIn.getX(),
