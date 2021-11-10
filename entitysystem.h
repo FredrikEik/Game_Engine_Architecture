@@ -24,7 +24,7 @@ public:
     void constructSphere();
     void constructPlane();
     void constructSuzanne();
-    void DestroyEntity();
+    void DestroyEntity(int i);
     void LODSuzanneSwithcer(MeshComponent *mesh);
 private:
     TransformComponent *TransComp;

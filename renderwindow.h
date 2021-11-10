@@ -19,6 +19,7 @@
 #include "soundsource.h"
 #include "vector3.h"
 #include "skybox.h"
+#include "jsonsystem.h"
 #include <ctime>    //for physics
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
@@ -51,6 +52,7 @@ public:
     resourceSystem * ResSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem(this);
     collisionSystem* collisionSys = new collisionSystem();
+    JSONSystem * JSS = new JSONSystem();
 
     std::vector<int> entities;
 

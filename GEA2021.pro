@@ -9,7 +9,9 @@ INCLUDEPATH += \
     ./gsl \
     ./Shaders \
     ./openal \
-    ./json/include/rapidjson
+    ./json/include/rapidjson \
+    ./json/include/nlohmann
+
 
 win32 {
     INCLUDEPATH += $(OPENAL_HOME)\include\AL
@@ -24,6 +26,7 @@ SOURCES += main.cpp \
     entitysystem.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
+    jsonsystem.cpp \
     openal/soundmanager.cpp \
     openal/soundsource.cpp \
     openal/vector3.cpp \
@@ -52,6 +55,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    jsonsystem.h \
     openal/soundmanager.h \
     openal/soundsource.h \
     openal/vector3.h \

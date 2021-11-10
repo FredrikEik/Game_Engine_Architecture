@@ -161,6 +161,7 @@ void RenderWindow::init()
     /***** should not use separate classes init() - function ****************/
     
     ////*************************************start**////////////
+    JSS->JSONSystemInit(this);
     ResSys->ResourceSystemInit(RenderSys);
     
     ///PURE ECS TEST
