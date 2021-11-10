@@ -71,7 +71,7 @@ void CoreEngine::setUpScene()
     temp->mName = "EditorGrid";
     mRenderSystem->mGameObjects.push_back(temp);
 
-//    readScene("scene1.json");
+    readScene("scene1.json");
 
     //dog triangle
     temp = mResourceManager->addObject("triangle");
@@ -154,7 +154,7 @@ void CoreEngine::setUpScene()
     mGameLoopTimer->start(20);
 }
 
-/*void CoreEngine::readScene(std::string sceneName)
+void CoreEngine::readScene(std::string sceneName)
 {
     mLogger->logText("Loading scene " + sceneName, LColor::HIGHLIGHT);
 
@@ -195,47 +195,73 @@ void CoreEngine::setUpScene()
             {
                 QJsonArray positionArray = entityObject["position"].toArray();
                 if (positionArray[0].isDouble())
-                    tempGOB->mTransform->mColor.x = positionArray[0].toDouble();
+                    tempGOB->mTransform->mPosition.x = positionArray[0].toDouble();
                 if (positionArray[1].isDouble())
-                    tempGOB.mColor.y = positionArray[1].toDouble();
+                    tempGOB->mTransform->mPosition.y = positionArray[1].toDouble();
                 if (positionArray[2].isDouble())
-                    tempGOB.mColor.z = positionArray[2].toDouble();
+                    tempGOB->mTransform->mPosition.z = positionArray[2].toDouble();
             }
-            if (entityObject.contains("color") && entityObject["color"].isArray())
+            if (entityObject.contains("scale") && entityObject["scale"].isArray())
             {
-                QJsonArray colorArray = entityObject["color"].toArray();
-                if (colorArray[0].isDouble())
-                    temp.mColor.x = colorArray[0].toDouble();
-                if (colorArray[1].isDouble())
-                    temp.mColor.y = colorArray[1].toDouble();
-                if (colorArray[2].isDouble())
-                    temp.mColor.z = colorArray[2].toDouble();
+                QJsonArray scaleArray = entityObject["scale"].toArray();
+                if (scaleArray[0].isDouble())
+                    tempGOB->mTransform->mScale.x = scaleArray[0].toDouble();
+                if (scaleArray[1].isDouble())
+                    tempGOB->mTransform->mScale.y = scaleArray[1].toDouble();
+                if (scaleArray[2].isDouble())
+                    tempGOB->mTransform->mScale.z = scaleArray[2].toDouble();
             }
-            if (entityObject.contains("useColor") && entityObject["useColor"].isBool())
+            if (entityObject.contains("rotation") && entityObject["rotation"].isArray())
             {
-                bool useColor = entityObject["useColor"].toBool();
-                temp.mUseColor = useColor;
+                QJsonArray rotationArray = entityObject["rotation"].toArray();
+                if (rotationArray[0].isDouble())
+                    tempGOB->mTransform->mRotation.x = rotationArray[0].toDouble();
+                if (rotationArray[1].isDouble())
+                    tempGOB->mTransform->mRotation.y = rotationArray[1].toDouble();
+                if (rotationArray[2].isDouble())
+                    tempGOB->mTransform->mRotation.z = rotationArray[2].toDouble();
             }
-            if (entityObject.contains("specularStrength") && entityObject["specularStrength"].isDouble())
-            {
-                float specularStrenght = entityObject["specularStrength"].toDouble();
-                temp.mSpecularStrength = specularStrenght;
-            }
-            if (entityObject.contains("specularExponent") && entityObject["specularExponent"].isDouble())
-            {
-                int specularExponent = entityObject["specularExponent"].toDouble();
-                temp.mSpecularExponent = specularExponent;
-            }
+//            if (entityObject.contains("material") && entityObject["material"].isString())
+//            {
+//                QString material = entityObject["material"].toString();
+//                tempGOB = mResourceManager->addObject(mesh.toStdString());
+//            }
+//            if (entityObject.contains("color") && entityObject["color"].isArray())
+//            {
+//                QJsonArray colorArray = entityObject["color"].toArray();
+//                if (colorArray[0].isDouble())
+//                    tempGOB.mColor.x = colorArray[0].toDouble();
+//                if (colorArray[1].isDouble())
+//                    tempGOB.mColor.y = colorArray[1].toDouble();
+//                if (colorArray[2].isDouble())
+//                    tempGOB.mColor.z = colorArray[2].toDouble();
+//            }
+//            if (entityObject.contains("useColor") && entityObject["useColor"].isBool())
+//            {
+//                bool useColor = entityObject["useColor"].toBool();
+//                temp.mUseColor = useColor;
+//            }
+//            if (entityObject.contains("specularStrength") && entityObject["specularStrength"].isDouble())
+//            {
+//                float specularStrenght = entityObject["specularStrength"].toDouble();
+//                temp.mSpecularStrength = specularStrenght;
+//            }
+//            if (entityObject.contains("specularExponent") && entityObject["specularExponent"].isDouble())
+//            {
+//                int specularExponent = entityObject["specularExponent"].toDouble();
+//                temp.mSpecularExponent = specularExponent;
+//            }
 
-            mMaterials.push_back(temp); //this should performe a copy...
-            mMaterialMap.emplace(name.toStdString(), materialIndex + 1);
+//            mMaterials.push_back(temp); //this should performe a copy...
+//            mMaterialMap.emplace(name.toStdString(), materialIndex + 1);
+            mRenderSystem->mGameObjects.push_back(tempGOB);
         }
-        mLogger->logText("  " + std::to_string(entityIndex) + " materials read from file");
+        mLogger->logText("  " + std::to_string(entityIndex) + " entities read from file");
     }
     else
-        mLogger->logText("materials.json file does not contain a Materials object", LColor::DAMNERROR);
+        mLogger->logText("scene.json file does not contain a Materials object", LColor::DAMNERROR);
 }
-*/
+
 
 void CoreEngine::handleInput()
 {
