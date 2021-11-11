@@ -816,9 +816,9 @@ void RenderWindow::handleInput()
         qDebug() << "Speed: " << mScript->getSpeed();
         float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
         if(mInput.A)
-            mPlayer->Move(-mScript->getSpeed() / deltaTime);
+            mPlayer->Move(-1.7 / deltaTime);
         if(mInput.D)
-            mPlayer->Move(mScript->getSpeed() / deltaTime);
+            mPlayer->Move(1.7 / deltaTime);
         if(mInput.SPACE){
             mPlayer->Jump(mJump);
         }
