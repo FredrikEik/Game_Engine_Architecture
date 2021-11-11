@@ -9,6 +9,10 @@ PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {re
 
 void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 {
+//    std::vector<gsml::Vertex>& triangleVertices = dynamic_cast<TriangleSurface*>(triangle_surface)->get_vertices(); //Original line
+
+    std::vector<GameObject>& triangleVertices = dynamic_cast<GameObject*>(TriangleSurface)->get_vertices();
+
     //Search for the gameobject called "name" and create a reference to the GameObject the ball will roll on.
     std::string name = "TriangleSurface";
     GameObject groundObject;
@@ -23,6 +27,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             groundObject.mMaterial = mGameObjects[i]->mMaterial;
             groundObject.mTransform = mGameObjects[i]->mTransform;
             groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
+            break;
         }
     }
     name.clear();
@@ -42,6 +47,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             physicsBall.mMaterial = mGameObjects[i]->mMaterial;
             physicsBall.mTransform = mGameObjects[i]->mTransform;
             physicsBall.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
+            break;
         }
     }
     //mLogger->logText(physicsBall.mName, LColor::LOG);
