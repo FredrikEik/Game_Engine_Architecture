@@ -85,10 +85,6 @@ void CoreEngine::setUpScene()
     enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
     enemy->mTransform->mMatrix.scale(0.5f);
 
-//    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
-//    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
-//    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
-
     mResourceManager->addCollider("sphere", enemy);
     mResourceManager->addComponent("roblox_stereo.wav", enemy);
     enemy->mSoundComponent->shouldPlay = false;
@@ -153,6 +149,22 @@ void CoreEngine::setUpScene()
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
+}
+
+void CoreEngine::testScene()
+{
+    for(int i = 0; i < 2; i++)
+    {
+
+        enemy->mTransform->mMatrix.translate(-2.f *i, -1.f , 4.f);
+        mRenderSystem->mGameObjects.push_back(enemy);
+
+    }
+
+        mRenderSystem->mGameObjects.push_back(player);
+        mRenderSystem->mGameObjects.push_back(axis);
+        playerSpawned = true;
+        enemySpawned = true;
 }
 
 void CoreEngine::spawnParticles()

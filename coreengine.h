@@ -40,6 +40,8 @@ public:
     GameObject* projectile;
     GameObject* skybox;
 
+    std::vector<GameObject*> enemies;
+
     bool playerSpawned = false;
     bool ProjectileSpawned = false;
     bool particlesSpawned = false;
@@ -61,6 +63,7 @@ public:
     void togglePlayMode(bool shouldPlay);
 
     void setUpScene();
+    void testScene();
     void updateCamera();
     void updateScene();
 

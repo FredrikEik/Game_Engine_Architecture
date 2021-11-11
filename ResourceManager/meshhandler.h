@@ -6,6 +6,8 @@
 #include "gltypes.h"
 #include "components.h"
 #include "texturehandler.h"
+//#include "coreengine.h"
+#include "camera.h"
 
 struct MeshData
 {
@@ -42,6 +44,8 @@ public:
     ///Makes a sphere of 3 circles with given radius.
     /// Color option for rgb or pink
     MeshData makeCircleSphere(float radius = 1, bool rgbColor = true);
+
+    MeshData makeFrustum(Camera *cam);
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;

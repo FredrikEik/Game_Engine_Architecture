@@ -7,6 +7,7 @@
 #include "math_constants.h"
 #include <random>
 #include <stdlib.h>
+#include "coreengine.h"
 MeshHandler::MeshHandler()
 {
     //This is a hack - to make sure my MeshComponens are not moved for now
@@ -629,6 +630,8 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
     return tempMesh;
 }
 
+
+
 int MeshHandler::Heightmap(TextureHandler *texture, float horSpaceing, float verSpacing, float height)
 {
     mTexture = texture;
@@ -1042,6 +1045,35 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
     initMesh(temp, 0);
 
     return temp;
+}
+
+MeshData MeshHandler::makeFrustum(Camera *camera)
+{
+    MeshData temp;
+
+    gsl::Vector3D &cameraPos = camera->mPosition;
+    gsl::Matrix4x4 &cameraRot = camera->mViewMatrix;
+
+    float xMinus{cameraPos.x};
+    float yMinus{cameraPos.y};
+    float zMinus{cameraPos.z};
+
+
+
+    temp.mVertices[0].insert( temp.mVertices[0].end(),
+                {
+
+       //Vertex data for back
+       Vertex{xMinus, yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f}    // 4
+
+
+                      });
+
+
+    temp.mDrawType = GL_LINES;
+    initMesh(temp, 0);
+    return temp;
+
 }
 
 void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)

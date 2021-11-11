@@ -234,4 +234,5 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 void MainWindow::on_pushButton_2_clicked()
 {
 
+    mCoreEngine->testScene();
 }

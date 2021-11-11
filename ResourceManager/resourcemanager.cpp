@@ -235,4 +235,11 @@ MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
 }
 
+//MeshData ResourceManager::makeFrustumDrawing()
+//{
+
+//}
+
+
+
 

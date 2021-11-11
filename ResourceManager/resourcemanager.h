@@ -32,6 +32,7 @@ public:
 
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
+    MeshData makeFrustumDrawing();
 
     MeshHandler* mMeshHandler{nullptr};
 
