@@ -27,7 +27,7 @@ void Level::initObjects()
     mPlayer = new Player(&mShapeFactory);
     mPlayer->mMaterial->mShaderProgram = 0; //plain shader
     mPlayer->init();
-    mPlayer->move(0,1,5);
+    mPlayer->move(0,0.5,5);
     mVisualObjects.push_back(mPlayer);
     mTransComps.push_back(mPlayer->mTransform);
     mNameComps.push_back(mPlayer->mNameComp);

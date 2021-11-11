@@ -1,16 +1,15 @@
 #include "player.h"
 
-Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
+Player::Player(ShapeFactory* f) : mx{0.0f}, my{1.0f}, mz{5.0f}
 {
     factoryPtr = f;
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
-    mTransform->mPosition = gsl::Vector3D(mx,my,mz);
     mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(4);
-    //mTransform->mMatrix.scale(0.5);
+    mTransform->mMatrix.scale(0.5);
     mColSystem = new CollisionSystem;
-    mCollision->setBoundingSphere(1, mTransform->mPosition);
+    mCollision->setBoundingSphere(0.5, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mInputComp = new InputComponent;
     mNameComp = new NameComponent();
@@ -43,7 +42,8 @@ void Player::move(float dx, float dy, float dz)
     temp.y = dy;
 
     mTransform->mPosition += temp;
-    mTransform->mMatrix.translate(temp.x, temp.y, temp.z);
+    mTransform->mMatrix.setPosition(mTransform->mPosition);
+    //mTransform->mMatrix.translate(temp.x, temp.y, temp.z);
     mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mCollision);
     mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mCollision);
 }

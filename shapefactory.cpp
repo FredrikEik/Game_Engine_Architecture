@@ -67,6 +67,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     {
         temp = new Circle;
         temp->mMesh = myMeshes[0];
+        temp->mTransform->mMatrix.scale(0.5);
         temp->mCollision = myCollis[0];
         temp->mCollision->setBoundingSphere(0.5, temp->mTransform->mPosition);
 
@@ -122,7 +123,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         temp = new Enemy;
         temp->mMesh = myMeshes[5];
         temp->mCollision = myCollis[5];
-        temp->mTransform->mMatrix.scale(0.2);
+        temp->mTransform->mMatrix.scale(0.3);
         temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
 
         if(doOnce[3] == false){
