@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <QFile>
+#include <QJSEngine>
 
 #include <iostream>
 
@@ -42,9 +44,38 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         qDebug() << "Context could not be made - quitting this application";
     }
 
+    //Make the Script engine itself
+    QJSEngine engine;
+
+    QString fileName = "../GEA2021/Script/tinyScript.js";
+
+    QFile scriptFile(fileName);
+
+    if (!scriptFile.open(QIODevice::ReadOnly))
+        qDebug() << "Error - NO FILE HERE: " << fileName;
+
+    //reads the file
+    QTextStream stream(&scriptFile);
+    QString contents = stream.readAll();
+    //now "contents" holds the whole JavaScript
+
+    scriptFile.close();
+
+    //Loads the whole script into script engine:
+    //The important part! fileName is used to report bugs in the file
+    engine.evaluate(contents, fileName);
+
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
+    mScript = new Script();
+    //Makes a script-version for the script engine:
+    QJSValue objectTest = engine.newQObject(mScript);
+    //Make a name for the object in the script engine
+    engine.globalObject().setProperty("cObject", objectTest);
+    QJSValue useFunction = engine.evaluate("setCVariable");
+    useFunction.call();
+    qDebug() << "C value set to:" << mScript->getSpeed();
 }
 
 RenderWindow::~RenderWindow()
@@ -782,11 +813,12 @@ void RenderWindow::handleInput()
     //Player
     if (bPlayGame && mPlayer)
     {
+        qDebug() << "Speed: " << mScript->getSpeed();
         float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
         if(mInput.A)
-            mPlayer->Move(-1.7f / deltaTime);
+            mPlayer->Move(-mScript->getSpeed() / deltaTime);
         if(mInput.D)
-            mPlayer->Move(1.7f / deltaTime);
+            mPlayer->Move(mScript->getSpeed() / deltaTime);
         if(mInput.SPACE){
             mPlayer->Jump(mJump);
         }

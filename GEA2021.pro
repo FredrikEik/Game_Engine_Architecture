@@ -1,4 +1,4 @@
-QT          += core gui widgets opengl
+QT          += core gui widgets opengl qml
 
 TEMPLATE    = app
 CONFIG      += c++17
@@ -31,6 +31,7 @@ SOURCES += main.cpp \
     objimport.cpp \
     player.cpp \
     renderwindow.cpp \
+    script.cpp \
     shader.cpp \
     mainwindow.cpp \
     skybox.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     objimport.h \
     player.h \
     renderwindow.h \
+    script.h \
     shader.h \
     mainwindow.h \
     skybox.h \
@@ -87,6 +89,7 @@ FORMS += \
     transform.ui
 
 DISTFILES += \
+    Script/tinyScript.js \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

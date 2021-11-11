@@ -15,6 +15,8 @@
 #include "spawner.h"
 #include "player.h"
 #include "skybox.h"
+#include "script.h"
+
 
 class QOpenGLContext;
 class Shader;
@@ -84,6 +86,8 @@ public:
     bool mGameCamAsFrustumCulling{false};
 
     int mTextureIndex = 0;
+
+    Script* mScript { nullptr };
 
 private slots:
     void render();
