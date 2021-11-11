@@ -4,7 +4,8 @@
 //Forward declaration
 class GameObject;
 class RenderSystem;
-
+struct MeshData;
+class GameObjectManager;
 
 class PhysicsHandler
 {
@@ -14,6 +15,7 @@ public:
     void movePhysicsObject(std::vector<GameObject*> mGameObjects);
 
     RenderSystem *mRenderSystem{nullptr};
+    GameObjectManager *mGameObjectManager{nullptr};
 
 private:
     class Logger *mLogger{nullptr};

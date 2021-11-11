@@ -1,6 +1,9 @@
 ﻿#include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
+//#include "meshhandler.h"
+//#include "coreengine.h" //trying to get access to meshdata
+
 
 PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
@@ -11,11 +14,15 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 {
 //    std::vector<gsml::Vertex>& triangleVertices = dynamic_cast<TriangleSurface*>(triangle_surface)->get_vertices(); //Original line
 
-    std::vector<GameObject>& triangleVertices = dynamic_cast<GameObject*>(TriangleSurface)->get_vertices();
+//    std::vector<GameObject*>& triangleVertices = <GameObject*>("TriangleSurface")->get_vertices();
+
+//    std::vector<GameObject*>& triangleVertices = mGameObjects->mMeshes->MeshData->mVAO();
+
 
     //Search for the gameobject called "name" and create a reference to the GameObject the ball will roll on.
     std::string name = "TriangleSurface";
     GameObject groundObject;
+    //MeshData md;
 
 //Get the details of the plane the physicsobject is going to interact with.
     for(int i = 0; i < mGameObjects.size(); i++)
@@ -27,11 +34,24 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             groundObject.mMaterial = mGameObjects[i]->mMaterial;
             groundObject.mTransform = mGameObjects[i]->mTransform;
             groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
+
+            //Struggeling to get MeshData to give me the data i want. This works in rendersystem.cpp at line 221, why not here? Looks like core includes render, but not the other way around?
+            //MeshData mGameObject[i].mVertices = CoreEngine::getInstance()->mGameObjectManager-> makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
+
+            //My understanding is that from bottom up, the all the Vertices is stored in MeshData, MeshHandler handles MeshData and creates an object.
+            //But i dont see how i can go from gameobject "down into" meshHandler and meshdata's vertex data.
+            //std::vector<Vertex*>& triangleVertices = dynamic_cast<GameObject*>(mGameObjects[i])->mMesh->get_mVAO;
+
             break;
+        }
+        if (i == mGameObjects.size()-1) //if entirety of gameobjects is searched and not found, the game-engine crashes trying to log two strings.
+        {
+            mLogger->logText("No gameobject named" + name, LColor::LOG);
         }
     }
     name.clear();
     //mLogger->logText(std::to_string(groundObject.mMesh->mVertexCount[0])); //How many vertices are there in TriangleSurface?
+
 
 
 //Get the details of the ball
@@ -68,7 +88,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 
 //Get the vertices of the trianglesurface
-    std::vector<gsl::Vector3D*> triangleVertices;
+    //std::vector<gsl::Vector3D*> triangleVertices;
 
 //    for (int i = 0; i < triangleVertices.size(); i++)
 //    {

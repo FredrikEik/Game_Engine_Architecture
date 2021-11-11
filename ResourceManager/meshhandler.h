@@ -22,6 +22,8 @@ struct MeshData
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
     float mColliderRadius{0};
+
+    //std::vector<Vertex> get_VAO() { return mVertices[0], mVertices[1], mVertices[2]; }; //Does not work, this is ideal end result.
 };
 
 
@@ -47,6 +49,10 @@ public:
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
+
+    //std::vector<Vertex> get_VAO() { return MeshData.mVertices }; //
+
+
 private:
     int readObj(std::string filename);
     int makeAxis();
