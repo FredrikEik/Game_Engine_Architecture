@@ -22,7 +22,7 @@ public:
 //    TransformComponent();
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D rotation{0.f,0.f,0.f};
-    gsl::Vector3D scale{0.f,0.f,0.f};
+    gsl::Vector3D scale{1.f,1.f,1.f};
 
     // Shoud not be in tranformComponent, but needed to be here for the moment
     // Normaly it is in collisioncomponent, but since meny enteties shares the same

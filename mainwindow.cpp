@@ -291,6 +291,12 @@ void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
     GameObjects[ObjectListIndex]->mTransformComp->rotation.setZ(z+GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ());
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateZ(z);
 }
+
+void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
+{
+    GameObjects[ObjectListIndex]->mTransformComp->scale.setX(arg1);
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D(GameObjects[ObjectListIndex]->mTransformComp->scale.getX(),1,1));
+}
 void MainWindow::on_actionCube_triggered()
 {
     mGameEngine->getInstance()->CreateCube();
@@ -328,14 +334,6 @@ void MainWindow::on_actionCube_hovered()
 {
     //ObjectListIndex = 0;
 }
-
-
-void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
-{
-//    QVector3D  scale = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(arg1));
-    //GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D{GLfloat(arg1),1,1});
-}
-
 
 void MainWindow::on_actionDelete_Selected_triggered()
 {

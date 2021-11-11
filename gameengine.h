@@ -50,6 +50,7 @@ public:
     void CreateObject(std::string filePath, bool bUsingLOD, std::string textureName);
 
 
+    GameObject *mXYZaxis{nullptr};
     GameObject* mPlayer{nullptr};
     gsl::Vector3D initPlayerPos{0,0,0};
 

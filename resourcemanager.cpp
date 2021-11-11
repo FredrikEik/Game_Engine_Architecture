@@ -61,7 +61,14 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mMaterialComp = new MaterialComponent();
     tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
-    tempGO->mMaterialComp->mShaderProgram = 2;
+    if(textureName == "plain")
+    {
+        tempGO->mMaterialComp->mShaderProgram = 0;
+    }else
+    {
+        tempGO->mMaterialComp->mShaderProgram = 2;
+    }
+
 
     //shoud not hardcode
     //tempGO->mMaterialComp->mTextureUnit=0;
@@ -109,11 +116,11 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
     std::string tempName = filepath;
     // Hardcoded filesize just to make "XYZ" work
-//    if(filepath.size() > 15)
-//    {
+    if(filepath != "xyz")
+    {
         tempName.erase(0,25);
         tempName.erase(tempName.end()-4,tempName.end());
-//    }
+    }
     tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
 
     tempGO->id = objectIDcounter;

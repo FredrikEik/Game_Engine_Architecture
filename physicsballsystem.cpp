@@ -56,6 +56,162 @@ void PhysicsBallSystem::move(float dt)
 
 }
 
+void PhysicsBallSystem::readFile(std::string filename)
+{
+    std::ifstream inn;
+    inn.open(filename.c_str());
+
+    if(inn.is_open())
+    {
+        gsl::Vector3D pos;
+        unsigned int n;
+        inn>>n;
+        mAllDataPoints.reserve(n);
+        int i{0};
+        float vx,vy,vz;
+
+
+
+        for(int i = 0; i<50;i++)
+        {
+            inn >> vx;
+            inn >> vz;
+            inn >> vy;
+            int x = int(vx);
+            int z = int(vz);
+            int y = int(vy);
+            static bool once = true;
+            if(once)
+            {
+                xMin = x;
+                xMax = x;
+                zMin = z;
+                zMax = z;
+                yMin = y;
+                yMax = y;
+                once = false;
+            }
+            if(x <= xMin)
+                xMin = x;
+
+            if(x >= xMax)
+                xMax = x;
+
+            if(z <= zMin)
+                zMin = z;
+
+            if(z >= zMax)
+                zMax = z;
+
+            if(y <= yMin)
+                yMin = y;
+
+            if(y >= yMax)
+                yMax = y;
+
+            pos.setX(x);
+            pos.setZ(z);
+            pos.setY(y);
+
+            mAllDataPoints.push_back(pos);
+        }
+        for(int i = 0; i < 50;i++)
+        {
+            mAllDataPoints[i].setX(mAllDataPoints[i].getX() - xMin);
+            mAllDataPoints[i].setZ(mAllDataPoints[i].getZ() - zMin);
+            mAllDataPoints[i].setY(mAllDataPoints[i].getY() - yMin);
+
+        }
+        xMax = xMax-xMin;
+        xMin = xMin-xMin;
+        zMax = zMax-zMin;
+        zMin = zMin-zMin;
+        yMax = yMax-yMin;
+        yMin = yMin-yMin;
+
+        // 998 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
+        float gridSizeX = xMax / 998;
+        qDebug() << "GridsizeX" << gridSizeX;
+        // 1457 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
+        float gridSizeZ = zMax / 1457;
+        qDebug() << "GridsizeY" << gridSizeZ;
+
+//        terrain = new GameObject();
+//        terrain->name = "terrain";
+//        terrain->mMeshComp = new MeshComponent();
+//        terrain->mMaterialComp = new MaterialComponent();
+//        terrain->mMaterialComp->mShaderProgram = 3;
+//        terrain->mMaterialComp->mTextureUnit = 0;
+//        terrain->mTransformComp = new TransformComponent();
+//        terrain->id = 99999;
+//        terrain->mCollisionComp = new CollisionComponent();
+//        terrain->mCollisionComp->mRaidus = 2*xMax;
+//        terrain->mCollisionComp->maxCorner = QVector3D{float(xMax),float(yMax),float(zMax)};
+//        terrain->mCollisionComp->minCorner = QVector3D{float(xMin),float(yMin),float(zMin)};
+
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMin, yMin, zMax,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMax, yMin, zMax,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMax, yMax, zMax,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMin, yMax, zMax,   1,0,0,  0,0));
+
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMin, yMin, zMin,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMax, yMin, zMin,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMax, yMax, zMin,   1,0,0,  0,0));
+//        terrain->mCollisionLines->mVertices->push_back(Vertex(xMin, yMax, zMin,   1,0,0,  0,0));
+
+
+
+//        for(int z = zMin; z < 100;z+=10)
+//        {
+//            for(int x = xMax;x>0; x-=10)
+//            {
+//                for(int it= 0; it < mAllDataPoints.size();it++)
+//                {
+//                    if(mAllDataPoints[i].x > x-10 && mAllDataPoints[i].x < x && mAllDataPoints[i].z > z && mAllDataPoints[i].z < z+10)
+//                    {
+//                        terrain->mMeshComp->mVertices[0].push_back(Vertex{x/10,mAllDataPoints[i].y/10,z/10});
+//                        goto jump;
+//                    }
+//                }
+//                if(!terrain->mMeshComp->mVertices->empty())
+//                {
+//                    terrain->mMeshComp->mVertices->push_back(terrain->mMeshComp->mVertices->at(terrain->mMeshComp->mVertices->size()-1));
+//                    continue;
+//                }else
+//                {
+//                    terrain->mMeshComp->mVertices[0].push_back(Vertex{0,0,0});
+//                    continue;
+//                }
+//                jump:;
+//            }
+//        }
+
+
+
+
+
+
+//        qDebug() << "xmin: " << xMin << "xmax: " << xMax <<  "ymin: " << yMin << "ymax: " << yMax << "zmin: " << zMin << "zmax: " << zMax;
+
+
+
+
+
+//    for(int xgrid = 0; xgrid < 1000; xgrid++)
+//    {
+//        for(int zgrid = 0; x)
+//    }
+
+
+
+
+
+        inn.close();
+    }
+
+
+}
+
 //PhysicsBallSystem * PhysicsBallSystem::getInstance()
 //{
 //    if(!mInstance)
@@ -244,4 +400,9 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
         qDebug() << "Ball is out of bounds!";
     }
     return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
+}
+
+GameObject *PhysicsBallSystem::GetTerrain()
+{
+    return terrain;
 }

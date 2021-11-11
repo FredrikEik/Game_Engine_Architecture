@@ -61,7 +61,7 @@ void GameEngine::SetUpScene()
     mResourceManager->getAllMeshNames();
 
 
-
+    //mPhysicsBallSystem->readFile(gsl::ProjectFolderName + "test_las.txt");
 
 
     SetUpObjects();
@@ -95,11 +95,13 @@ void GameEngine::SetUpObjects()
 {
 //    mResourceManager->loadScene(mRenderwindow->mGameObjects, mPlayer,mLight);
                                           //(gsl::MeshFilePath + "player.obj", gsl::TextureFilePath + "playerTexture")
-    mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj",false,"hund.bmp");
+//    mXYZaxis = mResourceManager->CreateObject("xyz",false,"plain");
+//    mRenderwindow->mGameObjects.push_back(mXYZaxis);
+
+    mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj",false,"plain");
 
     mPlayer->mTransformComp->mMatrix.setPosition(0,-1.8f,-8);
     initPlayerPos = {0,-1.8f,-8};
-    mPlayer->mMaterialComp->mShaderProgram = 2;
 //    mPlayer->mMaterialComp->mTextureUnit = 1;
     //mPlayer->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
 
@@ -138,6 +140,15 @@ void GameEngine::SetUpObjects()
     mLight->mMaterialComp->mShaderProgram = 2;
 //    mLight->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(mLight);
+
+
+
+
+    // TERRAIN:
+
+    //mRenderwindow->mGameObjects.push_back(mPhysicsBallSystem->GetTerrain());
+
+
 
 //    mLight2 = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj");
 //    mLight2->mTransformComp->mMatrix.setPosition(-1,3,-5);

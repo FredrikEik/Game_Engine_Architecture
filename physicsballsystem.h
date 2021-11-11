@@ -4,6 +4,7 @@
 #include "QVector3D"
 #include "gameobject.h"
 #include "queue"
+#include <array>
 class PhysicsBallSystem
 {
 public:
@@ -13,12 +14,15 @@ public:
     void SetTerrainData(GameObject& TerrainInn);
     void move(float dt);
     void StartRolling();
+    void readFile(std::string filename);
 
 
 //    static PhysicsBallSystem* getInstance();
 
     QVector3D barycentricCoordinates(const QVector2D &dette, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3);
     std::pair<QVector3D,QVector3D> getAkselerationVector(const QVector2D &ballPos);
+
+    GameObject *GetTerrain();
 
 private:
     float xPosOnTarrain;
@@ -29,6 +33,17 @@ private:
     float xzScale{1};
     int mRows{1};
     int mCols{1};
+
+    std::vector<gsl::Vector3D> mAllDataPoints;
+    GameObject *terrain{nullptr};
+    double xMin{0};
+    double xMax{0};
+    double zMin{0};
+    double zMax{0};
+    double yMin{0};
+    double yMax{0};
+    int hMapRows{998};
+    int hMapCols{1457};
 
     bool firstTriangle{true};
     QVector2D startPoint{0,0};
