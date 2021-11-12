@@ -40,15 +40,14 @@ SmallWall::SmallWall()
     mNameComp = new NameComponent();
 }
 
-Enemy::Enemy()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mNameComp = new NameComponent();
-    mMaterial = new MaterialComponent();
-    //readFile("../GEA2021/Assets/Enemy.obj");
-}
-
+//Enemy::Enemy()
+//{
+//    mTransform = new TransformComponent();
+//    mTransform->mMatrix.setToIdentity();
+//    mNameComp = new NameComponent();
+//    mMaterial = new MaterialComponent();
+//    //readFile("../GEA2021/Assets/Enemy.obj");
+//}
 
 
 ObjMesh::ObjMesh()
@@ -121,25 +120,25 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
         return temp;
     }
-    else if(shapeName == "Enemy")
-    {
-        temp = new Enemy;
-        temp->mMesh = myMeshes[5];
-        temp->mCollision = myCollis[5];
-        temp->mTransform->mMatrix.scale(0.3);
-        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
+//    else if(shapeName == "Enemy")
+//    {
+//        temp = new Enemy;
+//        temp->mMesh = myMeshes[5];
+//        temp->mCollision = myCollis[5];
+//        temp->mTransform->mMatrix.scale(0.3);
+//        temp->mCollision->setBoundingSphere(0.25, temp->mTransform->mPosition);
 
-        if(doOnce[3] == false){
-            temp->mNameComp->ObjectName = shapeName;
-            doOnce[3] = true;}
-        else
-            temp->mNameComp->ObjectName = shapeName + a;
+//        if(doOnce[3] == false){
+//            temp->mNameComp->ObjectName = shapeName;
+//            doOnce[3] = true;}
+//        else
+//            temp->mNameComp->ObjectName = shapeName + a;
 
-        temp->mNameComp->ObjectID = mCounter;
-        mCounter++;
+//        temp->mNameComp->ObjectID = mCounter;
+//        mCounter++;
 
-        return temp;
-    }
+//        return temp;
+//    }
     //    else if(shapeName == "BigWall")
     //    {
     //        temp = new BigWall;

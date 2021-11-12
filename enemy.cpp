@@ -1,49 +1,50 @@
-//#include "enemy.h"
+#include "enemy.h"
 
-//Enemy::Enemy()
-//{
-//    mTransform = new TransformComponent();
-//    mTransform->mMatrix.setToIdentity();
-//    mMesh = new MeshComponent();
-//   // mCollision = new CollisionComponent;
-//    mColSystem = new CollisionSystem;
-//    readFile("../GEA2021/Assets/Enemy.obj");
-//    mCollision->setBoundingSphere(0.2, mTransform->mPosition);
-//    mMaterial = new MaterialComponent();
-//    mNameComp = new NameComponent();
-//    mNameComp->ObjectName = "Enemy";
+Enemy::Enemy(ShapeFactory* f)
+{
+    factoryPtr = f;
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMesh = factoryPtr->getMesh(5);
+    mCollision = factoryPtr->getColli(5);
+    mTransform->mMatrix.scale(0.2);
+    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+    mNameComp->ObjectName = "Enemy";
+    mNameComp->ObjectID = factoryPtr->getCount();
+    factoryPtr->addCount();
 
-//}
-
-
-//Enemy::~Enemy()
-//{
+}
 
 
-//}
-//void Enemy::move(Player *mPlayer, gsl::Vector3D Ppos)
-//{
-//    //    if(Checkmove == false)
-//    //    {
-//    Ppos = mPlayer->mTransform->mPosition;
-//    gsl::Vector3D Epos = mTransform->mPosition;
-
-//    float xDistance = Ppos.x-Epos.x;
-//    float yDistance = Ppos.y-Epos.y;
-
-//    float hypo = sqrt((xDistance * xDistance) + (yDistance * yDistance));
+Enemy::~Enemy()
+{
 
 
-//    dir = Ppos - Epos;
-//    dir.normalize();
+}
+void Enemy::moveToPlayer(Player *mPlayer, gsl::Vector3D Ppos)
+{
+    //    if(Checkmove == false)
+    //    {
+    Ppos = mPlayer->mTransform->mPosition;
+    gsl::Vector3D Epos = mTransform->mPosition;
 
-//    dir = dir*speed;
-//    qDebug() << hypo;
+    float xDistance = Ppos.x-Epos.x;
+    float yDistance = Ppos.y-Epos.y;
 
-//    if(Checkmove == false)
-//    {
-//         mTransform->mMatrix.translate(dir);
-//         mColsystem->moveBoundingSphere(dir.x,dir.y,dir.z,mCollision);
-//    }
+    float hypo = sqrt((xDistance * xDistance) + (yDistance * yDistance));
 
-//}
+
+    dir = Ppos - Epos;
+    dir.normalize();
+
+    dir = dir*speed;
+    qDebug() << hypo;
+
+    if(Checkmove == false)
+    {
+        move(dir.x,dir.y,dir.z);
+    }
+
+}

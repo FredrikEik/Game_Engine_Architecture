@@ -148,14 +148,13 @@ void RenderWindow::init()
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
-    mEnemy = mLvl->mVisualObjects[6];
-    SoundHandler();
+    //SoundHandler();
 
     mLvl = new Level(&mPlayCamera);
     mSkyBox = mLvl->mSkyBox;
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
-
+    mEnemy = mLvl->mEnemy;
     //mMainWindow->update();
 
 
@@ -241,7 +240,7 @@ void RenderWindow::render()
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
 
-    checkCollision();
+    //checkCollision();
     //mFrustumSystem->updateFrustumPos(mPlayCamera.position());
     //Check Collision
     //    for(int i{0}; i < mVisualObjects.size(); i++)
@@ -261,16 +260,16 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     makeObject();
-    mInputSystem->moveEnemy(mEnemy,mPlayer->mTransform->mPosition,mEnemy->mTransform->mPosition);
+//    mEnemy->moveToPlayer(mPlayer,mEnemy->mTransform->mPosition);
 
 
 //    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemy->mCollision))
 //    {
-//        mInputComponent-> Checkmove = true;
+//        mEnemy->Checkmove = true;
 //       // ResetGame();
 //        qDebug() <<"Player hit detected";
 //        //mEnemy->Checkmove = false;
-//    }else mInputComponent-> Checkmove = false;
+//    }else mEnemy->Checkmove = false;
 
 
 

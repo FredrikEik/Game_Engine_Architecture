@@ -12,6 +12,7 @@
 
 #include "visualobject.h"
 
+
 using namespace std;
 
 class ShapeFactory{
@@ -21,6 +22,8 @@ public:
     void makeVertices();
     MeshComponent* getMesh(int i);
     CollisionComponent* getColli(int i);
+    int getCount(){return mCounter;};
+    void addCount(){mCounter++;};
 private:
     void readFile(std::string filename, MeshComponent* m);
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
@@ -32,6 +35,7 @@ private:
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
     string enemyString = "../GEA2021/Assets/Enemy.obj";
+
 };
 
 
@@ -71,15 +75,14 @@ public:
     ~SmallWall(){};
 };
 
-class Enemy : public VisualObject
-{
-public:
-    Enemy();
-    ~Enemy(){};
+//class Enemy : public VisualObject
+//{
+//public:
+//    Enemy();
+//    ~Enemy();
+//private:
 
-private:
-
-};
+//};
 
 class ObjMesh : public VisualObject
 {

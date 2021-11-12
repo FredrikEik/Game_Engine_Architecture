@@ -5,7 +5,8 @@ Level::Level(Camera* cam)
     mCam = cam;
     mShapeFactory.makeVertices();
     script = new Script();
-    initObjects();
+    DrawBoard();
+    //initObjects();
     readJS();
 }
 
@@ -20,6 +21,112 @@ Level::~Level()
     mVisualObjects.clear();
     mTransComps.clear();
     mNameComps.clear();
+}
+
+// 0 - coin
+// 1 - wall
+// 2 - Player
+// 3 - energizer
+// 4 - ghost initial positions
+
+int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
+{  //0                   1         5
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
+   {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},// 1
+   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},// 2
+   {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
+   {1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1},// 4
+   {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},// 5
+   {1,0,1,0,1,0,1,0,1,1,4,1,1,0,1,0,1,0,1,0,1},
+   {1,0,0,0,1,0,0,0,1,4,4,4,1,0,0,0,1,0,0,0,1},
+   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},
+   {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
+   {1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1},// 10
+   {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
+   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},// 12
+   {1,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},// 13
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 14
+};
+
+void Level::DrawBoard()
+{
+
+    VisualObject* temp;
+    temp = mShapeFactory.createShape("Plain");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;   //plain shader
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    mNameComps.push_back(temp->mNameComp);
+    for(int i = 0; i<DIM_Z;i++)
+    {
+        for(int j = 0; j<DIM_X; j++)
+        {
+            if(GameBoard[i][j] == 0)
+            {
+                temp = mShapeFactory.createShape("Circle");
+                temp->init();
+                temp->mMaterial->mShaderProgram = 0;
+                temp->move(i, CENTER_Y,DIM_Z - j - 1);
+                temp->mTransform->mMatrix.scale(0.3);//plain shader
+                mVisualObjects.push_back(temp);
+//                mTransComps.push_back(temp->mTransform);
+//                mNameComps.push_back(temp->mNameComp);
+            }
+            else if(GameBoard[i][j] == 1){
+                temp = mShapeFactory.createShape("Square");
+                temp->init();
+                temp->mMaterial->mShaderProgram = 0;    //plain shader
+                temp->move(i, CENTER_Y,DIM_Z - j - 1);
+                mVisualObjects.push_back(temp);
+//                mTransComps.push_back(temp->mTransform);
+//                mNameComps.push_back(temp->mNameComp);
+            }
+            else if(GameBoard[i][j] == 2){
+                mPlayer = new Player(&mShapeFactory);
+                mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+                mPlayer->init();
+                mPlayer->move(i, CENTER_Y,DIM_Z - j - 1);
+                mVisualObjects.push_back(mPlayer);
+                mTransComps.push_back(mPlayer->mTransform);
+                mNameComps.push_back(mPlayer->mNameComp);
+            }
+            else if(GameBoard[i][j] == 4){
+                mEnemy = new Enemy(&mShapeFactory);
+                mEnemy->init();
+                mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
+                mEnemy->move(i, CENTER_Y,DIM_Z - j - 1);
+                mVisualObjects.push_back(mEnemy);
+                mTransComps.push_back(mEnemy->mTransform);
+                mNameComps.push_back(mEnemy->mNameComp);
+            }
+
+        }
+
+    }
+
+    mFrustumSystem = new FrustumSystem(mCam);
+    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
+    mFrustumSystem->init();
+
+    //------------------------Skybox----------------------//
+    mSkyBox = new Skybox();
+    mSkyBox->setTexture();
+    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
+    mSkyBox->init();
+
+    //------------------------Light----------------------//
+    mLight = new Light;
+    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
+    mLight->move(0.f, 0.f, 6.f);
+    mLight->init();
+
+    //makes the soundmanager
+    //it is a Singleton!!!
+    SoundManager::getInstance()->init();
+    mLaserSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/laser.wav", true, 0.7f);
 }
 
 void Level::initObjects()
@@ -68,13 +175,13 @@ void Level::initObjects()
     //    mNameComps.push_back(temp->mNameComp);
 
     for(int i{1}; i<4; i++){
-        temp = mShapeFactory.createShape("Enemy");
-        temp->init();
-        temp->mMaterial->mShaderProgram = 0;    //plain shader
-        temp->move(-i/2 + 3, 0.f, (i*3) -5);
-        mVisualObjects.push_back(temp);
-        mTransComps.push_back(temp->mTransform);
-        mNameComps.push_back(temp->mNameComp);}
+        mEnemy = new Enemy(&mShapeFactory);
+        mEnemy->init();
+        mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
+        mEnemy->move(-i/2 + 3, 0.f, (i*3) -5);
+        mVisualObjects.push_back(mEnemy);
+        mTransComps.push_back(mEnemy->mTransform);
+        mNameComps.push_back(mEnemy->mNameComp);}
 
     mFrustumSystem = new FrustumSystem(mCam);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
@@ -179,6 +286,8 @@ void Level::winner()
 {
 
 }
+
+
 
 Script::Script(QObject *parent) : QObject(parent)
 {

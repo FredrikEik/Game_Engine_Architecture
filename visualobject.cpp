@@ -177,7 +177,7 @@ void VisualObject::readFile(std::string filename)
 void VisualObject::move(float dx, float dy, float dz)
 {
     mTransform->mPosition += gsl::Vector3D(dx,dy,dz);
-    mTransform->mMatrix.setPosition(dx, dy, dz);
+    mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
     mColSystem->moveBoundingBox(dx, dy, dz, mCollision);
-    mColSystem->moveBoundingSphere(dx,dy,dz,mCollision);
+    mColSystem->moveBoundingSphere(dx, dy, dz, mCollision);
 }
