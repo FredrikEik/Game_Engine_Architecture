@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void SelectWithMousePick(int index);
+    void update();
 
 private slots:
     void on_pushButton_toggled(bool checked);

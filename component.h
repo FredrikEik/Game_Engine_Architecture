@@ -36,6 +36,7 @@ struct MaterialComponent
 struct NameComponent{
     int ObjectID = 0;
     std::string ObjectName;
+     bool drawMe{true};
 
 };
 

@@ -53,6 +53,7 @@ public:
 
     bool mousePickCollide = false;
     int MousePickindex=0;
+    Level* mLvl;
 
 
 
@@ -73,8 +74,6 @@ private:
     Enemy *mEnemy;
     Light * mLight{nullptr};
 
-    void ResetGame();
-
 
     static const int nrOfShapes = 5;
     bool playM = false;
@@ -83,11 +82,12 @@ private:
     void mousePickingRay(QMouseEvent *event);
      gsl::Vector3D ray_wor;
 
-    void initObjects();
     void makeObject();
     void HandleInput();
     void SoundHandler();
     void makeMap();
+
+    void checkCollision();
 
 
 
@@ -122,6 +122,7 @@ private:
     GLint vMatrixUniform2{-1};
     GLint pMatrixUniform2{-1};
     GLint mTextureUniformPhong{-1};
+   // GLint mUsingTextureUniform{-1};
 
     //light shader variables
     GLint mLightColorUniform{-1};

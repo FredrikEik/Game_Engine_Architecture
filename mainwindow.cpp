@@ -185,6 +185,11 @@ void MainWindow::SelectWithMousePick(int index)
     ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
 }
 
+//void MainWindow::update()
+//{
+//    on_treeWidget_viewportEntered();
+//}
+
 
 
 

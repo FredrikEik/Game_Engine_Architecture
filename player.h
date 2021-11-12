@@ -1,24 +1,30 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "vector3d.h"
+#include "inputcomponent.h"
 #include "visualobject.h"
 #include "shapefactory.h"
-#include "collisionsystem.h"
-#include "inputcomponent.h"
 
 class Player : public VisualObject
 {
 public:
-    Player();
+    Player(ShapeFactory* f);
     ~Player();
     virtual void move(float dx, float dy, float dz) override;
+    void CheckPlayerWall(CollisionComponent* bCollision);
     InputComponent* mInputComp;
+    bool onRwallX{false};
+    bool onLwallX{false};
+    bool onFwallY{false};
+    bool onBwallY{false};
 
-
+    void noWall(){onRwallX = false;
+                  onLwallX = false;
+                  onFwallY = false;
+                  onBwallY = false;};
 private:
     float mx, my, mz; // posisjon
-    CollisionSystem *mColsystem;
+    CollisionSystem* mColSystem;
     ShapeFactory* factoryPtr;
 
 };

@@ -32,6 +32,7 @@
 #include "texture.h"
 #include "skybox.h"
 #include "light.h"
+#include "level.h"
 
 class QOpenGLContext;
 class Shader;

@@ -4,6 +4,7 @@
 #include "input.h"
 #include "player.h"
 #include "inputcomponent.h"
+#include "enemy.h"
 
 class InputSystem
 {
@@ -13,6 +14,10 @@ public:
     void update(Player *mPlayer,Camera *mCamera,Input mInput);
     void CheckActiveInput();
     void setCameraSpeed(Camera *mCurrentCamera,float value);
+
+private:
+    CollisionSystem* mColSystem;
+    ShapeFactory* mFactory;
 };
 
 #endif // INPUTSYSTEM_H

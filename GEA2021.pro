@@ -1,4 +1,5 @@
 QT          += core gui widgets opengl
+QT          += core gui widgets qml
 
 TEMPLATE    = app
 CONFIG      += c++17
@@ -22,6 +23,7 @@ SOURCES += main.cpp \
     enemy.cpp \
     inputcomponent.cpp \
     inputsystem.cpp \
+    level.cpp \
     light.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
@@ -53,6 +55,7 @@ HEADERS += \
     input.h \
     inputcomponent.h \
     inputsystem.h \
+    level.h \
     light.h \
     math_constants.h \
     matrix3x3.h \

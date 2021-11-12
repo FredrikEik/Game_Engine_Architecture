@@ -11,9 +11,10 @@ public:
     float mCameraRotateSpeed{0.1f};
     float mPlayerSpeed{0.1f};
 
+    float EnemySpeed = 0.3f;
     int mMouseXlast{0};
     int mMouseYlast{0};
-
+    bool Checkmove = false;
 
 
 };
