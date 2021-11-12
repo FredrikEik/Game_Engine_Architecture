@@ -77,19 +77,19 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(player);
 
     //ENEMY
-    enemy = mResourceManager->addObject("suzanne3.obj");
-    enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
-    enemy->mMaterial->mShaderProgram = 1;
-    enemy->mMaterial->mTextureUnit = 2;
-    enemy->mTransform->mMatrix.rotateY(180.f);
-    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
-    enemy->mTransform->mMatrix.scale(0.5f);
+//    enemy = mResourceManager->addObject("suzanne3.obj");
+//    enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
+//    enemy->mMaterial->mShaderProgram = 1;
+//    enemy->mMaterial->mTextureUnit = 2;
+//    enemy->mTransform->mMatrix.rotateY(180.f);
+//    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
+//    enemy->mTransform->mMatrix.scale(0.5f);
 
-    mResourceManager->addCollider("sphere", enemy);
-    mResourceManager->addComponent("roblox_stereo.wav", enemy);
-    enemy->mSoundComponent->shouldPlay = false;
-    enemy->mSoundComponent->looping = false;
-    enemy->objName = "enemy";
+//    mResourceManager->addCollider("sphere", enemy);
+//    mResourceManager->addComponent("roblox_stereo.wav", enemy);
+//    enemy->mSoundComponent->shouldPlay = false;
+//    enemy->mSoundComponent->looping = false;
+//    enemy->objName = "enemy";
     //mRenderSystem->mGameObjects.push_back(enemy);
 
     //BOSS
@@ -156,7 +156,18 @@ void CoreEngine::testScene()
     for(int i = 0; i < 2; i++)
     {
 
-        enemy->mTransform->mMatrix.translate(-2.f *i, -1.f , 4.f);
+        enemy = mResourceManager->addObject("suzanne3.obj");
+        enemy->mTransform->mMatrix.translate(-2*i, 0,0.f);
+        enemy->mMaterial->mShaderProgram = 1;
+        enemy->mMaterial->mTextureUnit = 2;
+        enemy->mTransform->mMatrix.rotateY(180.f);
+        enemy->mTransform->mMatrix.scale(0.5f);
+
+        mResourceManager->addCollider("sphere", enemy);
+        mResourceManager->addComponent("roblox_stereo.wav", enemy);
+        enemy->mSoundComponent->shouldPlay = false;
+        enemy->mSoundComponent->looping = false;
+
         mRenderSystem->mGameObjects.push_back(enemy);
 
     }
@@ -229,8 +240,8 @@ void CoreEngine::updateScene()
     if(ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.02f);
 
-    if(enemySpawned && !goatDead)
-        enemy->mTransform->mMatrix.translateZ(-.01);
+//    if(enemySpawned && !goatDead)
+//        enemy->mTransform->mMatrix.translateZ(-.01);
    // mResourceManager->update(mRenderSystem->dt);
 
     if(!enemy->mCollider->objectsHasCollided)
