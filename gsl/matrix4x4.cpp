@@ -1,4 +1,4 @@
-#include "matrix4x4.h"
+﻿#include "matrix4x4.h"
 //#include "quaternion.h"
 #include "math_constants.h"
 #include "matrix3x3.h"
@@ -217,6 +217,11 @@ void Matrix4x4::setPosition(gsl::Vector3D vectorIn)
 Vector3D Matrix4x4::getPosition()
 {
     return gsl::Vector3D(matrix[3], matrix[7], matrix[11]);
+}
+
+Vector2D Matrix4x4::getPosition2D()
+{
+    return gsl::Vector2D(matrix[3], matrix[7]/*, matrix[11]*/);
 }
 
 void Matrix4x4::rotateX(GLfloat degrees)

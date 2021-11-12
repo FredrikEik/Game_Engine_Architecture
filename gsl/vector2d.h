@@ -1,4 +1,4 @@
-#ifndef VECTOR2D_H
+﻿#ifndef VECTOR2D_H
 #define VECTOR2D_H
 
 #include "gltypes.h"

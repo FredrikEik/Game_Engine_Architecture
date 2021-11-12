@@ -23,12 +23,6 @@ struct MeshComponent
     GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f}; //Used for frustum culling, so relevant for rendering
-
-    MeshData md;
-
-    //Trying to get meshdata to return the vertices of the objectname.
-    std::vector<Vertex> get_MeshComp_mVertices(std::string objectName)
-        { return md.get_MeshData_mVertices(); }
 };
 
 struct MaterialComponent

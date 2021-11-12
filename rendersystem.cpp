@@ -1,4 +1,4 @@
-#include "rendersystem.h"
+﻿#include "rendersystem.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLDebugLogger>
@@ -14,7 +14,7 @@
 #include "ResourceManager/meshhandler.h"    //to check linebox
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
-    : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
+                : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
 {
     //This is sent to QWindow:

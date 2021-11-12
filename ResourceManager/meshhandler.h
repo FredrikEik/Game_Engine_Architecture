@@ -24,7 +24,7 @@ struct MeshData
     float mColliderRadius{0};
 
     //Does not work, altough i want to return mVertices of the gameobject calling it.
-    std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0], mVertices[1], mVertices[2]; };
+    std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0]; } //Only need the first, beacuse there is no LOD.
 };
 
 
@@ -51,7 +51,8 @@ public:
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
 
-    //std::vector<Vertex> get_VAO() { return MeshData.mVertices }; //
+    std::vector<MeshData> get_mMeshes() { return mMeshes; }
+    std::map<std::string, unsigned int> get_mMeshMap() { return mMeshMap; }
 
 
 private:

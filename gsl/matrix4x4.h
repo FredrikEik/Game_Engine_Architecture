@@ -1,6 +1,7 @@
-#ifndef MATRIX4X4_H
+﻿#ifndef MATRIX4X4_H
 #define MATRIX4X4_H
 
+#include "vector2d.h"
 #include "vector3d.h"
 //#include "vector4d.h"
 #include "gltypes.h"
@@ -34,6 +35,7 @@ public:
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
     void setPosition(gsl::Vector3D vectorIn);
     gsl::Vector3D getPosition();
+    gsl::Vector2D getPosition2D();
 
     //Rotate using EulerMatrix
     void rotateX(GLfloat degrees = 0.f);
