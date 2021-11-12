@@ -1,7 +1,7 @@
 ﻿#include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
 #include "rendersystem.h"
-//#include "meshhandler.h"
+#include "meshhandler.h"
 //#include "coreengine.h" //trying to get access to meshdata
 
 
@@ -22,7 +22,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     //Search for the gameobject called "name" and create a reference to the GameObject the ball will roll on.
     std::string name = "TriangleSurface";
     GameObject groundObject;
-    //MeshData md;
+    MeshData md;
 
 //Get the details of the plane the physicsobject is going to interact with.
     for(int i = 0; i < mGameObjects.size(); i++)
@@ -40,7 +40,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
             //My understanding is that from bottom up, the all the Vertices is stored in MeshData, MeshHandler handles MeshData and creates an object.
             //But i dont see how i can go from gameobject "down into" meshHandler and meshdata's vertex data.
-            //std::vector<Vertex*>& triangleVertices = dynamic_cast<GameObject*>(mGameObjects[i])->mMesh->get_mVAO;
+            std::vector<Vertex*>& triangleVertices = dynamic_cast<GameObject*>(mGameObjects[i])->mMesh->get_MeshComp_mVertices(name);
 
             break;
         }

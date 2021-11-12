@@ -1,4 +1,4 @@
-#ifndef MESHHANDLER_H
+﻿#ifndef MESHHANDLER_H
 #define MESHHANDLER_H
 
 #include <QOpenGLFunctions_4_1_Core>
@@ -23,7 +23,8 @@ struct MeshData
     gsl::Vector3D mLowLeftBackCorner{};
     float mColliderRadius{0};
 
-    //std::vector<Vertex> get_VAO() { return mVertices[0], mVertices[1], mVertices[2]; }; //Does not work, this is ideal end result.
+    //Does not work, altough i want to return mVertices of the gameobject calling it.
+    std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0], mVertices[1], mVertices[2]; };
 };
 
 
