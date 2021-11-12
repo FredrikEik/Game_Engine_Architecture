@@ -46,7 +46,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     name.clear();
     //mLogger->logText(std::to_string(groundObject.mMesh->mVertexCount[0])); //How many vertices are there in TriangleSurface?
 
-    //qDebug() << triangleVertices[0].mXYZ;
+    //qDebug() << "triangleVertices size" << triangleVertices.size();
 
 //Get the details of the ball
     name = "RollingBall";
@@ -69,12 +69,12 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 //Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
-    //qDebug() << "Ballposition3d: X" << ballPosition3d.x << "Y" << ballPosition3d.y << "Z" << ballPosition3d.z;
+    qDebug() << "Ballposition3d:           " << "(" << ballPosition3d.x << "," << ballPosition3d.y << "," << ballPosition3d.z << ")";
 
 
 //Find the vector3d position of the ground
     gsl::Vector3D groundPosition3d = {groundObject.mTransform->mMatrix.getPosition()};
-    //qDebug() << "Groundposition:" << groundObject.mTransform->mMatrix.getPosition();
+    qDebug() << "Groundposition:           " << triangleVertices[0].mXYZ + groundPosition3d;
 
 
 //Find the distance between the balls position and vertices of the trianglesurface
@@ -82,7 +82,14 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
     for (int i = 0; i < triangleVertices.size(); i++)
     {
-        distanceBetweenBallAndVert[i] = triangleVertices[i].mXYZ - ballPosition3d;
+        //distanceBetweenBallAndVert[i] = ballPosition3d - triangleVertices[i].mXYZ;/* + groundObject.mTransform->mMatrix.getPosition())*/
+
+//        distanceBetweenBallAndVert[i].x = ballPosition3d.x - (triangleVertices[i].mXYZ.x + groundObject.mTransform->mMatrix.getPosition().x);
+//        distanceBetweenBallAndVert[i].y = ballPosition3d.y - triangleVertices[i].mXYZ.y;
+//        distanceBetweenBallAndVert[i].z = ballPosition3d.z - triangleVertices[i].mXYZ.z;
+
+
+//        distanceBetweenBallAndVert[i].length();
 
         //if the distance is a negative number, flip it. This makes sure that the lowest physical distance is selected, not the lowest number.
         if (distanceBetweenBallAndVert[i].x < 0)
@@ -94,9 +101,13 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
         if (distanceBetweenBallAndVert[i].z < 0)
                 { distanceBetweenBallAndVert[i].z *= -1.0f; }
 
-
-//    qDebug() << "Vert nr                 " << i+1 << "X" << physicsBall.mTransform->mMatrix.getPosition().x << "Y" << physicsBall.mTransform->mMatrix.getPosition().y << "Z" << physicsBall.mTransform->mMatrix.getPosition().z;
-//    qDebug() << "Distance ball to vert nr" << i+1 << "X" << distanceBetweenBallAndVert[i].x << "Y" << distanceBetweenBallAndVert[i].y << "Z" << distanceBetweenBallAndVert[i].z;
+//    qDebug() << "Triangle Vert nr        " << i+1  << triangleVertices[i].mXYZ; /*<< "Y" << physicsBall.mTransform->mMatrix.getPosition().y << "Z" << physicsBall.mTransform->mMatrix.getPosition().z;*/
+//    qDebug() << "Distance ball to vert nr" << i+1  << "(" << distanceBetweenBallAndVert[i].x << "," << distanceBetweenBallAndVert[i].y << "," << distanceBetweenBallAndVert[i].z << ")";
+//    if (i == 2)
+//    {
+//        qDebug() << Qt::endl;
+//        qDebug() << "Ballposition3d:         " << i+1 << "(" << ballPosition3d.x << "," << ballPosition3d.y << "," << ballPosition3d.z << ")";
+//    }
     }
 
 
@@ -107,15 +118,15 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     closestTrianglePoint[0] =     distanceBetweenBallAndVert[0] + distanceBetweenBallAndVert[1] + distanceBetweenBallAndVert[2];
     gsl::Vector3D comparePoint = distanceBetweenBallAndVert[3] + distanceBetweenBallAndVert[4] + distanceBetweenBallAndVert[5];
 
-    qDebug() << closestTrianglePoint[0].x << closestTrianglePoint[0].y << closestTrianglePoint[0].z;
-    qDebug() << comparePoint.x << comparePoint.y << comparePoint.z;
+//    qDebug() << closestTrianglePoint[0].x << closestTrianglePoint[0].y << closestTrianglePoint[0].z;
+//    qDebug() << comparePoint.x << comparePoint.y << comparePoint.z;
 
     if (closestTrianglePoint[0].x + closestTrianglePoint[0].y + closestTrianglePoint[0].z <= comparePoint.x + comparePoint.y + comparePoint.z)
     {
         closestTrianglePoint[0] = triangleVertices[0].mXYZ;
         closestTrianglePoint[1] = triangleVertices[1].mXYZ;
         closestTrianglePoint[2] = triangleVertices[2].mXYZ;
-        qDebug() << "First triangle closest and its 3 corners stored";
+        //qDebug() << "First triangle closest and its 3 corners stored";
     }
         else
     {
@@ -132,7 +143,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     ballPosition.y = 0;
     gsl::Vector3D baryCordinates;
     baryCordinates = ballPosition.barycentricCoordinates(closestTrianglePoint[0], closestTrianglePoint[1], closestTrianglePoint[2]);
-    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates.x << baryCordinates.y << baryCordinates.z;
+    //qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates.x << baryCordinates.y << baryCordinates.z;
 
 
     //Calculating the normalvector of the triangle the ball is on

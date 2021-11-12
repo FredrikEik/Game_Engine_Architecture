@@ -120,19 +120,19 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Suzannes:
-    for(int i{0}; i < 10; i++)
-    {
-        for(int j{0}; j < 1; j++)
-        {
-            temp = mGameObjectManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
-            temp->mTransform->mMatrix.scale(0.5f);
-            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
-            temp->mTransform->mScale.setAlltoSame(0.5f);
-            temp->mName = "Monkey " + std::to_string(i+j);
-            mRenderSystem->mGameObjects.push_back(temp);
-        }
-    }
+//    for(int i{0}; i < 10; i++)
+//    {
+//        for(int j{0}; j < 1; j++)
+//        {
+//            temp = mGameObjectManager->addObject("suzanne.obj");
+//            temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
+//            temp->mTransform->mMatrix.scale(0.5f);
+//            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
+//            temp->mTransform->mScale.setAlltoSame(0.5f);
+//            temp->mName = "Monkey " + std::to_string(i+j);
+//            mRenderSystem->mGameObjects.push_back(temp);
+//        }
+//    }
 
 //    temp = mGameObjectManager->addObject("suzanne.obj");
 //    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
@@ -141,15 +141,15 @@ void CoreEngine::setUpScene()
 
 //Rollingball, getting vis & sim collision code integrated into GEA
         temp = mGameObjectManager->addObject("Ball.obj");
-        temp->mTransform->mMatrix.translate(0.0f, 0.0f, -9.0f);
-        temp->mTransform->mMatrix.scale(0.5f);
+        temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
+        temp->mTransform->mMatrix.scale(0.2f);
         temp->mName = "RollingBall";
         mGameObjectManager->addComponent("PhysicsComponent", temp);
         mRenderSystem->mGameObjects.push_back(temp);
 
         temp = mGameObjectManager->addObject("TriangleSurface.obj");
-        temp->mTransform->mMatrix.translate(1.5f, -2.0f, -9.0f);
-        temp->mTransform->mMatrix.scale(3.0f);
+        temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
+        temp->mTransform->mMatrix.scale(1.0f);
         temp->mTransform->mMatrix.rotateY(90);
         temp->mName = "TriangleSurface";
         mRenderSystem->mGameObjects.push_back(temp);
