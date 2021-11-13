@@ -17,8 +17,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     std::vector<MeshData> GameObjectMeshData =  CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->get_mMeshes();
 
 
-//Search for the gameobject called "name" and create a reference to the GameObject the ball will roll on.
-    std::string name = "TriangleSurface";
+//Search for the gameobject called "name" and create a gameobject using it.
+    std::string name = "CrookedTriangleSurface";
     GameObject groundObject;
     std::vector<Vertex> triangleVertices;
 
@@ -68,7 +68,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 ////Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
-    qDebug() << "Ballposition3d:           " << ballPosition3d;
+//    qDebug() << "Ballposition3d:           " << ballPosition3d;
 
 
 ////Find the vector3d position of the ground
@@ -138,7 +138,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     //ballPosition.y = 0;
     gsl::Vector3D baryCordinates;
     baryCordinates = ballPosition.barycentricCoordinates(closestTrianglePoint[0], closestTrianglePoint[1], closestTrianglePoint[2]);
-//    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
+    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
+    //The barycentric cordinates does not add up to 1?!
 
 
 ////Calculating the normalvector of the triangle the ball is on
@@ -157,8 +158,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 
 ////Update ball speed across triangle
-//    if(baryCordinates.x >= 0.0f && baryCordinates.y >= 0.0f && baryCordinates.z >= 0.0f)
-//    {
+    if(baryCordinates.x >= 0.0f && baryCordinates.y >= 0.0f && baryCordinates.z >= 0.0f)
+    {
         gsl::Vector3D acceleration = (gravity * 0.01f) ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
 
         velocity = velocity + (acceleration * 0.17f);
@@ -171,23 +172,16 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
                              baryCordinates.z * closestTrianglePoint[2].y);
 
         physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y + ballYOffset, newBallPosition.z);
-        //qDebug() << "ball is moving";
+//        qDebug() << "ball is moving";
+    }
+    else if ((baryCordinates.x + baryCordinates.y + baryCordinates.z) > 1.0f)
+    {
+        gsl::Vector3D acceleration = (-gravity * 0.01f);
 
-//    }
-//    else
-//    {
-//        gsml::Vector3d acceleration = (gravity * 0.001f) *-1 ^ triangleNormal ^ gsml::Vector3d(0, 0, triangleNormal.z);
-//        velocity = velocity + (acceleration * 0.17);
-//        float ballZOffset = 0.25f;
+        velocity = velocity + (acceleration * 0.17f);
 
-//        gsml::Vector3d newBallPosition = mMatrix.getPosition3D() + velocity;
+        gsl::Vector3D newBallPosition = ballPosition + velocity;
 
-//        newBallPosition.z = (baryCordinates.x * closestTrianglePoint[0].z +
-//                             baryCordinates.y * closestTrianglePoint[0].z +
-//                             baryCordinates.z * closestTrianglePoint[0].z);
-
-//        mPosition.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z + ballZOffset);
-//        //qDebug() << "ball is falling";
-//    }
-
+        physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+    }
 }

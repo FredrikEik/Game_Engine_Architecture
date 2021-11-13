@@ -147,11 +147,11 @@ void CoreEngine::setUpScene()
         mGameObjectManager->addComponent("PhysicsComponent", temp);
         mRenderSystem->mGameObjects.push_back(temp);
 
-        temp = mGameObjectManager->addObject("TriangleSurface.obj");
+        temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
         temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
         temp->mTransform->mMatrix.scale(1.0f);
         temp->mTransform->mMatrix.rotateY(0); //If rotation is applyed, vertices does not match their actual locations in world
-        temp->mName = "TriangleSurface";
+        temp->mName = "CrookedTriangleSurface";
         mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
