@@ -67,7 +67,7 @@ public:
     void updateCamera();
     void updateScene();
 
-    void spawnParticles();
+    void spawnParticles(GameObject *temp);
     void spawnProjectile();
 
     void handleInput();

@@ -309,11 +309,11 @@ void RenderSystem::render()
 
             }
 
-            if(CoreEngine::getInstance()->ProjectileSpawned == true)
-            {
+//            if(CoreEngine::getInstance()->ProjectileSpawned == true)
+//            {
 
-                CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
-            }
+//                CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
+//            }
 
         }
 

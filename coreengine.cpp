@@ -189,13 +189,13 @@ void CoreEngine::testScene()
         enemySpawned = true;
 }
 
-void CoreEngine::spawnParticles()
+void CoreEngine::spawnParticles(GameObject * temp)
 {
     srand( (unsigned)time( NULL ) );
 
-    tempPosX = enemy->mTransform->mMatrix.getPosition().getX();
-    tempPosY = enemy->mTransform->mMatrix.getPosition().getY();
-    tempPosZ = enemy->mTransform->mMatrix.getPosition().getZ();
+    tempPosX = temp->mTransform->mMatrix.getPosition().getX();
+    tempPosY = temp->mTransform->mMatrix.getPosition().getY();
+    tempPosZ = temp->mTransform->mMatrix.getPosition().getZ();
 
     for(float i = 0; i < .5; i += 0.002)
     {
@@ -267,7 +267,7 @@ void CoreEngine::updateScene()
                 enemies[i]->mCollider->objectsHasCollided = true;
                 enemies[i]->mSoundComponent->shouldPlay = true;
 
-                //spawnParticles();
+                spawnParticles(enemies[i]);
 
                 projectile->mSoundComponent->shouldPlay = true;
                 //enemies[i]->mTransform->mMatrix.translateZ(0);
@@ -285,27 +285,32 @@ void CoreEngine::updateScene()
 
 
         }
-    }
 
-
-    if(player->isAlive)
-    {
-        if(getInstance()->mResourceManager->checkCollision(
-        player, enemy))
+        if(player->isAlive)
         {
-            qDebug() << "You died!";
-            player->mTransform->mMatrix.rotateZ(90);
-            //enemy->mCollider->objectsHasCollided = true;
-            enemy->mSoundComponent->shouldPlay = true;
-            //enemy->mSoundComponent->looping = false;
-            spawnParticles();
-            projectile->mSoundComponent->shouldPlay = true;
+            if(getInstance()->mResourceManager->checkCollision(
+            player, enemies[i]))
+            {
+                qDebug() << "You died!";
+                player->mTransform->mMatrix.rotateZ(90);
+                //enemy->mCollider->objectsHasCollided = true;
+                enemies[i]->mSoundComponent->shouldPlay = true;
+                //enemy->mSoundComponent->looping = false;
+                spawnParticles(player);
+                projectile->mSoundComponent->shouldPlay = true;
 
-            player->isAlive = false;
+                player->isAlive = false;
+
+            }
 
         }
-
     }
+
+    if(ProjectileSpawned == true)
+        projectile->mTransform->mMatrix.translateZ(.02f);
+
+
+
 
 }
 
