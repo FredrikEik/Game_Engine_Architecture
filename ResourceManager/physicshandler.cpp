@@ -174,7 +174,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
         physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y + ballYOffset, newBallPosition.z);
 //        qDebug() << "ball is moving";
     }
-    else if ((baryCordinates.x + baryCordinates.y + baryCordinates.z) > 1.0f)
+    else if ((baryCordinates.x + baryCordinates.y + baryCordinates.z) > 1.0f) //If barycordinates are too high, apply gravity instead
     {
         gsl::Vector3D acceleration = (-gravity * 0.01f);
 
