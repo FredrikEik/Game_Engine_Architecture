@@ -68,7 +68,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 ////Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
-//    qDebug() << "Ballposition3d:           " << ballPosition3d;
+    qDebug() << "Ballposition3d:           " << ballPosition3d;
 
 
 ////Find the vector3d position of the ground
@@ -138,20 +138,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     //ballPosition.y = 0;
     gsl::Vector3D baryCordinates;
     baryCordinates = ballPosition.barycentricCoordinates(closestTrianglePoint[0], closestTrianglePoint[1], closestTrianglePoint[2]);
+//    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
 
-
-//// Barcentric cordinates from user5302 @
-//// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-//    gsl::Vector3D v0 = closestTrianglePoint[1] - closestTrianglePoint[0],
-//                  v1 = closestTrianglePoint[2] - closestTrianglePoint[0],
-//                  v2 = ballPosition - closestTrianglePoint[0];
-
-//    float den = v0.x * v1.y - v1.x * v0.y;
-//    baryCordinates.x = (v2.x * v1.y - v1.x * v0.y) / den;
-//    baryCordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
-//    baryCordinates.z = 1.0f - baryCordinates.x - baryCordinates.y;
-
-    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
 
 ////Calculating the normalvector of the triangle the ball is on
     gsl::Vector3D tempNormal[2];
@@ -168,25 +156,22 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 //    qDebug() << "Normalized Triangle normal is:" << triangleNormal.x << triangleNormal.y << triangleNormal.z;
 
 
-//Update ball speed across triangle
+////Update ball speed across triangle
 //    if(baryCordinates.x >= 0.0f && baryCordinates.y >= 0.0f && baryCordinates.z >= 0.0f)
 //    {
-////        Setting up some variables to move ball
-//        gsl::Vector3D acceleration = (gravity * 0.001f) ^ triangleNormal ^ gsl::Vector3D(0, 0, triangleNormal.z);
-//        velocity = velocity + (acceleration * 0.17f);
-//        gsl::Vector3D newBallPosition = physicsBall.mTransform->mMatrix.getPosition() + velocity;
-//        float ballZOffset = 0.25f;
-//        gsl::Vector3D ballSpeed = triangleNormal * 0.007; //Ballspeed, framerate-dependent beacuse DT (0.007) is set at 0.017 (in theory 16 1/3ms = 60hz)
+        gsl::Vector3D acceleration = (gravity * 0.01f) ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
 
-//        newBallPosition.z = (baryCordinates.x * closestTrianglePoint[0].z +
-//                             baryCordinates.y * closestTrianglePoint[0].z +
-//                             baryCordinates.z * closestTrianglePoint[0].z);
+        velocity = velocity + (acceleration * 0.17f);
 
-//        //qDebug() << newBallPosition.z << closestTrianglePoint[0].z;
+        gsl::Vector3D newBallPosition = ballPosition + velocity;
+        float ballYOffset = 0.05f;
 
-//        physicsBall.mTransform->mMatrix.translate(newBallPosition.x, newBallPosition.y, newBallPosition.z + ballZOffset); //Based on calculations in either collision or free-fall apply translation to ball.
-//        qDebug() << "BaryCordinates before move" << baryCordinates.x << baryCordinates.y << baryCordinates.z;
-//        qDebug() << "ball is moving";
+        newBallPosition.y = (baryCordinates.x * closestTrianglePoint[0].y +
+                             baryCordinates.y * closestTrianglePoint[1].y +
+                             baryCordinates.z * closestTrianglePoint[2].y);
+
+        physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y + ballYOffset, newBallPosition.z);
+        //qDebug() << "ball is moving";
 
 //    }
 //    else

@@ -102,9 +102,9 @@ public:
     {
         Vector3D p12 = p2-p1;
         Vector3D p13 = p3-p1;
-        // Ikke bruk z-koordinatene. Vi jobber med trekanter i 2D her og projiserer
-        p12.z = 0.0;
-        p13.z = 0.0;
+        // Ikke bruk y-koordinatene. Vi jobber med trekanter i 2D her og projiserer
+        p12.y = 0.0;
+        p13.y = 0.0;
         Vector3D n = p12^p13;
         float areal_123 = n.length(); // dobbelt areal
 
