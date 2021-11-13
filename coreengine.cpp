@@ -155,12 +155,12 @@ void CoreEngine::setUpScene()
         mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(0.0f, 0.0f, 20.0f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     //mGameObjectManager->setUpAllTextures();
 
-    mGameCamera->mPosition = gsl::Vector3D(0.0f, 0.0f, 20.0f);
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:

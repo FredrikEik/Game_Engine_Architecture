@@ -68,7 +68,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 ////Find the vector3d position of the ball
     gsl::Vector3D ballPosition3d = {physicsBall.mTransform->mMatrix.getPosition()};
-    qDebug() << "Ballposition3d:           " << ballPosition3d;
+//    qDebug() << "Ballposition3d:           " << ballPosition3d;
 
 
 ////Find the vector3d position of the ground
@@ -138,8 +138,20 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
     //ballPosition.y = 0;
     gsl::Vector3D baryCordinates;
     baryCordinates = ballPosition.barycentricCoordinates(closestTrianglePoint[0], closestTrianglePoint[1], closestTrianglePoint[2]);
-    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
 
+
+//// Barcentric cordinates from user5302 @
+//// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+//    gsl::Vector3D v0 = closestTrianglePoint[1] - closestTrianglePoint[0],
+//                  v1 = closestTrianglePoint[2] - closestTrianglePoint[0],
+//                  v2 = ballPosition - closestTrianglePoint[0];
+
+//    float den = v0.x * v1.y - v1.x * v0.y;
+//    baryCordinates.x = (v2.x * v1.y - v1.x * v0.y) / den;
+//    baryCordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
+//    baryCordinates.z = 1.0f - baryCordinates.x - baryCordinates.y;
+
+    qDebug() << "Barycentric cordinates to closest triangle" << baryCordinates;
 
 ////Calculating the normalvector of the triangle the ball is on
     gsl::Vector3D tempNormal[2];
