@@ -208,6 +208,7 @@ void CoreEngine::spawnParticles(GameObject * temp)
         mRenderSystem->mParticles.push_back(Particles);
     }
     particlesSpawned = true;
+    //Particles->isAlive = true;
 }
 
 void CoreEngine::spawnProjectile()
@@ -266,6 +267,7 @@ void CoreEngine::updateScene()
                 enemies[i]->mTransform->mMatrix.rotateZ(90);
                 enemies[i]->mCollider->objectsHasCollided = true;
                 enemies[i]->mSoundComponent->shouldPlay = true;
+                enemies[i]->isAlive = false;
 
                 spawnParticles(enemies[i]);
 
@@ -286,7 +288,7 @@ void CoreEngine::updateScene()
 
         }
 
-        if(player->isAlive)
+        if(player->isAlive && enemies[i]->isAlive)
         {
             if(getInstance()->mResourceManager->checkCollision(
             player, enemies[i]))
@@ -307,10 +309,9 @@ void CoreEngine::updateScene()
     }
 
     if(ProjectileSpawned == true)
+    {
         projectile->mTransform->mMatrix.translateZ(.02f);
-
-
-
+    }
 
 }
 
@@ -358,8 +359,12 @@ if(isPlaying)
     }
      else if(mInput.A)
     {
-if(isPlaying)
-         player->move(speed, 0, 0);
+        if(isPlaying)
+        {
+            player->move(speed, 0, 0);
+            //testDelete = true;
+        }
+
     }
      else if(mInput.D)
     {

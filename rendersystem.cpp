@@ -206,8 +206,10 @@ void RenderSystem::render()
 
         //draw the object
         //***Quick hack*** LOD test:
-        if(mGameObjects[i]->isAlive)
-        {
+
+        //test for å kun rendre det som er i live
+       // if(mGameObjects[i]->isAlive)
+        //{
             if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
             {
                 if (length < 8)
@@ -239,7 +241,7 @@ void RenderSystem::render()
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-        }
+        //}
 
 
         //test for linebox
@@ -272,20 +274,20 @@ void RenderSystem::render()
         }
 
 
-            for(unsigned int i{0}; i < mParticles.size(); i++)
+            for(unsigned int j{0}; j < mParticles.size(); j++)
            {
 
-            glUseProgram(mShaderPrograms[mParticles[i]->mMaterial->mShaderProgram]->getProgram() );
+            glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
 
             glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[i]->mTransform->mMatrix.constData());
+            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[j]->mTransform->mMatrix.constData());
 
-            if(mParticles[i]->isAlive)
+            if(mParticles[j]->isAlive)
             {
-                glBindVertexArray( mParticles[i]->mMesh->mVAO[0] );
-                glDrawArrays(mParticles[i]->mMesh->mDrawType, 0, mParticles[i]->mMesh->mVertexCount[0]);
-                mVerticesDrawn += mParticles[i]->mMesh->mVertexCount[0];
+                glBindVertexArray( mParticles[j]->mMesh->mVAO[0] );
+                glDrawArrays(mParticles[j]->mMesh->mDrawType, 0, mParticles[j]->mMesh->mVertexCount[0]);
+                mVerticesDrawn += mParticles[j]->mMesh->mVertexCount[0];
                 mParticlesDrawn ++;
             }
 
@@ -298,7 +300,7 @@ void RenderSystem::render()
                 if(CoreEngine::getInstance()->particlesSpawned == true)
                 {
 
-                    mParticles[i]->mTransform->mMatrix.translate(
+                    mParticles[j]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f
@@ -306,16 +308,12 @@ void RenderSystem::render()
                 }
 
 
-
             }
 
-//            if(CoreEngine::getInstance()->ProjectileSpawned == true)
-//            {
-
-//                CoreEngine::getInstance()->projectile->mTransform->mMatrix.translateZ(.02f);
-//            }
 
         }
+//        if(CoreEngine::getInstance()->testDelete == true)
+//        delete mParticles[1];
 
         this->updateDt();
         glBindVertexArray(0);

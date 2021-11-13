@@ -47,6 +47,7 @@ public:
     bool particlesSpawned = false;
     bool enemySpawned = false;
     bool goatDead = false;
+    bool testDelete = false;
 
     float tempPosX{0};
     float tempPosY{0};
