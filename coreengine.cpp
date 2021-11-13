@@ -66,7 +66,7 @@ void CoreEngine::setUpScene()
     player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
     player->mTransform->mMatrix.rotateY(180.f);
     player->mTransform->mMatrix.scale(0.5f);
-    player->mTransform->mMatrix.translate(0.f, 0, -6);
+    player->mTransform->mMatrix.translate(0.f, 0, -20);
     mResourceManager->addCollider("sphere", player);
     //Adds sound to player:
     mResourceManager->addComponent("caravan_mono.wav", player);
@@ -75,22 +75,6 @@ void CoreEngine::setUpScene()
     player->mSoundComponent->shouldPlay = true;
     player->objName = "Player";
     //mRenderSystem->mGameObjects.push_back(player);
-
-    //ENEMY
-//    enemy = mResourceManager->addObject("suzanne3.obj");
-//    enemy->mTransform->mMatrix.translate(-2, 1.f,2.f);
-//    enemy->mMaterial->mShaderProgram = 1;
-//    enemy->mMaterial->mTextureUnit = 2;
-//    enemy->mTransform->mMatrix.rotateY(180.f);
-//    enemy->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 4.f/**j*/);
-//    enemy->mTransform->mMatrix.scale(0.5f);
-
-//    mResourceManager->addCollider("sphere", enemy);
-//    mResourceManager->addComponent("roblox_stereo.wav", enemy);
-//    enemy->mSoundComponent->shouldPlay = false;
-//    enemy->mSoundComponent->looping = false;
-//    enemy->objName = "enemy";
-    //mRenderSystem->mGameObjects.push_back(enemy);
 
     //BOSS
     boss = mResourceManager->addObject("suzanne3.obj");
@@ -110,9 +94,7 @@ void CoreEngine::setUpScene()
 
 //    mTerrain = mResourceManager->addObject("terrain");
 //    mTerrain->mTransform->mMatrix.translateZ(-100.f);
-//    mRenderSystem->mGameObjects.push_back(mTerrain);
-    //setup camera
-
+//    mRenderSystem->mGameObjects.push_back(mTerrain)
 
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
@@ -139,8 +121,6 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-
-
     mResourceManager->setUpAllTextures();
 
     //Connect the gameloop timer to the render function:
@@ -156,9 +136,8 @@ void CoreEngine::testScene()
     for(int i = 0; i < 10; i++)
     {
 
-
         enemy = mResourceManager->addObject("suzanne3.obj");
-        enemy->mTransform->mMatrix.translate(-1*i, 0,0.f);
+        enemy->mTransform->mMatrix.translate(1*i, 0,0.f);
         enemy->mMaterial->mShaderProgram = 1;
         enemy->mMaterial->mTextureUnit = 2;
         enemy->mTransform->mMatrix.rotateY(180.f);
@@ -176,10 +155,6 @@ void CoreEngine::testScene()
         qDebug() << "enemy " << i;
 
         enemies.push_back(enemy);
-
-
-
-
 
     }
 
@@ -250,14 +225,18 @@ void CoreEngine::updateScene()
     //prøve få particles til å spawne på enemy
 
     if(ProjectileSpawned)
-    projectile->mTransform->mMatrix.translateZ(.02f);
+    projectile->mTransform->mMatrix.translateZ(.01f);
 
 //    if(enemySpawned && !goatDead)
 //        enemies->mTransform->mMatrix.translateZ(-.01);
    // mResourceManager->update(mRenderSystem->dt);
 
-    for(int i = 0; i< enemies.size(); i++)
+    for(unsigned int i = 0; i< enemies.size(); i++)
     {
+        if(enemies[i]->isAlive)
+        enemies[i]->mTransform->mMatrix.translateZ(-.001);
+
+        //test collision
         if(!enemies[i]->mCollider->objectsHasCollided)
         {
             if(getInstance()->mResourceManager->checkCollision(
@@ -269,10 +248,10 @@ void CoreEngine::updateScene()
                 enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
 
-                spawnParticles(enemies[i]);
+                //spawnParticles(enemies[i]);
 
                 projectile->mSoundComponent->shouldPlay = true;
-                //enemies[i]->mTransform->mMatrix.translateZ(0);
+
                 //velger om man skal drawe et object eller ikke
                 goatDead = true;
 
@@ -308,17 +287,13 @@ void CoreEngine::updateScene()
         }
     }
 
-    if(ProjectileSpawned == true)
-    {
-        projectile->mTransform->mMatrix.translateZ(.02f);
-    }
 
 }
 
 void CoreEngine::handleInput()
 {
     //Camera
-    float speed = 0.05f;
+    float speed = 0.2f;
     //TODO: Probably a cleaner way to do this!
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
@@ -348,14 +323,14 @@ void CoreEngine::handleInput()
     {
 
         if(isPlaying)
-         player->move(0,0 , speed);
+         player->move(0,0 , speed /2);
 
 
     }
     else if(mInput.S)
     {
 if(isPlaying)
-         player->move(0,0 , -speed);
+         player->move(0,0 , -speed /2);
     }
      else if(mInput.A)
     {
