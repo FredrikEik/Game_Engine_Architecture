@@ -153,11 +153,12 @@ void CoreEngine::setUpScene()
 
 void CoreEngine::testScene()
 {
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < 10; i++)
     {
 
+
         enemy = mResourceManager->addObject("suzanne3.obj");
-        enemy->mTransform->mMatrix.translate(-2*i, 0,0.f);
+        enemy->mTransform->mMatrix.translate(-1*i, 0,0.f);
         enemy->mMaterial->mShaderProgram = 1;
         enemy->mMaterial->mTextureUnit = 2;
         enemy->mTransform->mMatrix.rotateY(180.f);
@@ -169,6 +170,16 @@ void CoreEngine::testScene()
         enemy->mSoundComponent->looping = false;
 
         mRenderSystem->mGameObjects.push_back(enemy);
+
+        enemy->mName = "enemy " + std::to_string(enemies.size());
+
+        qDebug() << "enemy " << i;
+
+        enemies.push_back(enemy);
+
+
+
+
 
     }
 
@@ -241,32 +252,41 @@ void CoreEngine::updateScene()
     projectile->mTransform->mMatrix.translateZ(.02f);
 
 //    if(enemySpawned && !goatDead)
-//        enemy->mTransform->mMatrix.translateZ(-.01);
+//        enemies->mTransform->mMatrix.translateZ(-.01);
    // mResourceManager->update(mRenderSystem->dt);
 
-    if(!enemy->mCollider->objectsHasCollided)
+    for(int i = 0; i< enemies.size(); i++)
     {
-        if(getInstance()->mResourceManager->checkCollision(
-        projectile, enemy))
+        if(!enemies[i]->mCollider->objectsHasCollided)
         {
-            qDebug() << "collided !";
-            enemy->mTransform->mMatrix.rotateZ(90);
-            enemy->mCollider->objectsHasCollided = true;
-            enemy->mSoundComponent->shouldPlay = true;
-            //enemy->mSoundComponent->looping = false;
-            spawnParticles();
-            projectile->mSoundComponent->shouldPlay = true;
-            enemy->mTransform->mMatrix.translateZ(0);
-            //velger om man skal drawe et object eller ikke
-            goatDead = true;
-            //projectile->isAlive = false;
-            //enemy->isAlive = false;
+            if(getInstance()->mResourceManager->checkCollision(
+            projectile, enemies[i]))
+            {
+                qDebug() << "collided !";
+                enemies[i]->mTransform->mMatrix.rotateZ(90);
+                enemies[i]->mCollider->objectsHasCollided = true;
+                enemies[i]->mSoundComponent->shouldPlay = true;
 
-            //enemy->mSoundComponent->shouldPlay = false;
+                //spawnParticles();
+
+                projectile->mSoundComponent->shouldPlay = true;
+                //enemies[i]->mTransform->mMatrix.translateZ(0);
+                //velger om man skal drawe et object eller ikke
+                goatDead = true;
+
+                qDebug() << "enemy " << i << " hit";
+
+
+                //projectile->isAlive = false;
+                //enemy->isAlive = false;
+
+                //enemy->mSoundComponent->shouldPlay = false;
+            }
+
+
         }
-
-
     }
+
 
     if(player->isAlive)
     {

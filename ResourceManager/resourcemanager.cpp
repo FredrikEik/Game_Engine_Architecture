@@ -111,7 +111,7 @@ bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
 {
     //length between 2 objects from center to center
     gsl::Vector3D lengthVec = (obj1->mTransform->mMatrix.getPosition() -
-            obj2->mTransform->mMatrix.getPosition() ) * 3.14;
+            obj2->mTransform->mMatrix.getPosition() ) * 4.5;
 
 
     //sphere collider

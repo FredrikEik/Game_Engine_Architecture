@@ -40,7 +40,7 @@ public:
     GameObject* projectile;
     GameObject* skybox;
 
-    std::vector<GameObject*> enemies;
+    std::vector<GameObject *> enemies;
 
     bool playerSpawned = false;
     bool ProjectileSpawned = false;
