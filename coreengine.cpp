@@ -141,7 +141,7 @@ void CoreEngine::setUpScene()
 
 //Rollingball, getting vis & sim collision code integrated into GEA
         temp = mGameObjectManager->addObject("Ball.obj");
-        temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
+        temp->mTransform->mMatrix.translate(1.0f, 0.5f, 0.0f);
         temp->mTransform->mMatrix.scale(0.2f);
         temp->mName = "RollingBall";
         mGameObjectManager->addComponent("PhysicsComponent", temp);
@@ -150,7 +150,7 @@ void CoreEngine::setUpScene()
         temp = mGameObjectManager->addObject("TriangleSurface.obj");
         temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
         temp->mTransform->mMatrix.scale(1.0f);
-        temp->mTransform->mMatrix.rotateY(90);
+        temp->mTransform->mMatrix.rotateY(0); //If rotation is applyed, vertices does not match their actual locations in world
         temp->mName = "TriangleSurface";
         mRenderSystem->mGameObjects.push_back(temp);
 
