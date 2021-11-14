@@ -61,7 +61,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mMaterialComp = new MaterialComponent();
     tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
-    if(textureName == "plain")
+    if(textureName == "plain" || textureName == " ")
     {
         tempGO->mMaterialComp->mShaderProgram = 0;
     }else
@@ -96,7 +96,18 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 1, tempGO->mCollisionComp,tempGO->mCollisionLines );
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2, tempGO->mCollisionComp,tempGO->mCollisionLines );
         }else{
-            mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
+            if (filepath.find(".obj") != std::string::npos)
+            {
+                mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
+            }
+            if (filepath.find("xyz") != std::string::npos)
+            {
+                mMeshHandler->createXYZAxis(tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
+            }
+            if (filepath.find("test_las.txt") != std::string::npos)
+            {
+                mMeshHandler->createCreateTerrain(filepath, tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
+            }
         }
         meshCompCounter++;
     }
@@ -116,11 +127,12 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
     std::string tempName = filepath;
     // Hardcoded filesize just to make "XYZ" work
-    if(filepath != "xyz")
+    if(filepath != "xyz" && filepath != gsl::ProjectFolderName + "test_las.txt")
     {
         tempName.erase(0,25);
         tempName.erase(tempName.end()-4,tempName.end());
     }
+
     tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
 
     tempGO->id = objectIDcounter;

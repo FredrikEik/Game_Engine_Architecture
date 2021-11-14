@@ -222,6 +222,252 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
     init(*MeshComp, LODlvl);
 }
 
+void MeshHandler::createXYZAxis(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
+{
+    MeshComp->mVertices[0].push_back(Vertex{0,0,0,1,0,0});
+    MeshComp->mVertices[0].push_back(Vertex{3,0,0,1,0,0});
+    MeshComp->mVertices[0].push_back(Vertex{0,0,0,0,1,0});
+    MeshComp->mVertices[0].push_back(Vertex{0,3,0,0,1,0});
+    MeshComp->mVertices[0].push_back(Vertex{0,0,0,0,0,1});
+    MeshComp->mVertices[0].push_back(Vertex{0,0,3,0,0,1});
+    MeshComp->mDrawType = GL_LINES;
+
+    init(*MeshComp, 0);
+    //Min
+        CollisionComponent->minCorner.setX(0.f);
+        CollisionComponent->minCorner.setY(0.f);
+        CollisionComponent->minCorner.setZ(0.f);
+
+        CollisionComponent->maxCorner.setX(0.f);
+        CollisionComponent->maxCorner.setY(0.f);
+        CollisionComponent->maxCorner.setZ(0.f);
+
+        CollisionComponent->mRaidus = 0.f;
+
+
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+        CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
+
+//        CollLines->mIndices[0].insert( CollLines->mIndices[0].end(),
+//        { 0, 1, 1, 2, 2, 3, 3, 0,
+//          4, 5, 5, 6, 6, 7, 7, 4,
+//          0, 4, 3, 7,
+//          1, 5, 2, 6
+//                         });
+
+        CollLines->mDrawType = GL_LINES;
+
+        init(*CollLines,0);
+}
+
+void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
+{
+
+    std::vector<gsl::Vector3D> mAllDataPoints;
+
+    float vx,vy,vz;
+    float xMin;
+    float xMax;
+    float zMin;
+    float zMax;
+    float yMin;
+    float yMax;
+    unsigned int n;
+
+
+    std::ifstream inn;
+    inn.open(filename.c_str());
+
+    if(inn.is_open())
+    {
+        gsl::Vector3D pos;
+        inn>>n;
+        int loopLenth = n;
+//        float i{0};
+        mAllDataPoints.reserve(n);
+
+
+
+        for(int i{0}; i<loopLenth;i++)
+        {
+            inn >> vx;
+            inn >> vz;
+            inn >> vy;
+            float x = float(vx);
+            float z = float(vz);
+            float y = float(vy);
+
+            pos.setX(x);
+            pos.setZ(z);
+            pos.setY(y);
+
+            mAllDataPoints.push_back(pos);
+
+
+            static bool once = true;
+            if(once)
+            {
+                xMin = x;
+                xMax = x;
+                zMin = z;
+                zMax = z;
+                yMin = y;
+                yMax = y;
+                once = false;
+            }
+            if(x < xMin)
+                xMin = x;
+
+            if(x > xMax)
+                xMax = x;
+
+            if(z < zMin)
+                zMin = z;
+
+            if(z > zMax)
+                zMax = z;
+
+            if(y < yMin)
+                yMin = y;
+
+            if(y > yMax)
+                yMax = y;
+
+        }
+    inn.close();
+
+        for(unsigned long long i = 0; i < loopLenth;i++)
+        {
+            mAllDataPoints[i].setX(mAllDataPoints[i].getX() - xMin);
+            mAllDataPoints[i].setZ(mAllDataPoints[i].getZ() - zMin);
+            mAllDataPoints[i].setY(mAllDataPoints[i].getY() - yMin);
+        }
+    }
+    xMax = xMax-xMin;
+    xMin = xMin-xMin;
+    zMax = zMax-zMin;
+    zMin = zMin-zMin;
+    yMax = yMax-yMin;
+    yMin = yMin-yMin;
+
+    CollisionComponent->minCorner.setX(xMin);
+    CollisionComponent->minCorner.setY(yMin);
+    CollisionComponent->minCorner.setZ(zMin);
+
+    CollisionComponent->maxCorner.setX(xMax);
+    CollisionComponent->maxCorner.setY(yMax);
+    CollisionComponent->maxCorner.setZ(zMax);
+
+    // is only used for frustum culling so doesnt have to accurate.
+    CollisionComponent->mRaidus = xMax*2;
+
+    // 998 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
+    float gridSizeX = xMax / 998;
+    qDebug() << "GridsizeX" << gridSizeX;
+    // 1457 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
+    float gridSizeZ = zMax / 1457;
+    qDebug() << "GridsizeY" << gridSizeZ;
+
+
+    CollLines->mVertices[0].push_back(Vertex(xMin, yMin, zMax,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMax, yMin, zMax,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMax, yMax, zMax,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMin, yMax, zMax,   1,0,0,  0,0));
+
+    CollLines->mVertices[0].push_back(Vertex(xMin, yMin, zMin,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMax, yMin, zMin,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMax, yMax, zMin,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(xMin, yMax, zMin,   1,0,0,  0,0));
+
+    CollLines->mIndices[0].insert( CollLines->mIndices[0].end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,
+      4, 5, 5, 6, 6, 7, 7, 4,
+      0, 4, 3, 7,
+      1, 5, 2, 6 });
+
+    CollLines->mDrawType = GL_LINES;
+    init(*CollLines,0);
+    float gridSize {50};
+
+//    heights2D.reserve((xMax*zMax/gridSize));
+
+    for(int z = int(zMin); z < zMax;z+=gridSize)
+    {
+        for(int x = int(xMax);x > xMin; x-=gridSize)
+        {
+            for(auto it : mAllDataPoints)
+            {
+                if(it.x > x-gridSize && it.x < x && it.z > z && it.z < z + gridSize)
+                {
+                    //heights2D.push_back(gsl::Vector3D(x,it.y,z));
+                    MeshComp->mVertices[0].push_back(Vertex(x,it.y,z, 1,0,0,  0,0));
+//                    it=0;
+                    goto jump;
+                }
+            }
+            if(!MeshComp->mVertices->empty())
+            {
+                MeshComp->mVertices->push_back(MeshComp->mVertices->at(MeshComp->mVertices->size()-1));
+                continue;
+            }else
+            {
+                MeshComp->mVertices[0].push_back(Vertex(x,0,z, 1,0,0,  0,0));
+                continue;
+            }
+            jump:;
+        }
+    }
+
+    // Code from 3DProg just  to test, neet to set the correct indecies
+    // should problably use a 2d array to have more control of each vertex;
+    int c;
+    for(GLuint i{0}; i < MeshComp->mVertices[0].size() - (xMax/gridSize) -1; i++)
+    {
+        if(c == (xMax/gridSize) -1)
+        {
+            c=0;
+            continue;
+        }
+        MeshComp->mIndices->push_back(i);
+        MeshComp->mIndices->push_back(i+(xMax/gridSize));
+        MeshComp->mIndices->push_back(i+gridSize);
+
+        MeshComp->mIndices->push_back(i+(xMax/gridSize));
+        MeshComp->mIndices->push_back(i+(xMax/gridSize)+gridSize);
+        MeshComp->mIndices->push_back(i+gridSize);
+        c++;
+    }
+
+
+init(*MeshComp,0);
+
+
+
+//        qDebug() << "xmin: " << xMin << "xmax: " << xMax <<  "ymin: " << yMin << "ymax: " << yMax << "zmin: " << zMin << "zmax: " << zMax;
+
+
+
+
+
+//    for(int xgrid = 0; xgrid < 1000; xgrid++)
+//    {
+//        for(int zgrid = 0; x)
+//    }
+
+
+
+
+
+
+}
+
 void MeshHandler::findCollisionCorners(CollisionComponent *CollComp, QVector3D &vertex)
 {
         //Min

@@ -28,6 +28,8 @@ public:
 
     //this takes inn to many arguments...
     void readFile(std::string filename, MeshComponent *MeshComp, int LODlvl, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
+    void createXYZAxis(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
+    void createCreateTerrain(std::string filename, MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
 
     void findCollisionCorners(CollisionComponent *CollComp, QVector3D &vertex);
     void findCollisionRadious(CollisionComponent *CollComp, QVector3D &vertex);

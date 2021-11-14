@@ -258,7 +258,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
 
             // not draw player while playig
-            if(i==0 && isPlaying)
+            if(i==1 && isPlaying)
             {
                 continue;
             }
@@ -341,10 +341,15 @@ void RenderWindow::render()
         //qDebug() << "Distacne: " << distanceToFrontObject;
 
         // to not draw player while playig
-        if(i==0 && isPlaying)
+        if(i==1 && isPlaying)
         {
             continue;
         }
+        if(i == 0 && isPlaying)
+        {
+            continue;
+        }
+
         if(mGameObjects[i]->mMeshComp->bUsingLOD && bRenderingLOD)
         {
             if(distanceCamToObj < 10)
@@ -365,13 +370,17 @@ void RenderWindow::render()
                 mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[2].size();
                 mObjectsDrawn++;
             }
-        }else
+        }else /*(mGameObjects[i]->mMeshComp->mIndices->size() > 0)*/
+        {
+            glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
+            glDrawElements(mGameObjects[i]->mMeshComp->mDrawType, mGameObjects[i]->mMeshComp->mIndices->size(), GL_UNSIGNED_INT, nullptr);
+        }/*else
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
-        }
+        }*/
 
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;

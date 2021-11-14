@@ -12,7 +12,7 @@ class CollisionSystem
 public:
     CollisionSystem();
 
-    static bool isColliding(std::vector<GameObject*> objects, QVector3D playerNextPos);
+    static bool isColliding(GameObject * player, std::vector<GameObject*> objects, QVector3D playerNextPos);
 };
 
 #endif // COLLISIONSYSTEM_H

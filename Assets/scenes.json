@@ -4,6 +4,18 @@
             "levelname": "level1",
             "objects": [
                 {
+                    "filepath": "xyz",
+                    "positionx": 0,
+                    "positiony": 2.7755575615628914e-17,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 0,
+                    "texturename": "plain",
+                    "usingLOD": false
+                },
+                {
                     "filepath": "../GEA2021/Assets/Meshes/player.obj",
                     "positionx": 0,
                     "positiony": -1.7999999523162842,
@@ -11,15 +23,15 @@
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
-                    "shader": 2,
-                    "texturename": "hund.bmp",
+                    "shader": 0,
+                    "texturename": "plain",
                     "usingLOD": false
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/light.obj",
-                    "positionx": -52.631553649902344,
+                    "positionx": -7.137679576873779,
                     "positiony": 3,
-                    "positionz": 20.71096420288086,
+                    "positionz": 13.966470718383789,
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
@@ -30,37 +42,13 @@
                 {
                     "filepath": "../GEA2021/Assets/Meshes/cube.obj",
                     "positionx": -1,
-                    "positiony": -1,
+                    "positiony": -2.200000047683716,
                     "positionz": -5,
-                    "rotationx": -40,
+                    "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
                     "shader": 2,
                     "texturename": "orange.bmp",
-                    "usingLOD": false
-                },
-                {
-                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
-                    "positionx": 0,
-                    "positiony": 0,
-                    "positionz": 0,
-                    "rotationx": 0,
-                    "rotationy": 0,
-                    "rotationz": 0,
-                    "shader": 2,
-                    "texturename": " ",
-                    "usingLOD": true
-                },
-                {
-                    "filepath": "../GEA2021/Assets/Meshes/cacodemon2.obj",
-                    "positionx": 4.300000190734863,
-                    "positiony": 3.0999999046325684,
-                    "positionz": -2.700000047683716,
-                    "rotationx": 0,
-                    "rotationy": -47,
-                    "rotationz": 0,
-                    "shader": 2,
-                    "texturename": "cocademon3.bmp",
                     "usingLOD": false
                 }
             ]

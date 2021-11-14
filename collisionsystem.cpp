@@ -9,7 +9,7 @@ CollisionSystem::CollisionSystem()
 
 }
 
-bool CollisionSystem::isColliding(std::vector<GameObject*> objects, QVector3D playerNextPos)
+bool CollisionSystem::isColliding(GameObject *player, std::vector<GameObject*> objects, QVector3D playerNextPos)
 {
     // !! Hardcoded that player is object nr 0
 //    QVector3D playerPos {objects[0]->mTransformComp->mMatrix.getPosition().x,
@@ -17,10 +17,10 @@ bool CollisionSystem::isColliding(std::vector<GameObject*> objects, QVector3D pl
 //                objects[0]->mTransformComp->mMatrix.getPosition().z};
     QVector3D playerPos = playerNextPos;
 
-    QVector3D playerMaxCorner = objects[0]->mCollisionComp->maxCorner;
-    QVector3D playerMinCorner = objects[0]->mCollisionComp->minCorner;
+    QVector3D playerMaxCorner = player->mCollisionComp->maxCorner;
+    QVector3D playerMinCorner = player->mCollisionComp->minCorner;
 
-    for(unsigned long long i{1}; i < objects.size() ; i++)
+    for(unsigned long long i{2}; i < objects.size() ; i++)
     {
         QVector3D otherPos = {objects[i]->mTransformComp->mMatrix.getPosition().x,
                               objects[i]->mTransformComp->mMatrix.getPosition().y,

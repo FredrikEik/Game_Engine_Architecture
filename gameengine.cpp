@@ -27,7 +27,7 @@ void GameEngine::GameLoop()
     //mPhysicsBallSystem->update(*mPhysicsBall);
 
     rotateLight();
-    m3DTestSound->setPosition(mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.getPosition());
+    m3DTestSound->setPosition(mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.getPosition());
     mStereoSound->setPosition(gsl::Vector3D(0,0,0));
     HandleInput();
 
@@ -66,8 +66,6 @@ void GameEngine::SetUpScene()
 
     SetUpObjects();
 
-    objBeforePlaying = mRenderwindow->mGameObjects;
-    //TODO SetupTextures
 
 
     // Sound startup stuff
@@ -95,8 +93,11 @@ void GameEngine::SetUpObjects()
 {
 //    mResourceManager->loadScene(mRenderwindow->mGameObjects, mPlayer,mLight);
                                           //(gsl::MeshFilePath + "player.obj", gsl::TextureFilePath + "playerTexture")
-//    mXYZaxis = mResourceManager->CreateObject("xyz",false,"plain");
-//    mRenderwindow->mGameObjects.push_back(mXYZaxis);
+
+
+
+    mXYZaxis = mResourceManager->CreateObject("xyz",false,"plain");
+    mRenderwindow->mGameObjects.push_back(mXYZaxis);
 
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj",false,"plain");
 
@@ -145,8 +146,8 @@ void GameEngine::SetUpObjects()
 
 
     // TERRAIN:
-
-    //mRenderwindow->mGameObjects.push_back(mPhysicsBallSystem->GetTerrain());
+    mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
+    mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
 
 
@@ -302,9 +303,9 @@ void GameEngine::HandleInput()
 
             QVector3D nextVec = nextPos - currentPos;
 
-            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, nextPos))
             {
-                if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, currentPos))
+                if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
                 }else
@@ -325,9 +326,9 @@ void GameEngine::HandleInput()
 
             QVector3D nextVec = nextPos - currentPos;
 
-            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, nextPos))
             {
-                if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, currentPos))
+                if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
                 }else
@@ -348,9 +349,9 @@ void GameEngine::HandleInput()
 
             QVector3D nextVec = nextPos - currentPos;
 
-            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, nextPos))
             {
-                if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, currentPos))
+                if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
                 }else
@@ -371,9 +372,9 @@ void GameEngine::HandleInput()
 
             QVector3D nextVec = nextPos - currentPos;
 
-            if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, nextPos))
+            if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, nextPos))
             {
-                if(CollisionSystem::isColliding(mRenderwindow->mGameObjects, currentPos))
+                if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
                 }else
@@ -416,7 +417,7 @@ void GameEngine::UpdateGameCameraFollow()
 void GameEngine::rotateLight()
 {
     static float rotate{0.f};
-    mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
+    mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
     rotate+=0.01f;
 }
 

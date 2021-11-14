@@ -402,7 +402,7 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
 }
 
-GameObject *PhysicsBallSystem::GetTerrain()
-{
-    return terrain;
-}
+//GameObject *PhysicsBallSystem::GetTerrain()
+//{
+//    return terrain;
+//}

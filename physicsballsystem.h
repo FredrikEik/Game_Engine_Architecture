@@ -35,7 +35,6 @@ private:
     int mCols{1};
 
     std::vector<gsl::Vector3D> mAllDataPoints;
-    GameObject *terrain{nullptr};
     double xMin{0};
     double xMax{0};
     double zMin{0};

@@ -253,6 +253,9 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 
 void MainWindow::on_TranslateXspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(arg1,pos.y(),pos.z());
 }
@@ -260,12 +263,18 @@ void MainWindow::on_TranslateXspinBox_valueChanged(double arg1)
 
 void MainWindow::on_TranslateYspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),arg1,pos.z());
 }
 
 void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),pos.y(),arg1);
 }
@@ -273,6 +282,9 @@ void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
 
 void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     float x = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getX();
     GameObjects[ObjectListIndex]->mTransformComp->rotation.setX(x+GameObjects[ObjectListIndex]->mTransformComp->rotation.getX());
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX(x);
@@ -280,6 +292,9 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 
 void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     float y = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getY();
     GameObjects[ObjectListIndex]->mTransformComp->rotation.setY(y+GameObjects[ObjectListIndex]->mTransformComp->rotation.getY());
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateY(y);
@@ -287,6 +302,9 @@ void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
 
 void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     float z = arg1 - GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ();
     GameObjects[ObjectListIndex]->mTransformComp->rotation.setZ(z+GameObjects[ObjectListIndex]->mTransformComp->rotation.getZ());
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateZ(z);
@@ -294,6 +312,9 @@ void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
 
 void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 {
+    if(ObjectListIndex == 0)
+        return;
+
     GameObjects[ObjectListIndex]->mTransformComp->scale.setX(arg1);
     GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D(GameObjects[ObjectListIndex]->mTransformComp->scale.getX(),1,1));
 }
@@ -339,7 +360,7 @@ void MainWindow::on_actionDelete_Selected_triggered()
 {
     if(ObjectListIndex == 0)
     {
-        qDebug() << "You can not delete the player!";
+        qDebug() << "You can not delete the AXIS!";
         return;
     }
     bCurrentlyDeleting = true;
