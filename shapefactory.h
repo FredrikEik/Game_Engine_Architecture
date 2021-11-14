@@ -14,6 +14,40 @@
 
 using namespace std;
 
+class Circle : public VisualObject
+{
+public:
+    Circle();
+    ~Circle(){}
+};
+
+class Square : public VisualObject
+{
+public:
+    Square();
+    ~Square() {}
+    void CheckPlayerCol(VisualObject* p);
+    bool onRwallX{false};
+    bool onLwallX{false};
+    bool onFwallY{false};
+    bool onBwallY{false};
+    void noCol(){onRwallX = false;onLwallX = false;onFwallY = false;onBwallY = false;};
+};
+
+class Plain : public VisualObject
+{
+public:
+    Plain();
+    ~Plain(){};
+};
+
+class ObjMesh : public VisualObject
+{
+public:
+    ObjMesh();
+    ~ObjMesh(){};
+};
+
 class ShapeFactory{
 public:
     virtual ~ShapeFactory() {}
@@ -21,6 +55,8 @@ public:
     void makeVertices();
     MeshComponent* getMesh(int i);
     CollisionComponent* getColli(int i);
+    int getCount(){return mCounter;};
+    void addCount(){mCounter++;};
 private:
     void readFile(std::string filename, MeshComponent* m);
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
@@ -36,52 +72,5 @@ private:
 
 
 
-class Circle : public VisualObject
-{
-public:
-    Circle();
-    ~Circle(){}
-};
 
-class Square : public VisualObject
-{
-public:
-    Square();
-    ~Square() {}
-};
-
-class Plain : public VisualObject
-{
-public:
-    Plain();
-    ~Plain(){};
-};
-
-class BigWall : public VisualObject
-{
-public:
-    BigWall();
-    ~BigWall(){};
-};
-
-class SmallWall : public VisualObject
-{
-public:
-    SmallWall();
-    ~SmallWall(){};
-};
-
-class Enemy : public VisualObject
-{
-public:
-    Enemy();
-    ~Enemy(){};
-};
-
-class ObjMesh : public VisualObject
-{
-public:
-    ObjMesh();
-    ~ObjMesh(){};
-};
 #endif // SHAPEFACTORY_H

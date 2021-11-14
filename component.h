@@ -36,7 +36,6 @@ struct NameComponent
 {
     int objectID=0;
     std::string mName;
-    bool drawMe{true};
 };
 
 #endif // COMPONENT_H

@@ -8,9 +8,9 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     mTransform->mPosition = gsl::Vector3D(mx,my,mz);
     mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(4);
-    //mTransform->mMatrix.scale(0.5);
+    mTransform->mMatrix.scale(0.5);
     mColSystem = new CollisionSystem;
-    mCollision->setBoundingSphere(1, mTransform->mPosition);
+    mCollision->setBoundingSphere(0.3, mTransform->mPosition);
     mMaterial = new MaterialComponent();
     mInputComp = new InputComponent;
     mNameComp = new NameComponent();
@@ -43,41 +43,41 @@ void Player::move(float dx, float dy, float dz)
     temp.y = dy;
 
     mTransform->mPosition += temp;
-    mTransform->mMatrix.translate(temp.x, temp.y, temp.z);
+    mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
     mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mCollision);
     mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mCollision);
 }
 
-void Player::CheckPlayerWall(CollisionComponent *bCollision)
-{
-    auto x = fmax(bCollision->BoundingBoxMin.getX(), fmin(mCollision->center.getX(), bCollision->BoundingBoxMax.getX()));
-    auto z = fmax(bCollision->BoundingBoxMin.getZ(), fmin(mCollision->center.getZ(), bCollision->BoundingBoxMax.getZ()));
-    auto xdiff = x - mCollision->center.getX();
-    auto zdiff = z - mCollision->center.getZ();
+//void Player::CheckPlayerWall(Square* w)
+//{
+//    auto x = fmax(w->mCollision->BoundingBoxMin.getX(), fmin(mCollision->center.getX(), bCollision->BoundingBoxMax.getX()));
+//    auto z = fmax(w->mCollision->BoundingBoxMin.getZ(), fmin(mCollision->center.getZ(), bCollision->BoundingBoxMax.getZ()));
+//    auto xdiff = x - mCollision->center.getX();
+//    auto zdiff = z - mCollision->center.getZ();
 
-    //qDebug() << mCollision->center;
-    auto distance = sqrt((x - mCollision->center.getX()) * (x - mCollision->center.getX()));
-    if(distance < mCollision->radius)
-    {
-        if(xdiff > 0.f)
-            onLwallX = true;//qDebug() << "onLwallX";
-        if(xdiff < 0.f)
-            onRwallX = true;//qDebug() << "onRwallX";
-    }
-    else if(distance >= mCollision->radius)
-    {
-        onRwallX = false;onLwallX = false;
-    }
-    distance = sqrt((z - mCollision->center.getZ()) * (z - mCollision->center.getZ()));
-    if(distance < mCollision->radius)
-    {
-        if(zdiff > 0.f)
-            onBwallY = true;//qDebug() << "onBwallY";
-        if(zdiff < 0.f)
-            onFwallY = true;//qDebug() << "onFwallY";
-    }
-    else if(distance >= mCollision->radius)
-    {
-        onBwallY = false;onFwallY = false;
-    }
-}
+//    //qDebug() << mCollision->center;
+//    auto distance = sqrt((x - mCollision->center.getX()) * (x - mCollision->center.getX()));
+//    if(distance < mCollision->radius)
+//    {
+//        if(xdiff > 0.f)
+//            onLwallX = true;//qDebug() << "onLwallX";
+//        if(xdiff < 0.f)
+//            onRwallX = true;//qDebug() << "onRwallX";
+//    }
+//    else if(distance >= mCollision->radius)
+//    {
+//        onRwallX = false;onLwallX = false;
+//    }
+//    distance = sqrt((z - mCollision->center.getZ()) * (z - mCollision->center.getZ()));
+//    if(distance < mCollision->radius)
+//    {
+//        if(zdiff > 0.f)
+//            onBwallY = true;//qDebug() << "onBwallY";
+//        if(zdiff < 0.f)
+//            onFwallY = true;//qDebug() << "onFwallY";
+//    }
+//    else if(distance >= mCollision->radius)
+//    {
+//        onBwallY = false;onFwallY = false;
+//    }
+//}

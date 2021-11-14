@@ -53,7 +53,7 @@ void Skybox::setTexture()
 
 void Skybox::makeVerticies(MeshComponent *mMesh)
 {
-    float a = 10;
+    float a = 50;
     mMesh->mVertices.push_back(Vertex{-a, a, -a, 0,0,0,  0.0f, 0.0});
     mMesh->mVertices.push_back(Vertex{-a, -a, -a, 0,0,0, 1.0f, 0.0f});
     mMesh->mVertices.push_back(Vertex{a, -a, -a, 0,0,0,  1.0f, 1.0f});

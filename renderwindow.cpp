@@ -115,8 +115,8 @@ void RenderWindow::init()
     //********************** Set up camera **********************
 
     mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 8.f));
-    mPlayCamera.setPosition(gsl::Vector3D(0.f, 8.f, 5.f));
-    mPlayCamera.pitch(70);
+    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 8.f));
+    mPlayCamera.pitch(90);
 
     mCurrentCamera = &mEditorCamera;
 
@@ -181,9 +181,10 @@ void RenderWindow::drawObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        glBindVertexArray(mLvl->mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mLvl->mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
-        glBindVertexArray(0);
+        if(mLvl->mVisualObjects[i]->drawMe == true){
+            glBindVertexArray(mLvl->mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mLvl->mVisualObjects[i]->mMesh->mDrawType, 0, levelOfDetail(i));
+            glBindVertexArray(0);}
     }
 
     glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLight->mTransform->mMatrix.constData());
@@ -206,17 +207,16 @@ void RenderWindow::drawObject()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    // HandleInput();
-    mInputSystem->update(mCurrentCamera, mPlayer, mInput);
-    mCurrentCamera->update();
-
 
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    checkCollision();
+    // HandleInput();
+    mInputSystem->update(mCurrentCamera, mPlayer, mInput);
+    mCurrentCamera->update();
+    mLvl->checkCollision();
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -353,28 +353,54 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::checkCollision()
-{
-    //kollisjon fungerer foreløpig ikke for flere objekter
-    //kollisjon mot vegger
-    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mLvl->mVisualObjects[2]->mCollision))
-    {
-        //qDebug() <<"Collision detected"; //testing collision
-        mPlayer->CheckPlayerWall(mLvl->mVisualObjects[2]->mCollision);
-    }
-    else
-        mPlayer->noWall(); //må finne en annen måte å gjøre dette på
+//void RenderWindow::checkCollision()
+//{
+//    mPlayer->onRwallX = {false};
+//    mPlayer->onLwallX = {false};
+//    mPlayer->onFwallY = {false};
+//    mPlayer->onBwallY = {false};
+//    //kollisjon fungerer foreløpig ikke for flere objekter
+//    //kollisjon mot vegger
+//    for(int i{0}; i<2; i++){
+//        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mLvl->mVisualObjects[i+4]->mCollision))
+//        {
+//            //qDebug() <<"Collision detected"; //testing collision
+//            mLvl->mWall[i]->CheckPlayerCol(mPlayer);
 
-    //kollisjon mot trofeer
-    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[7]->mCollision))
-    {
-        qDebug() <<"Collision detected"; //testing collision
-        mLvl->trophies++; // for å senere sette win-condition
-        mLvl->mVisualObjects[7]->mNameComp->drawMe = false; //for å ikke tegne opplukket trofè
-    }
-    else
-        qDebug() << "No col";
-}
+//            if(mLvl->mWall[i]->onLwallX){
+//                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
+//            else if(mLvl->mWall[i]->onRwallX){
+//                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
+//            if(mLvl->mWall[i]->onBwallY){
+//                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
+//            else if(mLvl->mWall[i]->onFwallY){
+//                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
+//        }
+//        else
+//            mLvl->mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
+//    }
+
+//    for(int i{7}; i<10; i++){
+//        //kollisjon mot trofeer
+//        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[i]->mCollision))
+//        {
+//            qDebug() <<"Collision detected"; //testing collision
+//            mLvl->trophies++; // for å senere sette win-condition
+//            mLvl->mVisualObjects[i]->drawMe = false; //for å ikke tegne opplukket trofè
+//        }
+//        else
+//            qDebug() << "No col";
+//    }
+//    for(int i{1}; i<4; i++){
+//        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[i]->mCollision))
+//        {
+//            mLvl->mEnemies[i-1]->checkMove = true;
+//            // ResetGame();
+//            qDebug() <<"Player hit detected";
+//            //mEnemy->Checkmove = false;
+//        }else mLvl->mEnemies[i-1]->checkMove = false;
+//        mLvl->mEnemies[i-1]->moveEnemy(mPlayer, mLvl->mEnemies[i-1]->mTransform->mPosition);}
+//}
 
 void RenderWindow::playMode(bool p)
 {

@@ -24,6 +24,7 @@ SOURCES += main.cpp \
     camera.cpp \
     collisionsystem.cpp \
     component.cpp \
+    enemy.cpp \
     inputsystem.cpp \
     level.cpp \
     light.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     collisionsystem.h \
     component.h \
     constants.h \
+    enemy.h \
     gltypes.h \
     input.h \
     inputcomponent.h \
