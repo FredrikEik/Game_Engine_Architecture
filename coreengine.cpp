@@ -140,19 +140,19 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
 //Rollingball, getting vis & sim collision code integrated into GEA
-        temp = mGameObjectManager->addObject("Ball.obj");
-        temp->mTransform->mMatrix.translate(0.5f, 0.5f, 0.0f);
-        temp->mTransform->mMatrix.scale(0.1f);
-        temp->mName = "RollingBall";
-        mGameObjectManager->addComponent("PhysicsComponent", temp);
-        mRenderSystem->mGameObjects.push_back(temp);
+    temp = mGameObjectManager->addObject("Ball.obj");
+    temp->mTransform->mMatrix.translate(0.5f, 0.5f, 0.0f);
+    temp->mTransform->mMatrix.scale(0.1f);
+    temp->mName = "RollingBall";
+    mGameObjectManager->addComponent("PhysicsComponent", temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
-        temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
-        temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
-        temp->mTransform->mMatrix.scale(1.0f);
-        temp->mTransform->mMatrix.rotateY(0); //If rotation is applyed, vertices does not match their actual locations in world
-        temp->mName = "CrookedTriangleSurface";
-        mRenderSystem->mGameObjects.push_back(temp);
+    temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
+    temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
+    temp->mTransform->mMatrix.scale(1.0f);
+    temp->mTransform->mMatrix.rotateY(0); //If rotation is applyed, vertices does not match their actual locations in world
+    temp->mName = "CrookedTriangleSurface";
+    mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
