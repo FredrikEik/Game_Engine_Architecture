@@ -7,7 +7,7 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{1.0f}, mz{5.0f}
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(4);
-    mTransform->mMatrix.scale(0.5);
+    mTransform->mMatrix.scale(0.3);
     mColSystem = new CollisionSystem;
     mCollision->setBoundingSphere(0.5, mTransform->mPosition);
     mMaterial = new MaterialComponent();

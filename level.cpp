@@ -6,8 +6,9 @@ Level::Level(Camera* cam)
     mShapeFactory.makeVertices();
     script = new Script();
     DrawBoard();
+    SoundHandler();
     //initObjects();
-    readJS();
+    //readJS();
 }
 
 Level::~Level()
@@ -30,23 +31,54 @@ Level::~Level()
 // 4 - ghost initial positions
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
-{  //0                   1         5
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
-   {1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},// 1
-   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},// 2
-   {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
-   {1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1},// 4
-   {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},// 5
-   {1,0,1,0,1,0,1,0,1,1,4,1,1,0,1,0,1,0,1,0,1},
-   {1,0,0,0,1,0,0,0,1,4,4,4,1,0,0,0,1,0,0,0,1},
-   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},
-   {1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
-   {1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1},// 10
-   {1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1},
-   {1,0,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1},// 12
-   {1,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},// 13
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 14
+{  //0                1         5           21
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
+   {1,2,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},// 1
+   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},// 2
+   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
+   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 4
+   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 5
+   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
+   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
+   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},
+   {1,1,1,1,1,1,1,1,0,4,4,1,0,1,1,1,0,1,1,1,0,1},
+   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},// 10
+   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
+   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},// 12
+   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 13
+   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 14
+   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
+   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},
+   {1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //18
+
 };
+
+//int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
+//{  //0                1         5
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
+//   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},// 1
+//   {1,0,1,1,0,0,0,0,0,1,0,1,1,1,0,1,1,0,1},// 2
+//   {1,0,1,1,0,0,0,0,0,1,0,1,1,1,0,1,1,0,1},
+//   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},// 4
+//   {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},// 5
+//   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+//   {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},
+//   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
+//   {1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1},
+//   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},// 10
+//   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
+//   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 12
+//   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 13
+//   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},// 14
+//   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+//   {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},
+//   {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,0,1},
+//   {1,0,0,0,4,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+//   {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},
+//   {1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//};
 
 void Level::DrawBoard()
 {
@@ -55,6 +87,7 @@ void Level::DrawBoard()
     temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
+    temp->move(9.5f, 0.0f, 8.0f);
     mVisualObjects.push_back(temp);
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
@@ -68,7 +101,6 @@ void Level::DrawBoard()
                 temp->init();
                 temp->mMaterial->mShaderProgram = 0;
                 temp->move(i, CENTER_Y,DIM_Z - j - 1);
-                temp->mTransform->mMatrix.scale(0.3);//plain shader
                 mVisualObjects.push_back(temp);
 //                mTransComps.push_back(temp->mTransform);
 //                mNameComps.push_back(temp->mNameComp);
@@ -85,6 +117,7 @@ void Level::DrawBoard()
             else if(GameBoard[i][j] == 2){
                 mPlayer = new Player(&mShapeFactory);
                 mPlayer->mMaterial->mShaderProgram = 0; //plain shader
+                //temp->mTransform->mMatrix.scale(0.15);
                 mPlayer->init();
                 mPlayer->move(i, CENTER_Y,DIM_Z - j - 1);
                 mVisualObjects.push_back(mPlayer);
@@ -121,105 +154,16 @@ void Level::DrawBoard()
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
 
-    //makes the soundmanager
-    //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
+
+//    //makes the soundmanager
+//    //it is a Singleton!!!
+//    SoundManager::getInstance()->init();
+//    mLaserSound = SoundManager::getInstance()->createSource(
+//                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+//                "../GEA2021/Assets/laser.wav", true, 0.7f);
 }
 
-void Level::initObjects()
-{
-    mPlayer = new Player(&mShapeFactory);
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mPlayer->move(0,0.5,5);
-    mVisualObjects.push_back(mPlayer);
-    mTransComps.push_back(mPlayer->mTransform);
-    mNameComps.push_back(mPlayer->mNameComp);
 
-    VisualObject* temp = mShapeFactory.createShape("Circle");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(2.f, 1.f, .5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("Square");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    temp->move(-1.5f, 0.5f, -1.5f);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;   //plain shader
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    //    temp = mShapeFactory.createShape("BigWall");
-    //    temp = mShapeFactory.createShape("SmallWall");
-    //    temp = mShapeFactory.createShape("Monkey.obj");
-    //    temp = mShapeFactory.createShape("Pacman.obj");
-
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->move(4.f, 0.5f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-    for(int i{1}; i<4; i++){
-        mEnemy = new Enemy(&mShapeFactory);
-        mEnemy->init();
-        mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-        mEnemy->move(-i/2 + 3, 0.f, (i*3) -5);
-        mVisualObjects.push_back(mEnemy);
-        mTransComps.push_back(mEnemy->mTransform);
-        mNameComps.push_back(mEnemy->mNameComp);}
-
-    mFrustumSystem = new FrustumSystem(mCam);
-    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
-    mFrustumSystem->init();
-
-    //------------------------Skybox----------------------//
-    mSkyBox = new Skybox();
-    mSkyBox->setTexture();
-    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
-    mSkyBox->init();
-
-    //------------------------Light----------------------//
-    mLight = new Light;
-    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
-    mLight->move(0.f, 0.f, 6.f);
-    mLight->init();
-
-    //    for(int i=0; i<10; i++)
-    //    {
-    //        for(int y=0; y<10; y++)
-    //        {
-    //            temp = mShapeFactory.createShape("Monkey.obj");
-    //            temp->init();
-    //            temp->move((i-y), 0.5, y-5);
-    //            temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //            mTransComps.push_back(temp->mTransform);
-    //            mNameComps.push_back(temp->mNameComp);
-    //            mVisualObjects.push_back(temp);
-    //        }
-    //    }
-
-    //makes the soundmanager
-    //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
-}
 
 std::string Level::createShapes(string shapeID)
 {
@@ -285,6 +229,19 @@ void Level::readJS()
 void Level::winner()
 {
 
+}
+
+void Level::SoundHandler()
+{
+    SoundManager::getInstance()->init();
+
+    mSound = SoundManager::getInstance()->createSource(
+                "laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Sound/pacman_chomp.wav", true, 0.7f);
+
+    mSound->play();
+//    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+//    mSound->stop();
 }
 
 

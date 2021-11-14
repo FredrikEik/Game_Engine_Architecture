@@ -138,8 +138,8 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     mEditorCamera.setPosition(gsl::Vector3D(1.f, 5.f, 8.f));
-    mPlayCamera.setPosition(gsl::Vector3D(0.f, 10.f, 9.f));
-    mPlayCamera.pitch(70);
+    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 8.f));
+    mPlayCamera.pitch(90);
 
     mCurrentCamera = &mEditorCamera;
 
@@ -148,7 +148,6 @@ void RenderWindow::init()
     mInputComponent = new InputComponent();
     mInputSystem = new InputSystem();
     mCollisionSystem = new CollisionSystem();
-    //SoundHandler();
 
     mLvl = new Level(&mPlayCamera);
     mSkyBox = mLvl->mSkyBox;
@@ -263,13 +262,14 @@ void RenderWindow::render()
 //    mEnemy->moveToPlayer(mPlayer,mEnemy->mTransform->mPosition);
 
 
-//    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemy->mCollision))
-//    {
-//        mEnemy->Checkmove = true;
-//       // ResetGame();
-//        qDebug() <<"Player hit detected";
-//        //mEnemy->Checkmove = false;
-//    }else mEnemy->Checkmove = false;
+    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemy->mCollision))
+    {
+       // mEnemy->Checkmove = true;
+       // ResetGame();
+       // mLvl->SoundHandler();
+        qDebug() <<"Player hit detected";
+        //mEnemy->Checkmove = false;
+    }
 
 
 

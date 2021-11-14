@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "shapefactory.h"
 #include "enemy.h"
+#include <chrono>   //for sleep_for
+#include <thread>   //for sleep_for
 
 class Script : public QObject
 {
@@ -33,13 +35,14 @@ public:
     std::string createShapes(string shapeID);
     void readJS();
     void winner();
+    void SoundHandler();
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
     std::vector<VisualObject*> mVisualObjects;
     ShapeFactory mShapeFactory;
     FrustumSystem* mFrustumSystem;
-    SoundSource* mLaserSound{};
+    SoundSource* mSound{};
     Enemy *mEnemy;
     Player *mPlayer;
     Skybox *mSkyBox;
@@ -47,8 +50,8 @@ public:
     int trophies{0};
 
 
-    static const int DIM_X = 21;
-    static const int DIM_Z = 15;
+    static const int DIM_Z = 19;
+    static const int DIM_X = 22;
 //    static const int CENTER_X = DIM_X / 2;
 //    static const int CENTER_Z = (DIM_Z + 1) / 2;
     static const int CENTER_Y = 0;

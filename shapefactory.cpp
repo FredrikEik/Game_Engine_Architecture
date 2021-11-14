@@ -69,7 +69,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     {
         temp = new Circle;
         temp->mMesh = myMeshes[0];
-        temp->mTransform->mMatrix.scale(0.5);
+        temp->mTransform->mMatrix.scale(0.1);
         temp->mCollision = myCollis[0];
         temp->mCollision->setBoundingSphere(0.5, temp->mTransform->mPosition);
 
@@ -318,15 +318,15 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
 
     //24 x 18 fra -12 til +12 -9 til +9
-    x = 5;
-    z = 5;
-    m->mVertices.push_back(Vertex{-x, 0.0,-z,  0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{-x, 0.0, z,  0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.0, 0.3, 0.2});
+    x = 9;
+    z = 10.5;
+    m->mVertices.push_back(Vertex{-x, 0.0,-z,  0.2, 0.2, 0.2});
+    m->mVertices.push_back(Vertex{-x, 0.0, z,  0.2, 0.2, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.2, 0.2, 0.2});
 
-    m->mVertices.push_back(Vertex{ x, 0.0, z,  0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{-x, 0.0, z, 0.0, 0.3, 0.2});
-    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.0, 0.3, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0, z,  0.2, 0.2, 0.2});
+    m->mVertices.push_back(Vertex{-x, 0.0, z,  0.2, 0.2, 0.2});
+    m->mVertices.push_back(Vertex{ x, 0.0,-z,  0.2, 0.2, 0.2});
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
