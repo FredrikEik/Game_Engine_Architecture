@@ -17,6 +17,8 @@ public:
      SoundComponet* mSoundComponent{nullptr};
 
      bool isAlive = true;
+     bool ProjectileHit = false;
+     bool ProjectileSpawned = false;
 
      void move(float x, float y, float z);
 };

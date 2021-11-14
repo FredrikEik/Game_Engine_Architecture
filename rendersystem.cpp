@@ -274,8 +274,13 @@ void RenderSystem::render()
         }
 
 
-            for(unsigned int j{0}; j < mParticles.size(); j++)
+
+       for(unsigned int j{0}; j < mParticles.size(); j++)
+       {
+
+           if(mParticles[i]->isAlive)
            {
+
 
             glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
 
@@ -309,6 +314,8 @@ void RenderSystem::render()
 
 
             }
+
+           }
 
 
         }

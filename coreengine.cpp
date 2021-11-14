@@ -54,6 +54,7 @@ void CoreEngine::setUpScene()
 {
     //********************** Making the object to be drawn **********************
 
+    mResourceManager->setUpAllTextures();
     //Axis
     axis = mResourceManager->addObject("axis");
     axis->objName = "Axis";
@@ -92,9 +93,9 @@ void CoreEngine::setUpScene()
     boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
-//    mTerrain = mResourceManager->addObject("terrain");
-//    mTerrain->mTransform->mMatrix.translateZ(-100.f);
-//    mRenderSystem->mGameObjects.push_back(mTerrain)
+    mTerrain = mResourceManager->addObject("terrain");
+    //mTerrain->mTransform->mMatrix.translateZ(-100.f);
+    mRenderSystem->mGameObjects.push_back(mTerrain);
 
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
@@ -121,7 +122,7 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-    mResourceManager->setUpAllTextures();
+    //mResourceManager->setUpAllTextures();
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop
@@ -193,7 +194,7 @@ void CoreEngine::spawnProjectile()
     tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
 
     projectile->mTransform->mMatrix.setPosition(tempPosX, tempPosY, tempPosZ);
-    ProjectileSpawned = true;
+    projectile->ProjectileSpawned = true;
     mRenderSystem->mGameObjects.push_back(projectile);
 
 
@@ -216,25 +217,17 @@ void CoreEngine::updateCamera()
 
 void CoreEngine::updateScene()
 {
-    //TODO:
-    //mParticles->move(0,1,0);
+
     updateCamera();
 
-    //projectile->mTransform->mMatrix.setPosition();
 
-    //prøve få particles til å spawne på enemy
-
-    if(ProjectileSpawned)
+    if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);
-
-//    if(enemySpawned && !goatDead)
-//        enemies->mTransform->mMatrix.translateZ(-.01);
-   // mResourceManager->update(mRenderSystem->dt);
 
     for(unsigned int i = 0; i< enemies.size(); i++)
     {
         if(enemies[i]->isAlive)
-        enemies[i]->mTransform->mMatrix.translateZ(-.001);
+        enemies[i]->mTransform->mMatrix.translateZ(-.003);
 
         //test collision
         if(!enemies[i]->mCollider->objectsHasCollided)
@@ -256,10 +249,6 @@ void CoreEngine::updateScene()
                 goatDead = true;
 
                 qDebug() << "enemy " << i << " hit";
-
-
-                //projectile->isAlive = false;
-                //enemy->isAlive = false;
 
                 //enemy->mSoundComponent->shouldPlay = false;
             }
@@ -293,8 +282,7 @@ void CoreEngine::updateScene()
 void CoreEngine::handleInput()
 {
     //Camera
-    float speed = 0.2f;
-    //TODO: Probably a cleaner way to do this!
+    float speed = 0.5f;
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
     {

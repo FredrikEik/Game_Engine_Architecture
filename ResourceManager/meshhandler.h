@@ -52,7 +52,7 @@ public:
 
     //lage terrain
 
-    int Heightmap(TextureHandler *texture, float horSpaceing = 1.f, float verSpacing = 1.f, float height = 0.f);
+    //int Heightmap(TextureHandler *texture, float horSpaceing = 1.f, float verSpacing = 1.f, float height = 0.f);
 
     void calculateNormals();
     void initTerrain();
@@ -76,7 +76,9 @@ private:
     int makeParticle();
     int makeProjectile();
     int makeSkybox();
-    int makeTerrain();
+    int makeTerrain(std::string heightMapName);
+
+    void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
 
     float posX = 1.f;
     float posY = 1.f;

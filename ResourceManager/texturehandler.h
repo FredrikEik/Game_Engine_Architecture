@@ -15,6 +15,20 @@ struct Texture
 
     int mBytesPrPixel{};
     bool mAlphaUsed{false};
+
+    float getHeightFromIndex(int i)
+    {
+        if (i > mColumns * mRows || i < 0)
+            return 0;
+
+        int r = mBitmap[i*3];
+        int g = mBitmap[i*3+1];
+        int b = mBitmap[i*3+2];
+
+        float height = (r+g+b)/3.f;
+
+        return height;
+    }
 };
 
 class TextureHandler : protected QOpenGLFunctions_4_1_Core
@@ -22,28 +36,26 @@ class TextureHandler : protected QOpenGLFunctions_4_1_Core
 public:
     TextureHandler();
 
+    static TextureHandler* getInstance();
+
     int makeTexture(const std::string &filename = "none", bool cubeMap = false);
 
-    float getHeightFromIndex(int i);
+    //float getHeightFromIndex(int i);
 
     std::map<std::string, unsigned int> mTextureMap;
     std::vector<Texture> mTextures;
 
 
 
-    int mColumns;
-    int mRows;
-
-    unsigned char *mBitmap;
-    unsigned char *mCubemap[6]{nullptr};
-
 private:
     int makeDefault();
     int makeBMP(const std::string &filename, bool cubeMap = false);
     int readBitmap(const std::string &filename);
     void setTexture(Texture &textureIn);
-    int readCubeMap(const std::string &filename);
-    void setCubemapTexture(Texture &textureIn);
+    //int readCubeMap(const std::string &filename);
+    //void setCubemapTexture(Texture &textureIn);
+
+    static TextureHandler* mInstance;
 
     /*************************************/
     //this is put inside this class to avoid spamming the main namespace

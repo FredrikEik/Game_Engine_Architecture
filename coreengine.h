@@ -43,7 +43,6 @@ public:
     std::vector<GameObject *> enemies;
 
     bool playerSpawned = false;
-    bool ProjectileSpawned = false;
     bool particlesSpawned = false;
     bool enemySpawned = false;
     bool goatDead = false;

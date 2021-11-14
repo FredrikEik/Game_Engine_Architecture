@@ -38,6 +38,9 @@ public:
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     std::vector<GameObject*> mParticles;
+
+    std::vector<GameObject*> mProjectiles;
+
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
