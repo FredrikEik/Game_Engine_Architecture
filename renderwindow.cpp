@@ -141,7 +141,7 @@ void RenderWindow::drawObject()
     int projectionMatrix{-1};
     int modelMatrix{-1};
     //Draws the objects
-    for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
+    for(int i{0}; i < (int)mLvl->mVisualObjects.size(); i++)
     {
         glUseProgram(mShaderPrograms[mLvl->mVisualObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
