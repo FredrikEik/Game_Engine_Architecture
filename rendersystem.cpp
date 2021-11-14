@@ -326,6 +326,20 @@ void RenderSystem::render()
         glBindVertexArray(0);
     }
 
+    Camera *tempcam = CoreEngine::getInstance()->mGameCamera;
+
+    MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(
+                tempcam ->mFrustum
+                );
+
+    gsl::Matrix4x4 temp(true);
+    temp.translate(tempcam->mPosition);
+    temp.rotateY(-tempcam->mYaw);
+    temp.rotateX(tempcam->mPitch);
+
+    glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, temp.constData());
+    glBindVertexArray( frustum.mVAO[0] );
+    glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
     //Calculate framerate before

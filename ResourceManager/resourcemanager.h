@@ -28,11 +28,14 @@ public:
     bool addCollider(std::string colliderType, GameObject* obj);
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
+
     void setUpAllTextures();
 
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
     MeshData makeFrustumDrawing();
+    MeshData makeFrustum(const struct Frustum &frustumIn);
+
 
     MeshHandler* mMeshHandler{nullptr};
 

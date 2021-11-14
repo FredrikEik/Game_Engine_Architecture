@@ -41,6 +41,8 @@ public:
 
     std::vector<GameObject*> mProjectiles;
 
+    //Camera *mGameCamera{nullptr};
+
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 

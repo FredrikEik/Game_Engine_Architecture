@@ -95,7 +95,7 @@ void CoreEngine::setUpScene()
 
     mTerrain = mResourceManager->addObject("terrain");
     //mTerrain->mTransform->mMatrix.translateZ(-100.f);
-    mRenderSystem->mGameObjects.push_back(mTerrain);
+    //mRenderSystem->mGameObjects.push_back(mTerrain);
 
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);

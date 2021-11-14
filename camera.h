@@ -8,6 +8,24 @@
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
  */
+
+struct Frustum
+{
+    float mFarPlaneDistance{100.f};   //used to make projection matrix
+    float mNearPlaneDistance{0.1f};  //used to make projection matrix
+    float mFOVvertical{45.f};                //used to make projection matrix
+    float mAspectRatio{1.7777778f};        //used to make projection matrix - set to 16/9 as default
+
+    //Normals for the side planes - for frustum culling
+    //Make sure these are stored normalized!
+    gsl::Vector3D mRightPlane;
+    gsl::Vector3D mLeftPlane;
+    gsl::Vector3D mToptPlane;
+    gsl::Vector3D mBottomPlane;
+
+    //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
+};
+
 class Camera
 {
 public:
@@ -39,9 +57,14 @@ public:
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
 
-private:
+    Frustum mFrustum;
+
     float mPitch{0.f};
     float mYaw{0.f};
+
+
+private:
+
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;

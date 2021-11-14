@@ -1072,32 +1072,51 @@ MeshData MeshHandler::makeLineBox(std::string meshName)
     return temp;
 }
 
-MeshData MeshHandler::makeFrustum(Camera *camera)
+MeshData MeshHandler::makeFrustum(const Frustum &frustumIn)
 {
-    MeshData temp;
+    //calculate corners of frustum:
+    //Math shown here: https://learnopengl.com/Guest-Articles/2021/Scene/Frustum-Culling
+    float tanFOVv = tanf(gsl::deg2radf(frustumIn.mFOVvertical/2));          // expensive calculation - save answer
 
-    gsl::Vector3D &cameraPos = camera->mPosition;
-    gsl::Matrix4x4 &cameraRot = camera->mViewMatrix;
+    float halfHeightFar = abs(frustumIn.mFarPlaneDistance * tanFOVv);
+    float halfWidthFar = halfHeightFar * frustumIn.mAspectRatio;
 
-    float xMinus{cameraPos.x};
-    float yMinus{cameraPos.y};
-    float zMinus{cameraPos.z};
+    float halfHeightNear = abs(frustumIn.mNearPlaneDistance * tanFOVv);
+    float halfWidthNear = halfHeightNear * frustumIn.mAspectRatio;
 
+    // camera looks down -Z (as a start) so near and far-plane are negative when drawn
+    gsl::Vector3D cornerNear = gsl::Vector3D(halfWidthNear, halfHeightNear, -frustumIn.mNearPlaneDistance);
+    gsl::Vector3D cornerFar = gsl::Vector3D(halfWidthFar, halfHeightFar, -frustumIn.mFarPlaneDistance);
 
+    MeshData tempMesh;
 
-    temp.mVertices[0].insert( temp.mVertices[0].end(),
-                {
-
+    tempMesh.mVertices[0].insert( tempMesh.mVertices[0].end(),
+      {         //Vertex data for front points                  color                       uv
+       Vertex{-cornerNear.x, -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},     // 0
+       Vertex{cornerNear.x,  -cornerNear.y, cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerNear.x,  cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerNear.x, cornerNear.y,  cornerNear.z,       1.f, 0.301f, 0.933f,          0.f, 0.f},
        //Vertex data for back
-       Vertex{xMinus, yMinus, zMinus,      1, 0.301, 0.933,          0.f, 0.f}    // 4
-
-
+       Vertex{-cornerFar.x, -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},    // 4
+       Vertex{cornerFar.x,  -cornerFar.y, cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{cornerFar.x,  cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
+       Vertex{-cornerFar.x, cornerFar.y,  cornerFar.z,          1.f, 0.301f, 0.933f,          0.f, 0.f},
                       });
 
+    //One line at a time
+    tempMesh.mIndices[0].insert( tempMesh.mIndices[0].end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,       //front rectangle
+      4, 5, 5, 6, 6, 7, 7, 4,       //back rectangle
+      0, 4, 3, 7,                   //leftside lines
+      1, 5, 2, 6                    //rightside lines
+                     });
 
-    temp.mDrawType = GL_LINES;
-    initMesh(temp, 0);
-    return temp;
+    tempMesh.mDrawType = GL_LINES;
+
+    //only LOD level 0
+    initMesh(tempMesh, 0);
+
+    return tempMesh;
 
 }
 
