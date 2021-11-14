@@ -76,7 +76,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 ////Search through all trianglevertices and get their barycentric coordinates.
     gsl::Vector3D barycoordinates;
 
-    for (int i = 0; i < triangleVertices.size()-2; i += 3)
+    for (int i = 0; i < triangleVertices.size()-2; i += 3) //sycle through trianglevertices three by three.
     {
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
         gsl::Vector3D v0 = (triangleVertices[i+1].mXYZ) - (triangleVertices[i].mXYZ),
@@ -88,20 +88,27 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
         barycoordinates.z = (v0.x * v2.z - v2.x * v0.z) / den;
         barycoordinates.y = 1.0f - barycoordinates.x - barycoordinates.z;
 
-        if (barycoordinates.x > 0.0f && barycoordinates.y > 0.0f && barycoordinates.z > 0.0f) //If barycentric is above 0, we have found a triangle.
+        if (barycoordinates.x > 0.0f && barycoordinates.y > 0.0f && barycoordinates.z > 0.0f) //If barycentric is above 0, a triangle have been found.
         {
 //          qDebug() << "Barycentric coordinates" << barycoordinates;
 //          qDebug() << "Triangle found" << (triangleNr/3)+1;
 
             ////Normal of triangle is calculated.
-            gsl::Vector3D tempNormal[2]; //used for calculating normal of triangle currently on
+            gsl::Vector3D tempNormal[3]; //used for calculating normal of triangle currently on
             gsl::Vector3D triangleNormal;
 
-            tempNormal[0] = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
-            tempNormal[1] = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
-            triangleNormal.x = tempNormal[0].y * tempNormal[1].z - tempNormal[0].z * tempNormal[1].y;
-            triangleNormal.y = tempNormal[0].z * tempNormal[1].x - tempNormal[0].x * tempNormal[1].z;
-            triangleNormal.z = tempNormal[0].x * tempNormal[1].y - tempNormal[0].y * tempNormal[1].x;
+            tempNormal[0] = triangleVertices[i].mXYZ;
+            tempNormal[1] = triangleVertices[i+1].mXYZ;
+            tempNormal[2] = triangleVertices[i+2].mXYZ;
+
+            triangleNormal = (tempNormal[1] - tempNormal[0]) ^ (tempNormal[2] - tempNormal[0]);
+
+//            tempNormal[0] = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
+//            tempNormal[1] = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
+
+//            triangleNormal.x = tempNormal[0].y * tempNormal[1].z - tempNormal[0].z * tempNormal[1].y;
+//            triangleNormal.y = tempNormal[0].z * tempNormal[1].x - tempNormal[0].x * tempNormal[1].z;
+//            triangleNormal.z = tempNormal[0].x * tempNormal[1].y - tempNormal[0].y * tempNormal[1].x;
 
 //            qDebug() << "Triangle normal is:" << triangleNormal;
             triangleNormal.normalize();
@@ -115,7 +122,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             gsl::Vector3D newBallPosition = ballPosition3D + velocity;
             float ballYOffset = 0.15f;
 
-            newBallPosition.y = (barycoordinates.x * triangleVertices[i+0].mXYZ.y +
+            newBallPosition.y = (barycoordinates.x * triangleVertices[i].mXYZ.y +
                                  barycoordinates.y * triangleVertices[i+1].mXYZ.y +
                                  barycoordinates.z * triangleVertices[i+2].mXYZ.y);
 
@@ -135,7 +142,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             gsl::Vector3D newBallPosition = ballPosition3D + velocity;
 
             physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
-            qDebug() << "Ball is falling";
+//            qDebug() << "Ball is falling";
     }
 
 ////------------Old Method - delivered in compulsery 2 for vis & sim - not scalable to multiple meshes with more than 2 triangles.---------
