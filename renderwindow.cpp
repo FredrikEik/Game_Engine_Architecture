@@ -168,6 +168,7 @@ void RenderWindow::init()
     
     ///PURE ECS TEST
     entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
+    meshCompVec[0]->IsCollidable = false;
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
@@ -216,7 +217,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
     
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(50.f, 0.1f,800.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
     mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -610,58 +611,62 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
     // work out components of quadratic
     for(int i = 0; i < eSize; i++)
     {
-        //get position vector into qvec3d
-        QVector3D position;
-        position.setX( transformCompVec[i]->mMatrix.getPosition().getX());
-        position.setY( transformCompVec[i]->mMatrix.getPosition().getY());
-        position.setZ( transformCompVec[i]->mMatrix.getPosition().getZ());
-        //find collision radius for object
-        for(int j = 0; j < eSize; j++)
+        if(meshCompVec[i]->IsCollidable)
         {
-            if(transformCompVec[i]->entity == meshCompVec[j]->entity)
+
+            //get position vector into qvec3d
+            QVector3D position;
+            position.setX( transformCompVec[i]->mMatrix.getPosition().getX());
+            position.setY( transformCompVec[i]->mMatrix.getPosition().getY());
+            position.setZ( transformCompVec[i]->mMatrix.getPosition().getZ());
+            //find collision radius for object
+            for(int j = 0; j < eSize; j++)
             {
-                radiusOfcollider = meshCompVec[j]->collisionRadius;
+                if(transformCompVec[i]->entity == meshCompVec[j]->entity)
+                {
+                    radiusOfcollider = meshCompVec[j]->collisionRadius;
+                }
             }
-        }
 
-        QVector3D v = QVector3D(position.x(), position.y(),position.z()) - CamPos;
-        lenght = v.length();
-        long double a = QVector3D::dotProduct(RayVec,RayVec);
-        long double b = 2.0 * QVector3D::dotProduct(v, RayVec);
-        long double c = QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider;
-        long double b_squared_minus_4ac = b * b + (-4.0) * a * c;
+            QVector3D v = QVector3D(position.x(), position.y(),position.z()) - CamPos;
+            lenght = v.length();
+            long double a = QVector3D::dotProduct(RayVec,RayVec);
+            long double b = 2.0 * QVector3D::dotProduct(v, RayVec);
+            long double c = QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider;
+            long double b_squared_minus_4ac = b * b + (-4.0) * a * c;
 
-        if (b_squared_minus_4ac == 0)
-        {
-            // One real root //colliding
-            //return true;
-            mMainWindow->setSelectedItem(transformCompVec[i]->entity);
-            collided = true;
-            entitySys->construcRay(RayVec,CamPos,lenght);
-            qDebug() <<"COL1"<<CamPos;
-            break;
-        }
-        else if (b_squared_minus_4ac > 0)
-        {
-            // Two real roots  //colliding
-            long double x1 = (-b - sqrt(b_squared_minus_4ac)) / (2.0 * a);
-            long double x2 = (-b + sqrt(b_squared_minus_4ac)) / (2.0 * a);
-
-            if (x1 >= 0.0 || x2 >= 0.0)
+            if (b_squared_minus_4ac == 0)
             {
-                mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
+                // One real root //colliding
+                //return true;
+                mMainWindow->setSelectedItem(transformCompVec[i]->entity);
                 collided = true;
                 entitySys->construcRay(RayVec,CamPos,lenght);
-                qDebug() <<"COL2"<<CamPos;
+                qDebug() <<"COL1"<<CamPos;
                 break;
             }
-            if (x1 < 0.0 || x2 >= 0.0)
+            else if (b_squared_minus_4ac > 0)
             {
-                mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
-                collided = true;
-                entitySys->construcRay(RayVec,CamPos,lenght);
-                qDebug() <<"COL3"<<CamPos;
-                break;
+                // Two real roots  //colliding
+                long double x1 = (-b - sqrt(b_squared_minus_4ac)) / (2.0 * a);
+                long double x2 = (-b + sqrt(b_squared_minus_4ac)) / (2.0 * a);
+
+                if (x1 >= 0.0 || x2 >= 0.0)
+                {
+                    mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
+                    collided = true;
+                    entitySys->construcRay(RayVec,CamPos,lenght);
+                    qDebug() <<"COL2"<<CamPos;
+                    break;
+                }
+                if (x1 < 0.0 || x2 >= 0.0)
+                {
+                    mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
+                    collided = true;
+                    entitySys->construcRay(RayVec,CamPos,lenght);
+                    qDebug() <<"COL3"<<CamPos;
+                    break;
+                }
             }
         }
     }

@@ -33,7 +33,7 @@ struct MeshComponent
     //GLuint mEAB{0};
     //size_t VertexSize{0};
     bool IsRay = false;
-
+    bool IsCollidable = true;
     GLuint mVAO[3] = {0,0,0};
     GLuint mVBO[3] = {0,0,0};
     GLuint mEAB[3] = {0,0,0};
