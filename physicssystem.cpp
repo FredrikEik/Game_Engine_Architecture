@@ -38,7 +38,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
             //get speed
             float speed = Transf->Velocity.length() * elasticity;
             //apply speed to new vector direction
-            Transf->Velocity =  MakeGSLvec3D( NewVector)*speed;
+            Transf->Velocity =  MakeGSLvec3D( NewVector)*speed ;
             once = false;
 
             //clipping collision
@@ -52,7 +52,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
 
 
     // add strekning s = v0*t + 1/2 * a * t^2
-    QVector3D distance = MakeQvec3D( Transf->mMatrix.getPosition()) + DistanceTraveled(MakeQvec3D(Transf->Velocity),g,deltaTime);
+    QVector3D distance = MakeQvec3D( Transf->mMatrix.getPosition()) + DistanceTraveled(MakeQvec3D(Transf->Velocity),g,deltaTime)*1.5f;
     Transf->mMatrix.setPosition(distance.x(),distance.y(), distance.z());
 
 

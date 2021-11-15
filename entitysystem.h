@@ -26,6 +26,7 @@ public:
     void constructSuzanne();
     void DestroyEntity(int i);
     void LODSuzanneSwithcer(MeshComponent *mesh);
+    void constructSkybox(GLuint shader ,GLint texture );
 private:
     TransformComponent *TransComp;
     MeshComponent *MeshComp;

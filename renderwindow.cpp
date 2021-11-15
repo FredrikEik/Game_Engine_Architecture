@@ -99,7 +99,7 @@ void RenderWindow::init()
     mTextures[5] = new Texture("SpaceInvaders4.bmp");
     mTextures[6] = new Texture("SpaceInvaderBoss1.bmp");
     mTextures[7] = new Texture("SpaceInvadersBoss2.bmp");
-    
+    mTextures[8] = new Texture("skybox", true); //bitmap
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
@@ -117,6 +117,8 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[6]->mGLTextureID);
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_2D, mTextures[7]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE8);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[8]->mGLTextureID); //cubemap
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
     //Supported on most Windows machines
@@ -126,7 +128,7 @@ void RenderWindow::init()
     
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+    //glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
     
     //Compile shaders:
@@ -165,6 +167,7 @@ void RenderWindow::init()
     ResSys->ResourceSystemInit(RenderSys);
     
     ///PURE ECS TEST
+    entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
@@ -268,11 +271,43 @@ void RenderWindow::render()
     
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
-
-
     int viewMatrix{-1};
     int projectionMatrix{-1};
     int modelMatrix{-1};
+
+    //skybox code
+    //frustum culling lines! This is a visualisation of frostum
+    /*if(true) //add bIsSkybox
+    {
+
+        glUseProgram(mShaderPrograms[3]->getProgram()); // using plain shader program
+        meshData* Skybox = ResSys->makeSkyBox(RenderSys);
+        gsl::Matrix4x4 temp(true);
+        temp.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
+
+
+        initializeOpenGLFunctions();    //must call this every frame it seems...
+
+
+        viewMatrix = vMatrixUniform3;
+        projectionMatrix = pMatrixUniform3;
+        modelMatrix = mMatrixUniform3;
+        //Now mMaterial component holds texture slot directly - probably should be changed
+        glUniform1i(skyboxUniform3, mTextures[8]->mGLTextureID);
+
+        //glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+        //glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+        //glUniformMatrix4fv( modelMatrix, 1, GL_TRUE,temp.constData());
+
+        //draw the object
+        glBindVertexArray( Skybox->VAO );
+        glDrawArrays(Skybox->DrawType, 0, Skybox->meshVert.size());
+        glBindVertexArray(0);
+
+    }*/
+
+
+
 
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++)
@@ -282,6 +317,12 @@ void RenderWindow::render()
             frustumCulling(i);
 
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
+
+            if(entities[i] == 0)
+            {
+                glDepthMask(GL_FALSE);
+                //transformCompVec[0]->mMatrix.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
+            }
 
             if (MaterialCompVec[i]->mShaderProgram == 0)
             {
@@ -308,6 +349,16 @@ void RenderWindow::render()
                 glUniform3f(mLightPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos lightsource! booiiiii
                 glUniform1i(mTextureUniform2,  MaterialCompVec[i]->mTextureUnit);
             }
+            else if (MaterialCompVec[i]->mShaderProgram == 3)
+            {
+
+                viewMatrix = vMatrixUniform3;
+                projectionMatrix = pMatrixUniform3;
+                glUniform3f(mMatrixUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
+                glUniform1i(skyboxUniform3, MaterialCompVec[i]->mTextureUnit);
+
+            }
+
             if(meshCompVec[i]->LODEnabled){
                 //LOD SWITCHER
                 //calc length between obj and camera.
@@ -358,6 +409,11 @@ void RenderWindow::render()
             }
             //------------------------------------------------------
             */
+            if(entities[i] == 0)
+            {
+                glDepthMask(GL_TRUE);
+
+            }
         }
     }
 
@@ -472,10 +528,9 @@ void RenderWindow::setupPhongShader(int index)
 
 void RenderWindow::setupSkyboxshader(int shaderIndex)
 {
-    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-
+    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "view" );
+    pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "projection" );
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "POS" );
     skyboxUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
