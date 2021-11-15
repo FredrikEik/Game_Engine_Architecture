@@ -29,9 +29,9 @@
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/light.obj",
-                    "positionx": -7.137679576873779,
+                    "positionx": -27.91718292236328,
                     "positiony": 3,
-                    "positionz": 13.966470718383789,
+                    "positionz": 29.375507354736328,
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
@@ -42,8 +42,8 @@
                 {
                     "filepath": "../GEA2021/Assets/Meshes/cube.obj",
                     "positionx": -1,
-                    "positiony": -2.200000047683716,
-                    "positionz": -5,
+                    "positiony": -0.4000000059604645,
+                    "positionz": -4.699999809265137,
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,

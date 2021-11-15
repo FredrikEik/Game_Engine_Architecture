@@ -612,8 +612,8 @@ void RenderWindow::setCameraSpeed(float value)
     //Keep within some min and max values
     if(mCameraSpeed < 0.01f)
         mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
+    if (mCameraSpeed > 3.6f)
+        mCameraSpeed = 3.6f;
 }
 
 void RenderWindow::handleInput()

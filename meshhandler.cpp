@@ -366,7 +366,7 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     CollisionComponent->maxCorner.setZ(zMax);
 
     // is only used for frustum culling so doesnt have to accurate.
-    CollisionComponent->mRaidus = xMax*2;
+    CollisionComponent->mRaidus = xMax*zMax;
 
     // 998 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
     float gridSizeX = xMax / 998;
@@ -394,7 +394,8 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
     CollLines->mDrawType = GL_LINES;
     init(*CollLines,0);
-    float gridSize {50};
+    float gridSize {10};
+
 
 //    heights2D.reserve((xMax*zMax/gridSize));
 
@@ -402,49 +403,64 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     {
         for(int x = int(xMax);x > xMin; x-=gridSize)
         {
+            std::vector<float> allHeightsInSquare;
             for(auto it : mAllDataPoints)
             {
                 if(it.x > x-gridSize && it.x < x && it.z > z && it.z < z + gridSize)
                 {
                     //heights2D.push_back(gsl::Vector3D(x,it.y,z));
-                    MeshComp->mVertices[0].push_back(Vertex(x,it.y,z, 1,0,0,  0,0));
-//                    it=0;
-                    goto jump;
+                    allHeightsInSquare.push_back(it.y);
                 }
             }
-            if(!MeshComp->mVertices->empty())
+            if(!allHeightsInSquare.empty())
             {
-                MeshComp->mVertices->push_back(MeshComp->mVertices->at(MeshComp->mVertices->size()-1));
+                float averageHeight{0};
+                for(auto it: allHeightsInSquare)
+                {
+                    averageHeight += it;
+                }
+                averageHeight = averageHeight / allHeightsInSquare.size();
+                MeshComp->mVertices[0].push_back(Vertex(x,averageHeight,z, 1,0,0,  0,0));
+                allHeightsInSquare.clear();
+                averageHeight = 0;
+            }
+            else if(!MeshComp->mVertices->empty())
+            {
+                float lastHeight = MeshComp->mVertices[0].at(MeshComp->mVertices->size()-1).mXYZ.getY();
+                MeshComp->mVertices[0].push_back(Vertex(x,lastHeight,z, 1,0,0,  0,0));
+
                 continue;
             }else
             {
                 MeshComp->mVertices[0].push_back(Vertex(x,0,z, 1,0,0,  0,0));
                 continue;
             }
-            jump:;
+//            jump:;
         }
     }
 
     // Code from 3DProg just  to test, neet to set the correct indecies
     // should problably use a 2d array to have more control of each vertex;
-    int c;
-    for(GLuint i{0}; i < MeshComp->mVertices[0].size() - (xMax/gridSize) -1; i++)
+    xMax = 1000;
+    int c{0};
+    for(GLuint i{}; i < MeshComp->mVertices[0].size() - (xMax/gridSize) - 1; i++)
     {
-        if(c == (xMax/gridSize) -1)
+        if(c == (xMax/gridSize) - 1)
         {
             c=0;
             continue;
         }
         MeshComp->mIndices->push_back(i);
-        MeshComp->mIndices->push_back(i+(xMax/gridSize));
-        MeshComp->mIndices->push_back(i+gridSize);
+        MeshComp->mIndices->push_back(i+1);
+        MeshComp->mIndices->push_back(i+int(xMax/gridSize));
 
-        MeshComp->mIndices->push_back(i+(xMax/gridSize));
-        MeshComp->mIndices->push_back(i+(xMax/gridSize)+gridSize);
-        MeshComp->mIndices->push_back(i+gridSize);
+        MeshComp->mIndices->push_back(i + int(xMax/gridSize));
+        MeshComp->mIndices->push_back(i+1);
+        MeshComp->mIndices->push_back(i+(int(xMax/gridSize))+1);
         c++;
     }
-
+MeshComp->mDrawType = GL_TRIANGLES;
+glPointSize(5.f);
 
 init(*MeshComp,0);
 

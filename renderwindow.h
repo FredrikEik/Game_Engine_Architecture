@@ -132,7 +132,7 @@ private:
     float FOV{45.f};
     float mAspectratio{1.f};
     float mNearPlane{0.1f};
-    float mFarPlane{500.f};
+    float mFarPlane{1000.f};
 
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
