@@ -236,14 +236,14 @@ void RenderWindow::init()
     //send in the necessary data to physics engine
     int eSize = (int)entities.size();
     for(int i = 0; i < eSize; i++){
-        if(meshCompVec[i]->entity == 3){
+        if(meshCompVec[i]->entity == 4){
             Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("bowlSurface.obj"));
             break;
         }
     }
 
     //player
-    CurrentPlayer = transformCompVec[8];
+    CurrentPlayer = transformCompVec[9];
 
 }
 
@@ -401,7 +401,7 @@ void RenderWindow::render()
             /*//----------------------------------------------------
             //HARDCODED COLLIDER BABY
             //monkey thats moving is entity id 2
-            if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2){
+            if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2 && meshCompVec[2]->IsCollidable ){
                 if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[i],transformCompVec[i]))
                 {
                     //run collision code
@@ -423,13 +423,13 @@ void RenderWindow::render()
         
     }else{
         for(int i = 0; i < eSize; i++){
-            if(transformCompVec[i]->entity == 2)
+            if(transformCompVec[i]->entity == 3)
             {
                 transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
                 //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
                 //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
             }
-            if(transformCompVec[i]->entity == 4 ) //enmtity 4 is the ball
+            if(transformCompVec[i]->entity == 5 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
             {
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
                 //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
