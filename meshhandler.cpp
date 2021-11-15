@@ -420,19 +420,19 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
                     averageHeight += it;
                 }
                 averageHeight = averageHeight / allHeightsInSquare.size();
-                MeshComp->mVertices[0].push_back(Vertex(x,averageHeight,z, 1,0,0,  0,0));
+                MeshComp->mVertices[0].push_back(Vertex(x,averageHeight,z, 0,1,0,  0,0));
                 allHeightsInSquare.clear();
                 averageHeight = 0;
             }
             else if(!MeshComp->mVertices->empty())
             {
                 float lastHeight = MeshComp->mVertices[0].at(MeshComp->mVertices->size()-1).mXYZ.getY();
-                MeshComp->mVertices[0].push_back(Vertex(x,lastHeight,z, 1,0,0,  0,0));
+                MeshComp->mVertices[0].push_back(Vertex(x,lastHeight,z, 0,1,0,  0,0));
 
                 continue;
             }else
             {
-                MeshComp->mVertices[0].push_back(Vertex(x,0,z, 1,0,0,  0,0));
+                MeshComp->mVertices[0].push_back(Vertex(x,0,z, 0,1,0,  0,0));
                 continue;
             }
 //            jump:;
@@ -441,28 +441,97 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
     // Code from 3DProg just  to test, neet to set the correct indecies
     // should problably use a 2d array to have more control of each vertex;
-    xMax = 1000;
+    float TerrainSize = 1000;
     int c{0};
-    for(GLuint i{}; i < MeshComp->mVertices[0].size() - (xMax/gridSize) - 1; i++)
+    for(GLuint i{}; i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize) - 1; i++)
     {
-        if(c == (xMax/gridSize) - 1)
+        if(c == (TerrainSize/gridSize) - 1)
         {
             c=0;
             continue;
         }
         MeshComp->mIndices->push_back(i);
         MeshComp->mIndices->push_back(i+1);
-        MeshComp->mIndices->push_back(i+int(xMax/gridSize));
+        MeshComp->mIndices->push_back(i+int(TerrainSize/gridSize));
 
-        MeshComp->mIndices->push_back(i + int(xMax/gridSize));
+        MeshComp->mIndices->push_back(i + int(TerrainSize/gridSize));
         MeshComp->mIndices->push_back(i+1);
-        MeshComp->mIndices->push_back(i+(int(xMax/gridSize))+1);
+        MeshComp->mIndices->push_back(i+(int(TerrainSize/gridSize))+1);
         c++;
     }
 MeshComp->mDrawType = GL_TRIANGLES;
 glPointSize(5.f);
 
-init(*MeshComp,0);
+
+//Normals:
+QVector3D pCenter,p0,p1,p2,p3,p4,p5;
+QVector3D n0,n1,n2,n3,n4,n5;
+
+for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize);i++)
+{
+
+    //Får tak i alle punktene som trengs
+    if(MeshComp->mVertices[0].at(i).mXYZ.x >0 && MeshComp->mVertices[0].at(i).mXYZ.z > 0 && MeshComp->mVertices[0].at(i).mXYZ.x < xMax - (TerrainSize/gridSize)/9  && MeshComp->mVertices[0].at(i).mXYZ.z < zMax - (TerrainSize/gridSize)/5)
+    {
+        pCenter = QVector3D{MeshComp->mVertices[0].at(i).mXYZ.x,MeshComp->mVertices[0].at(i).mXYZ.y,MeshComp->mVertices[0].at(i).mXYZ.z};
+
+        //p0
+        p0 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.z};
+
+        //p1
+        p1 = QVector3D{MeshComp->mVertices[0].at(i+1).mXYZ.x,MeshComp->mVertices[0].at(i+1).mXYZ.y,MeshComp->mVertices[0].at(i+1).mXYZ.z};
+
+        //p2
+        p2 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.z};
+
+        //p3
+        p3 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.z};
+
+        //p4
+        p4 = QVector3D{MeshComp->mVertices[0].at(i-1).mXYZ.x,MeshComp->mVertices[0].at(i-1).mXYZ.y,MeshComp->mVertices[0].at(i-1).mXYZ.z};
+
+        //p5
+        p5 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.z};
+    }
+    //lager vektorer til alle punktene
+    QVector3D v0 = p0-pCenter;
+    QVector3D v1 = p1-pCenter;
+    QVector3D v2 = p2-pCenter;
+    QVector3D v3 = p3-pCenter;
+    QVector3D v4 = p4-pCenter;
+    QVector3D v5 = p5-pCenter;
+    QVector3D nV;
+
+    //Regner ut normalene til alle trekantene rundt punktet
+    //n0
+    n0 = v0.crossProduct(v0,v1);
+    n0.normalize();
+    //n1
+    n1 = QVector3D::crossProduct(v1,v2);
+    n1.normalize();
+    //n2
+    n2 = v2.crossProduct(v2,v3);
+    n2.normalize();
+    //n3
+    n3 = v3.crossProduct(v3,v4);
+    n3.normalize();
+    //n4
+    n4 = v4.crossProduct(v4,v5);
+    n4.normalize();
+    //n5
+    n5 = v5.crossProduct(v5,v0);
+    n5.normalize();
+
+    nV = n0+n1+n2+n3+n4+n5;
+    nV.normalize();
+
+    MeshComp->mVertices[0].at(i).set_normal(nV.x(),nV.y(),nV.z());
+//    mVertices[i].m_normal[1] = nV.y();
+//    mVertices[i].m_normal[2] = nV.z();
+}
+
+
+
 
 
 
@@ -479,7 +548,7 @@ init(*MeshComp,0);
 
 
 
-
+init(*MeshComp,0);
 
 
 }

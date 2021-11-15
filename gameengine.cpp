@@ -139,7 +139,8 @@ void GameEngine::SetUpObjects()
 //    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false, "cocademon3.bmp");
-    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
+//    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
+    mLight->mTransformComp->mMatrix.setPosition(0,300,600);
     mLight->mMaterialComp->mShaderProgram = 2;
 //    mLight->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(mLight);
@@ -149,6 +150,8 @@ void GameEngine::SetUpObjects()
 
     // TERRAIN:
     mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
+    mTerrainObject->mMaterialComp->mShaderProgram = 2;
+    mTerrainObject->mMaterialComp->mTextureUnit = 0;
     mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
 
@@ -419,7 +422,8 @@ void GameEngine::UpdateGameCameraFollow()
 void GameEngine::rotateLight()
 {
     static float rotate{0.f};
-    mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
+//    mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
+    mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)*10, 0, cos(rotate)*10);
     rotate+=0.01f;
 }
 
