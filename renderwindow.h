@@ -135,6 +135,7 @@ private:
     GLint mMatrixUniform3{-1};
     GLint vMatrixUniform3{-1};
     GLint pMatrixUniform3{-1};
+    GLint POSUniform3{-1};
     GLint skyboxUniform3{-1};
       class Texture *textures_faces[gsl::NumberOfTextures]{nullptr};//We can hold some textures ;
     //skybox* SkyBox;

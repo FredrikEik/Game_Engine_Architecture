@@ -5,9 +5,10 @@ out vec3 TexCoords;
 
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 mMatrix;
 uniform vec3 POS;
 void main()
 {
-    TexCoords = POS;
-    gl_Position = projection * view * vec4(POS, 1.0);
+    TexCoords = aPos;
+    gl_Position = projection * view *mMatrix* vec4(aPos, 1.0);
 }

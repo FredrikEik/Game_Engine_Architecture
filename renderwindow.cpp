@@ -216,7 +216,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
     
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mCurrentCamera = new Camera(50.f, 0.1f,800.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
     
     mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -321,7 +321,7 @@ void RenderWindow::render()
             if(entities[i] == 0)
             {
                 glDepthMask(GL_FALSE);
-                //transformCompVec[0]->mMatrix.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
+                transformCompVec[0]->mMatrix.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
             }
 
             if (MaterialCompVec[i]->mShaderProgram == 0)
@@ -354,7 +354,8 @@ void RenderWindow::render()
 
                 viewMatrix = vMatrixUniform3;
                 projectionMatrix = pMatrixUniform3;
-                glUniform3f(mMatrixUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
+                modelMatrix = mMatrixUniform3;
+                glUniform3f(POSUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
                 glUniform1i(skyboxUniform3, MaterialCompVec[i]->mTextureUnit);
 
             }
@@ -530,7 +531,8 @@ void RenderWindow::setupSkyboxshader(int shaderIndex)
 {
     vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "view" );
     pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "projection" );
-    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "POS" );
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    POSUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "POS" );
     skyboxUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
