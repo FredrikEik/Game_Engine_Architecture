@@ -100,6 +100,14 @@ private:
 
     void handleInput();
 
+    void switchProgram(int shaderIndex);
+    void switchLOD(int shaderIndex);
+    void drawFrostum();
+
+    int viewMatrix{-1};
+    int projectionMatrix{-1};
+    int modelMatrix{-1};
+
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};

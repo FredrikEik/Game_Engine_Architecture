@@ -251,8 +251,6 @@ void RenderWindow::init()
 void RenderWindow::render()
 {
     mMainWindow->updateDetails();
-    //
-    
     
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
@@ -272,123 +270,19 @@ void RenderWindow::render()
     
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
-    int viewMatrix{-1};
-    int projectionMatrix{-1};
-    int modelMatrix{-1};
-
-    //skybox code
-    //frustum culling lines! This is a visualisation of frostum
-    /*if(true) //add bIsSkybox
-    {
-
-        glUseProgram(mShaderPrograms[3]->getProgram()); // using plain shader program
-        meshData* Skybox = ResSys->makeSkyBox(RenderSys);
-        gsl::Matrix4x4 temp(true);
-        temp.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
-
-
-        initializeOpenGLFunctions();    //must call this every frame it seems...
-
-
-        viewMatrix = vMatrixUniform3;
-        projectionMatrix = pMatrixUniform3;
-        modelMatrix = mMatrixUniform3;
-        //Now mMaterial component holds texture slot directly - probably should be changed
-        glUniform1i(skyboxUniform3, mTextures[8]->mGLTextureID);
-
-        //glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-        //glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-        //glUniformMatrix4fv( modelMatrix, 1, GL_TRUE,temp.constData());
-
-        //draw the object
-        glBindVertexArray( Skybox->VAO );
-        glDrawArrays(Skybox->DrawType, 0, Skybox->meshVert.size());
-        glBindVertexArray(0);
-
-    }*/
-
-
-
-
     int eSize = entities.size();
     for(int i = 0; i < eSize; i++)
     {
-        if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity){
+        if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
+        {
             //frustum culling
             frustumCulling(i);
 
+            if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
+
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
-
-            if(entities[i] == 0)
-            {
-                glDepthMask(GL_FALSE);
-                transformCompVec[0]->mMatrix.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
-            }
-
-            if (MaterialCompVec[i]->mShaderProgram == 0)
-            {
-                viewMatrix = vMatrixUniform;
-                projectionMatrix = pMatrixUniform;
-                modelMatrix = mMatrixUniform;
-            }
-            else if (MaterialCompVec[i]->mShaderProgram == 1)
-            {
-                viewMatrix = vMatrixUniform1;
-                projectionMatrix = pMatrixUniform1;
-                modelMatrix = mMatrixUniform1;
-                //Now mMaterial component holds texture slot directly - probably should be changed
-                glUniform1i(mTextureUniform, MaterialCompVec[i]->mTextureUnit);
-            }
-            else if (MaterialCompVec[i]->mShaderProgram == 2)
-            {
-
-                viewMatrix = mVmatrixUniform2;
-                projectionMatrix = mPmatrixUniform2;
-                modelMatrix = mMmatrixUniform2;
-                glUniform1f(mUsingTextureUniform, true); // turns on texture
-                glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos camera
-                glUniform3f(mLightPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos lightsource! booiiiii
-                glUniform1i(mTextureUniform2,  MaterialCompVec[i]->mTextureUnit);
-            }
-            else if (MaterialCompVec[i]->mShaderProgram == 3)
-            {
-
-                viewMatrix = vMatrixUniform3;
-                projectionMatrix = pMatrixUniform3;
-                modelMatrix = mMatrixUniform3;
-                glUniform3f(POSUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
-                glUniform1i(skyboxUniform3, MaterialCompVec[i]->mTextureUnit);
-
-            }
-
-            if(meshCompVec[i]->LODEnabled){
-                //LOD SWITCHER
-                //calc length between obj and camera.
-                //use length to switch LOD level
-                //use length and LOD level to switch only one time
-                gsl::Vector3D LODlength = transformCompVec[i]->mMatrix.getPosition() - mCurrentCamera->position();
-
-                if(LODlength.length() < 10.0f)
-                {
-                    //qDebug() << "LOD level 0";
-                    //LOD LEVEL 0
-                    meshCompVec[i]->LODLevel = 0;
-                }
-                else if(LODlength.length() < 20.0f)
-                {
-                    //qDebug() << "LOD level 1";
-                    //LOD LEVEL 1
-                    meshCompVec[i]->LODLevel = 1;
-                }
-                else if(LODlength.length() > 20.0f)
-                {
-                    //qDebug() << "LOD level 2";
-                    //LOD LEVEL 2
-                    meshCompVec[i]->LODLevel = 2;
-                }
-            }else{
-                meshCompVec[i]->LODLevel = 0;
-            }
+            switchProgram(i);   //assignes propper values for programs
+            switchLOD(i);       //switches to correct lod
 
             RenderSys->draw(meshCompVec[i],
                             MaterialCompVec[i],
@@ -411,17 +305,15 @@ void RenderWindow::render()
             }
             //------------------------------------------------------
             */
-            if(entities[i] == 0)
-            {
-                glDepthMask(GL_TRUE);
 
-            }
+            if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
+
         }
     }
 
-    if(isPaused){
-        
-    }else{
+    if(!isPaused)
+    {
+        //COLLISON AND PHYSICS PART
         for(int i = 0; i < eSize; i++){
             if(transformCompVec[i]->entity == 3)
             {
@@ -437,29 +329,9 @@ void RenderWindow::render()
             }
         }
     }
-    //frustum culling lines! This is a visualisation of frostum
-    if(mCurrentCamera->mFrustum.isDrawable)
-    {
 
-        glUseProgram(mShaderPrograms[0]->getProgram()); // using plain shader program
-        meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
-        gsl::Matrix4x4 temp(true);
-        temp.translate(mCurrentCamera->Cam.mPosition);
-        temp.rotateY(-mCurrentCamera->Cam.mYaw);
-        temp.rotateX(-mCurrentCamera->Cam.mPitch);
+    drawFrostum();      //frustum culling lines! This is a visualisation of frostum
 
-        initializeOpenGLFunctions();    //must call this every frame it seems...
-
-        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
-        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
-        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
-
-        //draw the object
-        glBindVertexArray( frustum->VAO );
-        glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
-        glBindVertexArray(0);
-
-    }
 
     if(bIsPlayerCamera)
     {
@@ -946,6 +818,111 @@ void RenderWindow::handleInput()
         }
     }
 
+}
+
+void RenderWindow::switchProgram(int shaderIndex)
+{
+
+    if(entities[shaderIndex] == 0)
+    {
+        glDepthMask(GL_FALSE);
+        transformCompVec[0]->mMatrix.setPosition(mCurrentCamera->Cam.mPosition.getX(),mCurrentCamera->Cam.mPosition.getY(),mCurrentCamera->Cam.mPosition.getZ());
+    }
+
+    if (MaterialCompVec[shaderIndex]->mShaderProgram == 0)
+    {
+        viewMatrix = vMatrixUniform;
+        projectionMatrix = pMatrixUniform;
+        modelMatrix = mMatrixUniform;
+    }
+    else if (MaterialCompVec[shaderIndex]->mShaderProgram == 1)
+    {
+        viewMatrix = vMatrixUniform1;
+        projectionMatrix = pMatrixUniform1;
+        modelMatrix = mMatrixUniform1;
+        //Now mMaterial component holds texture slot directly - probably should be changed
+        glUniform1i(mTextureUniform, MaterialCompVec[shaderIndex]->mTextureUnit);
+    }
+    else if (MaterialCompVec[shaderIndex]->mShaderProgram == 2)
+    {
+
+        viewMatrix = mVmatrixUniform2;
+        projectionMatrix = mPmatrixUniform2;
+        modelMatrix = mMmatrixUniform2;
+        glUniform1f(mUsingTextureUniform, true); // turns on texture
+        glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos camera
+        glUniform3f(mLightPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos lightsource! booiiiii
+        glUniform1i(mTextureUniform2,  MaterialCompVec[shaderIndex]->mTextureUnit);
+    }
+    else if (MaterialCompVec[shaderIndex]->mShaderProgram == 3)
+    {
+
+        viewMatrix = vMatrixUniform3;
+        projectionMatrix = pMatrixUniform3;
+        modelMatrix = mMatrixUniform3;
+        glUniform3f(POSUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
+        glUniform1i(skyboxUniform3, MaterialCompVec[shaderIndex]->mTextureUnit);
+
+    }
+}
+
+void RenderWindow::switchLOD(int shaderIndex)
+{
+    if(meshCompVec[shaderIndex]->LODEnabled){
+        //LOD SWITCHER
+        //calc length between obj and camera.
+        //use length to switch LOD level
+        //use length and LOD level to switch only one time
+        gsl::Vector3D LODlength = transformCompVec[shaderIndex]->mMatrix.getPosition() - mCurrentCamera->position();
+
+        if(LODlength.length() < 10.0f)
+        {
+            //qDebug() << "LOD level 0";
+            //LOD LEVEL 0
+            meshCompVec[shaderIndex]->LODLevel = 0;
+        }
+        else if(LODlength.length() < 20.0f)
+        {
+            //qDebug() << "LOD level 1";
+            //LOD LEVEL 1
+            meshCompVec[shaderIndex]->LODLevel = 1;
+        }
+        else if(LODlength.length() > 20.0f)
+        {
+            //qDebug() << "LOD level 2";
+            //LOD LEVEL 2
+            meshCompVec[shaderIndex]->LODLevel = 2;
+        }
+    }
+    else{
+        meshCompVec[shaderIndex]->LODLevel = 0;
+    }
+}
+
+void RenderWindow::drawFrostum()
+{
+    if(mCurrentCamera->mFrustum.isDrawable)
+    {
+
+        glUseProgram(mShaderPrograms[0]->getProgram()); // using plain shader program
+        meshData* frustum = ResSys->makeFrustum(mCurrentCamera->mFrustum, RenderSys);
+        gsl::Matrix4x4 temp(true);
+        temp.translate(mCurrentCamera->Cam.mPosition);
+        temp.rotateY(-mCurrentCamera->Cam.mYaw);
+        temp.rotateX(-mCurrentCamera->Cam.mPitch);
+
+        initializeOpenGLFunctions();    //must call this every frame it seems...
+
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->Cam.mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE,temp.constData());
+
+        //draw the object
+        glBindVertexArray( frustum->VAO );
+        glDrawArrays(frustum->DrawType, 0, frustum->meshVert.size());
+        glBindVertexArray(0);
+
+    }
 }
 
 
