@@ -196,6 +196,7 @@ void RenderWindow::init()
 
         }
     }
+    JSS->SaveLevel();
 
 
 

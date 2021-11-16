@@ -43,6 +43,7 @@ struct MeshComponent
     float scale = 1;
 
     bool isDrawable = true;
+    bool isSceneObject = false;
 
     unsigned int LODLevel = 0;
     bool LODEnabled = false;
