@@ -26,9 +26,9 @@ public:
     //void readObj(std::string &filename, MeshComponent *MeshComp);
 //    void init(MeshComponent &MeshComp);
 
-    void saveScene(std::vector<GameObject*> &objects);
-    void loadScene(std::vector<GameObject *> &objects,GameObject* &player, GameObject* &light);
-    std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
+    void saveScene(std::vector<GameObject*> &objects, std::string &levelName);
+    void loadScene(std::vector<GameObject *> &objects,GameObject* &player, GameObject* &light, std::string &levelName);
+    std::map<QString,std::vector<GameObject*>> mLevels;
 
     void setUpAllTextures();
     void getAllMeshNames();

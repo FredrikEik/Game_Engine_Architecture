@@ -1,12 +1,12 @@
 {
     "levels": [
         {
-            "levelname": "level1",
+            "levelname": "lvl1",
             "objects": [
                 {
                     "filepath": "xyz",
                     "positionx": 0,
-                    "positiony": 2.7755575615628914e-17,
+                    "positiony": 0,
                     "positionz": 0,
                     "rotationx": 0,
                     "rotationy": 0,
@@ -18,7 +18,7 @@
                 {
                     "filepath": "../GEA2021/Assets/Meshes/player.obj",
                     "positionx": 0,
-                    "positiony": -1.7999999523162842,
+                    "positiony": 0,
                     "positionz": -8,
                     "rotationx": 0,
                     "rotationy": 0,
@@ -29,9 +29,9 @@
                 },
                 {
                     "filepath": "../GEA2021/Assets/Meshes/light.obj",
-                    "positionx": -27.91718292236328,
-                    "positiony": 3,
-                    "positionz": 29.375507354736328,
+                    "positionx": -500,
+                    "positiony": 100,
+                    "positionz": 0,
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
@@ -42,13 +42,102 @@
                 {
                     "filepath": "../GEA2021/Assets/Meshes/cube.obj",
                     "positionx": -1,
-                    "positiony": -0.4000000059604645,
-                    "positionz": -4.699999809265137,
+                    "positiony": 1,
+                    "positionz": -5,
                     "rotationx": 0,
                     "rotationy": 0,
                     "rotationz": 0,
                     "shader": 2,
                     "texturename": "orange.bmp",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/light.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 2,
+                    "texturename": "1Adefault.bmp",
+                    "usingLOD": false
+                }
+            ]
+        },
+        {
+            "levelname": "lvl2",
+            "objects": [
+                {
+                    "filepath": "xyz",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 0,
+                    "texturename": "plain",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/player.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": -8,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 0,
+                    "texturename": "plain",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/light.obj",
+                    "positionx": -500,
+                    "positiony": 100,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 2,
+                    "texturename": "cocademon3.bmp",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/cube.obj",
+                    "positionx": -1,
+                    "positiony": 1,
+                    "positionz": -5,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 2,
+                    "texturename": "orange.bmp",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/light.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 2,
+                    "texturename": "1Adefault.bmp",
+                    "usingLOD": false
+                },
+                {
+                    "filepath": "../GEA2021/Assets/Meshes/suzanne.obj",
+                    "positionx": 0,
+                    "positiony": 0,
+                    "positionz": 0,
+                    "rotationx": 0,
+                    "rotationy": 0,
+                    "rotationz": 0,
+                    "shader": 2,
+                    "texturename": "1Adefault.bmp",
                     "usingLOD": false
                 }
             ]

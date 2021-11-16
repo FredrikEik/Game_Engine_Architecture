@@ -91,6 +91,10 @@ private slots:
 
     void on_RotateZspinBox_valueChanged(double arg1);
 
+    void on_actionInfo_triggered();
+
+    void on_lineEdit_textEdited(const QString &arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -116,6 +120,8 @@ private:
     std::vector<std::string> allMeshes;
     int currentTextureIndex{0};
     int currentMeshIndex{0};
+
+    std::string levelName{""};
 
 
 };

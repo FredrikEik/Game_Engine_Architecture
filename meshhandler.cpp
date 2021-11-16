@@ -230,6 +230,9 @@ void MeshHandler::createXYZAxis(MeshComponent *MeshComp, CollisionComponent *Col
     MeshComp->mVertices[0].push_back(Vertex{0,3,0,0,1,0});
     MeshComp->mVertices[0].push_back(Vertex{0,0,0,0,0,1});
     MeshComp->mVertices[0].push_back(Vertex{0,0,3,0,0,1});
+
+//    MeshComp->mIndices[0].insert( CollLines->mIndices[0].end(),
+//    { 0,1,0,2,0,3});
     MeshComp->mDrawType = GL_LINES;
 
     init(*MeshComp, 0);
@@ -255,12 +258,12 @@ void MeshHandler::createXYZAxis(MeshComponent *MeshComp, CollisionComponent *Col
         CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
         CollLines->mVertices->push_back(Vertex(0,0,0, 0,0,0,  0,0));
 
-//        CollLines->mIndices[0].insert( CollLines->mIndices[0].end(),
-//        { 0, 1, 1, 2, 2, 3, 3, 0,
-//          4, 5, 5, 6, 6, 7, 7, 4,
-//          0, 4, 3, 7,
-//          1, 5, 2, 6
-//                         });
+        CollLines->mIndices[0].insert( CollLines->mIndices[0].end(),
+        { 0, 1, 1, 2, 2, 3, 3, 0,
+          4, 5, 5, 6, 6, 7, 7, 4,
+          0, 4, 3, 7,
+          1, 5, 2, 6
+                         });
 
         CollLines->mDrawType = GL_LINES;
 

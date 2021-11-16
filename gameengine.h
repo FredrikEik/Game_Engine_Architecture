@@ -59,8 +59,8 @@ public:
     void rotateLight();
     
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
-    void saveScene();
-    void loadScene();
+    void saveScene(std::string &levelName);
+    void loadScene(std::string &levelName);
 
     void setRotationX(float value);
 private:

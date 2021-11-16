@@ -370,17 +370,17 @@ void RenderWindow::render()
                 mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[2].size();
                 mObjectsDrawn++;
             }
-        }else /*(mGameObjects[i]->mMeshComp->mIndices->size() > 0)*/
+        }else if (mGameObjects[i]->mMeshComp->mIndices->size() > 0)
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawElements(mGameObjects[i]->mMeshComp->mDrawType, mGameObjects[i]->mMeshComp->mIndices->size(), GL_UNSIGNED_INT, nullptr);
-        }/*else
+        }else
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
-        }*/
+        }
 
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;

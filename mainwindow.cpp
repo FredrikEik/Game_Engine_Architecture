@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QComboBox>
 #include <QStyleFactory>
+#include <QMessageBox>
 
 #include "renderwindow.h"
 #include "gameengine.h"
@@ -384,14 +385,16 @@ void MainWindow::on_actionGetCurrentRow_triggered()
 
 void MainWindow::on_saveScene_clicked()
 {
-    GameEngine::getInstance()->saveScene();
+    qDebug() << "Tying to save " << QString::fromStdString(levelName);
+    GameEngine::getInstance()->saveScene(levelName);
 }
 
 
 void MainWindow::on_loadScene_clicked()
 {
+    qDebug() << "Tying to load " << QString::fromStdString(levelName);
     listWidget->setCurrentRow(0);
-    GameEngine::getInstance()->loadScene();
+    GameEngine::getInstance()->loadScene(levelName);
     refreshList();
 }
 
@@ -446,4 +449,19 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
     currentMeshIndex = index;
 }
 
+
+
+void MainWindow::on_actionInfo_triggered()
+{
+    QMessageBox::about(this, "Basic Controls",
+                       "EDITOR: Move and rotate camera by holding down right mouse button and use WASD.\n"
+                       "Q = down, E = up. Use ScrollWheel to adjust speed, DEL to delete object.\n\n"
+                       "GAME: Click mouse once to activate player WASD controll, and press escape to exit\n\n");
+}
+
+
+void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+{
+    levelName = arg1.toStdString();
+}
 
