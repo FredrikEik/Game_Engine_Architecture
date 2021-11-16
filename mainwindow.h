@@ -75,6 +75,8 @@ private slots:
 
     void on_actionSave_World_triggered();
 
+    void on_actionLoad_World_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;

@@ -170,6 +170,7 @@ void RenderWindow::init()
     entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
     meshCompVec[0]->IsCollidable = false;
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
+    /*
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
@@ -195,7 +196,7 @@ void RenderWindow::init()
             //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
 
         }
-    }
+    }*/
     //JSS->SaveLevel("Test");
 
 
@@ -244,8 +245,11 @@ void RenderWindow::init()
     }
 
     //player
-    CurrentPlayer = transformCompVec[9];
-
+/*
+    if(transformCompVec[9] != nullptr){
+        CurrentPlayer = transformCompVec[9];
+    }
+*/
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

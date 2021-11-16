@@ -294,12 +294,6 @@ void MainWindow::on_actionControls_triggered()
 
 void MainWindow::on_actionSave_World_triggered()
 {
-      /*QString filename =  QFileDialog::getOpenFileName(
-            this,
-            "Select Level (JSON)",
-            QDir::currentPath(),
-            "JSON File (*.json)");*/
-
       QString filename1 =  QFileDialog::getSaveFileName(this, "Select path and name for storage!", QDir::currentPath(), "JSON File (*.json)");
 
       if( !filename1.isNull() )
@@ -307,4 +301,15 @@ void MainWindow::on_actionSave_World_triggered()
         qDebug() << "selected file path : " << filename1.toUtf8();
         mRenderWindow->JSS->SaveLevel(filename1.toStdString());
       }
+}
+
+void MainWindow::on_actionLoad_World_triggered()
+{
+    QString filename1 =  QFileDialog::getOpenFileName(this, "Select File To Load!", QDir::currentPath(), "JSON File (*.json)");
+
+    if( !filename1.isNull() )
+    {
+      qDebug() << "selected file path : " << filename1.toUtf8();
+      mRenderWindow->JSS->LoadLevel(filename1.toStdString());
+    }
 }

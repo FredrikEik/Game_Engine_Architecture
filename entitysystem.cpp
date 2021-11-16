@@ -53,7 +53,7 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
         Deets = new DetailsComponent();
 
         Deets->entity = EntityId;
-        Deets->title = ObjReader+"-"+std::to_string(EntityId);
+        Deets->title = ObjReader;/*+"-"+std::to_string(EntityId);*/
         inRW->DeetsVector.push_back(Deets);
 
         TransComp->mMatrix.setToIdentity();

@@ -87,5 +87,20 @@ void JSONSystem::SaveLevel(std::string filepath)
 
 void JSONSystem::LoadLevel(std::string filepath)
 {
+    std::ifstream i(filepath);
+    json j;
+    i >> j;
 
+    int amountOfObjects = j.at("objectAmount");
+    for(int i = 0; i < amountOfObjects; i++){
+        RW->entitySys->construct(j.at("ObjectArr")[i].at("oName"),
+                                 QVector3D(j.at("ObjectArr")[i].at("oPosX"),
+                                           j.at("ObjectArr")[i].at("oPosY"),
+                                           j.at("ObjectArr")[i].at("oPosZ")),
+                                 j.at("ObjectArr")[i].at("oShader"),
+                                 j.at("ObjectArr")[i].at("oTexture")
+                                 );
+    }
+
+    qDebug() << "Amount Of Objects Loaded From "<< QString::fromStdString(filepath) << " :" << amountOfObjects;
 }
