@@ -12,8 +12,8 @@ class JSONSystem
 public:
     JSONSystem();
     void JSONSystemInit(class RenderWindow * inRW);
-    void SaveLevel();
-    void LoadLevel();
+    void SaveLevel(std::string filepath);
+    void LoadLevel(std::string filepath);
     void CheckLevels();
 
 private:

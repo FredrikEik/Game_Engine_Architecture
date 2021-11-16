@@ -25,7 +25,7 @@ void JSONSystem::JSONSystemInit(class RenderWindow * inRW)
     RW = inRW;
 }
 
-void JSONSystem::SaveLevel()
+void JSONSystem::SaveLevel(std::string filepath)
 {
     auto e    =   RW->entities;
     auto mC   =   RW->meshCompVec;
@@ -77,10 +77,15 @@ void JSONSystem::SaveLevel()
 
     }
 
-    std::ofstream o("pretty.json");
+    std::ofstream o(filepath);
     o << j.dump(4) << std::endl;
     o.close();
     //qDebug() << QString::fromStdString(j.dump(1));
 
+
+}
+
+void JSONSystem::LoadLevel(std::string filepath)
+{
 
 }

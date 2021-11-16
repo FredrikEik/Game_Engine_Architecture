@@ -291,3 +291,20 @@ void MainWindow::on_actionControls_triggered()
     msgBox.setText("Move and rotate camera by holding down right mouse button. \nUse WASD to move around. \nQ = down, \nE = up. \nUse ScrollWheel to adjust speed.");
     msgBox.exec();
 }
+
+void MainWindow::on_actionSave_World_triggered()
+{
+      /*QString filename =  QFileDialog::getOpenFileName(
+            this,
+            "Select Level (JSON)",
+            QDir::currentPath(),
+            "JSON File (*.json)");*/
+
+      QString filename1 =  QFileDialog::getSaveFileName(this, "Select path and name for storage!", QDir::currentPath(), "JSON File (*.json)");
+
+      if( !filename1.isNull() )
+      {
+        qDebug() << "selected file path : " << filename1.toUtf8();
+        mRenderWindow->JSS->SaveLevel(filename1.toStdString());
+      }
+}
