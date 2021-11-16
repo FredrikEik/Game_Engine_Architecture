@@ -151,11 +151,14 @@ void CoreEngine::testScene()
 
         mRenderSystem->mGameObjects.push_back(enemy);
 
-        enemy->mName = "enemy " + std::to_string(enemies.size());
+        enemy->objName = "enemy";
 
         qDebug() << "enemy " << i;
 
+
         enemies.push_back(enemy);
+
+
 
     }
 
@@ -310,19 +313,19 @@ void CoreEngine::handleInput()
     else if(mInput.W)
     {
 
-        if(isPlaying)
+        if(isPlaying && player->isAlive)
          player->move(0,0 , speed /2);
 
 
     }
     else if(mInput.S)
     {
-if(isPlaying)
+    if(isPlaying && player->isAlive)
          player->move(0,0 , -speed /2);
     }
      else if(mInput.A)
     {
-        if(isPlaying)
+        if(isPlaying && player->isAlive)
         {
             player->move(speed, 0, 0);
             //testDelete = true;
@@ -331,18 +334,18 @@ if(isPlaying)
     }
      else if(mInput.D)
     {
-if(isPlaying)
+    if(isPlaying && player->isAlive)
          player->move(-speed, 0, 0);
     }
     else if(mInput.Q)
     {
 
-        if(isPlaying)
+        if(isPlaying && player->isAlive)
         player->move(0, speed, 0);
     }
     else if(mInput.E)
     {
-            if(isPlaying)
+            if(isPlaying && player->isAlive)
         player->move(0, -speed, 0);
     }
 

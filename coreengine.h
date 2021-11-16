@@ -7,6 +7,7 @@
 #include "collisionhandler.h"
 #include "meshhandler.h"
 #include "scene.h"
+#include "mainwindow.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
@@ -91,6 +92,8 @@ private slots:
 private:
     static CoreEngine* mInstance;   //Not singleton, but can use static getInstance()
 
+
+    MainWindow *mMainWindow;
 };
 
 #endif // COREENGINE_H

@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
     void selectObjectByIndex(int indexIn);
     QListWidgetItem *mCurrentSelectedItem{nullptr};
     QTreeWidgetItem *mCurrentTreeItem{nullptr};
@@ -52,12 +53,12 @@ private slots:
 
 private:
     void init();
-    Ui::MainWindow *ui;
+
 
     class transformWidget *mTransformWidget{nullptr};
     bool clicked = true;
 
-
+    Ui::MainWindow *ui;
    // int currentIndex{-1};
     QString prevstring;
     bool itemFromSceneAdded = false;

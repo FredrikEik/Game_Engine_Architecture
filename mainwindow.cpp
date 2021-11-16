@@ -235,4 +235,10 @@ void MainWindow::on_pushButton_2_clicked()
 {
 
     mCoreEngine->testScene();
+
+    for(unsigned int i = 0; i < mCoreEngine->enemies.size(); i ++)
+    {
+
+        ui->listWidget->addItem(mCoreEngine->enemies[i]->objName);
+    }
 }
