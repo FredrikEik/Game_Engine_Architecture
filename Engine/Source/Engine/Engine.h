@@ -65,9 +65,8 @@ private:
 	class Shader* outlineShader{};
 
 	uint32 editorCameraEntity{};
-
 	uint32 RTSSelectionEntity{};
-
+	uint32 terrainEntity{};
 
 	static float windowWidth;
 	static float windowHeight;

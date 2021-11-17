@@ -41,14 +41,14 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
     if (!meshManager || !transformManager || !cameraTransform)
-        return;
+        assert(false);
     
 
     //auto meshesToRender = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity); // Frustum culling, a bit buggy, thus not used atm
     auto& meshArray = meshManager->getComponentArray();
     auto meshesToRender = GetMeshesToDrawAABB(manager, meshArray, cameraEntity);
     shader->use();
-    std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
+    //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
     for (auto& it : meshesToRender)
     {
         MeshComponent& meshComp = meshArray[it];
@@ -287,6 +287,13 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
     uint32 count{};
     for (const auto& it : allMeshes)
     {
+        if (it.bAlwaysRendered)
+        {
+            meshesToRender.push_back(count);
+            ++count;
+            continue;
+        }
+
         AxisAlignedBoxComponent* AABB = AABBManager->getComponentChecked(it.entityID);
         TransformComponent* transform = transformManager->getComponentChecked(it.entityID);
         glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transform->transform;

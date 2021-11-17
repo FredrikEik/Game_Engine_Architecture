@@ -135,18 +135,14 @@ void Engine::init()
 	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
-	//CameraSystem::setPerspective(editorCameraEntity, ECS, 
-	//	glm::radians(fov), windowWidth / windowWidth, 0.1f, 100.0f));
+	terrainEntity = ECS->newEntity();
+	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	meshComp->bAlwaysRendered = true;
+	ECS->addComponents<TransformComponent>(terrainEntity);
+	TransformSystem::setScale(terrainEntity, glm::vec3(1000, 1, 1000), ECS);
+	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
-	// Setup Dear ImGui context
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGuiIO& io = ImGui::GetIO();
-	//// Setup Platform/Renderer bindings
-	//ImGui_ImplGlfw_InitForOpenGL(window, true);
-	//ImGui_ImplOpenGL3_Init("#version 460 core");
-	//// Setup Dear ImGui style
-	//ImGui::StyleColorsDark();
 	viewport->begin(window, ECS->getNumberOfEntities());
 }
 
@@ -251,6 +247,7 @@ void Engine::loop()
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		CameraSystem::draw(editorCameraEntity, phongShader, ECS);
 		CameraSystem::setPhongUniforms(editorCameraEntity, phongShader, ECS);
+		phongShader->setVec3("lightPosition", glm::vec3(15, 40, 0));
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 		MeshSystem::draw(phongShader, "u_model", ECS, editorCameraEntity);
 

@@ -66,6 +66,7 @@ public:
 
 	LODMeshType LODType{ LODMeshType::Default };
 	bool bIsTranslucent{ false };
+	bool bAlwaysRendered{ false };
 };
 
 

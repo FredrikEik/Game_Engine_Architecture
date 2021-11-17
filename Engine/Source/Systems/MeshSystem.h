@@ -26,6 +26,7 @@ public:
     
     static void copyMesh(const struct MeshComponent& meshToCopy, struct MeshComponent& newMesh);
 
+
 private:
 	static void initialize(class MeshComponent& meshComponent);
 	static bool readObj(const std::filesystem::path& filePath, struct MeshComponent& meshComponent);
