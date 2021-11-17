@@ -28,7 +28,8 @@ private:
     /** Functions */
     ResourceManager();
 
-    int makeHeightMap(Mesh* meshComp);
+    int makeHeightMapFromTxt(std::string filename);
+    int makeHeightMap(std::string filename);
     gsl::Vector3D barycentricCoordinates(const gsl::Vector2D& dette, const gsl::Vector2D& p1,
                                          const gsl::Vector2D& p2, const gsl::Vector2D& p3);
 

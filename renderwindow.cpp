@@ -208,7 +208,7 @@ void RenderWindow::render()
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
 
-        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "heightMap" && //These name checks are temporary.
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" &&//These name checks are temporary.
             (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))                  //Will find a better way later.
         {
             mGameObjects[i]->mesh->renderObject = false;
@@ -313,12 +313,20 @@ void RenderWindow::render()
         else
             mGameObjects[i]->mesh->lodLevel = 0;
 
+
+        if(i == mGameObjects.size()-1){
+            int pp = 99;
+        }
+
         if(mGameObjects[i]->mesh->mIndices[0].size() > 0) /** I don't know if this works for all objects with indices */
         {                                                 /** But fixed heightMap problems (Heightmap was not using indices)*/
             glBindVertexArray( mGameObjects[i]->mesh->mVAO[0]);
             glDrawElements(mGameObjects[i]->mesh->mDrawType, mGameObjects[i]->mesh->mIndices[0].size(), GL_UNSIGNED_INT, nullptr);
         }
         else{
+            if(mGameObjects[i]->mName == "test_las.txt"){
+                int pp = 99;
+            }
             int tempLod = mGameObjects[i]->mesh->lodLevel;
             glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
             glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());

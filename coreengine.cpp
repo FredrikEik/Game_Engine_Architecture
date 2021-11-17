@@ -55,11 +55,18 @@ void CoreEngine::SetUpScene()
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
 
-    temp = mResourceManager->CreateObject("heightMap");
-    temp->transform->mMatrix.rotateX(90);
-    temp->transform->mMatrix.scale(2.5);
-    temp->transform->mMatrix.translate(0,0,-4);
-    hmMatrix = temp->transform->mMatrix;
+//    temp = mResourceManager->CreateObject("HamarHeightMap.bmp");
+//    temp->transform->mMatrix.rotateX(90);
+//    temp->transform->mMatrix.scale(2.5);
+//    temp->transform->mMatrix.translate(0,0,-4);
+//    hmMatrix = temp->transform->mMatrix;
+//    mRenderWindow->addToGameObjects(temp);
+
+    temp = mResourceManager->CreateObject("test_las.txt");
+    temp->transform->mMatrix.rotateX(180);
+    temp->transform->mMatrix.scale(0.05);
+    temp->transform->mMatrix.translate(-615184, -600,-6758690);
+//    hmMatrix = temp->transform->mMatrix;
     mRenderWindow->addToGameObjects(temp);
 
 

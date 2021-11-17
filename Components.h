@@ -47,7 +47,7 @@ struct Mesh
 struct Frustum
 {
     float FOV = 45.f;
-    float farPlane = 150.f;
+    float farPlane = 15000.f;
     float nearPlane = 0.5f;
 };
 

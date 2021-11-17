@@ -9,13 +9,15 @@ Camera::Camera()
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
-          //.setX(tan(FOV)*farplane/AspectR
-    farPlane.setX(tan(45.f)*100.f);
-    farPlane.setY(tan(45.f)* (100.f /1.3333));
-    farPlane.setZ(100.f);
-    nearPlane.setX(tan(45.f)*0.1f);
-    nearPlane.setY(tan(45.f)* (0.1f /1.3333));
-    nearPlane.setZ(0.1f);
+    frustum = new Frustum();
+
+    //.setX(tan(FOV)*farplane/AspectR
+    farPlane.setX(tan(frustum->FOV)*frustum->farPlane);
+    farPlane.setY(tan(frustum->FOV)* (frustum->farPlane /1.3333));
+    farPlane.setZ(frustum->farPlane);
+    nearPlane.setX(tan(frustum->FOV)*frustum->nearPlane);
+    nearPlane.setY(tan(frustum->FOV)* (frustum->nearPlane /1.3333));
+    nearPlane.setZ(frustum->nearPlane);
 }
 
 void Camera::pitch(float degrees)
