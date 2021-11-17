@@ -8,6 +8,7 @@
 class Engine
 {
 public:
+	// TODO: Remove or fix up the Get function
 	static Engine& Get()
 	{
 		static Engine* engineInst = new Engine();
@@ -59,6 +60,7 @@ private:
 	//TODO: Move these into appropriate classes. 
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
+	class Shader* phongShader{};
 	class Shader* selectionShader{};
 	class Shader* outlineShader{};
 

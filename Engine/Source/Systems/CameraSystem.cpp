@@ -61,6 +61,16 @@ void CameraSystem::draw(uint32 entity, Shader* shader, ECSManager* ECS)
 	shader->setMat4("u_projection", currentCamera->m_projectionMatrix);
 }
 
+void CameraSystem::setPhongUniforms(uint32 entity, Shader* shader, ECSManager* ECS)
+{
+	shader->use();
+	TransformComponent* currentCamera{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity) };
+	assert(currentCamera);
+	shader->setVec3("cameraPosition", glm::vec3(currentCamera->transform[3].x,
+		currentCamera->transform[3].y,
+		currentCamera->transform[3].z));
+}
+
 void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSManager* ECS, float deltaTime)
 {
 	float screenWidth = Engine::Get().getWindowWidth();

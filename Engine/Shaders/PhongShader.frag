@@ -3,7 +3,7 @@
 out vec4 fragmentColor;     //color sent to screen
 in vec3 normalTransposed;
 in vec3 fragmentPosition;
-in vec3 color;
+in vec4 color;
 
 uniform float ambientStrength = 0.1f;
 uniform float lightStrength = 0.7f;
@@ -31,7 +31,7 @@ void main() {
     float angleFactor = max(dot(normalCorrected, lightDirection), 0.f);
 
     // Branchless way of swapping between texture and color.
-    vec3 diffuse = angleFactor * objectColor * color * lightColor * lightStrength * (1-bUsingTexture) +
+    vec3 diffuse = angleFactor * objectColor * vec3(color) * lightColor * lightStrength * (1-bUsingTexture) +
                     angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
 
     // specular light

@@ -121,6 +121,7 @@ void Engine::init()
 
 
 	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
+	phongShader = new Shader("Shaders/PhongShader.vert", "Shaders/PhongShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
 
@@ -354,7 +355,7 @@ void Engine::loop()
 		if (bIsPlaying)
 		{
 			//std::cout << "Game camera'\n";
-
+			// TODO: Implement proper deltatime
 			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 		}
 		else
@@ -366,6 +367,7 @@ void Engine::loop()
 
 		// RTS Selection render -- Translucent -- ingame only
 		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
+		//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 
 
@@ -374,8 +376,11 @@ void Engine::loop()
 		glStencilMask(0xFF); // enable writing to the stencil buffer
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-		MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
+		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
+		CameraSystem::draw(editorCameraEntity, phongShader, ECS);
+		CameraSystem::setPhongUniforms(editorCameraEntity, phongShader, ECS);
+		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
+		MeshSystem::draw(phongShader, "u_model", ECS, editorCameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

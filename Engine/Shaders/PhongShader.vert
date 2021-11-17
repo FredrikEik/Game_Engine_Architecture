@@ -6,7 +6,7 @@ layout(location = 2) in vec2 aTexCoord;   // 2nd attribute buffer = normals
 //out vec4 color;      //color sent to rest of pipeline
 out vec3 fragmentPosition;
 out vec3 normalTransposed;
-out vec3 color;
+out vec4 color;
 
 
 uniform mat4 u_model;                    //the matrix for the model
@@ -16,9 +16,11 @@ uniform mat4 u_projection;
 
 void main() {
     //color = colorIn;   //passing on the vertex color
-    fragmentPosition = vec3(modelMatrix * vec4(positionIn, 1.0));
-    normalTransposed = mat3(transpose(inverse(modelMatrix))) * vertexNormal; // TODO: This should be done on the CPU and sent in via uniform instead
+//    fragmentPosition = vec3(u_model * vec4(aPos, 1.0));
+    fragmentPosition = vec3(u_model * aPos);
+    normalTransposed = mat3(transpose(inverse(u_model))) * vec3(aTexCoord, 0); // TODO: This should be done on the CPU and sent in via uniform instead
     //normalTransposed = vertexNormal;
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(positionIn, 1.0);     //calculate the position of the model
-    color = colorIn;
+    gl_Position = u_projection * u_view * u_model * aPos;     //calculate the position of the model
+    color = aColor;
+//    color = vec4(aTexCoord, 0, 0);
 }

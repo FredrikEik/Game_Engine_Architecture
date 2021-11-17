@@ -17,6 +17,7 @@ public:
 	static void updateEditorCamera(uint32 entity, class ECSManager* ECS, float deltaTime);
 
 	static void draw(uint32 entity, class Shader* shader, class ECSManager* ECS);
+	static void setPhongUniforms(uint32 entity, class Shader* shader, class ECSManager* ECS);
 
 	static glm::vec3 getForwardVector(const CameraComponent& currentCamera);
 	static glm::vec3 getRightVector(const glm::vec3& forwardVector);
