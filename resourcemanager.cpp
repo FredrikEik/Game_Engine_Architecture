@@ -151,7 +151,6 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
         qDebug() << "You need a level name to save!";
         return;
     }
-
     mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QString::fromStdString(levelName),objects));
 
     QFile saveFile(QString((gsl::AssetFilePath + "scenes.json").c_str()));
@@ -166,34 +165,34 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
     QJsonArray levelArray;
     for(auto it : mLevels)
     {
-        auto foundAtIndex = mLevels.find(QString::fromStdString(levelName));
-        if(foundAtIndex != mLevels.end()){
+        //auto foundAtIndex = mLevels.find(QString::fromStdString(levelName));
 
-            QJsonObject level;
-            QJsonArray objectarray;
-            level["levelname"] = it.first;
-            for(auto it2 : it.second)
-            {
-                QJsonObject levelObjects;
-                levelObjects["filepath"] = it2->filepath.c_str();
-                levelObjects["texturename"] = it2->mMaterialComp->mTextureName.c_str();
-                // transform
-                levelObjects["positionx"] = double(it2->mTransformComp->mMatrix.getPosition().x);
-                levelObjects["positiony"] = double(it2->mTransformComp->mMatrix.getPosition().y);
-                levelObjects["positionz"] = double(it2->mTransformComp->mMatrix.getPosition().z);
 
-                levelObjects["rotationx"] = double(it2->mTransformComp->rotation.getX());
-                levelObjects["rotationy"] = double(it2->mTransformComp->rotation.getY());
-                levelObjects["rotationz"] = double(it2->mTransformComp->rotation.getZ());
+        QJsonObject level;
+        QJsonArray objectarray;
+        level["levelname"] = it.first;
+        for(auto it2 : it.second)
+        {
+            QJsonObject levelObjects;
+            levelObjects["filepath"] = it2->filepath.c_str();
+            levelObjects["texturename"] = it2->mMaterialComp->mTextureName.c_str();
+            // transform
+            levelObjects["positionx"] = double(it2->mTransformComp->mMatrix.getPosition().x);
+            levelObjects["positiony"] = double(it2->mTransformComp->mMatrix.getPosition().y);
+            levelObjects["positionz"] = double(it2->mTransformComp->mMatrix.getPosition().z);
 
-                levelObjects["shader"] = int(it2->mMaterialComp->mShaderProgram);
-                levelObjects["usingLOD"] = it2->mMeshComp->bUsingLOD;
+            levelObjects["rotationx"] = double(it2->mTransformComp->mRotation.getX());
+            levelObjects["rotationy"] = double(it2->mTransformComp->mRotation.getY());
+            levelObjects["rotationz"] = double(it2->mTransformComp->mRotation.getZ());
 
-                objectarray.append(levelObjects);
-            }
-            level["objects"] = objectarray;
-            levelArray.append(level);
+            levelObjects["shader"] = int(it2->mMaterialComp->mShaderProgram);
+            levelObjects["usingLOD"] = it2->mMeshComp->bUsingLOD;
+
+            objectarray.append(levelObjects);
         }
+        level["objects"] = objectarray;
+        levelArray.append(level);
+
     }
     coreJsonObject["levels"] = levelArray;
     saveFile.write(QJsonDocument(coreJsonObject).toJson());
@@ -202,9 +201,6 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
 
 void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* &player, GameObject* &light, std::string &levelName)
 {
-
-
-
     QFile loadFile(QString((gsl::AssetFilePath + "scenes.json").c_str()));
 
     // open file
@@ -301,8 +297,8 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     if (singleObject.contains("rotationx") && singleObject["rotationx"].isDouble())
                     {
                         rotx = float(singleObject["rotationx"].toDouble());
-                        float x = rotx - gameObj->mTransformComp->rotation.getX();
-                        gameObj->mTransformComp->rotation.setX(x+gameObj->mTransformComp->rotation.getX());
+                        float x = rotx - gameObj->mTransformComp->mRotation.getX();
+                        gameObj->mTransformComp->mRotation.setX(x+gameObj->mTransformComp->mRotation.getX());
                         gameObj->mTransformComp->mMatrix.rotateX(x);
                     }
 
@@ -310,16 +306,16 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     if (singleObject.contains("rotationy") && singleObject["rotationy"].isDouble())
                     {
                         roty = float(singleObject["rotationy"].toDouble());
-                        float y = roty - gameObj->mTransformComp->rotation.getY();
-                        gameObj->mTransformComp->rotation.setY(y+gameObj->mTransformComp->rotation.getY());
+                        float y = roty - gameObj->mTransformComp->mRotation.getY();
+                        gameObj->mTransformComp->mRotation.setY(y+gameObj->mTransformComp->mRotation.getY());
                         gameObj->mTransformComp->mMatrix.rotateY(y);
                     }
 
                     if (singleObject.contains("rotationz") && singleObject["rotationz"].isDouble())
                     {
                         rotz = float(singleObject["rotationz"].toDouble());
-                        float z = rotz - gameObj->mTransformComp->rotation.getZ();
-                        gameObj->mTransformComp->rotation.setZ(z+gameObj->mTransformComp->rotation.getZ());
+                        float z = rotz - gameObj->mTransformComp->mRotation.getZ();
+                        gameObj->mTransformComp->mRotation.setZ(z+gameObj->mTransformComp->mRotation.getZ());
                         gameObj->mTransformComp->mMatrix.rotateX(z);
                     }
 
@@ -341,17 +337,20 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                         light = gameObj;
 
                     // if the level name chosen in editor is the same as the current in the JSON file, then add them to the array of objects that will be shown in the editor
+                    // else it will push the objects in the mLevels map anyway.
                     if(QSlevelname == QString::fromStdString(levelName))
                     {
                         objects.push_back(gameObj);
                     }
                 }
+
                 mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QSlevelname,objects));
             }
         }
     }
     loadFile.close();
 }
+
 
 int ResourceManager::CreateMaterial(std::string textureName)
 {

@@ -345,7 +345,7 @@
              <item row="3" column="1">
               <widget class="QDoubleSpinBox" name="ScaleXspinBox">
                <property name="minimum">
-                <double>1.000000000000000</double>
+                <double>0.100000000000000</double>
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>
@@ -358,7 +358,7 @@
              <item row="3" column="2">
               <widget class="QDoubleSpinBox" name="ScaleYspinBox">
                <property name="minimum">
-                <double>1.000000000000000</double>
+                <double>0.100000000000000</double>
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>
@@ -371,7 +371,7 @@
              <item row="3" column="3">
               <widget class="QDoubleSpinBox" name="ScaleZspinBox">
                <property name="minimum">
-                <double>1.000000000000000</double>
+                <double>0.100000000000000</double>
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>

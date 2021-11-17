@@ -68,7 +68,8 @@ void GameEngine::SetUpScene()
 
     SetUpObjects();
 
-
+//    std::string levelName("DefaultLevel");
+//    loadScene(levelName);
 
     // Sound startup stuff
     mStereoSound = SoundManager::getInstance()->createSource(
@@ -89,6 +90,7 @@ void GameEngine::SetUpScene()
     mMainWindow->initList();
     mMainWindow->initComboboxTexture(mResourceManager->mTextureNames);
     mMainWindow->initComboboxMeshes(mResourceManager->mMeshNames);
+
 }
 
 void GameEngine::SetUpObjects()
@@ -119,9 +121,10 @@ void GameEngine::SetUpObjects()
     //    }
 
 
-    mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false, "cocademon3.bmp");
+    mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false);
+        mLight->mTransformComp->mMatrix.setPosition(5,5,5);
 //    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
-    mLight->mTransformComp->mMatrix.setPosition(-500,100,0);
+//    mLight->mTransformComp->mMatrix.setPosition(-500,100,0);
     mLight->mMaterialComp->mShaderProgram = 2;
 //    mLight->mMaterialComp->mTextureUnit = 1;
     mRenderwindow->mGameObjects.push_back(mLight);
@@ -139,11 +142,11 @@ void GameEngine::SetUpObjects()
 
 
 
-    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj",false, "orange.bmp");
-    tempGameObject->mTransformComp->mMatrix.setPosition(-1,1,-5);
-    tempGameObject->mMaterialComp->mShaderProgram = 2;
-//    tempGameObject->mMaterialComp->mTextureUnit = 3;
-    mRenderwindow->mGameObjects.push_back(tempGameObject);
+//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj",false);
+//    tempGameObject->mTransformComp->mMatrix.setPosition(-1,1,-5);
+//    tempGameObject->mMaterialComp->mShaderProgram = 2;
+////    tempGameObject->mMaterialComp->mTextureUnit = 3;
+//    mRenderwindow->mGameObjects.push_back(tempGameObject);
 
 }
 
