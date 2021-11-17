@@ -33,6 +33,7 @@ public:
     void rotateX(GLfloat degrees = 0.f);
     void rotateY(GLfloat degrees = 0.f);
     void rotateZ(GLfloat degrees = 0.f);
+    gsl::Vector3D mRotation{0.f,0.f,0.f};
 
 //    void rotate(GLfloat angle, Vector3D vector);
 //    void rotate(GLfloat angle, GLfloat xIn, GLfloat yIn, GLfloat zIn);
@@ -40,6 +41,8 @@ public:
     void scale(Vector3D s);
     void scale(GLfloat uniformScale);
     void scale(GLfloat scaleX, GLfloat scaleY, GLfloat scaleZ);
+    void setScale(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
+    gsl::Vector3D mScale{1.f,1.f,1.f};
 
     GLfloat* constData();
 

@@ -114,6 +114,19 @@ void MainWindow::clean()
     listWidget->clear();
 }
 
+void MainWindow::Scale()
+{
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getX(),
+                                                                   1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getY(),
+                                                                   1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getZ());
+
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(scaleX,scaleY,scaleZ);
+
+    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(scaleX);
+    GameObjects[ObjectListIndex]->mTransformComp->mScale.setY(scaleY);
+    GameObjects[ObjectListIndex]->mTransformComp->mScale.setZ(scaleZ);
+}
+
 void MainWindow::initComboboxTexture(std::vector<std::string> &textureNames)
 {
     if(mRenderWindow)
@@ -314,14 +327,27 @@ void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-
-//    float x = arg1 - GameObjects[ObjectListIndex]->mTransformComp->mScale.getX();
-//    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(x+GameObjects[ObjectListIndex]->mTransformComp->mScale.getX());
-//    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.mScale(x);
-    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(arg1);
-    GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix = GameObjects[ObjectListIndex]->mTransformComp->mMatrix;
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(gsl::Vector3D(GameObjects[ObjectListIndex]->mTransformComp->mScale.getX(),1,1));
+    scaleX = float(arg1);
+    Scale();
 }
+
+void MainWindow::on_ScaleYspinBox_valueChanged(double arg1)
+{
+    if(ObjectListIndex == 0)
+        return;
+    scaleY = float(arg1);
+    Scale();
+}
+
+void MainWindow::on_ScaleZspinBox_valueChanged(double arg1)
+{
+    if(ObjectListIndex == 0)
+        return;
+    scaleZ = float(arg1);
+    Scale();
+}
+
+
 void MainWindow::on_actionCube_triggered()
 {
     mGameEngine->getInstance()->CreateCube();
@@ -452,8 +478,6 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
     currentMeshIndex = index;
 }
 
-
-
 void MainWindow::on_actionInfo_triggered()
 {
     QMessageBox::about(this, "Basic Controls",
@@ -462,9 +486,7 @@ void MainWindow::on_actionInfo_triggered()
                        "GAME: Click mouse once to activate player WASD controll, and press escape to exit\n\n");
 }
 
-
 void MainWindow::on_lineEdit_textEdited(const QString &arg1)
 {
     levelName = arg1.toStdString();
 }
-

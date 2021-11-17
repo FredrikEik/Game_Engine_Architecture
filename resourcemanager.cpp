@@ -185,6 +185,10 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
             levelObjects["rotationy"] = double(it2->mTransformComp->mRotation.getY());
             levelObjects["rotationz"] = double(it2->mTransformComp->mRotation.getZ());
 
+            levelObjects["scalex"] = double(it2->mTransformComp->mScale.getX());
+            levelObjects["scaley"] = double(it2->mTransformComp->mScale.getY());
+            levelObjects["scalez"] = double(it2->mTransformComp->mScale.getZ());
+
             levelObjects["shader"] = int(it2->mMaterialComp->mShaderProgram);
             levelObjects["usingLOD"] = it2->mMeshComp->bUsingLOD;
 
@@ -263,7 +267,7 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                 {
                     QJsonObject singleObject = objectsArray[objectindex].toObject();
                     GameObject *gameObj {nullptr};
-                    float x = 0,y = 0,z = 0, rotx = 0, roty = 0, rotz = 0;
+                    float x = 0,y = 0,z = 0, rotx = 0, roty = 0, rotz = 0,scalx = 0, scaly = 0, scalz = 0;
 
 
                     if (singleObject.contains("filepath") && singleObject["filepath"].isString())
@@ -316,9 +320,34 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                         rotz = float(singleObject["rotationz"].toDouble());
                         float z = rotz - gameObj->mTransformComp->mRotation.getZ();
                         gameObj->mTransformComp->mRotation.setZ(z+gameObj->mTransformComp->mRotation.getZ());
-                        gameObj->mTransformComp->mMatrix.rotateX(z);
+                        gameObj->mTransformComp->mMatrix.rotateZ(z);
                     }
 
+                    if (singleObject.contains("scalex") && singleObject["scalex"].isDouble())
+                    {
+                        scalx =float(singleObject["scalex"].toDouble());
+                    }
+
+                    if (singleObject.contains("scaley") && singleObject["scaley"].isDouble())
+                    {
+                        scaly =float(singleObject["scaley"].toDouble());
+                    }
+
+                    if (singleObject.contains("scalez") && singleObject["scalez"].isDouble())
+                    {
+                        scalz =float(singleObject["scalez"].toDouble());
+                    }
+
+                    //scale
+                    gameObj->mTransformComp->mMatrix.scale(1/gameObj->mTransformComp->mScale.getX(),
+                                                           1/gameObj->mTransformComp->mScale.getY(),
+                                                           1/gameObj->mTransformComp->mScale.getZ());
+                    gameObj->mTransformComp->mMatrix.scale(scalx,scaly,scalz);
+                    gameObj->mTransformComp->mScale.setX(scalx);
+                    gameObj->mTransformComp->mScale.setY(scaly);
+                    gameObj->mTransformComp->mScale.setZ(scalz);
+
+                    //setposition
                     gameObj->mTransformComp->mMatrix.setPosition(x,y,z);
 
 

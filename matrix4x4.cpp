@@ -298,6 +298,25 @@ void Matrix4x4::scale(GLfloat scaleX, GLfloat scaleY, GLfloat scaleZ)
     *this = (*this)*temp;
 }
 
+void Matrix4x4::setScale(GLfloat x, GLfloat y, GLfloat z)
+{
+     if (x==0){
+         x=0.1;
+     }
+     if (y==0){
+         y=0.1;
+     }
+     if (z==0){
+         z=0.1;
+     }
+
+     scale(1/mScale.x,1/mScale.y,1/mScale.z);
+
+     scale(x,y,z);
+
+     mScale = {x,y,z};
+}
+
 
 GLfloat *Matrix4x4::constData()
 {

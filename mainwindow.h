@@ -27,6 +27,7 @@ public:
     void refreshList();
     void setID(int ID);
     void clean();
+    void Scale();
 
     void initComboboxTexture(std::vector<std::string> &textureNames);
     void initComboboxMeshes(std::vector<std::string> &meshNames);
@@ -95,6 +96,10 @@ private slots:
 
     void on_lineEdit_textEdited(const QString &arg1);
 
+    void on_ScaleYspinBox_valueChanged(double arg1);
+
+    void on_ScaleZspinBox_valueChanged(double arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -103,6 +108,10 @@ private:
     int lastIndex{0};
     int lastXrot{0};
     int xcounter{0};
+
+    float scaleX{1};
+    float scaleY{1};
+    float scaleZ{1};
 
     bool bCurrentlyDeleting = false;
 
