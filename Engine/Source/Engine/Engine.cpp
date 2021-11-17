@@ -137,10 +137,11 @@ void Engine::init()
 
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
 	meshComp->bAlwaysRendered = true;
 	ECS->addComponents<TransformComponent>(terrainEntity);
-	TransformSystem::setScale(terrainEntity, glm::vec3(1000, 1, 1000), ECS);
+	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
 	viewport->begin(window, ECS->getNumberOfEntities());
@@ -245,9 +246,10 @@ void Engine::loop()
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
+		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
+		//lightPos += 0.01f;
 		CameraSystem::draw(editorCameraEntity, phongShader, ECS);
 		CameraSystem::setPhongUniforms(editorCameraEntity, phongShader, ECS);
-		phongShader->setVec3("lightPosition", glm::vec3(15, 40, 0));
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 		MeshSystem::draw(phongShader, "u_model", ECS, editorCameraEntity);
 

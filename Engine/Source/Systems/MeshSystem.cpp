@@ -39,6 +39,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
+    ComponentManager<TextureComponent>* textureManager = manager->getComponentManager<TextureComponent>();
     TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
     if (!meshManager || !transformManager || !cameraTransform)
         assert(false);
@@ -56,7 +57,20 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         if (meshComp.bIsTranslucent == true) 
             continue;
 
+        if (textureManager)
+        {
+            TextureComponent* textureComp = textureManager->getComponentChecked(meshComp.entityID);
+            if (textureComp)
+            {
+                shader->setInt("bUsingTexture", 1);
+                glBindTexture(GL_TEXTURE_2D, textureComp->textureID);
+            }
+            else
+            {
+                shader->setInt("bUsingTexture", 0);
 
+            }
+        }
 
         // calculate distance form mesh to camera determine lod to draw
         glm::vec3 cameraPos = glm::vec3(cameraTransform->transform[3]);

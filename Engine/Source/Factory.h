@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <filesystem>
 #include "Systems/MeshSystem.h"
+#include "Systems/TextureSystem.h"
 #include <iostream>
 #include <algorithm>
 
@@ -54,6 +55,9 @@ private:
 
 	uint32 loadMesh(const std::filesystem::path& filePath, uint32 entityID);
 	uint32 assignMesh(uint32 entityID, const std::filesystem::path& filePath);
+
+	uint32 loadPNG(uint32 entityID, const std::filesystem::path& filePath);
+	uint32 assignPNG(uint32 entityID, const std::filesystem::path& filePath);
 
 	bool assetExists(const std::filesystem::path& filePath);
 	uint32 assignAsset(uint32 entityID, const std::filesystem::path& filePath);
@@ -107,6 +111,8 @@ inline uint32 Factory::loadAsset(uint32 entityID, const std::filesystem::path& f
 
 	if (filePath.extension() == ".obj")
 		return loadMesh(filePath, entityID);
+	else if (filePath.extension() == ".png")
+		return loadPNG(entityID, filePath);
 
 	// Reading unsupported assets, the program should end.
 	assert(false);
@@ -128,6 +134,8 @@ inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path&
 	// "Manually" assign reusable assets based on asset type. 
 	if (reusableAsset.componentType == std::type_index(typeid(MeshComponent)))
 		return assignMesh(entityID, filePath);
+	else if (reusableAsset.componentType == std::type_index(typeid(TextureComponent)))
+		assignPNG(entityID, filePath);
 	else
 		assert(false); // You have to add new components to the if above. Soowry
 
@@ -194,6 +202,62 @@ inline uint32 Factory::assignMesh(uint32 entityID, const std::filesystem::path& 
 	assert(oldComponent);
 
 	MeshSystem::copyMesh(*oldComponent, newComponent);
+	reusableAsset.componentIDs.push_back(componentID); // Add the componentID to the reusable asset
+
+	return componentID;
+}
+
+inline uint32 Factory::loadPNG(uint32 entityID, const std::filesystem::path& filePath)
+{
+	uint32 componentID = createComponent<TextureComponent>(entityID, true);
+	TextureComponent* component = getComponentManager<TextureComponent>()->getComponentChecked(entityID);
+	TextureSystem::loadImage(entityID, filePath, component);
+
+	ReusableAsset reusableAsset(std::type_index(typeid(TextureComponent)), componentID);
+
+	std::size_t hash{ std::filesystem::hash_value(filePath) };
+	component->hash = hash;
+	reusableAssetComponents.insert(std::pair<std::size_t, ReusableAsset>
+			(hash, reusableAsset));
+
+	return componentID;
+}
+
+inline uint32 Factory::assignPNG(uint32 entityID, const std::filesystem::path& filePath)
+{
+
+	ReusableAsset& reusableAsset =
+		reusableAssetComponents.at(std::filesystem::hash_value(filePath));
+
+	ComponentManager<TextureComponent>* manager = getComponentManager<TextureComponent>();
+
+	uint32 componentID = createComponent<MeshComponent>(entityID, true);
+	TextureComponent* newComponent = manager->getComponentChecked(entityID);
+	TextureComponent* oldComponent{};
+
+
+	// Loop through the components in the reusable asset. 
+	// If it returns a nullptr, a component with that ID does not exist, so we remove it.
+	for (uint32 i{}; i < reusableAsset.componentIDs.size(); ++i)
+	{
+		oldComponent = manager->getComponentFromID(reusableAsset.componentIDs.at(i));
+		if (!oldComponent)
+		{
+			reusableAsset.componentIDs.erase(reusableAsset.componentIDs.begin() + i);
+			--i;
+		}
+		else
+			break;
+	}
+
+	// TODO: Make it so that it removes the reusable asset from the reusableAssetComponents map
+	// Then call load png??? idk, see assignMesh 
+	assert(oldComponent);
+
+	//MeshSystem::copyMesh(*oldComponent, newComponent);
+	newComponent->textureID = oldComponent->textureID;
+	newComponent->hash = oldComponent->hash;
+	newComponent->wrapMode = oldComponent->wrapMode;
 	reusableAsset.componentIDs.push_back(componentID); // Add the componentID to the reusable asset
 
 	return componentID;

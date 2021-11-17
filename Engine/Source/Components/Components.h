@@ -19,7 +19,7 @@
 * to the function removeComponentByRTTI in ECSManager.cpp
 * 
 * If the component is reusable, you need to add it 
-* to the function assignAsset in Factory.h
+* to the function assignAsset and loadAsset in Factory.h
 *
 *		ATTENTION
 *		ATTENTION
@@ -115,4 +115,18 @@ struct SphereComponent final : public Component
 	SphereComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 	float radius{};
 	glm::vec3 center{};
+};
+
+struct TextureComponent final : public Component
+{
+	TextureComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	std::size_t hash{};
+
+	int width{};
+	int height{};
+	int numberOfChannels{};
+	GLenum wrapMode{ GL_REPEAT };
+	uint textureID{};
+
+	uint8_t* rgbImage{};
 };
