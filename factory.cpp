@@ -150,6 +150,8 @@ GameObject* Factory::createObject(std::string objectName)
     else if (objectName == "TriangleSurface")
     {
        objectToCreate = new TriangleSurface("../GEA2021/Maps/test_las.txt");
+       objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+       objectToCreate->getMaterialComponent()->mTextureUnit = 0;
     }
     else{return nullptr;}
 

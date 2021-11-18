@@ -10,12 +10,12 @@
 TriangleSurface::TriangleSurface() : GameObject()
 {
     Vertex v{};
-    v.set_xyz(0,0,0); v.set_rgb(1,0,0); mVertices.push_back(v);
-    v.set_xyz(0.5,0,0); v.set_rgb(0,1,0); mVertices.push_back(v);
-    v.set_xyz(0.5,0.5,0); v.set_rgb(0,0,1); mVertices.push_back(v);
-    v.set_xyz(0,0,0); v.set_rgb(0,1,0); mVertices.push_back(v);
-    v.set_xyz(0.5,0.5,0); v.set_rgb(1,0,0); mVertices.push_back(v);
-    v.set_xyz(0,0.5,0); v.set_rgb(0,0,1); mVertices.push_back(v);
+    v.set_xyz(0,0,0); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
+    v.set_xyz(0.5,0,0); v.set_rgb(0,1,0); getMeshComponent()->mVertices.push_back(v);
+    v.set_xyz(0.5,0.5,0); v.set_rgb(0,0,1); getMeshComponent()->mVertices.push_back(v);
+    v.set_xyz(0,0,0); v.set_rgb(0,1,0); getMeshComponent()->mVertices.push_back(v);
+    v.set_xyz(0.5,0.5,0); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
+    v.set_xyz(0,0.5,0); v.set_rgb(0,0,1); getMeshComponent()->mVertices.push_back(v);
 }
 
 TriangleSurface::TriangleSurface(std::string filnavn) : GameObject()
@@ -96,6 +96,7 @@ void TriangleSurface::readFile(std::string filnavn)
             float currentSquareMinX = i;
             float currentSquareMaxX = i+squareSize;
             float combinedHeight = 0;
+            int vertexToPush = 1;
 
             //Firkanter i y-retning
             for(float j=mapMinY; j<=mapMaxY; j = j+squareSize)
@@ -111,8 +112,8 @@ void TriangleSurface::readFile(std::string filnavn)
                     float currentX;
                     float currentY;
                     float currentZ;
-                    mVertices.reserve(n);
-                    float heightsToCombine [100];
+                    getMeshComponent()->mVertices.reserve(n);
+                    float heightsToCombine [210000];
                     int heightsToCombineAmount = 0;
                     Vertex v{};
 
@@ -158,22 +159,22 @@ void TriangleSurface::readFile(std::string filnavn)
                     {
                         combinedHeight = 550;
                     }
-
-
-                    gsl::Vector3D vertexOne   = {currentSquareMinX - mapMinX,currentSquareMinY - mapMinY,combinedHeight - 550};
-                    gsl::Vector3D vertexTwo   = {currentSquareMaxX - mapMinX,currentSquareMinY - mapMinY,combinedHeight - 550};
-                    gsl::Vector3D vertexThree = {currentSquareMinX - mapMinX,currentSquareMaxY - mapMinY,combinedHeight - 550};
-                    gsl::Vector3D vertexFour  = {currentSquareMinX - mapMinX,currentSquareMaxY - mapMinY,combinedHeight - 550};
-                    gsl::Vector3D vertexFive  = {currentSquareMaxX - mapMinX,currentSquareMaxY - mapMinY,combinedHeight - 550};
-                    gsl::Vector3D vertexSix   = {currentSquareMaxX - mapMinX,currentSquareMinY - mapMinY,combinedHeight - 550};
-
-                    /*vertexOne.normalize();
+/*
+                    gsl::Vector3D vertexOne   = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
+                    gsl::Vector3D vertexTwo   = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
+                    gsl::Vector3D vertexThree = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
+                    gsl::Vector3D vertexFour  = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
+                    gsl::Vector3D vertexFive  = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
+                    gsl::Vector3D vertexSix   = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
+                    vertexOne.normalize();
                     vertexTwo.normalize();
                     vertexThree.normalize();
                     vertexFour.normalize();
                     vertexFive.normalize();
                     vertexSix.normalize();
-                    */
+
+
+
 
                     qDebug() << vertexOne.x << vertexOne.y << vertexOne.z;
 
@@ -182,33 +183,18 @@ void TriangleSurface::readFile(std::string filnavn)
 
 
 
-                    v.set_xyz(vertexOne.x, vertexOne.y, vertexOne.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    v.set_xyz(vertexTwo.x, vertexTwo.y, vertexTwo.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    v.set_xyz(vertexThree.x, vertexThree.y, vertexThree.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    v.set_xyz(vertexFour.x, vertexFour.y, vertexFour.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    v.set_xyz(vertexFive.x,vertexFive.y, vertexFive.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    v.set_xyz(vertexSix.x, vertexSix.y, vertexSix.z); v.set_rgb(1,0,0); mVertices.push_back(v);
-                    inn.close();
-                }
-
-        }
-
-    }
-/*
-    if (inn.is_open())
-    {
-        int n;
-        gsml::Vertex vertex;
-        inn >> n;
-        mVertices.reserve(n);
-        for (int i=0; i<n; i++)
-        {
-             inn >> vertex;
-             mVertices.push_back(vertex);
-        }
-        inn.close();
-    }
+                    if(vertexToPush == 1){v.set_xyz(vertexOne.x, vertexOne.y, vertexOne.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
+                    else if(vertexToPush == 2){v.set_xyz(vertexTwo.x, vertexTwo.y, vertexTwo.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
+                    else if(vertexToPush == 3){v.set_xyz(vertexThree.x, vertexThree.y, vertexThree.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
+                    else if(vertexToPush == 4){v.set_xyz(vertexFour.x, vertexFour.y, vertexFour.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
+                    else if(vertexToPush == 5){v.set_xyz(vertexFive.x,vertexFive.y, vertexFive.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
+                    else if(vertexToPush == 6){v.set_xyz(vertexSix.x, vertexSix.y, vertexSix.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
 */
+                inn.close();
+                }
+        }
+
+    }
 }
 
 
@@ -220,10 +206,10 @@ void TriangleSurface::writeFile(std::string filnavn)
     if (ut.is_open())
     {
 
-        auto n = mVertices.size();
+        auto n = getMeshComponent()->mVertices.size();
         Vertex vertex;
         ut << n << std::endl;
-        for (auto it=mVertices.begin(); it != mVertices.end(); it++)
+        for (auto it=getMeshComponent()->mVertices.begin(); it != getMeshComponent()->mVertices.end(); it++)
         {
             //vertex = *it;
             ut << *it << std::endl;
@@ -236,17 +222,17 @@ void TriangleSurface::init()
     initializeOpenGLFunctions();
 
     //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &mVAO );
-    glBindVertexArray( mVAO );
+    glGenVertexArrays( 1, &getMeshComponent()->mVAO );
+    glBindVertexArray( getMeshComponent()->mVAO );
 
     //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, mVBO );
+    glGenBuffers( 1, &getMeshComponent()->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, getMeshComponent()->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, mVertices.size()*sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, getMeshComponent()->mVertices.size()*sizeof(Vertex), getMeshComponent()->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, getMeshComponent()->mVBO);
     glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
@@ -262,10 +248,9 @@ void TriangleSurface::init()
 
 void TriangleSurface::draw()
 {
-    glBindVertexArray( mVAO );
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mMatrix.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());//mVertices.size());
-
+    glBindVertexArray( getMeshComponent()->mVAO );
+    glDrawArrays(getMeshComponent()->mDrawType, 0, getMeshComponent()->mVertices.size());
+    glBindVertexArray(0);
 }
 
 void TriangleSurface::construct()
@@ -275,16 +260,16 @@ void TriangleSurface::construct()
        for (auto y=ymin; y<ymax; y+=h)
        {
            float z = sin(M_PI*x)*sin(M_PI*y);
-           mVertices.push_back(Vertex{x,y,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x,y,z,x,y,z});
            z = sin(M_PI*(x+h))*sin(M_PI*y);
-           mVertices.push_back(Vertex{x+h,y,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x+h,y,z,x,y,z});
            z = sin(M_PI*x)*sin(M_PI*(y+h));
-           mVertices.push_back(Vertex{x,y+h,z,x,y,z});
-           mVertices.push_back(Vertex{x,y+h,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x,y+h,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x,y+h,z,x,y,z});
            z = sin(M_PI*(x+h))*sin(M_PI*y);
-           mVertices.push_back(Vertex{x+h,y,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x+h,y,z,x,y,z});
            z = sin(M_PI*(x+h))*sin(M_PI*(y+h));
-           mVertices.push_back(Vertex{x+h,y+h,z,x,y,z});
+           getMeshComponent()->mVertices.push_back(Vertex{x+h,y+h,z,x,y,z});
        }
 }
 
@@ -293,7 +278,7 @@ void TriangleSurface::construct_cylinder()
     float h=0.5;
     const int SEKTORER=12;
     float t=2*M_PI/SEKTORER;
-    mVertices.clear();
+    getMeshComponent()->mVertices.clear();
     for (int k=0; k<2; k++)
     {
         for (int i=0; i<SEKTORER; i++)
@@ -304,12 +289,12 @@ void TriangleSurface::construct_cylinder()
             float x1=cos((i+1)*t);
             float y1=sin((i+1)*t);
             float z2=h*(k+1);
-            mVertices.push_back(Vertex{x0,y0,z0,0,0,1,0,0});
-            mVertices.push_back(Vertex{x0,y0,z2,0,0,1,1,0});
-            mVertices.push_back(Vertex{x1,y1,z0,0,0,1,0,1});
-            mVertices.push_back(Vertex{x0,y0,z2,1,1,0,0,1});
-            mVertices.push_back(Vertex{x1,y1,z2,1,1,0,1,0});
-            mVertices.push_back(Vertex{x1,y1,z0,1,1,0,1,1});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y0,z0,0,0,1,0,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y0,z2,0,0,1,1,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y1,z0,0,0,1,0,1});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y0,z2,1,1,0,0,1});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y1,z2,1,1,0,1,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y1,z0,1,1,0,1,1});
 /*            float x0=cos(i*t);
             float y0=sin(i*t);
             float z0=h*k;
@@ -330,7 +315,7 @@ void TriangleSurface::construct_plane()
 {
     float dx=2.0;
     float dy=2.0;
-    mVertices.clear();
+    getMeshComponent()->mVertices.clear();
     for (float y=-2.0; y<2.0; y+=dy)
     {
         for (float x=-3.0; x<3.0; x+=dx)
@@ -339,12 +324,12 @@ void TriangleSurface::construct_plane()
             float y0=y;
             float x1=x0+dx;
             float y1=y0+dy;
-            mVertices.push_back(Vertex{x0,y0,0,0,0.5,0});
-            mVertices.push_back(Vertex{x1,y0,0,0,0.5,0});
-            mVertices.push_back(Vertex{x0,y1,0,0,0.5,0});
-            mVertices.push_back(Vertex{x0,y1,0,0,0.5,0});
-            mVertices.push_back(Vertex{x1,y0,0,0,0.5,0});
-            mVertices.push_back(Vertex{x1,y1,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y0,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y0,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y1,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x0,y1,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y0,0,0,0.5,0});
+            getMeshComponent()->mVertices.push_back(Vertex{x1,y1,0,0,0.5,0});
         }
     }
 }

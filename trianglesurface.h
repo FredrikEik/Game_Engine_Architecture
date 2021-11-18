@@ -24,19 +24,14 @@ public:
     void construct();
     void construct_cylinder();
     void construct_plane();
-    GLuint mVAO{0};
-    GLuint mVBO{0};
-    GLint mMatrixUniform{0};
+
     gsl::Matrix4x4 mMatrix;
     float mapMinX{0};
     float mapMaxX{0};
     float mapMinY{0};
     float mapMaxY{0};
-    std::vector<Vertex> mVertices;
 
      Vertex mMapTerrain;
-
-    std::vector<Vertex>& get_vertices() { return mVertices; } // 191120
 };
 
 #endif // TRIANGLESURFACE_H
