@@ -169,19 +169,18 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
         const int rows = 50;
         const int cols = 50;
 
-    // Vet ikke om jeg trenger disse.
         object->mesh->mVertices[0].reserve(n);
         tempPos.reserve(n);
         sortedPos.reserve(n);
 
         for (int i=0; i<n; i++)
         {
-            inn >> x >> y >> z;
+            inn >> x >> y >> z; // sets x, y and z based on numbers from the provided .txt file
 
-            tempPos.push_back(gsl::Vector3D{x, y, z});
+            tempPos.push_back(gsl::Vector3D{x, y, z}); //Pushes position into a temporary vector that holds all vertexes
 
-//if i == 0, xMin and yMin is 0. result would be xMin and yMin == 0 at the end of loop
-            if(x < xMin || i == 0)
+        // Calculates corners of the map in 2D space.
+            if(x < xMin || i == 0) //if i == 0, xMin and yMin is 0. result would be xMin and yMin == 0 at the end of loop
                 xMin = x;
             if(y < yMin || i == 0)
                 yMin = y;
@@ -190,29 +189,24 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
             if(y > yMax || i == 0)
                 yMax = y;
         }
-        float xStep = (xMax-xMin)/rows; //avstanden mellom hvert hjørne i et kvadrant (i x-planet)
-        float yStep = (yMax-yMin)/cols; //avstanden mellom hvert hjørne i et kvadrant (i y-planet)
-        int vertexesInQuad[rows][cols]; //antall vertexer i kvadrant [x][y]
-        float tempForAvg[rows][cols];   //holder summen av z verdiene i kvadrant [x][y]
+        float xStep = (xMax-xMin)/rows;       //Distance between the corners in a quad (x-axis)
+        float yStep = (yMax-yMin)/cols;       //Distance between the corners in a quad (y-axis)
+        int vertexesInQuad[rows][cols]{{0}};  //Amount of vertexes in quad.
+        float tempForAvg[rows][cols]{{0.0f}}; //Holds the sum of all z-values in a quad.
+        float allHeights = 0;
 
-        for (int y=0; y<cols; y++){
-            for (int x=0; x<rows; x++) {
-                tempForAvg[x][y]=0.0f;
-                vertexesInQuad[x][y]=0;
-             }
-        }
         for (int i = 0; i < tempPos.size(); i++)
         {
-//            int x1 = (int)((tempPos[i].x-xMin) / xStep);
-//            int y1 = (int)((tempPos[i].y-yMin) / yStep);
             int x1 = static_cast<int>((tempPos[i].x-xMin) / xStep);
             int y1 = static_cast<int>((tempPos[i].y-yMin) / yStep);
             tempForAvg[x1][y1] += tempPos[i].z;
             vertexesInQuad[x1][y1]++;
+            allHeights += tempPos[i].z;
         }
+    // If height == 0 at the start of next loop, this will fix the problem. (Decides height based on the average height of all points)
+        float ytemp = allHeights / tempPos.size();
 
         float xtemp;
-        float ytemp = 540;
         float ztemp;
 
         for (int y=0; y<cols; y++)
@@ -229,42 +223,41 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
                 }
                 else
                     sortedPos.push_back(gsl::Vector3D{ xtemp, ytemp, ztemp});
-
+                //Hvis jeg skal finne gjennomsnitt av punktene rundt et spesifikt punkt, så må jeg sette y = 0 her. Og senere loope igjennom alle
+                //punkter (igjen) og ta sette alle punkter som = 0 til gjennomsnittet av punktene rundt disse. Vet ikke 100% om dette funker.
             }
         }
+        int c = 0;
         for(int i = 0; i<sortedPos.size()-rows-1; i++)
         {
-            //qDebug() << sortedPos[i].x << sortedPos[i].y << sortedPos[i].z;
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i].x, sortedPos[i].y, sortedPos[i].z, 0,0.5,0});
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,0.5,0});
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,0.5,0});
+            //Skips to the next vertex if current vertex is the last in that row.
+            //Without this, triangles would be generated between points on different sides of the terrain
+            if(c == rows-1)
+            {
+                c=0;
+                continue; //continues to next index in for loop.
+            }
+            c++;
 
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,0.5,0});
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,0.5,0});
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows+1].x, sortedPos[i+rows+1].y, sortedPos[i+rows+1].z, 0,0.5,0});
+            //Tilfeldige verdier mellom 0 og 1.
+            //Dette er midlertidig for å lettere se linjene melloom vertexer i terrenget.
+                float a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+                float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+                float c = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+                float d = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+                float e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+                float f = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
+
+                                                                                                                                      /**  _____ */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i].x, sortedPos[i].y, sortedPos[i].z, 0,a,0});                      /** \    / */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,b,0});                /** \  /   */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,c,0});       /** \/     */
+
+
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,d,0});       /**     /\ */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,e,0});                /**   /  \ */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows+1].x, sortedPos[i+rows+1].y, sortedPos[i+rows+1].z, 0,f,0}); /** /____\ */
         }
-
-    /** Create Indices */
-
-//        int c=0;
-//        //Pusher inn indeksene i riktig rekkefølge slik at den tegner 1 quad av 2 trekanter per vertex, men ikke på den øverste raden.
-//        for(GLuint i{}; i<object->mesh->mVertices[0].size()-rows-1;i++)
-//        {
-//            //Sjekk for å ungå å tegne en utstrekt skrå quad fra slutten på raden til starten på neste rad
-//            if(c == rows-1)
-//            {
-//                c=0;
-//                continue;
-//            }
-//            object->mesh->mIndices[0].push_back(i);
-//            object->mesh->mIndices[0].push_back(i+1);
-//            object->mesh->mIndices[0].push_back(i+rows);
-
-//            object->mesh->mIndices[0].push_back(i+rows);
-//            object->mesh->mIndices[0].push_back(i+1);
-//            object->mesh->mIndices[0].push_back(i+rows+1);
-//            c++;
-//        }
 
     /** Make Normals */
 
@@ -275,11 +268,9 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
 //        for(int i = 1; i<object->mesh->mVertices[0].size()-rows; i++)
 //        {
-//            gsl::Vector3D pos = vert[i].mXYZ;
-
-//            if(pos.x > 0 && pos.y > 0 /*&& pos.z > 0*/)
+//            if(vert[i].mXYZ.x > 0 && vert[i].mXYZ.y > 0 /*&& pos.z > 0*/)
 //            {
-//                pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
+//                pCenter = gsl::Vector3D{vert[i].mXYZ.x, vert[i].mXYZ.y, vert[i].mXYZ.z};
 
 //                //p0
 //                p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};

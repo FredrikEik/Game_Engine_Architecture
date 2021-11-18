@@ -66,6 +66,7 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.rotateX(180);
     temp->transform->mMatrix.scale(0.05);
     temp->transform->mMatrix.translate(-615184, -600,-6758690);
+    temp->material->mShaderProgram = 0;
 //    hmMatrix = temp->transform->mMatrix;
     mRenderWindow->addToGameObjects(temp);
 
