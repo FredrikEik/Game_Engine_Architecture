@@ -18,7 +18,14 @@
 #include "Shader.h"
 #include "DataStructures/TArray.h"
 
-#include "Engine/Engine.h"
+#include "Engine/Engine.h"	
+#include <mono/metadata/assembly.h>
+#include <mono/jit/jit.h>
+#include <mono/metadata/environment.h>
+#include <mono/utils/mono-publib.h>
+#include <mono/metadata/mono-config.h>
+#include <mono/metadata/assembly.h>
+
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -74,11 +81,63 @@
 //float fov{ 45.0f };
 //
 
+void PrintMethod(MonoString * string)
+{
+	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
+	//#target_link_libraries(GameInJin ${CMAKE_CURRENT_BINARY_DIR}\Mono\lib\)
+	/*
+	set(MONO_COMPILE_FLAGS "--cflags ${CMAKE_SOURCE_DIR}/Mono/include/mono-2.0/")
+		set(MONO_LINK_FLAGS "--libs ${CMAKE_SOURCE_DIR}/Mono/include/mono-2.0/")
+
+		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${MONO_COMPILE_FLAGS}")
+		Set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${MONO_LINK_FLAGS}")
+		*/
+		std::cout << cppString;
+
+	mono_free(cppString);
+}
+
+
+
 int main()
 {
 	//Engine engine = Engine::Get();
 	//engine.start();
 	//delete& engine;
+		//Indicate Mono where you installed the lib and etc folders
+	//mono_set_assemblies_path("/Mono/lib");
+	mono_set_dirs("Mono/lib", "Mono/etc");
+	
+
+		//Create the main CSharp domain
+		MonoDomain* domain = mono_jit_init_version("CSharp_Domain", "v4.0.30319");
+
+		//Load the binary file as an Assembly
+	
+
+		MonoAssembly* csharpAssembly = mono_domain_assembly_open(domain, "Build/bin/Game.exe");
+		if (!csharpAssembly)
+		{
+			//Error detected
+			return -1;
+		}
+
+
+		//SetUp Internal Calls called from CSharp
+
+		//Namespace.Class::Method + a Function pointer with the actual definition
+		mono_add_internal_call("JellyBitEngine.JellyBitEngine::PrintMethod", &PrintMethod);
+
+		int argc = 1;
+		char* argv[1] = { (char*)"CSharp" };
+
+		//Call the main method in this code
+		mono_jit_exec(domain, csharpAssembly, argc, argv);
+
+		system("pause");
+		MonoAssemblyName* aname = mono_assembly_name_new("mscorlib");
+		mono_assembly_name_free(aname);
+		mono_jit_cleanup(domain);
 
 	Engine* engine = Engine::GetInstance();
 	engine->start();
