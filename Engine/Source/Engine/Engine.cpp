@@ -155,13 +155,16 @@ void Engine::init()
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
+	uint32 cameraEntity{};
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
 		processInput(window);
 
+		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
+
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(editorCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
@@ -175,7 +178,7 @@ void Engine::loop()
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
+			CameraSystem::draw(cameraEntity, selectionShader, ECS);
 			MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
 
 
@@ -229,18 +232,19 @@ void Engine::loop()
 		{
 			//std::cout << "Game camera'\n";
 			// TODO: Implement proper deltatime
-			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+			
+			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
 		}
 		else
 		{
 			//std::cout << "Editor camera'\n";
 			//TODO: Draw a game camera here
-			CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
 
 
 		// RTS Selection render -- Translucent -- ingame only
-		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
+		SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
 		//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 
@@ -253,16 +257,16 @@ void Engine::loop()
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
 		//lightPos += 0.01f;
-		CameraSystem::draw(editorCameraEntity, phongShader, ECS);
-		CameraSystem::setPhongUniforms(editorCameraEntity, phongShader, ECS);
+		CameraSystem::draw(cameraEntity, phongShader, ECS);
+		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
-		MeshSystem::draw(phongShader, "u_model", ECS, editorCameraEntity);
+		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00); // disable writing to the stencil buffer
 		glDisable(GL_DEPTH_TEST);
-		CameraSystem::draw(editorCameraEntity, outlineShader, ECS);
+		CameraSystem::draw(cameraEntity, outlineShader, ECS);
 		MeshSystem::drawOutline(outlineShader, "u_model", ECS);
 		
 	
