@@ -240,6 +240,8 @@ void RenderWindow::initObjects()
 
              hjelpeObjekt = factory->createObject("Cube");
 
+             mGround = factory->createObject("TriangleSurface");
+
 }
 
 // Called each frame - doing the rendering

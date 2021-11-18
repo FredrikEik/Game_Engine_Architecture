@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "skybox.h"
 #include "player.h"
+#include "trianglesurface.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -145,6 +146,10 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
+    }
+    else if (objectName == "TriangleSurface")
+    {
+       objectToCreate = new TriangleSurface("../GEA2021/Maps/test_las.txt");
     }
     else{return nullptr;}
 
