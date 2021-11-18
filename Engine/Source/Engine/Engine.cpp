@@ -57,6 +57,7 @@ Engine::~Engine()
 void Engine::setIsPlaying(bool isPlaying)
 {
 	bIsPlaying = isPlaying;
+	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
 	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
@@ -140,6 +141,7 @@ void Engine::init()
 	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
+
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
@@ -147,6 +149,7 @@ void Engine::init()
 	meshComp->bDisregardedDuringFrustumCulling = true;
 	ECS->addComponents<TransformComponent>(terrainEntity);
 	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
+	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
 	viewport->begin(window, ECS->getNumberOfEntities());
@@ -243,10 +246,6 @@ void Engine::loop()
 		}
 
 
-		// RTS Selection render -- Translucent -- ingame only
-		SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
-		//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 
 
 
@@ -274,6 +273,15 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
+		if (bIsPlaying)
+		{
+			// RTS Selection render -- Translucent -- ingame only
+			CameraSystem::draw(cameraEntity, ourShader, ECS);
+
+			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
+			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+		}
 
 		//// Render dear imgui into screen
 		//ImGui::Render();

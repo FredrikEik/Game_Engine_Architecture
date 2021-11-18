@@ -310,7 +310,10 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
     for (const auto& it : allMeshes)
     {
         if (!it.bShouldRender)
+        {
+            ++count;
             continue;
+        }
 
         if (it.bDisregardedDuringFrustumCulling)
         {
@@ -471,6 +474,14 @@ void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMes
     newMesh.m_VAO = meshToCopy.m_VAO;
     newMesh.m_VBO = meshToCopy.m_VBO;
     newMesh.m_vertices = meshToCopy.m_vertices;
+}
+
+void MeshSystem::setHiddenInGame(uint32 entity, ECSManager* ECS, bool bNewHiddenInGame)
+{
+    MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
+    assert(mesh);
+
+    mesh->bShouldRender = !bNewHiddenInGame;
 }
 
 void MeshSystem::initialize(MeshComponent& meshComponent)

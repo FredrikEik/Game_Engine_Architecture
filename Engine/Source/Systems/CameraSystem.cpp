@@ -265,13 +265,11 @@ void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
 	std::vector<Vertex> vertices;
 	for (auto& it : positions)
 	{
-		it = inverseProjViewMatrix*it; // order?
+		it = inverseProjViewMatrix*it; 
 		it.x /= it.w;
 		it.y /= it.w;
 		it.z /= it.w;
 		it.w = 1.f;
-		std::cout << "x: " << it.x << " y: " << it.y << " z: " << it.z << " w: " << it.w <<'\n';
-		//vertices.push_back(Vertex(glm::vec3(it), glm::vec3(0, 0, 1), glm::vec2()));
 		mesh->m_vertices.push_back(Vertex(glm::vec3(it), glm::vec3(0, 1, 1), glm::vec2()));
 	}
 
@@ -302,22 +300,5 @@ void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
 	mesh->m_indices.push_back(3);
 	mesh->m_indices.push_back(7);
 
-
-
-	//MeshSystem::generateMesh(*mesh, vertices);
 	MeshSystem::initialize(*mesh);
-	//std::vector<Vertex> vertices{
-	//	// Near
-	//	Vertex(glm::vec3(-1, -1, -1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(1, -1, -1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(1, 1, -1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(-1, 1, -1), glm::vec3(0, 0, 1), glm::vec2()),
-
-	//	// Far
-	//	Vertex(glm::vec3(-1, -1, 1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(1, -1, 1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(1, 1, 1), glm::vec3(0, 0, 1), glm::vec2()),
-	//	Vertex(glm::vec3(-1, 1, 1), glm::vec3(0, 0, 1), glm::vec2())
-	//};
-
 }
