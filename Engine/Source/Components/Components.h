@@ -131,3 +131,18 @@ struct TextureComponent final : public Component
 
 	uint8_t* rgbImage{};
 };
+
+struct SoundComponent final : public Component
+{
+	SoundComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	std::size_t hash{};
+
+	uint32 p_Source{};
+	float p_Pitch = 1.f;
+	float p_Gain = 1.f;
+	glm::vec3 position{};
+	glm::vec3 velocity{};
+	bool loopSound{false};
+	uint32 buffer{}; // Todo: Can be a vector of all the buffers
+
+};
