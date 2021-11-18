@@ -66,7 +66,8 @@ public:
 
 	LODMeshType LODType{ LODMeshType::Default };
 	bool bIsTranslucent{ false };
-	bool bAlwaysRendered{ false };
+	bool bDisregardedDuringFrustumCulling{ false }; // True if it should not be considered for frustum culling. Renders
+	bool bShouldRender{ true };
 };
 
 

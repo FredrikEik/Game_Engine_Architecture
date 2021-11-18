@@ -9,7 +9,7 @@ in vec2 UV;
 uniform float ambientStrength = 0.1f;
 uniform float lightStrength = 0.7f;
 uniform float objectAlpha = 1.f;
-uniform vec3 lightColor = vec3(0.8, 0.8, 0.3); // ~yellow
+uniform vec3 lightColor = vec3(1, 1, 0.7); // ~Bright yellow
 uniform vec3 objectColor = vec3(0.7, 0.7, 0.7); // grey
 uniform vec3 cameraPosition = vec3(50.f, 5.f, 50.f);
 
@@ -32,10 +32,12 @@ void main() {
     float angleFactor = max(dot(normalCorrected, lightDirection), 0.f);
 
     // Branchless way of swapping between texture and color.
-//    vec3 diffuse = angleFactor * objectColor * vec3(color) * lightColor * lightStrength * (1-bUsingTexture) +
+//    vec3 diffuse = angleFactor * objectColor * lightColor * lightStrength * (1-bUsingTexture) +
 //                    angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
-
-    vec3 diffuse = angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength;
+    vec3 diffuse = angleFactor * objectColor * vec3(color) * lightColor * lightStrength * (1-bUsingTexture) +
+                    angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
+//
+//    vec3 diffuse = angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength;
 
     // specular light
     float specFactor = 0.0;

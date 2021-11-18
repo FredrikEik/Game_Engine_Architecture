@@ -127,7 +127,12 @@ void Engine::init()
 
 
 	editorCameraEntity = ECS->newEntity();
-	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
+	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);	
+	gameCameraEntity = ECS->newEntity();
+	ECS->addComponents<CameraComponent, TransformComponent>(gameCameraEntity);
+	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
+	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
+	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -139,7 +144,7 @@ void Engine::init()
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	meshComp->bAlwaysRendered = true;
+	meshComp->bDisregardedDuringFrustumCulling = true;
 	ECS->addComponents<TransformComponent>(terrainEntity);
 	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
@@ -147,7 +152,7 @@ void Engine::init()
 	viewport->begin(window, ECS->getNumberOfEntities());
 }
 
-int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
+//int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
 	while (!glfwWindowShouldClose(window))

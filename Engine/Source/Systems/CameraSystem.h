@@ -27,6 +27,7 @@ public:
 	
 	static bool WithinFrustum(const float& a, const float& b, const float& c) { return a <= b && b <= c; }
 
+	static void createFrustumMesh(uint32 entity, class ECSManager* ECS);
 
 	// Add functionality to update forward/right/up vector
 	// Add pitching

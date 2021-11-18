@@ -21,6 +21,15 @@ bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& 
 	return true;
 }
 
+void MeshSystem::generateMesh(MeshComponent& meshComponent, const std::vector<Vertex>& vertices)
+{
+    for (uint32 i{}; i < vertices.size(); ++i)
+    {
+        meshComponent.m_vertices.push_back(vertices[i]);
+        meshComponent.m_indices.push_back(i);
+    }
+}
+
 bool MeshSystem::loadMeshLOD(const std::filesystem::path& filePath, MeshComponent& meshComponent, LODMeshType type)
 {
     auto& LODMesh = MeshComponent(meshComponent.entityID, meshComponent.ID);
@@ -54,7 +63,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     {
         MeshComponent& meshComp = meshArray[it];
         // skip transulenct objects
-        if (meshComp.bIsTranslucent == true) 
+        if (meshComp.bIsTranslucent == true || !meshComp.bShouldRender) 
             continue;
 
         if (textureManager)
@@ -68,7 +77,6 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
             else
             {
                 shader->setInt("bUsingTexture", 0);
-
             }
         }
 
@@ -97,7 +105,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 
 			glBindVertexArray(meshComp.m_VAO);
 			glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-			glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(meshComp.m_drawType, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
         else
@@ -110,7 +118,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 
 					glBindVertexArray(meshToDrawn.m_VAO);
 					glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(transformComp.transform));
-					glDrawElements(GL_TRIANGLES, meshToDrawn.m_indices.size(), GL_UNSIGNED_INT, 0);
+					glDrawElements(meshComp.m_drawType, meshToDrawn.m_indices.size(), GL_UNSIGNED_INT, 0);
 					glBindVertexArray(0);
 
                     break;
@@ -301,7 +309,10 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
     uint32 count{};
     for (const auto& it : allMeshes)
     {
-        if (it.bAlwaysRendered)
+        if (!it.bShouldRender)
+            continue;
+
+        if (it.bDisregardedDuringFrustumCulling)
         {
             meshesToRender.push_back(count);
             ++count;
