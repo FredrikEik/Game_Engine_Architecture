@@ -47,6 +47,7 @@ SOURCES += main.cpp \
     simpleparticles.cpp \
     soundsystem.cpp \
     soundsource.cpp \
+    timer.cpp \
     transformwidget.cpp \
     triangle.cpp \
     vertex.cpp \
@@ -78,6 +79,7 @@ HEADERS += \
     simpleparticles.h \
     soundsystem.h \
     soundsource.h \
+    timer.h \
     transformwidget.h \
     triangle.h \
     vertex.h \

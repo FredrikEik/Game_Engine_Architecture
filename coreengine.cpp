@@ -94,8 +94,8 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(boss);
 
     mTerrain = mResourceManager->addObject("terrain");
-    //mTerrain->mTransform->mMatrix.translateZ(-100.f);
-    //mRenderSystem->mGameObjects.push_back(mTerrain);
+    mTerrain->mTransform->mMatrix.translateZ(-100.f);
+    mRenderSystem->mGameObjects.push_back(mTerrain);
 
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
@@ -122,7 +122,6 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-    //mResourceManager->setUpAllTextures();
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop
@@ -244,7 +243,9 @@ void CoreEngine::updateScene()
                 enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
 
-                //spawnParticles(enemies[i]);
+                spawnParticles(enemies[i]);
+
+                testDelete = true;
 
                 projectile->mSoundComponent->shouldPlay = true;
 

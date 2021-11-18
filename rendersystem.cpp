@@ -7,7 +7,9 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
+#include <chrono>
 
+#include "dos.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -97,9 +99,10 @@ void RenderSystem::init()
 
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
-    //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
+        glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
+    CoreEngine::getInstance()->setUpScene();
     //Compile shaders:
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
@@ -118,12 +121,14 @@ void RenderSystem::init()
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
     //Probably should be placed elsewhere
-    CoreEngine::getInstance()->setUpScene();
+
 
     this->dt = 0;
     this->curTime = 0;
     this->lastTime = 0;
 
+
+    //timer.start();
 
 
     //********************** Set up camera **********************
@@ -137,7 +142,6 @@ void RenderSystem::render()
     mVerticesDrawn = 0;     //reset vertex counter
     mObjectsDrawn = 0;      //reset object counter
 
-    timer.start();
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
@@ -156,21 +160,22 @@ void RenderSystem::render()
 
 //        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
         float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
-//        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
+
+        //float angle = gsl::rad2degf(acos(distanceVector.normalized() * CoreEngine::getInstance()->mEditorCamera->mForward.normalized()));
+
+        //        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
 
 //        //if angle between camera Forward, and camera->GameObject > FOV of camera
-        if(angle > mFOVangle)
-            continue;   //don't draw object
+
+        //Error når continue
+//        if( angle > mFOVangle)
+//            continue;   //don't draw object
 
         //LOD calculation
         float length = distanceVector.length();
-//        qDebug() << "distance is" << length;
+
         /*************************************/
 
-
-        //First object - xyz
-        //what shader to use
-        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
         /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
@@ -269,48 +274,67 @@ void RenderSystem::render()
         srand( (float)time( NULL ) );
         if(CoreEngine::getInstance()->isPlaying == true)
         {
+
+            CoreEngine::getInstance()->startTimer = true;
             CoreEngine::getInstance()->updateScene();
+
 
         }
 
 
 
+
+
+
        for(unsigned int j{0}; j < mParticles.size(); j++)
        {
-
-           if(mParticles[i]->isAlive)
+           glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
+           if(mParticles[j]->isAlive)
            {
 
 
-            glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
+
 
             glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[j]->mTransform->mMatrix.constData());
 
-            if(mParticles[j]->isAlive)
-            {
-                glBindVertexArray( mParticles[j]->mMesh->mVAO[0] );
-                glDrawArrays(mParticles[j]->mMesh->mDrawType, 0, mParticles[j]->mMesh->mVertexCount[0]);
-                mVerticesDrawn += mParticles[j]->mMesh->mVertexCount[0];
-                mParticlesDrawn ++;
-            }
+            glBindVertexArray( mParticles[j]->mMesh->mVAO[0] );
+            glDrawArrays(mParticles[j]->mMesh->mDrawType, 0, mParticles[j]->mMesh->mVertexCount[0]);
+            mVerticesDrawn += mParticles[j]->mMesh->mVertexCount[0];
+             mParticlesDrawn ++;
+
+
+
+
 
 
 
 
             if(CoreEngine::getInstance()->isPlaying == true)
             {
-                //float rand = (float) rand()/(RAND_MAX / 1
+
+
                 if(CoreEngine::getInstance()->particlesSpawned == true)
                 {
+                    //timer.start();
 
                     mParticles[j]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f
                                                             );
+
+
                 }
+                if(timer.elapsedSeconds() >= 1)
+                {
+                    mParticles[j]->isAlive = false;
+                    //timer.stop();
+
+                }
+
+
 
 
             }
@@ -325,6 +349,8 @@ void RenderSystem::render()
         this->updateDt();
         glBindVertexArray(0);
     }
+
+
 
     Camera *tempcam = CoreEngine::getInstance()->mGameCamera;
 
@@ -342,6 +368,8 @@ void RenderSystem::render()
     glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
+    timerSetup(!CoreEngine::getInstance()->testDelete);
+    qDebug() << "Seconds: " << timer.elapsedSeconds();
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -375,6 +403,17 @@ void RenderSystem::rotateObj(double val)
 
 void RenderSystem::setPickedObject(int pickedID)
 {
+
+}
+
+void RenderSystem::timerSetup(bool toggle)
+{
+    //bool temp = toggle;
+    if(toggle)
+    {
+    timer.start();
+    //temp = false;
+    }
 
 }
 

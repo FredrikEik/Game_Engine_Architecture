@@ -56,7 +56,7 @@ public:
 
     void calculateNormals();
     void initTerrain();
-    void updateParticles(const float dt);
+    //void updateParticles(const float dt);
 
     TextureHandler *mTexture;
     unsigned short mWidth{0};

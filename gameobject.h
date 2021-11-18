@@ -19,6 +19,7 @@ public:
      bool isAlive = true;
      bool ProjectileHit = false;
      bool ProjectileSpawned = false;
+     bool particleDead = false;
 
      void move(float x, float y, float z);
 };

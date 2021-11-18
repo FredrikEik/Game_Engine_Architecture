@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
+#include "timer.h"
 
 #include "input.h"
 #include "constants.h"
@@ -54,6 +55,8 @@ public:
 
    void updatePickedObject();
 
+   void timerSetup(bool toggle);
+
 
 
 
@@ -101,25 +104,25 @@ private:
     int mObjectsDrawn{0};
     int mParticlesDrawn{0};
 
+    int timeTest{0};
+
     float translateX{1};
     float translateY{1};
     float translateZ{1};
     gsl::Vector3D tempPos;
 
-    float mFOVangle{45};
+    float mFOVangle{60};
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
-    QElapsedTimer timer;
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
-
-
+    Timer timer;
    // MeshData linebox;
     MeshData linebox2;
 

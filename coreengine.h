@@ -49,6 +49,8 @@ public:
     bool goatDead = false;
     bool testDelete = false;
 
+    bool startTimer = false;
+
     float tempPosX{0};
     float tempPosY{0};
     float tempPosZ{0};
