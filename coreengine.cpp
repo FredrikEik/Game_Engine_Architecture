@@ -93,6 +93,7 @@ void CoreEngine::setUpScene()
     boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
+
     mTerrain = mResourceManager->addObject("terrain");
     mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
@@ -129,6 +130,8 @@ void CoreEngine::setUpScene()
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
+
+
 }
 
 void CoreEngine::testScene()
@@ -169,7 +172,6 @@ void CoreEngine::testScene()
 
 void CoreEngine::spawnParticles(GameObject * temp)
 {
-    srand( (unsigned)time( NULL ) );
 
     tempPosX = temp->mTransform->mMatrix.getPosition().getX();
     tempPosY = temp->mTransform->mMatrix.getPosition().getY();
@@ -184,6 +186,7 @@ void CoreEngine::spawnParticles(GameObject * temp)
         Particles->mTransform->mMatrix.scale(.02);
         Particles->mTransform->mMatrix.setPosition(tempPosX,tempPosY,tempPosZ);
         mRenderSystem->mParticles.push_back(Particles);
+         //mRenderSystem->mGameObjects.push_back(Particles);
     }
     particlesSpawned = true;
     //Particles->isAlive = true;

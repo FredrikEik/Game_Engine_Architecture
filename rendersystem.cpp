@@ -288,7 +288,26 @@ void RenderSystem::render()
 
        for(unsigned int j{0}; j < mParticles.size(); j++)
        {
+
+
            glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
+
+           if (mParticles[j]->mMaterial->mShaderProgram == 0)
+           {
+               viewMatrix = vMatrixUniform;
+               projectionMatrix = pMatrixUniform;
+               modelMatrix = mMatrixUniform;
+           }
+           else if (mParticles[j]->mMaterial->mShaderProgram == 1)
+           {
+               viewMatrix = vMatrixUniform1;
+               projectionMatrix = pMatrixUniform1;
+               modelMatrix = mMatrixUniform1;
+
+               //Now mMaterial component holds texture slot directly - probably should be changed
+               glUniform1i(mTextureUniform, mParticles[j]->mMaterial->mTextureUnit);
+           }
+
            if(mParticles[j]->isAlive)
            {
 
@@ -302,7 +321,7 @@ void RenderSystem::render()
             glBindVertexArray( mParticles[j]->mMesh->mVAO[0] );
             glDrawArrays(mParticles[j]->mMesh->mDrawType, 0, mParticles[j]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mParticles[j]->mMesh->mVertexCount[0];
-             mParticlesDrawn ++;
+            mParticlesDrawn ++;
 
 
 
@@ -317,7 +336,7 @@ void RenderSystem::render()
 
                 if(CoreEngine::getInstance()->particlesSpawned == true)
                 {
-                    //timer.start();
+
 
                     mParticles[j]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
@@ -330,12 +349,8 @@ void RenderSystem::render()
                 if(timer.elapsedSeconds() >= 1)
                 {
                     mParticles[j]->isAlive = false;
-                    //timer.stop();
 
                 }
-
-
-
 
             }
 
@@ -343,8 +358,6 @@ void RenderSystem::render()
 
 
         }
-//        if(CoreEngine::getInstance()->testDelete == true)
-//        delete mParticles[1];
 
         this->updateDt();
         glBindVertexArray(0);
@@ -365,7 +378,7 @@ void RenderSystem::render()
 
     glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, temp.constData());
     glBindVertexArray( frustum.mVAO[0] );
-    glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+    //glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
     timerSetup(!CoreEngine::getInstance()->testDelete);
