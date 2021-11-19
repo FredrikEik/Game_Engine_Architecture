@@ -6,7 +6,6 @@
 #include <QKeyEvent>
 #include <QStatusBar>
 #include <QDebug>
-#include "rapidjson.h"
 #include <iostream>
 
 #include "lasheightmap.h"
