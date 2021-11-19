@@ -11,6 +11,9 @@ class LASHeightMap
 public:
     LASHeightMap(std::string fileName);
 
+    std::vector<Vertex> getPositions() const;
+    void setPositions(const std::vector<Vertex> &value);
+
 private:
     void ReadDatafromFile(std::string fileName);
     std::vector<Vertex> positions;

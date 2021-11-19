@@ -71,6 +71,16 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 }
 
+std::vector<Vertex> LASHeightMap::getPositions() const
+{
+    return positions;
+}
+
+void LASHeightMap::setPositions(const std::vector<Vertex> &value)
+{
+    positions = value;
+}
+
 void LASHeightMap::RemoveDeltaPos()
 {
     float smallestX{0}, biggestX{0};

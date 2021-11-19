@@ -185,7 +185,7 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
-
+/*
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
@@ -197,7 +197,7 @@ void RenderWindow::init()
         }
     }
     //JSS->SaveLevel("Test");
-
+*/
 
 
     SoundManager::getInstance()->init();
@@ -251,8 +251,9 @@ void RenderWindow::init()
 */
 
     //LASDATA
-
-    LASHeightMap map = LASHeightMap("C:/Users/deniz/Documents/UnrealProjects/GEA2021/test_las.txt");
+    LASHeightMap map = LASHeightMap("C:/Users/moham/OneDrive/Desktop/GEA2021/test_las.txt");
+    ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
+    entitySys->construct("LAS", QVector3D(0.0f,0.0f,0.0f), 0,0, GL_QUADS);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
