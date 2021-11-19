@@ -251,7 +251,7 @@ void RenderWindow::init()
 */
 
     //LASDATA
-    LASHeightMap map = LASHeightMap("C:/Users/moham/OneDrive/Desktop/GEA2021/test_las.txt");
+    LASHeightMap map = LASHeightMap("C:../GEA2021/test_las.txt");
     ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
     entitySys->construct("LAS", QVector3D(0.0f,0.0f,0.0f), 0,0, GL_QUADS);
 }
