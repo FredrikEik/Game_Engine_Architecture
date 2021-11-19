@@ -13,7 +13,7 @@ private:
 	SoundDevice();
 	~SoundDevice();
 
-	struct ALCdevice* p_ALCDevice;
-	struct ALCcontext* p_ALCContext;
+	struct ALCdevice* p_ALCDevice{};
+	struct ALCcontext* p_ALCContext{};
 
 };

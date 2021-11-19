@@ -32,6 +32,8 @@
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
 
+#include "../SaveLoad/Save.h"
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -151,6 +153,8 @@ void Engine::init()
 	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
+
+	Save::SaveEntities(ECS->entities, 0, ECS);
 
 	viewport->begin(window, ECS->getNumberOfEntities());
 }
