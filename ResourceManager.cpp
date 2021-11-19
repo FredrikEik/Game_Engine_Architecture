@@ -158,16 +158,16 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
     if (inn.is_open())
     {
-        int n; //antall punkter?
+        int n; //Amount of coordinates
         inn >> n;
 
         std::string coord = "";
 
         float x = 0.0f, y = 0.0f, z = 0.0f;
-        float xMin = 0.0f, xMax = 0.0f, yMin = 0.0f, yMax = 0.0f;
+        float xMin = 0.0f, xMax = 0.0f, yMin = 0.0f, yMax = 0.0f, zMin = 0.0f, zMax = 0.0f;
 
-        const int rows = 50;
-        const int cols = 50;
+        const int rows = 100;
+        const int cols = 100;
 
         object->mesh->mVertices[0].reserve(n);
         tempPos.reserve(n);
@@ -184,10 +184,15 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
                 xMin = x;
             if(y < yMin || i == 0)
                 yMin = y;
+            if(z < zMin || i == 0)
+                zMin = z;
             if(x > xMax || i == 0)
                 xMax = x;
             if(y > yMax || i == 0)
                 yMax = y;
+            if(z > zMax || i == 0)
+                zMax = z;
+
         }
         float xStep = (xMax-xMin)/rows;       //Distance between the corners in a quad (x-axis)
         float yStep = (yMax-yMin)/cols;       //Distance between the corners in a quad (y-axis)
@@ -199,6 +204,7 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
         {
             int x1 = static_cast<int>((tempPos[i].x-xMin) / xStep);
             int y1 = static_cast<int>((tempPos[i].y-yMin) / yStep);
+
             tempForAvg[x1][y1] += tempPos[i].z;
             vertexesInQuad[x1][y1]++;
             allHeights += tempPos[i].z;
@@ -228,105 +234,203 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
             }
         }
         int c = 0;
-        for(int i = 0; i<sortedPos.size()-rows-1; i++)
+        for(int i = 0; i<sortedPos.size(); i++) //IF USING INDICES: Remove "-rows-1"
         {
             //Skips to the next vertex if current vertex is the last in that row.
-            //Without this, triangles would be generated between points on different sides of the terrain
-            if(c == rows-1)
-            {
-                c=0;
-                continue; //continues to next index in for loop.
-            }
-            c++;
+            //Without this, triangles would be generated between points on opposite sides of the terrain
+//            if(c == rows-1)
+//            {
+//                c=0;
+//                continue; //continues to next index in for loop.
+//            }
+//            c++;
 
             //Tilfeldige verdier mellom 0 og 1.
             //Dette er midlertidig for å lettere se linjene melloom vertexer i terrenget.
-                float a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-                float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-                float c = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-                float d = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-                float e = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-                float f = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);;
-
-                                                                                                                                      /**  _____ */
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i].x, sortedPos[i].y, sortedPos[i].z, 0,a,0});                      /** \    / */
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,b,0});                /** \  /   */
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,c,0});       /** \/     */
+            float a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+//            float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+                                                                                                                                                         /**  _____ */
+            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i].x-xMin, sortedPos[i].y-zMin, sortedPos[i].z-yMin, 0,a,0});                          /** \    / */
+//            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x-xMin, sortedPos[i+1].y-zMin, sortedPos[i+1].z-yMin, 0,a,0});                  /** \  /   */
+//            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x-xMin, sortedPos[i+rows].y-zMin, sortedPos[i+rows].z-yMin, 0,a,0});         /** \/     */
 
 
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x, sortedPos[i+rows].y, sortedPos[i+rows].z, 0,d,0});       /**     /\ */
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x, sortedPos[i+1].y, sortedPos[i+1].z, 0,e,0});                /**   /  \ */
-            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows+1].x, sortedPos[i+rows+1].y, sortedPos[i+rows+1].z, 0,f,0}); /** /____\ */
+//            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows].x-xMin, sortedPos[i+rows].y-zMin, sortedPos[i+rows].z-yMin, 0,b,0});         /**     /\ */
+//            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+1].x-xMin, sortedPos[i+1].y-zMin, sortedPos[i+1].z-yMin, 0,b,0});                  /**   /  \ */
+//            object->mesh->mVertices[0].push_back(Vertex{sortedPos[i+rows+1].x-xMin, sortedPos[i+rows+1].y-zMin, sortedPos[i+rows+1].z-yMin, 0,b,0});   /** /____\ */
         }
 
-    /** Make Normals */
+            c=0;
+            //Pusher inn indeksene i riktig rekkefølge slik at den tegner 1 quad av 2 trekanter per vertex, men ikke på den øverste raden.
+            for(int i = 0; i<object->mesh->mVertices[0].size()-rows-1;i++)
+            {
+                //Sjekk for å ungå å tegne en utstrekkt  skrå quad fra slutten på raden til starten på neste rad
+                if(c == rows-1)
+                {
+                    c=0;
+                    continue;
+                }
+                c++;
 
-//        gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
-//        gsl::Vector3D n0,n1,n2,n3,n4,n5;
+                object->mesh->mIndices[0].push_back(i);
+                object->mesh->mIndices[0].push_back(i+1);
+                object->mesh->mIndices[0].push_back(i+rows);
+
+                object->mesh->mIndices[0].push_back(i+rows);
+                object->mesh->mIndices[0].push_back(i+1);
+                object->mesh->mIndices[0].push_back(i+rows+1);
+
+            }
+
+
+
+    /** Make Normals */
+        /** Skjønner ikke hvorfor, men normalkalkuleringene gjør ingen forskjell for hvordan terrenget ser ut */
+
+//        gsl::Vector3D p0,p1,p2,p3;
+//        gsl::Vector3D n0,n1,n2,n3;
 
 //        std::vector<Vertex> vert = object->mesh->mVertices[0];
-
-//        for(int i = 1; i<object->mesh->mVertices[0].size()-rows; i++)
+//        c = 0;
+//        for(int i = 0; i<object->mesh->mVertices[0].size()-rows-1; i++)
 //        {
-//            if(vert[i].mXYZ.x > 0 && vert[i].mXYZ.y > 0 /*&& pos.z > 0*/)
+////            if(c == rows-1)
+////            {
+////                c=0;
+////                continue; //continues to next index in for loop.
+////            }
+////            c++;
+//            gsl::Vector3D pos = object->mesh->mVertices[0][i].mXYZ;
+
+//            int x1 = static_cast<int>((pos.x) / xStep);
+//            int y1 = static_cast<int>((pos.z) / yStep);
+
+//            if(x1 > 0 && y1 > 0 && x1 < rows && y1 < cols) //index > 0
 //            {
-//                pCenter = gsl::Vector3D{vert[i].mXYZ.x, vert[i].mXYZ.y, vert[i].mXYZ.z};
+//                p0 = gsl::Vector3D{vert[i].mXYZ.x, vert[i].mXYZ.y, vert[i].mXYZ.z};
 
 //                //p0
-//                p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
+//                p1 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
 
 //                //p1
-//                p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
+//                p2 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
 
 //                //p2
-//                p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
+//                p3 = gsl::Vector3D{vert[i+rows+1].mXYZ.x, vert[i+rows+1].mXYZ.y, vert[i+rows+1].mXYZ.z};
 
-//                //p3
-//                p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
-
-//                //p4
-//                p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
-
-//                //p5
-//                p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
 //            }
 //            //lager vektorer til alle punktene
-//            gsl::Vector3D v0 = p0-pCenter;
-//            gsl::Vector3D v1 = p1-pCenter;
-//            gsl::Vector3D v2 = p2-pCenter;
-//            gsl::Vector3D v3 = p3-pCenter;
-//            gsl::Vector3D v4 = p4-pCenter;
-//            gsl::Vector3D v5 = p5-pCenter;
+//            gsl::Vector3D v0 = p0-p1;
+//            gsl::Vector3D v1 = p0-p2;
+//            gsl::Vector3D v2 = p0-p3;
 
-//            //Regner ut normalene til alle trekantene rundt punktet
+//            v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+//            v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+//            v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
 
-//            n0 = v0.cross(v0,v1);
+//            n0 = v0.cross(v0,v2);
 //            n0.normalize();
 
 //            n1 = v1.cross(v1,v2);
 //            n1.normalize();
 
-//            n2 = v2.cross(v2,v3);
-//            n2.normalize();
+//            gsl::Vector3D nV = n0+n1;
 
-//            n3 = v3.cross(v3,v4);
-//            n3.normalize();
-
-//            n4 = v4.cross(v4,v5);
-//            n4.normalize();
-
-//            n5 = v5.cross(v5,v0);
-//            n5.normalize();
-
-//            gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
-
-//            vert[i].mNormal.x = nV.x;
-//            vert[i].mNormal.y = nV.y;
-//            vert[i].mNormal.z = nV.z;
+//            object->mesh->mVertices[0].at(i).set_normal(nV.x, nV.z, nV.y);
 //        }
 
+
+
+
+        gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
+        gsl::Vector3D n0,n1,n2,n3,n4,n5;
+
+        std::vector<Vertex> vert = object->mesh->mVertices[0];
+        c=0;
+
+        for(int i = 0; i<object->mesh->mVertices[0].size()-rows; i++)
+        {
+//            if(c == rows-1)
+//            {
+//                c=0;
+//                continue; //continues to next index in for loop.
+//            }
+//            c++;
+            gsl::Vector3D pos = object->mesh->mVertices[0][i].mXYZ;
+
+            int x1 = static_cast<int>((pos.x) / xStep);
+            int y1 = static_cast<int>((pos.z) / yStep);
+
+            if(x1 > 0 && y1 > 0 && x1 < rows && y1 < cols) //index > 0
+            {
+                pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
+
+                //p0
+                p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
+
+                //p1
+                p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
+
+                //p2
+                p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
+
+                //p3
+                p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
+
+                //p4
+                p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
+
+                //p5
+                p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
+            }
+
+
+
+            //lager vektorer til alle punktene
+            gsl::Vector3D v0 = p0-pCenter;
+            gsl::Vector3D v1 = p1-pCenter;
+            gsl::Vector3D v2 = p2-pCenter;
+            gsl::Vector3D v3 = p3-pCenter;
+            gsl::Vector3D v4 = p4-pCenter;
+            gsl::Vector3D v5 = p5-pCenter;
+
+        /** If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values) */
+            v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+            v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+            v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+            v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+            v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+            v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+
+            //Regner ut normalene til alle trekantene rundt punktet
+
+            n0 = v0.cross(v0,v1);
+            n0.normalize();
+
+            n1 = v1.cross(v1,v2);
+            n1.normalize();
+
+            n2 = v2.cross(v2,v3);
+            n2.normalize();
+
+            n3 = v3.cross(v3,v4);
+            n3.normalize();
+
+            n4 = v4.cross(v4,v5);
+            n4.normalize();
+
+            n5 = v5.cross(v5,v0);
+            n5.normalize();
+
+            gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+
+            object->mesh->mVertices[0].at(i).set_normal(nV.x, nV.z, nV.y);
+        }
+
         inn.close();
+        qDebug() << object->transform->mMatrix.getPosition().x << object->transform->mMatrix.getPosition().y << object->transform->mMatrix.getPosition().z;
     }
+
     init(*object->mesh, 0);
 
     return mMeshComponents.size()-1;
@@ -337,7 +441,7 @@ int ResourceManager::makeHeightMap(std::string filename)
     texture = new Texture(filename, false);
 
 
-    rows = texture->mRows;   //WARNING: only using half of the heightmap. (Because of lag issues)
+    rows = texture->mRows;
     cols = texture->mColumns;
 
     unsigned char *mHeights = texture->getmHeights();

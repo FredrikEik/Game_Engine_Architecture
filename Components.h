@@ -24,6 +24,8 @@ struct Transform
 struct Mesh
 {
     std::vector<Vertex> mVertices[3];
+    std::vector<int> xGridIndex;
+    std::vector<int> zGridIndex;
     std::vector<GLuint> mIndices[3];
 
     GLint mMatrixUniform{0};
