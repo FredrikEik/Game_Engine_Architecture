@@ -162,6 +162,7 @@ void CoreEngine::testScene()
 
 
     }
+        mResourceManager->addCollider("sphere", projectile);
 
         mRenderSystem->mGameObjects.push_back(player);
 
@@ -196,7 +197,7 @@ void CoreEngine::spawnProjectile()
     tempPosX = player->mTransform->mMatrix.getPosition().getX();
     tempPosY = player->mTransform->mMatrix.getPosition().getY();
     tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
-    mResourceManager->addCollider("sphere", projectile);
+
 
     projectile->mTransform->mMatrix.setPosition(tempPosX, tempPosY, tempPosZ);
     projectile->ProjectileSpawned = true;
@@ -243,7 +244,7 @@ void CoreEngine::updateScene()
                 qDebug() << "collided !";
                 enemies[i]->mTransform->mMatrix.rotateZ(90);
                 enemies[i]->mCollider->objectsHasCollided = true;
-                enemies[i]->mSoundComponent->shouldPlay = true;
+                //enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
 
                 //spawnParticles(enemies[i]);
@@ -251,7 +252,7 @@ void CoreEngine::updateScene()
 
                 // INVALID NAME ERROR KOMMER AV FEIL MED LYDEN!
 
-                projectile->mSoundComponent->shouldPlay = true;
+               // projectile->mSoundComponent->shouldPlay = true;
 
                 //velger om man skal drawe et object eller ikke
                 goatDead = true;
@@ -259,6 +260,10 @@ void CoreEngine::updateScene()
                 qDebug() << "enemy " << i << " hit";
 
                 //enemy->mSoundComponent->shouldPlay = false;
+
+                score += 10;
+
+
             }
 
 
@@ -286,6 +291,11 @@ void CoreEngine::updateScene()
 
         }
     }
+
+
+
+    //mMainWindow->UpdateScore(score);
+
 
 
 }

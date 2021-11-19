@@ -91,6 +91,8 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
+    ui->progressBar->setValue(0);
 }
 
 
@@ -107,6 +109,8 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
 {
+
+
     mCoreEngine->togglePlayMode(checked);
     mRenderSystem->toggleFrustum(checked);
 
@@ -156,6 +160,12 @@ void MainWindow::selectObjectByIndex(int indexIn)
 //        on_outliner_itemClicked(mCurrentEditItem, 0);
 //    }
 
+}
+
+void MainWindow::UpdateScore(int value)
+{
+
+     ui->progressBar->setValue(value);
 }
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
@@ -234,6 +244,7 @@ void MainWindow::on_pushButton_2_clicked()
 
     mCoreEngine->testScene();
 
+
     for(unsigned int i = 0; i < mCoreEngine->enemies.size(); i ++)
     {
 
@@ -245,3 +256,10 @@ void MainWindow::on_pushButton_2_clicked()
 
 
 
+
+void MainWindow::on_progressBar_valueChanged(int value)
+{
+ if(value == 100)
+     qDebug() << " You Won!";
+ //ui->progressBar->
+}

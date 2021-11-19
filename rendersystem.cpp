@@ -367,11 +367,13 @@ void RenderSystem::render()
 
         }
 
+
+
         this->updateDt();
         glBindVertexArray(0);
     }
 
-
+    mMainWindow->UpdateScore(CoreEngine::getInstance()->score);
 
     Camera *tempcam = CoreEngine::getInstance()->mGameCamera;
 

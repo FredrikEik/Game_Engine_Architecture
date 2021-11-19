@@ -28,6 +28,8 @@ public:
     QListWidgetItem *mCurrentSelectedItem{nullptr};
     QTreeWidgetItem *mCurrentTreeItem{nullptr};
 
+    void UpdateScore(int value);
+
 
 public slots:
 
@@ -52,6 +54,8 @@ private slots:
     void on_pushButton_2_clicked();
 
 
+
+    void on_progressBar_valueChanged(int value);
 
 private:
     void init();

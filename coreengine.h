@@ -55,6 +55,8 @@ public:
     float tempPosY{0};
     float tempPosZ{0};
 
+    int score = 0;
+
     MeshData linebox;
     MeshData linebox2;
 
