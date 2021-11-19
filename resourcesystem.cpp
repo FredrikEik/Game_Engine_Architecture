@@ -276,6 +276,17 @@ void resourceSystem::SetMeshDataContainer()
     }
 }
 
+void resourceSystem::SetIntoMeshDataContainerRUNTIME(std::vector<Vertex> mVertices, std::string fname)
+{
+    meshData obj;
+    obj.meshVert = mVertices;
+    obj.internalIndex = meshDataContainer.size()-1;
+    obj.VAO = 0;//(GLuint)meshDataContainer.size()+1;
+    obj.VBO = 0;//(GLuint)meshDataContainer.size()+1;
+    meshDataContainer.push_back(std::make_pair(fname, obj));
+    rendSys->init(&meshDataContainer[meshDataContainer.size()-1].second.meshVert, &meshDataContainer[meshDataContainer.size()-1].second.VAO, &meshDataContainer[meshDataContainer.size()-1].second.VBO);
+}
+
 /// Returns vertex data for a specific mesh.
 std::vector<Vertex> resourceSystem::getVertexDataByName(std::string meshName)
 {
