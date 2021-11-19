@@ -382,7 +382,9 @@ void RenderSystem::render()
 
 
     timerSetup(!CoreEngine::getInstance()->testDelete);
-    qDebug() << "Seconds: " << timer.elapsedSeconds();
+    //qDebug() << "Seconds: " << timer.elapsedSeconds();
+
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time

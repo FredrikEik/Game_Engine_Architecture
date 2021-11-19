@@ -94,14 +94,13 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(boss);
 
 
-    mTerrain = mResourceManager->addObject("terrain");
+    mTerrain = mResourceManager->addObject("heightmap.bmp");
     mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
 
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
     projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
-    mResourceManager->addCollider("sphere", projectile);
     mResourceManager->addComponent("splat_stereo.wav", projectile);
     projectile->mSoundComponent->shouldPlay = false;
 
@@ -197,6 +196,7 @@ void CoreEngine::spawnProjectile()
     tempPosX = player->mTransform->mMatrix.getPosition().getX();
     tempPosY = player->mTransform->mMatrix.getPosition().getY();
     tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
+    mResourceManager->addCollider("sphere", projectile);
 
     projectile->mTransform->mMatrix.setPosition(tempPosX, tempPosY, tempPosZ);
     projectile->ProjectileSpawned = true;
@@ -246,9 +246,8 @@ void CoreEngine::updateScene()
                 enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
 
-                spawnParticles(enemies[i]);
+                //spawnParticles(enemies[i]);
 
-                testDelete = true;
 
                 projectile->mSoundComponent->shouldPlay = true;
 
@@ -275,6 +274,9 @@ void CoreEngine::updateScene()
                 //enemy->mSoundComponent->looping = false;
                 spawnParticles(player);
                 projectile->mSoundComponent->shouldPlay = true;
+
+
+                testDelete = true;
 
                 player->isAlive = false;
 
