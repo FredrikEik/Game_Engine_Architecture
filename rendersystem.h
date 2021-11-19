@@ -47,6 +47,8 @@ public:
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
+    bool toogleFrustumDrawing = true;
+
     void render();
 
     void rotateObj(double val);
@@ -56,6 +58,8 @@ public:
    void updatePickedObject();
 
    void timerSetup(bool toggle);
+
+   void toggleFrustum(bool toggle);
 
 
 

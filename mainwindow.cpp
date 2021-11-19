@@ -108,6 +108,7 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
 {
     mCoreEngine->togglePlayMode(checked);
+    mRenderSystem->toggleFrustum(checked);
 
     if(checked)
         ui->pb_togglePlay->setText("Stop (R)");
@@ -221,9 +222,6 @@ void MainWindow::on_actionAdd_XYZ_triggered()
     if(CoreEngine::getInstance()->isPlaying == false)
     {
 
-
-
-
     mRenderSystem->mGameObjects.push_back(mCoreEngine->axis);
     ui->listWidget->addItem(mCoreEngine->axis->objName);
     }
@@ -242,3 +240,8 @@ void MainWindow::on_pushButton_2_clicked()
         ui->listWidget->addItem(mCoreEngine->enemies[i]->objName);
     }
 }
+
+
+
+
+

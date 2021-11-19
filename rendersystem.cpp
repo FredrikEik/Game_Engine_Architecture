@@ -168,8 +168,16 @@ void RenderSystem::render()
 //        //if angle between camera Forward, and camera->GameObject > FOV of camera
 
         //Error når continue
-//        if( angle > mFOVangle)
-//            continue;   //don't draw object
+
+        if(!toogleFrustumDrawing)
+        {
+                    if( angle > mFOVangle)
+                        continue;   //don't draw object
+        }
+
+
+
+
 
         //LOD calculation
         float length = distanceVector.length();
@@ -378,7 +386,13 @@ void RenderSystem::render()
 
     glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, temp.constData());
     glBindVertexArray( frustum.mVAO[0] );
-    //glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+    if(toogleFrustumDrawing)
+    {
+        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+
+    }
 
 
     timerSetup(!CoreEngine::getInstance()->testDelete);
@@ -429,6 +443,18 @@ void RenderSystem::timerSetup(bool toggle)
     timer.start();
     //temp = false;
     }
+
+}
+
+void RenderSystem::toggleFrustum(bool toggle)
+{
+    if(toggle)
+
+        toogleFrustumDrawing = false;
+
+
+    else
+        toogleFrustumDrawing = true;
 
 }
 

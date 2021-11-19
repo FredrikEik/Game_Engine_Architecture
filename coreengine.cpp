@@ -58,6 +58,7 @@ void CoreEngine::setUpScene()
     //Axis
     axis = mResourceManager->addObject("axis");
     axis->objName = "Axis";
+    mRenderSystem->mGameObjects.push_back(axis);
     //scene->setupScene1();
     //scene->setupScene1();
 
@@ -94,8 +95,8 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(boss);
 
 
-    mTerrain = mResourceManager->addObject("heightmap.bmp");
-    mTerrain->mTransform->mMatrix.translateZ(-100.f);
+    mTerrain = mResourceManager->addObject("terrain");
+    //mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
 
     projectile = mResourceManager->addObject("projectile");
@@ -160,11 +161,10 @@ void CoreEngine::testScene()
         enemies.push_back(enemy);
 
 
-
     }
 
         mRenderSystem->mGameObjects.push_back(player);
-        mRenderSystem->mGameObjects.push_back(axis);
+
         playerSpawned = true;
         enemySpawned = true;
 }
@@ -248,6 +248,8 @@ void CoreEngine::updateScene()
 
                 //spawnParticles(enemies[i]);
 
+
+                // INVALID NAME ERROR KOMMER AV FEIL MED LYDEN!
 
                 projectile->mSoundComponent->shouldPlay = true;
 
