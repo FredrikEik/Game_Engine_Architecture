@@ -9,8 +9,7 @@ INCLUDEPATH += \
     ./gsl \
     ./Shaders \
     ./openal \
-    ./json/include/rapidjson \
-    ./json/include/nlohmann
+    ./libs/nlohmann
 
 
 win32 {
