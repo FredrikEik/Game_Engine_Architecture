@@ -141,7 +141,7 @@ void CoreEngine::setUpScene()
 
 //Rollingball, getting vis & sim collision code integrated into GEA
     temp = mGameObjectManager->addObject("Ball.obj");
-    temp->mTransform->mMatrix.translate(0.5f, 0.5f, 0.0f);
+    temp->mTransform->mMatrix.translate(0.5f, 1.5f, 0.0f);
     temp->mTransform->mMatrix.scale(0.1f);
     temp->mName = "RollingBall";
     mGameObjectManager->addComponent("PhysicsComponent", temp);
