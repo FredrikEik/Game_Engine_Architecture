@@ -51,7 +51,7 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
             z += line[26];
 
             //std::cout <<x<< " "<< y << " "<<z<< '\n';
-            positions.push_back(Vertex(std::stof(x),std::stof(z),std::stof(y), 0,0 ,0 ,0 ,0)); // setting data into Vertex
+            positions.push_back(Vertex(std::stof(x),std::stof(z),std::stof(y), (line[4] - '0')*0.1f ,(line[23]- '0')*0.1f ,(line[16]- '0')*0.1f ,0 ,0)); // setting data into Vertex
             x = "";
             y = "";
             z = "";
@@ -110,7 +110,7 @@ void LASHeightMap::RemoveDeltaPos()
             biggestZ = temp.getZ();
     }
 
-    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY}, deltaZ{biggestZ - smallestZ};
+    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
     qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
 
     for(auto i = 0; i<positions.size(); i++)

@@ -253,7 +253,7 @@ void RenderWindow::init()
     //LASDATA
     LASHeightMap map = LASHeightMap("C:../GEA2021/test_las.txt");
     ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
-    entitySys->construct("LAS", QVector3D(0.0f,0.0f,0.0f), 0,0, GL_QUADS);
+    entitySys->construct("LAS", QVector3D(-110.0f,-10.0f,-30.0f), 0,0, GL_POINTS);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -285,7 +285,7 @@ void RenderWindow::render()
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
         {
             //frustum culling
-            frustumCulling(i);
+            //frustumCulling(i);
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
 
