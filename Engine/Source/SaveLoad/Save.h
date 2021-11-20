@@ -11,6 +11,8 @@ public:
 		std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, 
 		core::MAX_ENTITIES>& entities, 
 		uint32 startIndex, class ECSManager* ECS);
+
+	static std::string getDefaultAbsolutePath();
 private:
 	static void addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson,
 			class ECSManager* ECS);

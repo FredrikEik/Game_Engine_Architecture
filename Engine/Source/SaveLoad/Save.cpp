@@ -37,6 +37,11 @@ void Save::saveEntities(const std::array<
 	file.close();
 }
 
+std::string Save::getDefaultAbsolutePath()
+{
+	return std::string(defaultSaveLocation + defaultSaveName);
+}
+
 void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson, ECSManager* ECS)
 {
 	JSON json;

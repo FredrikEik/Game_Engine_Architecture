@@ -26,19 +26,34 @@ void WorldOutliner::begin(class Viewport* inViewport, int32 inReservedEntities)
 
 void WorldOutliner::update()
 {
+	// TODO: get correct entityID's
 	int32 numberOfEntities = ECS->getNumberOfEntities();
 	int currentItem{};
 
 	// TODO: Make it so that this does not break when an entity is removed
 	ImGui::BeginChild("Entities");
-	for (int32 i{ reservedEntities }; i < numberOfEntities; ++i)
+	int32 validEntities{};
+	for (int32 i{reservedEntities}; i < ECS->entities.size(); ++i)
 	{
-		//ImGui::Text("%04d: Some text", i);
+		if (!ECS->entities[i].first)
+			continue;
+		if ((validEntities + reservedEntities) > numberOfEntities)
+			break;
+
 		std::string str = "Entity ";
-		str.append( std::to_string(i));
+		str.append(std::to_string(i));
 		if (ImGui::Button(str.c_str()))
 			viewport->setCurrentEntity(i);
+		validEntities++;
 	}
+	//for (int32 i{ reservedEntities }; i < numberOfEntities; ++i)
+	//{
+	//	//ImGui::Text("%04d: Some text", i);
+	//	std::string str = "Entity ";
+	//	str.append( std::to_string(i));
+	//	if (ImGui::Button(str.c_str()))
+	//		viewport->setCurrentEntity(i);
+	//}
 	ImGui::EndChild();
 
 }

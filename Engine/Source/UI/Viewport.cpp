@@ -118,6 +118,7 @@ void Viewport::render()
 				//puts(outPath);
 				Engine::Get().load(outPath);
 				free(outPath);
+				selectedEntity = -1;
 				//std::cout << outPath;
 			}
 			else if (result == NFD_CANCEL) {
@@ -150,6 +151,7 @@ void Viewport::render()
 
 		{
 				ECS->destroyEntity(selectedEntity);
+				selectedEntity = -1;
 		}
 		ImGui::End();
 

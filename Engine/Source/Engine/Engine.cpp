@@ -175,6 +175,7 @@ void Engine::init()
 	viewport->begin(window, reservedEntities);
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
+	load(Save::getDefaultAbsolutePath());
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented

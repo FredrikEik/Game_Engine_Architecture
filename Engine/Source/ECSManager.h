@@ -12,7 +12,7 @@ enum class DefaultAsset : uint8;
 class ECSManager
 {
 	friend class Engine;
-	friend class Save;
+	friend class WorldOutliner;
 public:
 	~ECSManager();
 
