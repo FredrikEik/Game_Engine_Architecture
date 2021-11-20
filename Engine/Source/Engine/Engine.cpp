@@ -33,6 +33,7 @@
 #include "../imgui/docking/imgui_impl_glfw.h"
 
 #include "../SaveLoad/Save.h"
+#include "../SaveLoad/Load.h"
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -154,9 +155,11 @@ void Engine::init()
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
-	Save::SaveEntities(ECS->entities, 0, ECS);
+	reservedEntities = ECS->getNumberOfEntities();
 
-	viewport->begin(window, ECS->getNumberOfEntities());
+	viewport->begin(window, reservedEntities);
+	Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
+	Load::loadEntities("../scenes/test.json", ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented

@@ -464,10 +464,11 @@ void MeshSystem::drawSelectableEditor(Shader* shader, const std::string& uniform
 	}
 }
 
-
+// TODO: Could just have been an operator = override at this point
 void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMesh)
 {
     newMesh.hash = meshToCopy.hash;
+    newMesh.path = meshToCopy.path;
     newMesh.m_drawType = meshToCopy.m_drawType;
     newMesh.m_EBO = meshToCopy.m_EBO;
     newMesh.m_indices = meshToCopy.m_indices;

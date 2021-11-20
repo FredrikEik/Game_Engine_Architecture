@@ -5,6 +5,11 @@
 #include "../Vertex.h"
 #include "glm/glm.hpp"
 #include "../Assets/DefaultAssets.h"
+#include "../JSON/json.hpp"
+
+using JSON = nlohmann::json;
+
+// TODO: Create a python script or something that can automate the process below
 
 /*		ATTENTION
 *		ATTENTION
@@ -20,6 +25,11 @@
 * 
 * If the component is reusable, you need to add it 
 * to the function assignAsset and loadAsset in Factory.h
+* 
+* 
+* If the component should be loaded / saved, you must implement json and jsonParse
+* As well as add it to the createComponent function in Load.cpp
+* Aaaaas well as add it to addComponentToJson() in Save.cpp
 *
 *		ATTENTION
 *		ATTENTION
@@ -40,6 +50,9 @@ public:
 	~Component(){}
 	uint32 entityID; // TODO: Should probably be uint16
 	uint32 ID;
+	
+	virtual JSON json() { return JSON(); } // TODO: Make these pure virtual
+	virtual void jsonParse(const JSON& json) {}
 };
 
 struct testComponent : public Component
@@ -56,6 +69,7 @@ struct MeshComponent final : public Component
 public:
 	MeshComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 	std::size_t hash{};
+	std::string path{};
 	GLuint m_VAO{};
 	GLuint m_VBO{};
 	GLuint m_EBO{};
@@ -68,6 +82,9 @@ public:
 	bool bIsTranslucent{ false };
 	bool bDisregardedDuringFrustumCulling{ false }; // True if it should not be considered for frustum culling. Renders
 	bool bShouldRender{ true };
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 
@@ -90,6 +107,9 @@ struct TransformComponent final : public Component
 	TransformComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 
 	glm::mat4x4 transform{ glm::mat4(1.0f) };
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct AxisAlignedBoxComponent final : public Component
@@ -98,6 +118,9 @@ struct AxisAlignedBoxComponent final : public Component
 	glm::vec3 minScaled{};
 	glm::vec3 maxScaled{};
 	glm::vec3 center{};
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 

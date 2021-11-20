@@ -17,6 +17,7 @@ enum class DefaultAsset : uint8;
 class Factory
 {
 	friend class ECSManager;
+	friend class Save;
 	Factory() : componentManagers{ (new std::unordered_map<std::type_index, ComponentManager<Component>*>) },
 		reusableAssetComponents{ (*new std::unordered_map<std::size_t, ReusableAsset>) } {}
 	~Factory();
@@ -163,6 +164,7 @@ inline uint32 Factory::loadMesh(const std::filesystem::path& filePath, uint32 en
 
 	std::size_t hash{ std::filesystem::hash_value(filePath) };
 	component.hash = hash;
+	component.path = filePath.string();
 
 	reusableAssetComponents.insert(std::pair<std::size_t, ReusableAsset>
 				(hash, reusableAsset));

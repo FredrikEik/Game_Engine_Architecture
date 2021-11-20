@@ -69,6 +69,8 @@ private:
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
 
+	uint32 reservedEntities{};
+
 	static float windowWidth;
 	static float windowHeight;
 
