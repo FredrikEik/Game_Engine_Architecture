@@ -36,7 +36,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             auto placement = GameObjectMap.find(searchGameName +".obj");
 
             triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices();
-//            qDebug() << "searchGameName" << "found";
+//            qDebug() << "Gameobject" << QString::fromStdString(searchGameName) << "found"; //Nice way to get from a std::string to qDebug printable string.
 //            qDebug() << triangleVertices.size();
             break;
         }

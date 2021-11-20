@@ -7,7 +7,6 @@
 #include "mainwindow.h"
 #include "physicshandler.h"
 #include "gameplaymechanics.h"
-#include "heigthmap.h"
 
 //for JavaScript functionality
 #include <QtQml>
@@ -99,8 +98,8 @@ void CoreEngine::setUpScene()
     mGameObjectManager->setUpAllShaders();
     mGameObjectManager->setUpAllMaterials();
 
-    HeigthMap hm;
-    hm.ReadLasFile();
+    MeshHandler HeightMap;
+    HeightMap.ReadLasFile();
 
     //********************** Making the object to be drawn **********************
 

@@ -59,7 +59,6 @@ SOURCES += main.cpp \
     coreengine.cpp \
     gameplaymechanics.cpp \
     gsl/vector4d.cpp \
-    heigthmap.cpp \
     logger.cpp \
     pch.cpp \
     rendersystem.cpp \
@@ -86,7 +85,6 @@ HEADERS += \
     coreengine.h \
     gameplaymechanics.h \
     gsl/vector4d.h \
-    heigthmap.h \
     logger.h \
     pch.h \
     rendersystem.h \

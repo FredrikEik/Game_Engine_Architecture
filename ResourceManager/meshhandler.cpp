@@ -563,6 +563,95 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
         meshIn.mColliderRadius = length;
 }
 
+void MeshHandler::ReadLasFile()
+{
+    float xMin, xMax, yMin, yMax, zMin, zMax;
+    int resolution;
+
+    std::ifstream inLasFile;
+    inLasFile.open(gsl::ProjectFolderName + "Assets/test_las.txt");
+
+    if(!inLasFile)
+    {
+        qDebug() << "unable to open file test_las.txt";
+    }
+
+    std::vector<gsl::Vector3D> pointData;
+    int linesWithPoints = {0};
+    float x, y, z = {0};
+
+    if(inLasFile.is_open())
+    {
+         inLasFile >> linesWithPoints; //read first line, the approximate number of datalines.
+         pointData.reserve(linesWithPoints); //reserve the space for the number of datalines.
+
+         for(int i = 0; i < linesWithPoints; i++) //for each line of data fill pointData with numbers
+         {
+             inLasFile >> x >> z >> y; //read the line, store as x, z and y. z and y flipped to match current project.
+             pointData.emplace_back(x, z, y); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
+
+
+             static bool once = true; //store the bounds of the terrain
+             if(once)
+             {
+                 xMin = x;
+                 xMax = x;
+                 zMin = z;
+                 zMax = z;
+                 yMin = y;
+                 yMax = y;
+                 once = false;
+             }
+             if(x < xMin)
+                 xMin = x;
+
+             if(x > xMax)
+                 xMax = x;
+
+             if(z < zMin)
+                 zMin = z;
+
+             if(z > zMax)
+                 zMax = z;
+
+             if(y < yMin)
+                 yMin = y;
+
+             if(y > yMax)
+                 yMax = y;
+         }
+    }
+    inLasFile.close();
+
+//    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
+//    qDebug() << "inLasFile lines with points" << linesWithPoints << "PointData Size" << pointData.size();
+
+//    int printNr = 5;
+//    for (int i = 0; i < printNr; i++)
+//    {
+//        //qDebug rounds, changes commas and generally gives wrong results from these datapoints.
+//        qDebug() << pointData[i];
+//    }
+
+//Lag et firkanta grid som skal dekke alle datapunkter.
+    resolution = 5;
+    int gridSizeX = 1500;
+    int gridSizeY = 1500;
+
+for (int i = 0; i <= gridSizeX; i += resolution)
+{
+//    qDebug() << i;
+}
+
+//Lag et gjennomsnitt av alle datapunktene, dette gjennomsnittet blir utgangspunktet for trekantene
+
+//    for (int i = 0; i < linesWithPoints; i++)
+//    {
+
+//    }
+}
+
+
 void MeshHandler::initMesh(MeshData &tempMesh, int lodLevel)
 {
     //must call this to use OpenGL functions

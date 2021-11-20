@@ -54,6 +54,7 @@ public:
     std::vector<MeshData> get_mMeshes() { return mMeshes; }
     std::map<std::string, unsigned int> get_mMeshMap() { return mMeshMap; }
 
+    void ReadLasFile();
 
 private:
     int readObj(std::string filename);
