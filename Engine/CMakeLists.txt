@@ -59,16 +59,16 @@ target_link_libraries(GameInJin ${CONAN_LIBS})
 target_link_libraries(GameInJin ${CMAKE_SOURCE_DIR}/Mono/lib/mono-2.0-sgen.lib)
 target_include_directories(GameInJin PUBLIC ${CMAKE_SOURCE_DIR}/Mono/include/mono-2.0)
 
-add_executable(Game 
-	Game/Source/App.config
-	Game/Source/Properties/AssemblyInfo.cs
-	Game/Source/Main.cs
+add_library(ScriptInJin SHARED
+	Scripts/Source/App.config
+	Scripts/Source/Properties/AssemblyInfo.cs
+	Scripts/Source/Main.cs
 
 )
-set_property(TARGET Game PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
-set_property(TARGET Game PROPERTY WIN32_EXECUTABLE TRUE)
+set_property(TARGET ScriptInJin PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+set_property(TARGET ScriptInJin PROPERTY WIN32_EXECUTABLE TRUE)
 
-set_property(TARGET Game PROPERTY VS_DOTNET_REFERENCES
+set_property(TARGET ScriptInJin PROPERTY VS_DOTNET_REFERENCES
 	"Microsoft.CSharp"
 	"PresentationCore"
 	"PresentationFramework"
@@ -84,3 +84,12 @@ set_property(TARGET Game PROPERTY VS_DOTNET_REFERENCES
 )
 include(CSharpUtilities)
 
+add_library(Game SHARED
+	../Game/Source/App.config
+	../Game/Source/Properties/AssemblyInfo.cs
+	../Game/Source/Unit.cs
+)
+
+set_property(TARGET Game PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+set_property(TARGET Game PROPERTY WIN32_EXECUTABLE TRUE)
+target_link_libraries(Game PUBLIC ScriptInJin)

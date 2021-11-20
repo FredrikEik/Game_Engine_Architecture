@@ -25,6 +25,10 @@
 #include <mono/utils/mono-publib.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/debug-helpers.h>
+#include <iterator>
+#include <vector>
+
 
 
 
@@ -98,7 +102,6 @@ void PrintMethod(MonoString * string)
 }
 
 
-
 int main()
 {
 	//Engine engine = Engine::Get();
@@ -115,7 +118,7 @@ int main()
 		//Load the binary file as an Assembly
 	
 
-		MonoAssembly* csharpAssembly = mono_domain_assembly_open(domain, "Build/bin/Game.exe");
+		MonoAssembly* csharpAssembly = mono_domain_assembly_open(domain, "Build/bin/Game.dll");
 		if (!csharpAssembly)
 		{
 			//Error detected
@@ -126,13 +129,46 @@ int main()
 		//SetUp Internal Calls called from CSharp
 
 		//Namespace.Class::Method + a Function pointer with the actual definition
-		mono_add_internal_call("JellyBitEngine.JellyBitEngine::PrintMethod", &PrintMethod);
+		//mono_add_internal_call("ScriptInJin.Test::PrintMethod", &PrintMethod);
 
 		int argc = 1;
 		char* argv[1] = { (char*)"CSharp" };
 
 		//Call the main method in this code
-		mono_jit_exec(domain, csharpAssembly, argc, argv);
+		// //beginplay
+		//update 
+			mono_jit_exec(domain, csharpAssembly, argc, argv);
+
+		MonoImage* monoImage = mono_assembly_get_image(csharpAssembly);
+
+		MonoClass* monoClass = mono_class_from_name(monoImage, "Game", "Unit");
+		if (monoClass == nullptr) { std::cout << "fuck";  system("pause"); }
+		std::vector<MonoMethod*> MethodArray{};
+		
+		//ptrIter //= (void**)malloc(mono_class_num_methods(monoClass) * sizeof(void*))'
+		void* pIterator = 0;
+		MonoMethod* monoMethod;
+		while ((monoMethod = mono_class_get_methods(monoClass, &pIterator)) != nullptr)
+			MethodArray.push_back(monoMethod);
+
+
+			//MonoMethod* monoMethod = mono_class_get_methods(monoClass, &pIterator);
+
+		
+		for (auto it : MethodArray)
+		{
+			std::cout << mono_method_get_name(it) << '\n';
+		}
+
+		//MonoMethodDesc* methodDes = mono_method_desc_new("Test:BeginPlay()", NULL);
+		//MonoMethod* mono_method_desc_search_in_class(MonoMethodDesc * desc, MonoClass * klass);
+		//MonoMethod* mono_method_desc_search_in_image(MonoMethodDesc * desc, MonoImage * image);
+		void* args[1];
+		int val = 10;
+		/* Note we put the address of the value type in the args array */
+		args[0] = &val;
+		//MonoObject* my_class_instance = mono_object_new(domain, monoClass);
+		//mono_runtime_invoke(MethodArray[1], NULL, args, NULL);
 
 		system("pause");
 		MonoAssemblyName* aname = mono_assembly_name_new("mscorlib");
