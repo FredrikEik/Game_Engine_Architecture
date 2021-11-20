@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "physicshandler.h"
 #include "gameplaymechanics.h"
+#include "heigthmap.h"
 
 //for JavaScript functionality
 #include <QtQml>
@@ -90,13 +91,17 @@ void CoreEngine::readJSScene()
 }
 
 void CoreEngine::setUpScene()
-{
+{   
     //ask resource manager to set up all asstes
     mGameObjectManager->setUpAllSounds();
     mGameObjectManager->setUpAllMeshes();
     mGameObjectManager->setUpAllTextures();
     mGameObjectManager->setUpAllShaders();
     mGameObjectManager->setUpAllMaterials();
+
+    HeigthMap hm;
+    hm.ReadLasFile();
+
     //********************** Making the object to be drawn **********************
 
     //Axis

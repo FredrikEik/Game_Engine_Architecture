@@ -1,4 +1,4 @@
-#ifndef COREENGINE_H
+﻿#ifndef COREENGINE_H
 #define COREENGINE_H
 
 //Forward declarations
@@ -27,20 +27,16 @@ public:
     static CoreEngine* getInstance();
 
     void togglePlayMode(bool shouldPlay);
-
     void setUpScene();
-
     void handleInput();
 
     GameObjectManager *mGameObjectManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     MainWindow *mMainWindow{nullptr};
-
     //Two separate cameras to be able to render the frustum, etc for the game camera while in editor modus
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
-
     QTimer *mGameLoopTimer{nullptr};    //timer that drives the gameloop
 
     bool isPlaying{false};              //is the game playing?
