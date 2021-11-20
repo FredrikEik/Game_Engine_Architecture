@@ -138,13 +138,14 @@ void GameEngine::SetUpObjects()
 //    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
     mTerrainObject->mMaterialComp->mShaderProgram = 2;
     mTerrainObject->mMaterialComp->mTextureUnit = 0;
-    mTerrainObject->mTransformComp->mMatrix.scale(1);
+    mTerrainObject->mTransformComp->mMatrix.scale(0.1f);
     mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
     mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
     mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
     mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
-    mHeightCurveObject->mTransformComp->mMatrix.scale(1);
+    mHeightCurveObject->mTransformComp->mMatrix.scale(0.1f);
+    mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
     mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
 
 

@@ -569,61 +569,8 @@ for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
     nV.normalize();
 
     MeshComp->mVertices[0].at(i).set_normal(nV.x(),nV.y(),nV.z());
-//    mVertices[i].m_normal[1] = nV.y();
-//    mVertices[i].m_normal[2] = nV.z();
 }
 
-
-//    MeshComp->mVertices[0].push_back(Vertex(1,0,1, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,0,0, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,1,0, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,0,1, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,1,1, 0,1,0,  0,0));
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices);
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices+1);
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices+2);
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices+3);
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices+4);
-//    MeshComp->mIndices->push_back(nrOfTerrainVertices+5);
-
-
-
-// ----- Høydekurver -----
-
-//  p3--p4a
-//  |  /|
-//  | / |
-//  |/  |
-//  p0--p1
-
-//    for(int ekv {30}; ekv < yMax; ekv += 5)
-//    {
-//        for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
-//        {
-//            float p0 = MeshComp->mVertices[0].at(i).mXYZ.getX();
-//            float p2 = MeshComp->mVertices[0].at(i+1).mXYZ.getX();
-//            float p3 = MeshComp->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX();
-//            float p4 = MeshComp->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX();
-//            //lower trianlge
-//            if()
-
-
-
-
-//        }
-
-//    }
-
-//        qDebug() << "xmin: " << xMin << "xmax: " << xMax <<  "ymin: " << yMin << "ymax: " << yMax << "zmin: " << zMin << "zmax: " << zMax;
-
-
-
-
-
-//    for(int xgrid = 0; xgrid < 1000; xgrid++)
-//    {
-//        for(int zgrid = 0; x)
-//    }
 
 terrainMesh = MeshComp;
 
@@ -645,7 +592,7 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
     CollisionComponent->maxCorner.setZ(1);
 
     // is only used for frustum culling so doesnt have to accurate.
-    CollisionComponent->mRaidus = 100000;
+    CollisionComponent->mRaidus = 1000000;
 
 
     CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
@@ -667,6 +614,8 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
     CollLines->mDrawType = GL_LINES;
     init(*CollLines,0); 
     // ----------
+
+
 
 
     // ----- Høydekurver -----
@@ -699,15 +648,6 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
             gsl::Vector2D p1 {terrainMesh->mVertices[0].at(i+1).mXYZ.getX(),terrainMesh->mVertices[0].at(i+1).mXYZ.getY()};
             gsl::Vector2D p2 {terrainMesh->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX(),terrainMesh->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getY()};
             gsl::Vector2D p3 {terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX(),terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getY()};
-//                float p1 = MeshComp->mVertices[0].at(i+1).mXYZ.getX();
-//                float p2 = MeshComp->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX();
-//                float p3 = MeshComp->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX();
-            //lower trianlge
-//            if(terrainMesh->mVertices[0].at(i).mXYZ.y < h+5 && terrainMesh->mVertices[0].at(i).mXYZ.y > h-5)
-//                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x, terrainMesh->mVertices[0].at(i).mXYZ.y, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
-//                MeshComp->mVertices[0].push_back(Vertex(p3.x, p3.y, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
-
-
 
             // Lower triangle
 
@@ -726,63 +666,6 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
                 float pros = a/b;
                 float posx = (1-pros)* gridSize;
                 MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x - posx, h, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
-            }
-
-            if(p1.y < h && p3.y > h)
-            {
-                float a = h - p1.y;
-                float b = p3.y - p1.y;
-                float pros = a/b;
-                float posz = pros*gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posz, 0,1,0,  0,0));
-            }
-            else if (p1.y > h && p3.y < h)
-            {
-                float a = h - p1.y;
-                float b = p1.y - p3.y;
-                float pros = a/b;
-                float posz = (pros)*gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posz, 0,1,0,  0,0));
-            }
-
-            if(p1.y < h && p2.y > h)
-            {
-                float a = h - p1.y;
-                float b = p2.y - p1.y;
-                float pros = a/b;
-                float posxz = (pros)*gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x + posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posxz , 0,1,0,  0,0));
-            }
-            else if (p1.y > h && p2.y < h)
-            {
-                float a = h - p1.y;
-                float b = p1.y - p2.y;
-                float pros = a/b;
-                float posxz = (pros)*gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x - posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posxz, 0,1,0,  0,0));
-            }
-
-
-
-
-
-//             Upper trianlge
-
-            if(p2.y < h && p3.y > h)
-            {
-                float a = h - p2.y;
-                float b = p3.y - p2.y;
-                float pros = a/b;
-                float posx = pros*gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+100).mXYZ.z, 0,1,0,  0,0));
-            }
-            else if (p2.y > h && p3.y < h)
-            {
-                float a = h - p3.y;
-                float b = p2.y - p3.y;
-                float pros = a/b;
-                float posx = (1-pros)* gridSize;
-                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.z, 0,1,0,  0,0));
             }
 
             if(p0.y < h && p2.y > h)
@@ -818,25 +701,67 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
                 float posxz = (pros)*gridSize;
                 MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x - posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posxz, 0,1,0,  0,0));
             }
-//                    MeshComp->mIndices->push_back(i);
-//                    MeshComp->mIndices->push_back(i);
 
 
+//             Upper trianlge
+
+            if(p2.y < h && p3.y > h)
+            {
+                float a = h - p2.y;
+                float b = p3.y - p2.y;
+                float pros = a/b;
+                float posx = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+100).mXYZ.z, 0,1,0,  0,0));
+            }
+            else if (p2.y > h && p3.y < h)
+            {
+                float a = h - p3.y;
+                float b = p2.y - p3.y;
+                float pros = a/b;
+                float posx = (1-pros)* gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.z, 0,1,0,  0,0));
+            }
+
+
+            if(p1.y < h && p3.y > h)
+            {
+                float a = h - p1.y;
+                float b = p3.y - p1.y;
+                float pros = a/b;
+                float posz = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posz, 0,1,0,  0,0));
+            }
+            else if (p1.y > h && p3.y < h)
+            {
+                float a = h - p1.y;
+                float b = p1.y - p3.y;
+                float pros = a/b;
+                float posz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posz, 0,1,0,  0,0));
+            }
+
+
+
+            if(p1.y < h && p2.y > h)
+            {
+                float a = h - p1.y;
+                float b = p2.y - p1.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x + posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posxz , 0,1,0,  0,0));
+            }
+            else if (p1.y > h && p2.y < h)
+            {
+                float a = h - p1.y;
+                float b = p1.y - p2.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x - posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posxz, 0,1,0,  0,0));
+            }
             c++;
         }
 
     }
-
-//    MeshComp->mVertices[0].push_back(Vertex(1,0,1, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,0,0, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,1,0, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,0,1, 0,1,0,  0,0));
-//    MeshComp->mVertices[0].push_back(Vertex(0,1,1, 0,1,0,  0,0));
-//    for(int i = 0; i < MeshComp->mVertices[0].size();i++)
-//    {
-//        MeshComp->mIndices->push_back(i);
-//        MeshComp->mIndices->push_back(i+1);
-//    }
 
     MeshComp->mDrawType = GL_LINES;
     init(*MeshComp,0);
