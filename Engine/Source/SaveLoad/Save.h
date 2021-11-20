@@ -14,5 +14,8 @@ public:
 private:
 	static void addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson,
 			class ECSManager* ECS);
+
+	static std::string defaultSaveLocation;
+	static std::string defaultSaveName;
 	//static void WriteComponentValues();
 };

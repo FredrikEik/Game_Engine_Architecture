@@ -80,9 +80,9 @@ int main()
 	//engine.start();
 	//delete& engine;
 
-	Engine* engine = Engine::GetInstance();
-	engine->start();
-	delete engine;
+	Engine& engine = Engine::Get();
+	engine.start();
+	delete& engine;
 	return 0;
 	//glfwInit();
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

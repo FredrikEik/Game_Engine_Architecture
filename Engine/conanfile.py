@@ -10,7 +10,8 @@ class ConanPackage(ConanFile):
 		('glm/0.9.9.8'),
         #('imgui/1.83'),
 		('openal/1.20.1'),
-		('libsndfile/1.0.31')
+		('libsndfile/1.0.31'),
+		('nativefiledialog/116')
     ]
 	generators = {
                 "cmake"

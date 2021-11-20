@@ -145,6 +145,7 @@ struct TextureComponent final : public Component
 {
 	TextureComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 	std::size_t hash{};
+	std::string path{};
 
 	int width{};
 	int height{};
@@ -153,6 +154,9 @@ struct TextureComponent final : public Component
 	uint textureID{};
 
 	uint8_t* rgbImage{};
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct SoundComponent final : public Component

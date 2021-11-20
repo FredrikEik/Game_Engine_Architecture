@@ -6,6 +6,8 @@
 #include <filesystem>
 
 using JSON = nlohmann::json;
+std::string Save::defaultSaveLocation = "../saves";
+std::string Save::defaultSaveName = "/entities.json";
 
 void Save::saveEntities(const std::array<
 	std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>,
@@ -28,8 +30,8 @@ void Save::saveEntities(const std::array<
 		json.push_back({ { std::to_string(i), components } });
 	}
 
-	std::filesystem::create_directory("../scenes");
-	std::ofstream file("../scenes/test.json");
+	std::filesystem::create_directory(defaultSaveLocation);
+	std::ofstream file(std::string(defaultSaveLocation + defaultSaveName));
 	assert(file);
 	file << std::setw(4) << json << std::endl;
 	file.close();

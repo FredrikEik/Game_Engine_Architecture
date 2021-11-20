@@ -9,9 +9,7 @@ JSON TransformComponent::json()
 		for (int j{}; j < 4; ++j)
 		{
 			row.push_back(transform[i][j]);
-			//std::cout << transform[i][j] <<'\n';
 		}
-		//std::cout << row<<'\n';
 		matrix.push_back(row);
 	}
 	return matrix;
@@ -26,7 +24,6 @@ void TransformComponent::jsonParse(const JSON& json)
 			transform[i][j] = json[i][j];
 		}
 	}
-	//std::cout << json<< '\n';
 }
 
 JSON MeshComponent::json()
@@ -40,7 +37,7 @@ JSON MeshComponent::json()
 		{"bIsTranslucent", bIsTranslucent},
 		{"bDisregardedDuringFrustumCulling", bDisregardedDuringFrustumCulling},
 		{"bShouldRender", bShouldRender}
-});
+	});
 
 	return json;
 }
@@ -72,5 +69,20 @@ void AxisAlignedBoxComponent::jsonParse(const JSON& json)
 	minScaled = glm::vec3(json["min"][0], json["min"][1], json["min"][2]);
 	maxScaled = glm::vec3(json["max"][0], json["max"][1], json["max"][2]);
 	center = glm::vec3(json["center"][0], json["center"][1], json["center"][2]);
+}
 
+JSON TextureComponent::json()
+{
+	JSON json{
+	{"reusable", true},
+	{"path", path},
+	{"wrapMode", wrapMode}
+	};
+
+	return json;
+}
+
+void TextureComponent::jsonParse(const JSON& json)
+{
+	wrapMode = json["wrapMode"];
 }

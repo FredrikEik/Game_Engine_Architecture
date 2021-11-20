@@ -46,21 +46,34 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		ECS->addComponent<TransformComponent>(entityID);
 		component = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entityID);
 	}
+	else if (componentName == std::type_index(typeid(AxisAlignedBoxComponent)).name())
+	{
+		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
+		component = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entityID);
+	}
 	else if (componentName == std::type_index(typeid(MeshComponent)).name())
 	{
 		if (jsonValue["reusable"])
 		{
 			std::string path = jsonValue["path"];
-			//std::cout << path<<'\n';
 			if (path == "")
 				return nullptr;
 			ECS->loadAsset(entityID, path);
 		}
-		//ECS->addComponent<TransformComponent>(entityID);
 		component = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entityID);
+	}	
+	else if (componentName == std::type_index(typeid(TextureComponent)).name())
+	{
+		if (jsonValue["reusable"])
+		{
+			std::string path = jsonValue["path"];
+			if (path == "")
+				return nullptr;
+			ECS->loadAsset(entityID, path);
+		}
+		component = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entityID);
 	}
-	//else if()
-	//std::cout << "Creating component: " << componentName << " for entity " << entityID << '\n';
+
 
 	return component;
 }

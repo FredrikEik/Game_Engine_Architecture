@@ -64,11 +64,26 @@ void Engine::setIsPlaying(bool isPlaying)
 	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
+void Engine::save()
+{
+	Save::saveEntities(ECS->entities, reservedEntities, ECS); 
+}
+
+void Engine::load(const std::string& path)
+{
+	for (uint32 i{ reservedEntities }; i < core::MAX_ENTITIES; ++i)
+	{
+		ECS->destroyEntity(i);
+	}
+	Load::loadEntities(path, ECS);
+}
+
 Engine* Engine::instance = nullptr;
 float Engine::windowWidth = 800.f;
 float Engine::windowHeight = 600.f;
 float Engine::fov = 45.f;	
 
+//sa
 void Engine::start()
 {
 	init();
@@ -158,8 +173,8 @@ void Engine::init()
 	reservedEntities = ECS->getNumberOfEntities();
 
 	viewport->begin(window, reservedEntities);
-	Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
-	Load::loadEntities("../scenes/test.json", ECS);
+	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
+	//Load::loadEntities("../saves/entities.json", ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented

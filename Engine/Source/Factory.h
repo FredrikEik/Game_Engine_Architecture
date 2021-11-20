@@ -219,6 +219,7 @@ inline uint32 Factory::loadPNG(uint32 entityID, const std::filesystem::path& fil
 
 	std::size_t hash{ std::filesystem::hash_value(filePath) };
 	component->hash = hash;
+	component->path = filePath.string();
 	reusableAssetComponents.insert(std::pair<std::size_t, ReusableAsset>
 			(hash, reusableAsset));
 
@@ -259,6 +260,7 @@ inline uint32 Factory::assignPNG(uint32 entityID, const std::filesystem::path& f
 	//MeshSystem::copyMesh(*oldComponent, newComponent);
 	newComponent->textureID = oldComponent->textureID;
 	newComponent->hash = oldComponent->hash;
+	newComponent->path = oldComponent->path;
 	newComponent->wrapMode = oldComponent->wrapMode;
 	reusableAsset.componentIDs.push_back(componentID); // Add the componentID to the reusable asset
 

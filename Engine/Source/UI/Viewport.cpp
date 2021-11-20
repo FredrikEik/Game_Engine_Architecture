@@ -19,6 +19,8 @@
 #include "Details.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "nfd.h"
 Viewport::Viewport(ECSManager* InECS)
 {
 	ECS = InECS;
@@ -102,6 +104,29 @@ void Viewport::render()
 	}
 	if (!bIsPlaying)
 	{
+		if (ImGui::Button("Save All"))
+		{
+			Engine::Get().save();
+		}
+		if (ImGui::Button("Load"))
+		{
+			nfdchar_t* outPath = NULL;
+			nfdresult_t result = NFD_OpenDialog(NULL, NULL, &outPath);
+
+			if (result == NFD_OKAY) {
+				//puts("Success!");
+				//puts(outPath);
+				Engine::Get().load(outPath);
+				free(outPath);
+				//std::cout << outPath;
+			}
+			else if (result == NFD_CANCEL) {
+				puts("User pressed cancel.");
+			}
+			else {
+				printf("Error: %s\n", NFD_GetError());
+			}
+		}
 		if (ImGui::Button("New Entity"))
 		{
 			uint32 entity = ECS->newEntity();
@@ -113,9 +138,9 @@ void Viewport::render()
 			{ }
 			ECS->addComponent<TransformComponent>(entity);
 			ECS->addComponent<AxisAlignedBoxComponent>(entity);
-			ECS->addComponent<SphereComponent>(entity);
+			//ECS->addComponent<SphereComponent>(entity);
 			CollisionSystem::construct(entity, ECS);
-			SphereSystem::construct(entity, ECS);
+			//SphereSystem::construct(entity, ECS);
 			
 			std::cout << "Adding entity " << entity << '\n';
 
@@ -128,14 +153,6 @@ void Viewport::render()
 		}
 		ImGui::End();
 
-		//ImGui::Begin("TransformWidget");
-		////ImGui::BeginChild("TransformWidget");
-
-		//if(!selectedEntity == 0)
-		//	ImGui::DragFloat3("Position", &ECS->getComponentManager<TransformComponent>()->getComponent(selectedEntity).transform[3].x, 0.1f, -10000.f, 10000.f);
-
-		////ImGui::EndChild();
-		//ImGui::End();
 		ImGui::EndGroup();
 
 		ImGui::BeginGroup();
@@ -207,5 +224,5 @@ void Viewport::togglePlay()
 	playButtonText = bIsPlaying ? std::string("Stop") : std::string("Play");
 	//Engine::Get().setIsPlaying(bIsPlaying);
 
-	Engine::GetInstance()->setIsPlaying(bIsPlaying);
+	Engine::Get().setIsPlaying(bIsPlaying);
 }

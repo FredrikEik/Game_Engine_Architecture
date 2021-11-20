@@ -1,30 +1,25 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "../CoreMinimal.h"
-
+#include <iostream>
 //#define DEBUG
 //#define DEBUG_BROADPHASE
 
 class Engine
 {
 public:
-	// TODO: Remove or fix up the Get function
 	static Engine& Get()
 	{
 		static Engine* engineInst = new Engine();
 		return *engineInst;
-	}
-	static Engine* GetInstance()
-	{
-		if (!instance)
-			instance = new Engine();
-		return instance;
 	}
 
 	void start();
 	~Engine();
 	// TODO: Make this a callback func instead of public
 	void setIsPlaying(bool isPlaying);
+	void save();
+	void load(const std::string& path);
 private:
 	static Engine* instance;
 	Engine();
