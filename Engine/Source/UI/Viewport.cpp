@@ -131,19 +131,19 @@ void Viewport::render()
 		if (ImGui::Button("New Entity"))
 		{
 			uint32 entity = ECS->newEntity();
-			ECS->loadAsset(entity, "Assets/suzanne.obj");
-			MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
-			if(!MeshSystem::loadMeshLOD("Assets/suzanne_L01.obj", *meshComp, LODMeshType::LOD1))
-			{ }
-			if(!MeshSystem::loadMeshLOD("Assets/suzanne_L02.obj", *meshComp, LODMeshType::LOD2))
-			{ }
-			ECS->addComponent<TransformComponent>(entity);
-			ECS->addComponent<AxisAlignedBoxComponent>(entity);
-			//ECS->addComponent<SphereComponent>(entity);
-			CollisionSystem::construct(entity, ECS);
-			//SphereSystem::construct(entity, ECS);
-			
-			std::cout << "Adding entity " << entity << '\n';
+			//ECS->loadAsset(entity, "Assets/suzanne.obj");
+			//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
+			//if(!MeshSystem::loadMeshLOD("Assets/suzanne_L01.obj", *meshComp, LODMeshType::LOD1))
+			//{ }
+			//if(!MeshSystem::loadMeshLOD("Assets/suzanne_L02.obj", *meshComp, LODMeshType::LOD2))
+			//{ }
+			//ECS->addComponent<TransformComponent>(entity);
+			//ECS->addComponent<AxisAlignedBoxComponent>(entity);
+			////ECS->addComponent<SphereComponent>(entity);
+			//CollisionSystem::construct(entity, ECS);
+			////SphereSystem::construct(entity, ECS);
+			//
+			//std::cout << "Adding entity " << entity << '\n';
 
 		}
 

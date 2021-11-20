@@ -7,6 +7,8 @@
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
 #include "TransformWidget.h"
+#include "nfd.h"
+#include "../Systems/CollisionSystem.h"
 
 Details::Details(std::string inWindowName, ECSManager* inECS)
 	:Window(inWindowName, inECS)
@@ -135,6 +137,28 @@ void Details::addComponent(std::string componentToAdd)
 				hasComponent = true;
 		}
 		if (!hasComponent)
-			ECS->addComponent<MeshComponent>(entityID);
+		{
+			nfdchar_t* outPath = NULL;
+			nfdresult_t result = NFD_OpenDialog(NULL, NULL, &outPath);
+
+			if (result == NFD_OKAY) {
+				//puts("Success!");
+				//puts(outPath);
+				//Engine::Get().load(outPath);
+				ECS->loadAsset(entityID, outPath);
+				ECS->addComponent<AxisAlignedBoxComponent>(entityID);
+				CollisionSystem::construct(entityID, ECS);
+				//MeshComponent*  ECS->getComponentManager<MeshComponent>()->getComponentChecked();
+				free(outPath);
+				//selectedEntity = -1;
+				//std::cout << outPath;
+			}
+			else if (result == NFD_CANCEL) {
+				puts("User pressed cancel.");
+			}
+			else {
+				printf("Error: %s\n", NFD_GetError());
+			}
+		}
 	}
 }
