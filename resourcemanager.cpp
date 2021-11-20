@@ -108,6 +108,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             {
                 mMeshHandler->createCreateTerrain(filepath, tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
             }
+            if (filepath.find("HeightCurve") != std::string::npos)
+            {
+                mMeshHandler->createHeightCurves(tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
+            }
         }
         meshCompCounter++;
     }
@@ -127,7 +131,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
     std::string tempName = filepath;
     // Hardcoded filesize just to make "XYZ" work
-    if(filepath != "xyz" && filepath != gsl::ProjectFolderName + "test_las.txt")
+    if(filepath != "xyz" && filepath != gsl::ProjectFolderName + "test_las.txt" && filepath != "HeightCurve")
     {
         tempName.erase(0,25);
         tempName.erase(tempName.end()-4,tempName.end());

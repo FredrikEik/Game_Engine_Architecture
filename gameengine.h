@@ -74,6 +74,7 @@ private:
 
     GameObject* tempGameObject{nullptr};
     GameObject* mTerrainObject{nullptr};
+    GameObject* mHeightCurveObject{nullptr};
     GameObject* mPhysicsBall{nullptr};
 
     Camera *mGameCamera{nullptr};

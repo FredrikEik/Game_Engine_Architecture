@@ -275,7 +275,7 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
     std::vector<gsl::Vector3D> mAllDataPoints;
 
-    float vx,vy,vz;
+    float x,y,z;
     float xMin;
     float xMax;
     float zMin;
@@ -300,12 +300,9 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
         for(int i{0}; i<loopLenth;i++)
         {
-            inn >> vx;
-            inn >> vz;
-            inn >> vy;
-            float x = float(vx);
-            float z = float(vz);
-            float y = float(vy);
+            inn >> x;
+            inn >> z;
+            inn >> y;
 
             pos.setX(x);
             pos.setZ(z);
@@ -397,15 +394,61 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
     CollLines->mDrawType = GL_LINES;
     init(*CollLines,0);
-    float gridSize {10};
+    int gridSize {10};
+    float TerrainWidth = 1000;
+    float TerrainLenght = 1460;
+    const int cols = TerrainWidth / gridSize;
+    const int rows = TerrainLenght / gridSize;
 
+    int vertexesInQuad[100][146]{0};
+    float tempForAvg[100][146]{0};
+    float allHeights = 0;
+
+    for(int i = 0; i < mAllDataPoints.size(); i++)
+    {
+        int X = static_cast<int>((mAllDataPoints.at(i).x-xMin)/gridSize);
+        int Z = static_cast<int>((mAllDataPoints.at(i).z-zMin)/gridSize);
+        tempForAvg[X][Z] += mAllDataPoints.at(i).y;
+        vertexesInQuad[X][Z]++;
+        allHeights += mAllDataPoints.at(i).y;
+    }
 
 //    heights2D.reserve((xMax*zMax/gridSize));
 
-    for(int z = int(zMin); z < zMax;z+=gridSize)
+    // hardcoded to 1000 because TerrainWidth = 1000 wide
+    float ytemp = allHeights / mAllDataPoints.size();
+
+    float xtemp;
+    float ztemp;
+    for(int z = int(zMin); z < TerrainLenght;z+=gridSize)
     {
-        for(int x = int(xMax);x > xMin; x-=gridSize)
+        for(int x = TerrainWidth;x > xMin; x-=gridSize)
         {
+
+            //---Quick mode test---
+//            xtemp = xMin + (x*10);
+//            ztemp = zMin + (z*10);
+//            if(tempForAvg[x/gridSize][z/gridSize] != 0)
+//            {
+//                ytemp = tempForAvg[x/gridSize][z/gridSize] / vertexesInQuad[x/gridSize][z/gridSize];
+//                MeshComp->mVertices[0].push_back(Vertex(xtemp,ytemp,ztemp, 0,0,0, 0,0));
+//            }
+//            else if(!MeshComp->mVertices->empty())
+//            {
+//                float lastHeight = MeshComp->mVertices[0].at(MeshComp->mVertices->size()-1).mXYZ.getY();
+//                MeshComp->mVertices[0].push_back(Vertex(xtemp,lastHeight,ztemp, 0,0,0, 0,0));
+
+//                continue;
+//            }
+//            else
+//            {
+//                MeshComp->mVertices[0].push_back(Vertex(x,0,z, 0,1,0,  0,0));
+//                continue;
+//            }
+
+
+            //---------------
+
             std::vector<float> allHeightsInSquare;
             for(auto it : mAllDataPoints)
             {
@@ -438,28 +481,25 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
                 MeshComp->mVertices[0].push_back(Vertex(x,0,z, 0,1,0,  0,0));
                 continue;
             }
-//            jump:;
         }
     }
 
-    // Code from 3DProg just  to test, neet to set the correct indecies
-    // should problably use a 2d array to have more control of each vertex;
-    float TerrainSize = 1000;
     int c{0};
-    for(GLuint i{}; i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize) - 1; i++)
+    int nrOfTerrainVertices = MeshComp->mVertices[0].size();
+    for(GLuint i{}; i < nrOfTerrainVertices - (TerrainWidth/gridSize) - 1; i++)
     {
-        if(c == (TerrainSize/gridSize) - 1)
+        if(c == (TerrainWidth/gridSize) - 1)
         {
             c=0;
             continue;
         }
         MeshComp->mIndices->push_back(i);
         MeshComp->mIndices->push_back(i+1);
-        MeshComp->mIndices->push_back(i+int(TerrainSize/gridSize));
+        MeshComp->mIndices->push_back(i+int(TerrainWidth/gridSize));
 
-        MeshComp->mIndices->push_back(i + int(TerrainSize/gridSize));
+        MeshComp->mIndices->push_back(i + int(TerrainWidth/gridSize));
         MeshComp->mIndices->push_back(i+1);
-        MeshComp->mIndices->push_back(i+(int(TerrainSize/gridSize))+1);
+        MeshComp->mIndices->push_back(i+(int(TerrainWidth/gridSize))+1);
         c++;
     }
 MeshComp->mDrawType = GL_TRIANGLES;
@@ -470,31 +510,31 @@ glPointSize(5.f);
 QVector3D pCenter,p0,p1,p2,p3,p4,p5;
 QVector3D n0,n1,n2,n3,n4,n5;
 
-for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize);i++)
+for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
 {
 
     //Får tak i alle punktene som trengs
-    if(MeshComp->mVertices[0].at(i).mXYZ.x >0 && MeshComp->mVertices[0].at(i).mXYZ.z > 0 && MeshComp->mVertices[0].at(i).mXYZ.x < xMax - (TerrainSize/gridSize)/9  && MeshComp->mVertices[0].at(i).mXYZ.z < zMax - (TerrainSize/gridSize)/5)
+    if(MeshComp->mVertices[0].at(i).mXYZ.x >0 && MeshComp->mVertices[0].at(i).mXYZ.z > 0 && MeshComp->mVertices[0].at(i).mXYZ.x < xMax - (TerrainWidth/gridSize)/9  && MeshComp->mVertices[0].at(i).mXYZ.z < zMax - (TerrainWidth/gridSize)/5)
     {
         pCenter = QVector3D{MeshComp->mVertices[0].at(i).mXYZ.x,MeshComp->mVertices[0].at(i).mXYZ.y,MeshComp->mVertices[0].at(i).mXYZ.z};
 
         //p0
-        p0 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)).mXYZ.z};
+        p0 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)).mXYZ.z};
 
         //p1
         p1 = QVector3D{MeshComp->mVertices[0].at(i+1).mXYZ.x,MeshComp->mVertices[0].at(i+1).mXYZ.y,MeshComp->mVertices[0].at(i+1).mXYZ.z};
 
         //p2
-        p2 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)+1).mXYZ.z};
+        p2 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)+1).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)+1).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)+1).mXYZ.z};
 
         //p3
-        p3 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainSize/gridSize)).mXYZ.z};
+        p3 = QVector3D{MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x,MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.y,MeshComp->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.z};
 
         //p4
         p4 = QVector3D{MeshComp->mVertices[0].at(i-1).mXYZ.x,MeshComp->mVertices[0].at(i-1).mXYZ.y,MeshComp->mVertices[0].at(i-1).mXYZ.z};
 
         //p5
-        p5 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainSize/gridSize)-1).mXYZ.z};
+        p5 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.z};
     }
     //lager vektorer til alle punktene
     QVector3D v0 = p0-pCenter;
@@ -534,9 +574,45 @@ for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize);i++)
 }
 
 
+//    MeshComp->mVertices[0].push_back(Vertex(1,0,1, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,0,0, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,1,0, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,0,1, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,1,1, 0,1,0,  0,0));
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices);
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices+1);
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices+2);
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices+3);
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices+4);
+//    MeshComp->mIndices->push_back(nrOfTerrainVertices+5);
 
 
 
+// ----- Høydekurver -----
+
+//  p3--p4a
+//  |  /|
+//  | / |
+//  |/  |
+//  p0--p1
+
+//    for(int ekv {30}; ekv < yMax; ekv += 5)
+//    {
+//        for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
+//        {
+//            float p0 = MeshComp->mVertices[0].at(i).mXYZ.getX();
+//            float p2 = MeshComp->mVertices[0].at(i+1).mXYZ.getX();
+//            float p3 = MeshComp->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX();
+//            float p4 = MeshComp->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX();
+//            //lower trianlge
+//            if()
+
+
+
+
+//        }
+
+//    }
 
 //        qDebug() << "xmin: " << xMin << "xmax: " << xMax <<  "ymin: " << yMin << "ymax: " << yMax << "zmin: " << zMin << "zmax: " << zMax;
 
@@ -549,11 +625,221 @@ for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainSize/gridSize);i++)
 //        for(int zgrid = 0; x)
 //    }
 
-
+terrainMesh = MeshComp;
 
 init(*MeshComp,0);
 
 
+}
+
+void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
+{
+    // ----- Setup -----
+
+    CollisionComponent->minCorner.setX(0);
+    CollisionComponent->minCorner.setY(0);
+    CollisionComponent->minCorner.setZ(0);
+
+    CollisionComponent->maxCorner.setX(1);
+    CollisionComponent->maxCorner.setY(1);
+    CollisionComponent->maxCorner.setZ(1);
+
+    // is only used for frustum culling so doesnt have to accurate.
+    CollisionComponent->mRaidus = 100000;
+
+
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+    CollLines->mVertices[0].push_back(Vertex(0,0,0,   1,0,0,  0,0));
+
+    CollLines->mIndices[0].insert( CollLines->mIndices[0].end(),
+    { 0, 1, 1, 2, 2, 3, 3, 0,
+      4, 5, 5, 6, 6, 7, 7, 4,
+      0, 4, 3, 7,
+      1, 5, 2, 6 });
+
+    CollLines->mDrawType = GL_LINES;
+    init(*CollLines,0); 
+    // ----------
+
+
+    // ----- Høydekurver -----
+
+//      p2--p3
+//      |  /|
+//      | / |
+//      |/  |
+//      p0--p1
+
+    int gridSize {10};
+    float TerrainWidth = 1000;
+    float TerrainLenght = 1460;
+    float xMax = 997;
+    float zMax = 1457;
+    float yMax = 95;
+    float ekv = 5.f;
+    int c {0};
+
+    for(float h {0}; h < yMax; h += ekv)
+    {
+        for(int i = 0;i < terrainMesh->mVertices[0].size() - (TerrainWidth/gridSize) ;i++)
+        {
+            if(c == (TerrainWidth/gridSize) -1)
+            {
+                c=0;
+                continue;
+            }
+            gsl::Vector2D p0 {terrainMesh->mVertices[0].at(i).mXYZ.getX(),terrainMesh->mVertices[0].at(i).mXYZ.y};
+            gsl::Vector2D p1 {terrainMesh->mVertices[0].at(i+1).mXYZ.getX(),terrainMesh->mVertices[0].at(i+1).mXYZ.getY()};
+            gsl::Vector2D p2 {terrainMesh->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX(),terrainMesh->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getY()};
+            gsl::Vector2D p3 {terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX(),terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getY()};
+//                float p1 = MeshComp->mVertices[0].at(i+1).mXYZ.getX();
+//                float p2 = MeshComp->mVertices[0].at(i+int(TerrainWidth/gridSize)).mXYZ.getX();
+//                float p3 = MeshComp->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX();
+            //lower trianlge
+//            if(terrainMesh->mVertices[0].at(i).mXYZ.y < h+5 && terrainMesh->mVertices[0].at(i).mXYZ.y > h-5)
+//                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x, terrainMesh->mVertices[0].at(i).mXYZ.y, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
+//                MeshComp->mVertices[0].push_back(Vertex(p3.x, p3.y, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
+
+
+
+            // Lower triangle
+
+            if(p0.y < h && p1.y > h)
+            {
+                float a = h - p0.y;
+                float b = p1.y - p0.y;
+                float pros = a/b;
+                float posx = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
+            }
+            else if (p0.y > h && p1.y < h)
+            {
+                float a = h - p1.y;
+                float b = p0.y - p1.y;
+                float pros = a/b;
+                float posx = (1-pros)* gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x - posx, h, terrainMesh->mVertices[0].at(i).mXYZ.z, 0,1,0,  0,0));
+            }
+
+            if(p1.y < h && p3.y > h)
+            {
+                float a = h - p1.y;
+                float b = p3.y - p1.y;
+                float pros = a/b;
+                float posz = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posz, 0,1,0,  0,0));
+            }
+            else if (p1.y > h && p3.y < h)
+            {
+                float a = h - p1.y;
+                float b = p1.y - p3.y;
+                float pros = a/b;
+                float posz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posz, 0,1,0,  0,0));
+            }
+
+            if(p1.y < h && p2.y > h)
+            {
+                float a = h - p1.y;
+                float b = p2.y - p1.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x + posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posxz , 0,1,0,  0,0));
+            }
+            else if (p1.y > h && p2.y < h)
+            {
+                float a = h - p1.y;
+                float b = p1.y - p2.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x - posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posxz, 0,1,0,  0,0));
+            }
+
+
+
+
+
+//             Upper trianlge
+
+            if(p2.y < h && p3.y > h)
+            {
+                float a = h - p2.y;
+                float b = p3.y - p2.y;
+                float pros = a/b;
+                float posx = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+100).mXYZ.z, 0,1,0,  0,0));
+            }
+            else if (p2.y > h && p3.y < h)
+            {
+                float a = h - p3.y;
+                float b = p2.y - p3.y;
+                float pros = a/b;
+                float posx = (1-pros)* gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.z, 0,1,0,  0,0));
+            }
+
+            if(p0.y < h && p2.y > h)
+            {
+                float a = h - p0.y;
+                float b = p2.y - p0.y;
+                float pros = a/b;
+                float posz = pros*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x, h, terrainMesh->mVertices[0].at(i).mXYZ.z + posz, 0,1,0,  0,0));
+            }
+            else if (p0.y > h && p2.y < h)
+            {
+                float a = h - p0.y;
+                float b = p0.y - p2.y;
+                float pros = a/b;
+                float posz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i).mXYZ.x, h, terrainMesh->mVertices[0].at(i).mXYZ.z - posz, 0,1,0,  0,0));
+            }
+
+            if(p1.y < h && p2.y > h)
+            {
+                float a = h - p1.y;
+                float b = p2.y - p1.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x + posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z + posxz , 0,1,0,  0,0));
+            }
+            else if (p1.y > h && p2.y < h)
+            {
+                float a = h - p1.y;
+                float b = p1.y - p2.y;
+                float pros = a/b;
+                float posxz = (pros)*gridSize;
+                MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x - posxz, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posxz, 0,1,0,  0,0));
+            }
+//                    MeshComp->mIndices->push_back(i);
+//                    MeshComp->mIndices->push_back(i);
+
+
+            c++;
+        }
+
+    }
+
+//    MeshComp->mVertices[0].push_back(Vertex(1,0,1, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,0,0, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,1,0, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,0,1, 0,1,0,  0,0));
+//    MeshComp->mVertices[0].push_back(Vertex(0,1,1, 0,1,0,  0,0));
+//    for(int i = 0; i < MeshComp->mVertices[0].size();i++)
+//    {
+//        MeshComp->mIndices->push_back(i);
+//        MeshComp->mIndices->push_back(i+1);
+//    }
+
+    MeshComp->mDrawType = GL_LINES;
+    init(*MeshComp,0);
 }
 
 void MeshHandler::findCollisionCorners(CollisionComponent *CollComp, QVector3D &vertex)

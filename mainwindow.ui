@@ -262,23 +262,26 @@
              <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="TranslateXspinBox">
                <property name="minimum">
-                <double>-999.000000000000000</double>
+                <double>-5000.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>999.000000000000000</double>
+                <double>5000.000000000000000</double>
                </property>
                <property name="singleStep">
                 <double>0.100000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
                </property>
               </widget>
              </item>
              <item row="1" column="2">
               <widget class="QDoubleSpinBox" name="TranslateYspinBox">
                <property name="minimum">
-                <double>-999.000000000000000</double>
+                <double>-5000.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>999.000000000000000</double>
+                <double>5000.000000000000000</double>
                </property>
                <property name="singleStep">
                 <double>0.100000000000000</double>
@@ -288,10 +291,10 @@
              <item row="1" column="3">
               <widget class="QDoubleSpinBox" name="TranslateZspinBox">
                <property name="minimum">
-                <double>-999.000000000000000</double>
+                <double>-5000.000000000000000</double>
                </property>
                <property name="maximum">
-                <double>999.000000000000000</double>
+                <double>5000.000000000000000</double>
                </property>
                <property name="singleStep">
                 <double>0.100000000000000</double>
