@@ -63,6 +63,7 @@ private:
 	uint32 gameCameraEntity{};
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
+	uint32 unitEntity{};
 
 	uint32 reservedEntities{};
 

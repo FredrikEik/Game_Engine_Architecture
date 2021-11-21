@@ -18,7 +18,11 @@
 #include "Shader.h"
 #include "DataStructures/TArray.h"
 
-#include "Engine/Engine.h"
+#include "Engine/Engine.h"	
+#include "Engine/ScriptEngine.h"
+
+
+
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -74,15 +78,24 @@
 //float fov{ 45.0f };
 //
 
+
 int main()
 {
 	//Engine engine = Engine::Get();
 	//engine.start();
 	//delete& engine;
+		//Indicate Mono where you installed the lib and etc folders
+	//mono_set_assemblies_path("/Mono/lib");
+
 
 	Engine& engine = Engine::Get();
+	ScriptEngine* scriptEngine = ScriptEngine::GetInstance();
+
+
 	engine.start();
+	delete* scriptEngine;
 	delete& engine;
+
 	return 0;
 	//glfwInit();
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

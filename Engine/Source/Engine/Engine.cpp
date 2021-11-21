@@ -32,8 +32,11 @@
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
 
+#include "../Systems/ScriptSystem.h"
+
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
+
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -170,12 +173,27 @@ void Engine::init()
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
+
+	viewport->begin(window, ECS->getNumberOfEntities());
+
+
+	//ScriptTest
+	//Init - binds all internal functions - Important first step
+	ScriptSystem::Init();
+
+	unitEntity = ECS->newEntity();
+	ECS->addComponents<ScriptComponent>(unitEntity);
+	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
+	ScriptSystem::Invoke("BeginPlay", ECS);
+
+
 	reservedEntities = ECS->getNumberOfEntities();
 
 	viewport->begin(window, reservedEntities);
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
+
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
@@ -258,8 +276,13 @@ void Engine::loop()
 		{
 			//std::cout << "Game camera'\n";
 			// TODO: Implement proper deltatime
-			
+
+			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+
 			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
+
+			//temp placement -- calls update on scripts
+			ScriptSystem::Invoke("Update", ECS);
 		}
 		else
 		{

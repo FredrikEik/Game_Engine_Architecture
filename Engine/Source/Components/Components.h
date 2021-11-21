@@ -4,12 +4,17 @@
 #include <vector>
 #include "../Vertex.h"
 #include "glm/glm.hpp"
+#include <unordered_map>
 #include "../Assets/DefaultAssets.h"
 #include "../JSON/json.hpp"
 
 using JSON = nlohmann::json;
 
 // TODO: Create a python script or something that can automate the process below
+
+#include <mono/utils/mono-publib.h>
+#include <mono/metadata/mono-config.h>
+
 
 /*		ATTENTION
 *		ATTENTION
@@ -155,8 +160,25 @@ struct TextureComponent final : public Component
 
 	uint8_t* rgbImage{};
 
+
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
+};
+
+
+struct ScriptComponent final : public Component
+{
+	ScriptComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	
+	std::string ScriptClassName{ "Unit" };
+	MonoClass* m_Class{};
+	MonoObject* m_Object{};
+	
+	//std::unordered_map<size_t, Ref<ScriptField>> m_Fields;
+	std::unordered_map<size_t, MonoMethod*> m_Methods;
+	//std::unordered_map<size_t, Ref<ScriptProperty>> m_Properties;
+
+
 };
 
 struct SoundComponent final : public Component
@@ -171,5 +193,4 @@ struct SoundComponent final : public Component
 	glm::vec3 velocity{};
 	bool loopSound{false};
 	uint32 buffer{}; // Todo: Can be a vector of all the buffers
-
 };
