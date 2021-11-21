@@ -1,10 +1,12 @@
 #include "lasheightmap.h"
+#include "lasheightmap.h"
 #include <qdebug.h>
 
 LASHeightMap::LASHeightMap(std::string fileName)
 {
     ReadDatafromFile(fileName);
-    //
+    //make a array data thingie
+    populatePosArr();
     GenerateHeightMap();
 }
 
@@ -73,9 +75,38 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 }
 
+
+
+void LASHeightMap::populatePosArr()
+{
+    qDebug() << "WE ARE HERE";
+    //makes empty populated array
+    for(int i = 0; i < 999 ; i++)
+    {
+        for (int j = 0 ; j < 1999; j++ )
+            PosArr[i][j] = 0.0f;
+    }
+
+    qDebug() << "WE ARE istiatiaat";
+    for(unsigned long long i = 0; i < positions.size(); i++)
+    {
+        int X =static_cast<int> (positions[i].getVertex().getX());
+        int Z =static_cast<int> (positions[i].getVertex().getZ());
+
+        PosArr[X][Z] = positions[i].getVertex().getY();//(PosArr[X][Z] +  positions[i].getVertex().getY())/2.0f;
+        //qDebug() << (positions[i].getVertex());
+
+    }
+    qDebug() << "WE ARE THERE" << PosArr[300][100];
+}
+
 std::vector<Vertex> LASHeightMap::getPositions() const
 {
     return positions;
+}
+std::vector<Vertex> LASHeightMap::getmVertices() const
+{
+    return mVertices;
 }
 
 void LASHeightMap::setPositions(const std::vector<Vertex> &value)
@@ -139,26 +170,35 @@ void LASHeightMap::RemoveDeltaPos()
 void LASHeightMap::GenerateHeightMap()
 {
     float f = 1;
-    for(float x = 0; x<10; x+=1)
-        for(float z =0; z<10; z+=1)
+    for(float x = 0; x<900; x+=1)
+        for(float z =0; z<1000; z+=1)
         {
-            mVertices.push_back(Vertex{  x, CalcHeight(  200+x,   200+z),   z, 0,0, f, f, 0});
-            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+  z),   z, 0,0, 0, f, f});
-            mVertices.push_back(Vertex{  x, CalcHeight(200+x,  200+z+1), z+1, 0,0, 0, 0, f});
-            mVertices.push_back(Vertex{  x, CalcHeight(200+x,  200+z+1), z+1, 0,0, 0, 0, f});
-            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+  z),   z, 0,0, 0, f, f});
-            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+z+1), z+1, 0,0, f, f, 0});
+
+            float height1 = CalcHeight(    x,    z);
+            float height2 = CalcHeight(  x+1,    z);
+            float height3 = CalcHeight(    x,  z+1);
+            float height4 = CalcHeight(    x,  z+1);
+            float height5 = CalcHeight(  x+1,    z);
+            float height6 = CalcHeight(  x+1,  z+1);
+
+            mVertices.push_back(Vertex{  x, height1,   z,  height1/30, height1/20, height1/20,0,0});
+            mVertices.push_back(Vertex{x+1, height2,   z,  height2/30, height2/20, height2/20,0,0});
+            mVertices.push_back(Vertex{  x, height3, z+1,  height3/30, height3/20, height3/20,0,0});
+            mVertices.push_back(Vertex{  x, height4, z+1,  height4/30, height4/20, height4/20,0,0});
+            mVertices.push_back(Vertex{x+1, height5,   z,  height5/30, height5/20, height5/20,0,0});
+            mVertices.push_back(Vertex{x+1, height6, z+1,  height6/30, height6/20, height6/20,0,0});
         }
 }
 
 float LASHeightMap::CalcHeight(float x, float z)
 {
-    float height = 0.0f;
+    float height = 10.0f;
+
     QVector2D xzVec = QVector2D(x,z); // here is pos
     QVector2D tempPos, closest;
-    float shortestLength{10};
+    float shortestLength{1};
     //find closest tempX or Z
-    for(unsigned long long i = 0; i < positions.size(); i++)
+    /*for(unsigned long long i = 0; i < positions.size(); i++)
     {
         //calculate legth between point and square
         QVector2D tempLength;
@@ -167,19 +207,50 @@ float LASHeightMap::CalcHeight(float x, float z)
         float length = tempPos.distanceToPoint(xzVec);
 
 
-        if(length < shortestLength)
+        if(length < shortestLength && length > 0.01f)
         {
             shortestLength = length;
             closest = tempPos;
             height = positions[i].getVertex().getY();
+            break;
         }
         //if(shortestLength <0.3f && shortestLength > 0.0f)
          //   break;
 
         //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+    }*/
+
+    int X = static_cast<int>(x);
+    int Z = static_cast<int>(z);
+    int counter =0;
+    float collected = 0;
+    height = PosArr[X][Z];
+
+    if((X>10 && Z>10) /*&& height <= 2.0f */)
+    {
+
+        for(int i = -5; i < 5 ; i++)
+        {
+            for (int j = -5 ; j <5; j++ )
+            {
+                if(PosArr[X + i][Z + j] != 0)
+                {
+                    collected += PosArr[X + i][Z + j];
+                    counter++;
+                }
+            }
+        }
+        height = ( collected)/(counter);
+        //average height of surrounding area
     }
+    else
+    {
+        height = PosArr[X][Z] ;
+    }
+
+
     //do the average calc
     //qDebug() << height;
-    //then return it
+    //then return its
     return height;
 }

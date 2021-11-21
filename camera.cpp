@@ -21,6 +21,7 @@ Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
     Cam.mViewMatrix.setToIdentity();
     Cam.mProjectionMatrix.setToIdentity();
 
+
     Cam.mYawMatrix.setToIdentity();
     Cam.mPitchMatrix.setToIdentity();
 
