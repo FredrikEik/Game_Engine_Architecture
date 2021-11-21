@@ -565,7 +565,8 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
 
 void MeshHandler::readLasFile()
 {
-    float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
+    float xMin, xMax, yMin, yMax, zMin, zMax;
+    int resolution;
 
     std::ifstream inLasFile;
     inLasFile.open(gsl::ProjectFolderName + "Assets/test_las.txt");
@@ -573,7 +574,6 @@ void MeshHandler::readLasFile()
     if(!inLasFile)
     {
         qDebug() << "unable to open file test_las.txt";
-        return;
     }
 
     std::vector<gsl::Vector3D> pointData;
@@ -589,7 +589,7 @@ void MeshHandler::readLasFile()
          {
              inLasFile >> x >> z >> y; //read the line, store as x, z and y. z and y flipped to match current project.
              pointData.emplace_back(x, z, y); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
-                                              //Given all data will use the same pointData vector this wont be a problem.
+
 
              static bool once = true; //store the bounds of the terrain
              if(once)
@@ -634,16 +634,16 @@ void MeshHandler::readLasFile()
 //        qDebug() << pointData[i];
 //    }
 
-//Lag et firkanta grid med gitt oppløsning som skal dekke alle datapunkter.
-    int resolution = 5;
-    const int gridSizeX = 500;
-    const int gridSizeZ = 500;
+//Lag et firkanta grid som skal dekke alle datapunkter.
+    resolution = 5;
+    const int gridSizeX = 1500;
+    const int gridSizeZ = 1500;
     gsl::Vector2D grid2D[gridSizeX][gridSizeZ];
 
-//    grid2D[0][0] = xMin, zMin;
-//    grid2D[gridSizeX-1][0] = xMax, zMin;
-//    grid2D[0][gridSizeZ-1] = xMin, zMax;
-//    grid2D[gridSizeX-1][gridSizeZ-1] = xMax, zMax;
+    grid2D[0][0] = xMin, zMin;
+    grid2D[gridSizeX-1][0] = xMax, zMin;
+    grid2D[0][gridSizeZ-1] = xMin, zMax;
+    grid2D[gridSizeX-1][gridSizeZ-1] = xMax, zMax;
 
     qDebug() << xMin << zMin;
 

@@ -99,7 +99,7 @@ void CoreEngine::setUpScene()
     mGameObjectManager->setUpAllMaterials();
 
     MeshHandler HeightMap;
-    HeightMap.ReadLasFile();
+    HeightMap.readLasFile();
 
     //********************** Making the object to be drawn **********************
 
