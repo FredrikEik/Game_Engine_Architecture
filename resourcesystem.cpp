@@ -291,7 +291,7 @@ void resourceSystem::SetIntoMeshDataContainerRUNTIME(std::vector<Vertex> mVertic
     obj.internalIndex = meshDataContainer.size()-1;
     obj.VAO = 0;//(GLuint)meshDataContainer.size()+1;
     obj.VBO = 0;//(GLuint)meshDataContainer.size()+1;
-    obj.DrawType = GL_QUADS;
+    obj.DrawType = GL_POINTS;
     meshDataContainer.push_back(std::make_pair(fname, obj));
     rendSys->init(&meshDataContainer[meshDataContainer.size()-1].second.meshVert, &meshDataContainer[meshDataContainer.size()-1].second.VAO, &meshDataContainer[meshDataContainer.size()-1].second.VBO);
 }

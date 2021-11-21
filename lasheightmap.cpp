@@ -4,6 +4,7 @@
 LASHeightMap::LASHeightMap(std::string fileName)
 {
     ReadDatafromFile(fileName);
+    GenerateHeightMap();
 }
 
 void LASHeightMap::ReadDatafromFile(std::string fileName)
@@ -73,7 +74,7 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 std::vector<Vertex> LASHeightMap::getPositions() const
 {
-    return positions;
+    return mVertices;
 }
 
 void LASHeightMap::setPositions(const std::vector<Vertex> &value)
@@ -112,15 +113,52 @@ void LASHeightMap::RemoveDeltaPos()
 
     float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
     qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
+    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
+    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
+    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
 
+
+    float smallestX1{0}, biggestX1{0};
+    float smallestY1{0}, biggestY1{0};
+    float smallestZ1{0}, biggestZ1{0};
     for(auto i = 0; i<positions.size(); i++)
     {
         positions[i].set_xyz(deltaX - positions[i].getVertex().getX() , deltaY - positions[i].getVertex().getY() ,   deltaZ - positions[i].getVertex().getZ());
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
     }
+
 
 //    for(auto i = 0; i<positions.size(); i++)
 //    {
 //        //positions[i].set_xyz(gsl::Vector3D(positions[i].getVertex().getX() - deltaX, positions[i].getVertex().getY() - deltaY, positions[i].getVertex().getZ() - deltaZ));
 //        qDebug() << positions[i].getVertex();
-//    }
+    //    }
+}
+
+void LASHeightMap::GenerateHeightMap()
+{
+    float f = 1;
+        for(float x = 0; x<1500; x+=1)
+            for(float z =0; z<2000; z+=1)
+            {
+                mVertices.push_back(Vertex{  x, CalcHeight(  x,   z),   z, 0,0, f, f, 0});
+                mVertices.push_back(Vertex{x+1, CalcHeight(x+1,   z),   z, 0,0, 0, f, f});
+                mVertices.push_back(Vertex{  x, CalcHeight(  x, z+1), z+1, 0,0, 0, 0, f});
+                mVertices.push_back(Vertex{  x, CalcHeight(  x, z+1), z+1, 0,0, 0, 0, f});
+                mVertices.push_back(Vertex{x+1, CalcHeight(x+1,   z),   z, 0,0, 0, f, f});
+                mVertices.push_back(Vertex{x+1, CalcHeight(x+1, z+1), z+1, 0,0, f, f, 0});
+            }
+}
+
+float LASHeightMap::CalcHeight(float x, float z)
+{
+    float height = 0.0f;
+    float tempX,tempY, tempZ;
+    //for(auto i = 0; i<positions.size(); i++)
+   // {
+    //   positions[i].getVertex().getX();
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+    //}
+
+    return height;
 }

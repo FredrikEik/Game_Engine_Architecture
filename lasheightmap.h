@@ -17,7 +17,10 @@ public:
 private:
     void ReadDatafromFile(std::string fileName);
     std::vector<Vertex> positions;
+    std::vector<Vertex> mVertices;
     void RemoveDeltaPos();
+    void GenerateHeightMap();
+    float CalcHeight(float x = 0, float z = 0);
 };
 
 #endif // LASHEIGHTMAP_H

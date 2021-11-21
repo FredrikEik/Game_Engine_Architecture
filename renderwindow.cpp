@@ -251,9 +251,9 @@ void RenderWindow::init()
 */
 
     //LASDATA
-    LASHeightMap map = LASHeightMap("C:../GEA2021/test_las.txt");
-    ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
-    entitySys->construct("LAS", QVector3D(-110.0f,-10.0f,-30.0f), 0,0, GL_POINTS);
+    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
+    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
