@@ -7,9 +7,11 @@
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
 #include "TransformWidget.h"
+#include "MeshWidget.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
 #include "../FileSystemHelpers.h"
+
 using TYPE = std::type_index;
 
 Details::Details(std::string inWindowName, ECSManager* inECS)
@@ -39,13 +41,24 @@ void Details::update(int32 inEntityID)
 	ImGui::BeginChild("Entities");
 	for (const auto &it : entity)
 	{
-		if (it.first == std::type_index(typeid(TransformComponent)))
+		// Creating new widgets every frame for now. If performance becomes an issue, refactor.
+		if (it.first == std::type_index(typeid(TransformComponent)).hash_code())
 		{
 			TransformWidget* transformWidget = new TransformWidget(windowName, ECS);
 			transformWidget->begin(viewport, reservedEntities);
 			transformWidget->update(entityID);
 			transformWidget->end();
 			delete transformWidget;
+		}
+		else if (it.first == TYPE(typeid(MeshComponent)).hash_code())
+		{
+			ImGui::NewLine();
+
+			MeshWidget* meshWidget = new MeshWidget(windowName, ECS);
+			meshWidget->begin(viewport, reservedEntities);
+			meshWidget->update(entityID);
+			meshWidget->end();
+			delete meshWidget;
 		}
 	}
 	//ImGui::BeginChild("AddComponent");
@@ -54,7 +67,8 @@ void Details::update(int32 inEntityID)
 	//ImGui::Button("TransformWidget");
 	//ImGui::EndPopup();
 	//ImGui::EndChild();
-	
+	ImGui::NewLine();
+
 	drawAddComponent();
 
 	ImGui::EndChild();
@@ -130,7 +144,7 @@ void Details::addComponent(std::string componentToAdd)
 		addTextureComponent();
 }
 
-bool Details::hasComponent(std::type_index type)
+bool Details::hasComponent(size_t type)
 {
 	for (const auto& it : entity)
 	{
@@ -143,23 +157,23 @@ bool Details::hasComponent(std::type_index type)
 
 void Details::addTransformComponent()
 {
-	if(!hasComponent(TYPE(typeid(TransformComponent))))
+	if(!hasComponent(TYPE(typeid(TransformComponent)).hash_code()))
 		ECS->addComponent<TransformComponent>(entityID);
 }
 
 void Details::addMeshComponent()
 {
-	if(hasComponent(TYPE(typeid(MeshComponent))))
+	if(hasComponent(TYPE(typeid(MeshComponent)).hash_code()))
 		return;
 	std::string path;
 	if (FileSystemHelpers::getPathFromFileExplorer(path))
 	{
-		if (!hasComponent(TYPE(typeid(TransformComponent))))
+		if (!hasComponent(TYPE(typeid(TransformComponent)).hash_code()))
 			addTransformComponent();
 
 		ECS->loadAsset(entityID, path);
 
-		if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
+		if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent)).hash_code()))
 		{
 			MeshSystem::setConsideredForFrustumCulling(entityID, ECS, false);
 		}
@@ -168,13 +182,13 @@ void Details::addMeshComponent()
 
 void Details::addAABBComponent()
 {
-	if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
+	if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent)).hash_code()))
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 }
 
 void Details::addTextureComponent()
 {
-	if (hasComponent(TYPE(typeid(TextureComponent))))
+	if (hasComponent(TYPE(typeid(TextureComponent)).hash_code()))
 		return;
 	std::string path;
 	if (FileSystemHelpers::getPathFromFileExplorer(path))

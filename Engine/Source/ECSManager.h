@@ -6,7 +6,7 @@
 #include <filesystem>
 #include "Components/ComponentManager.h"
 #include "Factory.h"
-
+#include <algorithm>
 enum class DefaultAsset : uint8;
 
 class ECSManager
@@ -42,11 +42,11 @@ public:
 
 	int32 getNumberOfEntities() const;
 	bool entityExists(int32 entityID) const;
-	std::vector<std::pair<std::type_index, uint32>> getEntity(int32 entityID);
+	std::vector<std::pair<size_t, uint32>> getEntity(int32 entityID);
 private:
 	ECSManager();
 
-	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
+	void removeComponentByRTTI(uint32 entityID, size_t componentType);
 	class Factory& factory;
 	template <typename... Ts>
 	void swallow(Ts&&...);
@@ -54,7 +54,7 @@ private:
 	/** Reads as std::pair<isActive, std::vector<std::pair<type_index of component, componentID>>>
 	* Iterating the entire array can be slow if entities are spread out, but that should not be necessary. 
 	*/
-	std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>& entities;
+	std::array<std::pair<bool, std::vector<std::pair<size_t, uint32>>>, core::MAX_ENTITIES>& entities;
 	// Keeping record of available entity ids
 	std::vector<uint32> &availableEntityIDs;
 
@@ -74,7 +74,6 @@ inline void ECSManager::addComponents(uint32 entityID)
 }
 
 
-
 // Don't mind this. Just unpacking variadic template arguments :))))
 template <typename... Ts>
 inline void ECSManager::swallow(Ts&&...) 
@@ -85,7 +84,8 @@ template<typename T>
 inline uint32 ECSManager::addComponent(uint32 entityID)
 {
 	uint32 componentID{ factory.createComponent<T>(entityID) };
-	std::pair<std::type_index, uint32> componentLocation(std::type_index(typeid(T)), componentID);
+	//std::pair<std::type_index, uint32> componentLocation(std::type_index(typeid(T)), componentID);
+	std::pair<size_t, uint32> componentLocation(std::type_index(typeid(T)).hash_code(), componentID);
 
 	entities.at(entityID).second.push_back(componentLocation); // THIS FUCKS UP
 
@@ -95,7 +95,32 @@ inline uint32 ECSManager::addComponent(uint32 entityID)
 template<typename T>
 inline bool ECSManager::removeComponent(uint32 entityID)
 {
+	if(entities[entityID].second.back().first == std::type_index(typeid(T)).hash_code())
+		entities[entityID].second.pop_back();
+	else
+		for (uint64 i{ }; i <entities[entityID].second.size(); ++i)
+		{
+
+			auto variable = entities[entityID].second[i].first;
+			std::cout << "stuff";
+			if (entities[entityID].second[i].first == std::type_index(typeid(T)).hash_code())
+			{
+				std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end());
+				entities[entityID].second.pop_back();
+			}
+		}
+		//for (auto& it : entities[entityID].second)
+		//{
+		//	auto variable = it.first;
+		//	std::cout << "stuff";
+		//	if (entities[entityID].second[i].first == std::type_index(typeid(T)).hash_code())
+		//	{
+		//		std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end());
+		//		entities[entityID].second.pop_back();
+		//	}
+		//}
 	factory.removeComponent<T>(entityID);
+
 
 	return true;
 }

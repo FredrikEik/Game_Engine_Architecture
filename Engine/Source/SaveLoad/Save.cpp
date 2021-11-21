@@ -10,7 +10,7 @@ std::string Save::defaultSaveLocation = "../saves";
 std::string Save::defaultSaveName = "/entities.json";
 
 void Save::saveEntities(const std::array<
-	std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>,
+	std::pair<bool, std::vector<std::pair<size_t, uint32>>>,
 	core::MAX_ENTITIES>& entities, 
 	uint32 startIndex, class ECSManager* ECS)
 {
@@ -42,46 +42,46 @@ std::string Save::getDefaultAbsolutePath()
 	return std::string(defaultSaveLocation + defaultSaveName);
 }
 
-void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson, ECSManager* ECS)
+void Save::addComponentToJson(size_t type, uint32 entityID, nlohmann::json& OUTjson, ECSManager* ECS)
 {
 	JSON json;
-	if (type == std::type_index(typeid(TransformComponent)))
+	if (type == std::type_index(typeid(TransformComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(MeshComponent)))
+	else if (type == std::type_index(typeid(MeshComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(TextureComponent)))
+	else if (type == std::type_index(typeid(TextureComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(AxisAlignedBoxComponent)))
+	else if (type == std::type_index(typeid(AxisAlignedBoxComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(CameraComponent)))
+	else if (type == std::type_index(typeid(CameraComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<CameraComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(SphereComponent)))
+	else if (type == std::type_index(typeid(SphereComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<SphereComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
 	}
-	else if (type == std::type_index(typeid(SoundComponent)))
+	else if (type == std::type_index(typeid(SoundComponent)).hash_code())
 	{
 		auto comp = ECS->getComponentManager<SoundComponent>()->getComponentChecked(entityID);
 		assert(comp);
@@ -91,5 +91,5 @@ void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::j
 
 	if (json == JSON())
 		return;
-	OUTjson.push_back({ { type.name(), json} });
+	OUTjson.push_back({ {type, json} });
 }

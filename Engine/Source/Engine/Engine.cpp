@@ -64,6 +64,16 @@ void Engine::setIsPlaying(bool isPlaying)
 {
 	bIsPlaying = isPlaying;
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
+	if (!isPlaying)
+	{
+		load(Save::getDefaultAbsolutePath());
+		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
+		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+	}
+	else
+	{
+		save();
+	}
 	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
@@ -290,10 +300,6 @@ void Engine::loop()
 			//TODO: Draw a game camera here
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
-
-
-
-
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
 		glStencilMask(0xFF); // enable writing to the stencil buffer
