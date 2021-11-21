@@ -227,8 +227,7 @@ void RenderWindow::init()
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
-    mSong->pause();
-    mMainWindow->updateViewPort();
+
     
 
 
@@ -254,6 +253,9 @@ void RenderWindow::init()
     LASHeightMap map = LASHeightMap("C:../GEA2021/test_las.txt");
     ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
     entitySys->construct("LAS", QVector3D(-110.0f,-10.0f,-30.0f), 0,0, GL_POINTS);
+
+    mSong->pause();
+    mMainWindow->updateViewPort();
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
