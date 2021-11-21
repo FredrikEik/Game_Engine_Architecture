@@ -15,6 +15,7 @@ void SelectionSystem::init(uint32 entity, ECSManager* ECS)
 	ECS->addComponent<MeshComponent>(entity);
 	MeshComponent* meshComponent{ ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity) };
 	meshComponent->bIsTranslucent = true;
+	meshComponent->bDisregardedDuringFrustumCulling = true;
 }
 
 void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class ECSManager* ECS, float deltaTime)
@@ -45,7 +46,7 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 
 	glm::vec3 originOfCam = cameraTransformComp->transform[3];
 	glm::vec3 normalOfPlane = glm::vec3(0.f,1.f,0.f);
-	float distanceOffset = 1.f;
+	float distanceOffset = -1.f;
 
 	float distanceFromRayOriginToPlane = - (glm::dot(originOfCam, normalOfPlane) + distanceOffset) / glm::dot(ray_wor, normalOfPlane);
 

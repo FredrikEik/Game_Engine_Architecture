@@ -24,6 +24,7 @@ endfunction(assign_source_group)
 file(GLOB_RECURSE SOURCE CONFIGURE_DEPENDS
 	Source/*.cpp
 	Source/*.h
+	Source/*.hpp
 )
 
 file(GLOB_RECURSE SHADERFILES CONFIGURE_DEPENDS 

@@ -34,6 +34,10 @@
 
 #include "../Systems/ScriptSystem.h"
 
+#include "../SaveLoad/Save.h"
+#include "../SaveLoad/Load.h"
+
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -59,7 +63,22 @@ Engine::~Engine()
 void Engine::setIsPlaying(bool isPlaying)
 {
 	bIsPlaying = isPlaying;
+	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
 	//std::cout << "bIsPlaying: " << bIsPlaying;
+}
+
+void Engine::save()
+{
+	Save::saveEntities(ECS->entities, reservedEntities, ECS); 
+}
+
+void Engine::load(const std::string& path)
+{
+	for (uint32 i{ reservedEntities }; i < core::MAX_ENTITIES; ++i)
+	{
+		ECS->destroyEntity(i);
+	}
+	Load::loadEntities(path, ECS);
 }
 
 Engine* Engine::instance = nullptr;
@@ -67,6 +86,7 @@ float Engine::windowWidth = 800.f;
 float Engine::windowHeight = 600.f;
 float Engine::fov = 45.f;	
 
+//sa
 void Engine::start()
 {
 	init();
@@ -129,7 +149,12 @@ void Engine::init()
 
 
 	editorCameraEntity = ECS->newEntity();
-	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
+	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);	
+	gameCameraEntity = ECS->newEntity();
+	ECS->addComponents<CameraComponent, TransformComponent>(gameCameraEntity);
+	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
+	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
+	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -137,14 +162,17 @@ void Engine::init()
 	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
+
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	meshComp->bAlwaysRendered = true;
+	meshComp->bDisregardedDuringFrustumCulling = true;
 	ECS->addComponents<TransformComponent>(terrainEntity);
 	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
+	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
+
 
 	viewport->begin(window, ECS->getNumberOfEntities());
 
@@ -158,18 +186,29 @@ void Engine::init()
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
 
+
+	reservedEntities = ECS->getNumberOfEntities();
+
+	viewport->begin(window, reservedEntities);
+	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
+	//Load::loadEntities("../saves/entities.json", ECS);
+	load(Save::getDefaultAbsolutePath());
+
 }
 
-int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
+//int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
+	uint32 cameraEntity{};
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
 		processInput(window);
 
+		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
+
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(editorCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
@@ -183,7 +222,7 @@ void Engine::loop()
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			CameraSystem::draw(editorCameraEntity, selectionShader, ECS);
+			CameraSystem::draw(cameraEntity, selectionShader, ECS);
 			MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
 
 
@@ -237,21 +276,22 @@ void Engine::loop()
 		{
 			//std::cout << "Game camera'\n";
 			// TODO: Implement proper deltatime
+
 			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+
+			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
+
+			//temp placement -- calls update on scripts
 			ScriptSystem::Invoke("Update", ECS);
 		}
 		else
 		{
 			//std::cout << "Editor camera'\n";
 			//TODO: Draw a game camera here
-			CameraSystem::updateEditorCamera(editorCameraEntity, ECS, 0.016f);
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
 
 
-		// RTS Selection render -- Translucent -- ingame only
-		SelectionSystem::updateSelection(RTSSelectionEntity, editorCameraEntity, ECS, currentFrame);
-		//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-		SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 
 
 
@@ -262,16 +302,16 @@ void Engine::loop()
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
 		//lightPos += 0.01f;
-		CameraSystem::draw(editorCameraEntity, phongShader, ECS);
-		CameraSystem::setPhongUniforms(editorCameraEntity, phongShader, ECS);
+		CameraSystem::draw(cameraEntity, phongShader, ECS);
+		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
-		MeshSystem::draw(phongShader, "u_model", ECS, editorCameraEntity);
+		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00); // disable writing to the stencil buffer
 		glDisable(GL_DEPTH_TEST);
-		CameraSystem::draw(editorCameraEntity, outlineShader, ECS);
+		CameraSystem::draw(cameraEntity, outlineShader, ECS);
 		MeshSystem::drawOutline(outlineShader, "u_model", ECS);
 		
 	
@@ -279,6 +319,15 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
+		if (bIsPlaying)
+		{
+			// RTS Selection render -- Translucent -- ingame only
+			CameraSystem::draw(cameraEntity, ourShader, ECS);
+
+			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
+			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+		}
 
 		//// Render dear imgui into screen
 		//ImGui::Render();

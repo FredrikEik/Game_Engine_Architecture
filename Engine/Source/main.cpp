@@ -88,13 +88,14 @@ int main()
 	//mono_set_assemblies_path("/Mono/lib");
 
 
-	Engine* engine = Engine::GetInstance();
+	Engine& engine = Engine::Get();
 	ScriptEngine* scriptEngine = ScriptEngine::GetInstance();
 
 
-	engine->start();
-	delete scriptEngine;
-	delete engine;
+	engine.start();
+	delete* scriptEngine;
+	delete& engine;
+
 	return 0;
 	//glfwInit();
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

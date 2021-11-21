@@ -40,9 +40,10 @@ protected:
 //public:
 	uint32 createComponent(uint32 entityID, bool isReusable);
 	bool assignComponent(uint32 componentID, uint32 entityID);
-	/**Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
+	/*@returns the component ID of the removed component
+	*Remove a component. This does not shrink the packedComponentArray, so the memory will still be reserved. 
 	* Call cleanUp when there is time available to free the memory.*/
-	void removeComponent(uint32 entityID);
+	uint32 removeComponent(uint32 entityID);
 
 private:
 	/* This array contains the location in the packedComponentArray
@@ -98,7 +99,7 @@ inline bool ComponentManager<T>::assignComponent(uint32 componentID, uint32 enti
 }
 
 template<class T>
-inline void ComponentManager<T>::removeComponent(uint32 entityID)
+inline uint32 ComponentManager<T>::removeComponent(uint32 entityID)
 {
 	assert(entityID < core::MAX_ENTITIES);
 	uint32 positionInPacked{ sparseComponentArray[entityID] };
@@ -117,9 +118,11 @@ inline void ComponentManager<T>::removeComponent(uint32 entityID)
 	}
 
 	// Remove the component and mark the vector dirty.
+	uint32 componentID = packedComponentArray.back().ID;
 	assert(packedComponentArray.size() > 0);
 	packedComponentArray.pop_back(); // Does not fuck up without this
 	packedComponentDirty = true;
+	return componentID;
 }
 
 template<class T>

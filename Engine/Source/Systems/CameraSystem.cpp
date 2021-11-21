@@ -235,3 +235,70 @@ float CameraSystem::isPointInPlane(const glm::vec4& plane, const glm::vec3& poin
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w);
 	//return std::sqrt(plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) >= -radius;
 }
+
+void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
+{
+	ECS->addComponent<MeshComponent>(entity);
+	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
+	CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity);
+	
+	assert(camera);
+	assert(mesh);
+	mesh->bDisregardedDuringFrustumCulling = true;
+	mesh->m_drawType = GL_LINE_STRIP;
+
+	glm::mat4 inverseProjViewMatrix = glm::inverse((camera->m_projectionMatrix * camera->m_viewMatrix));
+
+	std::vector<glm::vec4> positions
+	{
+		glm::vec4(-1, -1, -1, 1),
+		glm::vec4(1, -1, -1, 1),
+		glm::vec4(1, 1, -1, 1),
+		glm::vec4(-1, 1, -1, 1),
+				
+		glm::vec4(-1, -1, 1, 1),
+		glm::vec4(1, -1, 1, 1),
+		glm::vec4(1, 1, 1, 1),
+		glm::vec4(-1, 1, 1, 1)
+	};
+
+	std::vector<Vertex> vertices;
+	for (auto& it : positions)
+	{
+		it = inverseProjViewMatrix*it; 
+		it.x /= it.w;
+		it.y /= it.w;
+		it.z /= it.w;
+		it.w = 1.f;
+		mesh->m_vertices.push_back(Vertex(glm::vec3(it), glm::vec3(0, 1, 1), glm::vec2()));
+	}
+
+	mesh->m_indices.push_back(0);
+	mesh->m_indices.push_back(1);
+	mesh->m_indices.push_back(1);
+	mesh->m_indices.push_back(2);
+	mesh->m_indices.push_back(2);
+	mesh->m_indices.push_back(3);
+	mesh->m_indices.push_back(3);
+	mesh->m_indices.push_back(0);
+
+	mesh->m_indices.push_back(4);
+	mesh->m_indices.push_back(5);
+	mesh->m_indices.push_back(5);
+	mesh->m_indices.push_back(6);
+	mesh->m_indices.push_back(6);
+	mesh->m_indices.push_back(7);
+	mesh->m_indices.push_back(7);
+	mesh->m_indices.push_back(4);
+
+	mesh->m_indices.push_back(0);
+	mesh->m_indices.push_back(4);
+	mesh->m_indices.push_back(1);
+	mesh->m_indices.push_back(5);
+	mesh->m_indices.push_back(2);
+	mesh->m_indices.push_back(6);
+	mesh->m_indices.push_back(3);
+	mesh->m_indices.push_back(7);
+
+	MeshSystem::initialize(*mesh);
+}
