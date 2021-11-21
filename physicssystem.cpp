@@ -10,6 +10,7 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Ve
     mSurfaceData = surfaceData;
     mSurfaceData->collisionRadius = 0.0f;
     vertexData = inVertexData;
+
 }
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
@@ -86,7 +87,7 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
             Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
             float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
             //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
-            //  qDebug() << "BARYC HEIGHT: "<<height;
+             //qDebug() << "BARYC HEIGHT: "<<height;
             Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
             //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
             onTriangle = true;
@@ -148,7 +149,7 @@ QVector3D PhysicsSystem::Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVe
     //qDebug() <<"BARISENTRIC COORDINATES: " <<baryc;
 
     //i have no fucking clue why it needs to be negative. but hey it works ;)
-    return (-1*baryc);
+    return (-baryc);
 }
 
 gsl::Vector3D PhysicsSystem::MakeGSLvec3D(QVector3D vec)

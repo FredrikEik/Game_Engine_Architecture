@@ -173,7 +173,7 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(50.0f,100.0f,50.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(50.0f,5.0f,50.0f),2,1);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
@@ -245,19 +245,19 @@ void RenderWindow::init()
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
    // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
 
-    ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS2");
-    entitySys->construct("LAS2", QVector3D(-109,-22,-14), 0,0,-1, GL_TRIANGLES);
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
+    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    int eSize = (int)entities.size();
-    for(int i = 0; i < eSize; i++){
-        if(meshCompVec[i]->entity == 15){
-            Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("LAS2"));
-            break;
-        }
-    }
+    Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+//    int eSize = (int)entities.size();
+//    for(int i = 0; i < eSize; i++){
+//        if(meshCompVec[i]->entity == 16){
+//            break;
+//        }
+//    }
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

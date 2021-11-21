@@ -164,9 +164,12 @@ void LASHeightMap::RemoveDeltaPos()
 
 void LASHeightMap::GenerateHeightMap()
 {
+    float ofsetx = -100;
+    float ofsetz = -100;
+    float ofsety = -15;
     float f = 1;
-    for(float x = 0; x<900; x+=1)
-        for(float z =0; z<1000; z+=1)
+    for(float x = 100; x<200; x+=1)
+        for(float z =100; z<200; z+=1)
         {
 
             float height1 = CalcHeight(    x,    z);
@@ -176,12 +179,12 @@ void LASHeightMap::GenerateHeightMap()
             float height5 = CalcHeight(  x+1,    z);
             float height6 = CalcHeight(  x+1,  z+1);
 
-            mVertices.push_back(Vertex{  x, height1,   z,       x/900, height1/100, z/1000,0,0});
-            mVertices.push_back(Vertex{x+1, height2,   z,       x/900, height2/100, z/1000,0,0});
-            mVertices.push_back(Vertex{  x, height3, z+1,       x/900, height3/100, z/1000,0,0});
-            mVertices.push_back(Vertex{  x, height4, z+1,       x/900, height4/100, z/1000,0,0});
-            mVertices.push_back(Vertex{x+1, height5,   z,       x/900, height5/100, z/1000,0,0});
-            mVertices.push_back(Vertex{x+1, height6, z+1,       x/900, height6/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height2,ofsetz +   z,       x/900, height2/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +  x, ofsety +height1,ofsetz +   z,       x/900, height1/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +  x, ofsety +height3,ofsetz + z+1,       x/900, height3/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0});
+            mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0});
         }
 }
 
