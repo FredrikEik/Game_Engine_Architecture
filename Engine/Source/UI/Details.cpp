@@ -9,6 +9,8 @@
 #include "TransformWidget.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
+#include "../FileSystemHelpers.h"
+using TYPE = std::type_index;
 
 Details::Details(std::string inWindowName, ECSManager* inECS)
 	:Window(inWindowName, inECS)
@@ -65,7 +67,12 @@ void Details::end()
 
 void Details::drawAddComponent()
 {
-	const char* items[] = { transformComponent.c_str(), boxColliderComponent.c_str(), meshComponent.c_str() };
+	const char* items[] = { 
+		transformComponent.c_str(), 
+		boxColliderComponent.c_str(), 
+		meshComponent.c_str(),
+		textureComponent.c_str()
+	};
 	static const char* current_item = "Select component";
 	ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
 
@@ -109,59 +116,69 @@ void Details::addComponent(std::string componentToAdd)
 	bool hasComponent{ false };
 	if (componentToAdd == transformComponent)
 	{
-		for (const auto& it : entity)
-		{
-			if (it.first == std::type_index(typeid(TransformComponent)))
-				hasComponent = true;
-		}
-		if (!hasComponent)
-			ECS->addComponent<TransformComponent>(entityID);
+		addTransformComponent();
+	}
+	else if (componentToAdd == boxColliderComponent)
+	{
+		addAABBComponent();
+	}
+	else if (componentToAdd == meshComponent)
+	{
+		addMeshComponent();
+	}
+	else if (componentToAdd == textureComponent)
+		addTextureComponent();
+}
+
+bool Details::hasComponent(std::type_index type)
+{
+	for (const auto& it : entity)
+	{
+		if (it.first == type)
+			return true;
 	}
 
-	if (componentToAdd == boxColliderComponent)
+	return false;
+}
+
+void Details::addTransformComponent()
+{
+	if(!hasComponent(TYPE(typeid(TransformComponent))))
+		ECS->addComponent<TransformComponent>(entityID);
+}
+
+void Details::addMeshComponent()
+{
+	if(hasComponent(TYPE(typeid(MeshComponent))))
+		return;
+	std::string path;
+	if (FileSystemHelpers::getPathFromFileExplorer(path))
 	{
-		for (const auto& it : entity)
+		if (!hasComponent(TYPE(typeid(TransformComponent))))
+			addTransformComponent();
+
+		ECS->loadAsset(entityID, path);
+
+		if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
 		{
-			if (it.first == std::type_index(typeid(AxisAlignedBoxComponent)))
-				hasComponent = true;
-		}
-		if (!hasComponent)
-		{
-			ECS->addComponent<AxisAlignedBoxComponent>(entityID);
-			//CollisionSystem::construct(entityID, ECS);
+			MeshSystem::setConsideredForFrustumCulling(entityID, ECS, false);
 		}
 	}
+}
 
-	if (componentToAdd == meshComponent)
+void Details::addAABBComponent()
+{
+	if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
+		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
+}
+
+void Details::addTextureComponent()
+{
+	if (hasComponent(TYPE(typeid(TextureComponent))))
+		return;
+	std::string path;
+	if (FileSystemHelpers::getPathFromFileExplorer(path))
 	{
-		for (const auto& it : entity)
-		{
-			if (it.first == std::type_index(typeid(MeshComponent)))
-				hasComponent = true;
-		}
-		if (!hasComponent)
-		{
-			nfdchar_t* outPath = NULL;
-			nfdresult_t result = NFD_OpenDialog(NULL, NULL, &outPath);
-
-			if (result == NFD_OKAY) {
-				//puts("Success!");
-				//puts(outPath);
-				//Engine::Get().load(outPath);
-				ECS->loadAsset(entityID, outPath);
-				ECS->addComponent<AxisAlignedBoxComponent>(entityID);
-				CollisionSystem::construct(entityID, ECS, true);
-				//MeshComponent*  ECS->getComponentManager<MeshComponent>()->getComponentChecked();
-				free(outPath);
-				//selectedEntity = -1;
-				//std::cout << outPath;
-			}
-			else if (result == NFD_CANCEL) {
-				puts("User pressed cancel.");
-			}
-			else {
-				printf("Error: %s\n", NFD_GetError());
-			}
-		}
+		ECS->loadAsset(entityID, path);
 	}
 }

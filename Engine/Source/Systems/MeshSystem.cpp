@@ -487,6 +487,14 @@ void MeshSystem::setHiddenInGame(uint32 entity, ECSManager* ECS, bool bNewHidden
     mesh->bShouldRender = !bNewHiddenInGame;
 }
 
+void MeshSystem::setConsideredForFrustumCulling(uint32 entity, ECSManager* ECS, bool bConsideredForFrustumCulling)
+{
+    MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
+    assert(mesh);
+
+    mesh->bDisregardedDuringFrustumCulling = !bConsideredForFrustumCulling;
+}
+
 void MeshSystem::initialize(MeshComponent& meshComponent)
 {
 	glGenVertexArrays(1, &meshComponent.m_VAO);

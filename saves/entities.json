@@ -122,6 +122,13 @@
                         -0.5
                     ]
                 }
+            },
+            {
+                "struct TextureComponent": {
+                    "path": "Assets\\grass.png",
+                    "reusable": true,
+                    "wrapMode": 10497
+                }
             }
         ]
     }
