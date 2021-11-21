@@ -96,22 +96,20 @@ void CoreEngine::setUpScene()
 
 
     mTerrain = mResourceManager->addObject("terrain");
+    boss->mMaterial->mShaderProgram = 1;
+    boss->mMaterial->mTextureUnit = 2;
     //mTerrain->mTransform->mMatrix.translateZ(-100.f);
     mRenderSystem->mGameObjects.push_back(mTerrain);
 
-    projectile = mResourceManager->addObject("projectile");
-    projectile->mTransform->mMatrix.rotateY(180.f);
-    projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
-    mResourceManager->addComponent("splat_stereo.wav", projectile);
-    projectile->mSoundComponent->shouldPlay = false;
+
 
     //mRenderSystem->mGameObjects.push_back(projectile);
 
     skybox = mResourceManager->addObject("skybox");
-    skybox->mMaterial->mShaderProgram = 1;
+    skybox->mMaterial->mShaderProgram = 2;
     skybox->mMaterial->mTextureUnit = 2;
     skybox->mTransform->mMatrix.scale(40.f);
-    //mRenderSystem->mGameObjects.push_back(skybox);
+    mRenderSystem->mGameObjects.push_back(skybox);
 
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
@@ -162,6 +160,12 @@ void CoreEngine::testScene()
 
 
     }
+
+    projectile = mResourceManager->addObject("projectile");
+    projectile->mTransform->mMatrix.rotateY(180.f);
+    projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
+    mResourceManager->addComponent("splat_stereo.wav", projectile);
+    projectile->mSoundComponent->shouldPlay = false;
         mResourceManager->addCollider("sphere", projectile);
 
         mRenderSystem->mGameObjects.push_back(player);

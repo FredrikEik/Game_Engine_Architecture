@@ -114,9 +114,13 @@ void RenderSystem::init()
     mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
+    mShaderPrograms[2] = new ShaderHandler((gsl::ShaderFilePath + "skyboxshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "skyboxshader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
     setupPlainShader(0);
     setupTextureShader(1);
+    setupSkyboxShader(2);
 
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
@@ -208,6 +212,15 @@ void RenderSystem::render()
 
             //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+        }
+
+        else if (mGameObjects[i]->mMaterial->mShaderProgram == 2)
+        {
+            viewMatrix = vMatrixUniformSS;
+            projectionMatrix = pMatrixUniformSS;
+            modelMatrix = mMatrixUniformSS;
+
+            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
@@ -477,6 +490,13 @@ void RenderSystem::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
+void RenderSystem::setupSkyboxShader(int shaderIndex)
+{
+    mMatrixUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mTextureUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox");
+}
 
 
 //This function is called from Qt when window is exposed (shown)

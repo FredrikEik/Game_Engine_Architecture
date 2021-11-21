@@ -90,6 +90,12 @@ private:
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
 
+    void setupSkyboxShader(int shaderIndex);
+    GLint mMatrixUniformSS{-1};
+    GLint vMatrixUniformSS{-1};
+    GLint pMatrixUniformSS{-1};
+    GLint mTextureUniformSS{-1};
+
     void updateDt();
     float dt = 0;
     float curTime = 0;

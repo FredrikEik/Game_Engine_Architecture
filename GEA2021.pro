@@ -91,6 +91,8 @@ FORMS += \
     transformwidget.ui
 
 DISTFILES += \
+    Shaders/skyboxshader.frag \
+    Shaders/skyboxshader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \

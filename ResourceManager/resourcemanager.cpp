@@ -213,8 +213,8 @@ void ResourceManager::setUpAllTextures()
     }
 //    else
 //    {
-//       // qDebug() << "*** ERROR reading textures *** : Asset-folder " +
-//       //                  gsl::TextureFilePath + " does not exist!";
+//        qDebug() << "*** ERROR reading textures *** : Asset-folder " +
+//                         gsl::TextureFilePath + " does not exist!";
 //    }
 }
 
