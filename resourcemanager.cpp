@@ -203,6 +203,7 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
     // open file
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qWarning("Couldn't open save file.");
+        return;
     }
     // levelarray
     QByteArray saveData = loadFile.readAll();
