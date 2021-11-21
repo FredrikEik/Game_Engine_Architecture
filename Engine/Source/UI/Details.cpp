@@ -126,7 +126,10 @@ void Details::addComponent(std::string componentToAdd)
 				hasComponent = true;
 		}
 		if (!hasComponent)
+		{
 			ECS->addComponent<AxisAlignedBoxComponent>(entityID);
+			//CollisionSystem::construct(entityID, ECS);
+		}
 	}
 
 	if (componentToAdd == meshComponent)
@@ -147,7 +150,7 @@ void Details::addComponent(std::string componentToAdd)
 				//Engine::Get().load(outPath);
 				ECS->loadAsset(entityID, outPath);
 				ECS->addComponent<AxisAlignedBoxComponent>(entityID);
-				CollisionSystem::construct(entityID, ECS);
+				CollisionSystem::construct(entityID, ECS, true);
 				//MeshComponent*  ECS->getComponentManager<MeshComponent>()->getComponentChecked();
 				free(outPath);
 				//selectedEntity = -1;

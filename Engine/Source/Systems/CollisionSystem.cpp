@@ -5,7 +5,7 @@
 #include "../Vertex.h"
 
 void CollisionSystem::construct(uint32 entity,
-	class ECSManager* ECS)
+	class ECSManager* ECS, bool shouldGenerateOverlapEvents)
 {
 	//auto transformManager = ECS->getComponentManager<TransformComponent>();
 	//auto meshManager = ECS->getComponentManager<MeshComponent>();
@@ -61,6 +61,7 @@ void CollisionSystem::construct(uint32 entity,
 	collisionComponent->maxScaled = max;
 	collisionComponent->center = glm::vec3((max.x - min.x) / 2.f,
 		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
+	collisionComponent->bShouldGenerateOverlapEvents = shouldGenerateOverlapEvents;
 }
 
 // TODO: Test this function
@@ -117,21 +118,22 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	return true;
 }
 
-void CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* ECS)
+bool CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* ECS)
 {
 	//assert(false); // Implement
 
 	auto AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
-	isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
 //#ifndef DEBUG
 //
 //#endif // !Debug
 //#ifdef DEBUG
 //
 //#endif // DEBUG
-	//if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
-	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
+	// TODO: Remember to remove redundant call after debugging :))))))
+	if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
+		std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
 
+	return isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
 
 }
 

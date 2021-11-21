@@ -324,6 +324,14 @@ void Engine::loop()
 			// RTS Selection render -- Translucent -- ingame only
 			CameraSystem::draw(cameraEntity, ourShader, ECS);
 
+			// Only checks collision for one frame, so we delete it after
+			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
+			{
+				SelectionSystem::setHitEntities(RTSSelectionEntity, 
+						CollisionBroadphaseDatastructure->getOverlappedEntities(RTSSelectionEntity), ECS);
+				ECS->removeComponent<AxisAlignedBoxComponent>(RTSSelectionEntity);
+			}
+
 			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);

@@ -123,6 +123,7 @@ struct AxisAlignedBoxComponent final : public Component
 	glm::vec3 minScaled{};
 	glm::vec3 maxScaled{};
 	glm::vec3 center{};
+	bool bShouldGenerateOverlapEvents{ true };
 
 	JSON json() override;
 	void jsonParse(const JSON& json) override;

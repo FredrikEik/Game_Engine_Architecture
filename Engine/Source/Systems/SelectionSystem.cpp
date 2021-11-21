@@ -70,7 +70,12 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 		float maxX = originPos.x >= endPos.x ? originPos.x : endPos.x;
 		float maxZ = originPos.z >= endPos.z ? originPos.z : endPos.z;
 
-		
+		ECS->addComponent<AxisAlignedBoxComponent>(entity);
+		AxisAlignedBoxComponent *AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
+		assert(AABB);
+		AABB->bShouldGenerateOverlapEvents = true;
+		AABB->minScaled = glm::vec3(minX, 0, minZ);
+		AABB->maxScaled = glm::vec3(maxX, 0, maxZ);
 
 		// create rectancle
 		// apply collision check
@@ -108,4 +113,12 @@ void SelectionSystem::drawSelectedArea(uint32 entity, Shader* shader, ECSManager
 	//shader->setMat4("u_view", currentCamera->m_viewMatrix);
 	//shader->setMat4("u_projection", currentCamera->m_projectionMatrix);
 
+}
+
+void SelectionSystem::setHitEntities(uint32 entity, const std::vector<uint32> hitEntities, ECSManager* ECS)
+{
+	SelectionComponent* component = ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity);
+	assert(component);
+
+	component->hitEntities = hitEntities;
 }

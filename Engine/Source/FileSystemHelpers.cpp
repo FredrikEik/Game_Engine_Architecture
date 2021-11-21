@@ -4,7 +4,7 @@
 std::filesystem::path FileSystemHelpers::extractRelativePath(const std::filesystem::path& path)
 {
 	std::wsmatch matches;
-	std::regex pattern("((Assets\.*)|(Assets/.*))");
+	std::regex pattern("((Assets\.*)|(Assets/*))");
 	std::smatch match;
 	const std::string pathString = path.string();
 
