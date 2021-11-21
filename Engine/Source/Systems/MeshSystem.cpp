@@ -378,15 +378,17 @@ void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECS
         {
             if (!manager->entityExists(id))
                 continue;
-            MeshComponent& meshComp = *meshManager->getComponentChecked(id);
-			auto& transformComp = transformManager->getComponent(meshComp.entityID);
+            MeshComponent* meshComp = meshManager->getComponentChecked(id);
+            if (!meshComp)
+                continue;
+			auto& transformComp = transformManager->getComponent(meshComp->entityID);
 
 			glm::mat4x4 temp = transformComp.transform;
 			glm::mat4x4 tempscale = glm::scale(temp, glm::vec3(1.03f, 1.03f, 1.03f));
 
-			glBindVertexArray(meshComp.m_VAO);
+			glBindVertexArray(meshComp->m_VAO);
 			glUniformMatrix4fv(glGetUniformLocation(shader->getShaderID(), uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(tempscale));
-			glDrawElements(GL_TRIANGLES, meshComp.m_indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, meshComp->m_indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
         }
 	}

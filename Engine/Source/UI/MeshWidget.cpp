@@ -15,10 +15,11 @@ void MeshWidget::begin(Viewport* inViewport, int32 inReservedEntities)
 	Window::begin(inViewport, inReservedEntities);
 }
 
-void MeshWidget::update(int32 entityID)
+void MeshWidget::update(int32 entityID, bool& entitiesChanged)
 {
 	if (entityID >= reservedEntities)
 	{
+		entitiesChanged = false;
 		MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entityID);
 		assert(mesh);
 		ImGui::Text("Mesh");
@@ -36,9 +37,9 @@ void MeshWidget::update(int32 entityID)
 				mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entityID);
 				mesh->bDisregardedDuringFrustumCulling = bDisregardedDuringFrustumCulling;
 				mesh->bShouldRender = bShouldRender;
+				entitiesChanged = true;
 			}
 		}
-		//ImGui::Checkbox("Should Render", &mesh->);
 	}
 }
 

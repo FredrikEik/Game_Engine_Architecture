@@ -23,7 +23,7 @@ public:
 	/// <param name="OUTscaledMin">The lowest position of the mesh</param>
 	/// <param name="OUTscaledMax">The highest position of the mesh</param>
 	static void scaleToMesh(const struct MeshComponent* mesh,
-		glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax);
+		glm::vec3 &OUTscaledMin, glm::vec3 &OUTscaledMax);
 
 private:
 

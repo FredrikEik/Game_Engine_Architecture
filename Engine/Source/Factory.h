@@ -116,7 +116,7 @@ inline uint32 Factory::loadAsset(uint32 entityID, const std::filesystem::path& f
 
 	if (filePath.extension() == ".obj")
 		return loadMesh(filePath, entityID);
-	else if (filePath.extension() == ".png")
+	else if (filePath.extension() == ".png" || filePath.extension() == ".jpg")
 		return loadPNG(entityID, filePath);
 
 	// Reading unsupported assets, the program should end.

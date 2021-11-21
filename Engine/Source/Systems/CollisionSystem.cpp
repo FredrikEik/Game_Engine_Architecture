@@ -48,7 +48,9 @@ void CollisionSystem::construct(uint32 entity,
 	glm::vec3 max{ 0.5f, 0.5f, 0.5f };
 
 	if (mesh)
+	{
 		scaleToMesh(mesh, min, max);
+	}
 
 
 	glm::vec3 scale = glm::vec3(transform.transform[0][0],
@@ -138,7 +140,7 @@ bool CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* 
 }
 
 void CollisionSystem::scaleToMesh(const MeshComponent* mesh, 
-	glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax)
+	glm::vec3 &OUTscaledMin, glm::vec3 &OUTscaledMax)
 {
 	const auto& vertices = mesh->m_vertices;
 

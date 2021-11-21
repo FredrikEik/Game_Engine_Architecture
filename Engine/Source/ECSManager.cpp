@@ -127,6 +127,8 @@ std::type_index ECSManager::getAssetTypeIndex(const std::filesystem::path& fileP
 		return std::type_index(typeid(MeshComponent));
 	else if (filePath.extension() == ".png")
 		return std::type_index(typeid(TextureComponent));
+	else if (filePath.extension() == ".jpg")
+		return std::type_index(typeid(TextureComponent));
 	else
 		assert(false);
 

@@ -96,25 +96,25 @@ template<typename T>
 inline bool ECSManager::removeComponent(uint32 entityID)
 {
 	factory.removeComponent<T>(entityID);
-	if(entities[entityID].second.back().first == std::type_index(typeid(T)))
-		entities[entityID].second.pop_back();
-	else
-		for (auto& it : entities[entityID].second)
-		{
-			auto variable = it.first;
-			std::cout << "stuff";
-		}
-		//for (uint64 i{ }; i <entities[entityID].second.size(); ++i)
-		//{
+	auto& entt = entities[entityID].second;
 
-		//	auto variable = entities[entityID].second[i].first;
-		//	std::cout << "stuff";
-		//	if (entities[entityID].second[i].first.hash_code() == std::type_index(typeid(T)).hash_code())
-		//	{
-		//		std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end());
-		//		entities[entityID].second.pop_back();
-		//	}
-		//}
+	std::type_index index = std::type_index(typeid(T));
+
+	if(entt.back().first == index)
+		entt.pop_back();
+	else
+		for (uint64 i{ }; i < entt.size(); ++i)
+		{
+
+			//auto variable = entt.first;
+			std::cout << "stuff";
+			if (entt[i].first == index)
+			{
+				std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end()-1);
+				entities[entityID].second.pop_back();
+				break;
+			}
+		}
 
 
 	return true;

@@ -8,6 +8,8 @@
 #include "../imgui/docking/imgui_impl_glfw.h"
 #include "TransformWidget.h"
 #include "MeshWidget.h"
+#include "TextureWidget.h"
+#include "BoxColliderWidget.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
 #include "../FileSystemHelpers.h"
@@ -37,12 +39,13 @@ void Details::update(int32 inEntityID)
 	//}
 
 	entityID = inEntityID;
-	entity = ECS->getEntity(entityID);
 	ImGui::BeginChild("Entities");
+	entity = ECS->getEntity(entityID);
 	for (const auto &it : entity)
 	{
 		// Creating new widgets every frame for now. If performance becomes an issue, refactor.
-		if (it.first == std::type_index(typeid(TransformComponent)))
+		std::type_index index = it.first;
+		if (index == std::type_index(typeid(TransformComponent)))
 		{
 			TransformWidget* transformWidget = new TransformWidget(windowName, ECS);
 			transformWidget->begin(viewport, reservedEntities);
@@ -50,13 +53,50 @@ void Details::update(int32 inEntityID)
 			transformWidget->end();
 			delete transformWidget;
 		}
-		else if (it.first == TYPE(typeid(MeshComponent)))
+		else if (index == TYPE(typeid(MeshComponent)))
 		{
+			bool bEntityChanged{};
 			MeshWidget* meshWidget = new MeshWidget(windowName, ECS);
+			ImGui::NewLine();
 			meshWidget->begin(viewport, reservedEntities);
-			meshWidget->update(entityID);
+			meshWidget->update(entityID, bEntityChanged);
 			meshWidget->end();
 			delete meshWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
+		}
+		else if (index == TYPE(typeid(AxisAlignedBoxComponent)))
+		{
+			bool bEntityChanged{};
+			BoxColliderWidget* boxColliderWidget = new BoxColliderWidget(windowName, ECS);
+			ImGui::NewLine();
+			boxColliderWidget->begin(viewport, reservedEntities);
+			boxColliderWidget->update(entityID, bEntityChanged);
+			boxColliderWidget->end();
+			delete boxColliderWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
+		}
+		else if (index == TYPE(typeid(TextureComponent)))
+		{
+			bool bEntityChanged{};
+			TextureWidget* textureWidget = new TextureWidget(windowName, ECS);
+			ImGui::NewLine();
+			textureWidget->begin(viewport, reservedEntities);
+			textureWidget->update(entityID, bEntityChanged);
+			textureWidget->end();
+			delete textureWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
 		}
 	}
 	//ImGui::BeginChild("AddComponent");
@@ -66,6 +106,7 @@ void Details::update(int32 inEntityID)
 	//ImGui::EndPopup();
 	//ImGui::EndChild();
 	
+	ImGui::NewLine();
 	drawAddComponent();
 
 	ImGui::EndChild();
