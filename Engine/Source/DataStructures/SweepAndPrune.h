@@ -24,6 +24,7 @@ public:
 
 	void update();
 	bool getOverlappedEntities(uint32 entityID, std::vector<uint32>& OUTVector);
+	// COPY THIS INSTANTLY ON USE, reference to temp variable :)
 	const std::vector<uint32>& getOverlappedEntities(uint32 entityID);
 
 private:
