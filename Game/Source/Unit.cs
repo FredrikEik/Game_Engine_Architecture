@@ -10,13 +10,13 @@ namespace Game
         public override void BeginPlay()
         {
 
-            Debug.PrintMethod_Interal("BPlay");
+            //Debug.PrintMethod_Interal("BPlay");
             //throw new NotImplementedException();
         }
 
         public override void Update()
         {
-            Debug.PrintMethod_Interal("update");
+            //Debug.PrintMethod_Interal("update");
             //throw new NotImplementedException();
         }
     }
