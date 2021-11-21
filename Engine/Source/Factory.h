@@ -188,42 +188,13 @@ inline uint32 Factory::assignMesh(uint32 entityID, const std::filesystem::path& 
 
 	MeshComponent* oldComponent{}; 
 
-	// Loop through the components in the reusable asset. 
-	// If it returns a nullptr, a component with that ID does not exist, so we remove it.
-	//for (uint32 i{}; i < reusableAsset.componentIDs.size(); ++i)
-	//{
-	//	oldComponent = manager->getComponentFromID(reusableAsset.componentIDs.at(i));
-	//	if (!oldComponent)
-	//	{
-	//		reusableAsset.componentIDs.erase(reusableAsset.componentIDs.begin() + i);
-	//		--i;
-	//	}
-	//	else
-	//		break;
-	//}
-
 	if (!removeInvalidReusableAsset<MeshComponent>(filePath))
 		return loadAsset(entityID, filePath);
 
 	uint32 componentID = createComponent<MeshComponent>(entityID, true);
 	MeshComponent& newComponent = manager->getComponent(entityID);
 	oldComponent = removeInvalidReusableAsset<MeshComponent>(filePath);
-	//if(oldComponent->m_vertices.size() <= 0)
-	//	for (uint32 i{}; i < reusableAsset.componentIDs.size(); ++i)
-	//	{
-	//		oldComponent = manager->getComponentFromID(reusableAsset.componentIDs.at(i));
-	//		if (!oldComponent)
-	//		{
-	//			reusableAsset.componentIDs.erase(reusableAsset.componentIDs.begin() + i);
-	//			--i;
-	//		}
-	//		else
-	//			break;
-	//	}
 
-
-	// TODO: Make it so that it removes the reusable asset from the reusableAssetComponents map
-	// Then call load mesh
 	assert(oldComponent);
 
 	MeshSystem::copyMesh(*oldComponent, newComponent);
@@ -265,23 +236,6 @@ inline uint32 Factory::assignPNG(uint32 entityID, const std::filesystem::path& f
 	TextureComponent* newComponent = manager->getComponentChecked(entityID);
 	TextureComponent* oldComponent{ removeInvalidReusableAsset<TextureComponent>(filePath) };
 
-
-	//// Loop through the components in the reusable asset. 
-	//// If it returns a nullptr, a component with that ID does not exist, so we remove it.
-	//for (uint32 i{}; i < reusableAsset.componentIDs.size(); ++i)
-	//{
-	//	oldComponent = manager->getComponentFromID(reusableAsset.componentIDs.at(i));
-	//	if (!oldComponent)
-	//	{
-	//		reusableAsset.componentIDs.erase(reusableAsset.componentIDs.begin() + i);
-	//		--i;
-	//	}
-	//	else
-	//		break;
-	//}
-
-	// TODO: Make it so that it removes the reusable asset from the reusableAssetComponents map
-	// Then call load png??? idk, see assignMesh 
 	assert(oldComponent);
 
 	//MeshSystem::copyMesh(*oldComponent, newComponent);
