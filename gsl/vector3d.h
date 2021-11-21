@@ -29,6 +29,8 @@ public:
     //Vector3D operator*(Vector3D rhs) const;                                       //GLfloat operatoren funker ikke med denne???
     Vector3D operator/(GLfloat rhs) const;
     Vector3D operator^(const Vector3D& rhs) const; // v x v  - cross product
+    Vector3D barycentricCoordinates(const Vector3D& p1, const Vector3D& p2, const Vector3D& p3);
+
     GLfloat operator*(const Vector3D& rhs) const;  // v * v
 
     float sum();

@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "skybox.h"
 #include "player.h"
+#include "lassurface.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -115,13 +116,20 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "Skybox")
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
-        objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
 
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
         objectToCreate->mObjectName = "Skybox";
+    }
+    else if(objectName == "LASsurface")
+    {
+        objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate->mObjectType = "LASsurface";
+        objectToCreate->mObjectName = "LASsurface";
     }
     else if(objectName == "Light")
     {

@@ -36,6 +36,7 @@
 #include "vector4d.h"
 #include "level.h"
 #include "matrix4x4.h"
+#include "lassurface.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -219,8 +220,8 @@ void RenderWindow::initObjects()
     skybox = factory->createObject("Skybox");
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
-    GameObject *temp=nullptr;
-   /* for(int i{0}; i < 50; i++)
+    //GameObject *temp=nullptr;
+    /* for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -232,13 +233,16 @@ void RenderWindow::initObjects()
     }
 
     */
-            mPlayer = factory->createObject("Player");
-            mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-            mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-            mMainWindow->updateOutliner(factory->mGameObjects);
+    mPlayer = factory->createObject("Player");
+    mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+    mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    mMainWindow->updateOutliner(factory->mGameObjects);
+
+    factory->createObject("LASsurface");
+
+    hjelpeObjekt = factory->createObject("Cube");
 
 
-             hjelpeObjekt = factory->createObject("Cube");
 
 }
 
@@ -271,11 +275,8 @@ void RenderWindow::render()
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
-
         for(int i{0}; i < factory->mGameObjects.size(); i++)
-
 		{	
-
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
@@ -347,6 +348,7 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->draw();
             }
 
+            /*
             if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.
@@ -369,6 +371,7 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
+            */
         }
     }
     if (!editorMode){
@@ -535,9 +538,9 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
                 mVideoGameLand->play();
 
         if (mIndexToPickedObject > -1){
-        hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
-        hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
-        hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+        //hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
+        //hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
+        //hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
         mIndexToPickedObject = -1;
         }
 
