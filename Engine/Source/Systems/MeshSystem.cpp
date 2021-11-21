@@ -376,7 +376,8 @@ void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECS
 	{
         for (uint32 id : selection.hitEntities)
         {
-            
+            if (!manager->entityExists(id))
+                continue;
             MeshComponent& meshComp = *meshManager->getComponentChecked(id);
 			auto& transformComp = transformManager->getComponent(meshComp.entityID);
 
