@@ -636,8 +636,8 @@ void MeshHandler::readLasFile()
 
 //Lag et firkanta grid med gitt oppløsning som skal dekke alle datapunkter.
     int resolution = 5;
-    const int gridSizeX = 500;
-    const int gridSizeZ = 500;
+    const int gridSizeX = 100;
+    const int gridSizeZ = 100;
     gsl::Vector2D grid2D[gridSizeX][gridSizeZ];
 
 //    grid2D[0][0] = xMin, zMin;
