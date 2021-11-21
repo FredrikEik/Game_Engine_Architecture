@@ -22,7 +22,6 @@ bool FileSystemHelpers::getPathFromFileExplorer(std::string& OUTPath)
 {
 	nfdchar_t* path = NULL;
 	nfdresult_t result = NFD_OpenDialog(NULL, NULL, &path);
-
 	if (result == NFD_OKAY) 
 	{
 		OUTPath = path;
@@ -46,6 +45,36 @@ bool FileSystemHelpers::getPathFromFileExplorer(std::string& OUTPath)
 		return false;
 	}
 
+
+	return false;
+}
+
+bool FileSystemHelpers::getSavePathFromFileExplorer(std::string& OUTPath)
+{
+	nfdchar_t* path = NULL;
+	nfdresult_t result = NFD_SaveDialog(NULL, NULL, &path);
+	if (result == NFD_OKAY)
+	{
+		OUTPath = path;
+
+		//ECS->addComponent<AxisAlignedBoxComponent>(entityID);
+		//CollisionSystem::construct(entityID, ECS, true);
+		//MeshComponent*  ECS->getComponentManager<MeshComponent>()->getComponentChecked();
+		free(path);
+		return true;
+		//selectedEntity = -1;
+		//std::cout << outPath;
+	}
+	else if (result == NFD_CANCEL)
+	{
+		//puts("User pressed cancel.");
+		return false;
+	}
+	else
+	{
+		printf("FILESYSTEM ERROR: %s\n", NFD_GetError());
+		return false;
+	}
 
 	return false;
 }

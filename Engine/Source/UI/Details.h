@@ -14,6 +14,7 @@ public:
 protected:
 	void drawAddComponent();
 	void addComponent(std::string componentToAdd);
+	void removeComponent(std::string componentToAdd);
 
 	bool hasComponent(std::type_index type);
 

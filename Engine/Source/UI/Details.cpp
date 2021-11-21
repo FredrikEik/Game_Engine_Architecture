@@ -125,7 +125,7 @@ void Details::drawAddComponent()
 		meshComponent.c_str(),
 		textureComponent.c_str()
 	};
-	static const char* current_item = "Select component";
+	static const char* currentItem = "Select component";
 	ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
 
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -133,13 +133,13 @@ void Details::drawAddComponent()
 	float spacing = style.ItemInnerSpacing.x;
 	float button_sz = ImGui::GetFrameHeight();
 	ImGui::PushItemWidth(w - spacing * 2.0f - button_sz * 2.0f);
-	if (ImGui::BeginCombo("##custom combo", current_item, ImGuiComboFlags_NoArrowButton))
+	if (ImGui::BeginCombo("##custom combo", currentItem, ImGuiComboFlags_NoArrowButton))
 	{
 		for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 		{
-			bool is_selected = (current_item == items[n]);
+			bool is_selected = (currentItem == items[n]);
 			if (ImGui::Selectable(items[n], is_selected))
-				current_item = items[n];
+				currentItem = items[n];
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
 		}
@@ -149,8 +149,11 @@ void Details::drawAddComponent()
 	ImGui::SameLine(0, spacing);
 	if (ImGui::Button("Add"))
 	{
-		addComponent(current_item);
-		// do stuff
+		addComponent(currentItem);
+	}
+	if (ImGui::Button("Remove"))
+	{
+		removeComponent(currentItem);
 	}
 	//if (ImGui::ArrowButton("##r", ImGuiDir_Left))
 	//{
@@ -165,7 +168,6 @@ void Details::drawAddComponent()
 
 void Details::addComponent(std::string componentToAdd)
 {
-	bool hasComponent{ false };
 	if (componentToAdd == transformComponent)
 	{
 		addTransformComponent();
@@ -180,6 +182,27 @@ void Details::addComponent(std::string componentToAdd)
 	}
 	else if (componentToAdd == textureComponent)
 		addTextureComponent();
+}
+
+void Details::removeComponent(std::string componentToAdd)
+{
+	if (componentToAdd == transformComponent && hasComponent(TYPE(typeid(TransformComponent))))
+	{
+		ECS->removeComponent<TransformComponent>(entityID);
+	}
+	else if (componentToAdd == boxColliderComponent && hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
+	{
+		ECS->removeComponent<AxisAlignedBoxComponent>(entityID);
+
+	}
+	else if (componentToAdd == meshComponent && hasComponent(TYPE(typeid(MeshComponent))))
+	{
+		ECS->removeComponent<MeshComponent>(entityID);
+
+	}
+	else if (componentToAdd == textureComponent && hasComponent(TYPE(typeid(TextureComponent))))
+		ECS->removeComponent<TextureComponent>(entityID);
+
 }
 
 bool Details::hasComponent(std::type_index type)

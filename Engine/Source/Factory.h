@@ -57,8 +57,8 @@ private:
 	uint32 loadMesh(const std::filesystem::path& filePath, uint32 entityID);
 	uint32 assignMesh(uint32 entityID, const std::filesystem::path& filePath);
 
-	uint32 loadPNG(uint32 entityID, const std::filesystem::path& filePath);
-	uint32 assignPNG(uint32 entityID, const std::filesystem::path& filePath);
+	uint32 loadImage(uint32 entityID, const std::filesystem::path& filePath);
+	uint32 assignImage(uint32 entityID, const std::filesystem::path& filePath);
 
 	bool assetExists(const std::filesystem::path& filePath);
 	uint32 assignAsset(uint32 entityID, const std::filesystem::path& filePath);
@@ -117,7 +117,7 @@ inline uint32 Factory::loadAsset(uint32 entityID, const std::filesystem::path& f
 	if (filePath.extension() == ".obj")
 		return loadMesh(filePath, entityID);
 	else if (filePath.extension() == ".png" || filePath.extension() == ".jpg")
-		return loadPNG(entityID, filePath);
+		return loadImage(entityID, filePath);
 
 	// Reading unsupported assets, the program should end.
 	assert(false);
@@ -140,7 +140,7 @@ inline uint32 Factory::assignAsset(uint32 entityID, const std::filesystem::path&
 	if (reusableAsset.componentType == std::type_index(typeid(MeshComponent)))
 		return assignMesh(entityID, filePath);
 	else if (reusableAsset.componentType == std::type_index(typeid(TextureComponent)))
-		assignPNG(entityID, filePath);
+		assignImage(entityID, filePath);
 	else
 		assert(false); // You have to add new components to the if above. Soowry
 
@@ -203,7 +203,7 @@ inline uint32 Factory::assignMesh(uint32 entityID, const std::filesystem::path& 
 	return componentID;
 }
 
-inline uint32 Factory::loadPNG(uint32 entityID, const std::filesystem::path& filePath)
+inline uint32 Factory::loadImage(uint32 entityID, const std::filesystem::path& filePath)
 {
 	uint32 componentID = createComponent<TextureComponent>(entityID, true);
 	TextureComponent* component = getComponentManager<TextureComponent>()->getComponentChecked(entityID);
@@ -221,7 +221,7 @@ inline uint32 Factory::loadPNG(uint32 entityID, const std::filesystem::path& fil
 	return componentID;
 }
 
-inline uint32 Factory::assignPNG(uint32 entityID, const std::filesystem::path& filePath)
+inline uint32 Factory::assignImage(uint32 entityID, const std::filesystem::path& filePath)
 {
 
 	if (!removeInvalidReusableAsset<TextureComponent>(filePath))
