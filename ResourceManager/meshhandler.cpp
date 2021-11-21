@@ -628,13 +628,6 @@ void MeshHandler::readLasFile()
 //    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
 //    qDebug() << "inLasFile lines with points" << linesWithPoints << "PointData Size" << pointData.size();
 
-//    int printNr = 5;
-//    for (int i = 0; i < printNr; i++)
-//    {
-//        //qDebug rounds, changes commas and generally gives wrong results from these datapoints.
-//        qDebug() << pointData[i];
-//    }
-
 //Create a square grid, fill the extremities with the bounds of pointData, and fill the 2d array with evenly spaced cordinates.
     int resolution = 5;
     const int gridSizeX = 50;
@@ -642,11 +635,11 @@ void MeshHandler::readLasFile()
     gsl::Vector2D grid2D[gridSizeX][gridSizeZ]; //This vector2D equals vector3D X = X, and Y = Z.
 
     //Fill outer bounds of a 2D grid.
-    grid2D[0][0].x = xMin; //Low left
-    grid2D[0][0].y = zMin; //Low left
+//    grid2D[0][0].x = xMin; //Low left
+//    grid2D[0][0].y = zMin; //Low left
 
-    grid2D[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
-    grid2D[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
+//    grid2D[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
+//    grid2D[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
 
 //    grid2D[gridSizeX-1][0].x = xMax; //bot right
 //    grid2D[0][gridSizeX-1].y = zMin; //top left
@@ -655,33 +648,37 @@ void MeshHandler::readLasFile()
 //    grid2D[gridSizeZ-1][0].y = zMax; //bot right
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
-    float distanceBetweenSquaresX = (xMax - xMin) / resolution; //for Test_las.txt with 5 resolution this is 199.46
-    float distanceBetweenSquaresZ = (zMax - zMin) / resolution; //for Test_las.txt with 5 resolution this is 291.5
+    float distanceBetweenSquaresX = (xMax - xMin) / gridSizeX;
+    float distanceBetweenSquaresZ = (zMax - zMin) / gridSizeZ;
 
 //    qDebug() << grid2D[0][0].x << grid2D[0][0].y; //qDebug isnt correct, but the data is correct in debug mode.
+int pointDataOutOfGrid = pointData.size();
 
-for (int x = 1; x < gridSizeX; x++)
+for (int x = 0; x < gridSizeX; x++)
 {
-    for (int z = 1; z < gridSizeZ; z++)
+    for (int z = 0; z < gridSizeZ; z++)
     {
-        grid2D[x][z].x = grid2D[x-1][z-1].x + distanceBetweenSquaresX;
-        grid2D[x][z].y = grid2D[x-1][z-1].y + distanceBetweenSquaresZ;
+        grid2D[x][z].x = xMin + (distanceBetweenSquaresX * x); //Fill the array with evenly spaced coordinates enclosing all pointData
+        grid2D[x][z].y = zMin + (distanceBetweenSquaresZ * z);
 
 //        std::cout << x << " " << grid2D[x][z].x << " " << z << " " << grid2D[x][z].y << "\n";
 
-        //Check how many points there are between min + resolution
-//        if(pointData[x].getX() > grid2D[x][z].x && pointData[x].getY() > grid2D[x][z].y &&
-//           pointData[x].getX() > grid2D[x][z].x + resolution && pointData[x].getY() > grid2D[x][z].y + resolution)
-//        {
-//            qDebug() << "There is at least a point in sqaure" << x << z;
-//        }
-//        else {  qDebug() << "No point found";   }
+        //Check how many points there are between each position in the grid using resolution
+        for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++)
+        {
+            if(pointData[pointDataSearch].getX() >  grid2D[x][z].x               && pointData[pointDataSearch].getY() >  grid2D[x][z].y && //If a pointData coordinate is bigger then current grid2d position
+               pointData[pointDataSearch].getX() < (grid2D[x][z].x + resolution) && pointData[pointDataSearch].getY() < (grid2D[x][z].y + resolution)) //But also smaller then resolution
+            {
+                pointDataOutOfGrid--;
+            }
+        }
     }
 }
-    qDebug() << "Grid2D should be filled now";
+    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    std::cout << xMax << " " << zMax << "\n";
     qDebug() << "Beacuse i need another breakpoint QT accepts";
-//Lag et gjennomsnitt av alle datapunktene, dette gjennomsnittet blir utgangspunktet for trekantene
+
+//Create an average height of all the pointData in a square.
 
 //    for (int i = 0; i < linesWithPoints; i++)
 //    {
