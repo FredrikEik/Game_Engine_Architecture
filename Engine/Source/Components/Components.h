@@ -4,7 +4,12 @@
 #include <vector>
 #include "../Vertex.h"
 #include "glm/glm.hpp"
+#include <unordered_map>
 #include "../Assets/DefaultAssets.h"
+
+#include <mono/utils/mono-publib.h>
+#include <mono/metadata/mono-config.h>
+
 
 /*		ATTENTION
 *		ATTENTION
@@ -129,4 +134,19 @@ struct TextureComponent final : public Component
 	uint textureID{};
 
 	uint8_t* rgbImage{};
+};
+
+
+struct ScriptComponent final : public Component
+{
+	ScriptComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	
+	std::string ScriptClassName{ "Unit" };
+	MonoClass* m_Class{};
+	MonoObject* m_Object{};
+	
+	//std::unordered_map<size_t, Ref<ScriptField>> m_Fields;
+	std::unordered_map<size_t, MonoMethod*> m_Methods;
+	//std::unordered_map<size_t, Ref<ScriptProperty>> m_Properties;
+	
 };

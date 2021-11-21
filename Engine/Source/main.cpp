@@ -19,15 +19,8 @@
 #include "DataStructures/TArray.h"
 
 #include "Engine/Engine.h"	
-#include <mono/metadata/assembly.h>
-#include <mono/jit/jit.h>
-#include <mono/metadata/environment.h>
-#include <mono/utils/mono-publib.h>
-#include <mono/metadata/mono-config.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/debug-helpers.h>
-#include <iterator>
-#include <vector>
+#include "Engine/ScriptEngine.h"
+
 
 
 
@@ -84,7 +77,7 @@
 ////fov
 //float fov{ 45.0f };
 //
-
+/*
 void PrintMethod(MonoString * string)
 {
 	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
@@ -95,12 +88,12 @@ void PrintMethod(MonoString * string)
 
 		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${MONO_COMPILE_FLAGS}")
 		Set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${MONO_LINK_FLAGS}")
-		*/
+		
 		std::cout << cppString;
 
 	mono_free(cppString);
 }
-
+*/
 
 int main()
 {
@@ -109,74 +102,14 @@ int main()
 	//delete& engine;
 		//Indicate Mono where you installed the lib and etc folders
 	//mono_set_assemblies_path("/Mono/lib");
-	mono_set_dirs("Mono/lib", "Mono/etc");
-	
 
-		//Create the main CSharp domain
-		MonoDomain* domain = mono_jit_init_version("CSharp_Domain", "v4.0.30319");
-
-		//Load the binary file as an Assembly
-	
-
-		MonoAssembly* csharpAssembly = mono_domain_assembly_open(domain, "Build/bin/Game.dll");
-		if (!csharpAssembly)
-		{
-			//Error detected
-			return -1;
-		}
-
-
-		//SetUp Internal Calls called from CSharp
-
-		//Namespace.Class::Method + a Function pointer with the actual definition
-		//mono_add_internal_call("ScriptInJin.Test::PrintMethod", &PrintMethod);
-
-		int argc = 1;
-		char* argv[1] = { (char*)"CSharp" };
-
-		//Call the main method in this code
-		// //beginplay
-		//update 
-			mono_jit_exec(domain, csharpAssembly, argc, argv);
-
-		MonoImage* monoImage = mono_assembly_get_image(csharpAssembly);
-
-		MonoClass* monoClass = mono_class_from_name(monoImage, "Game", "Unit");
-		if (monoClass == nullptr) { std::cout << "fuck";  system("pause"); }
-		std::vector<MonoMethod*> MethodArray{};
-		
-		//ptrIter //= (void**)malloc(mono_class_num_methods(monoClass) * sizeof(void*))'
-		void* pIterator = 0;
-		MonoMethod* monoMethod;
-		while ((monoMethod = mono_class_get_methods(monoClass, &pIterator)) != nullptr)
-			MethodArray.push_back(monoMethod);
-
-
-			//MonoMethod* monoMethod = mono_class_get_methods(monoClass, &pIterator);
-
-		
-		for (auto it : MethodArray)
-		{
-			std::cout << mono_method_get_name(it) << '\n';
-		}
-
-		//MonoMethodDesc* methodDes = mono_method_desc_new("Test:BeginPlay()", NULL);
-		//MonoMethod* mono_method_desc_search_in_class(MonoMethodDesc * desc, MonoClass * klass);
-		//MonoMethod* mono_method_desc_search_in_image(MonoMethodDesc * desc, MonoImage * image);
-		void* args[1];
-		int val = 10;
-		/* Note we put the address of the value type in the args array */
-		args[0] = &val;
-		//MonoObject* my_class_instance = mono_object_new(domain, monoClass);
-		//mono_runtime_invoke(MethodArray[1], NULL, args, NULL);
-
-		system("pause");
-		MonoAssemblyName* aname = mono_assembly_name_new("mscorlib");
-		mono_assembly_name_free(aname);
-		mono_jit_cleanup(domain);
 
 	Engine* engine = Engine::GetInstance();
+	ScriptEngine* scriptEngine = ScriptEngine::GetInstance();
+
+
 	engine->start();
+	delete scriptEngine;
 	delete engine;
 	return 0;
 	//glfwInit();
