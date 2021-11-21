@@ -77,23 +77,7 @@
 ////fov
 //float fov{ 45.0f };
 //
-/*
-void PrintMethod(MonoString * string)
-{
-	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
-	//#target_link_libraries(GameInJin ${CMAKE_CURRENT_BINARY_DIR}\Mono\lib\)
-	/*
-	set(MONO_COMPILE_FLAGS "--cflags ${CMAKE_SOURCE_DIR}/Mono/include/mono-2.0/")
-		set(MONO_LINK_FLAGS "--libs ${CMAKE_SOURCE_DIR}/Mono/include/mono-2.0/")
 
-		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${MONO_COMPILE_FLAGS}")
-		Set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${MONO_LINK_FLAGS}")
-		
-		std::cout << cppString;
-
-	mono_free(cppString);
-}
-*/
 
 int main()
 {

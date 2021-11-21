@@ -16,8 +16,14 @@ namespace ScriptInJin
         public abstract void BeginPlay();
 
         //This indicates CSharp that the definition of this method is outside this project, as an Internal Call
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void PrintMethod(string msg);
 
+
+    }
+
+    public class Debug
+    {
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void PrintMethod_Interal(string msg);
     }
 }

@@ -67,6 +67,7 @@ private:
 	uint32 editorCameraEntity{};
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
+	uint32 unitEntity{};
 
 	static float windowWidth;
 	static float windowHeight;

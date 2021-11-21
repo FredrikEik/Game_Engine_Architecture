@@ -32,6 +32,8 @@
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
 
+#include "../Systems/ScriptSystem.h"
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -145,6 +147,17 @@ void Engine::init()
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
 	viewport->begin(window, ECS->getNumberOfEntities());
+
+
+	//ScriptTest
+	//Init - binds all internal functions - Important first step
+	ScriptSystem::Init();
+
+	unitEntity = ECS->newEntity();
+	ECS->addComponents<ScriptComponent>(unitEntity);
+	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
+	ScriptSystem::Invoke("BeginPlay", ECS);
+
 }
 
 int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
@@ -225,6 +238,7 @@ void Engine::loop()
 			//std::cout << "Game camera'\n";
 			// TODO: Implement proper deltatime
 			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+			ScriptSystem::Invoke("Update", ECS);
 		}
 		else
 		{

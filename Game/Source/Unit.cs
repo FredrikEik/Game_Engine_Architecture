@@ -9,12 +9,15 @@ namespace Game
 
         public override void BeginPlay()
         {
-            throw new NotImplementedException();
+
+            Debug.PrintMethod_Interal("BPlay");
+            //throw new NotImplementedException();
         }
 
         public override void Update()
         {
-            throw new NotImplementedException();
+            Debug.PrintMethod_Interal("update");
+            //throw new NotImplementedException();
         }
     }
 }

@@ -7,9 +7,20 @@
 #include "../Engine/ScriptEngine.h"
 
 
+void PrintMethod_Interal(MonoString* string)
+{
+	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
+
+	std::cout << cppString;
+
+	mono_free(cppString);
+}
+
 void ScriptSystem::Init()
 {
-	//ScriptEngine::GetInstance();
+	//Namespace.Class::Method + a Function pointer with the actual definition
+	BindInternalFunction("ScriptInJin.Debug::PrintMethod_Interal", &PrintMethod_Interal);
+	
 }
 
 void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* manager)
@@ -23,6 +34,7 @@ void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* m
 	}
 }
 
+//Namespace.Class::Method + a Function pointer with the actual definition
 void ScriptSystem::BindInternalFunction(const std::string& name, const void* functionPtr)
 {
 	mono_add_internal_call(name.c_str(), functionPtr);
@@ -54,7 +66,7 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp)
 	scriptComp->m_Object = mono_object_new(SE->getDomain(), scriptComp->m_Class);
 	mono_runtime_object_init(scriptComp->m_Object);
 
-
+	//todo 
 	// parameters
 	//fields
 }
