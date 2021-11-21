@@ -49,10 +49,11 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(7.f, 8.f, 2.f));
+    mEditorCamera->setPosition(gsl::Vector3D(7.f, 7.f, 7.f));
 //        mEditorCamera->setPosition(gsl::Vector3D(997.f, 50.f, -100.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
-    mEditorCamera->yaw(120);
+    mEditorCamera->yaw(-45);
+    mEditorCamera->pitch(30);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
     mGameCamera = new Camera();
@@ -122,7 +123,7 @@ void GameEngine::SetUpObjects()
 
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false);
-        mLight->mTransformComp->mMatrix.setPosition(50,30,50);
+        mLight->mTransformComp->mMatrix.setPosition(50,30,111);
                 //mLight->mTransformComp->mMatrix.setPosition(5,5,5);
 //    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
 //    mLight->mTransformComp->mMatrix.setPosition(500,300,500);
@@ -134,28 +135,19 @@ void GameEngine::SetUpObjects()
 
 
     // TERRAIN:
-    mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
-//    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
-    mTerrainObject->mMaterialComp->mShaderProgram = 2;
-    mTerrainObject->mMaterialComp->mTextureUnit = 0;
-    mTerrainObject->mTransformComp->mMatrix.scale(0.1f);
-    mRenderwindow->mGameObjects.push_back(mTerrainObject);
+//    mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
+////    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
+//    mTerrainObject->mMaterialComp->mShaderProgram = 2;
+//    mTerrainObject->mMaterialComp->mTextureUnit = 0;
+//    mTerrainObject->mTransformComp->mMatrix.scale(0.1f);
+//    mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
-    mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
-    mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
-    mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
-    mHeightCurveObject->mTransformComp->mMatrix.scale(0.1f);
-    mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
-    mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
-
-
-
-
-//    tempGameObject = mResourceManager->CreateObject(gsl::MeshFilePath + "cube.obj",false);
-//    tempGameObject->mTransformComp->mMatrix.setPosition(-1,1,-5);
-//    tempGameObject->mMaterialComp->mShaderProgram = 2;
-////    tempGameObject->mMaterialComp->mTextureUnit = 3;
-//    mRenderwindow->mGameObjects.push_back(tempGameObject);
+//    mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
+//    mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
+//    mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
+//    mHeightCurveObject->mTransformComp->mMatrix.scale(0.1f);
+//    mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
+//    mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
 
 }
 

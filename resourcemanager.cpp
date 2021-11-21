@@ -155,7 +155,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
         qDebug() << "You need a level name to save!";
         return;
     }
-    mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QString::fromStdString(levelName),objects));
+    //mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QString::fromStdString(levelName),objects));
 
     QFile saveFile(QString((gsl::AssetFilePath + "scenes.json").c_str()));
 
@@ -166,16 +166,16 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
     }
     QJsonObject coreJsonObject;
 
-    QJsonArray levelArray;
-    for(auto it : mLevels)
-    {
+//    QJsonArray levelArray;
+//    for(auto it : mLevels)
+//    {
         //auto foundAtIndex = mLevels.find(QString::fromStdString(levelName));
 
 
-        QJsonObject level;
+//        QJsonObject level;
         QJsonArray objectarray;
-        level["levelname"] = it.first;
-        for(auto it2 : it.second)
+//        level["levelname"] = it.first;
+        for(auto it2 : objects)
         {
             QJsonObject levelObjects;
             levelObjects["filepath"] = it2->filepath.c_str();
@@ -198,11 +198,11 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
 
             objectarray.append(levelObjects);
         }
-        level["objects"] = objectarray;
-        levelArray.append(level);
+//        level["objects"] = objectarray;
+//        levelArray.append(level);
 
-    }
-    coreJsonObject["levels"] = levelArray;
+//    }
+    coreJsonObject["objects"] = objectarray;
     saveFile.write(QJsonDocument(coreJsonObject).toJson());
     saveFile.close();
 }
@@ -224,48 +224,48 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
     QJsonObject loadDocJsonObject = loadDoc.object();
 
 
-    if (loadDocJsonObject.contains("levels") && loadDocJsonObject["levels"].isArray())
-    {
-        QJsonArray levelArray = loadDocJsonObject["levels"].toArray();
-        mLevels.clear();
+//    if (loadDocJsonObject.contains("levels") && loadDocJsonObject["levels"].isArray())
+//    {
+//        QJsonArray levelArray = loadDocJsonObject["levels"].toArray();
+//        mLevels.clear();
 
-        // Check if it exists
-        int found{0};
-        for(int levelindex = 0; levelindex < levelArray.size();levelindex++)
-        {
-            QString QSlevelname;
-            QJsonObject levelObjectsJsonObject = levelArray[levelindex].toObject();
-            if (levelObjectsJsonObject.contains("levelname") && levelObjectsJsonObject["levelname"].isString())
-                QSlevelname = levelObjectsJsonObject["levelname"].toString();
+//        // Check if it exists
+//        int found{0};
+//        for(int levelindex = 0; levelindex < levelArray.size();levelindex++)
+//        {
+//            QString QSlevelname;
+//            QJsonObject levelObjectsJsonObject = levelArray[levelindex].toObject();
+//            if (levelObjectsJsonObject.contains("levelname") && levelObjectsJsonObject["levelname"].isString())
+//                QSlevelname = levelObjectsJsonObject["levelname"].toString();
 
-            if(QSlevelname == QString::fromStdString(levelName))
-            {
-                found++;
-            }
-        }
-        if(found == 0)
-        {
-            qDebug() << "Level Not Found";
-            loadFile.close();
-            return;
-        }
+//            if(QSlevelname == QString::fromStdString(levelName))
+//            {
+//                found++;
+//            }
+//        }
+//        if(found == 0)
+//        {
+//            qDebug() << "Level Not Found";
+//            loadFile.close();
+//            return;
+//        }
 
         objects.clear();
 
 
-        for(int levelindex = 0; levelindex < levelArray.size();levelindex++)
-        {
-            QString QSlevelname;
-            QJsonObject levelObjectsJsonObject = levelArray[levelindex].toObject();
+//        for(int levelindex = 0; levelindex < levelArray.size();levelindex++)
+//        {
+//            QString QSlevelname;
+//            QJsonObject levelObjectsJsonObject = levelArray[levelindex].toObject();
 
-            if (levelObjectsJsonObject.contains("levelname") && levelObjectsJsonObject["levelname"].isString())
-                QSlevelname = levelObjectsJsonObject["levelname"].toString();
+//            if (levelObjectsJsonObject.contains("levelname") && levelObjectsJsonObject["levelname"].isString())
+//                QSlevelname = levelObjectsJsonObject["levelname"].toString();
 
 
 
-            if (levelObjectsJsonObject.contains("objects") && levelObjectsJsonObject["objects"].isArray())
+            if (loadDocJsonObject.contains("objects") && loadDocJsonObject["objects"].isArray())
             {
-                QJsonArray objectsArray = levelObjectsJsonObject["objects"].toArray();
+                QJsonArray objectsArray = loadDocJsonObject["objects"].toArray();
 
                 for(int objectindex = 0; objectindex < objectsArray.size();objectindex++)
                 {
@@ -371,16 +371,16 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
 
                     // if the level name chosen in editor is the same as the current in the JSON file, then add them to the array of objects that will be shown in the editor
                     // else it will push the objects in the mLevels map anyway.
-                    if(QSlevelname == QString::fromStdString(levelName))
-                    {
-                        objects.push_back(gameObj);
-                    }
+//                    if(QSlevelname == QString::fromStdString(levelName))
+//                    {
+                    objects.push_back(gameObj);
+//                    }
                 }
 
-                mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QSlevelname,objects));
+                //mLevels.insert(std::pair<QString,std::vector<GameObject*>>(QString::fromStdString(levelName),objects));
             }
-        }
-    }
+//        }
+//    }
     loadFile.close();
 }
 

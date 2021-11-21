@@ -722,7 +722,6 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
                 MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.x  - posx, h, terrainMesh->mVertices[0].at(i+(TerrainWidth/gridSize)).mXYZ.z, 0,1,0,  0,0));
             }
 
-
             if(p1.y < h && p3.y > h)
             {
                 float a = h - p1.y;
@@ -739,8 +738,6 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
                 float posz = (pros)*gridSize;
                 MeshComp->mVertices[0].push_back(Vertex(terrainMesh->mVertices[0].at(i+1).mXYZ.x, h, terrainMesh->mVertices[0].at(i+1).mXYZ.z - posz, 0,1,0,  0,0));
             }
-
-
 
             if(p1.y < h && p2.y > h)
             {
