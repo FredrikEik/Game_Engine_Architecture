@@ -256,7 +256,7 @@ void RenderWindow::init()
    // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
 
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS2");
-    entitySys->construct("LAS2", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
+    entitySys->construct("LAS2", QVector3D(-150,-20,-100), 0,0,-1, GL_TRIANGLES);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

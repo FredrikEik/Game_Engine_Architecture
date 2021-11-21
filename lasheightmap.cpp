@@ -160,11 +160,6 @@ void LASHeightMap::RemoveDeltaPos()
     }
 
 
-    //    for(auto i = 0; i<positions.size(); i++)
-    //    {
-    //        //positions[i].set_xyz(gsl::Vector3D(positions[i].getVertex().getX() - deltaX, positions[i].getVertex().getY() - deltaY, positions[i].getVertex().getZ() - deltaZ));
-    //        qDebug() << positions[i].getVertex();
-    //    }
 }
 
 void LASHeightMap::GenerateHeightMap()
@@ -181,12 +176,12 @@ void LASHeightMap::GenerateHeightMap()
             float height5 = CalcHeight(  x+1,    z);
             float height6 = CalcHeight(  x+1,  z+1);
 
-            mVertices.push_back(Vertex{  x, height1,   z,  height1/30, height1/20, height1/20,0,0});
-            mVertices.push_back(Vertex{x+1, height2,   z,  height2/30, height2/20, height2/20,0,0});
-            mVertices.push_back(Vertex{  x, height3, z+1,  height3/30, height3/20, height3/20,0,0});
-            mVertices.push_back(Vertex{  x, height4, z+1,  height4/30, height4/20, height4/20,0,0});
-            mVertices.push_back(Vertex{x+1, height5,   z,  height5/30, height5/20, height5/20,0,0});
-            mVertices.push_back(Vertex{x+1, height6, z+1,  height6/30, height6/20, height6/20,0,0});
+            mVertices.push_back(Vertex{  x, height1,   z,       x/900, height1/100, z/1000,0,0});
+            mVertices.push_back(Vertex{x+1, height2,   z,       x/900, height2/100, z/1000,0,0});
+            mVertices.push_back(Vertex{  x, height3, z+1,       x/900, height3/100, z/1000,0,0});
+            mVertices.push_back(Vertex{  x, height4, z+1,       x/900, height4/100, z/1000,0,0});
+            mVertices.push_back(Vertex{x+1, height5,   z,       x/900, height5/100, z/1000,0,0});
+            mVertices.push_back(Vertex{x+1, height6, z+1,       x/900, height6/100, z/1000,0,0});
         }
 }
 
@@ -194,31 +189,6 @@ float LASHeightMap::CalcHeight(float x, float z)
 {
     float height = 10.0f;
 
-    QVector2D xzVec = QVector2D(x,z); // here is pos
-    QVector2D tempPos, closest;
-    float shortestLength{1};
-    //find closest tempX or Z
-    /*for(unsigned long long i = 0; i < positions.size(); i++)
-    {
-        //calculate legth between point and square
-        QVector2D tempLength;
-        tempPos = QVector2D(positions[i].getVertex().getX(), positions[i].getVertex().getZ() );
-        tempLength = tempPos - xzVec;
-        float length = tempPos.distanceToPoint(xzVec);
-
-
-        if(length < shortestLength && length > 0.01f)
-        {
-            shortestLength = length;
-            closest = tempPos;
-            height = positions[i].getVertex().getY();
-            break;
-        }
-        //if(shortestLength <0.3f && shortestLength > 0.0f)
-         //   break;
-
-        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
-    }*/
 
     int X = static_cast<int>(x);
     int Z = static_cast<int>(z);
@@ -226,12 +196,12 @@ float LASHeightMap::CalcHeight(float x, float z)
     float collected = 0;
     height = PosArr[X][Z];
 
-    if((X>10 && Z>10) /*&& height <= 2.0f */)
+    if((X>15 && Z>15) /*&& height <= 2.0f */)
     {
 
-        for(int i = -5; i < 5 ; i++)
+        for(int i = -14; i < 14 ; i++)
         {
-            for (int j = -5 ; j <5; j++ )
+            for (int j = -14 ; j <14; j++ )
             {
                 if(PosArr[X + i][Z + j] != 0)
                 {

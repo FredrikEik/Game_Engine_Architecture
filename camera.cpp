@@ -75,6 +75,7 @@ void Camera::updateForwardVector()
 
 void Camera::update()
 {
+    Cam.mProjectionMatrix.perspective(mFrustum.mFOVvertical,mFrustum.mAspectRatio,mFrustum.mNearPlaneDistance,mFrustum.mFarPlaneDistance*100);
     Cam.mYawMatrix.setToIdentity();
     Cam.mPitchMatrix.setToIdentity();
 
