@@ -211,9 +211,9 @@ void CoreEngine::handleInput()
         if(mInput.A)
             mEditorCamera->moveRight(-mEditorCamera->mCameraSpeed);
         if(mInput.Q)
-            mEditorCamera->updateHeigth(-mEditorCamera->mCameraSpeed);
+            mEditorCamera->updateheight(-mEditorCamera->mCameraSpeed);
         if(mInput.E)
-            mEditorCamera->updateHeigth(mEditorCamera->mCameraSpeed);
+            mEditorCamera->updateheight(mEditorCamera->mCameraSpeed);
     }
 }
 

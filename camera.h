@@ -38,7 +38,7 @@ public:
     void setPosition(const gsl::Vector3D &position);
 
     void setSpeed(float speed);
-    void updateHeigth(float deltaHeigth);
+    void updateheight(float deltaheight);
     void moveRight(float delta);
 
     void setCameraSpeed(float value);

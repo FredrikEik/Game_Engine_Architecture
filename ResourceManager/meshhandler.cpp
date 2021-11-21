@@ -578,7 +578,7 @@ void MeshHandler::readLasFile()
 
     std::vector<gsl::Vector3D> pointData;
     int linesWithPoints = {0};
-    float x, y, z = {0};
+    float lasX, lasY, lasZ = {0};
 
     if(inLasFile.is_open())
     {
@@ -588,38 +588,38 @@ void MeshHandler::readLasFile()
 
          for(int i = 0; i < linesWithPoints; i++) //for each line of data fill pointData with numbers
          {
-             inLasFile >> x >> z >> y; //read the line, store as x, z and y. z and y flipped to match current project.
-             pointData.emplace_back(x, z, y); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
+             inLasFile >> lasX >> lasZ >> lasY; //read the line, store as x, z and y. z and y flipped to match current project.
+             pointData.emplace_back(lasX, lasZ, lasY); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
                                               //Given all data will use the same pointData vector this wont be a problem.
 
              static bool once = true; //store the bounds of the terrain
              if(once)
              {
-                 xMin = x;
-                 xMax = x;
-                 zMin = z;
-                 zMax = z;
-                 yMin = y;
-                 yMax = y;
+                 xMin = lasX;
+                 xMax = lasX;
+                 zMin = lasZ;
+                 zMax = lasZ;
+                 yMin = lasY;
+                 yMax = lasY;
                  once = false;
              }
-             if(x < xMin)
-                 xMin = x;
+             if(lasX < xMin)
+                 xMin = lasX;
 
-             if(x > xMax)
-                 xMax = x;
+             if(lasX > xMax)
+                 xMax = lasX;
 
-             if(z < zMin)
-                 zMin = z;
+             if(lasZ < zMin)
+                 zMin = lasZ;
 
-             if(z > zMax)
-                 zMax = z;
+             if(lasZ > zMax)
+                 zMax = lasZ;
 
-             if(y < yMin)
-                 yMin = y;
+             if(lasY < yMin)
+                 yMin = lasY;
 
-             if(y > yMax)
-                 yMax = y;
+             if(lasY > yMax)
+                 yMax = lasY;
 
          }
     }
@@ -632,20 +632,20 @@ void MeshHandler::readLasFile()
     int resolution = 5;
     const int gridSizeX = 50;
     const int gridSizeZ = 50;
-    gsl::Vector2D grid2D[gridSizeX][gridSizeZ]; //This vector2D equals vector3D X = X, and Y = Z.
+    gsl::Vector3D planeGrid[gridSizeX][gridSizeZ];
 
     //Fill outer bounds of a 2D grid.
-//    grid2D[0][0].x = xMin; //Low left
-//    grid2D[0][0].y = zMin; //Low left
+//    planeGrid[0][0].x = xMin; //Low left
+//    planeGrid[0][0].y = zMin; //Low left
 
-//    grid2D[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
-//    grid2D[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
+//    planeGrid[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
+//    planeGrid[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
 
-//    grid2D[gridSizeX-1][0].x = xMax; //bot right
-//    grid2D[0][gridSizeX-1].y = zMin; //top left
+//    planeGrid[gridSizeX-1][0].x = xMax; //bot right
+//    planeGrid[0][gridSizeX-1].y = zMin; //top left
 
-//    grid2D[0][gridSizeZ-1].x = xMin; //top left
-//    grid2D[gridSizeZ-1][0].y = zMax; //bot right
+//    planeGrid[0][gridSizeZ-1].x = xMin; //top left
+//    planeGrid[gridSizeZ-1][0].y = zMax; //bot right
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
     float distanceBetweenSquaresX = (xMax - xMin) / gridSizeX;
@@ -653,23 +653,39 @@ void MeshHandler::readLasFile()
 
 //    qDebug() << grid2D[0][0].x << grid2D[0][0].y; //qDebug isnt correct, but the data is correct in debug mode.
 int pointDataOutOfGrid = pointData.size();
+int pointsInSquare = 0; //Figuring this might be useful for calculating how many points are in each square.
 
 for (int x = 0; x < gridSizeX; x++)
 {
     for (int z = 0; z < gridSizeZ; z++)
     {
-        grid2D[x][z].x = xMin + (distanceBetweenSquaresX * x); //Fill the array with evenly spaced coordinates enclosing all pointData
-        grid2D[x][z].y = zMin + (distanceBetweenSquaresZ * z);
+        planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x); //Fill the array with evenly spaced coordinates enclosing all pointData positions
+        planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
 
-//        std::cout << x << " " << grid2D[x][z].x << " " << z << " " << grid2D[x][z].y << "\n";
+//        std::cout << x << " " << planeGrid[x][z].x << " " << z << " " << planeGrid[x][z].y << "\n";
 
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++)
         {
-            if(pointData[pointDataSearch].getX() >  grid2D[x][z].x               && pointData[pointDataSearch].getY() >  grid2D[x][z].y && //If a pointData coordinate is bigger then current grid2d position
-               pointData[pointDataSearch].getX() < (grid2D[x][z].x + resolution) && pointData[pointDataSearch].getY() < (grid2D[x][z].y + resolution)) //But also smaller then resolution
+            if(pointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
+               pointData[pointDataSearch].getY() >= planeGrid[x][z].z &&
+               pointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
+               pointData[pointDataSearch].getY() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
-                pointDataOutOfGrid--;
+                pointDataOutOfGrid--; //There are currently missing about 1365 pieces of data.
+                pointsInSquare++;
+
+                //Inside this if statement i need to create some logic to know spesificially which points are in each square.
+
+                //I need the y-height of the pointData and average their height for each [x][z] square.
+                //This really only needs to run for each square, but need to know which pointDataSearches was a hit with each planeGrid[x][z]
+
+                //I could create a vector of int[3] and fill 0 with pointDataSearch-es, 1 and 2 with x and z when there is a hit.
+                //That seems clunky. but could provide me with an escape from this monsterous for-loop.
+                //
+
+//                planeGrid[x][z].y = pointData[pointDataSearch].getY();
+
             }
         }
     }
