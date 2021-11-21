@@ -31,6 +31,8 @@ public:
 
     void initComboboxTexture(std::vector<std::string> &textureNames);
     void initComboboxMeshes(std::vector<std::string> &meshNames);
+    void initComboboxLevels(std::vector<std::string> &levelNames);
+    void updateComboboxLevels(std::vector<std::string> &levelNames);
 
     int getObjectListIndex() const;
 
@@ -94,11 +96,16 @@ private slots:
 
     void on_actionInfo_triggered();
 
-    void on_lineEdit_textEdited(const QString &arg1);
+//    void on_lineEdit_textEdited(const QString &arg1);
 
     void on_ScaleYspinBox_valueChanged(double arg1);
 
     void on_ScaleZspinBox_valueChanged(double arg1);
+
+    void on_comboBox_3_currentIndexChanged(int index);
+
+    void on_comboBox_3_currentTextChanged(const QString &arg1);
+
 
 private:
     void init();
@@ -123,12 +130,16 @@ private:
     QListWidget *listWidget{nullptr};
     QComboBox *textureComboBox{nullptr};
     QComboBox *meshComboBox{nullptr};
+    QComboBox *levelComboBox{nullptr};
 
     std::vector<GameObject*> GameObjects{nullptr};
     std::vector<std::string> allTextures;
     std::vector<std::string> allMeshes;
+    std::vector<std::string> allLevels;
+
     int currentTextureIndex{0};
     int currentMeshIndex{0};
+    int currentLevelIndex{0};
 
     std::string levelName{""};
 

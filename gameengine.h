@@ -50,6 +50,7 @@ public:
     void CreateObject(std::string filePath, bool bUsingLOD, std::string textureName);
 
 
+
     GameObject *mXYZaxis{nullptr};
     GameObject* mPlayer{nullptr};
     gsl::Vector3D initPlayerPos{0,0,0};
@@ -61,6 +62,7 @@ public:
     std::vector<std::pair<QString,std::vector<GameObject*>>> mLevels;
     void saveScene(std::string &levelName);
     void loadScene(std::string &levelName);
+    void updateAllLevels();
 
     void setRotationX(float value);
 private:

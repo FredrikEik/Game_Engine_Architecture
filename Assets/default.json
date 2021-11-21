@@ -17,7 +17,7 @@
         },
         {
             "filepath": "../GEA2021/Assets/Meshes/player.obj",
-            "positionx": 3.4000000953674316,
+            "positionx": 0,
             "positiony": 0,
             "positionz": -8,
             "rotationx": 0,
@@ -43,36 +43,6 @@
             "scalez": 1,
             "shader": 2,
             "texturename": " ",
-            "usingLOD": false
-        },
-        {
-            "filepath": "../GEA2021/Assets/Meshes/cacodemon.obj",
-            "positionx": 0,
-            "positiony": 0,
-            "positionz": 0,
-            "rotationx": 0,
-            "rotationy": 0,
-            "rotationz": 0,
-            "scalex": 1,
-            "scaley": 1,
-            "scalez": 1,
-            "shader": 2,
-            "texturename": "cocademon.bmp",
-            "usingLOD": false
-        },
-        {
-            "filepath": "../GEA2021/Assets/Meshes/cacodemon.obj",
-            "positionx": 2.5999999046325684,
-            "positiony": 0,
-            "positionz": 0,
-            "rotationx": -21,
-            "rotationy": 0,
-            "rotationz": 0,
-            "scalex": 1,
-            "scaley": 1,
-            "scalez": 1,
-            "shader": 2,
-            "texturename": "cocademon.bmp",
             "usingLOD": false
         }
     ]

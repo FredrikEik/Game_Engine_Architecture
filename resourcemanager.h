@@ -32,9 +32,11 @@ public:
 
     void setUpAllTextures();
     void getAllMeshNames();
+    void getAllLevelNames();
 
     std::vector<std::string> mTextureNames;
     std::vector<std::string> mMeshNames;
+    std::vector<std::string> mLevelNames;
 private:
     int CreateMaterial(std::string textureName);
     GameObject* tempGO{nullptr};

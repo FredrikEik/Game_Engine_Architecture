@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     textureComboBox = ui->comboBox;
 //    textureComboBox->setEditable(true);
     meshComboBox = ui->comboBox_2;
+    levelComboBox = ui->comboBox_3;
+    levelComboBox->setEditable(true);
 
 
     qApp->setStyle(QStyleFactory::create("Fusion"));
@@ -134,6 +136,7 @@ void MainWindow::initComboboxTexture(std::vector<std::string> &textureNames)
         allTextures = textureNames;
         for(auto it : textureNames)
         {
+            it.erase(it.end()-4,it.end());
             textureComboBox->addItem(tr(it.c_str()));
         }
     }
@@ -146,9 +149,59 @@ void MainWindow::initComboboxMeshes(std::vector<std::string> &meshNames)
         allMeshes = meshNames;
         for(auto it : allMeshes)
         {
+            it.erase(it.end()-4,it.end());
             meshComboBox->addItem(tr(it.c_str()));
         }
     }
+}
+
+void MainWindow::initComboboxLevels(std::vector<std::string> &levelNames)
+{
+    if(mRenderWindow)
+    {
+        allLevels = levelNames;
+        for(auto it : allLevels)
+        {
+//            std::string tempName = it;
+            it.erase(it.end()-5,it.end());
+            levelComboBox->addItem(tr(it.c_str()));
+        }
+    }
+}
+
+void MainWindow::updateComboboxLevels(std::vector<std::string> &levelNames)
+{
+    levelComboBox->clear();
+    if(mRenderWindow)
+    {
+        allLevels = levelNames;
+        for(auto it : allLevels)
+        {
+//            std::string tempName = it;
+            it.erase(it.end()-5,it.end());
+            levelComboBox->addItem(tr(it.c_str()));
+        }
+    }
+//    if(mRenderWindow)
+//    {
+//        GameObjects.clear();
+//        GameObjects = mRenderWindow->getAllGameObject();
+//        //listWidget->setCurrentRow(-1);
+//        for (int i = GameObjects.size(); i>0; i--) {
+//            listWidget->takeItem(i);
+//        }
+//        static bool once {true};
+//        for(auto it : GameObjects)
+//        {
+//            if(once)
+//            {
+//                once = false;
+//                continue;
+//            }
+//            new QListWidgetItem(tr((*it).name.c_str()), listWidget);
+//        }
+//        once = true;
+//    }
 }
 
 void MainWindow::init()
@@ -416,6 +469,7 @@ void MainWindow::on_saveScene_clicked()
 {
     qDebug() << "Tying to save " << QString::fromStdString(levelName);
     GameEngine::getInstance()->saveScene(levelName);
+    mGameEngine->getInstance()->updateAllLevels();
 }
 
 
@@ -486,7 +540,22 @@ void MainWindow::on_actionInfo_triggered()
                        "GAME: Click mouse once to activate player WASD controll, and press escape to exit\n\n");
 }
 
-void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+//void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+//{
+//    levelName = arg1.toStdString();
+//}
+
+void MainWindow::on_comboBox_3_currentIndexChanged(int index)
+{
+    currentLevelIndex = index;
+    qDebug() << "levelIndex:" << index;
+}
+
+
+void MainWindow::on_comboBox_3_currentTextChanged(const QString &arg1)
 {
     levelName = arg1.toStdString();
+    qDebug () << arg1;
 }
+
+

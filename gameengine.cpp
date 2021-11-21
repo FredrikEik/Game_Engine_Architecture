@@ -62,6 +62,7 @@ void GameEngine::SetUpScene()
 
     mResourceManager->setUpAllTextures();
     mResourceManager->getAllMeshNames();
+    mResourceManager->getAllLevelNames();
 
 
     //mPhysicsBallSystem->readFile(gsl::ProjectFolderName + "test_las.txt");
@@ -91,6 +92,7 @@ void GameEngine::SetUpScene()
     mMainWindow->initList();
     mMainWindow->initComboboxTexture(mResourceManager->mTextureNames);
     mMainWindow->initComboboxMeshes(mResourceManager->mMeshNames);
+    mMainWindow->initComboboxLevels(mResourceManager->mLevelNames);
 
 }
 
@@ -332,6 +334,12 @@ void GameEngine::saveScene(std::string &levelName)
 void GameEngine::loadScene(std::string &levelName)
 {
     mResourceManager->loadScene(mRenderwindow->mGameObjects,mPlayer, mLight,levelName);
+}
+
+void GameEngine::updateAllLevels()
+{
+    mResourceManager->getAllLevelNames();
+    mMainWindow->updateComboboxLevels(mResourceManager->mLevelNames);
 }
 
 void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)
