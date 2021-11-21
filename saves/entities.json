@@ -1,67 +1,5 @@
 [
     {
-        "4": [
-            {
-                "struct MeshComponent": {
-                    "LODType": 0,
-                    "bDisregardedDuringFrustumCulling": false,
-                    "bIsTranslucent": false,
-                    "bShouldRender": true,
-                    "drawType": 4,
-                    "path": "Assets/suzanne.obj",
-                    "reusable": true
-                }
-            },
-            {
-                "struct TransformComponent": [
-                    [
-                        2.799999952316284,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        2.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        0.0,
-                        1.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        2.9000000953674316,
-                        0.0,
-                        1.0
-                    ]
-                ]
-            },
-            {
-                "struct AxisAlignedBoxComponent": {
-                    "center": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "max": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "min": [
-                        -0.5,
-                        -0.5,
-                        -0.5
-                    ]
-                }
-            }
-        ]
-    },
-    {
         "5": [
             {
                 "struct TransformComponent": [
@@ -85,7 +23,7 @@
                     ],
                     [
                         0.0,
-                        5.400000095367432,
+                        5.199999809265137,
                         0.0,
                         1.0
                     ]
@@ -98,7 +36,7 @@
                     "bIsTranslucent": false,
                     "bShouldRender": true,
                     "drawType": 4,
-                    "path": "C:\\Users\\bryte\\Github_Projects\\School\\Fifth_Semester\\GEA2021\\Engine\\Assets\\suzanne.obj",
+                    "path": "Assets\\suzanne.obj",
                     "reusable": true
                 }
             },

@@ -9,7 +9,7 @@
 #include "Systems/TextureSystem.h"
 #include <iostream>
 #include <algorithm>
-
+#include "FileSystemHelpers.h"
 enum class DefaultAsset : uint8;
 // TODO: Don't duplicate reusable assets. Make all use the same one.
 
@@ -162,13 +162,15 @@ inline uint32 Factory::loadMesh(const std::filesystem::path& filePath, uint32 en
 {
 	uint32 componentID = createComponent<MeshComponent>(entityID, true);
 	MeshComponent& component = getComponentManager<MeshComponent>()->getComponent(entityID);
+	//MeshSystem::loadMesh("Assets/suzanne.obj", component);
 	MeshSystem::loadMesh(filePath, component);
 
 	ReusableAsset reusableAsset(std::type_index(typeid(MeshComponent)), componentID);
 
 	std::size_t hash{ std::filesystem::hash_value(filePath) };
 	component.hash = hash;
-	component.path = filePath.string();
+	component.path = FileSystemHelpers::extractRelativePath(filePath).string();
+	
 
 	reusableAssetComponents.insert(std::pair<std::size_t, ReusableAsset>
 				(hash, reusableAsset));
@@ -240,7 +242,8 @@ inline uint32 Factory::loadPNG(uint32 entityID, const std::filesystem::path& fil
 
 	std::size_t hash{ std::filesystem::hash_value(filePath) };
 	component->hash = hash;
-	component->path = filePath.string();
+	component->path = FileSystemHelpers::extractRelativePath(filePath).string();
+	//std::filesystem::cu
 	reusableAssetComponents.insert(std::pair<std::size_t, ReusableAsset>
 			(hash, reusableAsset));
 

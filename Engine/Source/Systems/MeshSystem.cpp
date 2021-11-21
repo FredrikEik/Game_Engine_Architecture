@@ -14,8 +14,9 @@
 #include "../Input/Input.h"
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
 {
-    assert(readObj(filePath, meshComponent));
-
+    //assert(readObj(filePath, meshComponent)); 
+    if (!readObj(filePath, meshComponent))
+        return false;
     initialize(meshComponent);
     std::cout << meshComponent.m_indices.size();
 	return true;
@@ -522,7 +523,7 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
     inputFile.open(filePath, std::ifstream::in);
     if (!inputFile)
     {
-        DEBUG_LOG("Could not open file");
+        DEBUG_LOG("Could not open file " + filePath.string());
         return false;
     }
 

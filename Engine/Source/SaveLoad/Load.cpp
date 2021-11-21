@@ -7,7 +7,8 @@
 void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 {
 	std::ifstream file(filePath);
-	assert(file);
+	if (!file)
+		return;
 
 	JSON json;
 	file >> json;
