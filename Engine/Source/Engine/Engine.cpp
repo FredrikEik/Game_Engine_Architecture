@@ -174,7 +174,7 @@ void Engine::init()
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
 
-	viewport->begin(window, ECS->getNumberOfEntities());
+	//viewport->begin(window, ECS->getNumberOfEntities());
 
 
 	//ScriptTest
@@ -277,7 +277,7 @@ void Engine::loop()
 			//std::cout << "Game camera'\n";
 			// TODO: Implement proper deltatime
 
-			CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
 			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
 

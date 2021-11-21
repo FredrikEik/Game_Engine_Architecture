@@ -93,7 +93,7 @@ int main()
 
 
 	engine.start();
-	delete* scriptEngine;
+	delete scriptEngine;
 	delete& engine;
 
 	return 0;
