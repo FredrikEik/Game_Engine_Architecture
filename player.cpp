@@ -1,5 +1,5 @@
 #include "player.h"
-
+#include "lassurface.h"
 
 Player::Player()
 {
@@ -77,6 +77,31 @@ void Player::movement()
         move(0,0,movementSpeed);
     if(input.A)
         move(0,0,-movementSpeed);
+
+    if(surfaceToWalkOn)
+    {
+        std::vector<Vertex>& vertices = dynamic_cast<class LASsurface*>(surfaceToWalkOn)->getMeshComponent()->mVertices;
+        gsl::Vector3D barycCoords;
+        gsl::Vector3D playerPos = getTransformComponent()->mMatrix.getPosition();
+
+        for(int i = 0; i < vertices.size() - 2; i+= 3)
+        {
+            gsl::Vector3D p1, p2, p3;
+            p1 = gsl::Vector3D(vertices[i].getXYZ());
+            p2 = gsl::Vector3D(vertices[i+1].getXYZ());
+            p3 = gsl::Vector3D(vertices[i+2].getXYZ());
+
+            barycCoords = playerPos.barycentricCoordinates(p1, p2, p3);
+            //qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;
+
+            if(barycCoords.x >= 0 && barycCoords.y >= 0 && barycCoords.z >= 0)
+            {
+                qDebug() << "is inside triangle: " << i;
+                float newY = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
+                getTransformComponent()->mMatrix.setY(newY);
+            }
+        }
+    }
 
 }
 void Player::draw()

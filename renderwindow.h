@@ -61,6 +61,7 @@ public:
 
     Level level;
 
+    GameObject *surface = nullptr;
     GameObject *hjelpeObjekt=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
 

@@ -117,7 +117,7 @@ GameObject* Factory::createObject(std::string objectName)
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 3;
 
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
@@ -126,8 +126,9 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "LASsurface")
     {
         objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
-        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        //objectToCreate = new LASsurface("../GEA2021/Assets/LAS/kapittelberget.txt");
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
         objectToCreate->mObjectType = "LASsurface";
         objectToCreate->mObjectName = "LASsurface";
     }

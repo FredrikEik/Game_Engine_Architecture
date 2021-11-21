@@ -22,7 +22,7 @@ private:
     std::vector<Vertex> lasData;
 
     //mins and maxes must be uniform with step
-    float xMin{-30.f}, yMin{-4.f}, zMin{-30.f}, xMax{30.f}, yMax{4.f}, zMax{30.0f};
+    float xMin{-20.f}, yMin{0.f}, zMin{-20.f}, xMax{20.f}, yMax{6.f}, zMax{20.0f};
     float step{2.f};
 
     float highestX, highestY, highestZ, lowestX, lowestY, lowestZ;

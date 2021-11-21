@@ -200,6 +200,21 @@ void Matrix4x4::translateZ(GLfloat z)
     translate(0.f, 0.f, z);
 }
 
+void Matrix4x4::setX(GLfloat x)
+{
+    matrix[3] = x;
+}
+
+void Matrix4x4::setY(GLfloat y)
+{
+    matrix[7] = y;
+}
+
+void Matrix4x4::setZ(GLfloat z)
+{
+    matrix[11] = z;
+}
+
 void Matrix4x4::setPosition(GLfloat x, GLfloat y, GLfloat z)
 {
     matrix[3] = x;

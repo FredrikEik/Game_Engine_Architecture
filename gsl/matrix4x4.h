@@ -26,6 +26,10 @@ public:
     void translateY(GLfloat y = 0.f);
     void translateZ(GLfloat z = 0.f);
 
+    void setX(GLfloat x = 0.f);
+    void setY(GLfloat y = 0.f);
+    void setZ(GLfloat z = 0.f);
+
     void setPosition(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);
     gsl::Vector3D getPosition();
     void setRotation(GLfloat x = 0.f, GLfloat y = 0.f, GLfloat z = 0.f);

@@ -15,15 +15,15 @@ LASsurface::LASsurface(std::string fileName)
     // Using min, max and step to find how many quads the TriangleSurface has in each direction
     const int quadAmountX = abs(xMax-xMin)/step; //qDebug() << quadAmountX;
     const int quadAmountZ = abs(zMax-zMin)/step; //qDebug() << quadAmountZ;
-    const int numOfQuads = quadAmountX*quadAmountZ; //qDebug() << numOfQuads;
+    //const int numOfQuads = quadAmountX*quadAmountZ; //qDebug() << numOfQuads;
 
     // An array of vectors that hold all the heights for each quad
     // Size of array is hardcoded, unsure how to do it from numOfQuads
-    std::array<std::vector<float>,1200> heights;
+    std::array<std::vector<float>,800> heights;
     //std::array<std::vector<float>,numOfQuads> heights;
 
     //An array that holds the average height of each quad
-    float averageHeights[1200];
+    float averageHeights[800];
     //float averageHeights[numOfQuads];
 
 
@@ -81,35 +81,59 @@ LASsurface::LASsurface(std::string fileName)
 //    }
 
     //Create triangulated surface
-    float R = 3;
-    float G = 70;
-    float B = 10;
+    float R = 10;
+    float G = 50;
+    float B = 75;
     for (float x = xMin; x < xMax-step; x+= step)
     {
-        for(float z = zMin; z < zMax-step; z+= step)
+        for(float z = zMin; z < zMax; z+= step)
         {
             int quadCoordX = (x-xMin)/step;
             int quadCoordZ = (z-zMin)/step;
             float u{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
             float v{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
 
+//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
+//                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255,u,v));
+
+//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
+//                                                           R, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, z+step, u+step, v+step));
+
+//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
+//                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
+
+//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
+//                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255, u, v));
+
+//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
+//                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255, u, v+step));
+
+//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
+//                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step, v+step));
+
+
             getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
                                                            R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255,u,v));
-
-            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
-                                                           R, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, z+step, u+step, v+step));
-
-            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
-                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
-
-            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
-                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255, u, v));
 
             getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
                                                            R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255, u, v+step));
 
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
+                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
+
+
+
             getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
                                                            R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step, v+step));
+
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
+                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
+
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
+                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255, u, v+step));
+
+
+
         }
     }
 

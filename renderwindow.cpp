@@ -111,7 +111,9 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
+    mTextures[2] = new Texture("grass2.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    mTextures[3] = new Texture("right.bmp",
                                "left.bmp",
                                "top.bmp",
                                "bottom.bmp",
@@ -119,11 +121,13 @@ void RenderWindow::init()
                                "back.bmp");
 
 
+
     //Set the textures loaded to a texture unit
 
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[3]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -233,12 +237,15 @@ void RenderWindow::initObjects()
     }
 
     */
+    surface = factory->createObject("LASsurface");
+
     mPlayer = factory->createObject("Player");
     mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-    mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,1.75f,0.f);
+    dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
     mMainWindow->updateOutliner(factory->mGameObjects);
 
-    factory->createObject("LASsurface");
+
 
     hjelpeObjekt = factory->createObject("Cube");
 

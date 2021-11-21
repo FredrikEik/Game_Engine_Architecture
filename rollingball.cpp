@@ -50,10 +50,10 @@ void Rollingball::move(float dt)
             //acceleration = acceleration + friction;
             velocity = velocity + acceleration * dt;
 
-            float zOffset = 0.25f;
+            float yOffset = 0.25f;
             gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
-            newPosition.z = p1.z*barycCoords.x + p2.z*barycCoords.y + p3.z*barycCoords.z;
-            getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
+            newPosition.y = p1.y*barycCoords.x + p2.z*barycCoords.y + p3.z*barycCoords.y;
+            getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y+ yOffset, newPosition.z);
 
             ballPosition = getTransformComponent()->mMatrix.getPosition();
 
