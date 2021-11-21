@@ -253,7 +253,7 @@ void RenderWindow::init()
     //LASDATA
     LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
-    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
+    entitySys->construct("LAS", QVector3D(-100,-20,-200), 0,0,-1, GL_LINES);
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!

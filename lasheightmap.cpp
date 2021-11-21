@@ -4,6 +4,7 @@
 LASHeightMap::LASHeightMap(std::string fileName)
 {
     ReadDatafromFile(fileName);
+    //
     GenerateHeightMap();
 }
 
@@ -74,7 +75,7 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 std::vector<Vertex> LASHeightMap::getPositions() const
 {
-    return mVertices;
+    return positions;
 }
 
 void LASHeightMap::setPositions(const std::vector<Vertex> &value)
@@ -128,37 +129,57 @@ void LASHeightMap::RemoveDeltaPos()
     }
 
 
-//    for(auto i = 0; i<positions.size(); i++)
-//    {
-//        //positions[i].set_xyz(gsl::Vector3D(positions[i].getVertex().getX() - deltaX, positions[i].getVertex().getY() - deltaY, positions[i].getVertex().getZ() - deltaZ));
-//        qDebug() << positions[i].getVertex();
+    //    for(auto i = 0; i<positions.size(); i++)
+    //    {
+    //        //positions[i].set_xyz(gsl::Vector3D(positions[i].getVertex().getX() - deltaX, positions[i].getVertex().getY() - deltaY, positions[i].getVertex().getZ() - deltaZ));
+    //        qDebug() << positions[i].getVertex();
     //    }
 }
 
 void LASHeightMap::GenerateHeightMap()
 {
     float f = 1;
-        for(float x = 0; x<1500; x+=1)
-            for(float z =0; z<2000; z+=1)
-            {
-                mVertices.push_back(Vertex{  x, CalcHeight(  x,   z),   z, 0,0, f, f, 0});
-                mVertices.push_back(Vertex{x+1, CalcHeight(x+1,   z),   z, 0,0, 0, f, f});
-                mVertices.push_back(Vertex{  x, CalcHeight(  x, z+1), z+1, 0,0, 0, 0, f});
-                mVertices.push_back(Vertex{  x, CalcHeight(  x, z+1), z+1, 0,0, 0, 0, f});
-                mVertices.push_back(Vertex{x+1, CalcHeight(x+1,   z),   z, 0,0, 0, f, f});
-                mVertices.push_back(Vertex{x+1, CalcHeight(x+1, z+1), z+1, 0,0, f, f, 0});
-            }
+    for(float x = 0; x<10; x+=1)
+        for(float z =0; z<10; z+=1)
+        {
+            mVertices.push_back(Vertex{  x, CalcHeight(  200+x,   200+z),   z, 0,0, f, f, 0});
+            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+  z),   z, 0,0, 0, f, f});
+            mVertices.push_back(Vertex{  x, CalcHeight(200+x,  200+z+1), z+1, 0,0, 0, 0, f});
+            mVertices.push_back(Vertex{  x, CalcHeight(200+x,  200+z+1), z+1, 0,0, 0, 0, f});
+            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+  z),   z, 0,0, 0, f, f});
+            mVertices.push_back(Vertex{x+1, CalcHeight(200+x+1,200+z+1), z+1, 0,0, f, f, 0});
+        }
 }
 
 float LASHeightMap::CalcHeight(float x, float z)
 {
     float height = 0.0f;
-    float tempX,tempY, tempZ;
-    //for(auto i = 0; i<positions.size(); i++)
-   // {
-    //   positions[i].getVertex().getX();
-        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
-    //}
+    QVector2D xzVec = QVector2D(x,z); // here is pos
+    QVector2D tempPos, closest;
+    float shortestLength{10};
+    //find closest tempX or Z
+    for(unsigned long long i = 0; i < positions.size(); i++)
+    {
+        //calculate legth between point and square
+        QVector2D tempLength;
+        tempPos = QVector2D(positions[i].getVertex().getX(), positions[i].getVertex().getZ() );
+        tempLength = tempPos - xzVec;
+        float length = tempPos.distanceToPoint(xzVec);
 
+
+        if(length < shortestLength)
+        {
+            shortestLength = length;
+            closest = tempPos;
+            height = positions[i].getVertex().getY();
+        }
+        //if(shortestLength <0.3f && shortestLength > 0.0f)
+         //   break;
+
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+    }
+    //do the average calc
+    //qDebug() << height;
+    //then return it
     return height;
 }
