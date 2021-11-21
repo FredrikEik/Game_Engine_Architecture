@@ -161,7 +161,7 @@ void MainWindow::on_treeWidget_viewportEntered()
         for(unsigned long j = 0; j < mRenderWindow->DeetsVector.size(); j++){
             if(mRenderWindow->DeetsVector[j]->entity==mRenderWindow->entities[i]){
                 QString temp;
-                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[j]->title));
+                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[j]->title) +  + " - " + QString::fromStdString(std::to_string(mRenderWindow->DeetsVector[j]->entity)));
                 break;
             }
             else{
@@ -187,7 +187,7 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     for(unsigned long i = 0; i < mRenderWindow->DeetsVector.size(); i++){
         if(mRenderWindow->DeetsVector[i]->title == itemNameOS){
             SelectedItem = mRenderWindow->DeetsVector[i]->entity;
-            ui->ObjectDetails->setTitle("Object Details: " + item->text(column));
+            ui->ObjectDetails->setTitle("Object Details: " + item->text(column)  + " - " + QString::fromStdString(std::to_string(mRenderWindow->DeetsVector[SelectedItem]->entity)));
             ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
             ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().y);
             ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().z);
@@ -239,7 +239,7 @@ void MainWindow::setSelectedItem(int i)
     ui->checkBox->setEnabled(true);
     ui->label_6->setEnabled(true);
     SelectedItem = i;
-    std::string text = mRenderWindow->DeetsVector[SelectedItem]->title;
+    std::string text = mRenderWindow->DeetsVector[SelectedItem]->title + " - " + std::to_string(mRenderWindow->DeetsVector[SelectedItem]->entity);
     QString Qtext = QString::fromStdString(text);
     ui->ObjectDetails->setTitle("Object Details: " + Qtext);
     ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
