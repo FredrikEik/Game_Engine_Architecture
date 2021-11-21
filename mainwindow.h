@@ -142,7 +142,7 @@ private:
     int currentLevelIndex{0};
 
     std::string levelName{""};
-
+    std::string currentLevelName{"default"};
 
 };
 

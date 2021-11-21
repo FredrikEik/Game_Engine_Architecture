@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     levelComboBox = ui->comboBox_3;
     levelComboBox->setEditable(true);
 
+    ui->GameObjectsGroupBox->setTitle("Scene: " + QString::fromStdString(currentLevelName));
+
 
     qApp->setStyle(QStyleFactory::create("Fusion"));
 
@@ -311,9 +313,11 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 
     // --Visible Selection in 3D window--
     // Turn off collision box of the last selected
+    if(GameObjects.size()>2){
     GameObjects[lastIndex]->mTransformComp->bShowCollisionBox = false;
 
     GameObjects[ObjectListIndex]->mTransformComp->bShowCollisionBox = true;
+    }
     lastIndex = currentRow;
 }
 
@@ -455,6 +459,8 @@ void MainWindow::on_actionDelete_Selected_triggered()
     //listWidget->removeItemWidget(listWidget->currentItem());
 
     //refreshList();
+    ObjectListIndex = ObjectListIndex - 1;
+    listWidget->setCurrentRow(GameObjects.size()-1);
 }
 
 
@@ -469,6 +475,8 @@ void MainWindow::on_saveScene_clicked()
 {
     qDebug() << "Tying to save " << QString::fromStdString(levelName);
     GameEngine::getInstance()->saveScene(levelName);
+    currentLevelName = levelName;
+    ui->GameObjectsGroupBox->setTitle("Scene: " + QString::fromStdString(currentLevelName));
     mGameEngine->getInstance()->updateAllLevels();
 }
 
@@ -478,6 +486,8 @@ void MainWindow::on_loadScene_clicked()
     qDebug() << "Tying to load " << QString::fromStdString(levelName);
     listWidget->setCurrentRow(0);
     GameEngine::getInstance()->loadScene(levelName);
+    currentLevelName = levelName;
+    ui->GameObjectsGroupBox->setTitle("Scene: " + QString::fromStdString(currentLevelName));
     refreshList();
 }
 
@@ -523,7 +533,10 @@ void MainWindow::on_addObject_released()
 {
     mGameEngine->getInstance()->CreateObject(gsl::MeshFilePath + allMeshes[currentMeshIndex], false ,allTextures[currentTextureIndex]);
     updateList();
-    listWidget->setCurrentRow(GameObjects.size()-1);
+    if(GameObjects.size()>0)
+        listWidget->setCurrentRow(GameObjects.size()-1);
+    else
+        listWidget->setCurrentRow(GameObjects.size());
 }
 
 
