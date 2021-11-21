@@ -582,6 +582,7 @@ void MeshHandler::readLasFile()
 
     if(inLasFile.is_open())
     {
+         qDebug() << "Opening las file";
          inLasFile >> linesWithPoints; //read first line, the approximate number of datalines.
          pointData.reserve(linesWithPoints); //reserve the space for the number of datalines.
 
@@ -623,8 +624,8 @@ void MeshHandler::readLasFile()
          }
     }
     inLasFile.close();
-
-    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
+    qDebug() << "Closing las file";
+//    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
 //    qDebug() << "inLasFile lines with points" << linesWithPoints << "PointData Size" << pointData.size();
 
 //    int printNr = 5;
@@ -634,27 +635,52 @@ void MeshHandler::readLasFile()
 //        qDebug() << pointData[i];
 //    }
 
-//Lag et firkanta grid med gitt oppløsning som skal dekke alle datapunkter.
+//Create a square grid, fill the extremities with the bounds of pointData, and fill the 2d array with evenly spaced cordinates.
     int resolution = 5;
-    const int gridSizeX = 100;
-    const int gridSizeZ = 100;
-    gsl::Vector2D grid2D[gridSizeX][gridSizeZ];
+    const int gridSizeX = 50;
+    const int gridSizeZ = 50;
+    gsl::Vector2D grid2D[gridSizeX][gridSizeZ]; //This vector2D equals vector3D X = X, and Y = Z.
 
-//    grid2D[0][0] = xMin, zMin;
-//    grid2D[gridSizeX-1][0] = xMax, zMin;
-//    grid2D[0][gridSizeZ-1] = xMin, zMax;
-//    grid2D[gridSizeX-1][gridSizeZ-1] = xMax, zMax;
+    //Fill outer bounds of a 2D grid.
+    grid2D[0][0].x = xMin; //Low left
+    grid2D[0][0].y = zMin; //Low left
 
-    qDebug() << xMin << zMin;
+    grid2D[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
+    grid2D[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
 
-for (int x = 0; x <= gridSizeX; x += resolution)
+//    grid2D[gridSizeX-1][0].x = xMax; //bot right
+//    grid2D[0][gridSizeX-1].y = zMin; //top left
+
+//    grid2D[0][gridSizeZ-1].x = xMin; //top left
+//    grid2D[gridSizeZ-1][0].y = zMax; //bot right
+
+    //Fill the rest of the grid with evenly spaced coordinates between min and max.
+    float distanceBetweenSquaresX = (xMax - xMin) / resolution; //for Test_las.txt with 5 resolution this is 199.46
+    float distanceBetweenSquaresZ = (zMax - zMin) / resolution; //for Test_las.txt with 5 resolution this is 291.5
+
+//    qDebug() << grid2D[0][0].x << grid2D[0][0].y; //qDebug isnt correct, but the data is correct in debug mode.
+
+for (int x = 1; x < gridSizeX; x++)
 {
-    for (int y = 0; y <= gridSizeZ; y += resolution)
+    for (int z = 1; z < gridSizeZ; z++)
     {
+        grid2D[x][z].x = grid2D[x-1][z-1].x + distanceBetweenSquaresX;
+        grid2D[x][z].y = grid2D[x-1][z-1].y + distanceBetweenSquaresZ;
 
+//        std::cout << x << " " << grid2D[x][z].x << " " << z << " " << grid2D[x][z].y << "\n";
+
+        //Check how many points there are between min + resolution
+//        if(pointData[x].getX() > grid2D[x][z].x && pointData[x].getY() > grid2D[x][z].y &&
+//           pointData[x].getX() > grid2D[x][z].x + resolution && pointData[x].getY() > grid2D[x][z].y + resolution)
+//        {
+//            qDebug() << "There is at least a point in sqaure" << x << z;
+//        }
+//        else {  qDebug() << "No point found";   }
     }
 }
-
+    qDebug() << "Grid2D should be filled now";
+//    std::cout << xMax << " " << zMax << "\n";
+    qDebug() << "Beacuse i need another breakpoint QT accepts";
 //Lag et gjennomsnitt av alle datapunktene, dette gjennomsnittet blir utgangspunktet for trekantene
 
 //    for (int i = 0; i < linesWithPoints; i++)
