@@ -12,10 +12,10 @@ public:
 	/// <param name="collisionComponent"></param>
 	/// <param name="ECS"></param>
 	static void construct(uint32 entity,
-		class ECSManager* ECS);
+		class ECSManager* ECS, bool shouldGenerateOverlapEvents = true);
 
 
-	static void testCollision(uint32 entityA, uint32 entityB, class ECSManager* ECS);
+	static bool testCollision(uint32 entityA, uint32 entityB, class ECSManager* ECS);
 	/// <summary>
 	/// Scales the min and max vectors to the outer bounds of the mesh.
 	/// </summary>
@@ -23,7 +23,7 @@ public:
 	/// <param name="OUTscaledMin">The lowest position of the mesh</param>
 	/// <param name="OUTscaledMax">The highest position of the mesh</param>
 	static void scaleToMesh(const struct MeshComponent* mesh,
-		glm::vec3 OUTscaledMin, glm::vec3 OUTscaledMax);
+		glm::vec3 &OUTscaledMin, glm::vec3 &OUTscaledMax);
 
 private:
 

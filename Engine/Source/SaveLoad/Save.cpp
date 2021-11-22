@@ -4,6 +4,7 @@
 #include "../Components/Components.h"
 #include <fstream>
 #include <filesystem>
+#include "../FileSystemHelpers.h"
 
 using JSON = nlohmann::json;
 std::string Save::defaultSaveLocation = "../saves";
@@ -32,6 +33,30 @@ void Save::saveEntities(const std::array<
 
 	std::filesystem::create_directory(defaultSaveLocation);
 	std::ofstream file(std::string(defaultSaveLocation + defaultSaveName));
+	assert(file);
+	file << std::setw(4) << json << std::endl;
+	file.close();
+}
+
+void Save::saveEntityPrefab(uint32 entityID, ECSManager* ECS)
+{
+	std::string path;
+	if (!FileSystemHelpers::getSavePathFromFileExplorer(path))
+		return;
+
+	JSON json;
+	auto entity = ECS->getEntity(entityID);
+
+	JSON components;
+	for (const auto& it : entity)
+	{
+		// TODO: Add a flag for if the component is reusable to make sure loading just loads from path
+		// This should be done in the component's json() function.
+		addComponentToJson(it.first, entityID, components, ECS);
+	}
+	json.push_back({ { std::to_string(entityID), components } });
+	
+	std::ofstream file(path);
 	assert(file);
 	file << std::setw(4) << json << std::endl;
 	file.close();

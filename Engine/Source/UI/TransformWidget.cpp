@@ -25,6 +25,7 @@ void TransformWidget::update(int32 entityID)
 
 	if (entityID >= reservedEntities)
 	{
+		ImGui::Text("Transform");
 		glm::mat4x4& transform = ECS->getComponentManager<TransformComponent>()->getComponent(entityID).transform;
 		ImGui::DragFloat3("Position", &transform[3].x, 0.1f, -10000.f, 10000.f);
 		float scale[3] = { transform[0].x, transform[1].y, transform[2].z };

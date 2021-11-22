@@ -28,6 +28,7 @@ public:
     static void copyMesh(const struct MeshComponent& meshToCopy, struct MeshComponent& newMesh);
 
     static void setHiddenInGame(uint32 entity, ECSManager* ECS, bool bNewHiddenInGame);
+    static void setConsideredForFrustumCulling(uint32 entity, ECSManager* ECS, bool bConsideredForFrustumCulling);
 
 	static void initialize(class MeshComponent& meshComponent);
 private:

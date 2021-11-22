@@ -6,7 +6,7 @@
 #include <filesystem>
 #include "Components/ComponentManager.h"
 #include "Factory.h"
-
+#include <algorithm>
 enum class DefaultAsset : uint8;
 
 class ECSManager
@@ -96,6 +96,26 @@ template<typename T>
 inline bool ECSManager::removeComponent(uint32 entityID)
 {
 	factory.removeComponent<T>(entityID);
+	auto& entt = entities[entityID].second;
+
+	std::type_index index = std::type_index(typeid(T));
+
+	if(entt.back().first == index)
+		entt.pop_back();
+	else
+		for (uint64 i{ }; i < entt.size(); ++i)
+		{
+
+			//auto variable = entt.first;
+			std::cout << "stuff";
+			if (entt[i].first == index)
+			{
+				std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end()-1);
+				entities[entityID].second.pop_back();
+				break;
+			}
+		}
+
 
 	return true;
 }

@@ -59,7 +59,8 @@ JSON AxisAlignedBoxComponent::json()
 	JSON json({
 		{"min", JSON::array({minScaled.x, minScaled.y, minScaled.z})},
 		{"max", JSON::array({maxScaled.x, maxScaled.y, maxScaled.z}) },
-		{"center", JSON::array({center.x, center.y, center.z}) }
+		{"center", JSON::array({center.x, center.y, center.z}) },
+		{"bShouldGenerateOverlapEvents", bShouldGenerateOverlapEvents}
 		});
 	return json;
 }
@@ -69,6 +70,7 @@ void AxisAlignedBoxComponent::jsonParse(const JSON& json)
 	minScaled = glm::vec3(json["min"][0], json["min"][1], json["min"][2]);
 	maxScaled = glm::vec3(json["max"][0], json["max"][1], json["max"][2]);
 	center = glm::vec3(json["center"][0], json["center"][1], json["center"][2]);
+	bShouldGenerateOverlapEvents = json["bShouldGenerateOverlapEvents"];
 }
 
 JSON TextureComponent::json()

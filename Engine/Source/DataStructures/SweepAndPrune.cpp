@@ -7,43 +7,50 @@
 #include <functional>
 
 SweepAndPrune::SweepAndPrune(ECSManager* inECS)
-	: m_data((*new std::vector<SweepElement>{}))
+	: m_data((*new std::vector<SweepElement>{})),
+	m_collisionPairs((*new std::unordered_map<uint32, std::vector<uint32>>()))
 {
 	ECS = inECS;
 }
 
 SweepAndPrune::SweepAndPrune()
-	: m_data((*new std::vector<SweepElement>{}))
+	: m_data((*new std::vector<SweepElement>{})),
+	m_collisionPairs((*new std::unordered_map<uint32, std::vector<uint32>>()))
 {
 }
+
 SweepAndPrune::~SweepAndPrune()
 {
 	delete &m_data;
+	delete& m_collisionPairs;
 }
 
 
-//void SweepAndPrune::insert(uint32 entity)
-//{
-//	//m_data->push_back(entity);
-//	// Making sure the entities have collision
-//	ComponentManager<AxisAlignedBoxComponent>* AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
-//	ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
-//
-//	AxisAlignedBoxComponent* AABBComponent = AABBManager->getComponentChecked(entity);
-//	TransformComponent* transformComponent = transformManager->getComponentChecked(entity);
-//	assert(AABBComponent);
-//	assert(transformComponent);
-//
-//	// Inserting the AABBs in absolute world positions.
-//	//m_data.push_back(SweepElement(
-//	//	entity));
-//
-//}
-//
 void SweepAndPrune::update()
 {
 	if(updateData())
 		sortAndSweep();
+}
+
+bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& OUTVector)
+{
+	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
+	{
+		auto& temp = m_collisionPairs.at(entityID);
+		std::copy(temp.begin(), temp.end(), OUTVector.begin());
+		return true;
+	}
+
+	return false;
+}
+
+const std::vector<uint32>& SweepAndPrune::getOverlappedEntities(uint32 entityID)
+{
+	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
+	{
+		return m_collisionPairs.at(entityID);
+	}
+	return std::vector<uint32>();
 }
 
 void SweepAndPrune::sortAndSweep()
@@ -56,17 +63,24 @@ void SweepAndPrune::sortAndSweep()
 		float minA = (a).min[tempSortAxis];
 		float minB = (b).min[tempSortAxis];
 
-		return minA > minB;
+		// if a should generate overlap while b shouldn't, a is pushed in front
+		// Seems to work so far, needs more testing
+		// If collision issues arise, remove everything after the OR
+		return (minA > minB) || (a.bShouldGenerateOverlapEvents > b.bShouldGenerateOverlapEvents);
 	};
 	//std::sort(m_data.begin(), m_data.end(), compareAABB(*this));
 	std::sort(m_data.begin(), m_data.end(), compare);
 
+	m_collisionPairs.clear(); // clears the collision array every frame
 	// Sweep
+
 	glm::vec2 sum{};
 	glm::vec2 sum2{};
 
 	for (uint32 i{}; i < m_data.size(); ++i)
 	{
+		if (!m_data.at(i).bShouldGenerateOverlapEvents)
+			continue;
 		glm::vec2 center = 0.5f * (m_data.at(i).min + m_data.at(i).max);
 
 		// To compute variance of centers
@@ -83,8 +97,9 @@ void SweepAndPrune::sortAndSweep()
 				(m_data.at(i).min[sortAxis]) &&
 				(m_data.at(i).max[sortAxis]) >=
 				(m_data.at(j).min[sortAxis]))
-			// Does the actual collision test.
-				CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS);
+				// Does the actual collision test.
+				if (CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS))
+					insertCollisionPair(m_data.at(i).entity, m_data.at(j).entity);
 			else
 				break;
 
@@ -129,7 +144,8 @@ void SweepAndPrune::clearAndFillData()
 
 	for (const auto& it : componentArray)
 	{
-		m_data.push_back(SweepElement(it.entityID));
+		m_data.push_back(SweepElement(it.entityID, it.bShouldGenerateOverlapEvents));
+		std::cout << "should generate: " << it.bShouldGenerateOverlapEvents << '\n';
 	}
 }
 
@@ -163,3 +179,14 @@ bool SweepAndPrune::updateData()
 	//TransformComponent* transformComponent = transformManager->getComponentChecked(entity);
 }
 
+void SweepAndPrune::insertCollisionPair(uint32 entityA, uint32 entityB)
+{
+	if (m_collisionPairs.find(entityA) == m_collisionPairs.end())
+	{
+		m_collisionPairs.insert(std::pair<uint32, std::vector<uint32>>(entityA, std::vector<uint32>()));
+		//collisionPair = m_collisionPairs.find(entityA);
+	}
+	std::vector<uint32>& collisionPair = m_collisionPairs.at(entityA);
+	//assert(collisionPair != m_collisionPairs.end());
+	collisionPair.push_back(entityB);
+}

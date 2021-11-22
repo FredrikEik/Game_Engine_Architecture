@@ -14,10 +14,20 @@ public:
 protected:
 	void drawAddComponent();
 	void addComponent(std::string componentToAdd);
+	void removeComponent(std::string componentToAdd);
+
+	bool hasComponent(std::type_index type);
+
+	void addTransformComponent();
+	void addMeshComponent();
+	void addAABBComponent();
+	void addTextureComponent();
+
 	std::vector<std::pair<std::type_index, uint32>> entity;
 	int32 entityID{};
 	const std::string transformComponent{ "Transform" };
 	const std::string boxColliderComponent{ "Box Collider" };
 	const std::string meshComponent{ "Mesh" };
+	const std::string textureComponent{ "Texture" };
 };
 

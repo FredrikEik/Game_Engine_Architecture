@@ -19,7 +19,8 @@
 #include "Details.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include "../SaveLoad/Save.h"
+#include "../SaveLoad/Load.h"
 #include "nfd.h"
 Viewport::Viewport(ECSManager* InECS)
 {
@@ -104,11 +105,22 @@ void Viewport::render()
 	}
 	if (!bIsPlaying)
 	{
+		if (ImGui::Button("New Entity"))
+		{
+			uint32 entity = ECS->newEntity();
+		}
+		if (ImGui::Button("New Entity From Prefab"))
+		{
+			std::string path;
+			if (FileSystemHelpers::getPathFromFileExplorer(path))
+				Load::loadEntities(path, ECS);
+			//Load::loadEntities()
+		}
 		if (ImGui::Button("Save All"))
 		{
 			Engine::Get().save();
 		}
-		if (ImGui::Button("Load"))
+		if (ImGui::Button("Load Scene"))
 		{
 			nfdchar_t* outPath = NULL;
 			nfdresult_t result = NFD_OpenDialog(NULL, NULL, &outPath);
@@ -128,24 +140,6 @@ void Viewport::render()
 				printf("Error: %s\n", NFD_GetError());
 			}
 		}
-		if (ImGui::Button("New Entity"))
-		{
-			uint32 entity = ECS->newEntity();
-			//ECS->loadAsset(entity, "Assets/suzanne.obj");
-			//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
-			//if(!MeshSystem::loadMeshLOD("Assets/suzanne_L01.obj", *meshComp, LODMeshType::LOD1))
-			//{ }
-			//if(!MeshSystem::loadMeshLOD("Assets/suzanne_L02.obj", *meshComp, LODMeshType::LOD2))
-			//{ }
-			//ECS->addComponent<TransformComponent>(entity);
-			//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-			////ECS->addComponent<SphereComponent>(entity);
-			//CollisionSystem::construct(entity, ECS);
-			////SphereSystem::construct(entity, ECS);
-			//
-			//std::cout << "Adding entity " << entity << '\n';
-
-		}
 
 		if(selectedEntity >= reservedEntities && ImGui::Button("Destroy selected entity"))
 
@@ -153,6 +147,15 @@ void Viewport::render()
 				ECS->destroyEntity(selectedEntity);
 				selectedEntity = -1;
 		}
+
+		if (selectedEntity >= reservedEntities && ImGui::Button("Create Prefab"))
+
+		{
+			Save::saveEntityPrefab(selectedEntity, ECS);
+		}
+
+		
+
 		ImGui::End();
 
 		ImGui::EndGroup();
