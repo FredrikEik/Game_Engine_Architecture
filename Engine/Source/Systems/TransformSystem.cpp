@@ -2,6 +2,7 @@
 #include "../Components/ComponentManager.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "../ECSManager.h"
+#include "../Engine/Engine.h"
 
 void TransformSystem::moveAll(class ComponentManager<TransformComponent>* componentManager)
 {
@@ -20,6 +21,18 @@ void TransformSystem::move(uint32 entity, glm::vec3 deltaLocation, ECSManager* E
 {
 	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
 	transform->transform[3] += glm::vec4(deltaLocation, 0);
+}
+
+void TransformSystem::move_internal(uint32 entity, glm::vec3 newLocation)
+{
+	TransformComponent* transformComp = Engine::Get().getECSManager()->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	transformComp->transform[3] += glm::vec4(newLocation, 0);
+}
+
+glm::vec3 TransformSystem::getTransform_internal(uint32 entity)
+{
+	TransformComponent* transformComp = Engine::Get().getECSManager()->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	return transformComp->transform[3];
 }
 
 void TransformSystem::setPosition(uint32 entity, glm::vec3 newLocation, ECSManager* ECS)

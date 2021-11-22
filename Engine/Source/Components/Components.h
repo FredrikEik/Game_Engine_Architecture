@@ -14,6 +14,7 @@ using JSON = nlohmann::json;
 
 #include <mono/utils/mono-publib.h>
 #include <mono/metadata/mono-config.h>
+#include <mono/metadata/reflection.h>
 
 
 /*		ATTENTION
@@ -174,6 +175,7 @@ struct ScriptComponent final : public Component
 	std::string ScriptClassName{ "Unit" };
 	MonoClass* m_Class{};
 	MonoObject* m_Object{};
+	MonoClassField* entityID_handle{};
 	
 	//std::unordered_map<size_t, Ref<ScriptField>> m_Fields;
 	std::unordered_map<size_t, MonoMethod*> m_Methods;

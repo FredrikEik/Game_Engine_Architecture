@@ -24,7 +24,6 @@ endfunction(assign_source_group)
 file(GLOB_RECURSE SOURCE CONFIGURE_DEPENDS
 	Source/*.cpp
 	Source/*.h
-	Source/*.hpp
 )
 
 file(GLOB_RECURSE SHADERFILES CONFIGURE_DEPENDS 
@@ -64,6 +63,7 @@ add_library(ScriptInJin SHARED
 	Scripts/Source/App.config
 	Scripts/Source/Properties/AssemblyInfo.cs
 	Scripts/Source/Main.cs
+	Scripts/Source/Math.cs
 
 )
 set_property(TARGET ScriptInJin PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")

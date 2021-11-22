@@ -14,10 +14,11 @@ ScriptEngine::ScriptEngine()
 
 ScriptEngine::~ScriptEngine()
 {
-	mono_assembly_name_free(m_AsmName);
 	mono_jit_cleanup(m_Domain);
-
-	delete m_ScriptEngineInst;
+	mono_assembly_name_free(m_AsmName);
+	
+	if(m_ScriptEngineInst != nullptr)
+		delete m_ScriptEngineInst;
 	m_ScriptEngineInst = nullptr;
 }
 
