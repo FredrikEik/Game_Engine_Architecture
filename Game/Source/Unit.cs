@@ -23,16 +23,16 @@ namespace Game
 
             if(IsEntitySelected_internal(entityID))
             {
-                Console.WriteLine("Entity is selected");
+                //Console.WriteLine("Entity is selected");
                 Vec3 currentPos = Transform.getTransform_internal(entityID);
-                Console.WriteLine(currentPos.m_y);
+                //Console.WriteLine(currentPos.m_y);
                 Transform.Move_Internal(entityID, currentPos + offset);
 
                 //Debug.PrintMethod_Interal("update");
                 //throw new NotImplementedException();
             }
-            else
-                Console.WriteLine("Entity not selected");
+            //else
+            //    Console.WriteLine("Entity not selected");
         }
     }
 }
