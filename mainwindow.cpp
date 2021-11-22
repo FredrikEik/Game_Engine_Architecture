@@ -572,3 +572,9 @@ void MainWindow::on_comboBox_3_currentTextChanged(const QString &arg1)
 }
 
 
+
+void MainWindow::on_actionPlay_toggled(bool arg1)
+{
+    GameEngine::getInstance()->bBallPhysicsIsPlaying = arg1;
+}
+

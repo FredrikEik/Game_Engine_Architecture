@@ -38,6 +38,7 @@ public:
     void resetWorld();
 
     bool bIsPlaying{false};
+    bool bBallPhysicsIsPlaying{false};
 
     Input mInput;
 

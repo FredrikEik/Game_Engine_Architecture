@@ -107,6 +107,8 @@ private slots:
     void on_comboBox_3_currentTextChanged(const QString &arg1);
 
 
+    void on_actionPlay_toggled(bool arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

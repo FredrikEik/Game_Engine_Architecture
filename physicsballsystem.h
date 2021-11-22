@@ -14,7 +14,6 @@ public:
     void SetTerrainData(GameObject& TerrainInn);
     void move(float dt);
     void StartRolling();
-    void readFile(std::string filename);
 
 
 //    static PhysicsBallSystem* getInstance();
@@ -30,7 +29,7 @@ private:
     float gridSquareSize;
     int gridXPos;
     int gridZPos;
-    float xzScale{1};
+    float xzScale{10};
     int mRows{1};
     int mCols{1};
 
