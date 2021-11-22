@@ -182,7 +182,7 @@ void Engine::init()
 	ScriptSystem::Init();
 
 	unitEntity = ECS->newEntity();
-	ECS->addComponents<ScriptComponent>(unitEntity);
+	ECS->addComponents<TransformComponent, ScriptComponent>(unitEntity);
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
 

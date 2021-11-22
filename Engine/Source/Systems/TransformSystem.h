@@ -2,6 +2,7 @@
 #include "BaseSystem.h"
 #include "../Components/Components.h"
 
+
 class TransformSystem final: public BaseSystem
 {
 public:
@@ -11,4 +12,8 @@ public:
 	static void setScale(int32 entity, glm::vec3 newScale, ECSManager* ECS);
 
 	static void setHeight(uint32 entity, float newHeight, class ECSManager* ECS);
+
+
+	static void move_internal(uint32 entity, glm::vec3 newLocation);
+	static glm::vec3 getTransform_internal(uint32 entity);
 };

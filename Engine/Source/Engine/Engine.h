@@ -76,6 +76,7 @@ private:
 
 	bool bIsPlaying{ false };
 public:
+	ECSManager* getECSManager() const { return ECS; }
 	float getWindowWidth() const { return windowWidth; }
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }

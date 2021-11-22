@@ -20,7 +20,7 @@ public:
 	//Namespace.Class::Method + a Function pointer with the actual definition
 	static void BindInternalFunction(const std::string& name, const void* functionPtr);
 	static std::string ScriptSystem::GetName(MonoMethod* method);
-	static void InitScriptObject(ScriptComponent* scriptComp);
+	static void InitScriptObject(ScriptComponent* scriptComp, std::string className = "Unit");
 private:
 
 };

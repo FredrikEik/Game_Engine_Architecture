@@ -5,9 +5,9 @@
 #include <iostream>
 #include "../ECSManager.h"
 #include "../Engine/ScriptEngine.h"
+#include "TransformSystem.h"
 
-
-void PrintMethod_Interal(MonoString* string)
+void PrintMethod_Internal(MonoString* string)
 {
 	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
 
@@ -16,10 +16,33 @@ void PrintMethod_Interal(MonoString* string)
 	mono_free(cppString);
 }
 
+uint64 getEntityID_Internal(MonoObject* this_ptr, MonoString* str)
+{
+	const char* name = mono_string_to_utf8(str);
+
+
+	std::string string = std::string(name);
+	std::string delim = std::string(".");
+	std::string name_space = string.substr(0, string.find(delim));
+	std::string classname = string.erase(0, string.find(delim) + delim.length());
+
+
+	uint64 entityID;
+	MonoClass* klass = mono_class_from_name(ScriptEngine::GetInstance()->getImage(), name_space.c_str(), classname.c_str());
+	mono_field_get_value(this_ptr, mono_class_get_field_from_name(klass, "native_handle"), &entityID);
+
+	return entityID;
+}
+
 void ScriptSystem::Init()
 {
 	//Namespace.Class::Method + a Function pointer with the actual definition
-	BindInternalFunction("ScriptInJin.Debug::PrintMethod_Interal", &PrintMethod_Interal);
+	BindInternalFunction("ScriptInJin.Debug::PrintMethod_Internal", &PrintMethod_Internal);
+
+	//mono_add_internal_call("ScriptInJin.Entity::get_EntityID", &);
+	BindInternalFunction("ScriptInJin.Entity::getEntityID_internal", &getEntityID_Internal);
+	BindInternalFunction("ScriptInJin.Transform::Move_Internal", &TransformSystem::move_internal);
+	BindInternalFunction("ScriptInJin.Transform::getTransform_internal", &TransformSystem::getTransform_internal);
 	
 }
 
@@ -49,10 +72,12 @@ std::string ScriptSystem::GetName(MonoMethod* method)
 		
 }
 
-void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp)
+
+void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string className)
 {
 	ScriptEngine* SE = ScriptEngine::GetInstance();
-	scriptComp->m_Class = mono_class_from_name(SE->getImage(), "Game", scriptComp->ScriptClassName.c_str());
+	scriptComp->ScriptClassName = className;
+	scriptComp->m_Class = mono_class_from_name(SE->getImage(), "Game", className.c_str());
 
 	void* pIterator = 0;
 	MonoMethod* monoMethod;
@@ -66,6 +91,9 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp)
 	scriptComp->m_Object = mono_object_new(SE->getDomain(), scriptComp->m_Class);
 	mono_runtime_object_init(scriptComp->m_Object);
 
+	// entity id handle
+	scriptComp->entityID_handle = mono_class_get_field_from_name(scriptComp->m_Class, "native_handle");
+	mono_field_set_value(scriptComp->m_Object, scriptComp->entityID_handle, &scriptComp->entityID);
 	//todo 
 	// parameters
 	//fields
