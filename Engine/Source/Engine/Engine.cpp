@@ -192,7 +192,8 @@ void Engine::init()
 	ScriptSystem::Init();
 
 	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, ScriptComponent>(unitEntity);
+	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
+	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
 

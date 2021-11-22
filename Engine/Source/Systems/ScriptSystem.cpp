@@ -6,6 +6,7 @@
 #include "../ECSManager.h"
 #include "../Engine/ScriptEngine.h"
 #include "TransformSystem.h"
+#include "SelectionSystem.h"
 
 void PrintMethod_Internal(MonoString* string)
 {
@@ -43,6 +44,7 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Entity::getEntityID_internal", &getEntityID_Internal);
 	BindInternalFunction("ScriptInJin.Transform::Move_Internal", &TransformSystem::move_internal);
 	BindInternalFunction("ScriptInJin.Transform::getTransform_internal", &TransformSystem::getTransform_internal);
+	BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
 	
 }
 

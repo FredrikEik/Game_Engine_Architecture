@@ -122,3 +122,17 @@ void SelectionSystem::setHitEntities(uint32 entity, const std::vector<uint32> hi
 
 	component->hitEntities = hitEntities;
 }
+
+bool SelectionSystem::IsEntitySelected_internal(uint32 EntityID)
+{
+	auto& selectionCompArray = Engine::Get().getECSManager()->getComponentManager<SelectionComponent>()->getComponentArray();
+	for (auto selectionComp : selectionCompArray)
+	{
+		for (auto hitEnt : selectionComp.hitEntities)
+		{
+			if (hitEnt == EntityID)
+				return true;
+		}
+	}
+	return false;
+}

@@ -4,76 +4,6 @@
             {
                 "struct TransformComponent": [
                     [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        0.0,
-                        1.0,
-                        0.0
-                    ],
-                    [
-                        10.800000190734863,
-                        12.100000381469727,
-                        0.0,
-                        1.0
-                    ]
-                ]
-            },
-            {
-                "struct MeshComponent": {
-                    "LODType": 0,
-                    "bDisregardedDuringFrustumCulling": false,
-                    "bIsTranslucent": false,
-                    "bShouldRender": true,
-                    "drawType": 4,
-                    "path": "Assets\\suzanne.obj",
-                    "reusable": true
-                }
-            },
-            {
-                "struct AxisAlignedBoxComponent": {
-                    "bShouldGenerateOverlapEvents": false,
-                    "center": [
-                        1.34375,
-                        1.34375,
-                        1.34375
-                    ],
-                    "max": [
-                        1.34375,
-                        1.34375,
-                        1.34375
-                    ],
-                    "min": [
-                        -1.34375,
-                        -1.34375,
-                        -1.34375
-                    ]
-                }
-            },
-            {
-                "struct TextureComponent": {
-                    "path": "Assets\\Briller.jpg",
-                    "reusable": true,
-                    "wrapMode": 10497
-                }
-            }
-        ]
-    },
-    {
-        "6": [
-            {
-                "struct TransformComponent": [
-                    [
                         5.800000190734863,
                         0.0,
                         0.0,
@@ -128,6 +58,76 @@
                     "drawType": 4,
                     "path": "Assets\\cube.obj",
                     "reusable": true
+                }
+            },
+            {
+                "struct TextureComponent": {
+                    "path": "Assets\\Briller.jpg",
+                    "reusable": true,
+                    "wrapMode": 10497
+                }
+            }
+        ]
+    },
+    {
+        "6": [
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        10.800000190734863,
+                        12.100000381469727,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": false,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets\\suzanne.obj",
+                    "reusable": true
+                }
+            },
+            {
+                "struct AxisAlignedBoxComponent": {
+                    "bShouldGenerateOverlapEvents": false,
+                    "center": [
+                        1.34375,
+                        1.34375,
+                        1.34375
+                    ],
+                    "max": [
+                        1.34375,
+                        1.34375,
+                        1.34375
+                    ],
+                    "min": [
+                        -1.34375,
+                        -1.34375,
+                        -1.34375
+                    ]
                 }
             },
             {

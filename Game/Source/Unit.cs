@@ -21,13 +21,18 @@ namespace Game
         public override void Update()
         {
 
-            //check if entity is selected 
-            Vec3 currentPos = Transform.getTransform_internal(entityID);
-            Console.WriteLine(currentPos.m_y);
-            Transform.Move_Internal(entityID, currentPos + offset);
+            if(IsEntitySelected_internal(entityID))
+            {
+                Console.WriteLine("Entity is selected");
+                Vec3 currentPos = Transform.getTransform_internal(entityID);
+                Console.WriteLine(currentPos.m_y);
+                Transform.Move_Internal(entityID, currentPos + offset);
 
-            //Debug.PrintMethod_Interal("update");
-            //throw new NotImplementedException();
+                //Debug.PrintMethod_Interal("update");
+                //throw new NotImplementedException();
+            }
+            else
+                Console.WriteLine("Entity not selected");
         }
     }
 }
