@@ -66,6 +66,10 @@ public:
     void updateAllLevels();
 
     void setRotationX(float value);
+
+    GameObject* mPhysicsBall{nullptr};
+    void ResetBallVelocity();
+
 private:
     //TODO InputHandler
 
@@ -78,7 +82,6 @@ private:
     GameObject* tempGameObject{nullptr};
     GameObject* mTerrainObject{nullptr};
     GameObject* mHeightCurveObject{nullptr};
-    GameObject* mPhysicsBall{nullptr};
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

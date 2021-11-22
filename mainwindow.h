@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QVector3D>
 
 class QWidget;
 class RenderWindow;
@@ -109,6 +110,8 @@ private slots:
 
     void on_actionPlay_toggled(bool arg1);
 
+    void on_actionReset_Ball_triggered();
+
 private:
     void init();
     Ui::MainWindow *ui;
@@ -121,6 +124,10 @@ private:
     float scaleX{1};
     float scaleY{1};
     float scaleZ{1};
+
+        bool getPosOnce{true};
+
+    QVector3D lastBallPos{0,0,0};
 
     bool bCurrentlyDeleting = false;
 

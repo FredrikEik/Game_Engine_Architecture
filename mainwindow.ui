@@ -412,6 +412,7 @@
      <string>PhysicsBall</string>
     </property>
     <addaction name="actionPlay"/>
+    <addaction name="actionReset_Ball"/>
    </widget>
    <addaction name="menuAdd_Mesh"/>
    <addaction name="menuOptions"/>
@@ -506,6 +507,11 @@
    </property>
    <property name="text">
     <string>Play</string>
+   </property>
+  </action>
+  <action name="actionReset_Ball">
+   <property name="text">
+    <string>Reset Ball</string>
    </property>
   </action>
  </widget>

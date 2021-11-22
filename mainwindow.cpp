@@ -576,5 +576,23 @@ void MainWindow::on_comboBox_3_currentTextChanged(const QString &arg1)
 void MainWindow::on_actionPlay_toggled(bool arg1)
 {
     GameEngine::getInstance()->bBallPhysicsIsPlaying = arg1;
+
+    if(getPosOnce)
+    {
+        lastBallPos.setX(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getX());
+        lastBallPos.setY(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getY());
+        lastBallPos.setZ(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getZ());
+        getPosOnce = false;
+    }
+
+}
+
+
+void MainWindow::on_actionReset_Ball_triggered()
+{
+    getPosOnce = true;
+    GameEngine::getInstance()->ResetBallVelocity();
+    GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.setPosition(lastBallPos.x(),lastBallPos.y(),lastBallPos.z());
+
 }
 

@@ -155,7 +155,7 @@ void GameEngine::SetUpObjects()
     // Ball-Physics:
 
     mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-    mPhysicsBall->mTransformComp->mMatrix.translate(455.f,50.f,625.f);
+    mPhysicsBall->mTransformComp->mMatrix.translate(667.80f,10.0f,281.50f);
     mPhysicsBall->mTransformComp->mMatrix.scale(1);
     mPhysicsBall->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mPhysicsBall);
@@ -351,6 +351,11 @@ void GameEngine::updateAllLevels()
 {
     mResourceManager->getAllLevelNames();
     mMainWindow->updateComboboxLevels(mResourceManager->mLevelNames);
+}
+
+void GameEngine::ResetBallVelocity()
+{
+    mPhysicsBallSystem->resetBall();
 }
 
 void GameEngine::setRenderPointer(RenderWindow *temp, MainWindow *mainW)

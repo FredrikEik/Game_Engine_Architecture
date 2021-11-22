@@ -23,6 +23,8 @@ public:
 
     GameObject *GetTerrain();
 
+    void resetBall();
+
 private:
     float xPosOnTarrain;
     float zPosOnTarrain;
@@ -40,23 +42,13 @@ private:
     double zMax{0};
     double yMin{0};
     double yMax{0};
-    int hMapRows{998};
-    int hMapCols{1457};
+//    int hMapRows{998};
+//    int hMapCols{1457};
 
-    bool firstTriangle{true};
-    QVector2D startPoint{0,0};
-    bool setup{true};
-    bool bOnBotLeft{true};
 
-    int lastTirangleID{0};
-    int currentTirangleID{0};
 
     //hardcoded for now should change when spawning on different square
     //make a init bool to get and set the curret pos;
-    QVector2D lastGridXZPos{0,0};
-    QVector2D currentGridXZPos{0,0};
-
-    std::queue<QVector2D> lastAndCurrentQ;
     QVector3D collisionVector{0,0,0};
 
     QVector3D normal;
@@ -76,9 +68,9 @@ private:
 
 
     QVector3D mVelocity{0,0,0};
-    QVector3D mAcceleration{0,0,0};
+//    QVector3D mAcceleration{0,0,0};
     QVector3D mPosition{0,0,0};
-    QVector3D mFriction{0.3f,0.3f,0.3f};
+//    QVector3D mFriction{0.3f,0.3f,0.3f};
 //    static PhysicsBallSystem* mInstance;
     GameObject* mTerrain;
 };

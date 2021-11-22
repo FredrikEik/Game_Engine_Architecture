@@ -275,10 +275,10 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             QVector3D aVec{normal.x()*normal.y(),((normal.y()*normal.y())-1),normal.y()*normal.z()};
 
 
-//            if(x == normalLastAndCurrentQ.back())
-//            {
-//                return std::pair<QVector3D,QVector3D>{aVec,QVector3D{0,0,0}};
-//            }
+            if(x == normalLastAndCurrentQ.back())
+            {
+                return std::pair<QVector3D,QVector3D>{aVec,QVector3D{0,0,0}};
+            }
 
             //aVec *= x;
             return std::pair<QVector3D,QVector3D>{aVec,x};
@@ -286,7 +286,20 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     }else{
         qDebug() << "Ball is out of bounds!";
     }
-//    return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
+    //    return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
+}
+
+void PhysicsBallSystem::resetBall()
+{
+//    mVelocity = {0,0,0};
+//    mPosition = {0,0,0};
+//    collisionVector = {0,0,0};
+//    lastNormal  = {0,0,0};
+//    currentNormal  = {0,0,0};
+//    normalLastAndCurrentQ.pop();
+//    normalLastAndCurrentQ.pop();
+//    onNewTriangle = false;
+//    id = 0;
 }
 
 //GameObject *PhysicsBallSystem::GetTerrain()
