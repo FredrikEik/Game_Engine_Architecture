@@ -153,6 +153,14 @@ void Viewport::render()
 		{
 			Save::saveEntityPrefab(selectedEntity, ECS);
 		}
+		if (ImGui::Button("Enable Wireframe"))
+		{
+			static bool WireFrame = !WireFrame;
+			if(WireFrame)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 
 		
 

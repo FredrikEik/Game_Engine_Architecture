@@ -1,12 +1,6 @@
 #include "Engine.h"
 #include <iostream>
 
-
-//#include <imgui.h>
-//#include "../imgui/Bindings/imgui_impl_glfw.h"
-//#include "../imgui/Bindings/imgui_impl_opengl3.h"
-
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,6 +13,7 @@
 #include "../Assets/DefaultAssets.h"
 #include "../Systems/TransformSystem.h"
 #include "../Systems/CameraSystem.h"
+#include "../Systems/TerrainSystem.h"
 
 #include "../Systems/SelectionSystem.h"
 #include "../Systems/CollisionSystem.h"
@@ -174,12 +169,14 @@ void Engine::init()
 
 
 	terrainEntity = ECS->newEntity();
-	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
-	ECS->loadAsset(terrainEntity, "Assets/grass.png");
-	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	meshComp->bDisregardedDuringFrustumCulling = true;
-	ECS->addComponents<TransformComponent>(terrainEntity);
-	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
+	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
+	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	//ECS->loadAsset(terrainEntity, "Assets/grass.png");
+	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	//meshComp->bDisregardedDuringFrustumCulling = true;
+	//ECS->addComponents<TransformComponent>(terrainEntity);
+	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
@@ -191,12 +188,12 @@ void Engine::init()
 	//Init - binds all internal functions - Important first step
 	ScriptSystem::Init();
 
-	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
-	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
-	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
-	ScriptSystem::Invoke("BeginPlay", ECS);
 
+	//unitEntity = ECS->newEntity();
+	//ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
+	//ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
+	//ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
+	//ScriptSystem::Invoke("BeginPlay", ECS);
 
 	reservedEntities = ECS->getNumberOfEntities();
 
@@ -219,7 +216,7 @@ void Engine::loop()
 		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
 
