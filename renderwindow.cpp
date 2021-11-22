@@ -184,6 +184,9 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
+
+
+
 /*
 
     //Suzannes - using default material:
@@ -256,6 +259,12 @@ void RenderWindow::init()
 //            break;
 //        }
 //    }
+
+    entitySys->construct("sphere.obj", QVector3D(55.0f,4.0f,50.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(60.0f,4.0f,50.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(65.0f,4.0f,50.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(70.0f,4.0f,50.0f),2,1);
+
     mSong->pause();
     mMainWindow->updateViewPort();
 }
@@ -327,7 +336,7 @@ void RenderWindow::render()
     if(!isPaused)
     {
         //COLLISON AND PHYSICS PART
-        for(int i = 0; i < eSize; i++){
+        for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++){
             if(transformCompVec[i]->entity == 3)
             {
                 transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
@@ -338,8 +347,33 @@ void RenderWindow::render()
             {
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
                 //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 16 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 17 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 18 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 19 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
                 break;
             }
+
         }
     }
 
