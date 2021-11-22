@@ -634,7 +634,7 @@ void MeshHandler::readLasFile()
     const int gridSizeZ = 50;
     gsl::Vector3D planeGrid[gridSizeX][gridSizeZ];
 
-    //Fill outer bounds of a 2D grid.
+    {//Fill outer bounds of a 2D grid.
 //    planeGrid[0][0].x = xMin; //Low left
 //    planeGrid[0][0].y = zMin; //Low left
 
@@ -646,14 +646,17 @@ void MeshHandler::readLasFile()
 
 //    planeGrid[0][gridSizeZ-1].x = xMin; //top left
 //    planeGrid[gridSizeZ-1][0].y = zMax; //bot right
+    }
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
     float distanceBetweenSquaresX = (xMax - xMin) / gridSizeX;
     float distanceBetweenSquaresZ = (zMax - zMin) / gridSizeZ;
 
-//    qDebug() << grid2D[0][0].x << grid2D[0][0].y; //qDebug isnt correct, but the data is correct in debug mode.
-int pointDataOutOfGrid = pointData.size();
-int pointsInSquare = 0; //Figuring this might be useful for calculating how many points are in each square.
+    int pointDataOutOfGrid = pointData.size();
+    int nrPoints[gridSizeX*gridSizeZ] = {0};
+    float sumPointData[gridSizeX*gridSizeZ];
+    float averagePointData[gridSizeX*gridSizeZ];
+
 
 for (int x = 0; x < gridSizeX; x++)
 {
@@ -665,7 +668,7 @@ for (int x = 0; x < gridSizeX; x++)
 //        std::cout << x << " " << planeGrid[x][z].x << " " << z << " " << planeGrid[x][z].y << "\n";
 
         //Check how many points there are between each position in the grid using resolution
-        for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++)
+        for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
         {
             if(pointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
                pointData[pointDataSearch].getY() >= planeGrid[x][z].z &&
@@ -673,23 +676,25 @@ for (int x = 0; x < gridSizeX; x++)
                pointData[pointDataSearch].getY() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
                 pointDataOutOfGrid--; //There are currently missing about 1365 pieces of data.
-                pointsInSquare++;
 
+                nrPoints[x*z]++;
+                sumPointData[x*z] += pointData[pointDataSearch].getY();
                 //Inside this if statement i need to create some logic to know spesificially which points are in each square.
-
                 //I need the y-height of the pointData and average their height for each [x][z] square.
                 //This really only needs to run for each square, but need to know which pointDataSearches was a hit with each planeGrid[x][z]
 
-                //I could create a vector of int[3] and fill 0 with pointDataSearch-es, 1 and 2 with x and z when there is a hit.
+                //I could create a vector of int and fill with pointDataSearch-es
+                //Another int[3] where 0 = number of points, 1 and 2 with x and z when there is a hit.
                 //That seems clunky. but could provide me with an escape from this monsterous for-loop.
-                //
-
-//                planeGrid[x][z].y = pointData[pointDataSearch].getY();
-
             }
         }
+        //This is now in the for loop running for x * z
+        averagePointData[x*z] = sumPointData[x*z]/nrPoints[x*z];
+
     }
 }
+    qDebug() << "Nr of points in square nr" << nrPoints[0] << "their average height" << averagePointData[0];
+//    qDebug() << xMax << planeGrid[49][49].x << zMax << planeGrid[49][49].z; //this does not match perfectly, but close enough for now.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    std::cout << xMax << " " << zMax << "\n";
     qDebug() << "Beacuse i need another breakpoint QT accepts";
