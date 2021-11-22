@@ -31,6 +31,8 @@ namespace ScriptInJin
         //[MethodImpl(MethodImplOptions.InternalCall)]
         //extern public static uint getEntityID_Internal(UIntPtr native_handle);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static bool IsEntitySelected_internalz(uint EntityID);
     }
 
     public class Transform

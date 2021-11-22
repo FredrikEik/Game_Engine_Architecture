@@ -20,6 +20,8 @@ namespace Game
         public Vec3 offset = new Vec3(0.0f, 0.01f, 0.0f);
         public override void Update()
         {
+
+            //check if entity is selected 
             Vec3 currentPos = Transform.getTransform_internal(entityID);
             Console.WriteLine(currentPos.m_y);
             Transform.Move_Internal(entityID, currentPos + offset);
