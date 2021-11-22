@@ -168,9 +168,7 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
 
-	terrainEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
-	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
+
 	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	//ECS->loadAsset(terrainEntity, "Assets/grass.png");
 	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
@@ -201,7 +199,10 @@ void Engine::init()
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
-
+	terrainEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
+	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
