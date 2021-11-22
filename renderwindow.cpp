@@ -184,8 +184,8 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
-
 /*
+
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
@@ -198,7 +198,6 @@ void RenderWindow::init()
     }
     //JSS->SaveLevel("Test");
 */
-
 
     SoundManager::getInstance()->init();
     
@@ -233,12 +232,12 @@ void RenderWindow::init()
 
 
     //player
-
+/*
     if(transformCompVec[9] != nullptr){
         CurrentPlayer = transformCompVec[9];
     }
 
-
+*/
     //LASDATA
     LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
