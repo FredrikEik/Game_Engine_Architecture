@@ -8,11 +8,20 @@
 
 #include "input.h"
 #include "constants.h"
+#include "objectfactory.h"
+#include "gameobject.h"
+#include "soundmanager.h"
+#include "mousepicker.h"
+#include "spawner.h"
+#include "player.h"
+#include "skybox.h"
+#include "script.h"
+
 
 class QOpenGLContext;
 class Shader;
 class MainWindow;
-class VisualObject;
+class GameObject;
 class Camera;
 class Texture;
 
@@ -32,6 +41,53 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
+    void toggleBacksideCulling(bool state);
+
+    std::vector<GameObject*> mGameObjects;
+
+    bool mIsPlaying{false};  //is the game playing?
+
+    Camera *mEditorCamera{nullptr};
+    Camera *mGameCamera{nullptr};
+
+    player* mPlayer { nullptr };
+
+    void playSound();
+    void pauseSound();
+    void stopSound();
+//    void valueX(double arg1);
+    void setSelectionIndex(int index);
+    void deleteSelection();
+
+    gsl::Matrix4x4 getTransform(int index);
+    gsl::Vector3D getRotation(int index);
+    gsl::Vector3D getScale(int index);
+
+    void setPositionX(double value);
+    void setPositionY(double value);
+    void setPositionZ(double value);
+
+    void setRotationX(double value);
+    void setRotationY(double value);
+    void setRotationZ(double value);
+
+    void setScaleX(double value);
+    void setScaleY(double value);
+    void setScaleZ(double value);
+    void setScale(double x, double y, double z, int index);
+
+    void updateMatrix();
+
+    void toggleGameMode();
+
+    void mousePickingRay(QMouseEvent *event);
+
+    bool mUseFrustumCulling{true};
+    bool mGameCamAsFrustumCulling{false};
+
+    int mTextureIndex = 0;
+
+    Script* mScript { nullptr };
 
 private slots:
     void render();
@@ -44,6 +100,10 @@ private:
     void calculateFramerate();
 
     void startOpenGLDebugger();
+
+    bool frustumCulling(int gameObjectIndex);
+
+    bool objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans);
 
     void setCameraSpeed(float value);
 
@@ -67,7 +127,12 @@ private:
     Camera *mCurrentCamera{nullptr};
     float mAspectratio{1.f};
 
-    std::vector<VisualObject*> mVisualObjects;
+    ObjectFactory* ObjFactory = new ObjectFactory;
+    SoundSource* mStereoSound;
+    SoundSource* mPop;
+    SoundSource* mJump;
+    class Spawner* MapSpawner { nullptr };
+    class SkyBox* skyBox { nullptr };
 
     Input mInput;
     float mCameraSpeed{0.05f};
@@ -83,7 +148,15 @@ private:
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
+    MousePicker *mMousePicker{nullptr};
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
+
+    bool bPlayGame = false;
+
+    //for statistics in status bar
+    int mVerticesDrawn{0};
+    int mObjectsDrawn{0};
+
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
@@ -93,6 +166,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+
+public:
+    void ObjectButton(std::string object);
 };
 
 #endif // RENDERWINDOW_H

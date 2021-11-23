@@ -1,13 +1,22 @@
 #include "camera.h"
+#include "math_constants.h" //gotta include this for frustum calculations.
 #include <QDebug>
 
-Camera::Camera()
+Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
 {
     mViewMatrix.setToIdentity();
     mProjectionMatrix.setToIdentity();
 
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
+
+    mFrustum.mFOVvertical = fovIn;
+    mFrustum.mNearPlaneDistance = nearPlaneDistanceIn;
+    mFrustum.mFarPlaneDistance = farPlaneDistanceIn;
+
+    updateForwardVector();
+
+    calculateFrustumVectors();
 }
 
 void Camera::pitch(float degrees)
@@ -21,6 +30,18 @@ void Camera::yaw(float degrees)
 {
     // rotate around mUp
     mYaw -= degrees;
+    updateForwardVector();
+}
+
+void Camera::setPitch(float pitch)
+{
+    mPitch = pitch;
+    updateForwardVector();
+}
+
+void Camera::setYaw(float yaw)
+{
+    mYaw = yaw;
     updateForwardVector();
 }
 
@@ -57,11 +78,23 @@ void Camera::update()
 
     mViewMatrix = mPitchMatrix* mYawMatrix;
     mViewMatrix.translate(-mPosition);
+
+}
+
+void Camera::calculateProjectionMatrix()
+{
+    mProjectionMatrix.perspective(mFrustum.mFOVvertical, mFrustum.mAspectRatio, mFrustum.mNearPlaneDistance, mFrustum.mFarPlaneDistance);
+    calculateFrustumVectors();
 }
 
 void Camera::setPosition(const gsl::Vector3D &position)
 {
     mPosition = position;
+}
+
+gsl::Vector3D Camera::getPosition()
+{
+    return mPosition;
 }
 
 void Camera::setSpeed(float speed)
@@ -92,4 +125,24 @@ gsl::Vector3D Camera::position() const
 gsl::Vector3D Camera::up() const
 {
     return mUp;
+}
+
+void Camera::calculateFrustumVectors()
+{
+    float halfVheight = mFrustum.mFarPlaneDistance * tanf(gsl::deg2radf(mFrustum.mFOVvertical/2)); //calculate the lenght of the opposite
+    float halfHwidth = halfVheight * mFrustum.mAspectRatio;
+
+    float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, mFrustum.mFarPlaneDistance)));
+
+    gsl::Vector3D tempVector;
+    //rightplane vector = mRight rotated by FOV around camera up
+    tempVector = mRight;
+    tempVector.axisAngleRotation(-horisontalHalfAngle, mUp);
+    mFrustum.mRightPlane = tempVector.normalized();
+
+    //leftPlane vector = mRight rotated by FOV+180 around camera up
+    tempVector = mRight;
+    tempVector.axisAngleRotation(horisontalHalfAngle - 180.f, mUp);
+    mFrustum.mLeftPlane = tempVector.normalized();
+
 }

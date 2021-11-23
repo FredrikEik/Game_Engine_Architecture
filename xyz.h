@@ -3,8 +3,9 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 #include "visualobject.h"
+#include "gameobject.h"
 
-class XYZ : public VisualObject
+class XYZ : public GameObject
 {
 public:
    XYZ();
@@ -12,6 +13,7 @@ public:
 
    void init() override;
    void draw() override;
+
 };
 
 #endif // XYZ_H
