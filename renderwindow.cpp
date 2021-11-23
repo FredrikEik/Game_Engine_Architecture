@@ -247,12 +247,14 @@ void RenderWindow::init()
    // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
 
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
     entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
+    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+    //Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
 //    int eSize = (int)entities.size();
 //    for(int i = 0; i < eSize; i++){
 //        if(meshCompVec[i]->entity == 16){
@@ -260,10 +262,10 @@ void RenderWindow::init()
 //        }
 //    }
 
-    entitySys->construct("sphere.obj", QVector3D(55.0f,4.0f,50.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(60.0f,4.0f,50.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(65.0f,4.0f,50.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(70.0f,4.0f,50.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(55.0f,4.0f,50.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(60.0f,4.0f,50.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(65.0f,4.0f,50.0f),2,1);
+    //ntitySys->construct("sphere.obj", QVector3D(70.0f,4.0f,50.0f),2,1);
 
     mSong->pause();
     mMainWindow->updateViewPort();

@@ -75,6 +75,16 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 }
 
+std::vector<Vertex> LASHeightMap::getCountourPoints() const
+{
+    return CountourPoints;
+}
+
+void LASHeightMap::setCountourPoints(const std::vector<Vertex> &value)
+{
+    CountourPoints = value;
+}
+
 
 
 void LASHeightMap::populatePosArr()
@@ -168,8 +178,8 @@ void LASHeightMap::GenerateHeightMap()
     float ofsetz = -100;
     float ofsety = -15;
     float f = 1;
-    for(float x = 100; x<200; x+=1)
-        for(float z =100; z<200; z+=1)
+    for(float x = 100; x<400; x+=1)
+        for(float z =100; z<600; z+=1)
         {
             //get all height data :D
             float height1 = CalcHeight(    x,    z);
@@ -185,6 +195,18 @@ void LASHeightMap::GenerateHeightMap()
             mVertices.push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0}); //4
             mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0}); //5
             mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0}); //6
+
+            int OfY = ofsety;
+            int H1 = height1;
+            int h = OfY + H1;
+            float test = ofsety + height1;
+            if(test > 5000 || test < 5){
+            }else{
+                if(std::fmod(test,5)<0.1){
+                        CountourPoints.push_back(Vertex{ofsetx +  x, ofsety +height1 + 0.01f,ofsetz +   z,       0, 0, 0,0,0});
+                        //qDebug() << CountourPoints[CountourPoints.size()-1].getVertex().getX() << CountourPoints[CountourPoints.size()-1].getVertex().getY() << CountourPoints[CountourPoints.size()-1].getVertex().getZ() << "____________________________________________________________";
+                }
+            }
         }
 }
 
