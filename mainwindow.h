@@ -53,6 +53,8 @@ private slots:
 
     void on_LoadLevel_clicked();
 
+    void on_togglePhysics_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};

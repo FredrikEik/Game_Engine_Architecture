@@ -251,3 +251,9 @@ void MainWindow::on_LoadLevel_clicked()
     mRenderWindow->loadLevel();
 }
 
+
+void MainWindow::on_togglePhysics_toggled(bool checked)
+{
+    mRenderWindow->togglePhysics = checked;
+}
+

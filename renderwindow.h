@@ -40,6 +40,7 @@ public:
 
     void toggleWireframe(bool buttonState);
     bool toggleFrustumCulling {false};
+    bool togglePhysics {false};
 
     void setPickedObject(int pickedID);
     void cancelPickedObject();

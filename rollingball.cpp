@@ -3,7 +3,8 @@
 
 Rollingball::Rollingball(int n) : OctahedronBall(n)
 {
-    gForce = gAcceleration * massInKg;
+    //gForce = -gAcceleration * massInKg;
+    gForce = gsl::Vector3D(0.f,-9.80565f,0.f);
 }
 Rollingball::~Rollingball()
 {
@@ -15,6 +16,7 @@ void Rollingball::move(float dt)
 
     gsl::Vector3D barycCoords;
     gsl::Vector3D ballPosition = getTransformComponent()->mMatrix.getPosition();
+    float yOffset = 0.25f;
 
     for(int i = 0; i < vertices.size() - 2; i+= 3)
     {
@@ -39,22 +41,35 @@ void Rollingball::move(float dt)
             gsl::Vector3D pNormal = p12^p13;
 
             //qDebug() << "pNormal not normalized: " << pNormal.x << pNormal.y << pNormal.z;
+
+            //pNormal.y = 0.0f;
             pNormal.normalize();
             //qDebug() << "pNormal normalized: " << pNormal.x << pNormal.y << pNormal.z;
 
-            gForce = gsl::Vector3D(abs(gForce.x), abs(gForce.y), abs(gForce.z));
-            //gsml::Vector3d pz{pNormal.z, pNormal.z, pNormal.z};
 
-            acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
+            //gForce = gsl::Vector3D(abs(gForce.x), abs(gForce.y), abs(gForce.z));
+
+            float surfaceY = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
+
+            if(ballPosition.y < surfaceY+ (yOffset*2))
+            {
+                //acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
+                acceleration = gsl::Vector3D(pNormal.x*pNormal.y*9.80565f, pNormal.y*pNormal.y*9.80565f, pNormal.z*pNormal.y*9.80565f) + gForce;
+                velocity = velocity + acceleration * dt;
+                gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY + yOffset, newPosition.z);
+            }
+            else
+            {
+                acceleration = gForce;
+                velocity = velocity + acceleration * dt;
+                gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y+yOffset, newPosition.z);
+            }
             //acceleration = gAcceleration * gsml::Vector3d(pNormal.x*pNormal.z, pNormal.y*pNormal.z, pNormal.z*pNormal.z-1);
             //acceleration = acceleration + friction;
-            velocity = velocity + acceleration * dt;
 
-            float yOffset = 0.25f;
-            gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
-            newPosition.y = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
-            getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y+ yOffset, newPosition.z);
-
+            //newPosition.y = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
             ballPosition = getTransformComponent()->mMatrix.getPosition();
 
             //mPosition.translate(velocity.x, velocity.y, velocity.z);

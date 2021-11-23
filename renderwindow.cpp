@@ -159,7 +159,8 @@ void RenderWindow::init()
     */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    //mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(7.f, 20.f, 27.f));
 
     //Compile shaders:
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -240,14 +241,15 @@ void RenderWindow::initObjects()
     */
     surface = factory->createObject("LASsurface");
 
-    GameObject* rb = factory->createObject("Rollingball");
-    dynamic_cast<Rollingball*>(rb)->LASsurface = surface;
-
-    for(int i{0}; i < 10; i++)
+    int max = 30;
+    int min = -30;
+    for(int i{0}; i < 80; i++)
     {
         GameObject* rb = factory->createObject("Rollingball");
         dynamic_cast<Rollingball*>(rb)->LASsurface = surface;
-        rb->getTransformComponent()->mMatrix.setPosition(rand() % 15, 7, rand() % 15);
+        int randX = rand()%(max-min+1)+min;
+        int randZ = rand()%(max-min+1)+min;
+        rb->getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
     }
 
     mPlayer = factory->createObject("Player");
@@ -391,7 +393,7 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
             */
-            if(factory->mGameObjects[i]->mObjectType == "Rollingball")
+            if(factory->mGameObjects[i]->mObjectType == "Rollingball" && togglePhysics == true)
             {
                 dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
             }
