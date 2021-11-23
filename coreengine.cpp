@@ -101,7 +101,7 @@ void CoreEngine::setUpScene()
     MeshHandler HeightMap;
     HeightMap.readLasFile();
 
-    //********************** Making the object to be drawn **********************
+    //********************** Making the object to be drawn *********************
 
     //Axis
     GameObject *temp = mGameObjectManager->addObject("axis");
@@ -154,7 +154,7 @@ void CoreEngine::setUpScene()
     temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
     temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     temp->mTransform->mMatrix.scale(1.0f);
-    temp->mTransform->mMatrix.rotateY(0); //If rotation is applyed, vertices does not match their actual locations in world
+    temp->mTransform->mMatrix.rotateY(0); //If rotation is applied, vertices does not match their actual locations in world
     temp->mName = "CrookedTriangleSurface";
     mRenderSystem->mGameObjects.push_back(temp);
 

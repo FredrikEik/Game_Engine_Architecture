@@ -361,6 +361,20 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, floa
 
     return tempMesh;
 }
+//Tried this, but it is too naive in the way that it is not called every frame or by the renderwindow, i think.
+//MeshData MeshHandler::makePoint(gsl::Vector3D &pointIn, float pointSizeIn, gsl::Vector3D colorIn)
+//{
+//    //    glPointSize(pointSizeIn); //This crashes the program
+////    glBegin(GL_POINTS);
+//    MeshData tempMesh;
+//    tempMesh.mVertices->push_back(Vertex{pointIn.x, pointIn.y, pointIn.z, colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
+
+//    tempMesh.mDrawType = GL_POINTS;
+
+//    initMesh(tempMesh, 0);
+////    glEnd();
+//    return tempMesh;
+//}
 
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
@@ -631,6 +645,7 @@ void MeshHandler::readLasFile()
 
 //--------------Done reading las file, on to creating a simplification-------------------//
 
+
     const int gridSizeX = 50; // This serves as a "resolution" now the grid with a huge set of datapoints, only
     const int gridSizeZ = 50; // have 50x50 = 2500 points for further work.
 
@@ -690,18 +705,43 @@ for (int x = 0; x < gridSizeX; x++)
     }
 }
     qDebug() << "planeGrid is now filled";
+
+//  Does not work for now.
+//    qDebug() << planeGrid[0][39];
+//    //Display the planeGrid using OpenGL Points
+//    for(int x = 0; x < gridSizeX; x++)
+//    {
+//        for(int z = 0; z < gridSizeZ; z++)
+//        {
+//            makePoint(planeGrid[x][z]);
+//        }
+//    }
+
+
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
 //    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << xMax << planeGrid[49][49].x << zMax << planeGrid[49][49].z; //this does not match perfectly, but close enough for now.
 //    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 
     // Now the vertices needs to be "converted" to triangles.
-    // Two Triangles need to be composed using planeGrid[0][0], [1][1], [1][0]
-    //                                                  [0][0], [1][1], [0][1]
+    // I could try to write an obj file, but seems difficult, could be used to not calculate everything every run.
+
+    // Two Triangles need to be composed using planeGrids cordinates [0][0], [1][1], [1][0]
+    //                                                               [0][0], [1][1], [0][1]
+
+    float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
+
+//    qDebug() << "Start of triangle creation";
+//    for (int width = 0; width > gridSizeX; width++)
+//    {
+//        for (int depth = 0; depth > gridSizeZ; depth++)
+//        {
+//            float y = planeGrid[width][depth].y / heigthScale;
+//        }
+//    }
 
     // The triangle normal needs to be calculated
     //
-
 }
 
 
