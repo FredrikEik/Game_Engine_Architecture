@@ -21,14 +21,14 @@ void GameObject::checkLodDistance(gsl::Vector3D distance, float cameraDistance)
 {
     if (abs(distance.x) < cameraDistance && abs(distance.z) < cameraDistance)
     {
-        qDebug() << abs(distance.x);
-        qDebug() << abs(distance.z);
+        //qDebug() << abs(distance.x);
+        //qDebug() << abs(distance.z);
         BadLod = false;
-        qDebug() << BadLod;
+        //qDebug() << BadLod;
     }
     else
     {
         BadLod = true;
-        qDebug() << BadLod;
+        //qDebug() << BadLod;
     }
 }

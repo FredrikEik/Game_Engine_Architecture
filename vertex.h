@@ -33,6 +33,9 @@ public:
     void set_st(GLfloat *st);
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
+    gsl::Vector3D getXYZ(){ return mXYZ;}
+    gsl::Vector3D getNormal(){return mNormal;}
+    gsl::Vector2D getST(){return mST;}
 
 private:
     gsl::Vector3D mXYZ;

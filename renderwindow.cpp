@@ -23,6 +23,7 @@
 #include "triangle.h"
 #include "mariocube.h"
 #include "sphere.h"
+#include "lasterraingenerator.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
@@ -219,6 +220,10 @@ void RenderWindow::initObjects()
     skybox = factory->createObject("Skybox");
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
+
+    terrain = factory->createObject("Terrain");
+
+
     GameObject *temp=nullptr;
    /* for(int i{0}; i < 50; i++)
     {

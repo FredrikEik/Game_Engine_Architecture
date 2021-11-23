@@ -55,6 +55,7 @@ public:
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
     GameObject* skybox;
+    GameObject* terrain;
 
     //Javascript engine
     QJSEngine engine;
