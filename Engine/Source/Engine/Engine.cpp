@@ -192,6 +192,12 @@ void Engine::init()
 	//ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	//ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	//ScriptSystem::Invoke("BeginPlay", ECS);
+	
+	unitEntity = ECS->newEntity();
+	ECS->addComponent<TransformComponent>(unitEntity);
+	ECS->loadAsset(unitEntity, DefaultAsset::CUBE);
+	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
+	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
 
 	reservedEntities = ECS->getNumberOfEntities();
 
@@ -222,7 +228,7 @@ void Engine::loop()
 		float currentFrame = glfwGetTime();
 
 		CollisionBroadphaseDatastructure->update();
-
+		vissim_moveCube();
 
 		//// RENDER
 		// Selection Render
@@ -397,6 +403,23 @@ void Engine::windowSize_callback(GLFWwindow* window, int x, int y)
 {
 	windowWidth = x;
 	windowHeight = y;
+}
+
+void Engine::vissim_moveCube()
+{
+	//TerrainSystem::getHeight(unitEntity, terrainEntity, ECS);
+	Input& input = *Input::getInstance();
+
+	if (input.getKeyState(KEY_I).bHeld)
+		TransformSystem::move(unitEntity, glm::vec3(1, 0, 0) * 0.016f * 5.f, ECS);
+	if (input.getKeyState(KEY_K).bHeld)
+		TransformSystem::move(unitEntity, glm::vec3(-1, 0, 0) * 0.016f * 5.f, ECS);
+	if (input.getKeyState(KEY_J).bHeld)
+		TransformSystem::move(unitEntity, glm::vec3(0, 0, -1) * 0.016f * 5.f, ECS);
+	if (input.getKeyState(KEY_L).bHeld)
+		TransformSystem::move(unitEntity, glm::vec3(0, 0, 1) * 0.016f * 5.f, ECS);
+
+	TransformSystem::setHeight(unitEntity, TerrainSystem::getHeight(unitEntity, terrainEntity, ECS), ECS);
 }
 
 void Engine::GLClearError()

@@ -35,6 +35,8 @@ private:
 	static void mouseButton_callback(GLFWwindow* window, int button, int action, int mods);
 	static void windowSize_callback(GLFWwindow* window, int x, int y);
 
+	void vissim_moveCube();
+
 	// glGetError is very slow, thus should only be used in debug builds
 	static void GLClearError();
 

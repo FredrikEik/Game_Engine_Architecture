@@ -81,17 +81,17 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	std::vector<glm::vec3>& normals = (*new std::vector<glm::vec3>());
 	std::vector<GLuint>& indices = (*new std::vector<GLuint>());
 
-	float terrainResolution{ 10 };
+	terrainResolution = { 10 };
 
-	float x, y, z;
 	glm::vec3 min{};
 	glm::vec3 max{};
+	bool initialized{ false };
+	float x, y, z;
 	int32 points{};
 
 	file >> points; // The first line does not contain position info
 	lasPositions.reserve(points);
 
-	bool initialized{ false };
 
 	while (file)
 	{
@@ -124,9 +124,10 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	 @param int number of that height*/
 	std::map<int, std::pair<float, int>> averageHeightPerSquare;
 
+	float tempTerrainResolution = terrainResolution; // Just so the lambda can capture it
 	// Lambda that adds the positions to the averageHeightPerSquare container
 	auto addPositionToAvgHeight =
-		[terrainResolution, min](std::map<int, std::pair<float, int>>& container, const glm::vec3& position)
+		[tempTerrainResolution, min](std::map<int, std::pair<float, int>>& container, const glm::vec3& position)
 	{
 		float positionRow = (position.x - min.x) / terrainResolution;
 		float positionColumn = (position.z - min.z) / terrainResolution;
@@ -183,6 +184,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 			rowsLooped++;
 			continue;
 		}
+
 		indices.push_back(i);
 		indices.push_back(i + 1 + columns);
 		indices.push_back(i + columns);
@@ -208,6 +210,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	mesh->bDisregardedDuringFrustumCulling = true;
 
 }
+
 
 void TerrainSystem::calculateNormals(const std::vector<glm::vec3>& positions, uint32 rowSize,
 	float stepDistanceX, float stepDistanceY, std::vector<glm::vec3>& OUTNormals)
@@ -254,6 +257,123 @@ void TerrainSystem::calculateNormals(const std::vector<glm::vec3>& positions, ui
 		{
 			rowsLooped++;
 		}
-
 	}
+}
+
+float TerrainSystem::getHeight(uint32 entity, uint32 terrainEntity, class ECSManager* ECS)
+{
+	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	TransformComponent* transform = ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity);
+	assert(mesh);
+	assert(transform);
+
+	glm::vec3 position = glm::vec3(transform->transform[3]);
+	uint32 columns = std::sqrt(mesh->m_vertices.size());
+
+	// Dividing the position by the terrain resolution and flooring the results
+	int positionX = position.x / terrainResolution;
+	int positionZ = position.z / terrainResolution;
+
+	// Converting the worldposition to a position in the vertex array
+	uint32 positionInArray = positionZ + (columns * positionX);
+
+	// Converting the position in the vertex array to a position in the index array
+	uint32 approximateStartIndex = positionInArray * 6;
+
+	/**Because the index array stops one short on every row, a small error builds up
+	* For now, a static variable errorMargin corrects this error and makes the guess very accurate
+	* However, it remains to be tested if this is faster than an unchanging error margin when lots of calls are introduced
+	* 1-2 percent is a safe margin, but will make the guess miss by a few houndred when the index gets large*/
+	//approximateStartIndex = ((float)approximateStartIndex) * 0.99;
+	approximateStartIndex = ((float)approximateStartIndex * errorMargin);
+
+
+	// Makes sure we start at the start of a triangle
+	while (approximateStartIndex % 3 != 0)
+		--approximateStartIndex;
+
+	glm::vec3 p, q, r, baryCoord;
+
+	//std::cout << "Position in array: " << positionInArray << ". Guessed index: " << approximateStartIndex << '\n';
+	for (uint32 i{ approximateStartIndex }; i < mesh->m_indices.size(); i+=3)
+	{
+		if (findTriangle(i, position, *mesh, baryCoord, p, q, r))
+		{
+			int32 error = approximateStartIndex - i;
+			if (error <= -9)
+				errorMargin += 0.00001f;
+			else if (error >= -3 && approximateStartIndex > 12)
+				errorMargin -= 0.00001f;
+
+			//std::cout << "Found triangle after " << i - approximateStartIndex << " loops at index "<<i << " with error: " << error << " and error margin: " << errorMargin << '\n';
+			//std::cout << "Found triangle at index" << i << ". Height is: " << baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y <<" .\n";
+			return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
+		}
+	}
+
+	return 0.0f;
+}
+
+bool TerrainSystem::findTriangle(uint64 index, const glm::vec3& position, const MeshComponent& terrainMesh,
+	glm::vec3& outBaryCoord, glm::vec3& outP, glm::vec3& outQ, glm::vec3& outR)
+{
+	glm::vec2 p, q, r;
+
+	// first finding the triangle by searching with 2d vector
+	// then get the height of all 3 vertices when the triangle is found
+	p = glm::vec2(terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[0], 
+		terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[2]);
+
+	q = glm::vec2(terrainMesh.m_vertices[terrainMesh.m_indices[(index+1)]].m_xyz[0], 
+		terrainMesh.m_vertices[terrainMesh.m_indices[(index+1)]].m_xyz[2]);
+
+	r = glm::vec2(terrainMesh.m_vertices[terrainMesh.m_indices[(index+2)]].m_xyz[0],
+		terrainMesh.m_vertices[terrainMesh.m_indices[(index+2)]].m_xyz[2]);
+
+	glm::vec2 pos(position.x, position.z);
+
+	outBaryCoord = baryCentricCoordinates(pos, p, q, r);
+	if (outBaryCoord.x >= 0 && outBaryCoord.y >= 0 && outBaryCoord.z >= 0)
+	{
+		outP = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[0],
+			terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[1],
+			terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[2]);
+
+		outQ = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[0],
+			terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[1],
+			terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[2]);
+
+		outR = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[0],
+			terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[1],
+			terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[2]);
+
+		return true;
+	}
+	return false;
+}
+
+glm::vec3 TerrainSystem::baryCentricCoordinates(const glm::vec2& position, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3)
+{
+	glm::vec2 p12 = p2 - p1;
+	glm::vec2 p13 = p3 - p1;
+	glm::vec3 n = glm::cross(glm::vec3(p13, 0), glm::vec3(p12, 0));
+	float areal_123 = glm::length(n); 
+
+	glm::vec3 baryc; 
+	glm::vec2 p = p2 - position;
+	glm::vec2 q = p3 - position;
+	n = glm::cross(glm::vec3(q,0), glm::vec3(p,0));
+	baryc.x = (n.z / areal_123);// v
+
+	p = p3 - position;
+	q = p1 - position;
+	n = glm::cross(glm::vec3(q,0), glm::vec3(p,0));
+	baryc.y = (n.z / areal_123);// w
+
+	p = p1 - position;
+	q = p2 - position;
+	n = glm::cross(glm::vec3(q,0), glm::vec3(p,0));
+	baryc.z = (n.z / areal_123); // u?
+
+	return baryc;
 }
