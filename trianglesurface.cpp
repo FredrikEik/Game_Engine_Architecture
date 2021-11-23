@@ -35,13 +35,13 @@ TriangleSurface::~TriangleSurface()
 void TriangleSurface::readFile(std::string filnavn)
 {
     std::ifstream inn;
-    std::ifstream inn2;
     inn.open(filnavn.c_str());
+    std::vector <gsl::Vector3D> mapData;
 
 //Leser gjennom fil for å sette maximum og minimum kordinater
     if(inn.is_open())
     {
-        qDebug() << "reading 1";
+        //qDebug() << "reading 1";
         int n;
         inn >> n;
 
@@ -51,16 +51,22 @@ void TriangleSurface::readFile(std::string filnavn)
 
         inn >> currentX >> currentY >> currentZ;
 
+        mapData.push_back(gsl::Vector3D(currentX,currentY,currentZ));
+
         mapMinX = currentX;
         mapMaxX = currentX;
         mapMinY = currentY;
         mapMaxY = currentY;
+        mapMinZ = currentZ;
+        mapMaxZ = currentZ;
 
         for(int i=0; i<n; i++)
         {
 
 
             inn >> currentX >> currentY >> currentZ;
+
+            mapData.push_back(gsl::Vector3D(currentX,currentY,currentZ));
 
 
             if(currentX < mapMinX)
@@ -79,50 +85,69 @@ void TriangleSurface::readFile(std::string filnavn)
             {
                 mapMaxY = currentY;
             }
+            if(currentZ < mapMinZ)
+            {
+                mapMinZ = currentZ;
+            }
+            else if(currentZ > mapMaxZ)
+            {
+                mapMaxZ = currentZ;
+            }
+
+
 
         }
+        //qDebug() << mapMaxZ;
+        //qDebug() << mapMinZ;
         //qDebug() << mapMinX << mapMaxX << mapMinY << mapMaxY;
         inn.close();
     }
+
 //Bruker maximum og minimums kordinater til å sette opp mappet i et 5x5 rutenett
-        float squareSize = 100;
+        float squareSize = 10;
+        std::vector<float> mapHeights;
+        int terrainGridX = 0;
+        int terrainGridZ = 0;
 
         //Firkanter i x-Retning
         for(float i=mapMinX; i<=mapMaxX; i = i+squareSize)
         {
-            qDebug() << "Max X: " << mapMaxX;
-            qDebug() <<"Square CoordX: " << i;
+            //qDebug() << "Max X: " << mapMaxX;
+            //qDebug() <<"Square CoordX: " << i;
+            terrainGridZ = 0;
 
             float currentSquareMinX = i;
             float currentSquareMaxX = i+squareSize;
             float combinedHeight = 0;
-            int vertexToPush = 1;
+
 
             //Firkanter i y-retning
             for(float j=mapMinY; j<=mapMaxY; j = j+squareSize)
             {
+
                 float currentSquareMinY = j;
                 float currentSquareMaxY = j+squareSize;
-                inn.open(filnavn.c_str());
-                if(inn.is_open())
-                {
 
-                    int n;
-                    inn >> n;
                     float currentX;
                     float currentY;
                     float currentZ;
-                    getMeshComponent()->mVertices.reserve(n);
-                    float heightsToCombine [210000];
-                    int heightsToCombineAmount = 0;
-                    Vertex v{};
 
-                    for(int k=0; k<=n; k++)
+                    float heightsToCombine [21000];
+                    heightsToCombine [0] = mapMinZ;
+                    int heightsToCombineAmount = 0;
+
+
+                    for(int k=0; k<mapData.size(); k++)
                     {
 
+
                         //Leser inn en linje med kordinater og sjekker om de er innenfor firkanten
-                        inn >> currentX >> currentY >> currentZ;
                         //qDebug() << currentY;
+                        currentX = mapData[k].getX();
+                        currentY = mapData[k].getY();
+                        currentZ = mapData[k].getZ();
+
+
 
 
                         if(currentX >= currentSquareMinX)
@@ -139,63 +164,89 @@ void TriangleSurface::readFile(std::string filnavn)
                                         //qDebug() << "MÅL!";
                                         heightsToCombineAmount++;
                                         heightsToCombine[heightsToCombineAmount] = currentZ;
-                                        //qDebug() << heightsToCombineAmount;
                                     }
                                 }
                             }
                         }
                     }
+
                     //Legger sammen alle z verdiene fra kordinater i trekanter
-                    if(heightsToCombineAmount!= 0)
-                    {
+                        combinedHeight = 0;
                         for(int l=1; l<= heightsToCombineAmount; l++)
                         {
                             combinedHeight = combinedHeight + heightsToCombine[l];
+                           //qDebug() << "Height to add: " << heightsToCombine[l];
                         }
+                        //qDebug() << "Height combined: " << combinedHeight;
+                        //qDebug() << "Divide amount: " << heightsToCombineAmount;
                         combinedHeight = combinedHeight/heightsToCombineAmount;
-                        qDebug() <<"Height: " << combinedHeight;
-                    }
-                    else
-                    {
-                        combinedHeight = 550;
-                    }
-/*
-                    gsl::Vector3D vertexOne   = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
-                    gsl::Vector3D vertexTwo   = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
-                    gsl::Vector3D vertexThree = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
-                    gsl::Vector3D vertexFour  = {currentSquareMinX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
-                    gsl::Vector3D vertexFive  = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMaxY - mapMinY};
-                    gsl::Vector3D vertexSix   = {currentSquareMaxX - mapMinX,combinedHeight - 550,currentSquareMinY - mapMinY};
-                    vertexOne.normalize();
-                    vertexTwo.normalize();
-                    vertexThree.normalize();
-                    vertexFour.normalize();
-                    vertexFive.normalize();
-                    vertexSix.normalize();
+                        /*if(combinedHeight < mapMinZ)
+                        {
+                            qDebug() << "Height combined: " << combinedHeight*heightsToCombineAmount;
+                            qDebug() << "Divide amount: " << heightsToCombineAmount;
+                            qDebug() << "Result: " << combinedHeight;
+                        }
+                        */
+                        //qDebug() << "Result: " << combinedHeight;
+                        //qDebug() <<"Height: " << combinedHeight;
+                        mapHeights.push_back(combinedHeight);
 
 
 
-
-                    qDebug() << vertexOne.x << vertexOne.y << vertexOne.z;
-
-                    //qDebug() << vertexOne.x << vertexOne.y << vertexOne.z;
-
-
-
-
-                    if(vertexToPush == 1){v.set_xyz(vertexOne.x, vertexOne.y, vertexOne.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-                    else if(vertexToPush == 2){v.set_xyz(vertexTwo.x, vertexTwo.y, vertexTwo.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-                    else if(vertexToPush == 3){v.set_xyz(vertexThree.x, vertexThree.y, vertexThree.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-                    else if(vertexToPush == 4){v.set_xyz(vertexFour.x, vertexFour.y, vertexFour.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-                    else if(vertexToPush == 5){v.set_xyz(vertexFive.x,vertexFive.y, vertexFive.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-                    else if(vertexToPush == 6){v.set_xyz(vertexSix.x, vertexSix.y, vertexSix.z); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);}
-*/
-                inn.close();
+                terrainGridZ++;
+                //qDebug() << terrainGridZ;
                 }
+            qDebug() << terrainGridZ;
+            terrainGridX++;
+            //qDebug() << terrainGridX;
         }
 
-    }
+        //Normalize height
+
+        for (int i = 0; i<mapHeights.size(); i++)
+        {
+            //qDebug() << mapMaxZ;
+            //qDebug() << mapMinZ;
+            //qDebug() << mapHeights[i];
+            float zMaxNormalized = 20;
+            float zMinNormalized = 0;
+            float tempZ = abs(zMinNormalized + zMinNormalized + ((mapHeights[i]- mapMinZ)*(zMaxNormalized-zMinNormalized))/(mapMaxZ - mapMinZ));
+            mapHeights[i] = tempZ;
+
+            //qDebug() << mapHeights[i];
+        }
+        for (int i = 0; i<mapHeights.size(); i++)
+        {
+            //qDebug() << mapHeights[i];
+        }
+
+        for(int i = 0; i < terrainGridX-1; i++)
+        {
+            for(int j = 0; j < terrainGridZ-1; j++)
+            {
+                if(j+((i+1)*terrainGridX) < mapHeights.size())
+                {
+                Vertex v{};
+                v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v1: " << j + i*terrainGridX;
+                v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v2: " << j + ((i+1)*terrainGridX);
+                v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v3: " << (j+1) + (i*terrainGridX);
+                v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v4: " <<  (j+1) + (i*terrainGridX);
+                v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v5: " << (j+1) + ((i+1)*terrainGridX);
+                v.set_xyz(((i+1)*squareSize),mapHeights[(j+1) + ((i+1)*terrainGridZ)], ((j+1)*squareSize)); v.set_rgb(255,0,0); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v6: " << j + ((i+1)*terrainGridX);
+                }
+
+            }
+
+        }
 }
+
+
 
 
 void TriangleSurface::writeFile(std::string filnavn)
@@ -295,7 +346,7 @@ void TriangleSurface::construct_cylinder()
             getMeshComponent()->mVertices.push_back(Vertex{x0,y0,z2,1,1,0,0,1});
             getMeshComponent()->mVertices.push_back(Vertex{x1,y1,z2,1,1,0,1,0});
             getMeshComponent()->mVertices.push_back(Vertex{x1,y1,z0,1,1,0,1,1});
-/*            float x0=cos(i*t);
+/*          float x0=cos(i*t);
             float y0=sin(i*t);
             float z0=h*k;
             float x1=cos((i+1)*t);

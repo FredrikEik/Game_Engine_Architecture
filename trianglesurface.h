@@ -30,6 +30,8 @@ public:
     float mapMaxX{0};
     float mapMinY{0};
     float mapMaxY{0};
+    float mapMinZ{0};
+    float mapMaxZ{0};
 
      Vertex mMapTerrain;
 };

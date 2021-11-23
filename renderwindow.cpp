@@ -344,7 +344,7 @@ void RenderWindow::render()
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                             mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                           mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                                                            mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
                 factory->mGameObjects[i]->draw();
             }
