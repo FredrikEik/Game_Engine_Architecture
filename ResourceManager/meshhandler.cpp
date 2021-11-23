@@ -306,8 +306,8 @@ int MeshHandler::makeProjectile()
 {
     mMeshes.emplace_back(MeshData());
     MeshData &tempMesh = mMeshes.back();
-float radius = .1;
-bool rgbColor = true;
+    float radius = .1;
+    bool rgbColor = true;
 
     float angle = gsl::deg2radf(90/6);
 
@@ -684,6 +684,9 @@ int MeshHandler::makeLAS(std::string fileName)
     ReadDatafromFile(fileName, temp);
     GenerateHeightMap(temp);
 
+    temp.mDrawType = GL_TRIANGLES;
+    initMesh(temp,0);
+
     return mMeshes.size()-1;
 }
 
@@ -747,7 +750,7 @@ void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
         fileIn.close();
         //delete delta in the vertex, as it starts with insaneley big values :D
         RemoveDeltaPos(mesh);
-        initMesh(mesh, 0);
+        //initMesh(mesh, 0);
     }
     else
     {
@@ -993,7 +996,10 @@ void MeshHandler::GenerateHeightMap(MeshData &mesh)
             mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0}); //4
             mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0}); //5
             mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0}); //6
+
+
         }
+
 }
 
 float MeshHandler::CalcHeight(float x, float z)

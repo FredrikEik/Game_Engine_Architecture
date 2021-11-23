@@ -145,6 +145,7 @@ void RenderSystem::render()
     mTimeStart.restart();   //restart FPS clock
     mVerticesDrawn = 0;     //reset vertex counter
     mObjectsDrawn = 0;      //reset object counter
+    mParticlesDrawn = 0;
 
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -399,7 +400,7 @@ void RenderSystem::render()
     temp.rotateY(-tempcam->mYaw);
     temp.rotateX(tempcam->mPitch);
 
-    glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, temp.constData());
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, temp.constData());
     glBindVertexArray( frustum.mVAO[0] );
 
     if(toogleFrustumDrawing)

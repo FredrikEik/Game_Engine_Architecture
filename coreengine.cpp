@@ -96,8 +96,7 @@ void CoreEngine::setUpScene()
 
 
     mTerrain = mResourceManager->addObject("terrain");
-    boss->mMaterial->mShaderProgram = 1;
-    boss->mMaterial->mTextureUnit = 3;
+
     //mTerrain->mTransform->mMatrix.translateZ(-100.f);
     //mRenderSystem->mGameObjects.push_back(mTerrain);
 
@@ -114,7 +113,13 @@ void CoreEngine::setUpScene()
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
     Las = mResourceManager->addObject("LAS");
+    Las->mTransform->mMatrix.translate(0,0,0);
+    Las->mMaterial->mShaderProgram =0;
+    Las->mMaterial->mTextureUnit = 0;
+    //Las->mTransform->mMatrix.scale(50.f);
     mRenderSystem->mGameObjects.push_back(Las);
+
+
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
