@@ -628,13 +628,15 @@ void MeshHandler::readLasFile()
 //    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
 //    qDebug() << "inLasFile lines with points" << linesWithPoints << "PointData Size" << pointData.size();
 
-//Create a square grid, fill the extremities with the bounds of pointData, and fill the 2d array with evenly spaced cordinates.
-    int resolution = 5;
-    const int gridSizeX = 50;
-    const int gridSizeZ = 50;
-    gsl::Vector3D planeGrid[gridSizeX][gridSizeZ];
 
-    {//Fill outer bounds of a 2D grid.
+//--------------Done reading las file, on to creating a simplification-------------------//
+
+    const int gridSizeX = 50; // This serves as a "resolution" now the grid with a huge set of datapoints, only
+    const int gridSizeZ = 50; // have 50x50 = 2500 points for further work.
+
+//Keeping this in case i need further accuracy with including all points
+    {
+//Fill outer bounds of a 2D grid.
 //    planeGrid[0][0].x = xMin; //Low left
 //    planeGrid[0][0].y = zMin; //Low left
 
@@ -652,11 +654,12 @@ void MeshHandler::readLasFile()
     float distanceBetweenSquaresX = (xMax - xMin) / gridSizeX;
     float distanceBetweenSquaresZ = (zMax - zMin) / gridSizeZ;
 
-    int pointDataOutOfGrid = pointData.size();
-    int nrPoints[gridSizeX][gridSizeZ] = {0};
-    float sumPointData[gridSizeX][gridSizeZ] = {0};
-//    float averagePointData[gridSizeX*gridSizeZ] = {0};
+    gsl::Vector3D planeGrid[gridSizeX][gridSizeZ]; // planeGrid stores the x,z and an average y height for all points in the data
+    int pointDataOutOfGrid = pointData.size(); //Used to calculate how many points are missing
+    int nrPoints[gridSizeX][gridSizeZ] = {0}; //Used to count how many points are in each square
+    float sumPointData[gridSizeX][gridSizeZ] = {0}; //Used to sum all the points in each square, is then used to average the y.
 
+    qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
 
 for (int x = 0; x < gridSizeX; x++)
 {
@@ -664,8 +667,6 @@ for (int x = 0; x < gridSizeX; x++)
     {
         planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x); //Fill the array with evenly spaced coordinates enclosing all pointData positions
         planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
-
-//        std::cout << x << " " << planeGrid[x][z].x << " " << z << " " << planeGrid[x][z].y << "\n";
 
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
@@ -679,35 +680,28 @@ for (int x = 0; x < gridSizeX; x++)
 
                 nrPoints[x][z]++;
                 sumPointData[x][z] += pointData[pointDataSearch].getY();
-                //Inside this if statement i need to create some logic to know spesificially which points are in each square.
-                //I need the y-height of the pointData and average their height for each [x][z] square.
-                //This really only needs to run for each square, but need to know which pointDataSearches was a hit with each planeGrid[x][z]
-
-                //I could create a vector of int and fill with pointDataSearch-es
-                //Another int[3] where 0 = number of points, 1 and 2 with x and z when there is a hit.
-                //That seems clunky. but could provide me with an escape from this monsterous for-loop.
             }
         }
         //This is now in the for loop running for x * z
         if(nrPoints[x][z] != 0) //There might be some squares with 0 points, this makes sure we dont divide by zero
         {
-            planeGrid[x][z].y = sumPointData[x][z]/nrPoints[x][z]; //planeGrid is now filled with a 50x50 square with x,y,z coordinates.
+            planeGrid[x][z].y = sumPointData[x][z]/nrPoints[x][z]; //planeGrid is now filled with a 50x50 square with x,z and average of y coordinates.
         }
     }
 }
-    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
-    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
+    qDebug() << "planeGrid is now filled";
+//    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
+//    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << xMax << planeGrid[49][49].x << zMax << planeGrid[49][49].z; //this does not match perfectly, but close enough for now.
-    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
-//    std::cout << xMax << " " << zMax << "\n";
-    qDebug() << "Beacuse i need another breakpoint QT accepts";
+//    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 
-//Create an average height of all the pointData in a square.
+    // Now the vertices needs to be "converted" to triangles.
+    // Two Triangles need to be composed using planeGrid[0][0], [1][1], [1][0]
+    //                                                  [0][0], [1][1], [0][1]
 
-//    for (int i = 0; i < linesWithPoints; i++)
-//    {
+    // The triangle normal needs to be calculated
+    //
 
-//    }
 }
 
 
