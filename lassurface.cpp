@@ -202,7 +202,7 @@ void LASsurface::readLAS(std::string fileName)
     }
 
     /*Print las data*/
-//    qDebug() << highestX << highestY << highestZ << lowestX << lowestY << lowestZ;
+    qDebug() << highestX << highestY << highestZ << lowestX << lowestY << lowestZ;
 //    for(int i = 0; i < 1000; i++)
 //    {
 //        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;

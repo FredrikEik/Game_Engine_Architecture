@@ -37,6 +37,7 @@
 #include "level.h"
 #include "matrix4x4.h"
 #include "lassurface.h"
+#include "rollingball.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -239,6 +240,16 @@ void RenderWindow::initObjects()
     */
     surface = factory->createObject("LASsurface");
 
+    GameObject* rb = factory->createObject("Rollingball");
+    dynamic_cast<Rollingball*>(rb)->LASsurface = surface;
+
+    for(int i{0}; i < 10; i++)
+    {
+        GameObject* rb = factory->createObject("Rollingball");
+        dynamic_cast<Rollingball*>(rb)->LASsurface = surface;
+        rb->getTransformComponent()->mMatrix.setPosition(rand() % 15, 7, rand() % 15);
+    }
+
     mPlayer = factory->createObject("Player");
     mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
     mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,1.75f,0.f);
@@ -355,6 +366,7 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->draw();
             }
 
+
             /*
             if (i==mIndexToPickedObject) {
 
@@ -379,6 +391,10 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
             */
+            if(factory->mGameObjects[i]->mObjectType == "Rollingball")
+            {
+                dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
+            }
         }
     }
     if (!editorMode){
@@ -573,6 +589,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
+    factory->ballCounter = 0;
 
     initObjects();
 //    factory->mGameObjects.clear();

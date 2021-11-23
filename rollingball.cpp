@@ -25,7 +25,7 @@ void Rollingball::move(float dt)
         //qDebug() << "p1:" << p1.x<<p1.y<<p1.z << " p2:" << p2.x<<p2.y<<p3.z << " p3:" << p3.x<<p3.y<<p3.z;
 
         barycCoords = ballPosition.barycentricCoordinates(p1, p2, p3);
-        qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;
+        //qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;
 
         if(barycCoords.x >= 0 && barycCoords.y >= 0 && barycCoords.z >= 0)
         {
@@ -35,24 +35,24 @@ void Rollingball::move(float dt)
 
             gsl::Vector3D p12 = p2-p1;
             gsl::Vector3D p13 = p3-p1;
-            qDebug() << "p12, p13" << p12.x << p12.y << p12.z << p13.x << p13.y << p13.z;
+            //qDebug() << "p12, p13" << p12.x << p12.y << p12.z << p13.x << p13.y << p13.z;
             gsl::Vector3D pNormal = p12^p13;
 
             //qDebug() << "pNormal not normalized: " << pNormal.x << pNormal.y << pNormal.z;
             pNormal.normalize();
-            qDebug() << "pNormal normalized: " << pNormal.x << pNormal.y << pNormal.z;
+            //qDebug() << "pNormal normalized: " << pNormal.x << pNormal.y << pNormal.z;
 
             gForce = gsl::Vector3D(abs(gForce.x), abs(gForce.y), abs(gForce.z));
             //gsml::Vector3d pz{pNormal.z, pNormal.z, pNormal.z};
 
-            acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, 0, pNormal.z);
+            acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
             //acceleration = gAcceleration * gsml::Vector3d(pNormal.x*pNormal.z, pNormal.y*pNormal.z, pNormal.z*pNormal.z-1);
             //acceleration = acceleration + friction;
             velocity = velocity + acceleration * dt;
 
             float yOffset = 0.25f;
             gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
-            newPosition.y = p1.y*barycCoords.x + p2.z*barycCoords.y + p3.z*barycCoords.y;
+            newPosition.y = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
             getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y+ yOffset, newPosition.z);
 
             ballPosition = getTransformComponent()->mMatrix.getPosition();
@@ -101,7 +101,7 @@ void Rollingball::move(float x, float y, float z)
 
 void Rollingball::draw()
 {
-   glBindVertexArray( getMeshComponent()->mVAO );
-   glUniformMatrix4fv( getMeshComponent()->mMatrixUniform, 1, GL_TRUE, getTransformComponent()->mMatrix.constData());
-   glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());//mVertices.size());
+    glBindVertexArray( getMeshComponent()->mVAO );
+    glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
+    glBindVertexArray(0);
 }
