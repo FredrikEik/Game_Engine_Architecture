@@ -187,7 +187,7 @@ void LASHeightMap::GenerateHeightMap()
             float height4 = CalcHeight(    x,  z+1);
             float height5 = CalcHeight(  x+1,    z);
             float height6 = CalcHeight(  x+1,  z+1);
-                                                                                        //use height date for colouring   //This order is like this because our
+            //use height date for colouring   //This order is like this because our
             mVertices.push_back(Vertex{ofsetx +  x, ofsety +height1,ofsetz +   z,       x/900, height1/100, z/1000,0,0}); //1
             mVertices.push_back(Vertex{ofsetx +x+1, ofsety +height2,ofsetz +   z,       x/900, height2/100, z/1000,0,0}); //2
             mVertices.push_back(Vertex{ofsetx +  x, ofsety +height3,ofsetz + z+1,       x/900, height3/100, z/1000,0,0}); //3
@@ -201,42 +201,15 @@ void LASHeightMap::GenerateHeightMap()
             if(test > 5000 || test < 5){
             }else{
                 if(std::fmod(test,5)<0.1){
-                        CountourPoints.push_back(Vertex{ofsetx +  x, ofsety +height1 + 0.1f,ofsetz +   z,       0, 0, 0,0,0});
-                        //qDebug() << CountourPoints[CountourPoints.size()-1].getVertex().getX() << CountourPoints[CountourPoints.size()-1].getVertex().getY() << CountourPoints[CountourPoints.size()-1].getVertex().getZ() << "____________________________________________________________";
+                    CountourPoints.push_back(Vertex{ofsetx +  x, ofsety +height1 + 0.1f,ofsetz +   z,       0, 0, 0,0,0});
+                    //qDebug() << CountourPoints[CountourPoints.size()-1].getVertex().getX() << CountourPoints[CountourPoints.size()-1].getVertex().getY() << CountourPoints[CountourPoints.size()-1].getVertex().getZ() << "____________________________________________________________";
                 }
             }
         }
 
-    float smallestX{0}, biggestX{0};
-    float smallestY{0}, biggestY{0};
-    float smallestZ{0}, biggestZ{0};
-    for(auto i = 0; i<positions.size(); i++)
-    {
 
-        gsl::Vector3D temp = positions[i].getVertex();
-        //qDebug() << "xyz "<< temp;
-        //check size of x
-        if(temp.getX() < smallestX)
-            smallestX = temp.getX();
-        if(temp.getX() > biggestX)
-            biggestX = temp.getX();
-        //check size of y
-        if(temp.getY() < smallestY)
-            smallestY = temp.getY();
-        if(temp.getY() > biggestY)
-            biggestY = temp.getY();
-        //check size of Z
-        if(temp.getZ() < smallestZ)
-            smallestZ = temp.getZ();
-        if(temp.getZ() > biggestZ)
-            biggestZ = temp.getZ();
-    }
 
-    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
-    qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
-    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
-    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
-    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
+
 }
 
 float LASHeightMap::CalcHeight(float x, float z)
@@ -250,8 +223,6 @@ float LASHeightMap::CalcHeight(float x, float z)
     float collected = 0;
     height = PosArr[X][Z];
 
-    if(height > 500)
-        qDebug() << height << X << Z;
     if((X>resolution && Z>resolution) /*&& height <= 2.0f */)
     {
 
@@ -273,6 +244,24 @@ float LASHeightMap::CalcHeight(float x, float z)
     {
         height = PosArr[X][Z] ;
     }
+
+
+    //we find the highest and lowest y values
+
+
+    //check size of y
+    if(height < lowestY && height>20.f)
+    {
+        lowestY =height;
+        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+    }
+    if(height > heighestY)
+    {
+        heighestY = height;
+        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+    }
+
+
 
 
     //do the average calc

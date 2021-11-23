@@ -38,8 +38,8 @@ private:
     float CalcHeight(float x = 0, float z = 0);
 
 
-    float heighestY;
-    float lowestY;
+    float heighestY = 0;
+    float lowestY = 0;
 
 };
 
