@@ -106,7 +106,7 @@ void PlaneImport::readFile(std::string filename)
         //Vertex made - pushing it into vertex-vector
         tempVertecies.push_back(tempVertex);
 
-        Vertex tempVert(tempVertex, gsl::Vector3D(0.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
+        Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
         //getMeshComp()->mVertices.push_back(tempVertex);
     }
 

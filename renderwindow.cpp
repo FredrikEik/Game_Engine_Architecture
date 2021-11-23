@@ -273,20 +273,20 @@ void RenderWindow::render()
 
     if(ObjFactory->mGameObject.size() > 0)
     {
-        glUseProgram(mShaderPrograms[1]->getProgram());
-        glUniform1i(mTextureUniform, 0); // chooses texture slot 0
+        glUseProgram(mShaderPrograms[0]->getProgram());
+        //glUniform1i(mTextureUniform, 0); // chooses texture slot 0
 
         for (unsigned int i = 0; i < ObjFactory->mGameObject.size(); i++){
             //send data to shader
-            if (mTextureIndex != ObjFactory->mGameObject[i]->mTexture)
+            /*if (mTextureIndex != ObjFactory->mGameObject[i]->mTexture)
             {
                 mTextureIndex = ObjFactory->mGameObject[i]->mTexture;
                 glUniform1i(mTextureUniform, mTextureIndex);
-            }
+            }*/
 
-            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
             if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
             {
