@@ -53,6 +53,8 @@ private slots:
 
     void on_LoadLevel_clicked();
 
+    void on_SwitchTerrain_clicked();
+
 private:
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};

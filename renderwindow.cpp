@@ -221,7 +221,7 @@ void RenderWindow::initObjects()
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
 
-    terrain = factory->createObject("Terrain");
+    //terrain = factory->createObject("Terrain");
 
 
     GameObject *temp=nullptr;
@@ -523,7 +523,23 @@ void RenderWindow::createObjectbutton(std::string objectName)
     mQuadtree.insert(position2D, id, newObject);
       mMainWindow->updateOutliner(factory->mGameObjects);
 }
-
+void RenderWindow::createTerrain()
+{
+    if(terrainOne)
+    {
+        reset(format());
+        factory->createObject("TestLasTerrain");
+        terrainOne = false;
+        initObjects();
+    }
+    else
+    {
+        reset(format());
+        factory->createObject("StorhoiTerrain");
+        terrainOne = true;
+        initObjects();
+    }
+}
 void RenderWindow::playPausebutton(const QSurfaceFormat &format)
 {
     bPause = !bPause;

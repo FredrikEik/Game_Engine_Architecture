@@ -50,7 +50,10 @@ public:
     void clearLevel();
     bool bPause = true;
     bool editorMode = true;
+    bool terrainOne = true;
+    void createTerrain();
     Factory *getFactory(){return factory;};
+
 
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};

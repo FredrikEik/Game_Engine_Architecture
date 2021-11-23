@@ -147,12 +147,22 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
     }
-    else if (objectName == "Terrain")
+    else if (objectName == "StorhoiTerrain")
     {
-        objectToCreate = new LasTerrainGenerator;
-        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate = new LasTerrainGenerator("../GEA2021/Storhoi.txt");
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->mObjectName = "Storhoi";
+        objectToCreate->mObjectType = "StorHoi";
+
+    }
+    else if (objectName == "TestLasTerrain")
+    {
+        objectToCreate = new LasTerrainGenerator("../GEA2021/test_las.txt");
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->mObjectName = "Terrain";
+        objectToCreate->mObjectType = "Terrain";
 
     }
     else{return nullptr;}

@@ -251,3 +251,8 @@ void MainWindow::on_LoadLevel_clicked()
     mRenderWindow->loadLevel();
 }
 
+
+void MainWindow::on_SwitchTerrain_clicked()
+{
+    mRenderWindow->createTerrain();
+}
