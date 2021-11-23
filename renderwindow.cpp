@@ -28,6 +28,7 @@
 #include "plane.h"
 #include "constants.h"
 #include "skybox.h"
+#include "lasplane.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -131,9 +132,14 @@ void RenderWindow::init()
     m_light->setPosition(QVector3D(0.f, 150.f, 150.f));
 
     //Map
-    m_world = new Plane(gsl::TextureFilePath + "hm2.bmp");
+//    m_world = new Plane(gsl::TextureFilePath + "hm2.bmp");
+//    m_world->setShader(m_shaderProgramMap["phong"]);
+//    m_world->setObjectName("World");
+
+    //LasMap
+    m_world = new LasPlane(gsl::AssetFilePath + "test_las.txt");
     m_world->setShader(m_shaderProgramMap["phong"]);
-    m_world->setObjectName("World");
+    m_world->setObjectName("Las World");
 
     //Skybox
     m_skybox = new SkyBox();

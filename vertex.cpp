@@ -34,6 +34,20 @@ Vertex::Vertex(float x, float y, float z, float r, float g, float b, float u, fl
     m_uv[1] = v;
 }
 
+Vertex::Vertex(QVector3D posVec, QVector3D normalVec)
+{
+    m_xyz[0] = posVec.x();
+    m_xyz[1] = posVec.y();
+    m_xyz[2] = posVec.z();
+
+    m_normal[0] = normalVec.x();
+    m_normal[1] = normalVec.y();
+    m_normal[2] = normalVec.z();
+
+    m_uv[0] = 1.f;
+    m_uv[1] = 1.f;
+}
+
 Vertex::Vertex(QVector3D posVec, QVector3D normalVec, QVector2D UVvec)
 {
     m_xyz[0] = posVec.x();

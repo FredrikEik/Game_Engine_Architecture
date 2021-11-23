@@ -17,6 +17,7 @@ SOURCES += main.cpp \
     cubemap.cpp \
     gameobject.cpp \
     interactiveobject.cpp \
+    lasplane.cpp \
     lightsource.cpp \
     mathfunctions.cpp \
     plane.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     gltypes.h \
     input.h \
     interactiveobject.h \
+    lasplane.h \
     lightsource.h \
     math_constants.h \
     mathfunctions.h \
@@ -78,6 +80,7 @@ DISTFILES += \
     Assets/Textures/dogedoge.bmp \
     Assets/Textures/hm2.bmp \
     Assets/Textures/hund.bmp \
+    Assets/test_las.txt \
     Shaders/cubemap.frag \
     Shaders/cubemap.vert \
     Shaders/phong.frag \

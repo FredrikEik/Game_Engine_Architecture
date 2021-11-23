@@ -16,6 +16,7 @@ public:
     Vertex();
     Vertex(float x, float y, float z, float r, float g, float b);
     Vertex(float x, float y, float z, float r, float g, float b, float u, float v);
+    Vertex(class QVector3D posVec, class QVector3D normalVec);
     Vertex(class QVector3D posVec, class QVector3D normalVec, class QVector2D UVvec);
     QVector3D getPosition();
 private:

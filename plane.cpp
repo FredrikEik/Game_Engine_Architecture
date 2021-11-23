@@ -11,11 +11,13 @@ Plane::Plane(std::string filename)
     rows = static_cast<int>(m_heightMap->rows()); //Z
     height = 0.f; //Y
 
-    constructPlane();
+    //constructPlane();
 }
 
 void Plane::init(GLint matrixUniform)
 {
+    constructPlane();
+
     m_matrixUniform = matrixUniform;
 
     initializeOpenGLFunctions();
@@ -150,6 +152,8 @@ void Plane::constructPlane()
     }
 
     qDebug() << "Map triangles drawn!";
+
+    tempPosition.clear();
 }
 
 QVector3D Plane::calculateNormal(QVector3D point3D, int index)

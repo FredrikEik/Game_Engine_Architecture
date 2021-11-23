@@ -10,8 +10,9 @@ public:
 
     virtual void init(GLint matrixUniform) override;
     virtual void draw() override;
+    virtual void constructPlane();
+
     float getHeight(QVector3D position);
-    void constructPlane();
     QVector3D calculateNormal(QVector3D point3D, int index);
 
     int getRows() const;
