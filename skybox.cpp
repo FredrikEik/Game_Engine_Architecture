@@ -1,6 +1,7 @@
 #include "skybox.h"
 #include "cubemap.h"
 #include "Shaders/shader.h"
+#include "constants.h"
 
 SkyBox::SkyBox()
     :VisualObject()
@@ -60,7 +61,7 @@ SkyBox::SkyBox()
     std::array<std::string, 6> skyboxPaths{};
     for(unsigned int i{}; i<skyboxPaths.size(); ++i)
     {
-        std::string path{"../3DProg21/Assets/Skybox/"};
+        std::string path{gsl::SkyboxFilePath};
         std::string suffix{".bmp"};
         skyboxPaths[i] = path.append(std::to_string(i+1)).append(suffix);
     }
