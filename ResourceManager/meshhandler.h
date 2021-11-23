@@ -18,6 +18,7 @@ struct MeshData
     GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
+    std::vector<Vertex> positions;
     std::vector<GLuint> mIndices[3];
     //AABB Collider box: (the largest of these will be the radius for a Bounding sphere)
     gsl::Vector3D mUpRightFrontCorner{};
@@ -50,9 +51,10 @@ public:
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
 
-    //lage terrain
+    std::vector<Vertex> getPositions() const;
+    std::vector<Vertex> getmVertices() const;
+    void setPositions(const std::vector<Vertex> &value);
 
-    //int Heightmap(TextureHandler *texture, float horSpaceing = 1.f, float verSpacing = 1.f, float height = 0.f);
 
     void calculateNormals();
     void initTerrain();
@@ -76,9 +78,18 @@ private:
     int makeParticle();
     int makeProjectile();
     int makeSkybox();
-    int makeTerrain(std::string heightMapName);
+    int makeTerrain(std::string heightMapName);   
 
+
+    //LAS SETUP
+    int makeLAS(std::string fileName);
+    void ReadDatafromFile(std::string fileName, MeshData &mesh);
     void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
+    void RemoveDeltaPos(MeshData &mesh);
+    void GenerateHeightMap(MeshData &mesh);
+    float CalcHeight(float x = 0, float z = 0);
+
+
 
     float posX = 1.f;
     float posY = 1.f;
@@ -89,7 +100,8 @@ private:
         float lifetime;
     };
     std::vector< Particle > particles;
-    float positions[400];
+    //float positions[400];
+    float PosArr[1000][2000];
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
 

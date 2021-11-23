@@ -97,19 +97,11 @@ void CoreEngine::setUpScene()
 
     mTerrain = mResourceManager->addObject("terrain");
     boss->mMaterial->mShaderProgram = 1;
-    boss->mMaterial->mTextureUnit = 2;
+    boss->mMaterial->mTextureUnit = 3;
     //mTerrain->mTransform->mMatrix.translateZ(-100.f);
-    mRenderSystem->mGameObjects.push_back(mTerrain);
+    //mRenderSystem->mGameObjects.push_back(mTerrain);
 
 
-
-    //mRenderSystem->mGameObjects.push_back(projectile);
-
-    skybox = mResourceManager->addObject("skybox");
-    skybox->mMaterial->mShaderProgram = 2;
-    skybox->mMaterial->mTextureUnit = 2;
-    skybox->mTransform->mMatrix.scale(40.f);
-    mRenderSystem->mGameObjects.push_back(skybox);
 
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
@@ -121,7 +113,8 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-
+    Las = mResourceManager->addObject("LAS");
+    mRenderSystem->mGameObjects.push_back(Las);
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
@@ -134,7 +127,8 @@ void CoreEngine::setUpScene()
 
 void CoreEngine::testScene()
 {
-    for(int i = 0; i < 10; i++)
+
+   for(int i = 0; i < 10; i++)
     {
 
         enemy = mResourceManager->addObject("suzanne3.obj");
@@ -166,12 +160,21 @@ void CoreEngine::testScene()
     projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
     mResourceManager->addComponent("splat_stereo.wav", projectile);
     projectile->mSoundComponent->shouldPlay = false;
-        mResourceManager->addCollider("sphere", projectile);
+    mResourceManager->addCollider("sphere", projectile);
+    mRenderSystem->mGameObjects.push_back(player);
+    playerSpawned = true;
+    enemySpawned = true;
 
-        mRenderSystem->mGameObjects.push_back(player);
 
-        playerSpawned = true;
-        enemySpawned = true;
+    skybox = mResourceManager->addObject("skybox");
+    skybox->mMaterial->mShaderProgram = 2;
+    skybox->mMaterial->mTextureUnit = 3;
+    skybox->mTransform->mMatrix.scale(40.f);
+    mRenderSystem->mGameObjects.push_back(skybox);
+
+
+
+
 }
 
 void CoreEngine::spawnParticles(GameObject * temp)

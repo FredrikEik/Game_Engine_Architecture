@@ -40,6 +40,7 @@ public:
     GameObject* Particles;
     GameObject* projectile;
     GameObject* skybox;
+    GameObject* Las;
 
     std::vector<GameObject *> enemies;
 
