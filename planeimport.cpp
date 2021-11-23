@@ -99,7 +99,7 @@ void PlaneImport::readFile(std::string filename)
 
         gsl::Vector3D tempVertex;
         sStream >> oneWord;
-        tempVertex.x = std::stof(oneWord) - 6152000.f;
+        tempVertex.x = std::stof(oneWord) - 6152000.f; // file reads wrong for no reason
         tempVertex.x -= 606000.f;
         sStream >> oneWord;
         tempVertex.y = std::stof(oneWord) - 565.f;
