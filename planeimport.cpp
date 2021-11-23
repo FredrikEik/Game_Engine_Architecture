@@ -85,6 +85,8 @@ void PlaneImport::readFile(std::string filename)
     int num = std::atoi(oneWord.c_str());
     qDebug() << "Vertices: " << num;
 
+    unsigned int temp_index = 0;
+
     for(int i = 0; i < num; i++)
     {
         std::getline(fileIn, oneLine);
@@ -97,17 +99,23 @@ void PlaneImport::readFile(std::string filename)
 
         gsl::Vector3D tempVertex;
         sStream >> oneWord;
-        tempVertex.x = std::stof(oneWord);
+        tempVertex.x = std::stof(oneWord) - 6152000.f;
+        tempVertex.x -= 606000.f;
         sStream >> oneWord;
-        tempVertex.y = std::stof(oneWord);
+        tempVertex.y = std::stof(oneWord) - 565.f;
         sStream >> oneWord;
-        tempVertex.z = std::stof(oneWord);
+        tempVertex.z = std::stof(oneWord) - 565.f;
+        //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
 
         //Vertex made - pushing it into vertex-vector
         tempVertecies.push_back(tempVertex);
 
         Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
-        //getMeshComp()->mVertices.push_back(tempVertex);
+        if(getMeshComp())
+        {
+            getMeshComp()->mVertices.push_back(tempVert);
+            getMeshComp()->mIndices.push_back(temp_index++);
+        }
     }
 
     //closing the file after use
