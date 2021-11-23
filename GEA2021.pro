@@ -37,6 +37,7 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
+    lasterraingenerator.cpp \
     level.cpp \
     light.cpp \
     mariocube.cpp \
@@ -76,6 +77,7 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    lasterraingenerator.h \
     level.h \
     light.h \
     mariocube.h \
