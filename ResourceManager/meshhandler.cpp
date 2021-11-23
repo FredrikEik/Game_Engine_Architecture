@@ -602,9 +602,9 @@ void MeshHandler::readLasFile()
 
          for(int i = 0; i < linesWithPoints; i++) //for each line of data fill pointData with numbers
          {
-             inLasFile >> lasX >> lasZ >> lasY; //read the line, store as x, z and y. z and y flipped to match current project.
+             inLasFile >> lasX >> lasZ >> lasY;        //read the line, store as x, z and y. z and y flipped to match current project.
              pointData.emplace_back(lasX, lasZ, lasY); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
-                                              //Given all data will use the same pointData vector this wont be a problem.
+                                                       //Given all data will use the same pointData vector this wont be a problem.
 
              static bool once = true; //store the bounds of the terrain
              if(once)
@@ -649,7 +649,7 @@ void MeshHandler::readLasFile()
     const int gridSizeX = 50; // This serves as a "resolution" now the grid with a huge set of datapoints, only
     const int gridSizeZ = 50; // have 50x50 = 2500 points for further work.
 
-//Keeping this in case i need further accuracy with including all points
+//Keeping this in case i need further accuracy, including all points
     {
 //Fill outer bounds of a 2D grid.
 //    planeGrid[0][0].x = xMin; //Low left
@@ -726,19 +726,24 @@ for (int x = 0; x < gridSizeX; x++)
     // Now the vertices needs to be "converted" to triangles.
     // I could try to write an obj file, but seems difficult, could be used to not calculate everything every run.
 
-    // Two Triangles need to be composed using planeGrids cordinates [0][0], [1][1], [1][0]
-    //                                                               [0][0], [1][1], [0][1]
+    // Two Triangles need to be composed using planeGrids cordinates
+    // [0][0], [0][1], [1][1] //First square, the two triangles
+    // [0][0], [0][1], [1][1]
+
+    // [0][1], [0][2], [1][2] //Second square
+    // [0][1], [1][1], [1][2]
 
     float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
-//    qDebug() << "Start of triangle creation";
-//    for (int width = 0; width > gridSizeX; width++)
-//    {
-//        for (int depth = 0; depth > gridSizeZ; depth++)
-//        {
-//            float y = planeGrid[width][depth].y / heigthScale;
-//        }
-//    }
+    qDebug() << "Start of triangle creation";
+    for (int width = 0; width > gridSizeX; width++)
+    {
+        for (int depth = 0; depth > gridSizeZ; depth++)
+        {
+            float y = planeGrid[width][depth].y / heigthScale;
+        }
+    }
+
 
     // The triangle normal needs to be calculated
     //
