@@ -653,9 +653,9 @@ void MeshHandler::readLasFile()
     float distanceBetweenSquaresZ = (zMax - zMin) / gridSizeZ;
 
     int pointDataOutOfGrid = pointData.size();
-    int nrPoints[gridSizeX*gridSizeZ] = {0};
-    float sumPointData[gridSizeX*gridSizeZ];
-    float averagePointData[gridSizeX*gridSizeZ];
+    int nrPoints[gridSizeX][gridSizeZ] = {0};
+    float sumPointData[gridSizeX][gridSizeZ] = {0};
+//    float averagePointData[gridSizeX*gridSizeZ] = {0};
 
 
 for (int x = 0; x < gridSizeX; x++)
@@ -677,8 +677,8 @@ for (int x = 0; x < gridSizeX; x++)
             {
                 pointDataOutOfGrid--; //There are currently missing about 1365 pieces of data.
 
-                nrPoints[x*z]++;
-                sumPointData[x*z] += pointData[pointDataSearch].getY();
+                nrPoints[x][z]++;
+                sumPointData[x][z] += pointData[pointDataSearch].getY();
                 //Inside this if statement i need to create some logic to know spesificially which points are in each square.
                 //I need the y-height of the pointData and average their height for each [x][z] square.
                 //This really only needs to run for each square, but need to know which pointDataSearches was a hit with each planeGrid[x][z]
@@ -689,11 +689,14 @@ for (int x = 0; x < gridSizeX; x++)
             }
         }
         //This is now in the for loop running for x * z
-        averagePointData[x*z] = sumPointData[x*z]/nrPoints[x*z];
-
+        if(nrPoints[x][z] != 0) //There might be some squares with 0 points, this makes sure we dont divide by zero
+        {
+            planeGrid[x][z].y = sumPointData[x][z]/nrPoints[x][z]; //planeGrid is now filled with a 50x50 square with x,y,z coordinates.
+        }
     }
 }
-    qDebug() << "Nr of points in square nr" << nrPoints[0] << "their average height" << averagePointData[0];
+    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
+    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << xMax << planeGrid[49][49].x << zMax << planeGrid[49][49].z; //this does not match perfectly, but close enough for now.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    std::cout << xMax << " " << zMax << "\n";
