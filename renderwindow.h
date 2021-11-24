@@ -5,20 +5,11 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
 #include <QElapsedTimer>
-
-
 #include "obj.h"
 #include "vector4d.h"
 #include "matrix4x4.h"
 #include "collisionsystem.h"
-
-
-#include <chrono>   //for sleep_for
-#include <thread>   //for sleep_for
 #include <math.h>       /* sqrt */
-
-
-
 
 
 class QOpenGLContext;
@@ -48,11 +39,9 @@ public:
     std::string createShapes(string shapeID);
     void playMode(bool p);
 
-    std::vector<NameComponent*> mNameComp;
-    std::vector<TransformComponent*> mTransformComp;
 
     bool mousePickCollide = false;
-    int MousePickindex=0;
+    int MousePickindex = 0;
     Level* mLvl;
 
 
@@ -65,7 +54,6 @@ private:
     InputComponent *mInputComponent;
     InputSystem *mInputSystem;
     Player *mPlayer;
-    SoundSource* mLaserSound{};
     Input mInput;
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
@@ -78,18 +66,12 @@ private:
     static const int nrOfShapes = 5;
     bool playM = false;
 
-    int Lod(int i);
+
     void mousePickingRay(QMouseEvent *event);
      gsl::Vector3D ray_wor;
 
-    void makeObject();
-    void HandleInput();
-    void SoundHandler();
-    void makeMap();
-
-    void checkCollision();
-
-
+    int Lod(int i);
+    void drawObjects();
 
     void init();
 

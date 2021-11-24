@@ -78,13 +78,10 @@
     <property name="title">
      <string>Add Objects</string>
     </property>
-    <addaction name="actionAdd_Triangle"/>
     <addaction name="actionAdd_Square"/>
     <addaction name="actionAdd_Circle"/>
     <addaction name="actionAdd_Monkey"/>
     <addaction name="separator"/>
-    <addaction name="actionAdd_BigWall"/>
-    <addaction name="actionAdd_SmallWall"/>
    </widget>
    <addaction name="menuAdd_Objects"/>
   </widget>
@@ -288,11 +285,6 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionAdd_Triangle">
-   <property name="text">
-    <string>Add Triangle</string>
-   </property>
-  </action>
   <action name="actionAdd_Square">
    <property name="text">
     <string>Add Square</string>
@@ -306,16 +298,6 @@
   <action name="actionAdd_Monkey">
    <property name="text">
     <string>Add Monkey</string>
-   </property>
-  </action>
-  <action name="actionAdd_BigWall">
-   <property name="text">
-    <string>Add BigWall</string>
-   </property>
-  </action>
-  <action name="actionAdd_SmallWall">
-   <property name="text">
-    <string>Add SmallWall</string>
    </property>
   </action>
  </widget>

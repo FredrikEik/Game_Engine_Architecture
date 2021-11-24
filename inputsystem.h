@@ -6,6 +6,7 @@
 #include "inputcomponent.h"
 #include "enemy.h"
 
+
 class InputSystem
 {
 public:
@@ -18,6 +19,7 @@ public:
 private:
     CollisionSystem* mColSystem;
     ShapeFactory* mFactory;
+   // Level *mLvl;
 };
 
 #endif // INPUTSYSTEM_H

@@ -7,7 +7,7 @@ Enemy::Enemy(ShapeFactory* f)
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(5);
     mCollision = factoryPtr->getColli(5);
-    mTransform->mMatrix.scale(0.2);
+    mTransform->mMatrix.scale(2);
     mCollision->setBoundingSphere(0.25, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
@@ -23,28 +23,14 @@ Enemy::~Enemy()
 
 
 }
-void Enemy::moveToPlayer(Player *mPlayer, gsl::Vector3D Ppos)
+void Enemy::moveEnemy()
 {
-    //    if(Checkmove == false)
-    //    {
-    Ppos = mPlayer->mTransform->mPosition;
-    gsl::Vector3D Epos = mTransform->mPosition;
 
-    float xDistance = Ppos.x-Epos.x;
-    float yDistance = Ppos.y-Epos.y;
+    move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 
-    float hypo = sqrt((xDistance * xDistance) + (yDistance * yDistance));
+}
 
-
-    dir = Ppos - Epos;
-    dir.normalize();
-
-    dir = dir*speed;
-    qDebug() << hypo;
-
-    if(Checkmove == false)
-    {
-        move(dir.x,dir.y,dir.z);
-    }
+void Enemy::rotateY()
+{
 
 }

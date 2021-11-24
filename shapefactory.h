@@ -34,7 +34,7 @@ private:
     bool doOnce[6]{false};
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
-    string enemyString = "../GEA2021/Assets/Enemy.obj";
+    string enemyString = "../GEA2021/Assets/Monkey.obj";
 
 };
 
@@ -52,6 +52,12 @@ class Square : public VisualObject
 public:
     Square();
     ~Square() {}
+    void CheckPlayerCol(VisualObject* p);
+    bool onRwallX{false};
+    bool onLwallX{false};
+    bool onFwallY{false};
+    bool onBwallY{false};
+    void noCol(){onRwallX = false;onLwallX = false;onFwallY = false;onBwallY = false;};
 };
 
 class Plain : public VisualObject

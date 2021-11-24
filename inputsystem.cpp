@@ -29,13 +29,25 @@ void InputSystem::update(Player *mPlayer,Camera *mCamera, Input mInput)
        {
            i = mPlayer->mInputComp;
            if(mInput.W == true)
+           {
+               //mLvl->SoundHandler();
                mPlayer->move(0,0,-i->mPlayerSpeed);
+           }
            if(mInput.S == true)
+           {
+               //mLvl->SoundHandler();
                mPlayer->move(0,0, i->mPlayerSpeed);
+           }
            if(mInput.D == true)
+           {
+               //mLvl->SoundHandler();
                mPlayer->move(i->mPlayerSpeed,0,0);
+           }
            if(mInput.A == true)
+           {
+               //mLvl->SoundHandler();
                mPlayer->move(-i->mPlayerSpeed,0,0);
+           }
        }
 }
 

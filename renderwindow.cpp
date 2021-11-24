@@ -138,7 +138,7 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     mEditorCamera.setPosition(gsl::Vector3D(1.f, 5.f, 8.f));
-    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 8.f));
+    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 11.f));
     mPlayCamera.pitch(90);
 
     mCurrentCamera = &mEditorCamera;
@@ -153,14 +153,13 @@ void RenderWindow::init()
     mSkyBox = mLvl->mSkyBox;
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
-    mEnemy = mLvl->mEnemy;
-    //mMainWindow->update();
+    mMainWindow->update();
 
 
 }
 
 
-void RenderWindow::makeObject()
+void RenderWindow::drawObjects()
 {
     //This block sets up the uniforms for the shader used in the material
     //Also sets up texture if needed.
@@ -208,9 +207,13 @@ void RenderWindow::makeObject()
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mVisualObjects[i]->mTransform->mMatrix.constData());
 
-        glBindVertexArray(mLvl->mVisualObjects[i]->mMesh->mVAO );
-        glDrawArrays(mLvl->mVisualObjects[i]->mMesh->mDrawType, 0, Lod(i));
-        glBindVertexArray(0);
+        if(mLvl->mVisualObjects[i]->drawMe == true)
+        {
+            glBindVertexArray(mLvl->mVisualObjects[i]->mMesh->mVAO );
+            glDrawArrays(mLvl->mVisualObjects[i]->mMesh->mDrawType, 0, Lod(i));
+            glBindVertexArray(0);
+        }
+
     }
 
     glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLight->mTransform->mMatrix.constData());
@@ -235,19 +238,6 @@ void RenderWindow::makeObject()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
-    // HandleInput();
-    mInputSystem->update(mPlayer,mCurrentCamera,mInput);
-    mCurrentCamera->update();
-
-    //checkCollision();
-    //mFrustumSystem->updateFrustumPos(mPlayCamera.position());
-    //Check Collision
-    //    for(int i{0}; i < mVisualObjects.size(); i++)
-
-    //    {
-    //        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mVisualObjects[i]->mCollision))
-    //            qDebug() <<"Collision detected";
-    //    }
 
 
     mTimeStart.restart(); //restart FPS clock
@@ -255,22 +245,16 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
+    // HandleInput();
+    mInputSystem->update(mPlayer,mCurrentCamera,mInput);
+    mCurrentCamera->update();
+    mLvl->checkCollision();
+
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    makeObject();
-//    mEnemy->moveToPlayer(mPlayer,mEnemy->mTransform->mPosition);
 
-
-    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemy->mCollision))
-    {
-       // mEnemy->Checkmove = true;
-       // ResetGame();
-       // mLvl->SoundHandler();
-        qDebug() <<"Player hit detected";
-        //mEnemy->Checkmove = false;
-    }
-
+    drawObjects();
 
 
     //Calculate framerate before
@@ -287,37 +271,14 @@ void RenderWindow::render()
     mContext->swapBuffers(this);
 }
 
-void RenderWindow::checkCollision()
-{
-    //kollisjon fungerer foreløpig ikke for flere objekter
-    //kollisjon mot vegger
-    if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mLvl->mVisualObjects[2]->mCollision))
-    {
-        //qDebug() <<"Collision detected"; //testing collision
-        mPlayer->CheckPlayerWall(mLvl->mVisualObjects[2]->mCollision);
-    }
-    else
-        mPlayer->noWall(); //må finne en annen måte å gjøre dette på
-
-    //kollisjon mot trofeer
-    if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[7]->mCollision))
-    {
-        qDebug() <<"Collision detected"; //testing collision
-        mLvl->trophies++; // for å senere sette win-condition
-        mLvl->mVisualObjects[7]->mNameComp->drawMe = false; //for å ikke tegne opplukket trofè
-    }
-    else
-        qDebug() << "No col";
-}
-
 std::string RenderWindow::createShapes(string shapeID)
 {
     VisualObject* temp = mShapeFactory.createShape(shapeID);
     temp->init();
     temp->move(1,1,0.5);
     temp->mMaterial->mShaderProgram = 0;    //plain shader
-    mTransformComp.push_back(temp->mTransform);
-    mNameComp.push_back(temp->mNameComp);
+    mLvl->mTransformComp.push_back(temp->mTransform);
+    mLvl->mNameComp.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
     return temp->mNameComp->ObjectName;
 }
@@ -346,8 +307,6 @@ int RenderWindow::Lod(int i)
 
 
 }
-
-
 
 
 void RenderWindow::mousePickingRay(QMouseEvent *event)
@@ -429,43 +388,6 @@ void RenderWindow::playMode(bool p)
         playM = false;
     }
 }
-
-
-void RenderWindow::HandleInput()
-{
-    mCurrentCamera->setSpeed(0.f);
-    if(mInput.RMB == true)
-    {
-        if(mInput.W == true)
-            mCurrentCamera->setSpeed(mInputComponent->mCameraSpeed);
-        if(mInput.S == true)
-            mCurrentCamera->setSpeed(-mInputComponent->mCameraSpeed);
-        if(mInput.D == true)
-            mCurrentCamera->moveRight(mInputComponent->mCameraSpeed);
-        if(mInput.A == true)
-            mCurrentCamera->moveRight (-mInputComponent->mCameraSpeed);
-        if(mInput.Q == true)
-            mCurrentCamera->updateHeigth (-mInputComponent->mCameraSpeed);
-        if(mInput.E == true)
-            mCurrentCamera->updateHeigth (mInputComponent->mCameraSpeed);
-    }
-}
-
-void RenderWindow::SoundHandler()
-{
-    SoundManager::getInstance()->init();
-
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
-
-    mLaserSound->play();
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    mLaserSound->stop();
-}
-
-
-
 
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)
@@ -696,23 +618,13 @@ void RenderWindow::exposeEvent(QExposeEvent *)
         mTimeStart.start();
     }
 
+    //mEditorCamera.calculateFrustumVectors();
     //calculate aspect ration and set projection matrix
     mPlayCamera.mFrustumComp.mAspectRatio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
-
     mPlayCamera.calculateProjectionMatrix();
     mEditorCamera.calculateProjectionMatrix();
-
-    //mPlayCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
-    //mEditorCamera.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    //    qDebug() << mCamera.mProjectionMatrix;
 }
-
-//The way this is set up is that we start the clock before doing the draw call,
-// and check the time right after it is finished (done in the render function)
-//This will approximate what framerate we COULD have.
-//The actual frame rate on your monitor is limited by the vsync and is probably 60Hz
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();

@@ -62,7 +62,7 @@ bool CollisionSystem::CheckSphCol(CollisionComponent *aCollision, CollisionCompo
     float distance = sqrt(
                 (aCollision->center.getX()- bCollision->center.getX())*(aCollision->center.getX() - bCollision->center.getX())+
                 (aCollision->center.getY()- bCollision->center.getY())*(aCollision->center.getY() - bCollision->center.getY())+
-                (aCollision->center.getY()- bCollision->center.getY())*(aCollision->center.getY() - bCollision->center.getY()));
+                (aCollision->center.getZ()- bCollision->center.getZ())*(aCollision->center.getZ() - bCollision->center.getZ()));
     return distance < (aCollision->radius + bCollision->radius);
 }
 

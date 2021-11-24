@@ -5,8 +5,8 @@
 #include <QObject>
 #include <vector>
 #include "camera.h"
-#include "shapefactory.h"
 #include "enemy.h"
+#include "shapefactory.h"
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
 
@@ -24,48 +24,50 @@ public slots:
     //  en public slot kan kalles fra javascript, uten Q_INVOKABLE
     void scriptFunction(float x, float y, float z);
 };
-
-
 class Level : public QObject
 {
 public:
     Level(Camera* cam);
     ~Level();
-    void initObjects();
     std::string createShapes(string shapeID);
     void readJS();
     void winner();
+    void checkCollision();
     void SoundHandler();
+    void checkCoints();
+    int cointAmount;
 
-    std::vector<NameComponent*> mNameComps;
-    std::vector<TransformComponent*> mTransComps;
+    std::vector<NameComponent*> mNameComp;
+    std::vector<TransformComponent*> mTransformComp;
     std::vector<VisualObject*> mVisualObjects;
+    std::vector<Square*> mWall;
+    std::vector<Enemy*> mEnemies;
+    std::vector<Circle*> mTrophies;
     ShapeFactory mShapeFactory;
     FrustumSystem* mFrustumSystem;
     SoundSource* mSound{};
-    Enemy *mEnemy;
-    Player *mPlayer;
+    Enemy* mEnemy;
+    Player* mPlayer;
     Skybox *mSkyBox;
-    Light *mLight{nullptr};
+    XYZ *xyz;
+    Light * mLight{nullptr};
     int trophies{0};
-
-
+    bool wallCheck(int z, int x);
+    void moveEnemy();
+    void RotateEnemy();
+private:
     static const int DIM_Z = 19;
     static const int DIM_X = 22;
-//    static const int CENTER_X = DIM_X / 2;
-//    static const int CENTER_Z = (DIM_Z + 1) / 2;
+    bool checkEnemyRotFront = false;
+    bool checkEnemyRotBack = false;
+    bool checkEnemyRotLeft = false;
+    bool checkEnemyRotRight = false;
     static const int CENTER_Y = 0;
-
-
-
     static int GameBoard[DIM_Z][DIM_X];
     void DrawBoard();
-//	static bool isWall(int x, int y);
-
-private:
     Script *script{nullptr};
     Camera* mCam;
-
+    CollisionSystem* mColSystem;
 
 };
 

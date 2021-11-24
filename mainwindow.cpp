@@ -100,13 +100,7 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
         ui->pushButton_2->setText("Play");
 }
 
-void MainWindow::on_actionAdd_Triangle_triggered()
-{
-    std::string a = mRenderWindow->createShapes("Triangle");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
-}
+
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
@@ -132,24 +126,6 @@ void MainWindow::on_actionAdd_Monkey_triggered()
     item->setText(0, temp.fromStdString(a));
 }
 
-void MainWindow::on_actionAdd_BigWall_triggered()
-{
-    std::string a = mRenderWindow->createShapes("BigWall");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
-}
-
-
-
-void MainWindow::on_actionAdd_SmallWall_triggered()
-{
-    std::string a = mRenderWindow->createShapes("SmallWall");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
-}
-
 
 
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
@@ -157,23 +133,22 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     QString itemName = item->text(column);
     std::string itemToString = itemName.toStdString();
     ui->DetailGroupBox->setTitle("Details: "+itemName);
-    for(auto i = 0;i<mRenderWindow->mNameComp.back()->ObjectID+1; i++){
-        if(mRenderWindow->mNameComp[i]->ObjectName == itemToString)
+    for(auto i = 0;i<mRenderWindow->mLvl->mNameComp.back()->ObjectID+1; i++){
+        if(mRenderWindow->mLvl->mNameComp[i]->ObjectName == itemToString)
         {
 
             if(mRenderWindow->mousePickCollide == true)
             {
                 SelectWithMousePick(mRenderWindow->MousePickindex);
-                ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
-                ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
-                ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
-               // ui->DetailGroupBox->setTitle("Details: "+itemName);
+                ui->doubleSpinBoxX->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
+                ui->doubleSpinBoxY->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+                ui->doubleSpinBoxZ->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
                 mRenderWindow->mousePickCollide = false;
             }else{
-                ActiveObject = mRenderWindow->mNameComp[i]->ObjectID;
-                ui->doubleSpinBoxX->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
-                ui->doubleSpinBoxY->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
-                ui->doubleSpinBoxZ->setValue(mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
+                ActiveObject = mRenderWindow->mLvl->mNameComp[i]->ObjectID;
+                ui->doubleSpinBoxX->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().x);
+                ui->doubleSpinBoxY->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().y);
+                ui->doubleSpinBoxZ->setValue(mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition().z);
             }
         }
     }
@@ -182,101 +157,98 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 void MainWindow::SelectWithMousePick(int index)
 {
 
-    ActiveObject = mRenderWindow->mNameComp[index]->ObjectID;
+    ActiveObject = mRenderWindow->mLvl->mNameComp[index]->ObjectID;
 }
 
-//void MainWindow::update()
-//{
-//    on_treeWidget_viewportEntered();
-//}
-
-
+void MainWindow::update()
+{
+    on_treeWidget_viewportEntered();
+}
 
 
 void MainWindow::on_treeWidget_viewportEntered()
 {
-    QTreeWidgetItem * Widgetitem = new QTreeWidgetItem(ui->treeWidget);
+    Widgetitem = new QTreeWidgetItem(ui->treeWidget);
     ui->treeWidget->addTopLevelItem(Widgetitem);
     Widgetitem->setText(0, "Objects");
     Widgetitem->setExpanded(true);
 
-
-    for(auto i = 0; i <= mRenderWindow->mNameComp.back()->ObjectID; i++){
+    for(auto i = 0; i <= mRenderWindow->mLvl->mNameComp.back()->ObjectID; i++){
         QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
         QString temp;
-        item->setText(0, temp.fromStdString(mRenderWindow->mNameComp[i]->ObjectName));
+        item->setText(0, temp.fromStdString(mRenderWindow->mLvl->mNameComp[i]->ObjectName));
     }
 }
 
 
 void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(arg1,temp.y, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.setPosition(arg1,temp.y, temp.z);
 }
 
 
 void MainWindow::on_doubleSpinBoxY_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,arg1, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,arg1, temp.z);
 
 }
 
 
 void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mTransformComp[ActiveObject]->mMatrix.getPosition();
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,temp.y, arg1);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.setPosition(temp.x,temp.y, arg1);
 }
 
 
 
 void MainWindow::on_RotateXP_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateX(5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateX(5.f);
 }
 
 
 void MainWindow::on_RotateYP_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateY(5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateY(5.f);
 }
 
 
 void MainWindow::on_RotateZP_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateZ(5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateZ(5.f);
 }
 
 
 void MainWindow::on_ScaleP_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(1.5f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.scale(1.5f);
 }
 
 
 void MainWindow::on_ScaleM_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.scale(0.50f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.scale(0.50f);
 }
 
 
 void MainWindow::on_RotateYM_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateY(-5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateY(-5.f);
 }
 
 
 void MainWindow::on_RotateZM_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateZ(-5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateZ(-5.f);
 }
 
 
 void MainWindow::on_RoatetXM_clicked()
 {
-    mRenderWindow->mTransformComp[ActiveObject]->mMatrix.rotateX(-5.f);
+    mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateX(-5.f);
 }
 
 

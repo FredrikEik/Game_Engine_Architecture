@@ -31,8 +31,6 @@ private slots:
     void on_pushButton_2_toggled(bool checked);
 
 
-    void on_actionAdd_Triangle_triggered();
-
     void on_actionAdd_Square_triggered();
 
     void on_actionAdd_Circle_triggered();
@@ -70,9 +68,6 @@ private slots:
 
     void on_RoatetXM_clicked();
 
-    void on_actionAdd_BigWall_triggered();
-
-    void on_actionAdd_SmallWall_triggered();
 
 private:
     void init();

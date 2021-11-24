@@ -10,10 +10,12 @@ class Enemy : public VisualObject
 public:
     Enemy(ShapeFactory* f);
     ~Enemy();
-    void moveToPlayer(Player *mPlayer, gsl::Vector3D Ppos);
-    float speed = 0.3f;
+    void moveEnemy();
+    float speed = 0.01f;
 
-    bool Checkmove = false;
+    bool checkMove = false;
+    void rotateY();
+    gsl::Vector3D mForward{0.f, 0.f, -1.f};
 
 private:
         CollisionSystem *mColsystem;
