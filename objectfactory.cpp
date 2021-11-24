@@ -64,7 +64,7 @@ void ObjectFactory::createObject(std::string objectName)
         else
         {
             willCreateObject = new Surface("../GEA2021/test_las.txt");
-            storedMeshes.insert(std::pair("Goat", willCreateObject->getMeshComp()));
+            storedMeshes.insert(std::pair("Surface", willCreateObject->getMeshComp()));
             qDebug() << "surface mesh saved";
         }
         willCreateObject->mTexture = 2;

@@ -182,8 +182,8 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	0.5f, 4.f));
-    //mCurrentCamera->setPosition(gsl::Vector3D(615199.75f,	6758330.96f,	565.59f));
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	0.5f, 4.f)); //normal camera
+    //mCurrentCamera->setPosition(gsl::Vector3D(615199.75f,	6758330.96f,	565.59f)); //supposedly close to coordinates
     qDebug() << "camera is here: " << mCurrentCamera->getPosition();
 
     SoundManager::getInstance()->init();
