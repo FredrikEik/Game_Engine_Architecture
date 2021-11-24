@@ -20,6 +20,10 @@ public:
 
     InputComponent input;
 
+    GameObject* surfaceToWalkOn = nullptr;
+
+    void setSurfaceToWalkOn(GameObject* surface){surfaceToWalkOn = surface;}
+
 private:
 
     float movementSpeed = 0.3f;

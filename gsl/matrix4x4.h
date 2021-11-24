@@ -43,6 +43,9 @@ public:
     void rotateY(GLfloat degrees = 0.f);
     void rotateZ(GLfloat degrees = 0.f);
 
+
+    void setY(GLfloat y);
+
 //    void setRotation(GLfloat x, GLfloat y, GLfloat z);
 //    Vector3D getRotation();
     Vector3D rotation {0.0,0.0,0.0};
@@ -90,6 +93,8 @@ public:
         return output;
     }
     GLfloat getFloat(int space);
+
+
 private:
     GLfloat matrix[16];
 };

@@ -42,10 +42,12 @@ SOURCES += main.cpp \
     light.cpp \
     mariocube.cpp \
     objreader.cpp \
+    octahedronball.cpp \
     plane.cpp \
     player.cpp \
     quadtree.cpp \
     renderwindow.cpp \
+    rollingball.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
@@ -82,10 +84,12 @@ HEADERS += \
     light.h \
     mariocube.h \
     objreader.h \
+    octahedronball.h \
     plane.h \
     player.h \
     quadtree.h \
     renderwindow.h \
+    rollingball.h \
     shader.h \
     mainwindow.h \
     skybox.h \

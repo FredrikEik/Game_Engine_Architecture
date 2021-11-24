@@ -224,7 +224,7 @@ void RenderWindow::initObjects()
     //terrain = factory->createObject("Terrain");
 
 
-    GameObject *temp=nullptr;
+    GameObject *temp = nullptr;
    /* for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
@@ -528,16 +528,18 @@ void RenderWindow::createTerrain()
     if(terrainOne)
     {
         reset(format());
-        factory->createObject("TestLasTerrain");
+        GameObject* TestLasTerrain = factory->createObject("TestLasTerrain");
         terrainOne = false;
         initObjects();
+        dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(TestLasTerrain);
     }
     else
     {
         reset(format());
-        factory->createObject("StorhoiTerrain");
+        GameObject* TestLasTerrain = factory->createObject("StorhoiTerrain");
         terrainOne = true;
         initObjects();
+        dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(TestLasTerrain);
     }
 }
 void RenderWindow::playPausebutton(const QSurfaceFormat &format)
@@ -553,7 +555,7 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
     }
     else
     {
-                mVideoGameLand->play();
+        mVideoGameLand->play();
 
         if (mIndexToPickedObject > -1){
         hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);

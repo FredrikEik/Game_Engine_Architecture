@@ -583,4 +583,9 @@ GLfloat Matrix4x4::getFloat(int space)
     return matrix[space];
 }
 
+void Matrix4x4::setY(GLfloat y)
+{
+    matrix[7] = y;
+}
+
 } //namespace

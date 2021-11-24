@@ -84,6 +84,7 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
             getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuads + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuads + quadX]*G/255, B/255, u, v+step));
         }
     }
+
 }
 LasTerrainGenerator::~LasTerrainGenerator()
 {}
