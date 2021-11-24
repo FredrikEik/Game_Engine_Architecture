@@ -682,7 +682,116 @@ int MeshHandler::makeLAS(std::string fileName)
 
     //qDebug() << "making lAas";
     ReadDatafromFile(fileName, temp);
-    GenerateHeightMap(temp);
+    minMaxNormalize();
+    //GenerateHeightMap(temp);
+
+
+    int quadCoordX = 0;
+    int quadCoordZ = 0;
+
+    // Using min, max and step to find how many quads the TriangleSurface has in each direction
+    const int quadAmountX = abs(xMax-xMin)/step; //qDebug() << quadAmountX;
+    const int quadAmountZ = abs(zMax-zMin)/step; //qDebug() << quadAmountZ;
+    //const int numOfQuads = quadAmountX*quadAmountZ; //qDebug() << numOfQuads;
+
+    // An array of vectors that hold all the heights for each quad
+    // Size of array is hardcoded, unsure how to do it from numOfQuads
+    std::array<std::vector<float>,800> heights;
+    //std::array<std::vector<float>,numOfQuads> heights;
+
+    //An array that holds the average height of each quad
+    float averageHeights[800];
+    //float averageHeights[numOfQuads];
+
+
+
+    //For every vertices
+    //qDebug() << "Vertices size" << lasData.size();
+    for(int i = 0; i < lasData.size(); i++)
+    {
+        //.. find what column the vertex is on
+        for(int j = xMin; j < xMax; j+=step) // j = -5.0f, -3.0f, -1.0f, 1.0f, 3.0f, 5.0f
+        {
+            if(lasData[i].get_xyz().getX() > j && lasData[i].get_xyz().getX() < j + step)
+            {
+                quadCoordX = (j-xMin)/step;
+            }
+        }
+        //.. find what row the vertex is on
+        for(int j = zMin; j < zMax; j+=step)
+        {
+            if(lasData[i].get_xyz().getZ() > j && lasData[i].get_xyz().getZ() < j + step)
+            {
+                quadCoordZ = (j-zMin)/step;
+            }
+        }
+
+        //Converts from row&column to vector-array index
+        int vectorIndex = quadCoordZ*quadAmountZ + quadCoordX; //0-1199
+
+        //Pushes the height(y) to the correct vector in the array
+        heights[vectorIndex].push_back(lasData[i].get_xyz().getY());
+    }
+
+    //qDebug() << "size of height array " << heights.size();
+    for(int i = 0; i < heights.size(); i++)
+    {
+        //qDebug() << "size of height vector " << i << heights[i].size();
+
+        //Calculate the average of all heights in quad
+        //.. and put it in the array of averageHeights
+
+        //float sum = std::accumulate(heights[i].begin(), heights[i].end(), 0);
+
+        float sum = 0;
+        for(int j = 0; j < heights[i].size(); j++)
+        {
+            sum += heights[i][j];
+        }
+        sum = sum/heights[i].size();
+        averageHeights[i] = sum;
+    }
+
+//    for(int i = 0; i < 25 ; i++)
+//    {
+//        qDebug() << "averageheight:" << i << " " << averageHeights[i];
+//    }
+
+    //Create triangulated surface
+    float R = 10;
+    float G = 50;
+    float B = 75;
+    for (float x = xMin; x < xMax-step; x+= step)
+    {
+        for(float z = zMin; z < zMax; z+= step)
+        {
+            int quadCoordX = (x-xMin)/step;
+            int quadCoordZ = (z-zMin)/step;
+            float u{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
+            float v{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
+
+            temp.mVertices[0].push_back(Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
+                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255,u,v));
+
+            temp.mVertices[0].push_back(Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
+                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255, u, v+step));
+
+            temp.mVertices[0].push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
+                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
+
+
+
+            temp.mVertices[0].push_back(Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
+                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step, v+step));
+
+            temp.mVertices[0].push_back(Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
+                                                           R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255, u+step,v));
+
+            temp.mVertices[0].push_back(Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
+                                                           R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255, u, v+step));
+
+        }
+    }
 
     temp.mDrawType = GL_TRIANGLES;
     initMesh(temp,0);
@@ -692,6 +801,7 @@ int MeshHandler::makeLAS(std::string fileName)
 
 void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
 {
+    /*
     std::string line;
 
 
@@ -749,7 +859,7 @@ void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
         }
         fileIn.close();
         //delete delta in the vertex, as it starts with insaneley big values :D
-        RemoveDeltaPos(mesh);
+        //RemoveDeltaPos(mesh);
         //initMesh(mesh, 0);
     }
     else
@@ -757,7 +867,81 @@ void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
         QString string = QString::fromStdString( fileName);
         qDebug() << "Unable to open file: " << string;
     }
+    */
 
+
+    std::string tempName{0};
+    tempName = fileName;
+
+    tempName = gsl::DataFilePath + tempName;
+
+    qDebug() << "Reading " << tempName.c_str();
+    std::ifstream fileIn;
+    fileIn.open (tempName, std::ifstream::in);
+
+    if (!fileIn.is_open())
+    {
+        qDebug() << "Error, file couldn't be opened";
+    }
+    if (fileIn.is_open()) {
+        int numberOfVertices;
+        fileIn >> numberOfVertices;
+        lasData.reserve(numberOfVertices);
+        Vertex vertex{0,0,0};
+        double tempX, tempY, tempZ;
+        float x,y,z;
+        for (int i=0; i < numberOfVertices; i++)
+        {
+
+             fileIn >> tempX >> tempZ >> tempY;
+             //convert double to float since las data has a lot of decimals
+             x = float(tempX);
+             y = float(tempY);
+             z = float(tempZ);
+
+             if(i == 0)
+             {
+                 highestX = x;
+                 highestY = y;
+                 highestZ = z;
+                 lowestX = x;
+                 lowestY = y;
+                 lowestZ = z;
+             }
+
+             if(tempX > highestX){ highestX = x;}
+             if(tempY > highestY){ highestY = y;}
+             if(tempZ > highestZ){ highestZ = z;}
+             if(tempX < lowestX){ lowestX = x;}
+             if(tempY < lowestY){ lowestY = y;}
+             if(tempZ < lowestZ){ lowestZ = z;}
+
+             vertex.set_xyz(x, y, z);
+             lasData.push_back(vertex);
+        }
+        fileIn.close();
+    }
+
+    /*Print las data*/
+    qDebug() << highestX << highestY << highestZ << lowestX << lowestY << lowestZ;
+//    for(int i = 0; i < 1000; i++)
+//    {
+//        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;
+//    }
+
+
+}
+
+void MeshHandler::minMaxNormalize()
+{
+    for(int i = 0; i < lasData.size(); i++)
+    {
+        float nX = xMin+(((lasData[i].get_xyz().getX() - lowestX)*(xMax-xMin)) / (highestX - lowestX));
+        float nY = yMin+(((lasData[i].get_xyz().getY()  - lowestY)*(yMax-yMin)) / (highestY - lowestY));
+        float nZ = zMin+(((lasData[i].get_xyz().getZ()  - lowestZ)*(zMax-zMin)) / (highestZ - lowestZ));
+
+        lasData[i].set_xyz(nX,nY,nZ);
+    }
 }
 
 
@@ -897,150 +1081,150 @@ void MeshHandler::calculateHeighMapNormals(int width, int depth, MeshData &mesh)
     qDebug() << "Normals for ground calclulated";
 }
 
-void MeshHandler::RemoveDeltaPos(MeshData &mesh)
-{
+//void MeshHandler::RemoveDeltaPos(MeshData &mesh)
+//{
 
 
-    float smallestX{0}, biggestX{0};
-    float smallestY{0}, biggestY{0};
-    float smallestZ{0}, biggestZ{0};
+//    float smallestX{0}, biggestX{0};
+//    float smallestY{0}, biggestY{0};
+//    float smallestZ{0}, biggestZ{0};
 
-    //we take biggest delta between x,y and z, then we remove it from the vertexes to get a more appropreate number.
-    for(auto i = 0; i<mesh .positions.size(); i++)
-    {
+//    //we take biggest delta between x,y and z, then we remove it from the vertexes to get a more appropreate number.
+//    for(auto i = 0; i<mesh .positions.size(); i++)
+//    {
 
-        //gsml::Vector3d temp = positions[i].getVertex();
-        float tempX = mesh .positions[i].get_xyz().getX();
-        float tempY = mesh .positions[i].get_xyz().getY();
-        float tempZ = mesh .positions[i].get_xyz().getZ();
-        //qDebug() << "xyz "<< temp;
-        //check size of x
-        if(tempX < smallestX)
-            smallestX = tempX;
-        if(tempX > biggestX)
-            biggestX = tempX;
-        //check size of y
-        if(tempY < smallestY)
-            smallestY = tempY;
-        if(tempY > biggestY)
-            biggestY = tempY;
-        //check size of Z
-        if(tempZ < smallestZ)
-            smallestZ = tempZ;
-        if(tempZ > biggestZ)
-            biggestZ = tempZ;
-    }
+//        //gsml::Vector3d temp = positions[i].getVertex();
+//        float tempX = mesh .positions[i].get_xyz().getX();
+//        float tempY = mesh .positions[i].get_xyz().getY();
+//        float tempZ = mesh .positions[i].get_xyz().getZ();
+//        //qDebug() << "xyz "<< temp;
+//        //check size of x
+//        if(tempX < smallestX)
+//            smallestX = tempX;
+//        if(tempX > biggestX)
+//            biggestX = tempX;
+//        //check size of y
+//        if(tempY < smallestY)
+//            smallestY = tempY;
+//        if(tempY > biggestY)
+//            biggestY = tempY;
+//        //check size of Z
+//        if(tempZ < smallestZ)
+//            smallestZ = tempZ;
+//        if(tempZ > biggestZ)
+//            biggestZ = tempZ;
+//    }
 
-    for(auto i = 0; i<mesh .positions.size(); i++)
-    {
+//    for(auto i = 0; i<mesh .positions.size(); i++)
+//    {
 
-        gsl::Vector3D temp = mesh.positions[i].get_xyz();
-        //qDebug() << "xyz "<< temp;
-        //check size of x
-        if(temp.getX() < smallestX)
-            smallestX = temp.getX();
-        if(temp.getX() > biggestX)
-            biggestX = temp.getX();
-        //check size of y
-        if(temp.getY() < smallestY)
-            smallestY = temp.getY();
-        if(temp.getY() > biggestY)
-            biggestY = temp.getY();
-        //check size of Z
-        if(temp.getZ() < smallestZ)
-            smallestZ = temp.getZ();
-        if(temp.getZ() > biggestZ)
-            biggestZ = temp.getZ();
-    }
+//        gsl::Vector3D temp = mesh.positions[i].get_xyz();
+//        //qDebug() << "xyz "<< temp;
+//        //check size of x
+//        if(temp.getX() < smallestX)
+//            smallestX = temp.getX();
+//        if(temp.getX() > biggestX)
+//            biggestX = temp.getX();
+//        //check size of y
+//        if(temp.getY() < smallestY)
+//            smallestY = temp.getY();
+//        if(temp.getY() > biggestY)
+//            biggestY = temp.getY();
+//        //check size of Z
+//        if(temp.getZ() < smallestZ)
+//            smallestZ = temp.getZ();
+//        if(temp.getZ() > biggestZ)
+//            biggestZ = temp.getZ();
+//    }
 
-    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
-    qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
-    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
-    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
-    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
-
-
-    for(auto i = 0; i<mesh .positions.size(); i++)
-    {
-        mesh .positions[i].set_xyz(deltaX - mesh .positions[i].get_xyz().getX(),
-                             deltaY - mesh .positions[i].get_xyz().getY() ,
-                             deltaZ - mesh .positions[i].get_xyz().getZ());
-        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
-    }
-
-}
-
-void MeshHandler::GenerateHeightMap(MeshData &mesh)
-{
+//    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
+//    qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
+//    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
+//    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
+//    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
 
 
-    float ofsetx = -100;
-    float ofsetz = -100;
-    float ofsety = -15;
+//    for(auto i = 0; i<mesh .positions.size(); i++)
+//    {
+//        mesh .positions[i].set_xyz(deltaX - mesh .positions[i].get_xyz().getX(),
+//                             deltaY - mesh .positions[i].get_xyz().getY() ,
+//                             deltaZ - mesh .positions[i].get_xyz().getZ());
+//        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+//    }
 
-    for(float x = 100; x<200; x+=1)
-        for(float z =100; z<200; z+=1)
-        {
-            //get all height data :D
-            float height1 = CalcHeight(    x,    z);
-            float height2 = CalcHeight(  x+1,    z);
-            float height3 = CalcHeight(    x,  z+1);
-            float height4 = CalcHeight(    x,  z+1);
-            float height5 = CalcHeight(  x+1,    z);
-            float height6 = CalcHeight(  x+1,  z+1);
+//}
 
-                                                                                        //use height date for colouring   //This order is like this because our
-            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height1,ofsetz +   z,       x/900, height1/100, z/1000,0,0}); //1
-            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height2,ofsetz +   z,       x/900, height2/100, z/1000,0,0}); //2
-            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height3,ofsetz + z+1,       x/900, height3/100, z/1000,0,0}); //3
-            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0}); //4
-            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0}); //5
-            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0}); //6
+//void MeshHandler::GenerateHeightMap(MeshData &mesh)
+//{
 
 
-        }
+//    float ofsetx = -100;
+//    float ofsetz = -100;
+//    float ofsety = -15;
 
-}
+//    for(float x = 100; x<200; x+=1)
+//        for(float z =100; z<200; z+=1)
+//        {
+//            //get all height data :D
+//            float height1 = CalcHeight(    x,    z);
+//            float height2 = CalcHeight(  x+1,    z);
+//            float height3 = CalcHeight(    x,  z+1);
+//            float height4 = CalcHeight(    x,  z+1);
+//            float height5 = CalcHeight(  x+1,    z);
+//            float height6 = CalcHeight(  x+1,  z+1);
 
-float MeshHandler::CalcHeight(float x, float z)
-{
-    float height = 10.0f;
-
-
-    int X = static_cast<int>(x);
-    int Z = static_cast<int>(z);
-    int counter =0;
-    float collected = 0;
-    height = PosArr[X][Z];
-
-    if((X>15 && Z>15) /*&& height <= 2.0f */)
-    {
-
-        for(int i = -14; i < 14 ; i++)
-        {
-            for (int j = -14 ; j <14; j++ )
-            {
-                if(PosArr[X + i][Z + j] != 0)
-                {
-                    collected += PosArr[X + i][Z + j];
-                    counter++;
-                }
-            }
-        }
-        height = ( collected)/(counter);
-        //average height of surrounding area
-    }
-    else
-    {
-        height = PosArr[X][Z] ;
-    }
+//                                                                                        //use height date for colouring   //This order is like this because our
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height1,ofsetz +   z,       x/900, height1/100, z/1000,0,0}); //1
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height2,ofsetz +   z,       x/900, height2/100, z/1000,0,0}); //2
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height3,ofsetz + z+1,       x/900, height3/100, z/1000,0,0}); //3
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0}); //4
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0}); //5
+//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0}); //6
 
 
-    //do the average calc
-    //qDebug() << height;
-    //then return its
-    return height;
-}
+//        }
+
+//}
+
+//float MeshHandler::CalcHeight(float x, float z)
+//{
+//    float height = 10.0f;
+
+
+//    int X = static_cast<int>(x);
+//    int Z = static_cast<int>(z);
+//    int counter =0;
+//    float collected = 0;
+//    height = PosArr[X][Z];
+
+//    if((X>15 && Z>15) /*&& height <= 2.0f */)
+//    {
+
+//        for(int i = -14; i < 14 ; i++)
+//        {
+//            for (int j = -14 ; j <14; j++ )
+//            {
+//                if(PosArr[X + i][Z + j] != 0)
+//                {
+//                    collected += PosArr[X + i][Z + j];
+//                    counter++;
+//                }
+//            }
+//        }
+//        height = ( collected)/(counter);
+//        //average height of surrounding area
+//    }
+//    else
+//    {
+//        height = PosArr[X][Z] ;
+//    }
+
+
+//    //do the average calc
+//    //qDebug() << height;
+//    //then return its
+//    return height;
+//}
 
 MeshData MeshHandler::makeLineBox(std::string meshName)
 {

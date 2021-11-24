@@ -80,20 +80,27 @@ private:
     int makeSkybox();
     int makeTerrain(std::string heightMapName);   
 
+    void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
 
     //LAS SETUP
     int makeLAS(std::string fileName);
     void ReadDatafromFile(std::string fileName, MeshData &mesh);
-    void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
-    void RemoveDeltaPos(MeshData &mesh);
-    void GenerateHeightMap(MeshData &mesh);
-    float CalcHeight(float x = 0, float z = 0);
 
+    //void RemoveDeltaPos(MeshData &mesh);
+    //void GenerateHeightMap(MeshData &mesh);
+    //float CalcHeight(float x = 0, float z = 0);
 
+    void minMaxNormalize();
+    std::vector<Vertex> lasData;
+    float xMin{-20.f}, yMin{0.f}, zMin{-20.f}, xMax{20.f}, yMax{6.f}, zMax{20.0f};
+    float step{2.f};
+    float highestX, highestY, highestZ, lowestX, lowestY, lowestZ;
 
     float posX = 1.f;
     float posY = 1.f;
     float posZ = 1.f;
+
+
     struct Particle
     {
         gsl::Vector3D position;

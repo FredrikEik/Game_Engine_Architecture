@@ -113,7 +113,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
     Las = mResourceManager->addObject("LAS");
-    Las->mTransform->mMatrix.translate(0,0,0);
+    //Las->mTransform->mMatrix.translate(0,0,0);
     Las->mMaterial->mShaderProgram =0;
     Las->mMaterial->mTextureUnit = 0;
     //Las->mTransform->mMatrix.scale(50.f);
