@@ -368,14 +368,6 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     // is only used for frustum culling so doesnt have to accurate.
     CollisionComponent->mRaidus = xMax*zMax;
 
-    // 998 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
-    float gridSizeX = xMax / 998;
-    qDebug() << "GridsizeX" << gridSizeX;
-    // 1457 er hardcodet siden nå er gridsize akkuratt 1 med den dataen jeg bruker nå;
-    float gridSizeZ = zMax / 1457;
-    qDebug() << "GridsizeY" << gridSizeZ;
-
-
     CollLines->mVertices[0].push_back(Vertex(xMin, yMin, zMax,   1,0,0,  0,0));
     CollLines->mVertices[0].push_back(Vertex(xMax, yMin, zMax,   1,0,0,  0,0));
     CollLines->mVertices[0].push_back(Vertex(xMax, yMax, zMax,   1,0,0,  0,0));
@@ -394,6 +386,9 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
     CollLines->mDrawType = GL_LINES;
     init(*CollLines,0);
+
+
+
     int gridSize {10};
     float TerrainWidth = 1000;
     float TerrainLenght = 1460;
@@ -503,7 +498,7 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
         c++;
     }
 MeshComp->mDrawType = GL_TRIANGLES;
-glPointSize(5.f);
+//glPointSize(5.f);
 
 
 //Normals:
@@ -639,7 +634,7 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
     {
         for(int i = 0;i < terrainMesh->mVertices[0].size() - (TerrainWidth/gridSize) ;i++)
         {
-            if(c == (TerrainWidth/gridSize) -1)
+            if(c == (TerrainWidth/gridSize) -1) // for not including the last square in the row
             {
                 c=0;
                 continue;

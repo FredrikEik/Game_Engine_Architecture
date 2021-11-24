@@ -142,11 +142,6 @@ float PhysicsBallSystem::getHeightbyBarycentricCoordinates(const QVector2D &ball
         float p3y  = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos-1)).mXYZ.getY();
         float p4y  = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos)).mXYZ.getY();
 
-//       float p1y = sArrayHeights[(gridYPos)*rows + (gridXPos)];
-//        float p2y = sArrayHeights[(gridYPos+1)*rows + (gridXPos)];
-//        float p3y = sArrayHeights[(gridYPos)*rows + (gridXPos+1)];
-//        float p4y = sArrayHeights[(gridYPos+1)*rows + (gridXPos+1)];
-
 
         //Finne hvilken av de to trekantene spilleren står på
         if(xCoordInSquare <= (zCoordInSquare))
@@ -194,17 +189,6 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     qDebug () << "gridXPos: " << gridXPos << "gridZPos: " << gridZPos;
 
 
-
-    //FOR DEBUG!! ::
-//    return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
-
-//    float sArrayHeights[14600];
-//    for(int i = 0; i < mTerrain->mMeshComp->mVertices[0].size();i++)
-//        sArrayHeights[i] = mTerrain->mMeshComp->mVertices[0].at(i).mXYZ.getY();
-
-
-
-
     if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
     {   //Koordinat grids
 
@@ -213,26 +197,13 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
         QVector2D p3_2D{10,10};
         QVector2D p4_2D{0,10};
 
-        //TODO: make p1y p2y etc. in the right order. get the right y height from each vertex.
 
-//        float p1y = 0.203227f;
-//        float p2y = 0.0f;
-//        float p3y = 0.0f;
-//        float p4y = 0.203227f;
         float p1y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos-1)).mXYZ.getY();
         float p2y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos)).mXYZ.getY();
         float p3y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos-1)).mXYZ.getY();
         float p4y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos)).mXYZ.getY();
 
-//        float p1y = sArrayHeights[gridZPos*mCols + (100-gridXPos-1)];
-//        float p2y = sArrayHeights[gridZPos*mCols + (100-gridXPos)];
-//        float p3y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos-1)];
-//        float p4y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos)];
 
-//        float p1y = sArrayHeights[gridZPos*mCols + (100-gridXPos)];
-//        float p3y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos)];
-//        float p2y = sArrayHeights[gridZPos*mCols + (100-gridXPos-1)];
-//        float p4y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos-1)];
 
         QVector3D p1{p1_2D.x(),p1y,p1_2D.y()};
         QVector3D p2{p2_2D.x(),p2y,p2_2D.y()};
@@ -241,19 +212,6 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
 
         qDebug() << "p1: " << p1 << "p2: " << p2 << "p3: " << p3 << "p4: " << p4;
 
-//       float p1y = sArrayHeights[(gridYPos)*rows + (gridXPos)];
-//        float p2y = sArrayHeights[(gridYPos+1)*rows + (gridXPos)];
-//        float p3y = sArrayHeights[(gridYPos)*rows + (gridXPos+1)];
-//        float p4y = sArrayHeights[(gridYPos+1)*rows + (gridXPos+1)];
-
-
-
-        //FOR DEBUG!! ::
-//        return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
-
-
-
-    //qDebug() <<"x: " <<  xCoordInSquare << "y: " << zCoordInSquare;
         //Finne hvilken av de to trekantene spilleren står på
         if(xCoordInSquare <= (zCoordInSquare))
         {
@@ -296,10 +254,6 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             {
                 return std::pair<QVector3D,QVector3D>{Vec,QVector3D{0,0,0}};
             }
-
-
-//            QVector3D uvw = barycentricCoordinates(QVector2D{xCoordInSquare,zCoordInSquare},p2_2D,p4_2D,p3_2D);
-//            height = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
 
 
             return std::pair<QVector3D,QVector3D>{Vec,x};
@@ -347,12 +301,6 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             {
                 return std::pair<QVector3D,QVector3D>{aVec,QVector3D{0,0,0}};
             }
-
-            //aVec *= x;
-
-//            QVector3D uvw = barycentricCoordinates(QVector2D{xCoordInSquare,zCoordInSquare},p1_2D,p2_2D,p3_2D);
-//            height = p1y*uvw.x()+p2y*uvw.y()+p3y*uvw.z();
-
 
             return std::pair<QVector3D,QVector3D>{aVec,x};
         }
