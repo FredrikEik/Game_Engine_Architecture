@@ -38,6 +38,7 @@ SOURCES += main.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     spawner.cpp \
+    surface.cpp \
     texture.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
@@ -73,6 +74,7 @@ HEADERS += \
     soundmanager.h \
     soundsource.h \
     spawner.h \
+    surface.h \
     texture.h \
     triangle.h \
     gsl/vector2d.h \

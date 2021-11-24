@@ -22,6 +22,7 @@
 #include "texture.h"
 #include "MathStuff/MathStuff.h"
 #include "spawner.h"
+#include "surface.h"
 
 #include "cube.h"
 #include "objimport.h"
@@ -76,6 +77,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     QJSValue useFunction = engine.evaluate("setCVariable");
     useFunction.call();
     qDebug() << "C value set to:" << mScript->getSpeed();
+
+    //mGameObjects.push_back(new Surface("../3Dprog21/TaskAFile.txt"));
 }
 
 RenderWindow::~RenderWindow()
@@ -129,7 +132,7 @@ void RenderWindow::init()
     mTextures[1] = new Texture("hund.bmp");
     mTextures[2] = new Texture("cobbleStone.bmp");
     mTextures[3] = new Texture("whitefur.bmp");
-    mTextures[4] = new Texture("firesky.bmp");
+    mTextures[4] = new Texture("clouds1_up.bmp");
     mTextures[5] = new Texture("lava.bmp");
 
     //Set the textures loaded to a texture unit
@@ -179,7 +182,9 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	0.5f, 4.f));
+    //mCurrentCamera->setPosition(gsl::Vector3D(615199.75f,	6758330.96f,	565.59f));
+    qDebug() << "camera is here: " << mCurrentCamera->getPosition();
 
     SoundManager::getInstance()->init();
 
@@ -197,11 +202,13 @@ void RenderWindow::init()
     mMousePicker = new MousePicker(mCurrentCamera);
     mMainWindow->setMouseTracking(true);
 
-    ObjFactory->createObject("Goat");
-    mMainWindow->addObjectToWorldList("Player");
-    ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
-    ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
-    mPlayer = new player(ObjFactory->mGameObject.back());
+    //ObjFactory->createObject("Goat");
+    ObjFactory->createObject("Surface");
+    mMainWindow->addObjectToWorldList("Surface");
+    //mMainWindow->addObjectToWorldList("Player");
+    //ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
+    //ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
+    //mPlayer = new player(ObjFactory->mGameObject.back());
 
     skyBox = new SkyBox();
     skyBox->init();
@@ -215,9 +222,9 @@ void RenderWindow::init()
     setScaleZ(100);
     ObjFactory->setOBJindex(-1);
 
-    MapSpawner = new Spawner(ObjFactory, mMainWindow);
+    //MapSpawner = new Spawner(ObjFactory, mMainWindow);
     //MapSpawner->spawnRow();
-    MapSpawner->spawnRow(100);
+    //MapSpawner->spawnRow(100);
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);
 }
@@ -261,7 +268,7 @@ void RenderWindow::render()
 
     skyBox->Update(mCurrentCamera->getPosition());
 
-    MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
+    //MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
 
     unsigned int cullSafe;
     if(bPlayGame)
@@ -300,7 +307,7 @@ void RenderWindow::render()
             //ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
             //ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
 
-            if (i > 1)
+            /*if (i > 1)
             {
                 bool test;
                 test = objectsColliding(*mPlayer->mMesh->CollisionComp, *ObjFactory->mGameObject[i]->getCollisionComp(),
@@ -309,7 +316,7 @@ void RenderWindow::render()
 
                 if (test && bPlayGame)
                     toggleGameMode();
-            }
+            }*/
 
             /*for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
             {
@@ -593,12 +600,12 @@ void RenderWindow::toggleGameMode()
     if (bPlayGame) {
         bPlayGame = false;
         mCurrentCamera = mEditorCamera;
-        if (mPlayer)
+        /*if (mPlayer)
         {
             mPlayer->mMesh->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
             mPlayer->mMesh->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
-        }
-        if (MapSpawner)
+        }*/
+        /*if (MapSpawner)
         {
             MapSpawner->resetSpawner();
             for(int i = 0; i < ObjFactory->mGameObject.size(); i++)
@@ -611,7 +618,7 @@ void RenderWindow::toggleGameMode()
                 }
             }
             MapSpawner->spawnHindrances(100);
-        }
+        }*/
         stopSound();
         mMainWindow->disableWorldObjects(false);
     }
@@ -811,7 +818,7 @@ void RenderWindow::handleInput()
     }
 
     //Player
-    if (bPlayGame && mPlayer)
+    /*if (bPlayGame && mPlayer)
     {
         qDebug() << "Speed: " << mScript->getSpeed();
         float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
@@ -825,7 +832,7 @@ void RenderWindow::handleInput()
         mPlayer->update(deltaTime);
         gsl::Vector3D position = mCurrentCamera->getPosition();
         mCurrentCamera->setPosition(gsl::Vector3D(position.x, position.y, position.z + (-4 / deltaTime)));
-    }
+    }*/
 }
 
 void RenderWindow::keyPressEvent(QKeyEvent *event)

@@ -14,6 +14,8 @@ public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init();
+    virtual void init(GLint matrixUniform)=0;
+
     virtual void draw()=0;
 
     gsl::Matrix4x4 mMatrix;
@@ -29,6 +31,7 @@ protected:
     GLuint mVAO{0};
     GLuint mVBO{0};
     GLuint mEAB{0}; //holds the indices (Element Array Buffer - EAB)
+    GLint mMatrixUniform{0};
 
 };
 #endif // VISUALOBJECT_H

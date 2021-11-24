@@ -3,6 +3,7 @@
 #include "triangle.h"
 #include "xyz.h"
 #include "objimport.h"
+#include "surface.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -22,6 +23,7 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.5f, 0.5f, 0.5f);
         willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.5f, -0.5f, -0.5f);
         willCreateObject->mTexture = 2;
+        //mVisualObjects.push_back(new Surface(("../GEA2021/test_las.txt")));
     }
 
     else if (objectName == "Triangle")
@@ -47,6 +49,26 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject->mTexture = 3;
         willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.3f, 1.4f, 0.5f);
         willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.3f, .1f, -0.5f);
+    }
+    else if (objectName == "Surface")
+    {
+            //willCreateObject = new ObjImport(".../GEA2021/terrainpoints.txt");
+            //storedMeshes.insert(std::pair("Surface", willCreateObject->getMeshComp()));
+            //mVisualObjects.push_back(new Surface(("../GEA2021/terrainpoints.txt")));
+        if (EXISTS("Surface"))
+        {
+            willCreateObject = new Surface("");
+            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Surface"]));
+            qDebug() << "surface mesh extracted";
+        }
+        else
+        {
+            willCreateObject = new Surface("../GEA2021/test_las.txt");
+            storedMeshes.insert(std::pair("Goat", willCreateObject->getMeshComp()));
+            qDebug() << "surface mesh saved";
+        }
+        willCreateObject->mTexture = 2;
+
     }
     else
         return;

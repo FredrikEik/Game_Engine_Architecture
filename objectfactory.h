@@ -4,6 +4,7 @@
 #include "iostream"
 #include "gameobject.h"
 #include "objimport.h"
+#include "visualobject.h"
 #include <map>
 
 class ObjectFactory
@@ -11,6 +12,7 @@ class ObjectFactory
 public:
     ObjectFactory();
     std::vector<GameObject*> mGameObject;
+    std::vector<VisualObject*> mVisualObjects;
     void createObject(std::string objectName);
 
     void saveMesh(std::string fileName, std::string nickName);
