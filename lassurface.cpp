@@ -30,8 +30,8 @@ void LasSurface::readLasFile(std::string filnavn)
     if (inn.is_open())
     {
         inn >> n;
-        inn >> x >> z >> y;
-        xMaximum = x;
+        inn >> x >> z >> y;             // leser inn hvor mange linjer det er, og første linje. Første linjen med kordinater brukes som standard
+        xMaximum = x;                   // for x,y,z maximum og minimum
         xMinimum = x;
         yMaximum = y;
         yMinimum = y;
@@ -40,17 +40,17 @@ void LasSurface::readLasFile(std::string filnavn)
         lasVertices.reserve(n);
         lasVertex.set_xyz(x,y,z);
         lasVertices.push_back(lasVertex);
-        for (int i=0; i<n; i++)
+        for (int i=0; i<n; i++)                 //for loop som går gjennom hele dokumentet
         {
             inn >> x >> z >> y;
             linesRead++;
-            lasVertex.set_xyz(x,y,z);
+            lasVertex.set_xyz(x,y,z);                   //leser inn data og push_backer det
             lasVertices.push_back(lasVertex);
             if (x > xMaximum)
                 xMaximum = x;
             else if(x < xMinimum)
                 xMinimum = x;
-            if (y > yMaximum)
+            if (y > yMaximum)                           // endrer på maximum og minimum verdier hvis det kommer en som er større/mindre enn forrige
                 yMaximum = y;
             else if(y < yMinimum)
                 yMinimum = y;
@@ -62,7 +62,7 @@ void LasSurface::readLasFile(std::string filnavn)
         inn.close();
     }
 
-    minMaxScale();
+    minMaxScale();                                          //skalerer til en minimum- og maximum-grense
 
 
     int VerticesCounter=0;
@@ -76,17 +76,17 @@ void LasSurface::readLasFile(std::string filnavn)
     double squareMinX = xmin;
     double squareMaxX;
 
-    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset){
+    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset){     //looper gjennom hver square i z retning
         squareMaxZ = j+zOffset;
 
-        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset){
+        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset){       //looper gjennom hver square i x retning
             numberofPointsInside=0;
             float tempX=0;
             float tempY=0;
             float tempZ=0;
             VerticesCounter++;
             squareMaxX = i +xOffset;
-            for ( unsigned long long k = 0 ; k<lasVertices.size(); k++){
+            for ( unsigned long long k = 0 ; k<lasVertices.size(); k++){        //sjekker om punktene er innenfor squaren
                 if ( lasVertices[k].getXYZ().getX() < squareMaxX &&
                      lasVertices[k].getXYZ().getX() > i &&
                      lasVertices[k].getXYZ().getZ() < squareMaxZ &&
@@ -96,14 +96,14 @@ void LasSurface::readLasFile(std::string filnavn)
                     tempY = tempY+ lasVertices[k].getXYZ().y;
                 }
             }
-            tempX = squareMaxX - (xOffset/2);
+            tempX = squareMaxX - (xOffset/2);                               //finner midtpunktet i squaren
             tempZ =  squareMaxZ - (zOffset/2);
             if(numberofPointsInside==0){
-                tempY = (ymin+(ymax-ymin))/2;
+                tempY = (ymin+(ymax-ymin))/2;                               //setter en standar y verdi om det ikke er noen punkter i squaren
             }
             else if(numberofPointsInside > 0)  {
 
-                tempY = tempY/numberofPointsInside;
+                tempY = tempY/numberofPointsInside;                         // tar gjennomsnitt av alle y verdiene
             }
             vertex.set_xyz(tempX, tempY, tempZ);
             vertex.set_rgb(0,255,100);
@@ -112,7 +112,7 @@ void LasSurface::readLasFile(std::string filnavn)
             //qDebug () << numberofPointsInside;
             //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
             //qDebug() << lasVertices[squarecounter].getXYZ().x << lasVertices[squarecounter].getXYZ().y << lasVertices[squarecounter].getXYZ().z
-            tempVertices.push_back(vertex);
+            tempVertices.push_back(vertex);                                 //push_backer vertexen
 
         }
     }
@@ -121,11 +121,11 @@ void LasSurface::readLasFile(std::string filnavn)
     //qDebug() << "Amount of squares" << Amountsquares;
     int k=1;
     int j=0;
-        for(int i =0; i< Amountsquares; i++){
+        for(int i =0; i< Amountsquares; i++){                       // lager de nye punktene om til trekanter/squares.
 
             if(i == squaresDirection*k){
                 j++;
-                k++;
+                k++;                                                // sjekker om alle squarene på en rekke er fylt ut.
             }
 
         getMeshComponent()->mVertices.push_back(tempVertices[(i)+(j)]);
@@ -174,7 +174,7 @@ void LasSurface::writeFile(std::string filnavn)
     }
 }
 
-void LasSurface::minMaxScale()
+void LasSurface::minMaxScale()          //skalerer mellom to verdier, gjør dette med alle verdiene for å få lettere tall og jobbe med.
 {
     for(int index = 0; index < lasVertices.size(); index++){
 

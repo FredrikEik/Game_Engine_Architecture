@@ -30,7 +30,7 @@ private:
     gsl::Vector3D akselerasjon{0.0f,0.0f,0.0f};
     gsl::Vector3D gAkselerasjon{0.0f,0.0f,9.80565f};
     gsl::Vector3D gKraft;
-    float masseIKG{0.05f};              //massen til ballen
+    float masseIKG{1.f};              //massen til ballen
 
 
     gsl::Vector3D old_normal{0.0, 0.0, 1.0};

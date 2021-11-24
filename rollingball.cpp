@@ -67,23 +67,16 @@ void RollingBall::move(float dt)
 
         if(barycentricCord.x > 0 && barycentricCord.y > 0 && barycentricCord.z > 0 &&
                 barycentricCord.x < 1 && barycentricCord.y < 1 && barycentricCord.z < 1){   //sjekker at ballen er innafor trianglene
-            //qDebug() << "The ball is inside";
-            //gsml::Vector3d avstand = 0;
-            //gsml::Vector3d projeksjon=0;
-            //gsml::Vector3d distanseFlyttet =0;
-            //gsml::Vector3d distanseFlyttetNM =0;
-            //gsml::Vector3d temp = (1,0,0.55);
-            //qDebug() << i;
 
             normalvektor = (v1-v0)^(v2-v0);                                             //regner ut normalvektoren til planet
             normalvektor.normalize();                                                   //normaliserer normalvektoren
-            akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,0,normalvektor.z); //regner ut akselerasjon
+            akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,normalvektor.y,0); //regner ut akselerasjon
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
 
             //if(i==3){
-            nyPosisjon = ballpos + hastighet;                                         //oppdaterer posisjonen
-            nyPosisjon.z = v0.z*barycentricCord.x+v1.z*barycentricCord.y+v2.z*barycentricCord.z;   //bruker barysentriske kordinatene til å bestemme nye z posisjonen
-            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y, nyPosisjon.z+radius);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
+            nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;                                         //oppdaterer posisjonen
+            nyPosisjon.y = v0.y*barycentricCord.x+v1.y*barycentricCord.y+v2.y*barycentricCord.z;   //bruker barysentriske kordinatene til å bestemme nye z posisjonen
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y+radius, nyPosisjon.z);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
            // }
 
 //            else if (i==0){
