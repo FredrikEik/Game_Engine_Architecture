@@ -107,7 +107,7 @@ void LasSurface::readLasFile(std::string filnavn)
             }
             vertex.set_xyz(tempX, tempY, tempZ);
             vertex.set_rgb(0,255,100);
-            vertex.set_normal(tempX,0,1);
+            vertex.set_normal(tempX,1,0);
 
             //qDebug () << numberofPointsInside;
             //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
@@ -117,8 +117,8 @@ void LasSurface::readLasFile(std::string filnavn)
         }
     }
 
-    //qDebug() <<"Number of Vertices" << VerticesCounter;
-    //qDebug() << "Amount of squares" << Amountsquares;
+    qDebug() <<"Number of Vertices" << VerticesCounter;
+    qDebug() << "Amount of squares" << Amountsquares;
     int k=1;
     int j=0;
         for(int i =0; i< Amountsquares; i++){                       // lager de nye punktene om til trekanter/squares.
