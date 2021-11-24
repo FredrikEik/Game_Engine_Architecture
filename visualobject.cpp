@@ -2,7 +2,6 @@
 #include "Shaders/shader.h"
 #include "texture.h"
 #include <QDebug>
-
 VisualObject::VisualObject()
 {
     m_scale.setToIdentity();
@@ -97,6 +96,11 @@ void VisualObject::setPosition(const QMatrix4x4 &position)
 QVector3D VisualObject::getPosition() const
 {
     return m_position.column(3).toVector3D();
+}
+
+QVector3D VisualObject::getFirstVertexPosition()
+{
+    return m_vertices.at(0).getPosition();
 }
 
 void VisualObject::setScale(const QVector3D &scale)

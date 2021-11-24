@@ -158,7 +158,10 @@ void RenderWindow::init()
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
-
+//    m_camera->setPosition(m_world->getFirstVertexPosition());
+//    QVector3D FUCKINGTEST = m_world->getFirstVertexPosition();
+//    qDebug()<<FUCKINGTEST;
+//    m_camera->setPosition()
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }

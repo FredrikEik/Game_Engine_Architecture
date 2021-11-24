@@ -16,7 +16,7 @@ public:
     QVector3D calculateNormal(QVector3D point3D, unsigned int index, const std::vector<QVector3D> &tempPosition);
 
 private:
-    std::string filepath{nullptr};
+    std::string filepath{};
 
 };
 

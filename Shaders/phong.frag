@@ -10,7 +10,7 @@ uniform float lightStrength = 0.6f;
 uniform float objectAlpha = 1.f;
 
 uniform vec3 lightColor = vec3(0.8, 0.8, 0.3);  //Kinda yellow
-uniform vec3 objectColor = vec3(0.7, 0.7, 0.7);  // grey
+uniform vec3 objectColor = vec3(0.2, 0.2, 0.2);  // grey
 uniform vec3 cameraPosition = vec3(50.f, 5.f, 50.f);
 uniform vec3 lightPosition = vec3(100.f, 50.f, 200.f);
 

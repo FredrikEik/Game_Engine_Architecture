@@ -34,6 +34,7 @@ public:
 
     std::string getObjectName() const;
     QVector3D getPosition() const;
+    QVector3D getFirstVertexPosition();
     QVector3D getScale() const;
     QMatrix4x4 getRotation() const;
     QMatrix4x4 getModelMatrix() const;
