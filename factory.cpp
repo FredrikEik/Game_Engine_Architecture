@@ -10,6 +10,8 @@
 #include "constants.h"
 #include "skybox.h"
 #include "player.h"
+#include "lassurface.h"
+#include "rollingball.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -146,6 +148,27 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
     }
+    else if (objectName == "LasSurface")
+    {
+        objectToCreate = new LasSurface("../GEA2021/Assets/LAS/test_las.txt");
+        if(EXISTS("LasSurface"))
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["LasSurface"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->mObjectName = "LasSurface";
+    }
+    else if(objectName == "Rollingball")
+        {
+            objectToCreate = new RollingBall(3);
+            objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+            objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+            objectToCreate->mObjectType = "RollingBall";
+            objectToCreate->mObjectName = "RollingBall" + std::to_string(ballcounter);
+            ballcounter++;
+            objectToCreate->getTransformComponent()->mMatrix.scale(0.25, 0.25, 0.25);
+        }
     else{return nullptr;}
 
     objectToCreate->init();

@@ -37,14 +37,17 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     gsl/vector4d.cpp \
+    lassurface.cpp \
     level.cpp \
     light.cpp \
     mariocube.cpp \
     objreader.cpp \
+    octahedronball.cpp \
     plane.cpp \
     player.cpp \
     quadtree.cpp \
     renderwindow.cpp \
+    rollingball.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
@@ -76,14 +79,17 @@ HEADERS += \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
+    lassurface.h \
     level.h \
     light.h \
     mariocube.h \
     objreader.h \
+    octahedronball.h \
     plane.h \
     player.h \
     quadtree.h \
     renderwindow.h \
+    rollingball.h \
     shader.h \
     mainwindow.h \
     skybox.h \
