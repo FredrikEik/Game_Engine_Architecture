@@ -82,8 +82,9 @@ void Surface::readFile(std::string filename)
         for (int i=0; i<n; i++) {
             inn >> vertex;
             getMeshComp()->mVertices.push_back(vertex);
-            //qDebug() << "vertexes" << i; //it does read the correct amount of vertexes, i just can't see them
-            qDebug() << getTransformComp()->mMatrix.getPosition();
+            //getMeshComp()->mIndices.push_back();
+            //qDebug() << "vertexes" << i; //reads the correct amount of vertexes
+            //qDebug() << getTransformComp()->mMatrix.getPosition(); //only shows {0,0,0}
         }
         qDebug() << "created surface!";
         inn.close();
