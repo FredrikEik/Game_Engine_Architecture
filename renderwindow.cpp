@@ -235,7 +235,11 @@ void RenderWindow::initObjects()
 
         surface = factory->createObject("LasSurface");
 
+
+
+
         rollingBall = factory->createObject("RollingBall");
+        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,1.5f,0.5f);
         dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
 
             mPlayer = factory->createObject("Player");
@@ -568,6 +572,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
+    factory->ballcounter = 0;
 
     initObjects();
 }
@@ -590,6 +595,7 @@ void RenderWindow::clearLevel()
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
+    factory->ballcounter = 0;
 }
 
 

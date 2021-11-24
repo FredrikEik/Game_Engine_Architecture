@@ -66,7 +66,7 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step = 5;
+    int step = 20;
     int squaresDirection = (step-1);
     int Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
@@ -128,13 +128,13 @@ void LasSurface::readLasFile(std::string filnavn)
                 k++;
             }
 
-        mVertices.push_back(tempVertices[(i)+(j)]);
-        mVertices.push_back(tempVertices[(i+1)+j]);
-        mVertices.push_back(tempVertices[(i+step)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i)+(j)]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+j]);
 
-        mVertices.push_back(tempVertices[(i+(step+1)+j)]);
-        mVertices.push_back(tempVertices[(i+step)+j]);
-        mVertices.push_back(tempVertices[(i+1)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+(step+1)+j)]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+j]);
     }
 
     //              sortering algoritme, ikke i bruk
