@@ -6,40 +6,33 @@
 LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
 {
     readFile(fileName);
-    minMaxNormalize();
+    minMaxNormalize(); //Thobias Ovastrøm kode
 
-    // Coordinates for which quad the vertex is on
+    //kordinater som brukes til å sjekke hvilket quad vertexene er på
     int quadX = 0;
     int quadZ = 0;
 
-    // Using min, max and step to find how many quads the TriangleSurface has in each direction
+    //Quads i hver rettning
+    const int amountOfQuads = abs(zMax-zMin)/step;
 
-    const int quadAmountZ = abs(zMax-zMin)/step; //qDebug() << quadAmountZ;
-
-
-    // An array of vectors that hold all the heights for each quad
-    // Size of array is hardcoded, unsure how to do it from numOfQuads
+    //Et Array med alle høyde verdiene til alle quads
     std::array<std::vector<float>,800> heights;
 
-    //An array that holds the average height of each quad
+    //Et array med gjennomsnittet av høydene
     float averageHeights[800];
 
-
-
-    //For every vertices
-    //qDebug() << "Vertices size" << mPointsArray.size();
+    //For alle vertices..
     for(int i = 0; i < mPointsArray.size(); i++)
     {
-
-        //.. find what column the vertex is on
-        for(int j = xMin; j < xMax; j+=step) // j = -5.0f, -3.0f, -1.0f, 1.0f, 3.0f, 5.0f
+        //..finner kolonnen
+        for(int j = xMin; j < xMax; j+=step)
         {
             if(mPointsArray[i].getXYZ().getX() > j && mPointsArray[i].getXYZ().getX() < j + step)
             {
                 quadX = (j-xMin)/step;
             }
         }
-        //.. find what row the vertex is on
+        //..finner rekka
         for(int j = zMin; j < zMax; j+=step)
         {
             if(mPointsArray[i].getXYZ().getZ() > j && mPointsArray[i].getXYZ().getZ() < j + step)
@@ -47,26 +40,19 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
                 quadZ = (j-zMin)/step;
             }
         }
+        //Konverterer fra rekke og kolonne til vector array indexen
+        int vectorIndex = quadZ*amountOfQuads + quadX;
 
-        //Converts from row&column to vector-array index
-        int vectorIndex = quadZ*quadAmountZ + quadX; //0-1199
-
-        //Pushes the height(y) to the correct vector in the array
+        //push backer høyde kordinatene till rett vector i arrayet
         heights[vectorIndex].push_back(mPointsArray[i].getXYZ().getY());
 
 
     }
 
-    //qDebug() << "size of height array " << heights.size();
     for(int i = 0; i < heights.size(); i++)
     {
-        //qDebug() << "size of height vector " << i << heights[i].size();
-
         //Calculate the average of all heights in quad
         //.. and put it in the array of averageHeights
-
-        //float sum = std::accumulate(heights[i].begin(), heights[i].end(), 0);
-
         float sum = 0;
         for(int j = 0; j < heights[i].size(); j++)
         {
@@ -78,10 +64,9 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
 
     }
 
-    //Create triangulated surface
-    float R = 10;
-    float G = 50;
-    float B = 75;
+    //Lager triangulert overflate her
+    float R, B, G = 1; //Må ha rgb
+
     for (float x = xMin; x < xMax-step; x+= step)
     {
         for(float z = zMin; z < zMax; z+= step)
@@ -91,26 +76,20 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
             float u{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
             float v{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
 
-            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadZ*quadAmountZ + quadX], z,R/255, averageHeights[quadZ*quadAmountZ + quadX]*G/255, B/255,u,v));
-            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*quadAmountZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*quadAmountZ + quadX]*G/255, B/255, u, v+step));
-            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*quadAmountZ + quadX+1], z,R/255, averageHeights[quadZ*quadAmountZ + quadX+1]*G/255, B/255, u+step,v));
-            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadZ+1)*quadAmountZ + quadX+1], z+step, R/255, averageHeights[(quadZ+1)*quadAmountZ + quadX+1]*G/255, B/255, u+step, v+step));
-            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*quadAmountZ + quadX+1], z,R/255, averageHeights[quadZ*quadAmountZ + quadX+1]*G/255, B/255, u+step,v));
-            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*quadAmountZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*quadAmountZ + quadX]*G/255, B/255, u, v+step));
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadZ*amountOfQuads + quadX], z,R/255, averageHeights[quadZ*amountOfQuads + quadX]*G/255, B/255,u,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuads + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuads + quadX]*G/255, B/255, u, v+step));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuads + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuads + quadX+1]*G/255, B/255, u+step,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadZ+1)*amountOfQuads + quadX+1], z+step, R/255, averageHeights[(quadZ+1)*amountOfQuads + quadX+1]*G/255, B/255, u+step, v+step));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuads + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuads + quadX+1]*G/255, B/255, u+step,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuads + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuads + quadX]*G/255, B/255, u, v+step));
         }
-    }
-    /* Print all vertices in trianglesurface*/
-    for(int i = 0; i < getMeshComponent()->mVertices.size(); i++)
-    {
-        qDebug() << getMeshComponent()->mVertices[i].getXYZ().getX()
-                 << getMeshComponent()->mVertices[i].getXYZ().getY()
-                 << getMeshComponent()->mVertices[i].getXYZ().getZ();
     }
 }
 LasTerrainGenerator::~LasTerrainGenerator()
 {}
 void LasTerrainGenerator::readFile(std::string filename)
 {
+    //Leser Fila
     std::ifstream inn;
     inn.open(filename.c_str());
     bool first = true;
