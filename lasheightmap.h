@@ -24,6 +24,7 @@ public:
     std::vector<Vertex> getCountourPoints() const;
     void setCountourPoints(const std::vector<Vertex> &value);
 
+
 private:
     void ReadDatafromFile(std::string fileName);
     std::vector<Vertex> positions;
@@ -37,6 +38,7 @@ private:
     void GenerateHeightMap();
     float CalcHeight(float x = 0, float z = 0);
 
+    void CalcContourlineOrder();
 
     float heighestY = 0;
     float lowestY = 0;

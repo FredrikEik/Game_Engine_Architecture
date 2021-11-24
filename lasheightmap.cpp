@@ -175,10 +175,10 @@ void LASHeightMap::GenerateHeightMap()
 {
     float ofsetx = -100;
     float ofsetz = -100;
-    float ofsety = -15;
-    float f = 1;
-    for(float x = 100; x<400; x+=1)
-        for(float z =100; z<600; z+=1)
+    float ofsety = -10;
+
+    for(float x = 100; x<400; x+=1)//(float x = 100; x<150; x+=1)//
+        for(float z =100; z<600; z+=1)//(float z =100; z<150; z+=1)
         {
             //get all height data :D
             float height1 = CalcHeight(    x,    z);
@@ -206,7 +206,7 @@ void LASHeightMap::GenerateHeightMap()
                 }
             }
         }
-
+    CalcContourlineOrder();
 
 
 
@@ -216,7 +216,7 @@ float LASHeightMap::CalcHeight(float x, float z)
 {
     float height = 0.0f;
 
-    int resolution = 15;
+    int resolution =15;
     int X = static_cast<int>(x);
     int Z = static_cast<int>(z);
     int counter =0;
@@ -270,3 +270,53 @@ float LASHeightMap::CalcHeight(float x, float z)
     return height;
 }
 
+void LASHeightMap::CalcContourlineOrder()
+{
+    /*
+    gsl::Vector3D Point1, Point2, ClosestPoint;
+    std::vector<gsl::Vector3D> tempPoints;
+
+    tempPoints.push_back(CountourPoints[0].getVertex());
+
+    for(unsigned long long i = 0; i<CountourPoints.size(); i++)
+    {
+        float shortestDistance = 10000.0f;
+
+        Point1 = CountourPoints[i].getVertex();
+        if(Point1.getX() == -10000.0f )
+            Point1 = CountourPoints[i+1].getVertex();
+        //Point2 = CountourPoints[i].getVertex();
+        //ClosestPoint = CountourPoints[i].getVertex();
+        for(unsigned long long j = 0; j<CountourPoints.size() -1; j++)
+        {
+            Point2 = CountourPoints[j].getVertex();
+
+            //distance
+            QVector3D d =(Point1.getQVector() - Point2.getQVector());
+            float distance = d.length();
+
+            if(distance < shortestDistance && distance != 0.0f  )
+            {
+                shortestDistance = distance;
+                ClosestPoint = Point2;
+                CountourPoints[j].set_xyz(-10000.0f);
+            }
+            else if (shortestDistance == 10000.0f) {
+                shortestDistance = distance;
+                ClosestPoint = CountourPoints[j+1].getVertex();
+                CountourPoints[j].set_xyz(-10000.0f);
+            }
+        }
+        //legg inn etter funnet nermeste punkt
+        tempPoints.push_back(ClosestPoint);
+    }
+
+    for(unsigned long long i = 0; i<CountourPoints.size(); i++)
+    {
+        CountourPoints[i].set_xyz(tempPoints[i]);
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+    }
+
+    qDebug() <<"Finished Sorting Contour Lines";
+*/
+}
