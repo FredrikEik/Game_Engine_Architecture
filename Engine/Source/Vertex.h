@@ -11,6 +11,7 @@ public:
         const float& u = 0, const float& v = 0);
     Vertex::Vertex(const glm::vec3& position, const glm::vec3& normals, glm::vec2& UV);
 //private:
+    glm::vec3 getPosition() const { return glm::vec3(m_xyz[0], m_xyz[1], m_xyz[2]); }
     float m_xyz[3];
     float m_normal[3];
     float m_uv[2];

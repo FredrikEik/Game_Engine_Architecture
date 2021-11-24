@@ -16,14 +16,14 @@ Factory::ReusableAsset Factory::getReusableAsset(std::size_t hash)
 
 uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 {
-	std::cout << "Loading asset\n";
+	//std::cout << "Loading asset\n";
 	switch (defaultAsset)
 	{
 	case DefaultAsset::CUBE:
 		return loadAsset(entityID, "Assets/cube.obj"); // Hardcoding filepath. Could generate as well
 		break;
 	case DefaultAsset::SPHERE:
-		assert(false); // Implement it first, dummy
+		return loadAsset(entityID, "Assets/sphere.obj");
 		break;
 	case DefaultAsset::PLANE:
 		assert(false); // Implement it first, dummy

@@ -17,6 +17,7 @@
 
 #include "../Systems/SelectionSystem.h"
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/PhysicsSystem.h"
 
 
 #include "../Input/Input.h"
@@ -59,16 +60,16 @@ void Engine::setIsPlaying(bool isPlaying)
 {
 	bIsPlaying = isPlaying;
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
-	if (!isPlaying)
-	{
-		load(Save::getDefaultAbsolutePath());
-		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
-		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
-	}
-	else
-	{
-		save();
-	}
+	//if (!isPlaying)
+	//{
+	//	load(Save::getDefaultAbsolutePath());
+	//	TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
+	//	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+	//}
+	//else
+	//{
+	//	save();
+	//}
 	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
@@ -160,6 +161,7 @@ void Engine::init()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
+	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, true);
 
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -193,42 +195,65 @@ void Engine::init()
 	//ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	//ScriptSystem::Invoke("BeginPlay", ECS);
 	
+	reservedEntities = ECS->getNumberOfEntities();
+	load(Save::getDefaultAbsolutePath());
 	unitEntity = ECS->newEntity();
-	ECS->addComponent<TransformComponent>(unitEntity);
-	ECS->loadAsset(unitEntity, DefaultAsset::CUBE);
+	ECS->addComponents<TransformComponent, PhysicsComponent>(unitEntity);
+	ECS->loadAsset(unitEntity, DefaultAsset::SPHERE);
 	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
 	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
 
-	reservedEntities = ECS->getNumberOfEntities();
+	for (int i{}; i < 50; ++i)
+	{
+		for (int j{}; j < 50; ++j)
+		{
+			uint32 entt = ECS->newEntity();
+			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
+			ECS->loadAsset(entt, DefaultAsset::SPHERE);
+			TransformSystem::setPosition(entt, glm::vec3(4 * i + 50 , 200, 50 + 4* j ), ECS);
+			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
+
+		}
+
+	}
+
 
 	viewport->begin(window, reservedEntities);
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
-	load(Save::getDefaultAbsolutePath());
 	terrainEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
+	lastFrame = glfwGetTime();
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
-	uint32 cameraEntity{};
+	uint32 cameraEntity{ editorCameraEntity };
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
 		processInput(window);
 
-		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
+		//cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		//std::cout << "fps: " << 1.f / deltaTime << '\n';
 
 		CollisionBroadphaseDatastructure->update();
-		vissim_moveCube();
+		if (!bIsPlaying)
+			vissim_moveCube();
+		else
+			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
+			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
 
 		//// RENDER
 		// Selection Render
@@ -287,24 +312,25 @@ void Engine::loop()
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		if (bIsPlaying)
-		{
-			//std::cout << "Game camera'\n";
-			// TODO: Implement proper deltatime
+		//if (bIsPlaying)
+		//{
+		//	//std::cout << "Game camera'\n";
+		//	// TODO: Implement proper deltatime
 
-			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+		//	//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
-			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
+		//	CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
 
-			//temp placement -- calls update on scripts
-			ScriptSystem::Invoke("Update", ECS);
-		}
-		else
-		{
-			//std::cout << "Editor camera'\n";
-			//TODO: Draw a game camera here
-			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
-		}
+		//	//temp placement -- calls update on scripts
+		//	ScriptSystem::Invoke("Update", ECS);
+		//}
+		//else
+		//{
+		//	//std::cout << "Editor camera'\n";
+		//	//TODO: Draw a game camera here
+		//	CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
+		//}
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, deltaTime);
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
 		glStencilMask(0xFF); // enable writing to the stencil buffer
@@ -323,6 +349,7 @@ void Engine::loop()
 		glStencilMask(0x00); // disable writing to the stencil buffer
 		glDisable(GL_DEPTH_TEST);
 		CameraSystem::draw(cameraEntity, outlineShader, ECS);
+		CameraSystem::draw(cameraEntity, outlineShader, ECS);
 		MeshSystem::drawOutline(outlineShader, "u_model", ECS);
 		
 	
@@ -330,23 +357,23 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
-		if (bIsPlaying)
-		{
-			// RTS Selection render -- Translucent -- ingame only
-			CameraSystem::draw(cameraEntity, ourShader, ECS);
+		//if (bIsPlaying)
+		//{
+		//	// RTS Selection render -- Translucent -- ingame only
+		//	CameraSystem::draw(cameraEntity, ourShader, ECS);
 
-			// Only checks collision for one frame, so we delete it after
-			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
-			{
-				SelectionSystem::setHitEntities(RTSSelectionEntity, 
-						CollisionBroadphaseDatastructure->getOverlappedEntities(RTSSelectionEntity), ECS);
-				ECS->removeComponent<AxisAlignedBoxComponent>(RTSSelectionEntity);
-			}
+		//	// Only checks collision for one frame, so we delete it after
+		//	if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
+		//	{
+		//		SelectionSystem::setHitEntities(RTSSelectionEntity, 
+		//				CollisionBroadphaseDatastructure->getOverlappedEntities(RTSSelectionEntity), ECS);
+		//		ECS->removeComponent<AxisAlignedBoxComponent>(RTSSelectionEntity);
+		//	}
 
-			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
-			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-		}
+		//	SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
+		//	//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+		//	SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+		//}
 
 		//// Render dear imgui into screen
 		//ImGui::Render();
@@ -409,17 +436,18 @@ void Engine::vissim_moveCube()
 {
 	//TerrainSystem::getHeight(unitEntity, terrainEntity, ECS);
 	Input& input = *Input::getInstance();
-
+	
 	if (input.getKeyState(KEY_I).bHeld)
-		TransformSystem::move(unitEntity, glm::vec3(1, 0, 0) * 0.016f * 5.f, ECS);
+		TransformSystem::move(unitEntity, glm::vec3(1, 0, 0) * deltaTime * 5.f, ECS);
 	if (input.getKeyState(KEY_K).bHeld)
-		TransformSystem::move(unitEntity, glm::vec3(-1, 0, 0) * 0.016f * 5.f, ECS);
+		TransformSystem::move(unitEntity, glm::vec3(-1, 0, 0) * deltaTime * 5.f, ECS);
 	if (input.getKeyState(KEY_J).bHeld)
-		TransformSystem::move(unitEntity, glm::vec3(0, 0, -1) * 0.016f * 5.f, ECS);
+		TransformSystem::move(unitEntity, glm::vec3(0, 0, -1) * deltaTime * 5.f, ECS);
 	if (input.getKeyState(KEY_L).bHeld)
-		TransformSystem::move(unitEntity, glm::vec3(0, 0, 1) * 0.016f * 5.f, ECS);
+		TransformSystem::move(unitEntity, glm::vec3(0, 0, 1) * deltaTime * 5.f, ECS);
 
-	TransformSystem::setHeight(unitEntity, TerrainSystem::getHeight(unitEntity, terrainEntity, ECS), ECS);
+	TransformSystem::setHeight(unitEntity, std::max(TerrainSystem::getHeight(unitEntity, terrainEntity, ECS), 
+		TransformSystem::getTransform_internal(unitEntity).y ), ECS);
 }
 
 void Engine::GLClearError()

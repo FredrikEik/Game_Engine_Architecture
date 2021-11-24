@@ -23,6 +23,11 @@ void TransformSystem::move(uint32 entity, glm::vec3 deltaLocation, ECSManager* E
 	transform->transform[3] += glm::vec4(deltaLocation, 0);
 }
 
+void TransformSystem::move(TransformComponent& OUTtransform, glm::vec3 deltaLocation)
+{
+	OUTtransform.transform[3] += glm::vec4(deltaLocation, 0);
+}
+
 void TransformSystem::move_internal(uint32 entity, glm::vec3 newLocation)
 {
 	TransformComponent* transformComp = Engine::Get().getECSManager()->getComponentManager<TransformComponent>()->getComponentChecked(entity);

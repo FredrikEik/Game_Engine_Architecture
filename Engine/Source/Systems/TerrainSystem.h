@@ -9,6 +9,12 @@ public:
 	static void generateRegularGrid(uint32 entity, class ECSManager* ECS);
 	static void generateGridFromLAS(uint32 entity, std::filesystem::path path,class ECSManager* ECS);
 	static float getHeight(uint32 entity, uint32 terrainEntity, class ECSManager* ECS);
+	static float getHeight(const struct TransformComponent& entityTransform, const struct MeshComponent& terrainMesh,
+		 int32 &OUTIndex);
+
+	static glm::vec3 getNormal(const struct TransformComponent& entityTransform,
+		const struct MeshComponent& terrainMesh, const int32& Index);
+
 private:
 	static void calculateNormals(const std::vector<glm::vec3>& positions, uint32 rowSize, 
 		float stepDistanceX, float stepDistanceY, std::vector<glm::vec3>& OUTNormals);

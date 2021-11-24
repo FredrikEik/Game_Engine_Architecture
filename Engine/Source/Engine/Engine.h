@@ -45,6 +45,8 @@ private:
 
 	struct GLFWwindow* window{};
 
+	//float lastFrameTime{};
+	//float deltaTime{};
 
 private:
 	// TODO: Move this shit ASAP

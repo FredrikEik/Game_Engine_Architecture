@@ -212,6 +212,28 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 }
 
 
+glm::vec3 TerrainSystem::getNormal(const struct TransformComponent& entityTransform, 
+	const MeshComponent& terrainMesh, const int32& index)
+{
+	if (index < 0)
+		return glm::vec3(0, 1, 0); // not standing on any surface, assume flat ground
+
+	glm::vec3 a(terrainMesh.m_vertices[terrainMesh.m_indices[index]].getPosition());
+	glm::vec3 b(terrainMesh.m_vertices[terrainMesh.m_indices[index+1]].getPosition());
+	glm::vec3 c(terrainMesh.m_vertices[terrainMesh.m_indices[index+2]].getPosition());
+
+	glm::vec3 v(b - a);
+	glm::vec3 w(c - a);
+
+	glm::vec3 normal = glm::cross(v, w); // opposite of QT
+	if (glm::length(normal) < 0.1f)
+		return glm::vec3(0, 1, 0);
+	else
+		return glm::normalize(normal);
+
+	//return glm::vec3();
+}
+
 void TerrainSystem::calculateNormals(const std::vector<glm::vec3>& positions, uint32 rowSize,
 	float stepDistanceX, float stepDistanceY, std::vector<glm::vec3>& OUTNormals)
 {
@@ -267,6 +289,9 @@ float TerrainSystem::getHeight(uint32 entity, uint32 terrainEntity, class ECSMan
 	assert(mesh);
 	assert(transform);
 
+	int32 tempIndex{};
+	return getHeight(*transform, *mesh, tempIndex);
+
 	glm::vec3 position = glm::vec3(transform->transform[3]);
 	uint32 columns = std::sqrt(mesh->m_vertices.size());
 
@@ -307,6 +332,68 @@ float TerrainSystem::getHeight(uint32 entity, uint32 terrainEntity, class ECSMan
 
 			//std::cout << "Found triangle after " << i - approximateStartIndex << " loops at index "<<i << " with error: " << error << " and error margin: " << errorMargin << '\n';
 			//std::cout << "Found triangle at index" << i << ". Height is: " << baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y <<" .\n";
+			return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
+		}
+	}
+
+	return 0.0f;
+}
+
+float TerrainSystem::getHeight(const TransformComponent& entityTransform, const MeshComponent& terrainMesh,
+	int32& OUTIndex)
+{
+
+	glm::vec3 position = glm::vec3(entityTransform.transform[3]);
+
+	if (position.x < 0 || position.z < 0)
+	{
+		OUTIndex = -1;
+		return 0.0f;
+	}
+
+	uint32 columns = std::sqrt(terrainMesh.m_vertices.size());
+
+	// Dividing the position by the terrain resolution and flooring the results
+	int positionX = position.x / terrainResolution;
+	int positionZ = position.z / terrainResolution;
+
+	// Converting the worldposition to a position in the vertex array
+	uint32 positionInArray = positionZ + (columns * positionX);
+
+	// Converting the position in the vertex array to a position in the index array
+	uint32 approximateStartIndex = positionInArray * 6;
+
+	/**Because the index array stops one short on every row, a small error builds up
+	* For now, a static variable errorMargin corrects this error and makes the guess very accurate
+	* However, it remains to be tested if this is faster than an unchanging error margin when lots of calls are introduced
+	* 1-2 percent is a safe margin, but will make the guess miss by a few houndred when the index gets large*/
+	//approximateStartIndex = ((float)approximateStartIndex) * 0.99;
+	approximateStartIndex = ((float)approximateStartIndex * errorMargin); // could be per entity
+	//approximateStartIndex = ((float)approximateStartIndex * OUTErrorMargin); // per entity
+
+
+	// Makes sure we start at the start of a triangle
+	while (approximateStartIndex % 3 != 0)
+		--approximateStartIndex;
+
+	glm::vec3 p, q, r, baryCoord;
+
+	//std::cout << "Position in array: " << positionInArray << ". Guessed index: " << approximateStartIndex << '\n';
+	for (uint32 i{ approximateStartIndex }; i < terrainMesh.m_indices.size(); i += 3)
+	{
+		if (findTriangle(i, position, terrainMesh, baryCoord, p, q, r))
+		{
+			int32 error = approximateStartIndex - i;
+			if (error <= -9)
+				errorMargin += 0.00001f;
+			else if (error >= -3 && approximateStartIndex > 12)
+				errorMargin -= 0.00001f;
+
+				//OUTErrorMargin += 0.00001f * (error <= -9);
+				//OUTErrorMargin -= 0.00001f * (error >= -3 && approximateStartIndex > 12);
+
+			OUTIndex = i;
+
 			return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
 		}
 	}
