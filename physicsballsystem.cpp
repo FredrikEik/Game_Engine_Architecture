@@ -104,6 +104,69 @@ QVector3D PhysicsBallSystem::barycentricCoordinates(const QVector2D &dette, cons
     return baryc;
 }
 
+
+float PhysicsBallSystem::getHeightbyBarycentricCoordinates(const QVector2D &ballPos)
+{
+    //qDebug() << "Barri: " << barycentricCoordinates(QVector2D{1,1},QVector2D{1,0},QVector2D{1,1},QVector2D{0,1});
+    //world koordinater, men i forhold til height mapet der 0,0 er nederst til venstre (sør-vest).
+
+//    qDebug() << "ballPos X: " << ballPos.x() << "Y: " << ballPos.y();
+    xPosOnTarrain = (ballPos.x() - mTerrain->mTransformComp->mMatrix.getPosition().x) ;
+    zPosOnTarrain = (ballPos.y() - mTerrain->mTransformComp->mMatrix.getPosition().z);
+
+    // xyScale og Gridsize er Hardkodet til å være 2 nå
+    gridSquareSize = xzScale;
+    //hvilken grid spilleren er på
+    gridXPos = int(floor(xPosOnTarrain / xzScale));
+    gridZPos = int(floor(zPosOnTarrain / xzScale));
+
+    if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
+    {   //Koordinat grid
+//        qDebug() << "gridPos x: " << gridXPos << "z:" << gridZPos;
+
+        float xCoordInSquare = fmod(xPosOnTarrain,gridSquareSize)/gridSquareSize;
+        float zCoordInSquare = fmod(zPosOnTarrain,gridSquareSize)/gridSquareSize;
+
+        //qDebug () << "xz in Square x: " << xCoordInSquare << "z: " << zCoordInSquare;
+        QVector3D uvw;
+        float answer;
+        QVector2D p1{1,0};
+        QVector2D p2{0,0};
+        QVector2D p3{1,1};
+        QVector2D p4{0,1};
+
+        //TODO: make p1 p2 etc. in the right order. get the right y height from each vertex.
+
+        float p1y  = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos-1)).mXYZ.getY();
+        float p2y  = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos)).mXYZ.getY();
+        float p3y  = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos-1)).mXYZ.getY();
+        float p4y  = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos)).mXYZ.getY();
+
+//       float p1y = sArrayHeights[(gridYPos)*rows + (gridXPos)];
+//        float p2y = sArrayHeights[(gridYPos+1)*rows + (gridXPos)];
+//        float p3y = sArrayHeights[(gridYPos)*rows + (gridXPos+1)];
+//        float p4y = sArrayHeights[(gridYPos+1)*rows + (gridXPos+1)];
+
+
+        //Finne hvilken av de to trekantene spilleren står på
+        if(xCoordInSquare <= (zCoordInSquare))
+        {
+            uvw = barycentricCoordinates(QVector2D{float(xCoordInSquare),float(zCoordInSquare)},p1,p2,p3);
+            answer = p1y*uvw.x()+p2y*uvw.y()+p3y*uvw.z();
+            return answer;
+        }
+        if(xCoordInSquare > (zCoordInSquare))
+        {   QVector2D posInsSquare{xCoordInSquare,zCoordInSquare};
+            uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
+            answer = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
+            return answer;
+        }
+    }else{
+        qDebug() << "Ball is out of bounds!";
+    }
+    return 0.f;
+}
+
 std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QVector2D &ballPos)
 {        
     //qDebug() << "Barri: " << barycentricCoordinates(QVector2D{1,1},QVector2D{1,0},QVector2D{1,1},QVector2D{0,1});
@@ -135,15 +198,15 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     //FOR DEBUG!! ::
 //    return std::pair<QVector3D,QVector3D>{QVector3D{0,0,0},QVector3D{0,0,0}};
 
-    float sArrayHeights[14600];
-    for(int i = 0; i < mTerrain->mMeshComp->mVertices[0].size();i++)
-        sArrayHeights[i] = mTerrain->mMeshComp->mVertices[0].at(i).mXYZ.getY();
+//    float sArrayHeights[14600];
+//    for(int i = 0; i < mTerrain->mMeshComp->mVertices[0].size();i++)
+//        sArrayHeights[i] = mTerrain->mMeshComp->mVertices[0].at(i).mXYZ.getY();
 
 
 
 
     if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
-    {   //Koordinat grid
+    {   //Koordinat grids
 
         QVector2D p1_2D{10,0};
         QVector2D p2_2D{0,0};
@@ -156,15 +219,15 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
 //        float p2y = 0.0f;
 //        float p3y = 0.0f;
 //        float p4y = 0.203227f;
-//        float p1y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mRows + 100-gridXPos).mXYZ.getY();
-//        float p2y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mRows + 100-gridXPos).mXYZ.getY();
-//        float p3y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mRows + 100-gridXPos-1).mXYZ.getY();
-//        float p4y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mRows + 100-gridXPos-1).mXYZ.getY();
+        float p1y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos-1)).mXYZ.getY();
+        float p2y = mTerrain->mMeshComp->mVertices[0].at(gridZPos*mCols + (100-gridXPos)).mXYZ.getY();
+        float p3y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos-1)).mXYZ.getY();
+        float p4y = mTerrain->mMeshComp->mVertices[0].at((gridZPos+1)*mCols + (100-gridXPos)).mXYZ.getY();
 
-        float p1y = sArrayHeights[gridZPos*mCols + (100-gridXPos-1)];
-        float p2y = sArrayHeights[gridZPos*mCols + (100-gridXPos)];
-        float p3y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos-1)];
-        float p4y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos)];
+//        float p1y = sArrayHeights[gridZPos*mCols + (100-gridXPos-1)];
+//        float p2y = sArrayHeights[gridZPos*mCols + (100-gridXPos)];
+//        float p3y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos-1)];
+//        float p4y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos)];
 
 //        float p1y = sArrayHeights[gridZPos*mCols + (100-gridXPos)];
 //        float p3y = sArrayHeights[(gridZPos+1)*mCols + (100-gridXPos)];
@@ -199,7 +262,7 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             QVector3D v0 = p2 - p4;
             QVector3D v1 = p3 - p4;
 
-            normal = QVector3D::crossProduct(v0,v1);
+            normal = QVector3D::crossProduct(v1,v0);
             normal.normalize();
 
 
@@ -233,6 +296,11 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             {
                 return std::pair<QVector3D,QVector3D>{Vec,QVector3D{0,0,0}};
             }
+
+
+//            QVector3D uvw = barycentricCoordinates(QVector2D{xCoordInSquare,zCoordInSquare},p2_2D,p4_2D,p3_2D);
+//            height = p2y*uvw.x()+p4y*uvw.y()+p3y*uvw.z();
+
 
             return std::pair<QVector3D,QVector3D>{Vec,x};
         }
@@ -281,6 +349,11 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             }
 
             //aVec *= x;
+
+//            QVector3D uvw = barycentricCoordinates(QVector2D{xCoordInSquare,zCoordInSquare},p1_2D,p2_2D,p3_2D);
+//            height = p1y*uvw.x()+p2y*uvw.y()+p3y*uvw.z();
+
+
             return std::pair<QVector3D,QVector3D>{aVec,x};
         }
     }else{

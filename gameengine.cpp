@@ -50,10 +50,10 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-//    mEditorCamera->setPosition(gsl::Vector3D(7.f, 7.f, 7.f));
-        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
+    mEditorCamera->setPosition(gsl::Vector3D(7.f, 7.f, 7.f));
+//        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
-//    mEditorCamera->yaw(120);
+   mEditorCamera->yaw(120);
     mEditorCamera->pitch(30);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
@@ -142,20 +142,20 @@ void GameEngine::SetUpObjects()
 //    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
     mTerrainObject->mMaterialComp->mShaderProgram = 2;
     mTerrainObject->mMaterialComp->mTextureUnit = 0;
-    //mTerrainObject->mTransformComp->mMatrix.scale(0.1f);
+//    mTerrainObject->mTransformComp->mMatrix.scale(1,0.5f,1);
     mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
     mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
     mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
     mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
-    //mHeightCurveObject->mTransformComp->mMatrix.scale(0.1f);
+//    mHeightCurveObject->mTransformComp->mMatrix.scale(1,0.5f,1);
     mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
     mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
 
     // Ball-Physics:
 
     mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-    mPhysicsBall->mTransformComp->mMatrix.translate(667.80f,10.0f,281.50f);
+    mPhysicsBall->mTransformComp->mMatrix.translate(552.f,23.f,601.f);
     mPhysicsBall->mTransformComp->mMatrix.scale(1);
     mPhysicsBall->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mPhysicsBall);

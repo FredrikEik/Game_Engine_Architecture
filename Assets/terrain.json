@@ -74,6 +74,21 @@
             "shader": 0,
             "texturename": "plain",
             "usingLOD": false
+        },
+        {
+            "filepath": "../GEA2021/Assets/Meshes/sphere.obj",
+            "positionx": 10,
+            "positiony": 10,
+            "positionz": 10,
+            "rotationx": 0,
+            "rotationy": 0,
+            "rotationz": 0,
+            "scalex": 1,
+            "scaley": 1,
+            "scalez": 1,
+            "shader": 2,
+            "texturename": "blue.bmp",
+            "usingLOD": false
         }
     ]
 }

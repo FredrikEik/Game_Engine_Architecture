@@ -20,6 +20,7 @@ public:
 
     QVector3D barycentricCoordinates(const QVector2D &dette, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3);
     std::pair<QVector3D,QVector3D> getAkselerationVector(const QVector2D &ballPos);
+    float getHeightbyBarycentricCoordinates(const QVector2D &ballPos);
 
     GameObject *GetTerrain();
 
@@ -34,6 +35,8 @@ private:
     float xzScale{10};
     int mRows{1};
     int mCols{1};
+
+    float height{0};
 
     std::vector<gsl::Vector3D> mAllDataPoints;
     double xMin{0};

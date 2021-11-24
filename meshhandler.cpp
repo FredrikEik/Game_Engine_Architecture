@@ -400,23 +400,23 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     const int cols = TerrainWidth / gridSize;
     const int rows = TerrainLenght / gridSize;
 
-    int vertexesInQuad[100][146]{0};
-    float tempForAvg[100][146]{0};
-    float allHeights = 0;
+//    int vertexesInQuad[100][146]{0};
+//    float tempForAvg[100][146]{0};
+//    float allHeights = 0;
 
-    for(int i = 0; i < mAllDataPoints.size(); i++)
-    {
-        int X = static_cast<int>((mAllDataPoints.at(i).x-xMin)/gridSize);
-        int Z = static_cast<int>((mAllDataPoints.at(i).z-zMin)/gridSize);
-        tempForAvg[X][Z] += mAllDataPoints.at(i).y;
-        vertexesInQuad[X][Z]++;
-        allHeights += mAllDataPoints.at(i).y;
-    }
+//    for(int i = 0; i < mAllDataPoints.size(); i++)
+//    {
+//        int X = static_cast<int>((mAllDataPoints.at(i).x-xMin)/gridSize);
+//        int Z = static_cast<int>((mAllDataPoints.at(i).z-zMin)/gridSize);
+//        tempForAvg[X][Z] += mAllDataPoints.at(i).y;
+//        vertexesInQuad[X][Z]++;
+//        allHeights += mAllDataPoints.at(i).y;
+//    }
 
 //    heights2D.reserve((xMax*zMax/gridSize));
 
     // hardcoded to 1000 because TerrainWidth = 1000 wide
-    float ytemp = allHeights / mAllDataPoints.size();
+//    float ytemp = allHeights / mAllDataPoints.size();
 
     float xtemp;
     float ztemp;
