@@ -239,8 +239,9 @@ void RenderWindow::initObjects()
 
 
         rollingBall = factory->createObject("RollingBall");
-        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,1.5f,0.5f);
+        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,1.2f,0.5f);
         dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
+        dynamic_cast<RollingBall*>(rollingBall)->setSurface(surface);
 
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
@@ -380,6 +381,10 @@ void RenderWindow::render()
             }
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+            }
+            if(factory->mGameObjects[i]->mObjectType == "RollingBall")
+            {
+                dynamic_cast<RollingBall*>(factory->mGameObjects[i])->move(0.017f);
             }
         }
     }

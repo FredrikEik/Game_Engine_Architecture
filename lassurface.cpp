@@ -117,8 +117,8 @@ void LasSurface::readLasFile(std::string filnavn)
         }
     }
 
-    qDebug() <<"Number of Vertices" << VerticesCounter;
-    qDebug() << "Amount of squares" << Amountsquares;
+    //qDebug() <<"Number of Vertices" << VerticesCounter;
+    //qDebug() << "Amount of squares" << Amountsquares;
     int k=1;
     int j=0;
         for(int i =0; i< Amountsquares; i++){
@@ -149,9 +149,6 @@ void LasSurface::readLasFile(std::string filnavn)
     //            }
 
     //qDebug() << xMinimum << xMaximum << yMinimum << yMaximum << zMinimum << zMaximum;
-    for(int i =0;i<tempVertices.size();i++){
-        qDebug() << tempVertices[i].getXYZ().x << tempVertices[i].getXYZ().y << tempVertices[i].getXYZ().z;
-    }
 
 
 }
