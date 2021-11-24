@@ -52,16 +52,17 @@ void RollingBall::move(float x, float y, float z)
 
 void RollingBall::move(float dt)
 {
-    mMatrix = mPosition * mScale;
-    std::vector<Vertex>& vertices = dynamic_cast<class LasSurface*>(LasSurface)->getMeshComponent->mVertices;             //skaffer vertices
+
+    std::vector<Vertex>& vertices = dynamic_cast<class LasSurface*>(LasSurface)->getMeshComponent()
+            ->mVertices;             //skaffer vertices
     for (int i=0; i < vertices.size()-2; i+=3){
-        v0 = gsml::Vector3d(vertices[i].getXYZ());
-        v1 = gsml::Vector3d(vertices[i+1].getXYZ());
-        v2 = gsml::Vector3d(vertices[i+2].getXYZ());
+        v0 = gsl::Vector3D(vertices[i].getXYZ());
+        v1 = gsl::Vector3D(vertices[i+1].getXYZ());
+        v2 = gsl::Vector3D(vertices[i+2].getXYZ());
 
-        gsml::Vector3d playerPos = mPosition.getPosition();                 //skaffer posisjonen til ballen
+        gsl::Vector3D ballpos = getTransformComponent()->mMatrix.getPosition();                 //skaffer posisjonen til ballen
 
-        barycentricCord = playerPos.barycentricCoordinates(
+        barycentricCord = ballpos.barycentricCoordinates(
                     vertices[i].getXYZ(),vertices[i+1].getXYZ(), vertices[i+2].getXYZ());  //kalkulerer barisentriske kordinater
 
         if(barycentricCord.x > 0 && barycentricCord.y > 0 && barycentricCord.z > 0 &&
@@ -72,17 +73,17 @@ void RollingBall::move(float dt)
             //gsml::Vector3d distanseFlyttet =0;
             //gsml::Vector3d distanseFlyttetNM =0;
             //gsml::Vector3d temp = (1,0,0.55);
-            qDebug() << i;
+            //qDebug() << i;
 
             normalvektor = (v1-v0)^(v2-v0);                                             //regner ut normalvektoren til planet
             normalvektor.normalize();                                                   //normaliserer normalvektoren
-            akselerasjon = gKraft ^ normalvektor ^ gsml::Vector3d (0,0,normalvektor.z); //regner ut akselerasjon
+            akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,0,normalvektor.z); //regner ut akselerasjon
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
 
             //if(i==3){
-            nyPosisjon = playerPos + hastighet;                                         //oppdaterer posisjonen
+            nyPosisjon = ballpos + hastighet;                                         //oppdaterer posisjonen
             nyPosisjon.z = v0.z*barycentricCord.x+v1.z*barycentricCord.y+v2.z*barycentricCord.z;   //bruker barysentriske kordinatene til å bestemme nye z posisjonen
-            mPosition.setPosition(nyPosisjon.x, nyPosisjon.y, nyPosisjon.z+radius);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y, nyPosisjon.z+radius);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
            // }
 
 //            else if (i==0){

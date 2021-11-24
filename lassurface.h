@@ -17,7 +17,7 @@ public:
     void move(float x, float y, float z) override;
     void minMaxScale();
     std::vector<Vertex> mVertices;
-    float xmin=-20.f, xmax=20.f, ymin=-20.f, ymax=20.f, zmin = 0.f, zmax =10.f, h=0.f;
+    float xmin=-20.f, xmax=20.f, zmin=-20.f, zmax=20.f, ymin = 0.f, ymax =10.f, h=0.f;
     double xMinimum = 0, xMaximum = 1, yMinimum = 0, yMaximum=1, zMinimum = 0, zMaximum=1;
     int numberofPointsInside;
     Vertex vertex;

@@ -35,6 +35,8 @@
 #include "quadtree.cpp"
 #include "vector4d.h"
 #include "level.h"
+#include "lassurface.h"
+#include "rollingball.h"
 #include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -143,7 +145,6 @@ void RenderWindow::init()
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
     factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
-    factory->saveMesh("../GEA2021/Assets/LAS/jonas.txt", "LasSurface");
 
     //********************** Set up camera **********************/
     /*
@@ -220,18 +221,22 @@ void RenderWindow::initObjects()
     skybox = factory->createObject("Skybox");
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
-    GameObject *temp=nullptr;
-    for(int i{0}; i < 50; i++)
-    {
-        for(int j{0}; j < 10; j++)
-        {
-            temp = factory->createObject("Cube");
-            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
-            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
-            //TODO: Scaling have to be made easier and more automatic than this!
-        }
-    }
+//    GameObject *temp=nullptr;
+//    for(int i{0}; i < 50; i++)
+//    {
+//        for(int j{0}; j < 10; j++)
+//        {
+//            temp = factory->createObject("Cube");
+//            temp->getTransformComponent()->mMatrix.setPosition(2.f*i,0.f,2.f*j);
+//            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
+//            //TODO: Scaling have to be made easier and more automatic than this!
+//        }
+//    }
 
+        surface = factory->createObject("LasSurface");
+
+        rollingBall = factory->createObject("RollingBall");
+        dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
 
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
@@ -240,6 +245,8 @@ void RenderWindow::initObjects()
 
 
              hjelpeObjekt = factory->createObject("Cube");
+
+
 
 }
 

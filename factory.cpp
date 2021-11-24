@@ -150,16 +150,13 @@ GameObject* Factory::createObject(std::string objectName)
     }
     else if (objectName == "LasSurface")
     {
-        objectToCreate = new LasSurface("../GEA2021/Assets/LAS/test_las.txt");
-        if(EXISTS("LasSurface"))
-        {
-        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["LasSurface"]));
-        }
+        objectToCreate = new LasSurface("../GEA2021/Assets/LAS/jonas.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "LasSurface";
+        objectToCreate->mObjectType = "LasSurface";
     }
-    else if(objectName == "Rollingball")
+    else if(objectName == "RollingBall")
         {
             objectToCreate = new RollingBall(3);
             objectToCreate->getMaterialComponent()->mShaderProgram = 0;

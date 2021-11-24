@@ -5,14 +5,15 @@
 #include <vector>
 #include "lassurface.h"
 
-LasSurface::LasSurface()
-{
-
-}
 
 LasSurface::LasSurface(std::string filnavn)
 {
     readLasFile(filnavn);
+}
+
+LasSurface::~LasSurface()
+{
+
 }
 
 void LasSurface::readLasFile(std::string filnavn)
@@ -29,7 +30,7 @@ void LasSurface::readLasFile(std::string filnavn)
     if (inn.is_open())
     {
         inn >> n;
-        inn >> x >> y >> z;
+        inn >> x >> z >> y;
         xMaximum = x;
         xMinimum = x;
         yMaximum = y;
@@ -41,7 +42,7 @@ void LasSurface::readLasFile(std::string filnavn)
         lasVertices.push_back(lasVertex);
         for (int i=0; i<n; i++)
         {
-            inn >> x >> y >> z;
+            inn >> x >> z >> y;
             linesRead++;
             lasVertex.set_xyz(x,y,z);
             lasVertices.push_back(lasVertex);
@@ -65,18 +66,18 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step = 50;
+    int step = 5;
     int squaresDirection = (step-1);
     int Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
-    float yOffset = (ymax-ymin)/step;
-    double squareMinY = ymin;
-    double squareMaxY;
+    float zOffset = (zmax-zmin)/step;
+    double squareMinZ =zmin;
+    double squareMaxZ;
     double squareMinX = xmin;
     double squareMaxX;
 
-    for (double j=squareMinY; j<=ymax-yOffset; j+=yOffset){
-        squareMaxY = j+yOffset;
+    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset){
+        squareMaxZ = j+zOffset;
 
         for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset){
             numberofPointsInside=0;
@@ -88,21 +89,21 @@ void LasSurface::readLasFile(std::string filnavn)
             for ( unsigned long long k = 0 ; k<lasVertices.size(); k++){
                 if ( lasVertices[k].getXYZ().getX() < squareMaxX &&
                      lasVertices[k].getXYZ().getX() > i &&
-                     lasVertices[k].getXYZ().getY() < squareMaxY &&
-                     lasVertices[k].getXYZ().getY() > j){
+                     lasVertices[k].getXYZ().getZ() < squareMaxZ &&
+                     lasVertices[k].getXYZ().getZ() > j){
                     numberofPointsInside++;
 
-                    tempZ = tempZ+ lasVertices[k].getXYZ().z;
+                    tempY = tempY+ lasVertices[k].getXYZ().y;
                 }
             }
             tempX = squareMaxX - (xOffset/2);
-            tempY =  squareMaxY - (yOffset/2);
+            tempZ =  squareMaxZ - (zOffset/2);
             if(numberofPointsInside==0){
-                tempZ = (zmin+(zmax-zmin))/2;
+                tempY = (ymin+(ymax-ymin))/2;
             }
             else if(numberofPointsInside > 0)  {
 
-                tempZ = tempZ/numberofPointsInside;
+                tempY = tempY/numberofPointsInside;
             }
             vertex.set_xyz(tempX, tempY, tempZ);
             vertex.set_rgb(0,255,100);
@@ -134,8 +135,6 @@ void LasSurface::readLasFile(std::string filnavn)
         mVertices.push_back(tempVertices[(i+(step+1)+j)]);
         mVertices.push_back(tempVertices[(i+step)+j]);
         mVertices.push_back(tempVertices[(i+1)+j]);
-
-
     }
 
     //              sortering algoritme, ikke i bruk
@@ -150,7 +149,9 @@ void LasSurface::readLasFile(std::string filnavn)
     //            }
 
     //qDebug() << xMinimum << xMaximum << yMinimum << yMaximum << zMinimum << zMaximum;
-    // qDebug() << linesRead;
+    for(int i =0;i<tempVertices.size();i++){
+        qDebug() << tempVertices[i].getXYZ().x << tempVertices[i].getXYZ().y << tempVertices[i].getXYZ().z;
+    }
 
 
 }
