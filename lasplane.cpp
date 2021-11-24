@@ -6,7 +6,7 @@ LasPlane::LasPlane(std::string filename)
     :VisualObject()
 {
     filepath = filename;
-    qDebug() << "basfasdfsdgf!";
+    //qDebug() << "basfasdfsdgf!";
 }
 
 //void LasPlane::constructPlane()
@@ -78,10 +78,12 @@ void LasPlane::constructPlane()
 
     readFile(filepath, max, min, tempLasPos);
 
-    std::vector<int> test(4, 2000);
+    qDebug() << "File read!";
 
-    qDebug()<<min;
-    qDebug()<<max;
+    //std::vector<int> test(4, 2000);
+
+    //qDebug()<<min;
+    //qDebug()<<max;
 
     //first == number of points in square, second == total height.
 //    std::vector<std::pair<int, float>> &squareHeights = (*new std::vector<std::pair<int, float>>);//(std::pair<int, float>(0,0), (int)((max.z() * max.x()) / resoluton));
