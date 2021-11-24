@@ -142,6 +142,7 @@ void RenderWindow::init()
 // Called each frame - doing the rendering
 void RenderWindow::render()
 {
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -196,7 +197,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
 
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
-            glUniform3f(mLightPositionUniform, -50.f, 50.f, 50.f);
+            glUniform3f(mLightPositionUniform, -50.f, 50.f, 0.f);
         }
 
 
@@ -208,7 +209,7 @@ void RenderWindow::render()
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
 
-        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" &&//These name checks are temporary.
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" && mGameObjects[i]->mName != "ContourLines" &&//These name checks are temporary.
             (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))                  //Will find a better way later.
         {
             mGameObjects[i]->mesh->renderObject = false;
@@ -313,20 +314,12 @@ void RenderWindow::render()
         else
             mGameObjects[i]->mesh->lodLevel = 0;
 
-
-        if(i == mGameObjects.size()-1){
-            int pp = 99;
-        }
-
         if(mGameObjects[i]->mesh->mIndices[0].size() > 0) /** I don't know if this works for all objects with indices */
         {                                                 /** But fixed heightMap problems (Heightmap was not using indices)*/
             glBindVertexArray( mGameObjects[i]->mesh->mVAO[0]);
             glDrawElements(mGameObjects[i]->mesh->mDrawType, mGameObjects[i]->mesh->mIndices[0].size(), GL_UNSIGNED_INT, nullptr);
         }
         else{
-            if(mGameObjects[i]->mName == "test_las.txt"){
-                int pp = 99;
-            }
             int tempLod = mGameObjects[i]->mesh->lodLevel;
             glBindVertexArray( mGameObjects[i]->mesh->mVAO[tempLod]);
             glDrawArrays(mGameObjects[i]->mesh->mDrawType, 0, mGameObjects[i]->mesh->mVertices[tempLod].size());

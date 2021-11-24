@@ -24,12 +24,16 @@ public:
 
     float getHeightMapHeight(const gsl::Vector2D& pos);
 
+    GameObject* mTerrain{nullptr};
+
 private:
     /** Functions */
     ResourceManager();
 
     int makeHeightMapFromTxt(std::string filename);
     int makeHeightMap(std::string filename);
+    int countourLines();
+
     gsl::Vector3D barycentricCoordinates(const gsl::Vector2D& dette, const gsl::Vector2D& p1,
                                          const gsl::Vector2D& p2, const gsl::Vector2D& p3);
 
@@ -37,7 +41,7 @@ private:
 
     int readObj(std::string filename);
 
-    /** Variables */
+/** Variables */
     GameObject* object;
 
     std::map<std::string, unsigned int> mMeshIndexMap;
@@ -50,13 +54,16 @@ private:
 
     CoreEngine* mCoreEngine{nullptr};
 
-    /** HeightMap Variables*/
+    // HeightMap Variables
     gsl::Vector3D HeightMapPos{0,0,0};
     float *sArrayHeights{nullptr};
     float xyScale = .1f;
-    int rows{0};
-    int cols{0};
 
+    int mRows = 0;
+    int mCols = 0;
+    float zMin = 0.f, zMax = 0.f;
+    float xStep = 0;
+    float zStep = 0;
 };
 
 #endif // RESOURCEMANAGER_H

@@ -51,7 +51,7 @@ public:
 
     Camera* getGameCamera();
 
-    gsl::Matrix4x4 *getHeightMapMatrix();
+    gsl::Vector3D getHeightMapPosition();
 
     gsl::Matrix4x4 getPlayerMatrix();
 
@@ -78,12 +78,11 @@ private:
 
     GameObject *mGameCameraMesh{nullptr};
     GameObject *playerObject{nullptr};
-
-    gsl::Matrix4x4 hmMatrix;
+    GameObject *mTerrain{nullptr};
 
     SoundSource* mStereoSound{nullptr};
 
-    std::string treeNames[14] = { //Temporary, will remove later.
+    std::string treeNames[14] = {
         "1tree.obj", "2tree.obj", "3tree.obj", "4tree.obj", "5tree.obj", "6tree.obj",
         "1forestTree.obj", "2forestTree.obj", "3forestTree.obj", "4forestTree.obj", "5forestTree.obj", "6forestTree.obj",
         "1deadTree.obj", "2deadTree.obj",

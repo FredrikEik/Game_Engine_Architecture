@@ -24,8 +24,6 @@ struct Transform
 struct Mesh
 {
     std::vector<Vertex> mVertices[3];
-    std::vector<int> xGridIndex;
-    std::vector<int> zGridIndex;
     std::vector<GLuint> mIndices[3];
 
     GLint mMatrixUniform{0};
@@ -49,7 +47,7 @@ struct Mesh
 struct Frustum
 {
     float FOV = 45.f;
-    float farPlane = 15000.f;
+    float farPlane = 150.f;
     float nearPlane = 0.5f;
 };
 
