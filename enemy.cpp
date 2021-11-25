@@ -20,3 +20,20 @@ void Enemy::moveEnemy()
 {
     move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 }
+
+void Enemy::rotateForwardV()
+{
+    gsl::Vector3D temp{0,0,0};
+    if(mForward.x == -1)
+        temp = gsl::Vector3D(0,0,-1);
+    else if(mForward.x == 1)
+        temp = gsl::Vector3D(0,0,1);
+    else if(mForward.z == -1)
+        temp = gsl::Vector3D(1,0,0);
+    else if(mForward.z == 1)
+        temp = gsl::Vector3D(-1,0,0);
+    else
+        qDebug() << "Error rotating Enemy Forward vector";
+
+    mForward = temp;
+}

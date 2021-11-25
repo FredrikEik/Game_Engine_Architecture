@@ -321,8 +321,8 @@ void ShapeFactory::makeVertices()
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
-    m = new MeshComponent;
-    c = new CollisionComponent;
+//    m = new MeshComponent;
+//    c = new CollisionComponent;
 
 
 }

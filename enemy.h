@@ -8,10 +8,11 @@ public:
     Enemy(ShapeFactory* f);
     ~Enemy(){};
     void moveEnemy();
+    void rotateForwardV();
     bool checkMove;
-    gsl::Vector3D mForward{0,0,-1};
+    gsl::Vector3D mForward{0,0,1};
 private:
-    float speed = 0.03;
+    float speed = 0.025;
     ShapeFactory* factoryPtr;
     gsl::Vector3D dir;
 };

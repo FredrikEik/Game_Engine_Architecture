@@ -47,8 +47,8 @@ public:
     Skybox *mSkyBox;
     Light * mLight{nullptr};
 private:
-    static const int DIM_Z = 19;
-    static const int DIM_X = 22;
+    static const int DIM_Z = 22;
+    static const int DIM_X = 19;
 //    static const int CENTER_X = DIM_X / 2;
 //    static const int CENTER_Z = (DIM_Z + 1) / 2;
     static const int CENTER_Y = 0;

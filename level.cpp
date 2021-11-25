@@ -24,25 +24,28 @@ Level::~Level()
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
 {  //0                1         5           21
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
-   {1,2,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},// 1
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},// 2
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 4
-   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 5
-   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
-   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
-   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},
-   {1,1,1,1,1,1,1,1,0,4,4,1,0,1,1,1,0,1,1,1,0,1},
-   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},// 10
-   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
-   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},// 12
-   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 13
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 14
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},
-   {1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //18
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
+   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
+   {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
+   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
+   {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
+   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
+   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
+   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
+   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
+   {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
+   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+   {1,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //21
 
 };
 
@@ -61,7 +64,7 @@ void Level::DrawBoard()
                 tempC = static_cast<Circle*>(temp);
                 tempC->init();
                 tempC->mMaterial->mShaderProgram = 0;
-                tempC->move(j, CENTER_Y, DIM_Z-1-i);
+                tempC->move(j, CENTER_Y,i);
                 mVisualObjects.push_back(tempC);
                 mTrophies.push_back(tempC);
                 mTransComps.push_back(tempC->mTransform);
@@ -72,7 +75,7 @@ void Level::DrawBoard()
                 tempS = static_cast<Square*>(temp);
                 tempS->init();
                 tempS->mMaterial->mShaderProgram = 0;    //plain shader
-                tempS->move(j, CENTER_Y, DIM_Z-1-i);
+                tempS->move(j, CENTER_Y, i);
                 mWall.push_back(tempS);
                 mVisualObjects.push_back(temp);
                 mTransComps.push_back(tempS->mTransform);
@@ -83,7 +86,7 @@ void Level::DrawBoard()
                 mPlayer->mMaterial->mShaderProgram = 0; //plain shader
                 //temp->mTransform->mMatrix.scale(0.15);
                 mPlayer->init();
-                mPlayer->move(j, CENTER_Y, DIM_Z-1-i);
+                mPlayer->move(j, CENTER_Y, i);
                 mVisualObjects.push_back(mPlayer);
                 mTransComps.push_back(mPlayer->mTransform);
                 mNameComps.push_back(mPlayer->mNameComp);
@@ -92,7 +95,7 @@ void Level::DrawBoard()
                 mEnemy = new Enemy(&mShapeFactory);
                 mEnemy->init();
                 mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-                mEnemy->move(j, CENTER_Y, DIM_Z-1-i);
+                mEnemy->move(j, CENTER_Y, i);
                 mEnemies.push_back(mEnemy);
                 mVisualObjects.push_back(mEnemy);
                 mTransComps.push_back(mEnemy->mTransform);
@@ -251,7 +254,7 @@ void Level::checkCollision()
 
 bool Level::wallCheck(int x, int z)
 {
-    if(GameBoard[x][z] == 1)
+    if(GameBoard[z][x] == 1)
         return true;
     else
         return false;
@@ -280,24 +283,34 @@ void Level::resetGame()
 void Level::moveEnemy()
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
-        int EposZ = mEnemies[i]->mTransform->mPosition.z + mEnemies[i]->mForward.z;
+        int EposX{0};
+        int EposZ{0};
+        if(mEnemies[i]->mForward.x > 0)
+            EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
+        else if(mEnemies[i]->mForward.x <0)
+            EposX = mEnemies[i]->mTransform->mPosition.x +1 + mEnemies[i]->mForward.x;
+        else if(mEnemies[i]->mForward.z >0)
+        EposZ = mEnemies[i]->mTransform->mPosition.z  + mEnemies[i]->mForward.z;
+        else if(mEnemies[i]->mForward.z <0)
+        EposZ = mEnemies[i]->mTransform->mPosition.z +1 + mEnemies[i]->mForward.z;
 
         //double a = rand()%15;
 
         // mEnemies[i]->moveEnemy();
-        if(wallCheck(EposZ, EposX))
+        if(wallCheck(EposX, EposZ))
         {
-//            if(a<5 )
-//            {
-                mEnemies[i]->mTransform->mMatrix.rotateY(90);
-                mEnemies[i]->mForward.rotateY(90);
-//            }else{
-//                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
-//                mEnemies[i]->mForward.rotateY(-90);
-//            }
+            //            int xdiff = mEnemies[i]->mTransform->mPosition.x - std::round(mEnemies[i]->mTransform->mPosition.x);
+            //            int zdiff = mEnemies[i]->mTransform->mPosition.z - std::round(mEnemies[i]->mTransform->mPosition.z);
+            //            mEnemies[i]->move(-xdiff, 0, -zdiff);
+
+            mEnemies[i]->mTransform->mMatrix.rotateY(90);
+            mEnemies[i]->rotateForwardV();
+
+
         }
-        mEnemies[i]->moveEnemy();   }
+        else
+            mEnemies[i]->moveEnemy();
+    }
 }
 
 
