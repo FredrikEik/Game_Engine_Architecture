@@ -4,20 +4,21 @@
 //Forward declaration
 class GameObject;
 class GameObjectManager;
+class RenderSystem;
 
 
 class GamePlayMechanics
 {
 public:
     //Functions
-    GamePlayMechanics();
+    GamePlayMechanics(RenderSystem *renderSystemIn);
     int GetTetromino();
     void ActiveTetromino(int tetromino);
     void ManageGameplayLines(bool gameField);
-    GameObject* TetrominoMaker(int tetromino);
-
+    std::vector<GameObject*> TetrominoMaker(int tetromino);
 
     GameObjectManager *mGameObjectManager{nullptr};
+    RenderSystem *mRenderSystem{nullptr};
 };
 
 #endif // GAMEPLAYMECHANICS_H

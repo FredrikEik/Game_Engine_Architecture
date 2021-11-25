@@ -230,11 +230,37 @@ void CoreEngine::gameLoop()
     PhysicsHandler ph(mRenderSystem);
     ph.movePhysicsObject(mGameObjects);
 
-    //Fått basic valg av tetrominoer til å fungere.
-    GamePlayMechanics tm;
-    int tetromino = tm.GetTetromino(); //Returnerer et tilfeldig tall mellom 1 og 7, brukes til å velge hvilken tetromino. Slår meg som overflødig, kan bruke QRand-overalt?
-    GameObject* gameBlock = tm.TetrominoMaker(tetromino); //Returnerer spill-objectet som skal brukes i scenen
-    //qDebug() << gameBlock->mName; //Krøll her også, ikke ferdig med tetrominoMaker funksjonen.
+    //Initializing values for the gameplay
+    GamePlayMechanics tm(mRenderSystem);
+    int tetrominoNr;
+//    std::vector<GameObject*> gameBlock;
+
+    while(mGameObjects.size() < 40) //this line never s
+    {
+//        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
+        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
+
+        //This line compiles, but mGameObjects does not expand with the push backs from inside the tetrominomaker function
+        mGameObjects = tm.TetrominoMaker(tetrominoNr); //Returns four tetrominos as four gameobjects to be used in the scene.
+
+        //With these lines i get convert-type errors. c2440 From '_Ty' to '_objty'
+//        mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
+//        mRenderSystem->mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
+
+        //If there is a tetromino in scene, let player rotate and drop tetromino
+        for (int x = 0; x > mGameObjects.size(); x++)
+        {
+            for (int i = 0; i > 4; i++) //Need to loop through the four gameBlock vectors containing one square each
+            {
+                if(mGameObjects[x]->mName == "Tetromino")
+                {
+                    qDebug() << "Gameobject and subsecquent tetrominoes found";
+                    qDebug() << QString::fromStdString(mGameObjects[i]->mName);
+                }
+            }
+        }
+    }
+    //If there is not a tetromino in scene, draw another one.
 
     mRenderSystem->render();
 }
