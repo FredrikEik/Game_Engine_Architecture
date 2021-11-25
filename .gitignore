@@ -63,6 +63,6 @@ compile_commands.json
 # Doxygen
 *DoxygenHTML-*
 *DoxygenCompile-*
-*DoxygenCompile/HTML-*
+*DoxygenCompile\html-*
 *.html
 
