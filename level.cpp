@@ -292,53 +292,38 @@ void Level::SoundHandler()
 
 bool Level::wallCheck(int z, int x)
 {
-    if(GameBoard[x][z] == 1)
+    if(GameBoard[z][x] == 1)
         return true;
     else
         return false;
 }
 
 
-void Level::moveEnemy()
+void Level::moveEnemy(int randNum)
 {
-    int angle = 0;
+
+         //qDebug() << "RandomeNumberIs: " << a;
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
-        int EposZ = mEnemies[i]->mTransform->mPosition.z + mEnemies[i]->mForward.z;
+        int EposX = mEnemies[i]->mTransform->mPosition.x+1 + mEnemies[i]->mForward.x;
+        int EposZ = mEnemies[i]->mTransform->mPosition.z+1 + mEnemies[i]->mForward.z;
 
-        double a = rand()%15;
+        int pPosX = mPlayer->mTransform->mPosition.x;
+        int pPosZ = mPlayer->mTransform->mPosition.z;
 
-        if(angle == 0)
-        {
-
-        }else if(angle == 90){
-            mEnemies[i]->mTransform->mMatrix.rotateY(90);
-        }else if(angle == 180){
-            mEnemies[i]->mTransform->mMatrix.rotateY(90);
-        }else if(angle == 270){
-            mEnemies[i]->mTransform->mMatrix.rotateY(90);
-
-        }
-
-
-       // mEnemies[i]->moveEnemy();
         if(wallCheck(EposZ, EposX))
         {
-            if(a<5 )
-            {
-                mEnemies[i]->mTransform->mMatrix.rotateY(90);
-                mEnemies[i]->mForward.rotateY(90);
-            }else if(a>5 &&a<=15 ){
-                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
-                mEnemies[i]->mForward.rotateY(-90);
-            }/*else{
-                mEnemies[i]->mTransform->mMatrix.rotateY(270);
-                mEnemies[i]->mForward.rotateY(270);
-            }*/
+//            if(mEnemies[1]->mTransform->mPosition.x<mPlayer->mTransform->mPosition.x){
+//                mEnemies[1]->mForward = {1,0,0};
+//            }
 
-        }
-        mEnemies[i]->moveEnemy();   }
+            mEnemies[i]->mTransform->mMatrix.rotateY(90);
+            mEnemies[i]->rotateForwardV();
+        }else
+            mEnemies[i]->moveEnemy();
+    }
 }
+
+
 
 void Level::resetGame()
 {
@@ -359,6 +344,7 @@ void Level::resetGame()
         }
     }
 }
+
 
 
 Script::Script(QObject *parent) : QObject(parent)

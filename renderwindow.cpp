@@ -249,10 +249,10 @@ void RenderWindow::render()
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
-
+    int a = rand() % 20;
     if(playM)
     {
-        mLvl->moveEnemy();
+        mLvl->moveEnemy(a);
     }
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -53,12 +53,14 @@ public:
     Light * mLight{nullptr};
     int trophies{0};
     bool wallCheck(int z, int x);
-    void moveEnemy();
-    void CheckRotation();
+    void moveEnemy(int randNum);
     void resetGame();
+
 private:
     static const int DIM_X = 19;
     static const int DIM_Z = 22;
+    static const int CENTER_X = DIM_X / 2;
+    static const int CENTER_Z = DIM_Z / 2;
     bool checkEnemyRotFront = false;
     bool checkEnemyRotBack = false;
     bool checkEnemyRotLeft = false;
@@ -70,6 +72,8 @@ private:
     Camera* mCam;
     CollisionSystem* mColSystem;
     int mLives{2};
+    bool isValidPos = false;
+    int angle =0;
 
 };
 

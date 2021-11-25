@@ -25,12 +25,43 @@ Enemy::~Enemy()
 }
 void Enemy::moveEnemy()
 {
+move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
+//    if(angle == 0)
+//    {
 
-    move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
+//    }
+
 
 }
 
-void Enemy::rotateY()
+void Enemy::rotateForwardV()
 {
+    gsl::Vector3D temp{0,0,0};
+    if(mForward.x == -1)
+        temp = gsl::Vector3D(0,0,-1);
+    else if(mForward.x == 1)
+        temp = gsl::Vector3D(0,0,1);
+    else if(mForward.z == -1)
+        temp = gsl::Vector3D(1,0,0);
+    else if(mForward.z == 1)
+        temp = gsl::Vector3D(-1,0,0);
+    else
+        qDebug() << "Error rotating Enemy Forward vector";
+
+    mForward = temp;
+}
+
+void Enemy::CheckRotation()
+{
+    if(mForward.x==1)
+        angle = 270;
+    if(mForward.x == -1)
+        angle = 90;
+    if(mForward.z == -1)
+        angle = 180;
+    if(mForward.z == 1)
+        angle =0;
+
+
 
 }
