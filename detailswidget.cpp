@@ -27,6 +27,16 @@ void DetailsWidget::init(Factory *factory, int index)
     readRotation();
     readScale();
     clearFocus();
+
+    ui->ComboBoxShader->addItem("Plain shader");
+    ui->ComboBoxShader->addItem("Texture shader");
+    ui->ComboBoxShader->addItem("Light shader");
+    ui->ComboBoxShader->addItem("Skybox shader");
+
+    ui->ComboBoxTexture->addItem("Default");
+    ui->ComboBoxTexture->addItem("hund.bmp");
+    ui->ComboBoxTexture->addItem("grass2.bmp");
+    ui->ComboBoxTexture->addItem("Skybox");
 }
 
 void DetailsWidget::readPosition()
@@ -53,6 +63,15 @@ void DetailsWidget::readScale()
     ui->DoubleSpinBoxXScale->setValue(scale.x);
     ui->DoubleSpinBoxYScale->setValue(scale.y);
     ui->DoubleSpinBoxZScale->setValue(scale.z);
+}
+
+void DetailsWidget::setShaderProgram(int shaderIndex)
+{
+    mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram = shaderIndex;
+}
+void DetailsWidget::setTextureUnit(int textureUnit)
+{
+    mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit = textureUnit;
 }
 
 void DetailsWidget::setPosition()
@@ -134,5 +153,14 @@ void DetailsWidget::on_DoubleSpinBoxZScale_valueChanged(double arg1)
     setScale();
 }
 
+void DetailsWidget::on_ComboBoxShader_currentIndexChanged(int index)
+{
+    setShaderProgram(index);
+}
 
+
+void DetailsWidget::on_ComboBoxTexture_currentIndexChanged(int index)
+{
+    setTextureUnit(index);
+}
 

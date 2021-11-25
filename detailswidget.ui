@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>150</height>
+    <width>315</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -250,6 +250,33 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="horizontalSpacing">
+      <number>1</number>
+     </property>
+     <item row="3" column="0">
+      <widget class="QComboBox" name="ComboBoxShader"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="TextureLabel">
+       <property name="text">
+        <string>Texture</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="ShaderLabel">
+       <property name="text">
+        <string>Shader</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QComboBox" name="ComboBoxTexture"/>
      </item>
     </layout>
    </item>

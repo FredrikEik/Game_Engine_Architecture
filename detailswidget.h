@@ -43,6 +43,10 @@ private slots:
 
     void on_DoubleSpinBoxZScale_valueChanged(double arg1);
 
+    void on_ComboBoxShader_currentIndexChanged(int index);
+
+    void on_ComboBoxTexture_currentIndexChanged(int index);
+
 private:
     Ui::DetailsWidget *ui;
 
@@ -52,6 +56,9 @@ private:
     void setPosition();
     void setRotation();
     void setScale();
+
+    void setShaderProgram(int shaderIndex);
+    void setTextureUnit(int textureIndex);
 
     float mPositionPace{1.f};
     float mRotationPace{1.f};

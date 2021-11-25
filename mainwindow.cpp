@@ -110,9 +110,8 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("MarioCube");
     ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
-    ui->PlayPause->setText("Editor Mode(TAB)");
     ui->createDropDownBox->addItem("Light");
-
+    ui->PlayPause->setText("Editor Mode(TAB)");
 
 }
 
@@ -126,7 +125,7 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
 {
-            itemToSpawn = arg1.toStdString();
+    itemToSpawn = arg1.toStdString();
 }
 
 void MainWindow::on_CreateObject_clicked()
