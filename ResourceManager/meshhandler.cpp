@@ -362,19 +362,19 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, floa
     return tempMesh;
 }
 //Tried this, but it is too naive in the way that it is not called every frame or by the renderwindow, i think.
-//MeshData MeshHandler::makePoint(gsl::Vector3D &pointIn, float pointSizeIn, gsl::Vector3D colorIn)
-//{
-//    //    glPointSize(pointSizeIn); //This crashes the program
-////    glBegin(GL_POINTS);
-//    MeshData tempMesh;
-//    tempMesh.mVertices->push_back(Vertex{pointIn.x, pointIn.y, pointIn.z, colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
+MeshData MeshHandler::makePoint(gsl::Vector3D &pointIn, float pointSizeIn, gsl::Vector3D colorIn)
+{
+//    glPointSize(pointSizeIn); //This crashes the program
+//    glBegin(GL_POINTS);
+    MeshData tempMesh;
+    tempMesh.mVertices->push_back(Vertex{pointIn.x, pointIn.y, pointIn.z, colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
 
-//    tempMesh.mDrawType = GL_POINTS;
+    tempMesh.mDrawType = GL_POINTS;
 
-//    initMesh(tempMesh, 0);
-////    glEnd();
-//    return tempMesh;
-//}
+    initMesh(tempMesh, 0);
+//    glEnd();
+    return tempMesh;
+}
 
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
@@ -602,8 +602,8 @@ void MeshHandler::readLasFile()
 
          for(int i = 0; i < linesWithPoints; i++) //for each line of data fill pointData with numbers
          {
-             inLasFile >> lasX >> lasZ >> lasY;        //read the line, store as x, z and y. z and y flipped to match current project.
-             pointData.emplace_back(lasX, lasZ, lasY); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
+             inLasFile >> lasX >> lasY >> lasZ;
+             pointData.emplace_back(lasX, lasY, lasZ); //There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
                                                        //Given all data will use the same pointData vector this wont be a problem.
 
              static bool once = true; //store the bounds of the terrain
@@ -619,19 +619,14 @@ void MeshHandler::readLasFile()
              }
              if(lasX < xMin)
                  xMin = lasX;
-
              if(lasX > xMax)
                  xMax = lasX;
-
              if(lasZ < zMin)
                  zMin = lasZ;
-
              if(lasZ > zMax)
                  zMax = lasZ;
-
              if(lasY < yMin)
                  yMin = lasY;
-
              if(lasY > yMax)
                  yMax = lasY;
 
@@ -683,13 +678,17 @@ for (int x = 0; x < gridSizeX; x++)
         planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x); //Fill the array with evenly spaced coordinates enclosing all pointData positions
         planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
 
+        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
+        planeGrid[x][z].y -= yMin;
+        planeGrid[x][z].z -= zMin;
+
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
         {
             if(pointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
-               pointData[pointDataSearch].getY() >= planeGrid[x][z].z &&
+               pointData[pointDataSearch].getZ() >= planeGrid[x][z].z &&
                pointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
-               pointData[pointDataSearch].getY() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
+               pointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
                 pointDataOutOfGrid--; //There are currently missing about 1365 pieces of data.
 
@@ -708,7 +707,7 @@ for (int x = 0; x < gridSizeX; x++)
 
 //  Does not work for now.
 //    qDebug() << planeGrid[0][39];
-//    //Display the planeGrid using OpenGL Points
+    //Display the planeGrid using OpenGL Points
 //    for(int x = 0; x < gridSizeX; x++)
 //    {
 //        for(int z = 0; z < gridSizeZ; z++)
@@ -721,7 +720,7 @@ for (int x = 0; x < gridSizeX; x++)
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
 //    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << xMax << planeGrid[49][49].x << zMax << planeGrid[49][49].z; //this does not match perfectly, but close enough for now.
-//    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
+    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 
     // Now the vertices needs to be "converted" to triangles.
     // I could try to write an obj file, but seems difficult, could be used to not calculate everything every run.
@@ -733,6 +732,8 @@ for (int x = 0; x < gridSizeX; x++)
     // [0][1], [0][2], [1][2] //Second square
     // [0][1], [1][1], [1][2]
 
+    float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number smaller
+    float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number smaller
     float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
     qDebug() << "Start of triangle creation";
