@@ -15,7 +15,7 @@
 #include "xyz.h"
 #include "camera.h"
 #include "constants.h"
-#include "texture.h"
+#include "texturehandler.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -93,8 +93,8 @@ void RenderWindow::init()
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -250,6 +250,10 @@ void RenderWindow::render()
     mCurrentCamera->update();
     mLvl->checkCollision();
 
+    if(playM)
+    {
+        mLvl->moveEnemy();
+    }
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -528,7 +532,6 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     }
     mInputComponent->mMouseXlast = event->pos().x();
     mInputComponent->mMouseYlast = event->pos().y();
-    //mDrawMousePickRay = true;
 
 }
 

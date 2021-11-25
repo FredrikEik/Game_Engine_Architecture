@@ -32,26 +32,30 @@ Level::~Level()
 // 4 - ghost initial positions
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
-{  //0                1         5           21
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
-   {1,2,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},// 1
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},// 2
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 4
-   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 5
-   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},
-   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
-   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},
-   {1,1,1,1,1,1,1,1,0,4,4,1,0,1,1,1,0,1,1,1,0,1},
-   {1,0,0,0,0,1,0,0,0,1,4,1,0,1,0,0,0,1,0,0,0,1},// 10
-   {1,0,1,1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1},
-   {1,0,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1},// 12
-   {1,0,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1},// 13
-   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},// 14
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1},
-   {1,0,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,0,0,1,0,1},
-   {1,0,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,1,0,0,0,1},
-   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //18
+{  //0                1         5       19
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
+   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
+   {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
+   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
+   {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
+   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
+   {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
+   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
+   {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
+   {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
+   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
+   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+   {1,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //21
+
 
 };
 
@@ -73,7 +77,7 @@ void Level::DrawBoard()
                 tempC = static_cast<Circle*>(temp);
                 tempC->init();
                 tempC->mMaterial->mShaderProgram = 0;
-                tempC->move(i, CENTER_Y,DIM_Z - j - 1+3);
+                tempC->move(j, CENTER_Y,i);
                 mVisualObjects.push_back(tempC);
                 mTrophies.push_back(tempC);
                 mTransformComp.push_back(tempC->mTransform);
@@ -84,7 +88,7 @@ void Level::DrawBoard()
                 tempS = static_cast<Square*>(temp);
                 tempS->init();
                 tempS->mMaterial->mShaderProgram = 0;    //plain shader
-                tempS->move(i, CENTER_Y,DIM_Z - j - 1+3);
+                tempS->move(j, CENTER_Y,i);
                 mWall.push_back(tempS);
                 mVisualObjects.push_back(temp);
                 mTransformComp.push_back(tempS->mTransform);
@@ -94,7 +98,7 @@ void Level::DrawBoard()
                 mPlayer = new Player(&mShapeFactory);
                 mPlayer->mMaterial->mShaderProgram = 0; //plain shader
                 mPlayer->init();
-                mPlayer->move(i, CENTER_Y,DIM_Z - j - 1+3);
+                mPlayer->move( j, CENTER_Y,i);
                 mVisualObjects.push_back(mPlayer);
                 mTransformComp.push_back(mPlayer->mTransform);
                 mNameComp.push_back(mPlayer->mNameComp);
@@ -103,7 +107,7 @@ void Level::DrawBoard()
                 mEnemy = new Enemy(&mShapeFactory);
                 mEnemy->init();
                 mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-                mEnemy->move(i, CENTER_Y,DIM_Z - j - 1+3);
+                mEnemy->move(j, CENTER_Y,i);
                 mEnemies.push_back(mEnemy);
                 mVisualObjects.push_back(mEnemy);
                 mTransformComp.push_back(mEnemy->mTransform);
@@ -247,25 +251,30 @@ void Level::checkCollision()
     }
 
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
-        //kollisjon mot trofeer
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
-        {
-            //qDebug() <<"Collision detected"; //testing collision
-            trophies++; // for å senere sette win-condition
-            mTrophies[i]->drawMe = false; //for å ikke tegne opplukket trofè
-        }
-        //        else
-        //            qDebug() << "No col";
-    }
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
-        {
-            mEnemies[i]->checkMove = true;
-            // ResetGame();
-            //qDebug() <<"Player hit detected";
-            //mEnemy->Checkmove = false;
-        }else mEnemies[i]->checkMove = false;
-        moveEnemy();}
+         //kollisjon mot trofeer
+         if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
+         {
+             if(trophies < static_cast<int>(mTrophies.size())){
+                 if(mTrophies[i]->drawMe == true){
+                     trophies++;
+                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
+                 else
+                     continue;
+             }else{
+                 qDebug() << "You Win";
+                 resetGame();}
+         }
+     }
+     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
+         {
+             if(mLives > 0){
+                 mLives--;qDebug() << mLives;
+             }else{
+                 qDebug() << "You lose";
+                 resetGame();}
+         }
+     }
 }
 
 void Level::SoundHandler()
@@ -292,11 +301,25 @@ bool Level::wallCheck(int z, int x)
 
 void Level::moveEnemy()
 {
+    int angle = 0;
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         int EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
         int EposZ = mEnemies[i]->mTransform->mPosition.z + mEnemies[i]->mForward.z;
 
         double a = rand()%15;
+
+        if(angle == 0)
+        {
+
+        }else if(angle == 90){
+            mEnemies[i]->mTransform->mMatrix.rotateY(90);
+        }else if(angle == 180){
+            mEnemies[i]->mTransform->mMatrix.rotateY(90);
+        }else if(angle == 270){
+            mEnemies[i]->mTransform->mMatrix.rotateY(90);
+
+        }
+
 
        // mEnemies[i]->moveEnemy();
         if(wallCheck(EposZ, EposX))
@@ -306,15 +329,35 @@ void Level::moveEnemy()
                 mEnemies[i]->mTransform->mMatrix.rotateY(90);
                 mEnemies[i]->mForward.rotateY(90);
             }else if(a>5 &&a<=15 ){
-                mEnemies[i]->mTransform->mMatrix.rotateY(180);
-                mEnemies[i]->mForward.rotateY(180);
-            }else{
+                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
+                mEnemies[i]->mForward.rotateY(-90);
+            }/*else{
                 mEnemies[i]->mTransform->mMatrix.rotateY(270);
                 mEnemies[i]->mForward.rotateY(270);
-            }
+            }*/
 
         }
         mEnemies[i]->moveEnemy();   }
+}
+
+void Level::resetGame()
+{
+    mPlayer->move(1, 0, 1);
+    for(int i{0}; i<mVisualObjects.size(); i++)
+    {
+        mVisualObjects[i]->drawMe = true;
+    }
+    trophies = 0;
+    mLives = 2;
+    int eID = 0;
+    for(int i = 0; i<DIM_Z;i++)
+    {
+        for(int j = 0; j<DIM_X; j++){
+            if(GameBoard[i][j] == 4){
+                mEnemies[eID]->move(i, CENTER_Y,DIM_Z - j - 1);
+                eID++;}
+        }
+    }
 }
 
 

@@ -39,10 +39,11 @@ Texture::Texture()
 
 Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_1_Core()
 {
-    mTextureFilename = filename;
+
     initializeOpenGLFunctions();
     if(cubeMap) //Skybox - environment map
     {
+        mTextureFilename = filename;
         readCubeMap();
         setCubemapTexture();
     }
@@ -126,12 +127,12 @@ void Texture::readCubeMap()
     sStream << mTextureFilename;
     std::getline(sStream, justName, '.');   //deleting .bmp
     justName.pop_back();    //removing 1
-    for(int i{0}; i< 6; i++)
+    for(int i{1}; i< 7; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = "../GEA2021/Assets/skybox/" +justName + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
-        mCubemap[i] = mBitmap;
+        mCubemap[i-1] = mBitmap;
     }
 }
 

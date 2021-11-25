@@ -11,7 +11,7 @@ public:
     Enemy(ShapeFactory* f);
     ~Enemy();
     void moveEnemy();
-    float speed = 0.01f;
+    float speed = 0.03f;
 
     bool checkMove = false;
     void rotateY();
