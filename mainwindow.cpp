@@ -357,7 +357,13 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 
     float x = arg1 - GameObjects[ObjectListIndex]->mTransformComp->mRotation.getX();
     GameObjects[ObjectListIndex]->mTransformComp->mRotation.setX(x+GameObjects[ObjectListIndex]->mTransformComp->mRotation.getX());
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateX(x);
+    GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix.rotateX(x);
+
+
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix = GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix;
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(GameObjects[ObjectListIndex]->mTransformComp->mScale.x,
+                                                                GameObjects[ObjectListIndex]->mTransformComp->mScale.y,
+                                                                GameObjects[ObjectListIndex]->mTransformComp->mScale.z);
 }
 
 void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
@@ -384,8 +390,12 @@ void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-    scaleX = float(arg1);
-    Scale();
+
+    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(arg1);
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix = GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix;
+    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(GameObjects[ObjectListIndex]->mTransformComp->mScale);
+//    scaleX = float(arg1);
+//    Scale();
 }
 
 void MainWindow::on_ScaleYspinBox_valueChanged(double arg1)

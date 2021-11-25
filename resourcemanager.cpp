@@ -141,7 +141,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
     tempGO->id = objectIDcounter;
 
-
+    //
+    tempGO->mTransformComp->mScaleMatrix = tempGO->mTransformComp->mMatrix;
     //qDebug() << "Number of objects in map:" << mObjectsMap.size();
     //qDebug() << "Number of unique meshcomps:" << meshCompCounter;
     objectIDcounter++;

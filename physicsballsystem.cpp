@@ -28,6 +28,7 @@ void PhysicsBallSystem::update(GameObject& ballInn)
 
     if(onNewTriangle)
     {
+        qDebug() << "NewTriangle";
         QVector3D nextVelocity = mVelocity - (2 * (mVelocity * collisionVector) * collisionVector);
         mVelocity = nextVelocity;
     }
@@ -186,7 +187,7 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
     float zCoordInSquare = fmod(zPosOnTarrain,gridSquareSize)/gridSquareSize;
 
 //    qDebug () << "xCoordInSquare: " << xCoordInSquare << "zCoorInSquare: " << zCoordInSquare;
-    qDebug () << "gridXPos: " << gridXPos << "gridZPos: " << gridZPos;
+//    qDebug () << "gridXPos: " << gridXPos << "gridZPos: " << gridZPos;
 
 
     if(gridXPos >= 0 && gridZPos >= 0 && gridXPos < mCols && gridZPos < mRows)
@@ -210,7 +211,7 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
         QVector3D p3{p3_2D.x(),p3y,p3_2D.y()};
         QVector3D p4{p4_2D.x(),p4y,p4_2D.y()};
 
-        qDebug() << "p1: " << p1 << "p2: " << p2 << "p3: " << p3 << "p4: " << p4;
+//        qDebug() << "p1: " << p1 << "p2: " << p2 << "p3: " << p3 << "p4: " << p4;
 
         //Finne hvilken av de to trekantene spilleren står på
         if(xCoordInSquare <= (zCoordInSquare))
@@ -254,7 +255,6 @@ std::pair<QVector3D,QVector3D> PhysicsBallSystem::getAkselerationVector(const QV
             {
                 return std::pair<QVector3D,QVector3D>{Vec,QVector3D{0,0,0}};
             }
-
 
             return std::pair<QVector3D,QVector3D>{Vec,x};
         }

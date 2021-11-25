@@ -137,30 +137,30 @@ void GameEngine::SetUpObjects()
 
 
 
-    // TERRAIN:
-    mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
-//    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
-    mTerrainObject->mMaterialComp->mShaderProgram = 2;
-    mTerrainObject->mMaterialComp->mTextureUnit = 0;
-//    mTerrainObject->mTransformComp->mMatrix.scale(1,0.5f,1);
-    mRenderwindow->mGameObjects.push_back(mTerrainObject);
+//    // TERRAIN:
+//    mTerrainObject = mResourceManager->CreateObject(gsl::ProjectFolderName + "test_las.txt",false,"plain");
+////    mTerrainObject->mTransformComp->mMatrix.setPosition(-500.f,-60.f,-500.f);
+//    mTerrainObject->mMaterialComp->mShaderProgram = 2;
+//    mTerrainObject->mMaterialComp->mTextureUnit = 0;
+////    mTerrainObject->mTransformComp->mMatrix.scale(1,0.5f,1);
+//    mRenderwindow->mGameObjects.push_back(mTerrainObject);
 
-    mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
-    mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
-    mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
-//    mHeightCurveObject->mTransformComp->mMatrix.scale(1,0.5f,1);
-    mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
-    mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
+//    mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
+//    mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
+//    mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
+////    mHeightCurveObject->mTransformComp->mMatrix.scale(1,0.5f,1);
+//    mHeightCurveObject->mTransformComp->mMatrix.translateY(0.f);
+//    mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
 
-    // Ball-Physics:
+//    // Ball-Physics:
 
-    mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-    mPhysicsBall->mTransformComp->mMatrix.translate(561.1f,21.6f,601.f);
-    mPhysicsBall->mTransformComp->mMatrix.scale(1);
-    mPhysicsBall->mMaterialComp->mShaderProgram = 2;
-    mRenderwindow->mGameObjects.push_back(mPhysicsBall);
+//    mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
+//    mPhysicsBall->mTransformComp->mMatrix.translate(561.1f,21.6f,601.f);
+//    mPhysicsBall->mTransformComp->mMatrix.scale(1);
+//    mPhysicsBall->mMaterialComp->mShaderProgram = 2;
+//    mRenderwindow->mGameObjects.push_back(mPhysicsBall);
 
-    mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
+//    mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
 
 }
 

@@ -26,6 +26,7 @@ private slots:
 public:
     GameEngine();
     void SetUpScene();
+
     void SetUpObjects();
     void HandleInput();
     void togglePlay(bool bInIsPlaying);
@@ -48,6 +49,8 @@ public:
     void CreatePyramid();
     void CreateSphere();
     void CreateSuzanne();
+
+    /// Object needs filepaht, if using lod, texture name
     void CreateObject(std::string filePath, bool bUsingLOD, std::string textureName);
 
 

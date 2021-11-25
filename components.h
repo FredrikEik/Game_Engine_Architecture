@@ -21,6 +21,7 @@ class TransformComponent
 public:
 //    TransformComponent();
     gsl::Matrix4x4 mMatrix;
+    gsl::Matrix4x4 mScaleMatrix;
     gsl::Vector3D mRotation{0.f,0.f,0.f};
     gsl::Vector3D mScale{1.f,1.f,1.f};
 
