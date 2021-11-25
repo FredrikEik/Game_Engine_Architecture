@@ -98,8 +98,8 @@ void CoreEngine::setUpScene()
     mGameObjectManager->setUpAllShaders();
     mGameObjectManager->setUpAllMaterials();
 
-    MeshHandler HeightMap;
-    HeightMap.readLasFile();
+//    MeshHandler HeightMap; //Disabling this to work on GEA, much faster compilation
+//    HeightMap.readLasFile();
 
     //********************** Making the object to be drawn *********************
 
