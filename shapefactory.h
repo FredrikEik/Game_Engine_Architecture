@@ -14,6 +14,14 @@
 
 using namespace std;
 
+class XYZ : public VisualObject
+{
+public:
+    XYZ();
+    ~XYZ() override{};
+    //void init() override;
+};
+
 class Circle : public VisualObject
 {
 public:

@@ -30,8 +30,8 @@ public:
     void initObjects();
     std::string createShapes(string shapeID);
     void readJS();
-    void winner();
     void checkCollision();
+    void moveEnemy();
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -46,7 +46,6 @@ public:
     Player* mPlayer;
     Skybox *mSkyBox;
     Light * mLight{nullptr};
-    int trophies{0};
 private:
     static const int DIM_Z = 19;
     static const int DIM_X = 22;
@@ -55,9 +54,13 @@ private:
     static const int CENTER_Y = 0;
     static int GameBoard[DIM_Z][DIM_X];
     void DrawBoard();
+    bool wallCheck(int x, int z);
     Script *script{nullptr};
     Camera* mCam;
     CollisionSystem* mColSystem;
+    void resetGame();
+    int mLives{2};
+    int trophies{0};
 };
 
 #endif // LEVEL_H

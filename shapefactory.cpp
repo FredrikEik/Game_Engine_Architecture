@@ -1,5 +1,7 @@
 #include "shapefactory.h"
 
+
+
 Circle::Circle()
 {
     mTransform = new TransformComponent();
@@ -318,6 +320,11 @@ void ShapeFactory::makeVertices()
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+
+
 }
 
 MeshComponent *ShapeFactory::getMesh(int i)
@@ -491,3 +498,24 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
 }
 
 
+
+XYZ::XYZ()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+
+    mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
+
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    mMesh->mDrawType = GL_LINES;
+
+    mMaterial = new MaterialComponent();
+}

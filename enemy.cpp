@@ -16,28 +16,7 @@ Enemy::Enemy(ShapeFactory* f)
     factoryPtr->addCount();
 }
 
-void Enemy::moveEnemy(Player *mPlayer, gsl::Vector3D Ppos)
+void Enemy::moveEnemy()
 {
-    //    if(Checkmove == false)
-    //    {
-    Ppos = mPlayer->mTransform->mPosition;
-    gsl::Vector3D Epos = mTransform->mPosition;
-
-    float xDistance = Ppos.x-Epos.x;
-    float yDistance = Ppos.y-Epos.y;
-
-    float hypo = sqrt((xDistance * xDistance) + (yDistance * yDistance));
-
-
-    dir = Ppos - Epos;
-    dir.normalize();
-
-    dir = dir*speed;
-    qDebug() << hypo;
-
-    if(checkMove == false)
-    {
-         move(dir.x, dir.y, dir.z);
-    }
-
+    move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 }

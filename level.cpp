@@ -6,7 +6,6 @@ Level::Level(Camera* cam)
     mShapeFactory.makeVertices();
     script = new Script();
     DrawBoard();
-    //initObjects();
     readJS();
 }
 
@@ -21,116 +20,6 @@ Level::~Level()
     mVisualObjects.clear();
     mTransComps.clear();
     mNameComps.clear();
-}
-
-void Level::initObjects()
-{
-    VisualObject* temp{nullptr};
-    Square* tempS{nullptr};
-
-    mPlayer = new Player(&mShapeFactory);
-    mPlayer->mMaterial->mShaderProgram = 0; //plain shader
-    mPlayer->init();
-    mPlayer->move(0,0.5,4);
-    mVisualObjects.push_back(mPlayer);
-    mTransComps.push_back(mPlayer->mTransform);
-    mNameComps.push_back(mPlayer->mNameComp);
-
-    for(int i{1}; i<4; i++){
-        mEnemy = new Enemy(&mShapeFactory);
-        mEnemy->init();
-        mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-        mEnemy->move(-i/2 + 3, 0.f, (i*3) -5);
-        mEnemies.push_back(mEnemy);
-        mVisualObjects.push_back(mEnemy);
-        mTransComps.push_back(mEnemy->mTransform);
-        mNameComps.push_back(mEnemy->mNameComp);}
-
-    //    VisualObject* temp = mShapeFactory.createShape("Circle");
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->move(2.f, 1.f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-    temp = mShapeFactory.createShape("Square");
-    tempS = static_cast<Square*>(temp);
-    tempS->init();
-    tempS->mMaterial->mShaderProgram = 0;    //plain shader
-    tempS->move(-1.5f, 0.5f, -1.5f);
-    mWall.push_back(tempS);
-    mVisualObjects.push_back(tempS);
-    mTransComps.push_back(tempS->mTransform);
-    mNameComps.push_back(tempS->mNameComp);
-
-    temp = mShapeFactory.createShape("Square");
-    tempS = static_cast<Square*>(temp);
-    tempS->init();
-    tempS->mMaterial->mShaderProgram = 0;    //plain shader
-    tempS->move(-2.5f, 0.5f, -3.5f);
-    mWall.push_back(tempS);
-    mVisualObjects.push_back(tempS);
-    mTransComps.push_back(tempS->mTransform);
-    mNameComps.push_back(tempS->mNameComp);
-
-    temp = mShapeFactory.createShape("Plain");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;   //plain shader
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
-    mNameComps.push_back(temp->mNameComp);
-
-    //    temp = mShapeFactory.createShape("BigWall");
-    //    temp = mShapeFactory.createShape("SmallWall");
-    //    temp = mShapeFactory.createShape("Monkey.obj");
-    //    temp = mShapeFactory.createShape("Pacman.obj");
-
-    //    temp->init();
-    //    temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //    temp->move(4.f, 0.5f, .5f);
-    //    mVisualObjects.push_back(temp);
-    //    mTransComps.push_back(temp->mTransform);
-    //    mNameComps.push_back(temp->mNameComp);
-
-
-
-    mFrustumSystem = new FrustumSystem(mCam);
-    mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
-    mFrustumSystem->init();
-
-    //------------------------Skybox----------------------//
-    mSkyBox = new Skybox();
-    mSkyBox->setTexture();
-    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
-    mSkyBox->init();
-
-    //------------------------Light----------------------//
-    mLight = new Light;
-    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
-    mLight->move(0.f, 0.f, 6.f);
-    mLight->init();
-
-    //    for(int i=0; i<10; i++)
-    //    {
-    //        for(int y=0; y<10; y++)
-    //        {
-    //            temp = mShapeFactory.createShape("Monkey.obj");
-    //            temp->init();
-    //            temp->move((i-y), 0.5, y-5);
-    //            temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //            mTransComps.push_back(temp->mTransform);
-    //            mNameComps.push_back(temp->mNameComp);
-    //            mVisualObjects.push_back(temp);
-    //        }
-    //    }
-
-    //makes the soundmanager
-    //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
 }
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
@@ -172,7 +61,7 @@ void Level::DrawBoard()
                 tempC = static_cast<Circle*>(temp);
                 tempC->init();
                 tempC->mMaterial->mShaderProgram = 0;
-                tempC->move(i, CENTER_Y,DIM_Z - j - 1);
+                tempC->move(j, CENTER_Y, DIM_Z-1-i);
                 mVisualObjects.push_back(tempC);
                 mTrophies.push_back(tempC);
                 mTransComps.push_back(tempC->mTransform);
@@ -183,7 +72,7 @@ void Level::DrawBoard()
                 tempS = static_cast<Square*>(temp);
                 tempS->init();
                 tempS->mMaterial->mShaderProgram = 0;    //plain shader
-                tempS->move(i, CENTER_Y,DIM_Z - j - 1);
+                tempS->move(j, CENTER_Y, DIM_Z-1-i);
                 mWall.push_back(tempS);
                 mVisualObjects.push_back(temp);
                 mTransComps.push_back(tempS->mTransform);
@@ -194,7 +83,7 @@ void Level::DrawBoard()
                 mPlayer->mMaterial->mShaderProgram = 0; //plain shader
                 //temp->mTransform->mMatrix.scale(0.15);
                 mPlayer->init();
-                mPlayer->move(i, CENTER_Y,DIM_Z - j - 1);
+                mPlayer->move(j, CENTER_Y, DIM_Z-1-i);
                 mVisualObjects.push_back(mPlayer);
                 mTransComps.push_back(mPlayer->mTransform);
                 mNameComps.push_back(mPlayer->mNameComp);
@@ -203,7 +92,7 @@ void Level::DrawBoard()
                 mEnemy = new Enemy(&mShapeFactory);
                 mEnemy->init();
                 mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-                mEnemy->move(i, CENTER_Y,DIM_Z - j - 1);
+                mEnemy->move(j, CENTER_Y, DIM_Z-1-i);
                 mEnemies.push_back(mEnemy);
                 mVisualObjects.push_back(mEnemy);
                 mTransComps.push_back(mEnemy->mTransform);
@@ -215,7 +104,7 @@ void Level::DrawBoard()
     temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
-    temp->move(9.5f, 0.0f, 8.0f);
+    temp->move(9.5f, -.5f, 8.0f);
     mVisualObjects.push_back(temp);
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
@@ -307,19 +196,13 @@ void Level::readJS()
     //        mNameComps.push_back(temp->mNameComp);}}
 }
 
-void Level::winner()
-{
-
-}
-
 void Level::checkCollision()
 {
     mPlayer->onRwallX = {false};
     mPlayer->onLwallX = {false};
     mPlayer->onFwallY = {false};
     mPlayer->onBwallY = {false};
-    //kollisjon fungerer foreløpig ikke for flere objekter
-    //kollisjon mot vegger
+
     for(int i{0}; i<static_cast<int>(mWall.size()); i++){
         if(mColSystem->CheckSphOnBoxCol(mPlayer->mCollision, mWall[i]->mCollision))
         {
@@ -336,30 +219,87 @@ void Level::checkCollision()
                 mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
         }
         else
-            mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
+            mWall[i]->noCol();
     }
 
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
         {
-            qDebug() <<"Collision detected"; //testing collision
-            trophies++; // for å senere sette win-condition
-            mTrophies[i]->drawMe = false; //for å ikke tegne opplukket trofè
+            if(trophies < static_cast<int>(mTrophies.size())){
+                if(mTrophies[i]->drawMe == true){
+                    trophies++;
+                    mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
+                else
+                    continue;
+            }else{
+                qDebug() << "You Win";
+                resetGame();}
         }
-        else
-            qDebug() << "No col";
     }
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-            mEnemies[i]->checkMove = true;
-            // ResetGame();
-            qDebug() <<"Player hit detected";
-            //mEnemy->Checkmove = false;
-        }else mEnemies[i]->checkMove = false;
-        mEnemies[i]->moveEnemy(mPlayer, mEnemies[i]->mTransform->mPosition);}
+            if(mLives > 0){
+                mLives--;qDebug() << mLives;
+            }else{
+                qDebug() << "You lose";
+                resetGame();}
+        }
+    }
 }
+
+bool Level::wallCheck(int x, int z)
+{
+    if(GameBoard[x][z] == 1)
+        return true;
+    else
+        return false;
+}
+
+void Level::resetGame()
+{
+    mPlayer->move(1, 0, 1);
+    for(int i{0}; i<mVisualObjects.size(); i++)
+    {
+        mVisualObjects[i]->drawMe = true;
+    }
+    trophies = 0;
+    mLives = 2;
+    int eID = 0;
+    for(int i = 0; i<DIM_Z;i++)
+    {
+        for(int j = 0; j<DIM_X; j++){
+            if(GameBoard[i][j] == 4){
+                mEnemies[eID]->move(i, CENTER_Y,DIM_Z - j - 1);
+                eID++;}
+        }
+    }
+}
+
+void Level::moveEnemy()
+{
+    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+        int EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
+        int EposZ = mEnemies[i]->mTransform->mPosition.z + mEnemies[i]->mForward.z;
+
+        //double a = rand()%15;
+
+        // mEnemies[i]->moveEnemy();
+        if(wallCheck(EposZ, EposX))
+        {
+//            if(a<5 )
+//            {
+                mEnemies[i]->mTransform->mMatrix.rotateY(90);
+                mEnemies[i]->mForward.rotateY(90);
+//            }else{
+//                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
+//                mEnemies[i]->mForward.rotateY(-90);
+//            }
+        }
+        mEnemies[i]->moveEnemy();   }
+}
+
 
 Script::Script(QObject *parent) : QObject(parent)
 {

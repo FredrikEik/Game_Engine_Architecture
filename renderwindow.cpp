@@ -217,6 +217,8 @@ void RenderWindow::render()
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
+    if(playM)
+        mLvl->moveEnemy();
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -352,55 +354,6 @@ void RenderWindow::toggleWireframe(bool buttonState)
         //glEnable(GL_CULL_FACE);
     }
 }
-
-//void RenderWindow::checkCollision()
-//{
-//    mPlayer->onRwallX = {false};
-//    mPlayer->onLwallX = {false};
-//    mPlayer->onFwallY = {false};
-//    mPlayer->onBwallY = {false};
-//    //kollisjon fungerer foreløpig ikke for flere objekter
-//    //kollisjon mot vegger
-//    for(int i{0}; i<2; i++){
-//        if(mCollisionSystem->CheckSphOnBoxCol(mPlayer->mCollision, mLvl->mVisualObjects[i+4]->mCollision))
-//        {
-//            //qDebug() <<"Collision detected"; //testing collision
-//            mLvl->mWall[i]->CheckPlayerCol(mPlayer);
-
-//            if(mLvl->mWall[i]->onLwallX){
-//                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
-//            else if(mLvl->mWall[i]->onRwallX){
-//                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
-//            if(mLvl->mWall[i]->onBwallY){
-//                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
-//            else if(mLvl->mWall[i]->onFwallY){
-//                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
-//        }
-//        else
-//            mLvl->mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
-//    }
-
-//    for(int i{7}; i<10; i++){
-//        //kollisjon mot trofeer
-//        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[i]->mCollision))
-//        {
-//            qDebug() <<"Collision detected"; //testing collision
-//            mLvl->trophies++; // for å senere sette win-condition
-//            mLvl->mVisualObjects[i]->drawMe = false; //for å ikke tegne opplukket trofè
-//        }
-//        else
-//            qDebug() << "No col";
-//    }
-//    for(int i{1}; i<4; i++){
-//        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mLvl->mVisualObjects[i]->mCollision))
-//        {
-//            mLvl->mEnemies[i-1]->checkMove = true;
-//            // ResetGame();
-//            qDebug() <<"Player hit detected";
-//            //mEnemy->Checkmove = false;
-//        }else mLvl->mEnemies[i-1]->checkMove = false;
-//        mLvl->mEnemies[i-1]->moveEnemy(mPlayer, mLvl->mEnemies[i-1]->mTransform->mPosition);}
-//}
 
 void RenderWindow::playMode(bool p)
 {
