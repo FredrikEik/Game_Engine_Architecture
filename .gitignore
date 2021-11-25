@@ -59,3 +59,9 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+# Doxygen
+*DoxygenHTML-*
+*DoxygenCompile-*
+*.html
+
