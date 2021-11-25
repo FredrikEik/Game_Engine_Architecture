@@ -15,7 +15,7 @@ class ECSManager
 	friend class WorldOutliner;
 public:
 	~ECSManager();
-
+	
 	template<typename T>
 	uint32 addComponent(uint32 entityID);
 	template<typename ... Types>
@@ -45,7 +45,7 @@ public:
 	std::vector<std::pair<std::type_index, uint32>> getEntity(int32 entityID);
 private:
 	ECSManager();
-
+	
 	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
 	class Factory& factory;
 	template <typename... Ts>

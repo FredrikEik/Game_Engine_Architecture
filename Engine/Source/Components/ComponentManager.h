@@ -5,7 +5,10 @@
 #include <assert.h>
 #include <algorithm>
 #include "../DataStructures/TArray.h"
-/* There should only ever exist one class per component type. Therefore, do NOT instantiate this directly. Go through Factory
+/** 
+* @brief One instance per component type. Manages every component of that type
+*  
+* There should only ever exist one class per component type. Therefore, do NOT instantiate this directly, go through Factory.
 * The class exists as a way to manage all the components of a given type. 
 * The intention is to make lookups very fast and easy
 * Drawbacks: It is using a lot of memory, generating and array the size of MAX_ENTITIES*4byte per component type, in addition to all the components.
@@ -24,6 +27,12 @@ class ComponentManager
 	}
 	~ComponentManager();
 public:
+	
+	/// <summary>
+	/// Gets the component.
+	/// </summary>
+	/// <param name="entityID">The entity identifier.</param>
+	/// <returns></returns>
 	T& getComponent(uint32 entityID);
 	T* getComponentChecked(uint32 entityID);
 	/// <summary>

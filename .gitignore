@@ -1,3 +1,4 @@
 #ignore Build directory
 Build/
 .vs
+Documentation

@@ -22,7 +22,7 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 		assert(entityTransform);
 		tempHeight = TerrainSystem::getHeight(*entityTransform, *terrain, tempTerrainIndex);
 		tempIsInAir = entityTransform->transform[3].y > (tempHeight+ 0.0001);
-		//if(tempIsInAir)
+
 		tempSurfaceNormal = TerrainSystem::getNormal(*entityTransform, *terrain, tempTerrainIndex) * (float)!tempIsInAir;
 		it.velocity = getVelocity(it.velocity,
 			getAcceleration(tempSurfaceNormal, it.mass), // TEST
@@ -33,11 +33,12 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 			tempCollisionNormal = 
 				(it.lastSurfaceNormal + tempSurfaceNormal) / glm::length(it.lastSurfaceNormal + tempSurfaceNormal);
 			it.velocity = getVelocity(it.velocity, glm::normalize(tempCollisionNormal));
+			//it.velocity = getVelocity(it.velocity, glm::normalize(tempSurfaceNormal + it.velocity));
 		}
 
 		TransformSystem::move(*entityTransform, it.velocity);
-		if (!tempIsInAir)
-			entityTransform->transform[3].y = tempHeight;
+		//if (!tempIsInAir)
+		//	entityTransform->transform[3].y = tempHeight;
 		//else
 		//{
 

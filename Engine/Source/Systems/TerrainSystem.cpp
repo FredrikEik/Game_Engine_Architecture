@@ -129,8 +129,8 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	auto addPositionToAvgHeight =
 		[tempTerrainResolution, min](std::map<int, std::pair<float, int>>& container, const glm::vec3& position)
 	{
-		float positionRow = (position.x - min.x) / terrainResolution;
-		float positionColumn = (position.z - min.z) / terrainResolution;
+		float positionRow = (position.x - min.x + 1) / terrainResolution;
+		float positionColumn = (position.z - min.z + 1) / terrainResolution;
 		long positionInArray = std::lroundf(positionColumn * positionRow);
 		if (container.find(positionInArray) != container.end())
 		{
@@ -142,6 +142,24 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 			container.insert(std::pair<int, std::pair<float, int>>(positionInArray, std::pair<float, int>(position.y, 1)));
 		}
 	};
+
+	auto addPositionToAvgHeightNew =
+		[tempTerrainResolution, min](std::map<int, std::pair<float, int>>& container, const glm::vec3& position)
+	{
+		float positionRow = (position.x - min.x + 1) / terrainResolution;
+		float positionColumn = (position.z - min.z + 1) / terrainResolution;
+		long positionInArray = std::lroundf(positionColumn * positionRow);
+		if (container.find(positionInArray) != container.end())
+		{
+			container.at(positionInArray).first += position.y;
+			container.at(positionInArray).second++;
+		}
+		else
+		{
+			container.insert(std::pair<int, std::pair<float, int>>(positionInArray, std::pair<float, int>(position.y, 1)));
+		}
+	};
+
 
 	// Looping through all positions and gets the average height per vertex
 	for (const auto& it : lasPositions)
@@ -155,7 +173,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	normals.reserve(averageHeightPerSquare.size());
 	indices.reserve(averageHeightPerSquare.size());
 	positions.reserve(averageHeightPerSquare.size());
-
+	std::cout << "Size of terrain: " << columns << "^2\n";
 	// Using the for each loop as a regular nested for loop to ensure there are no gaps
 	uint64 columnsLooped = 0;
 	uint64 rowsLooped = 0;
@@ -172,6 +190,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 		z = columnsLooped;
 		z *= terrainResolution;
 		positions.push_back(glm::vec3(x, it.second.first - center.y, z));
+		//positions.push_back(glm::vec3(x, 0, z));
 		++columnsLooped;
 	}
 

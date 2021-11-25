@@ -203,19 +203,6 @@ void Engine::init()
 	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
 	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
 
-	for (int i{}; i < 50; ++i)
-	{
-		for (int j{}; j < 50; ++j)
-		{
-			uint32 entt = ECS->newEntity();
-			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
-			ECS->loadAsset(entt, DefaultAsset::SPHERE);
-			TransformSystem::setPosition(entt, glm::vec3(4 * i + 50 , 200, 50 + 4* j ), ECS);
-			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
-
-		}
-
-	}
 
 
 	viewport->begin(window, reservedEntities);
@@ -225,6 +212,20 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
+	for (int i{}; i < 10; ++i)
+	{
+		for (int j{}; j < 10; ++j)
+		{
+			uint32 entt = ECS->newEntity();
+			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
+			ECS->loadAsset(entt, DefaultAsset::SPHERE);
+			TransformSystem::setPosition(entt, glm::vec3(4 * i + 50 , 200, 50 + 4* j ), ECS);
+			TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
+			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
+
+		}
+
+	}
 	lastFrame = glfwGetTime();
 }
 
