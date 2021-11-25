@@ -61,8 +61,7 @@ compile_commands.json
 *creator.user*
 
 # Doxygen
-*DoxygenHTML-*
-*DoxygenCompile-*
-*DoxygenCompile\html-*
+*DoxygenHTML/*
+*DoxygenCompile/*
 *.html
 
