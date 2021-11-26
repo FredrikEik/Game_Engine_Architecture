@@ -36,21 +36,21 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
    {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
-   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,4,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
-   {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
+   {1,0,0,1,0,0,0,0,0,0,0,0,4,0,0,1,0,0,1},// 5
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
-   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
-   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
+   {1,0,0,0,0,0,0,1,0,4,0,1,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1},// 12
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
    {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
-   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
@@ -268,11 +268,9 @@ void Level::checkCollision()
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-            if(mLives > 0){
-                mLives--;qDebug() << mLives;
-            }else{
-                qDebug() << "You lose";
-                resetGame();}
+            //qDebug() << "You Win";
+            resetGame();
+
         }
     }
 }
@@ -303,9 +301,25 @@ void Level::moveEnemy(int randNum)
 {
 
 
+//    int EposX{static_cast<int>(mEnemies[0]->mTransform->mPosition.x+1)};
+//    int EposZ{static_cast<int>(mEnemies[0]->mTransform->mPosition.z+1)};
+//    if(wallCheck(EposZ, EposX))
+//    {
+//        mEnemies[0]->mTransform->mMatrix.rotateY(90);
+//    }else
+//        mEnemies[0]->goToPlayer(mPlayer->mTransform->mPosition);
+
+
+
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
         int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
+
+        if(i == 0 || i ==1)
+        {
+            mEnemies[i]->goToPlayer(mPlayer->mTransform->mPosition);
+        }
+
 
         if(mEnemies[i]->mForward.x > 0)
             EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
@@ -319,6 +333,8 @@ void Level::moveEnemy(int randNum)
             else
                 qDebug() << "error in Level::moveEnemy";}
 
+
+
         if(wallCheck(EposZ, EposX))
         {
             if(randNum<5){
@@ -330,15 +346,19 @@ void Level::moveEnemy(int randNum)
         }
         else
             mEnemies[i]->moveEnemy();
+
     }
+
 }
-
-
 
 void Level::resetGame()
 {
-    mPlayer->move(1, 0, 1);
-    for(int i{0}; i<mVisualObjects.size(); i++)
+    gsl::Vector3D playerP = {1,CENTER_Y,20};
+    gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+
+    VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+    vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+    for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
     {
         mVisualObjects[i]->drawMe = true;
     }
@@ -349,7 +369,9 @@ void Level::resetGame()
     {
         for(int j = 0; j<DIM_X; j++){
             if(GameBoard[i][j] == 4){
-                mEnemies[eID]->move(i, CENTER_Y,DIM_Z - j - 1);
+                gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
+                gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
+                mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
                 eID++;}
         }
     }

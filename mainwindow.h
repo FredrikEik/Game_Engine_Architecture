@@ -69,6 +69,8 @@ private slots:
     void on_RoatetXM_clicked();
 
 
+    void on_toolButton_triggered(QAction *arg1);
+
 private:
     void init();
     Ui::MainWindow *ui;

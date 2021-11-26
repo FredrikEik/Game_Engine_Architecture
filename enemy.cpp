@@ -6,9 +6,10 @@ Enemy::Enemy(ShapeFactory* f)
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(5);
-    mCollision = factoryPtr->getColli(5);
-    mTransform->mMatrix.scale(0.25);
-    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
+    mCollision = new CollisionComponent;
+    //mCollision = factoryPtr->getColli(5);
+    mTransform->mMatrix.scale(2);
+    mCollision->setBoundingSphere(0.4, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
     mNameComp->ObjectName = "Enemy";
@@ -46,31 +47,22 @@ void Enemy::rotateForwardV()
     mForward = temp;
 }
 
-void Enemy::CheckRotation()
+
+void Enemy::goToPlayer(gsl::Vector3D pPos)
 {
-    if(mForward.x==1)
-        angle = 270;
-    if(mForward.x == -1)
-        angle = 90;
-    if(mForward.z == -1)
-        angle = 180;
-    if(mForward.z == 1)
-        angle =0;
-
-
-
-}
-
-void Enemy::goToPlayer()
-{
-    gsl::Vector3D pPos = mPlayer->mTransform->mPosition;
-    gsl::Vector3D ePos = mTransform->mPosition;
+    gsl::Vector3D ePos {mTransform->mPosition.x,0,mTransform->mPosition.z};
     gsl::Vector3D dir = pPos - ePos;
+
+    qDebug()<<dir;
+    if(dir.x>dir.z)
+        dir = {dir.x,0,0};
+    else if(dir.x<dir.z)
+        dir = {0,0,dir.z};
+    else
+        qDebug()<<"Somethings wrong with move";
     dir.normalize();
-    move(dir.x*speed,0,dir.z*speed);
-
-
-
-
+    mForward = dir;
 
 }
+
+

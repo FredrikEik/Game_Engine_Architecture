@@ -128,7 +128,7 @@ void Texture::readCubeMap()
     std::stringstream sStream;
     sStream << mTextureFilename;
     std::getline(sStream, justName, '.');   //deleting .bmp
-    justName.pop_back();    //removing 1
+    //justName.pop_back();    //removing 1
     for(int i{0}; i< 6; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located

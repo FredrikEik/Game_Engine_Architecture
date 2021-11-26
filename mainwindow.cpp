@@ -94,10 +94,16 @@ void MainWindow::on_pushButton_toggled(bool checked)
 void MainWindow::on_pushButton_2_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
-    if(checked)
+    if(checked){
         ui->pushButton_2->setText("Stop");
-    else
+    ui->dockWidget_2->hide();
+    ui->dockWidget_4->hide();
+    }
+    else{
         ui->pushButton_2->setText("Play");
+        ui->dockWidget_2->show();
+        ui->dockWidget_4->show();
+    }
 }
 
 
@@ -252,4 +258,17 @@ void MainWindow::on_RoatetXM_clicked()
 }
 
 
+
+
+void MainWindow::on_toolButton_triggered(QAction *arg1)
+{
+
+    int nrOfTrophies;
+
+//    mRenderWindow->mLvl->trophies = nrOfTrophies;
+//    string str= toStdString(nrOfTrophies);
+//    std::string itemToString = nrOfTrophies.toStdString();
+
+//    ui->toolButton->setText(str);
+}
 

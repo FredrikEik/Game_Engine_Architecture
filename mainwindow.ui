@@ -42,6 +42,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QToolButton" name="toolButton">
+      <property name="text">
+       <string>Points: </string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QVBoxLayout" name="OpenGLLayout"/>
     </item>
     <item>

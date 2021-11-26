@@ -311,7 +311,7 @@ void ShapeFactory::makeVertices()
 
     readFile(monkeyString, m);
     m->mDrawType = GL_TRIANGLES;
-    c->radius = 0.2;
+   // c->radius = 0.2;
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
