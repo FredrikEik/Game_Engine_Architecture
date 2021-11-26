@@ -9,6 +9,7 @@
 #include "shapefactory.h"
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
+#include "texture.h"
 
 class Script : public QObject
 {
@@ -37,6 +38,7 @@ public:
     void checkCoints();
     int cointAmount;
 
+    Texture *mTexture;
     std::vector<NameComponent*> mNameComp;
     std::vector<TransformComponent*> mTransformComp;
     std::vector<VisualObject*> mVisualObjects;

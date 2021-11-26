@@ -118,10 +118,11 @@ void Level::DrawBoard()
     //------------------------Plain----------------------//
     temp = mShapeFactory.createShape("Plain");
     temp->init();
-    temp->mMaterial->mShaderProgram = 0;   //plain shader
+    temp->mMaterial->mShaderProgram = 1;   //plain shader
     temp->move(9.5f, -0.5f, 11.0f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
+    temp->mMaterial->mTextureUnit = 1;
     mNameComp.push_back(temp->mNameComp);
 
     mFrustumSystem = new FrustumSystem(mCam);
@@ -129,14 +130,13 @@ void Level::DrawBoard()
     mFrustumSystem->init();
 
     //------------------------Skybox----------------------//
-    mSkyBox = new Skybox();
-    mSkyBox->setTexture();
-    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
+    mSkyBox = new Skybox(/*&mTexture[2]*/);
     mSkyBox->init();
-
+    mSkyBox->mMaterial->mShaderProgram = 3;  //plain shader
+    mSkyBox->mMaterial->mTextureUnit =2;
     //------------------------Light----------------------//
     mLight = new Light;
-    mLight->mMaterial->mShaderProgram = 2;    //Phongshader
+    mLight->mMaterial->mShaderProgram = 3;    //Phongshader
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
     //Skal stå mer her, kommer i neste mld
@@ -251,30 +251,30 @@ void Level::checkCollision()
     }
 
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
-         //kollisjon mot trofeer
-         if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
-         {
-             if(trophies < static_cast<int>(mTrophies.size())){
-                 if(mTrophies[i]->drawMe == true){
-                     trophies++;
-                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
-                 else
-                     continue;
-             }else{
-                 qDebug() << "You Win";
-                 resetGame();}
-         }
-     }
-     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
-         {
-             if(mLives > 0){
-                 mLives--;qDebug() << mLives;
-             }else{
-                 qDebug() << "You lose";
-                 resetGame();}
-         }
-     }
+        //kollisjon mot trofeer
+        if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
+        {
+            if(trophies < static_cast<int>(mTrophies.size())){
+                if(mTrophies[i]->drawMe == true){
+                    trophies++;
+                    mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
+                else
+                    continue;
+            }else{
+                qDebug() << "You Win";
+                resetGame();}
+        }
+    }
+    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+        if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
+        {
+            if(mLives > 0){
+                mLives--;qDebug() << mLives;
+            }else{
+                qDebug() << "You lose";
+                resetGame();}
+        }
+    }
 }
 
 void Level::SoundHandler()
@@ -302,23 +302,33 @@ bool Level::wallCheck(int z, int x)
 void Level::moveEnemy(int randNum)
 {
 
-         //qDebug() << "RandomeNumberIs: " << a;
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX = mEnemies[i]->mTransform->mPosition.x+1 + mEnemies[i]->mForward.x;
-        int EposZ = mEnemies[i]->mTransform->mPosition.z+1 + mEnemies[i]->mForward.z;
 
-        int pPosX = mPlayer->mTransform->mPosition.x;
-        int pPosZ = mPlayer->mTransform->mPosition.z;
+    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+        int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
+        int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
+
+        if(mEnemies[i]->mForward.x > 0)
+            EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
+        else if(mEnemies[i]->mForward.x <0)
+            EposX = std::floor(mEnemies[i]->mTransform->mPosition.x);
+        else{
+            if(mEnemies[i]->mForward.z >0)
+                EposZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
+            else if(mEnemies[i]->mForward.z <0)
+                EposZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
+            else
+                qDebug() << "error in Level::moveEnemy";}
 
         if(wallCheck(EposZ, EposX))
         {
-//            if(mEnemies[1]->mTransform->mPosition.x<mPlayer->mTransform->mPosition.x){
-//                mEnemies[1]->mForward = {1,0,0};
-//            }
-
-            mEnemies[i]->mTransform->mMatrix.rotateY(90);
-            mEnemies[i]->rotateForwardV();
-        }else
+            if(randNum<5){
+                mEnemies[i]->mTransform->mMatrix.rotateY(90);
+                mEnemies[i]->rotateForwardV();}
+            else{
+                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
+                mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
+        }
+        else
             mEnemies[i]->moveEnemy();
     }
 }

@@ -7,7 +7,7 @@ Enemy::Enemy(ShapeFactory* f)
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(5);
     mCollision = factoryPtr->getColli(5);
-    mTransform->mMatrix.scale(2);
+    mTransform->mMatrix.scale(0.25);
     mCollision->setBoundingSphere(0.25, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
@@ -25,12 +25,7 @@ Enemy::~Enemy()
 }
 void Enemy::moveEnemy()
 {
-move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
-//    if(angle == 0)
-//    {
-
-//    }
-
+    move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 
 }
 
@@ -61,6 +56,20 @@ void Enemy::CheckRotation()
         angle = 180;
     if(mForward.z == 1)
         angle =0;
+
+
+
+}
+
+void Enemy::goToPlayer()
+{
+    gsl::Vector3D pPos = mPlayer->mTransform->mPosition;
+    gsl::Vector3D ePos = mTransform->mPosition;
+    gsl::Vector3D dir = pPos - ePos;
+    dir.normalize();
+    move(dir.x*speed,0,dir.z*speed);
+
+
 
 
 

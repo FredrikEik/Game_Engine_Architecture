@@ -37,7 +37,7 @@ Texture::Texture()
     mTextureFilename = "Basic Texture";
 }
 
-Texture::Texture(const std::string &filename, bool cubeMap): QOpenGLFunctions_4_1_Core()
+Texture::Texture(const std::string &filename, bool cubeMap)//: QOpenGLFunctions_4_1_Core()
 {
 
     initializeOpenGLFunctions();
@@ -83,6 +83,8 @@ float Texture::getHeightFromIndex(int i)
     return height;
 }
 
+
+
 //Read BMP into memory
 void Texture::readBitmap(const std::string &filename)
 {
@@ -127,10 +129,10 @@ void Texture::readCubeMap()
     sStream << mTextureFilename;
     std::getline(sStream, justName, '.');   //deleting .bmp
     justName.pop_back();    //removing 1
-    for(int i{1}; i< 7; i++)
+    for(int i{0}; i< 6; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../GEA2021/Assets/skybox/" +justName + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp ="skybox/"+ justName+ std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         mCubemap[i-1] = mBitmap;
     }

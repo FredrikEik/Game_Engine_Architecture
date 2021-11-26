@@ -32,8 +32,9 @@ private:
     bool mAlphaUsed{false};
     void readBitmap(const std::string &filename);
     void readCubeMap();
-    void setTexture();
     void setCubemapTexture();
+    void setTexture();
+
 
     //this is put inside this class to avoid spamming the main namespace
     //with stuff that only is used inside this class
