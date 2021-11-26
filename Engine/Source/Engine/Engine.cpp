@@ -212,15 +212,15 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
-	for (int i{}; i < 10; ++i)
+	for (int i{}; i < 5; ++i)
 	{
-		for (int j{}; j < 10; ++j)
+		for (int j{}; j < 5; ++j)
 		{
 			uint32 entt = ECS->newEntity();
 			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
 			ECS->loadAsset(entt, DefaultAsset::SPHERE);
-			TransformSystem::setPosition(entt, glm::vec3(4 * i + 50 , 200, 50 + 4* j ), ECS);
-			TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
+			TransformSystem::setPosition(entt, glm::vec3(4 * i + 52 , 200, 52 + 4* j ), ECS);
+			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
 			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
 
 		}
@@ -244,17 +244,25 @@ void Engine::loop()
 		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
 
 		//std::cout << "fps: " << 1.f / deltaTime << '\n';
 
 		CollisionBroadphaseDatastructure->update();
 		if (!bIsPlaying)
+		{
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
 			vissim_moveCube();
+		}
 		else
+		{
+		_sleep((0.016f - (currentFrame - lastFrame)));
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
 			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
-			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
+			PhysicsSystem::update(terrainEntity, ECS, deltaTime*0.1);
+		}
 
 		//// RENDER
 		// Selection Render

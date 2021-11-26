@@ -155,11 +155,12 @@ void Viewport::render()
 		}
 		if (ImGui::Button("Enable Wireframe"))
 		{
-			static bool WireFrame = !WireFrame;
+			static bool WireFrame = true;
 			if(WireFrame)
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			else
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			WireFrame = !WireFrame;
 		}
 
 		

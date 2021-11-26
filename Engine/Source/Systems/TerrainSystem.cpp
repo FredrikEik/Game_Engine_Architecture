@@ -2,6 +2,7 @@
 #include "../ECSManager.h"
 #include "MeshSystem.h"
 #include <fstream>
+#include <chrono>
 void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 {
 	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
@@ -92,7 +93,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	file >> points; // The first line does not contain position info
 	lasPositions.reserve(points);
 
-
+	auto start = std::chrono::system_clock::now();
 	while (file)
 	{
 		file >> x;
@@ -118,6 +119,8 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 
 		lasPositions.push_back(glm::vec3(x, y, z));
 	}
+
+
 	/* @brief A map that will contain the height values, sorted based on the position they will have
 	 @param int position in array
 	 @param float total height 
@@ -166,7 +169,11 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	{
 		addPositionToAvgHeight(averageHeightPerSquare, it);
 	}
-
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	std::cout << "finished computation at " << std::ctime(&end_time)
+		<< "elapsed time: " << elapsed_seconds.count() << "s\n";
 	glm::vec3 center = (min + max) / 2.f;
 	
 	uint64 columns = std::sqrt(averageHeightPerSquare.size());
@@ -418,6 +425,15 @@ float TerrainSystem::getHeight(const TransformComponent& entityTransform, const 
 	}
 
 	return 0.0f;
+}
+
+float TerrainSystem::getHeightFast(const TransformComponent& entityTransform, const MeshComponent& terrainMesh, const int32& index)
+{
+	glm::vec3 p, q, r, baryCoord, position{entityTransform.transform[3]};
+
+	findTriangle(index, position, terrainMesh, baryCoord, p, q, r);
+
+	return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
 }
 
 bool TerrainSystem::findTriangle(uint64 index, const glm::vec3& position, const MeshComponent& terrainMesh,

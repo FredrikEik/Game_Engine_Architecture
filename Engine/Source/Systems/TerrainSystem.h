@@ -12,6 +12,9 @@ public:
 	static float getHeight(const struct TransformComponent& entityTransform, const struct MeshComponent& terrainMesh,
 		 int32 &OUTIndex);
 
+	static float getHeightFast(const struct TransformComponent& entityTransform, const struct MeshComponent& terrainMesh,
+		const int32& index);
+
 	static glm::vec3 getNormal(const struct TransformComponent& entityTransform,
 		const struct MeshComponent& terrainMesh, const int32& Index);
 

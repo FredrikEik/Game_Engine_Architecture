@@ -205,7 +205,7 @@ struct PhysicsComponent final : public Component
 	glm::vec3 acceleration{};
 	glm::vec3 velocity{};
 	glm::vec3 lastSurfaceNormal{};
-	uint32 lastTriangleIndex{};
+	int32 lastTriangleIndex{};
 	float mass{1.f};
 	//float baryCentricErrorMargin{0.985f};
 	bool bIsInAir{false};
