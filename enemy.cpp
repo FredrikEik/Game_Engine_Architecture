@@ -6,9 +6,10 @@ Enemy::Enemy(ShapeFactory* f)
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(5);
-    mCollision = factoryPtr->getColli(5);
+    mCollision = new CollisionComponent;
+    //mCollision = factoryPtr->getColli(5);
     mTransform->mMatrix.scale(0.2);
-    mCollision->setBoundingSphere(0.25, mTransform->mPosition);
+    mCollision->setBoundingSphere(factoryPtr->getColli(5)->radius, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
     mNameComp->mName = "Enemy";
@@ -23,6 +24,7 @@ void Enemy::moveEnemy()
 
 void Enemy::rotateForwardV()
 {
+    //mTransform->mMatrix.rotateY(90);
     gsl::Vector3D temp{0,0,0};
     if(mForward.x == -1)
         temp = gsl::Vector3D(0,0,-1);

@@ -30,8 +30,6 @@ private slots:
 
     void on_pushButton_2_toggled(bool checked);
 
-    void on_actionAdd_Triangle_triggered();
-
     void on_actionAdd_Circle_triggered();
 
     void on_actionAdd_Square_triggered();
@@ -57,12 +55,6 @@ private slots:
     void on_ScalePlus_clicked();
 
     void on_ScaleMinus_clicked();
-
-    void on_actionAdd_Big_Wall_triggered();
-
-    void on_actionAdd_Small_Wall_triggered();
-
-
 private:
     void init();
     Ui::MainWindow *ui;

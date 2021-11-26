@@ -137,16 +137,15 @@ void Level::DrawBoard()
                 "../GEA2021/Assets/laser.wav", true, 0.7f);
 }
 
-std::string Level::createShapes(string shapeID)
+void Level::createShapes(string shapeID)
 {
     VisualObject* temp = mShapeFactory.createShape(shapeID);
+    temp->move(1,4,1);
     temp->init();
-    temp->move(1,1,0.5);
     temp->mMaterial->mShaderProgram = 0;    //plain shader
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
-    return temp->mNameComp->mName;
 }
 
 void Level::readJS()
@@ -243,13 +242,11 @@ void Level::checkCollision()
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-            if(mLives > 0){
-                mLives--;qDebug() << mLives;
-            }else{
-                qDebug() << "You lose";
-                resetGame();}
+            qDebug() << "You lose";
+            resetGame();
         }
     }
+
 }
 
 bool Level::wallCheck(int x, int z)
@@ -262,8 +259,12 @@ bool Level::wallCheck(int x, int z)
 
 void Level::resetGame()
 {
-    mPlayer->move(1, 0, 1);
-    for(int i{0}; i<mVisualObjects.size(); i++)
+    gsl::Vector3D playerP = {1,CENTER_Y,20};
+    gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+
+    VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+    vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+    for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
     {
         mVisualObjects[i]->drawMe = true;
     }
@@ -274,39 +275,41 @@ void Level::resetGame()
     {
         for(int j = 0; j<DIM_X; j++){
             if(GameBoard[i][j] == 4){
-                mEnemies[eID]->move(i, CENTER_Y,DIM_Z - j - 1);
+                gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
+                gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
+                mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
                 eID++;}
         }
     }
 }
 
-void Level::moveEnemy()
+void Level::moveEnemy(double randNr)
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX{0};
-        int EposZ{0};
-        if(mEnemies[i]->mForward.x > 0)
-            EposX = mEnemies[i]->mTransform->mPosition.x + mEnemies[i]->mForward.x;
-        else if(mEnemies[i]->mForward.x <0)
-            EposX = mEnemies[i]->mTransform->mPosition.x +1 + mEnemies[i]->mForward.x;
-        else if(mEnemies[i]->mForward.z >0)
-        EposZ = mEnemies[i]->mTransform->mPosition.z  + mEnemies[i]->mForward.z;
-        else if(mEnemies[i]->mForward.z <0)
-        EposZ = mEnemies[i]->mTransform->mPosition.z +1 + mEnemies[i]->mForward.z;
+        int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
+        int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
 
-        //double a = rand()%15;
+        if(mEnemies[i]->mForward.x > 0)
+            EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
+        else if(mEnemies[i]->mForward.x <0)
+            EposX = std::floor(mEnemies[i]->mTransform->mPosition.x);
+        else{
+            if(mEnemies[i]->mForward.z >0)
+                EposZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
+            else if(mEnemies[i]->mForward.z <0)
+                EposZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
+            else
+                qDebug() << "error in Level::moveEnemy";}
+
+        //double a = rand()%10;
 
         // mEnemies[i]->moveEnemy();
         if(wallCheck(EposX, EposZ))
         {
-            //            int xdiff = mEnemies[i]->mTransform->mPosition.x - std::round(mEnemies[i]->mTransform->mPosition.x);
-            //            int zdiff = mEnemies[i]->mTransform->mPosition.z - std::round(mEnemies[i]->mTransform->mPosition.z);
-            //            mEnemies[i]->move(-xdiff, 0, -zdiff);
-
-            mEnemies[i]->mTransform->mMatrix.rotateY(90);
-            mEnemies[i]->rotateForwardV();
-
-
+            if(randNr<5){
+                mEnemies[i]->rotateForwardV();}
+            else{
+                mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
         }
         else
             mEnemies[i]->moveEnemy();

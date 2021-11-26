@@ -217,8 +217,9 @@ void RenderWindow::render()
     mInputSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
+    double randNr = rand()%10;
     if(playM)
-        mLvl->moveEnemy();
+        mLvl->moveEnemy(randNr);
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -367,6 +368,7 @@ void RenderWindow::playMode(bool p)
     {
         mCurrentCamera = &mEditorCamera;
         mLvl->mLaserSound->stop();
+        mLvl->resetGame();
         playM = false;
     }
 }
@@ -596,10 +598,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
             MousePickindex = i;
             qDebug() <<"Mouse Collision detected";
         }
-
     }
-
-
 }
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)

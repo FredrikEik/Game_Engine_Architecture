@@ -18,6 +18,7 @@ public:
     bool onFwallY{false};
     bool onBwallY{false};
 private:
+    gsl::Vector3D mForward{0,0,-1};
     float mx, my, mz; // posisjon
     CollisionSystem* mColSystem;
     ShapeFactory* factoryPtr;

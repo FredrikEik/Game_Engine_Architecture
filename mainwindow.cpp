@@ -90,58 +90,36 @@ void MainWindow::on_pushButton_toggled(bool checked)
 void MainWindow::on_pushButton_2_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
-    if(checked)
+    if(checked){
         ui->pushButton_2->setText("Stop");
-    else
+        ui->dockWidget->hide();
+        ui->dockWidget_4->hide();
+    }else{
         ui->pushButton_2->setText("Play");
-}
-
-void MainWindow::on_actionAdd_Triangle_triggered()
-{
-    std::string a = mRenderWindow->mLvl->createShapes("Enemy.obj");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+        ui->dockWidget->show();
+        ui->dockWidget_4->show();
+    }
 }
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-    std::string a = mRenderWindow->mLvl->createShapes("Circle");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+    mRenderWindow->mLvl->createShapes("Circle");
+    run();
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
-    std::string a = mRenderWindow->mLvl->createShapes("Square");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+    mRenderWindow->mLvl->createShapes("Square");
+    run();
+    //    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
+    //    QString temp;
+    //    item->setText(0, temp.fromStdString(a));
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
-    std::string a = mRenderWindow->mLvl->createShapes("Monkey.obj");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
-}
-
-void MainWindow::on_actionAdd_Big_Wall_triggered()
-{
-    std::string a = mRenderWindow->mLvl->createShapes("BigWall");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
-}
-
-void MainWindow::on_actionAdd_Small_Wall_triggered()
-{
-    std::string a = mRenderWindow->mLvl->createShapes("SmallWall");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+    mRenderWindow->mLvl->createShapes("Monkey.obj");
+    run();
 }
 
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
@@ -171,12 +149,15 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 
 void MainWindow::run()
 {
+    if(Widgetitem == nullptr)
+        Widgetitem = new QTreeWidgetItem(ui->treeWidget);
+    else
+        Widgetitem->treeWidget()->clear();
     on_treeWidget_viewportEntered();
 }
 
 void MainWindow::on_treeWidget_viewportEntered()
 {
-    Widgetitem = new QTreeWidgetItem(ui->treeWidget);
     ui->treeWidget->addTopLevelItem(Widgetitem);
     Widgetitem->setText(0, "Objects");
     Widgetitem->setExpanded(true);
@@ -234,9 +215,4 @@ void MainWindow::on_ScalePlus_clicked()
 void MainWindow::on_ScaleMinus_clicked()
 {
     mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.scale(0.5f);
-}
-
-void MainWindow::createStatusBar()
-{
-    statusBar()->showMessage(tr("You died"), 2000);
 }

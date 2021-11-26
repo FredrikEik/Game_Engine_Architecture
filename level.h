@@ -22,16 +22,19 @@ public slots:
     //  en public slot kan kalles fra javascript, uten Q_INVOKABLE
     void scriptFunction(float x, float y, float z);
 };
+
+
 class Level : public QObject
 {
 public:
     Level(Camera* cam);
     ~Level();
     void initObjects();
-    std::string createShapes(string shapeID);
+    void createShapes(string shapeID);
     void readJS();
     void checkCollision();
-    void moveEnemy();
+    void moveEnemy(double randNr);
+    void resetGame();
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -49,8 +52,6 @@ public:
 private:
     static const int DIM_Z = 22;
     static const int DIM_X = 19;
-//    static const int CENTER_X = DIM_X / 2;
-//    static const int CENTER_Z = (DIM_Z + 1) / 2;
     static const int CENTER_Y = 0;
     static int GameBoard[DIM_Z][DIM_X];
     void DrawBoard();
@@ -58,7 +59,6 @@ private:
     Script *script{nullptr};
     Camera* mCam;
     CollisionSystem* mColSystem;
-    void resetGame();
     int mLives{2};
     int trophies{0};
 };
