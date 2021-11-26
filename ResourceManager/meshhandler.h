@@ -48,7 +48,7 @@ public:
     ///Makes a line for debug drawing.
     MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
-    ////Makes the points for debug drawing. Does not work for now.
+    ////Makes the points for debug drawing with some default values other than the point.
     MeshData makePoint(gsl::Vector3D &pointIn, float pointSize = 1.0f, gsl::Vector3D colorIn = {0.0f, 1.0f, 0.0f});
 
     std::map<std::string, unsigned int> mMeshMap;

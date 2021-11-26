@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "physicshandler.h"
 #include "gameplaymechanics.h"
+#include <thread>
 
 //for JavaScript functionality
 #include <QtQml>
@@ -98,8 +99,16 @@ void CoreEngine::setUpScene()
     mGameObjectManager->setUpAllShaders();
     mGameObjectManager->setUpAllMaterials();
 
-//    MeshHandler HeightMap; //Disabling this to work on GEA, much faster compilation
-//    HeightMap.readLasFile();
+    //HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
+
+    // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
+    // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
+    MeshHandler HeightMap;
+//    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
+////    t1(HeightMap.readLasFile());
+//    t1.detach();
+
+    HeightMap.readLasFile();
 
     //********************** Making the object to be drawn *********************
 
@@ -230,36 +239,36 @@ void CoreEngine::gameLoop()
     PhysicsHandler ph(mRenderSystem);
     ph.movePhysicsObject(mGameObjects);
 
-    //Initializing values for the gameplay
-    GamePlayMechanics tm(mRenderSystem);
-    int tetrominoNr;
-//    std::vector<GameObject*> gameBlock;
+//    //Initializing values for the gameplay
+//    GamePlayMechanics tm(mRenderSystem);
+//    int tetrominoNr;
+////    std::vector<GameObject*> gameBlock;
 
-    while(mGameObjects.size() < 40) //this line never s
-    {
-//        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
-        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
+//    while(mGameObjects.size() < 40) //this line never s
+//    {
+////        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
+//        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
 
-        //This line compiles, but mGameObjects does not expand with the push backs from inside the tetrominomaker function
-        mGameObjects = tm.TetrominoMaker(tetrominoNr); //Returns four tetrominos as four gameobjects to be used in the scene.
+//        //This line compiles, but mGameObjects does not expand with the push backs from inside the tetrominomaker function
+//        mGameObjects = tm.TetrominoMaker(tetrominoNr); //Returns four tetrominos as four gameobjects to be used in the scene.
 
-        //With these lines i get convert-type errors. c2440 From '_Ty' to '_objty'
-//        mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
-//        mRenderSystem->mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
+//        //With these lines i get convert-type errors. c2440 From '_Ty' to '_objty'
+////        mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
+////        mRenderSystem->mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
 
-        //If there is a tetromino in scene, let player rotate and drop tetromino
-        for (int x = 0; x > mGameObjects.size(); x++)
-        {
-            for (int i = 0; i > 4; i++) //Need to loop through the four gameBlock vectors containing one square each
-            {
-                if(mGameObjects[x]->mName == "Tetromino")
-                {
-                    qDebug() << "Gameobject and subsecquent tetrominoes found";
-                    qDebug() << QString::fromStdString(mGameObjects[i]->mName);
-                }
-            }
-        }
-    }
+//        //If there is a tetromino in scene, let player rotate and drop tetromino
+//        for (int x = 0; x > mGameObjects.size(); x++)
+//        {
+//            for (int i = 0; i > 4; i++) //Need to loop through the four gameBlock vectors containing one square each
+//            {
+//                if(mGameObjects[x]->mName == "Tetromino")
+//                {
+//                    qDebug() << "Gameobject and subsecquent tetrominoes found";
+//                    qDebug() << QString::fromStdString(mGameObjects[i]->mName);
+//                }
+//            }
+//        }
+//    }
     //If there is not a tetromino in scene, draw another one.
 
     mRenderSystem->render();
