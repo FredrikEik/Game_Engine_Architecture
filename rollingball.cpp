@@ -3,7 +3,8 @@
 
 RollingBall::RollingBall(int n) : OctahedronBall(n)
 {
-    gKraft = gAkselerasjon*masseIKG;        //regner ut gkraften til ballen
+    //gKraft = gAkselerasjon*masseIKG;        //regner ut gkraften til ballen
+    gKraft =  gsl::Vector3D(0,-9.80565f*masseIKG,0);
 }
 
 
@@ -53,8 +54,7 @@ void RollingBall::move(float x, float y, float z)
 void RollingBall::move(float dt)
 {
 
-    std::vector<Vertex>& vertices = dynamic_cast<class LasSurface*>(LasSurface)->getMeshComponent()
-            ->mVertices;             //skaffer vertices
+    std::vector<Vertex>& vertices = dynamic_cast<class LasSurface*>(LasSurface)->getMeshComponent()->mVertices;             //skaffer vertices
     for (int i=0; i < vertices.size()-2; i+=3){
         v0 = gsl::Vector3D(vertices[i].getXYZ());
         v1 = gsl::Vector3D(vertices[i+1].getXYZ());
@@ -71,6 +71,9 @@ void RollingBall::move(float dt)
             normalvektor = (v1-v0)^(v2-v0);                                             //regner ut normalvektoren til planet
             normalvektor.normalize();                                                   //normaliserer normalvektoren
             akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,normalvektor.y,0); //regner ut akselerasjon
+//            akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,
+//                                         normalvektor.y*normalvektor.y*9.80665f,
+//                                         normalvektor.z*normalvektor.y*9.80665f)+gKraft;
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
 
             //if(i==3){
@@ -110,6 +113,7 @@ void RollingBall::move(float dt)
         }
         else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
                  barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
+            //getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, gKraft.getY(), nyPosisjon.z);
            qDebug() << "The ball is outside";
         }
     }

@@ -28,7 +28,7 @@ private:
     gsl::Vector3D nyPosisjon;
     gsl::Vector3D hastighet{0.0f,0.0f,0.0f};
     gsl::Vector3D akselerasjon{0.0f,0.0f,0.0f};
-    gsl::Vector3D gAkselerasjon{0.0f,0.0f,9.80565f};
+    gsl::Vector3D gAkselerasjon{0.0f,9.80565f,0.0f};
     gsl::Vector3D gKraft;
     float masseIKG{1.f};              //massen til ballen
 

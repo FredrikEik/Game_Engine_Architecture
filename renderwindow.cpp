@@ -155,7 +155,8 @@ void RenderWindow::init()
     */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(-5.f, 5.f, -5.f));
+    mCurrentCamera->yaw(130);
 
     //Compile shaders:
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -239,8 +240,8 @@ void RenderWindow::initObjects()
 
 
         rollingBall = factory->createObject("RollingBall");
-        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,1.2f,0.5f);
-        dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
+        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,0.6f,0.5f);
+     //   dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
         dynamic_cast<RollingBall*>(rollingBall)->setSurface(surface);
 
             mPlayer = factory->createObject("Player");

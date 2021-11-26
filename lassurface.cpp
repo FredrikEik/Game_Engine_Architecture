@@ -66,9 +66,9 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step = 20;
-    int squaresDirection = (step-1);
-    int Amountsquares = squaresDirection*squaresDirection;
+    int step = 7;
+    float squaresDirection = (step-1);
+    float Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
     float zOffset = (zmax-zmin)/step;
     double squareMinZ =zmin;
@@ -94,6 +94,8 @@ void LasSurface::readLasFile(std::string filnavn)
                     numberofPointsInside++;
 
                     tempY = tempY+ lasVertices[k].getXYZ().y;
+
+
                 }
             }
             tempX = squareMaxX - (xOffset/2);                               //finner midtpunktet i squaren
@@ -119,22 +121,22 @@ void LasSurface::readLasFile(std::string filnavn)
 
     qDebug() <<"Number of Vertices" << VerticesCounter;
     qDebug() << "Amount of squares" << Amountsquares;
-    int k=1;
-    int j=0;
-        for(int i =0; i< Amountsquares; i++){                       // lager de nye punktene om til trekanter/squares.
+    float j=1;
+        for(int i =0; i< Amountsquares-step-1; i++){                       // lager de nye punktene om til trekanter/squares.
 
-            if(i == squaresDirection*k){
+            if(i == j*step){
                 j++;
-                k++;                                                // sjekker om alle squarene på en rekke er fylt ut.
+                i++;
+                                                               // sjekker om alle squarene på en rekke er fylt ut.
             }
 
-        getMeshComponent()->mVertices.push_back(tempVertices[(i)+(j)]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+j]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i)]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)]);
 
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+(step+1)+j)]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+j]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+j]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+(step+1))]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)]);
+        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)]);
     }
 
     //              sortering algoritme, ikke i bruk
