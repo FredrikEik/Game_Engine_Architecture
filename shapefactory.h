@@ -67,28 +67,14 @@ public:
     ~Plain(){};
 };
 
-class BigWall : public VisualObject
+class ParticleMesh : public VisualObject
 {
 public:
-    BigWall();
-    ~BigWall(){};
+    ParticleMesh();
+    ~ParticleMesh(){};
 };
 
-class SmallWall : public VisualObject
-{
-public:
-    SmallWall();
-    ~SmallWall(){};
-};
 
-//class Enemy : public VisualObject
-//{
-//public:
-//    Enemy();
-//    ~Enemy();
-//private:
-
-//};
 
 class ObjMesh : public VisualObject
 {

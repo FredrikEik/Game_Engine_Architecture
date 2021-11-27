@@ -1,31 +1,52 @@
-//#include "particles.h"
-//#include <QElapsedTimer>
+#include "particles.h"
+#include <QElapsedTimer>
 
-//Particles::Particles()
-//{
+Particles::Particles(ShapeFactory* f)
+{
 
-//}
+    factoryPtr = f;
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMesh = factoryPtr->getMesh(3);
+    mCollision = new CollisionComponent;
+    mCollision = factoryPtr->getColli(3);
+   // mTransform->mMatrix.scale(2);
+    //mCollision->setBoundingSphere(0.01, mTransform->mPosition);
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+    mNameComp->ObjectName = "Particles";
+    mNameComp->ObjectID = factoryPtr->getCount();
+    factoryPtr->addCount();
 
-//gsl::Vector3D Particles::getPosition()
-//{
-//    return Position;
-//}
+//    mPlayer->mBackward.x = direction.x;
+//    mPlayer->mBackward.z = direction.z;
+//    direction.x = mVelocity.x;
+//    direction.z = mVelocity.z;
 
-//float Particles::getRotation()
-//{
-//    return rotation;
-//}
+}
 
-//float Particles::getScale()
-//{
-//    return scale;
-//}
-
-//bool Particles::update()
-//{
-//    mVelocity.y += mPlayer->Gravity * gravityEffect;
-//    gsl::Vector3D changePos = gsl::Vector3D(mVelocity);
-//    changePos*(nsecElapsed);
+Particles::~Particles()
+{
 
 
-//}
+}
+
+void Particles::update(float dt)
+{
+    mPosition += mVelocity * dt;
+}
+
+void Particles::setPosition(gsl::Vector3D position)
+{
+    mPosition = position;
+}
+
+gsl::Vector3D Particles::getPosition()
+{
+    return mPosition;
+}
+
+void Particles::getRandParticle()
+{
+
+}

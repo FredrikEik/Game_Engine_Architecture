@@ -10,19 +10,15 @@ class Player : public VisualObject
 public:
     Player(ShapeFactory* f);
     ~Player();
-    virtual void move(float dx, float dy, float dz) override;
-    void CheckPlayerWall(CollisionComponent* bCollision);
+    void movePlayer();
+    void setForward(float dx, float dz);
+    void centerPlayer();
+    void CheckPlayerWall(Square* w);
     InputComponent* mInputComp;
-    bool onRwallX{false};
-    bool onLwallX{false};
-    bool onFwallY{false};
-    bool onBwallY{false};
+    gsl::Vector3D mForward{0,0,-1};
 
-    void noWall(){onRwallX = false;
-                  onLwallX = false;
-                  onFwallY = false;
-                  onBwallY = false;};
-    float Gravity = -50;
+    gsl::Vector3D mBackward{0.f, 0.f, 1.f};
+     void rotateBackwardV();
 private:
     float mx, my, mz; // posisjon
     CollisionSystem* mColSystem;

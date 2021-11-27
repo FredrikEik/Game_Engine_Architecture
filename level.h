@@ -10,6 +10,7 @@
 #include <chrono>   //for sleep_for
 #include <thread>   //for sleep_for
 #include "texture.h"
+#include "particles.h"
 
 class Script : public QObject
 {
@@ -45,20 +46,25 @@ public:
     std::vector<Square*> mWall;
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
+//    std::vector<ParticleMesh*> mParticlePool;
+
     ShapeFactory mShapeFactory;
-    FrustumSystem* mFrustumSystem;
-    SoundSource* mSound{};
-    Enemy* mEnemy;
-    Player* mPlayer;
+    FrustumSystem *mFrustumSystem;
+    SoundSource *mSound{};
+    Enemy *mEnemy;
+    Player *mPlayer;
     Skybox *mSkyBox;
     XYZ *xyz;
-    Light * mLight{nullptr};
+    Light *mLight{nullptr};
+    Particles *mParticle;
     int trophies{0};
     bool wallCheck(int z, int x);
     void moveEnemy(int randNum);
+    void movePlayer();
     void resetGame();
     void GameLoop();
     bool hit =false;
+    //void spawnParticle();
 
 private:
     static const int DIM_X = 19;

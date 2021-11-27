@@ -5,7 +5,7 @@ Enemy::Enemy(ShapeFactory* f)
     factoryPtr = f;
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
-    mMesh = factoryPtr->getMesh(5);
+    mMesh = factoryPtr->getMesh(6);
     mCollision = new CollisionComponent;
     //mCollision = factoryPtr->getColli(5);
     mTransform->mMatrix.scale(2);

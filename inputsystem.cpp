@@ -28,26 +28,19 @@ void InputSystem::update(Player *mPlayer,Camera *mCamera, Input mInput)
        else if(mInput.RMB == false)
        {
            i = mPlayer->mInputComp;
+           //        mColSystem->CheckCollision(mPlayer->mCollision, mFactory->myShapes[1]->mCollision);
            if(mInput.W == true)
-           {
-               //mLvl->SoundHandler();
-               mPlayer->move(0,0,-i->mPlayerSpeed);
-           }
+               //if(mColSystem->playerOnBwallY == false)
+                   mPlayer->setForward(0, -1);
            if(mInput.S == true)
-           {
-               //mLvl->SoundHandler();
-               mPlayer->move(0,0, i->mPlayerSpeed);
-           }
+               //if(mColSystem->playerOnFwallY == false)
+                   mPlayer->setForward(0, 1);
            if(mInput.D == true)
-           {
-               //mLvl->SoundHandler();
-               mPlayer->move(i->mPlayerSpeed,0,0);
-           }
+               //if(mColSystem->playerOnRwallX == false)
+                   mPlayer->setForward(1, 0);
            if(mInput.A == true)
-           {
-               //mLvl->SoundHandler();
-               mPlayer->move(-i->mPlayerSpeed,0,0);
-           }
+               //if(mColSystem->playerOnLwallX == false)
+                   mPlayer->setForward(-1, 0);
        }
 }
 

@@ -16,6 +16,33 @@ Square::Square()
     mNameComp = new NameComponent();
 }
 
+Plain::Plain()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mMaterial = new MaterialComponent();
+    mNameComp = new NameComponent();
+}
+
+
+
+ObjMesh::ObjMesh()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+}
+
+ParticleMesh::ParticleMesh()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+    mNameComp = new NameComponent();
+    mMaterial = new MaterialComponent();
+}
+
+
 void Square::CheckPlayerCol(VisualObject* p)
 {
     auto x = fmax(mCollision->BoundingBoxMin.getX(), fmin(p->mCollision->center.getX(), mCollision->BoundingBoxMax.getX()));
@@ -50,39 +77,7 @@ void Square::CheckPlayerCol(VisualObject* p)
     }
 }
 
-Plain::Plain()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
 
-BigWall::BigWall()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
-
-SmallWall::SmallWall()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mMaterial = new MaterialComponent();
-    mNameComp = new NameComponent();
-}
-
-
-
-ObjMesh::ObjMesh()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mNameComp = new NameComponent();
-    mMaterial = new MaterialComponent();
-}
 
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
@@ -139,6 +134,24 @@ VisualObject* ShapeFactory::createShape(string shapeName)
          if(doOnce[2] == false){
              temp->mNameComp->ObjectName = shapeName;
              doOnce[2] = true;}
+         else
+             temp->mNameComp->ObjectName = shapeName + a;
+
+         temp->mNameComp->ObjectID = mCounter;
+         mCounter++;
+
+         return temp;
+     }
+     else if(shapeName == "Particle")
+     {
+         temp = new ParticleMesh;
+         temp->mMesh = myMeshes[3];
+         temp->mCollision = myCollis[3];
+         temp->mCollision->setBoundingSphere(myCollis[3]->radius, temp->mTransform->mPosition);
+
+         if(doOnce[3] == false){
+             temp->mNameComp->ObjectName = shapeName;
+             doOnce[3] = true;}
          else
              temp->mNameComp->ObjectName = shapeName + a;
 
@@ -305,6 +318,26 @@ void ShapeFactory::makeVertices()
 
     myMeshes.push_back(m);
     myCollis.push_back(c);
+
+    m = new MeshComponent;
+    c = new CollisionComponent;
+    c->radius = 0.01;
+    m->mDrawType = GL_TRIANGLES;
+
+    x = 0.1;
+    y = 0.1;
+    z = 0.1;
+    m->mVertices.push_back(Vertex{-x,-y,-z,  0,1,1});
+    m->mVertices.push_back(Vertex{ x,-y,-z,  0,1,1});       // bottom surface
+    m->mVertices.push_back(Vertex{-x, y,-z,  0,1,1});
+
+    m->mVertices.push_back(Vertex{ x,-y,-z,  0,1,1});
+    m->mVertices.push_back(Vertex{ x, y,-z,  0,1,1});
+    m->mVertices.push_back(Vertex{-x, y,-z,  0,1,1});
+
+    myMeshes.push_back(m);
+    myCollis.push_back(c);
+
 
     m = new MeshComponent;
     c = new CollisionComponent;
@@ -506,3 +539,4 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
         myMeshes[0]->mVertices.push_back(v);
     }
 }
+

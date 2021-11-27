@@ -28,6 +28,7 @@ Level::~Level()
 // 0 - coins
 // 1 - wall
 // 2 - Player
+// 3 - Particle
 // 4 - ghost initial positions
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
@@ -51,8 +52,8 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
-   {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
-   {1,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+   {1,3,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //21
 
 
@@ -112,6 +113,15 @@ void Level::DrawBoard()
                 mTransformComp.push_back(mEnemy->mTransform);
                 mNameComp.push_back(mEnemy->mNameComp);
             }
+            else if(GameBoard[i][j] == 3){
+                mParticle = new Particles(&mShapeFactory);
+                mParticle->init();
+                mParticle->mMaterial->mShaderProgram = 0;   //plain shader
+                mParticle->move(j, CENTER_Y,i);
+                mVisualObjects.push_back(mParticle);
+                mTransformComp.push_back(mParticle->mTransform);
+                mNameComp.push_back(mParticle->mNameComp);
+            }
         }
     }
     //------------------------Plain----------------------//
@@ -123,6 +133,7 @@ void Level::DrawBoard()
     mTransformComp.push_back(temp->mTransform);
     temp->mMaterial->mTextureUnit = 1;
     mNameComp.push_back(temp->mNameComp);
+
 
     mFrustumSystem = new FrustumSystem(mCam);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
@@ -151,6 +162,7 @@ void Level::DrawBoard()
     xyz = new XYZ;
     xyz->init();
     mVisualObjects.push_back(xyz);
+   // spawnParticle();
 
 
 
@@ -225,30 +237,30 @@ void Level::winner()
 
 void Level::checkCollision()
 {
-    mPlayer->onRwallX = {false};
-    mPlayer->onLwallX = {false};
-    mPlayer->onFwallY = {false};
-    mPlayer->onBwallY = {false};
-    //kollisjon fungerer foreløpig ikke for flere objekter
-    //kollisjon mot vegger
-    for(int i{0}; i<static_cast<int>(mWall.size()); i++){
-        if(mColSystem->CheckSphOnBoxCol(mPlayer->mCollision, mWall[i]->mCollision))
-        {
-            //qDebug() <<"Collision detected"; //testing collision
-            mWall[i]->CheckPlayerCol(mPlayer);
+//    mPlayer->onRwallX = {false};
+//    mPlayer->onLwallX = {false};
+//    mPlayer->onFwallY = {false};
+//    mPlayer->onBwallY = {false};
+//    //kollisjon fungerer foreløpig ikke for flere objekter
+//    //kollisjon mot vegger
+//    for(int i{0}; i<static_cast<int>(mWall.size()); i++){
+//        if(mColSystem->CheckSphOnBoxCol(mPlayer->mCollision, mWall[i]->mCollision))
+//        {
+//            //qDebug() <<"Collision detected"; //testing collision
+//            mWall[i]->CheckPlayerCol(mPlayer);
 
-            if(mWall[i]->onLwallX){
-                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
-            else if(mWall[i]->onRwallX){
-                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
-            if(mWall[i]->onBwallY){
-                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
-            else if(mWall[i]->onFwallY){
-                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
-        }
-        else
-            mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
-    }
+//            if(mWall[i]->onLwallX){
+//                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
+//            else if(mWall[i]->onRwallX){
+//                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
+//            if(mWall[i]->onBwallY){
+//                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
+//            else if(mWall[i]->onFwallY){
+//                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
+//        }
+//        else
+//            mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
+//    }
 
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
@@ -318,6 +330,25 @@ void Level::resetGame()
         }}
 }
 
+//void Level::spawnParticle()
+//{
+//    VisualObject* temp{nullptr};
+//    ParticleMesh* tempP{nullptr};
+
+//    for(int i = 0; i<10; i++)
+//    {
+//        temp = mShapeFactory.createShape("Particle");
+//        tempP = static_cast<ParticleMesh*>(tempP);
+//        tempP->init();
+//        tempP->mMaterial->mShaderProgram = 0;   //plain shader
+//        tempP->move(mParticle->direction.x+i,mParticle->direction.y+i,mParticle->direction.z);
+//        mVisualObjects.push_back(tempP);
+//        mTransformComp.push_back(tempP->mTransform);
+//        //mNameComp.push_back(mParticle->mNameComp);
+//    }
+
+//}
+
 
 void Level::SoundHandler()
 {
@@ -340,20 +371,36 @@ bool Level::wallCheck(int z, int x)
         return false;
 }
 
+void Level::movePlayer()
+{
+        int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
+        int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
+
+        if(mPlayer->mForward.x > 0)
+            EposX = std::ceil(mPlayer->mTransform->mPosition.x);
+        else if(mPlayer->mForward.x <0)
+            EposX = std::floor(mPlayer->mTransform->mPosition.x);
+        else{
+            if(mPlayer->mForward.z >0)
+                EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
+            else if(mPlayer->mForward.z <0)
+                EposZ = std::floor(mPlayer->mTransform->mPosition.z);
+            else
+                qDebug() << "error in Level::moveEnemy";}
+
+        //double a = rand()%10;
+
+        // mEnemies[i]->moveEnemy();
+        if(wallCheck(EposX, EposZ))
+        {
+            mPlayer->centerPlayer();
+        }
+        else
+            mPlayer->movePlayer();
+}
 
 void Level::moveEnemy(int randNum)
 {
-
-
-    //    int EposX{static_cast<int>(mEnemies[0]->mTransform->mPosition.x+1)};
-    //    int EposZ{static_cast<int>(mEnemies[0]->mTransform->mPosition.z+1)};
-    //    if(wallCheck(EposZ, EposX))
-    //    {
-    //        mEnemies[0]->mTransform->mMatrix.rotateY(90);
-    //    }else
-    //        mEnemies[0]->goToPlayer(mPlayer->mTransform->mPosition);
-
-
 
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};

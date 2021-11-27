@@ -29,10 +29,11 @@
 #include "xyz.h"
 #include "camera.h"
 #include "constants.h"
-//#include "texture.h"
+#include "texture.h"
 #include "skybox.h"
 #include "light.h"
 #include "level.h"
+//#include "particles.h"
 
 class QOpenGLContext;
 class Shader;

@@ -253,10 +253,11 @@ void RenderWindow::render()
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
-    int a = rand() % 20;
+    int randNr = rand() % 20;
     if(playM)
     {
-        mLvl->moveEnemy(a);
+        mLvl->moveEnemy(randNr);
+        mLvl->movePlayer();
     }
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -388,6 +389,7 @@ void RenderWindow::playMode(bool p)
         mCurrentCamera = &mPlayCamera;
         //mLaserSound->play();
         playM = true;
+
     }
     else
     {
