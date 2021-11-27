@@ -210,7 +210,7 @@ int MeshHandler::readObj(std::string filename)
                 continue;
             }
         }
-        //beeing a nice boy and closing the file after use
+        //Closing the file after use
         fileIn.close();
 
         initMesh(temp, lod);
@@ -365,17 +365,22 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, floa
     return tempMesh;
 }
 
-MeshData MeshHandler::makePoint(gsl::Vector3D &pointIn, float pointSizeIn, gsl::Vector3D colorIn)
+MeshData MeshHandler::makePoint(MeshData pointsIn, float pointSizeIn, gsl::Vector3D colorIn)
 {
-    MeshData tempMesh;
+//    MeshData tempMesh;
 
-    tempMesh.mVertices->push_back(Vertex{pointIn.x, pointIn.y, pointIn.z, colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
+//    for(int i = 0; i < pointsIn.mVertexCount()-2; i += 3)
+//    {
+//        tempMesh.mVertices->push_back(Vertex{pointsIn.mVertices[i], pointsIn.mVertices[i+1], pointsIn.mVertices[+2], colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
+//    }
+//    tempMesh.mDrawType = GL_POINTS;
 
-    tempMesh.mDrawType = GL_POINTS;
+//    initMesh(tempMesh, 0);
 
-    initMesh(tempMesh, 0);
+    pointsIn.mDrawType = GL_POINTS;
 
-    return tempMesh;
+    initMesh(pointsIn, 0);
+    return pointsIn;
 }
 
 //void MeshHandler::makeMeshFromMeshData(MeshData tempMesh)
@@ -587,26 +592,26 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
         meshIn.mColliderRadius = length;
 }
 
-void MeshHandler::readLasFile()
+MeshData MeshHandler::readLasFile()
 {
     float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
 
     std::ifstream inLasFile;
-    inLasFile.open(gsl::ProjectFolderName + "Assets/test_las.txt");
+    inLasFile.open(gsl::ProjectFolderName + "Assets/test_las.txt"); //Open file using a constant adress, called test_las.txt
 
-    if(!inLasFile)
+    if(!inLasFile) //if file not found
     {
         qDebug() << "unable to open file test_las.txt";
-        return;
+        exit(EXIT_FAILURE);
     }
 
-    std::vector<gsl::Vector3D> pointData;
-    int linesWithPoints = {0};
-    float lasX, lasY, lasZ = {0};
+    std::vector<gsl::Vector3D> pointData; //Used to store all data from file
+    int linesWithPoints = {0}; //Used to store the first line in the document, its an int with
+    float lasX, lasY, lasZ = {0}; //Temp variables overwritten every line, used to fill Vector3D pointData.
 
     if(inLasFile.is_open())
     {
-         qDebug() << "Opening las file";
+        qDebug() << "Opening las file"; //Sort of timer functionality, lets me know in application output if something freezes.
          inLasFile >> linesWithPoints; //read first line, the approximate number of datalines.
          pointData.reserve(linesWithPoints); //reserve the space for the number of datalines.
 
@@ -645,18 +650,19 @@ void MeshHandler::readLasFile()
     }
     inLasFile.close();
     qDebug() << "Closing las file";
-//    qDebug() << xMin << xMax << yMin << yMax << zMin << zMax;
-//    qDebug() << "inLasFile lines with points" << linesWithPoints << "PointData Size" << pointData.size();
-//    qDebug() << "x" << pointData[0].x << "y" << pointData[0].y << "z" << pointData[0].z;
 
 
 //--------------Done reading las file, on to creating a simplification-------------------//
 
 
-// This serves as the index in the planeGrid.
+// This serves as the indexes in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
     const int gridSizeX = 5;
     const int gridSizeZ = 5;
+
+    float widthSize = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
+    float depthSize = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
+    float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
 //Keeping this in case i need further accuracy, including all points
     {
@@ -678,12 +684,14 @@ void MeshHandler::readLasFile()
     float distanceBetweenSquaresX = (xMax - xMin) / gridSizeX;
     float distanceBetweenSquaresZ = (zMax - zMin) / gridSizeZ;
 
-    gsl::Vector3D planeGrid[gridSizeX][gridSizeZ]; // planeGrid stores the x,z and an average y height for all points in the data
+    //Various variables needed for the simplification
+    gsl::Vector3D planeGrid[gridSizeX][gridSizeZ]; // planeGrid stores a rectangulated x,z and an average y height for all points in the data
     int pointDataOutOfGrid = pointData.size(); //Used to calculate how many points are missing
     int nrPoints[gridSizeX][gridSizeZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData[gridSizeX][gridSizeZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-//    MeshData MDPoints;
+    MeshData meshDataPoints; //Used to send meshdata to another function for drawing.
+
 
     qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
 
@@ -704,14 +712,12 @@ for (int x = 0; x < gridSizeX; x++)
                pointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
                 pointDataOutOfGrid--; // Keep track of missing points.
-
-                nrPoints[x][z]++;
-                sumPointData[x][z] += pointData[pointDataSearch].getY();
+                nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
+                sumPointData[x][z] += pointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
             }
         }
-        //This is now in the for loop running for x * z
-
-        if(nrPoints[x][z] != 0) //There might be some squares with 0 points, this makes sure we dont divide by zero
+        ////This is now in the for loop running for x * z
+        if(nrPoints[x][z] != 0) //Especially for higher resoulutions, there might be some squares with 0 points, this makes sure we dont divide by zero
         {
             planeGrid[x][z].y = sumPointData[x][z]/nrPoints[x][z]; //planeGrid is now filled with a 50x50 square with x,z and average of y coordinates.
         }
@@ -719,42 +725,48 @@ for (int x = 0; x < gridSizeX; x++)
         //After having found all y-cordinates, subtract min in each coordinate, to get origin at 0
         planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
         planeGrid[x][z].z -= zMin;
-//        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
+        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
+
+        planeGrid[x][z].x /= widthSize; //Gives resonable cordinates to find in scene
+        planeGrid[x][z].z /= depthSize;
+        planeGrid[x][z].y /= heigthScale;
+
+//        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
+//        planeGrid[x][z].z *= -1;
+//        planeGrid[x][z].y *= -1;
+
+        meshDataPoints.mVertices->emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
+                                                     0.0f, 0.0f, 0.0f, //Normals
+                                                     0.0f, 0.0f}); //UVs
     }
 }
 //Print out all points as openGL_Points
-/*MDPoints = */makePoint(planeGrid[0][0], 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
-//        glVertex3f(planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z);
-//    mGameObjectManager->makePointObject(MDPoints);
+//MeshData Points = makePoint(meshDataPoints, 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f));
 
-
-    qDebug() << "planeGrid is now filled"; //As of 26.11-2021 this takes about half a minute on my computer.
+    qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
 //    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << "xMin" << xMin << "yMin" << yMin << "zMin" << zMin;
 //    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
+return meshDataPoints;
 
-    float widthSize = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
-    float depthSize = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
-    float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
-
-    int c = 0;
+//    int c = 0;
 //    qDebug() << "Start of triangle creation";
-    for (int width = 0; width < gridSizeX; width++)
-    {
-        for (int depth = 0; depth < gridSizeZ; depth++)
-        {
-//            float y = planeGrid[width][depth].y / heigthScale;
+//    for (int width = 0; width < gridSizeX; width++)
+//    {
+//        for (int depth = 0; depth < gridSizeZ; depth++)
+//        {
+////            float y = planeGrid[width][depth].y / heigthScale;
 
-            //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
-            if(c == depth-1)
-            {
-                c=0;
-                continue;
-            }
-            c++;
+//            //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
+//            if(c == depth-1)
+//            {
+//                c=0;
+//                continue;
+//            }
+//            c++;
 
             //Create a triangle using the points in this order.
 //            mMeshes.mIndices[0].push_back(width);   // But mIndeces is a member of meshdata?
@@ -764,14 +776,14 @@ for (int x = 0; x < gridSizeX; x++)
 //            mMeshes.mIndices[0].push_back(width+depth);
 //            mMeshes.mIndices[0].push_back(width+1);
 //            mMeshes.mIndices[0].push_back(width+depth+1);
-        }
-    }
+//        }
+//    }
 //    qDebug() << "End of triangle calculation";
 
 
     //Normal calculation
-    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
-    gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
+//    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
+//    gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
 //    std::vector<Vertex> vert = object->mesh->mVertices[0];
 

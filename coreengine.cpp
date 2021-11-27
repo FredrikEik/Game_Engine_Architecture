@@ -99,22 +99,32 @@ void CoreEngine::setUpScene()
     mGameObjectManager->setUpAllShaders();
     mGameObjectManager->setUpAllMaterials();
 
-    //HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
+    //First GameObject to be added is not drawn, making it an empty one.
+    GameObject *temp = mGameObjectManager->addObject(("EmptyGameObject"));
+    temp->mName = "EmptyGameObject";
+    mRenderSystem->mGameObjects.push_back(temp);
 
+
+    //********************** Making the objects to be drawn *********************
+
+
+    //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
     // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
     MeshHandler HeightMap;
 //    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
-////    t1(HeightMap.readLasFile());
+//    t1(HeightMap.readLasFile());
 //    t1.detach();
 
     HeightMap.readLasFile();
     //Needs to be pushed to mRenderSystem
-
-    //********************** Making the object to be drawn *********************
+    GameObject *LasGround = mGameObjectManager->addObject("LasGround");
+    LasGround->mName = "LasGround";
+//    LasGround->mMesh = HeightMap.readLasFile(); //For now the mesh is the default triangle. Needs conversion from meshdata to an actual mesh.
+    mRenderSystem->mGameObjects.push_back(LasGround);
 
     //Axis
-    GameObject *temp = mGameObjectManager->addObject("axis");
+    temp = mGameObjectManager->addObject("axis");
     temp->mName = "Axis";
     mRenderSystem->mGameObjects.push_back(temp);
 
