@@ -759,8 +759,8 @@ for (int x = 0; x < gridSizeX; x++)
             c++;
 
             //Indices decide the order of which the vertices gets drawn.
-            mMeshes.mIndices[0].push_back(width);
-            mMeshes.mIndices[0].push_back(width+1);
+            mMeshes.mIndices[0].push_back(width);   // But mIndeces is a member of meshdata?
+            mMeshes.mIndices[0].push_back(width+1); // mMeshes is a vector of MeshData, and the struct MeshData contains mIndeces?
             mMeshes.mIndices[0].push_back(width+depth);
 
             mMeshes.mIndices[0].push_back(width+depth);
