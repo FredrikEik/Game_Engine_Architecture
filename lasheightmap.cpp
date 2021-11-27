@@ -197,19 +197,38 @@ void LASHeightMap::GenerateHeightMap()
 
 
             //contour line Collector :D
-            float test = ofsety + height1;
+            int test = static_cast<int>(((height1 + height2 + height3 + height4 + height5 + height6)/6)+ofsety);
             if(test > 5000 || test < 5){
             }else{
                 if(std::fmod(test,5)<0.1){
-                    CountourPoints.push_back(Vertex{ofsetx +  x, ofsety +height1 + 0.1f,ofsetz +   z,       0, 0, 0,0,0});
+                    /*if((int)CountourLines.size() != 0){
+                        auto it = CountourLines.begin();
+                        for(; it != CountourLines.end(); it++){
+                            if(it->first == (int)test){
+                                it->second.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                                qDebug()<< "Put new vector at level... ";
+                                break;
+                            }else{
+                                qDebug()<< "Check in new vector and level...";
+                                std::vector<QVector3D> tempVec{QVector3D{ofsetx+x,test+0.1f,ofsetz+z}};
+                                tempVec.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                                CountourLines.push_back(std::make_pair(test, tempVec));
+                                break;
+                                //CountourLines[(int)CountourLines.size()-1].second.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                            }
+                        }
+                    }else{
+                        std::vector<QVector3D> tempVec{QVector3D{ofsetx+x,test+0.1f,ofsetz+z}};
+                        tempVec.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                        CountourLines.push_back(std::make_pair(test, tempVec));
+                        qDebug()<< "Check in new vector and level...";
+                    }*/
+                    CountourPoints.push_back(Vertex{ofsetx+x, test+0.3f, ofsetz+z, 0,0,0, 0,0});
                     //qDebug() << CountourPoints[CountourPoints.size()-1].getVertex().getX() << CountourPoints[CountourPoints.size()-1].getVertex().getY() << CountourPoints[CountourPoints.size()-1].getVertex().getZ() << "____________________________________________________________";
                 }
             }
         }
     CalcContourlineOrder();
-
-
-
 }
 
 float LASHeightMap::CalcHeight(float x, float z)
