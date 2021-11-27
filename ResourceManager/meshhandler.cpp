@@ -683,7 +683,7 @@ void MeshHandler::readLasFile()
     int nrPoints[gridSizeX][gridSizeZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData[gridSizeX][gridSizeZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-    MeshData MDPoints;
+//    MeshData MDPoints;
 
     qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
 
@@ -722,7 +722,7 @@ for (int x = 0; x < gridSizeX; x++)
 //        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
 
         //Print out all points as openGL_Points
-        MDPoints = makePoint(planeGrid[x][z], 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
+        /*MDPoints = */makePoint((planeGrid[x][z]/*.x, planeGrid[x][z].y, planeGrid[x][z].z*/), 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
 //        glVertex3f(planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z);
     }
 }
@@ -738,8 +738,8 @@ for (int x = 0; x < gridSizeX; x++)
 //    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
 
-    float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
-    float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
+    float widthSize = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
+    float depthSize = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
     float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
     int c = 0;
@@ -748,7 +748,7 @@ for (int x = 0; x < gridSizeX; x++)
     {
         for (int depth = 0; depth > gridSizeZ; depth++)
         {
-            float y = planeGrid[width][depth].y / heigthScale;
+//            float y = planeGrid[width][depth].y / heigthScale;
 
             //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
             if(c == depth-1)
@@ -758,20 +758,84 @@ for (int x = 0; x < gridSizeX; x++)
             }
             c++;
 
-            //Indices decide the order of which the vertices gets drawn.
-            mMeshes.mIndices[0].push_back(width);   // But mIndeces is a member of meshdata?
-            mMeshes.mIndices[0].push_back(width+1); // mMeshes is a vector of MeshData, and the struct MeshData contains mIndeces?
-            mMeshes.mIndices[0].push_back(width+depth);
+            //Create a triangle using the points in this order.
+//            mMeshes.mIndices[0].push_back(width);   // But mIndeces is a member of meshdata?
+//            mMeshes.mIndices[0].push_back(width+1); // mMeshes is a vector of MeshData, and the struct MeshData contains mIndeces?
+//            mMeshes.mIndices[0].push_back(width+depth);
 
-            mMeshes.mIndices[0].push_back(width+depth);
-            mMeshes.mIndices[0].push_back(width+1);
-            mMeshes.mIndices[0].push_back(width+depth+1);
+//            mMeshes.mIndices[0].push_back(width+depth);
+//            mMeshes.mIndices[0].push_back(width+1);
+//            mMeshes.mIndices[0].push_back(width+depth+1);
         }
     }
+//    qDebug() << "End of triangle calculation";
 
 
-    // The triangle normal needs to be calculated
-    //
+    //Normal calculation
+    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
+    gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
+
+//    std::vector<Vertex> vert = object->mesh->mVertices[0];
+
+//    for(int i = 0; i < gridSizeX * gridSizeZ; i++)
+//    {
+////        gsl::Vector3D pos = object->mesh->mVertices[0][i].mXYZ;
+
+//        int x1 = static_cast<int>((pos.x) / xStep);
+//        int y1 = static_cast<int>((pos.z) / zStep);
+
+//        if(x1 > 0 && y1 > 0 && x1 < rows && y1 < cols) //index > 0
+//        {
+//            pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
+
+//            p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
+//            p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
+//            p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
+//            p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
+//            p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
+//            p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
+//        }
+
+//        //Lager vektorer til alle punktene
+//        gsl::Vector3D v0 = p0-pCenter;
+//        gsl::Vector3D v1 = p1-pCenter;
+//        gsl::Vector3D v2 = p2-pCenter;
+//        gsl::Vector3D v3 = p3-pCenter;
+//        gsl::Vector3D v4 = p4-pCenter;
+//        gsl::Vector3D v5 = p5-pCenter;
+
+//    /** If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values) */
+//        v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+//        v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+//        v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+//        v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+//        v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+//        v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+
+//        //Regner ut normalene til alle trekantene rundt punktet
+
+//        n0 = v0.cross(v0,v1);
+//        n0.normalize();
+
+//        n1 = v1.cross(v1,v2);
+//        n1.normalize();
+
+//        n2 = v2.cross(v2,v3);
+//        n2.normalize();
+
+//        n3 = v3.cross(v3,v4);
+//        n3.normalize();
+
+//        n4 = v4.cross(v4,v5);
+//        n4.normalize();
+
+//        n5 = v5.cross(v5,v0);
+//        n5.normalize();
+
+//        gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+
+//        object->mesh->mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z);
+//    }
 }
 
 
