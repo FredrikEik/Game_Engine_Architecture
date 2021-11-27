@@ -118,9 +118,10 @@ void Level::DrawBoard()
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox();
-    mSkyBox->setTexture();
-    mSkyBox->mMaterial->mShaderProgram = 3;    //plain shader
     mSkyBox->init();
+    mVisualObjects.push_back(mSkyBox);
+    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
+    mSkyBox->mMaterial->mTextureUnit =2;
 
     //------------------------Light----------------------//
     mLight = new Light;
@@ -200,30 +201,6 @@ void Level::readJS()
 
 void Level::checkCollision()
 {
-    mPlayer->onRwallX = {false};
-    mPlayer->onLwallX = {false};
-    mPlayer->onFwallY = {false};
-    mPlayer->onBwallY = {false};
-
-    for(int i{0}; i<static_cast<int>(mWall.size()); i++){
-        if(mColSystem->CheckSphOnBoxCol(mPlayer->mCollision, mWall[i]->mCollision))
-        {
-            //qDebug() <<"Collision detected"; //testing collision
-            mWall[i]->CheckPlayerCol(mPlayer);
-
-            if(mWall[i]->onLwallX){
-                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
-            else if(mWall[i]->onRwallX){
-                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
-            if(mWall[i]->onBwallY){
-                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
-            else if(mWall[i]->onFwallY){
-                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
-        }
-        else
-            mWall[i]->noCol();
-    }
-
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
@@ -242,12 +219,25 @@ void Level::checkCollision()
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-            qDebug() << "You lose";
-            resetGame();
+            hit=true;
+            if(hit == true)
+            {
+                mLives--; hit = false;
+                gsl::Vector3D playerP = {1,CENTER_Y,20};
+                gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+                VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+                vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+            }
+            if(mLives == 0)
+            {
+                resetGame();
+            }
+            qDebug() << mLives;
         }
     }
-
 }
+
+
 
 bool Level::wallCheck(int x, int z)
 {
@@ -262,25 +252,56 @@ void Level::resetGame()
     gsl::Vector3D playerP = {1,CENTER_Y,20};
     gsl::Vector3D currP = mPlayer->mTransform->mPosition;
 
+
     VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
     vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
-    for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
-    {
-        mVisualObjects[i]->drawMe = true;
-    }
-    trophies = 0;
-    mLives = 2;
-    int eID = 0;
-    for(int i = 0; i<DIM_Z;i++)
-    {
-        for(int j = 0; j<DIM_X; j++){
-            if(GameBoard[i][j] == 4){
-                gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
-                gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
-                mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
-                eID++;}
+
+    if(mLives==0){
+        for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
+        {
+            mVisualObjects[i]->drawMe = true;
         }
-    }
+        trophies = 0;
+        mLives = 2;
+        int eID = 0;
+        for(int i = 0; i<DIM_Z;i++)
+        {
+            for(int j = 0; j<DIM_X; j++){
+                if(GameBoard[i][j] == 4){
+                    gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
+                    gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
+                    mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
+                    eID++;}
+            }
+        }}
+}
+
+void Level::movePlayer()
+{
+        int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
+        int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
+
+        if(mPlayer->mForward.x > 0)
+            EposX = std::ceil(mPlayer->mTransform->mPosition.x);
+        else if(mPlayer->mForward.x <0)
+            EposX = std::floor(mPlayer->mTransform->mPosition.x);
+        else{
+            if(mPlayer->mForward.z >0)
+                EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
+            else if(mPlayer->mForward.z <0)
+                EposZ = std::floor(mPlayer->mTransform->mPosition.z);
+            else
+                qDebug() << "error in Level::moveEnemy";}
+
+        //double a = rand()%10;
+
+        // mEnemies[i]->moveEnemy();
+        if(wallCheck(EposX, EposZ))
+        {
+            mPlayer->centerPlayer();
+        }
+        else
+            mPlayer->movePlayer();
 }
 
 void Level::moveEnemy(double randNr)

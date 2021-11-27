@@ -34,6 +34,7 @@ public:
     void readJS();
     void checkCollision();
     void moveEnemy(double randNr);
+    void movePlayer();
     void resetGame();
 
     std::vector<NameComponent*> mNameComps;
@@ -61,6 +62,7 @@ private:
     CollisionSystem* mColSystem;
     int mLives{2};
     int trophies{0};
+    bool hit{false};
 };
 
 #endif // LEVEL_H

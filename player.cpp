@@ -23,66 +23,31 @@ Player::~Player()
 
 }
 
-//void Player::move(float dx, float dy, float dz)
-//{
-//    gsl::Vector3D mPos = mTransform->mPosition;
-//    gsl::Vector3D mRound {std::round(mTransform->mPosition.x), 0, std::round(mTransform->mPosition.z)};
-
-//    float xDiff = mRound.x - mPos.x;
-//    float zDiff = mRound.z - mPos.z;
-//    gsl::Vector3D temp(0,0,0);
-//    if(dz > 0 && onBwallY == true){
-//        temp.z = zDiff; temp.x = xDiff;}
-//    else if(dz < 0 && onFwallY == true){
-//        temp.z = zDiff; temp.x = xDiff;}
-//    else{
-//        temp.z = dz;}
-
-//    if(dx > 0 && onLwallX == true){
-//        temp.x = xDiff; temp.z = zDiff;}
-//    else if(dx < 0 && onRwallX == true){
-//        temp.x = xDiff; temp.z = zDiff;}
-//    else{
-//        temp.x = dx;}
-
-//    temp.y = dy;
-
-//    qDebug() << xDiff << zDiff;
-
-//    mTransform->mPosition += temp;
-//    mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
-//    mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mCollision);
-//    mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mCollision);
-//}
-
-void Player::move(float dx, float dy, float dz)
+void Player::centerPlayer()
 {
     gsl::Vector3D mPos = mTransform->mPosition;
     gsl::Vector3D mRound {std::round(mTransform->mPosition.x), 0, std::round(mTransform->mPosition.z)};
 
     float xDiff = mRound.x - mPos.x;
     float zDiff = mRound.z - mPos.z;
-    gsl::Vector3D temp(0,0,0);
-    if(dz > 0 && onBwallY == true){
-        temp.z = zDiff; temp.x = xDiff;}
-    else if(dz < 0 && onFwallY == true){
-        temp.z = zDiff; temp.x = xDiff;}
-    else{
-        temp.z = dz;}
+    gsl::Vector3D temp(xDiff,0,zDiff);
 
-    if(dx > 0 && onLwallX == true){
-        temp.x = xDiff; temp.z = zDiff;}
-    else if(dx < 0 && onRwallX == true){
-        temp.x = xDiff; temp.z = zDiff;}
-    else{
-        temp.x = dx;}
-
-    temp.y = dy;
-
-    qDebug() << xDiff << zDiff;
+    //qDebug() << xDiff << zDiff;
 
     mTransform->mPosition += temp;
     mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
     mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mCollision);
     mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mCollision);
+}
+
+void Player::movePlayer()
+{
+    move(mForward.x * mInputComp->mPlayerSpeed, mForward.y * mInputComp->mPlayerSpeed, mForward.z * mInputComp->mPlayerSpeed);
+}
+
+void Player::setForward(float dx, float dz)
+{
+    mForward = {dx, 0, dz};
+    mTransform->mMatrix.setRotationToVector(mForward);
+    mTransform->mMatrix.scale(0.5);
 }

@@ -11,21 +11,8 @@ public:
     Skybox();
     ~Skybox() override;
     void makeVerticies(MeshComponent* mMesh);
-    void setTexture();
     Texture *mTextures[6]{nullptr};
     unsigned int textureID;
-
-private:
-
-    std::string mFaces[6]
-    {
-        "../Skybox/right.bmp",
-        "../Skybox/left.bmp",
-        "../Skybox/bottom.bmp",
-        "../Skybox/top.bmp",
-        "../Skybox/front.bmp",
-        "../Skybox/back.bmp"
-    };
 };
 
 #endif // SKYBOX_H
