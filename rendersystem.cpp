@@ -248,23 +248,22 @@ void RenderSystem::render()
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
         //Drawing forward vector of gameCam
-/*       gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
-        MeshData forwardVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
-                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-        glBindVertexArray( forwardVector.mVAO[0] );
-        temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+//        gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+//        MeshData forwardVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+//        glBindVertexArray( forwardVector.mVAO[0] );
+//        temp.setToIdentity();
+//        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
 
-        //Drawing FOV vector of gameCam on right side
-        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
-        MeshData frustumCullRightVector = CoreEngine::getInstance()->mResourceManager->mMeshHandler->
-                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-        glBindVertexArray( frustumCullRightVector.mVAO[0] );
-        temp.setToIdentity();
-        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
-        */
+//        //Drawing FOV vector of gameCam on right side
+//        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+//        MeshData frustumCullRightVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->
+//                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+//        glBindVertexArray( frustumCullRightVector.mVAO[0] );
+//        temp.setToIdentity();
+//        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+
     }
 
     //Moves the dog triangle - should be made another way!!!!
@@ -331,6 +330,11 @@ void RenderSystem::render()
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
+
+//void RenderSystem::addToGameObjects(GameObject *obj)
+//{
+//    mGameObjects.emplace_back(obj);
+//}
 
 //This function is called from Qt when window is exposed (shown)
 // and when it is resized

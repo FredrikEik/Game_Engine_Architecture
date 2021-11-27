@@ -374,3 +374,11 @@ MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
         return &mMaterials[0];
     }
 }
+
+//void makePointObject(MeshData temp)
+//{
+//    //Use temp
+//    GameObject *pointGameObject;
+
+//    pointGameObject->mMesh = temp.mVertices;
+//}

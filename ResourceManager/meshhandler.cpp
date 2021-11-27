@@ -7,6 +7,8 @@
 #include "math_constants.h"
 #include "camera.h"
 #include "logger.h"
+//#include "gameobjectmanager.h"
+//#include "gameobject.h"
 
 MeshHandler::MeshHandler()
 {
@@ -14,6 +16,7 @@ MeshHandler::MeshHandler()
     //Please fix
     mMeshes.reserve(gsl::MAX_MESHCOMPONENTS);
     mLogger = Logger::getInstance();    //Have to do this, else program will crash
+//    mGameObjectManager = &GameObjectManager::getInstance();
 }
 
 int MeshHandler::makeMesh(std::string meshName)
@@ -375,6 +378,14 @@ MeshData MeshHandler::makePoint(gsl::Vector3D &pointIn, float pointSizeIn, gsl::
     return tempMesh;
 }
 
+//void MeshHandler::makeMeshFromMeshData(MeshData tempMesh)
+//{
+//    mMeshComponents.emplace_back(tempMesh);
+//    *object->mMesh = mMeshComponents.back();
+
+//    object->mMesh->mVertices->push_back(Vertex(vert[i].getXYZ().x -xPos, lineHeight, vert[i].getXYZ().z, 1,0,0));
+//}
+
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
     MeshData tempMesh;
@@ -672,6 +683,8 @@ void MeshHandler::readLasFile()
     int nrPoints[gridSizeX][gridSizeZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData[gridSizeX][gridSizeZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
+    MeshData MDPoints;
+
     qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
 
 for (int x = 0; x < gridSizeX; x++)
@@ -709,10 +722,13 @@ for (int x = 0; x < gridSizeX; x++)
 //        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
 
         //Print out all points as openGL_Points
-        makePoint(planeGrid[x][z], 1.0f, (0.0f, 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
+        MDPoints = makePoint(planeGrid[x][z], 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
 //        glVertex3f(planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z);
     }
 }
+
+//    mGameObjectManager->makePointObject(MDPoints);
+
 
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 this takes about half a minute on my computer.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
@@ -722,26 +738,34 @@ for (int x = 0; x < gridSizeX; x++)
 //    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
 
-    // Now the vertices needs to be "converted" to triangles.
-    // I could try to write an obj file, but seems difficult, could be used to not calculate everything every run.
-
-    // Two Triangles need to be composed using planeGrids cordinates
-    // [0][0], [0][1], [1][1] //First square, the two triangles
-    // [0][0], [0][1], [1][1]
-
-    // [0][1], [0][2], [1][2] //Second square
-    // [0][1], [1][1], [1][2]
-
-    float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number smaller
-    float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number smaller
+    float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
+    float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
     float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
+    int c = 0;
 //    qDebug() << "Start of triangle creation";
     for (int width = 0; width > gridSizeX; width++)
     {
         for (int depth = 0; depth > gridSizeZ; depth++)
         {
             float y = planeGrid[width][depth].y / heigthScale;
+
+            //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
+            if(c == depth-1)
+            {
+                c=0;
+                continue;
+            }
+            c++;
+
+            //Indices decide the order of which the vertices gets drawn.
+            mMeshes.mIndices[0].push_back(width);
+            mMeshes.mIndices[0].push_back(width+1);
+            mMeshes.mIndices[0].push_back(width+depth);
+
+            mMeshes.mIndices[0].push_back(width+depth);
+            mMeshes.mIndices[0].push_back(width+1);
+            mMeshes.mIndices[0].push_back(width+depth+1);
         }
     }
 

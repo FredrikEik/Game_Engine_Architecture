@@ -1,4 +1,4 @@
-#ifndef RENDERSYSTEM_H
+﻿#ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
 class QOpenGLContext;
@@ -43,6 +43,7 @@ public:
     GameObjectManager *mGameObjectManager{nullptr};
 
     void render();
+//    void addToGameObjects(GameObject *obj);
 
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};

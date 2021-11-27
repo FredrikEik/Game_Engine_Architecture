@@ -4,6 +4,10 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include "vertex.h"
 #include "gltypes.h"
+#include "components.h"
+
+//class GameObjectManager;
+//class GameObject;
 
 struct MeshData
 {
@@ -33,6 +37,8 @@ class MeshHandler : public QOpenGLFunctions_4_1_Core
 public:
     MeshHandler();
 
+//    GameObjectManager *mGameObjectManager{nullptr};
+
     int makeMesh(std::string meshName);
 
     MeshData makeLineBox(std::string meshName);
@@ -50,14 +56,19 @@ public:
 
     ////Makes the points for debug drawing with some default values other than the point.
     MeshData makePoint(gsl::Vector3D &pointIn, float pointSize = 1.0f, gsl::Vector3D colorIn = {0.0f, 1.0f, 0.0f});
+    void makeMeshFromMeshData(MeshData temp);
 
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
+
+//    std::vector<MeshComponent> mMeshComponents;
 
     std::vector<MeshData> get_mMeshes() { return mMeshes; }
     std::map<std::string, unsigned int> get_mMeshMap() { return mMeshMap; }
 
     void readLasFile();
+
+
 
 private:
     int readObj(std::string filename);
@@ -70,6 +81,8 @@ private:
 
     //initalizes the mesh with OpenGL buffers - VAO, VBO, EAB
     void initMesh(MeshData &currentMesh, int lodLevel);
+
+//    GameObject* object;
 
     class Logger* mLogger{nullptr};
 };

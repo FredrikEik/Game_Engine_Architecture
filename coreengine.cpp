@@ -126,6 +126,11 @@ void CoreEngine::setUpScene()
     //Adds sound to moving triangle:
     mGameObjectManager->addComponent("caravan_mono.wav", temp);
 
+//    //groundObject
+//    temp = mGameObjectManager->addObject("Ground");
+//    temp->mName = "Ground";
+//    mRenderSystem->mGameObjects.push_back(temp);
+
     //Hack to test sound system
     if(temp->mSoundComponent)
         temp->mSoundComponent->shouldPlay = true;

@@ -37,6 +37,8 @@ public:
     MeshData makeCircleSphere(float radius, bool rgbColor);
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
+//    void makePointObject(MeshData temp); //Turn points into a object that can be drawn.
+
     MeshHandler* mMeshHandler{nullptr};
 
     std::map<std::string, unsigned int> mShaderMap;
@@ -56,7 +58,6 @@ private:
     gsl::AssetType findAssetType(std::string assetName);
 
     SoundComponent* makeSoundComponent(std::string assetName);
-
 
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
