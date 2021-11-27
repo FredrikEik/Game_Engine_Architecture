@@ -22,6 +22,7 @@ public:
                   onLwallX = false;
                   onFwallY = false;
                   onBwallY = false;};
+    float Gravity = -50;
 private:
     float mx, my, mz; // posisjon
     CollisionSystem* mColSystem;

@@ -25,10 +25,9 @@ Level::~Level()
     mNameComp.clear();
 }
 
-// 0 - coin
+// 0 - coins
 // 1 - wall
 // 2 - Player
-// 3 - energizer
 // 4 - ghost initial positions
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
@@ -131,15 +130,16 @@ void Level::DrawBoard()
 
     //------------------------Skybox----------------------//
     mSkyBox = new Skybox(/*&mTexture[2]*/);
+    mSkyBox->move(12.f, 0.f, 10.f);
     mSkyBox->init();
-    mSkyBox->mMaterial->mShaderProgram = 3;  //plain shader
+    mVisualObjects.push_back(mSkyBox);
+    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
     mSkyBox->mMaterial->mTextureUnit =2;
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 3;    //Phongshader
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
-    //Skal stå mer her, kommer i neste mld
 
     //makes the soundmanager
     //it is a Singleton!!!
@@ -267,13 +267,57 @@ void Level::checkCollision()
     }
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
-        {
-            //qDebug() << "You Win";
-            resetGame();
+         {
+            hit=true;
+            if(hit == true)
+            {
+
+                mLives--; hit = false;
+                gsl::Vector3D playerP = {1,CENTER_Y,20};
+                gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+                VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+                vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+            }
+            if(mLives == 0)
+            {
+                resetGame();
+            }
+            qDebug() << mLives;
+
 
         }
     }
 }
+
+void Level::resetGame()
+{
+    gsl::Vector3D playerP = {1,CENTER_Y,20};
+    gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+
+
+    VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+    vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+
+    if(mLives==0){
+        for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
+        {
+            mVisualObjects[i]->drawMe = true;
+        }
+        trophies = 0;
+        mLives = 2;
+        int eID = 0;
+        for(int i = 0; i<DIM_Z;i++)
+        {
+            for(int j = 0; j<DIM_X; j++){
+                if(GameBoard[i][j] == 4){
+                    gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
+                    gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
+                    mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
+                    eID++;}
+            }
+        }}
+}
+
 
 void Level::SoundHandler()
 {
@@ -301,13 +345,13 @@ void Level::moveEnemy(int randNum)
 {
 
 
-//    int EposX{static_cast<int>(mEnemies[0]->mTransform->mPosition.x+1)};
-//    int EposZ{static_cast<int>(mEnemies[0]->mTransform->mPosition.z+1)};
-//    if(wallCheck(EposZ, EposX))
-//    {
-//        mEnemies[0]->mTransform->mMatrix.rotateY(90);
-//    }else
-//        mEnemies[0]->goToPlayer(mPlayer->mTransform->mPosition);
+    //    int EposX{static_cast<int>(mEnemies[0]->mTransform->mPosition.x+1)};
+    //    int EposZ{static_cast<int>(mEnemies[0]->mTransform->mPosition.z+1)};
+    //    if(wallCheck(EposZ, EposX))
+    //    {
+    //        mEnemies[0]->mTransform->mMatrix.rotateY(90);
+    //    }else
+    //        mEnemies[0]->goToPlayer(mPlayer->mTransform->mPosition);
 
 
 
@@ -351,31 +395,6 @@ void Level::moveEnemy(int randNum)
 
 }
 
-void Level::resetGame()
-{
-    gsl::Vector3D playerP = {1,CENTER_Y,20};
-    gsl::Vector3D currP = mPlayer->mTransform->mPosition;
-
-    VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-    vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
-    for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
-    {
-        mVisualObjects[i]->drawMe = true;
-    }
-    trophies = 0;
-    mLives = 2;
-    int eID = 0;
-    for(int i = 0; i<DIM_Z;i++)
-    {
-        for(int j = 0; j<DIM_X; j++){
-            if(GameBoard[i][j] == 4){
-                gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
-                gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
-                mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
-                eID++;}
-        }
-    }
-}
 
 
 

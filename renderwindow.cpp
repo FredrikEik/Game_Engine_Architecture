@@ -130,7 +130,7 @@ void RenderWindow::init()
 
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
-    qDebug() << "Phong shader program id: " << mShaderPrograms[3]->getProgram();
+    qDebug() << "SkyBox shader program id: " << mShaderPrograms[3]->getProgram();
 
 
     setupPlainShader(0);

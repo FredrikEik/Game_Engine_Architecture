@@ -58,6 +58,7 @@ public:
     void moveEnemy(int randNum);
     void resetGame();
     void GameLoop();
+    bool hit =false;
 
 private:
     static const int DIM_X = 19;
@@ -68,7 +69,7 @@ private:
     Script *script{nullptr};
     Camera* mCam;
     CollisionSystem* mColSystem;
-    int mLives{2};
+    int mLives{3};
     bool isValidPos = false;
     int angle =0;
 

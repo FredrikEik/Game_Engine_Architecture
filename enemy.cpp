@@ -53,7 +53,7 @@ void Enemy::goToPlayer(gsl::Vector3D pPos)
     gsl::Vector3D ePos {mTransform->mPosition.x,0,mTransform->mPosition.z};
     gsl::Vector3D dir = pPos - ePos;
 
-    qDebug()<<dir;
+    //qDebug()<<dir;
     if(dir.x>dir.z)
         dir = {dir.x,0,0};
     else if(dir.x<dir.z)

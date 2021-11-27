@@ -27,6 +27,7 @@ SOURCES += main.cpp \
     light.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    particles.cpp \
     player.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    particles.h \
     player.h \
     renderwindow.h \
     shader.h \
