@@ -212,6 +212,11 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
+
+	uint32 contourEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent>(contourEntity);
+	TerrainSystem::generateContourLines(contourEntity, terrainEntity, ECS);
+
 	for (int i{}; i < 5; ++i)
 	{
 		for (int j{}; j < 5; ++j)

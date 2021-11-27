@@ -237,6 +237,67 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 
 }
 
+void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEntity, ECSManager* ECS)
+{
+	MeshComponent* terrainMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	MeshComponent* contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
+	assert(terrainMesh);
+	assert(contourMesh);
+	contourMesh->m_vertices.reserve(terrainMesh->m_indices.size());
+
+	std::vector<glm::vec3>& positions = (*new std::vector<glm::vec3>());
+	std::vector<GLuint>& indices = (*new std::vector<GLuint>());
+
+	auto lerp = [](const glm::vec3& a, const glm::vec3& b, float alpha) -> glm::vec3
+	{
+		return glm::vec3(
+			(a.x+(a.x-b.x))		* alpha, 
+			(a.y + (a.y-b.y))	* alpha,
+			(a.z + (a.z-b.z))	* alpha
+		);
+	};
+
+	glm::vec3 tempPosition[4]{};
+	glm::vec3 tempLinePosA{};
+	glm::vec3 tempLinePosB{};
+
+	//int i{};
+	int columns = std::sqrt(terrainMesh->m_vertices.size());
+	int ekviDistance{ 5 };
+	int yMax{ 95 };
+	//for (auto& it : terrainMesh->m_indices)
+	//{
+	for (int i{}; i < yMax; i += ekviDistance)
+	{
+		for (int j{}; j < terrainMesh->m_vertices.size(); ++j)
+		{
+			contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
+
+			tempPosition[0] = terrainMesh->m_vertices[j].getPosition();
+			tempPosition[1] = terrainMesh->m_vertices[j + 1].getPosition();
+			tempPosition[2] = terrainMesh->m_vertices[j + columns].getPosition();
+			tempPosition[3] = terrainMesh->m_vertices[j + columns + 1].getPosition();
+
+			//tempLinePosA = lerp(tempPosition[0], tempPosition[2], 0.5f);
+			//tempLinePosB = lerp(tempPosition[1], tempPosition[3], 0.5f);
+
+			//findLineToDraw(tempPosition, tempLinePosA, tempLinePosB);
+			contourMesh->m_vertices.push_back(Vertex(tempLinePosA, glm::vec3(0, 1, 0), glm::vec2()));
+			contourMesh->m_vertices.push_back(Vertex(tempLinePosB, glm::vec3(0, 1, 0), glm::vec2()));
+
+			contourMesh->m_indices.push_back(j);
+			contourMesh->m_indices.push_back(j+1);
+
+		}
+	}
+	//}
+	contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
+	contourMesh->m_drawType = GL_LINE_STRIP;
+	MeshSystem::initialize(*contourMesh);
+	contourMesh->bDisregardedDuringFrustumCulling = true;
+	
+}
+
 
 glm::vec3 TerrainSystem::getNormal(const struct TransformComponent& entityTransform, 
 	const MeshComponent& terrainMesh, const int32& index)

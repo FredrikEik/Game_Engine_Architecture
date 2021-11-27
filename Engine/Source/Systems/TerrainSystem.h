@@ -8,6 +8,9 @@ class TerrainSystem : public BaseSystem
 public:
 	static void generateRegularGrid(uint32 entity, class ECSManager* ECS);
 	static void generateGridFromLAS(uint32 entity, std::filesystem::path path,class ECSManager* ECS);
+
+	static void generateContourLines(uint32 contourEntity, uint32 terrainEntity, class ECSManager* ECS);
+
 	static float getHeight(uint32 entity, uint32 terrainEntity, class ECSManager* ECS);
 	static float getHeight(const struct TransformComponent& entityTransform, const struct MeshComponent& terrainMesh,
 		 int32 &OUTIndex);
