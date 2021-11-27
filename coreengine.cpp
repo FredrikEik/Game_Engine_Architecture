@@ -109,6 +109,7 @@ void CoreEngine::setUpScene()
 //    t1.detach();
 
     HeightMap.readLasFile();
+    //Needs to be pushed to mRenderSystem
 
     //********************** Making the object to be drawn *********************
 

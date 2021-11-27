@@ -653,10 +653,10 @@ void MeshHandler::readLasFile()
 //--------------Done reading las file, on to creating a simplification-------------------//
 
 
-// I have made an assumption that the grid is square, will have another look at this if something goes wrong
-// could use xMax and zMax to get correct rectangle
-    const int gridSizeX = 5; // This serves as a "resolution" now the grid with a huge set of datapoints, only
-    const int gridSizeZ = 5; // have 50x50 = 2500 points for further work.
+// This serves as the index in the planeGrid.
+// Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
+    const int gridSizeX = 5;
+    const int gridSizeZ = 5;
 
 //Keeping this in case i need further accuracy, including all points
     {
@@ -720,13 +720,11 @@ for (int x = 0; x < gridSizeX; x++)
         planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
         planeGrid[x][z].z -= zMin;
 //        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
-
-        //Print out all points as openGL_Points
-        /*MDPoints = */makePoint((planeGrid[x][z]/*.x, planeGrid[x][z].y, planeGrid[x][z].z*/), 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
-//        glVertex3f(planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z);
     }
 }
-
+//Print out all points as openGL_Points
+/*MDPoints = */makePoint(planeGrid[0][0], 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f)); //Print the point with cordinates, size 1, and green color
+//        glVertex3f(planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z);
 //    mGameObjectManager->makePointObject(MDPoints);
 
 
@@ -744,9 +742,9 @@ for (int x = 0; x < gridSizeX; x++)
 
     int c = 0;
 //    qDebug() << "Start of triangle creation";
-    for (int width = 0; width > gridSizeX; width++)
+    for (int width = 0; width < gridSizeX; width++)
     {
-        for (int depth = 0; depth > gridSizeZ; depth++)
+        for (int depth = 0; depth < gridSizeZ; depth++)
         {
 //            float y = planeGrid[width][depth].y / heigthScale;
 
