@@ -7,6 +7,8 @@
 #include "mainwindow.h"
 #include "physicshandler.h"
 #include "gameplaymechanics.h"
+#include "meshhandler.h"
+
 #include <thread>
 
 //for JavaScript functionality
@@ -111,24 +113,40 @@ void CoreEngine::setUpScene()
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
     // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
-    MeshHandler HeightMap;
+    MeshHandler HeightMapMeshHandler;
 //    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
 //    t1(HeightMap.readLasFile());
 //    t1.detach();
 
-    MeshData HeightMesh = HeightMap.readLasFile();
+    //Get the data from the las file.
+    MeshData HeightMesh = HeightMapMeshHandler.readLasFile();
 
+    //Create a new mesh for the Las ground
+    int meshIndex = HeightMapMeshHandler.makeMesh("LasGroundMesh");
+    MeshComponent* currentMesh = new MeshComponent();
+
+    //Fill the mesh with relevant data from heightMesh
+    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO,
+              HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+
+    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount,
+              HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+
+    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount,
+              HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+
+//    glPointSize(5.0f)
+    currentMesh->mDrawType = {GL_POINTS};
+    currentMesh->mColliderRadius = 0.0f;
+
+    //Create the gameobject LasGround
     GameObject *LasGround = mGameObjectManager->addObject("LasGround");
-
-//    LasGround->mMesh->mVAO[0] = HeightMesh.mVertices[0];
-//    LasGround->mMesh->mVertexCount = HeightMesh.mVertexCount;
-//    LasGround->mMesh->mIndexCount = HeightMesh.mIndexCount;
-    LasGround->mMesh->mDrawType = {GL_POINTS};
-    LasGround->mMesh->mColliderRadius = 0.0f;
-
+    LasGround->mMesh = currentMesh;
     LasGround->mName = "LasGround";
-//    LasGround->mMesh = HeightMap.readLasFile(); //For now the mesh is the default triangle. Needs conversion from meshdata to an actual mesh.
+    LasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     mRenderSystem->mGameObjects.push_back(LasGround);
+
+//---------------------End of Vis & Sim code----------------------------------------
 
     //Axis
     temp = mGameObjectManager->addObject("axis");
