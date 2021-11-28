@@ -11,6 +11,7 @@
 #include "skybox.h"
 #include "player.h"
 #include "lasterraingenerator.h"
+#include "rollingball.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -165,6 +166,15 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectType = "Terrain";
 
     }
+    else if(objectName == "RollingBall")
+    {
+        objectToCreate = new RollingBall(3);
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->mObjectName = "Ball";
+        objectToCreate->mObjectType = "Ball";
+    }
+
     else{return nullptr;}
 
     objectToCreate->init();

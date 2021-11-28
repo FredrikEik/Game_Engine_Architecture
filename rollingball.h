@@ -8,11 +8,13 @@ class RollingBall : public OctahedronBall
 public:
     RollingBall(int n);
     ~RollingBall();
-    void init(GLint matrixUniform);
-    void draw();
+    void init() override;
+    void draw() override;
     void move(float dt);
+    void move(float x, float y, float z) override;
     void setSurface(GameObject* surface) { triangle_surface = surface; }
     void barycentricCoordinates();
+    GameObject* LasTerrainGenerator;
 protected:
     GameObject* triangle_surface;
 private:

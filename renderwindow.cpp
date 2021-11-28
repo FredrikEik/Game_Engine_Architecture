@@ -234,9 +234,19 @@ void RenderWindow::initObjects()
             temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,0.f,2.f*j);
             //TODO: Scaling have to be made easier and more automatic than this!
         }
+    }*/
+    for(int i{0}; i < 10; i++)
+    {
+        for(int j{0}; j < 10; j++)
+        {
+            temp = factory->createObject("RollingBall");
+            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,0.f,4.f*j);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,0.f,4.f*j);
+            //TODO: Scaling have to be made easier and more automatic than this!
+        }
     }
 
-    */
+
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
