@@ -3,6 +3,9 @@
 #include "MeshSystem.h"
 #include <fstream>
 #include <chrono>
+#include "CameraSystem.h"
+#include "../Engine/Engine.h"
+#include "../Shader.h"
 void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 {
 	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
@@ -82,7 +85,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	std::vector<glm::vec3>& normals = (*new std::vector<glm::vec3>());
 	std::vector<GLuint>& indices = (*new std::vector<GLuint>());
 
-	terrainResolution = { 10 };
+	terrainResolution = { 15 };
 
 	glm::vec3 min{};
 	glm::vec3 max{};
@@ -251,11 +254,17 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 	auto lerp = [](const glm::vec3& a, const glm::vec3& b, float alpha) -> glm::vec3
 	{
 		return glm::vec3(
-			(a.x+(a.x-b.x))		* alpha, 
-			(a.y + (a.y-b.y))	* alpha,
-			(a.z + (a.z-b.z))	* alpha
+			a.x+  ((b.x-a.x)	* alpha), 
+			a.y + ((b.y-a.y)	* alpha),
+			a.z + ((b.z-a.z)	* alpha)
 		);
 	};
+
+	auto getContourPosition = [](const glm::vec3& position, float height) -> glm::vec3
+	{
+		return glm::vec3(position.x, height, position.z);
+	};
+
 
 	glm::vec3 tempPosition[4]{};
 	glm::vec3 tempLinePosA{};
@@ -263,36 +272,384 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 	//int i{};
 	int columns = std::sqrt(terrainMesh->m_vertices.size());
-	int ekviDistance{ 5 };
-	int yMax{ 95 };
+	int ekviDistance{ 2 };
+	int yMax{ 50 };
 	//for (auto& it : terrainMesh->m_indices)
 	//{
-	for (int i{}; i < yMax; i += ekviDistance)
+	
+	// Rename or refactor
+	auto withinEkviDistance = [ekviDistance](const glm::vec3 pos, float contourHeight) -> bool
 	{
-		for (int j{}; j < terrainMesh->m_vertices.size(); ++j)
+		float heightDifference = pos.y - contourHeight;
+		if (std::abs(heightDifference) < 2)
 		{
+			return true;
+		}
+		return false;
+		return pos.y > contourHeight;
+
+	};
+
+	auto findCaseToDraw = [contourMesh, lerp](const glm::vec3* pos, float contourHeight, int& index)
+	{
+
+		/*
+		 __c__
+		|    /|	
+		d  /  b
+		|/_a__|
+		*/
+
+		bool a{}, b{}, c{}, d{};
+		glm::vec3 n(0, 4, 0);
+		glm::vec2 uv{};
+		std::vector<glm::vec3> positions;
+		
+		//auto customPos = [contourHeight](const glm::vec3 pos) {return glm::vec3(pos.x, contourHeight, pos.z); };
+		auto getLerpAlpha = [contourHeight](float lower, float upper) {
+			float height = contourHeight;
+			// Making sure the values are sorted by lowest to highest
+			if (lower > upper)
+			{
+				float temp = lower;
+				lower = upper;
+				upper = temp;
+			}
+			// Finding out the lerp alpha of height between lower and upper
+			float shift = lower;
+			upper -= shift;
+			height -= shift;
+			return height / upper;
+		};
+		auto pushPoint = [contourMesh, contourHeight](int& index, const glm::vec3& positionToPush)
+		{
+			//contourMesh->m_vertices.push_back(Vertex(glm::vec3(positionToPush.x, contourHeight, positionToPush.z), glm::vec3(0, 4, 0), glm::vec2()));
+			contourMesh->m_vertices.push_back(Vertex(positionToPush, glm::vec3(0, 4, 0), glm::vec2()));
+			contourMesh->m_indices.push_back(index++);
+		};
+		if (pos[0].y <= contourHeight && pos[1].y > contourHeight ||
+			pos[0].y > contourHeight && pos[1].y <= contourHeight)
+		{
+			// along edge A
+			glm::vec3 lerpedPos = lerp(pos[0], pos[1], (getLerpAlpha(pos[0].y, pos[1].y)));
+			//pushPoint(index, lerpedPos);
+			positions.push_back(lerpedPos);
+			if (lerpedPos.x < 0 || lerpedPos.z < 0)
+			{
+				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
+				float lerpAlpha = getLerpAlpha(pos[0].y, pos[1].y);
+				lerpedPos = lerp(pos[0], pos[1], (lerpAlpha));
+			}
+			a = true;
+		}
+
+
+		if (pos[1].y <= contourHeight && pos[3].y > contourHeight || 
+			pos[1].y > contourHeight && pos[3].y <= contourHeight)
+		{
+			// along edge B
+			glm::vec3 lerpedPos = lerp(pos[1], pos[3], (getLerpAlpha(pos[1].y, pos[3].y)));
+			//pushPoint(index, lerpedPos);
+			positions.push_back(lerpedPos);
+
+			b = true;
+
+			if (lerpedPos.x < 0 || lerpedPos.z < 0)
+				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
+		}
+
+		if (pos[2].y <= contourHeight && pos[3].y > contourHeight || 
+			pos[2].y > contourHeight && pos[3].y <= contourHeight)
+		{
+			// along edge C
+			glm::vec3 lerpedPos = lerp(pos[2], pos[3], (getLerpAlpha(pos[2].y, pos[3].y)));
+			//pushPoint(index, lerpedPos);
+			positions.push_back(lerpedPos);
+
+			//std::cout << "edge C\n";
+			c = true;
+			if (lerpedPos.x < 0 || lerpedPos.z < 0)
+				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
+
+		}
+
+		if (pos[0].y <= contourHeight && pos[2].y > contourHeight || 
+			pos[0].y > contourHeight && pos[2].y <= contourHeight)
+		{
+			// along edge D
+			glm::vec3 lerpedPos = lerp(pos[0], pos[2], (getLerpAlpha(pos[0].y, pos[2].y)));
+			//pushPoint(index, lerpedPos);
+			positions.push_back(lerpedPos);
+
+			//std::cout << "edge D\n";
+			d = true;
+			if (lerpedPos.x < 0 || lerpedPos.z < 0)
+				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
+		}
+
+		auto lerpFloat = [](float a, float b, float alpha) {return a + (b - a) * alpha; };
+		auto getPositionOnTriangleLine = [pos, lerp](float alpha) {return lerp(pos[0], pos[3], alpha); };
+		auto getTriangleAlpha = [lerpFloat, getLerpAlpha, pos](int a1, int a2, int b1, int b2)
+		{
+			float lerpAlphaA = getLerpAlpha(pos[a1].y, pos[a2].y);
+			float lerpAlphaB = getLerpAlpha(pos[b1].y, pos[b2].y);
+			return lerpFloat(lerpAlphaA, lerpAlphaB, 0.5f); };
+		/*
+__c__
+|    /|
+d  /  b
+|/_a__|
+*/
+		if (positions.size() == 2)
+		{
+			glm::vec3 triangleLinePos{};
+			if (a && c)
+				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 2, 3));
+			else if (a && d)
+				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
+			else if (b && c)
+				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 2, 3));
+			else if (b && d)
+				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 0, 2));
+			else
+			{
+				pushPoint(index, positions[0]);
+				pushPoint(index, positions[1]);
+				return;
+			}
+
+			pushPoint(index, positions[0]);
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, positions[1]);
+		}
+		else if (positions.size() == 4)
+		{
+
+			glm::vec3 triangleLinePos{};
+			// a - b
+			pushPoint(index, positions[0]);
+			pushPoint(index, positions[1]);
+
+			// b - c
+			pushPoint(index, positions[1]);
+			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 2, 3)); 
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, positions[2]);
+
+			// c - d
+			pushPoint(index, positions[2]);
+			pushPoint(index, positions[3]);
+
+			// d - a
+			pushPoint(index, positions[3]);
+			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, triangleLinePos);
+			pushPoint(index, positions[0]);
+
+			//if (a && c)
+			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 2, 3));
+			//else if (a && d)
+			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
+			//else if (b && c)
+			//else if (b && d)
+			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 0, 2));
+
+		}
+	};
+
+	auto findDrawPoints = [lerp](glm::vec3* positions, float height, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& d)
+	{
+		/*	  c
+			d	b
+			  a
+		*/
+		a = lerp(positions[0], positions[1], 0.5f);
+		//a.y = height;
+		b = lerp(positions[3], positions[1], 0.5f);
+		//b.y = height;
+		c = lerp(positions[3], positions[2], 0.5f);
+		//c.y = height;
+		d = lerp(positions[2], positions[0], 0.5f);
+		//d.y = height;
+	};
+
+	int index{ };
+	auto drawCase = [contourMesh, findDrawPoints](int caseToDraw, glm::vec3* positions, float height, int& index)
+	{
+		/*	  c
+			d	b
+			  a
+		*/
+		glm::vec3 a, b, c, d;
+		glm::vec3 normal{ 0,4,0 };
+		glm::vec2 uv{};
+		findDrawPoints(positions, height, a, b, c, d);
+		switch (caseToDraw)
+		{
+		case 1: case 14:
+			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 2: case 13:
+			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 3: case 12:
+			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 4: case 11:
+			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 5:
+			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+
+			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 6: case 9:
+			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+		case 7: case 8:
+			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+
+			break;
+		case 10:
+			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+
+			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
+			contourMesh->m_indices.push_back(index++);
+			break;
+
+		default:
+			break;
+		}
+	};
+
+	for (int i{-50}; i < yMax; i += ekviDistance)
+	{
+		for (int j{}; j < terrainMesh->m_vertices.size()-columns-1; ++j)
+		{
+			int caseToDraw{};
 			contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
+
+			if ((j + 1) % columns == 0)
+				continue;
+
+			//if((j + columns + 1) >= )
 
 			tempPosition[0] = terrainMesh->m_vertices[j].getPosition();
 			tempPosition[1] = terrainMesh->m_vertices[j + 1].getPosition();
 			tempPosition[2] = terrainMesh->m_vertices[j + columns].getPosition();
 			tempPosition[3] = terrainMesh->m_vertices[j + columns + 1].getPosition();
+			findCaseToDraw(tempPosition, i, index);
 
+			//if (tempPosition[0].y < j && tempPosition[2].y >= j)
+			//{
+			//	contourMesh->m_vertices.push_back(Vertex(getContourPosition(tempPosition[0], i), normal, uv));
+			//	contourMesh->m_indices.push_back(index++);
+			//}
+			////////caseToDraw += withinEkviDistance(tempPosition[0], i);
+			////////caseToDraw += withinEkviDistance(tempPosition[1], i) * 2;
+			////////caseToDraw += withinEkviDistance(tempPosition[2], i) * 4;
+			////////caseToDraw += withinEkviDistance(tempPosition[3], i) * 8;
+
+			////////drawCase(caseToDraw, tempPosition, i, index);
+			
+
+
+			//if (caseToDraw != 15 && caseToDraw > 0)
+			//	std::cout << "CaseToDraw: " << caseToDraw << "\n";
 			//tempLinePosA = lerp(tempPosition[0], tempPosition[2], 0.5f);
 			//tempLinePosB = lerp(tempPosition[1], tempPosition[3], 0.5f);
 
 			//findLineToDraw(tempPosition, tempLinePosA, tempLinePosB);
-			contourMesh->m_vertices.push_back(Vertex(tempLinePosA, glm::vec3(0, 1, 0), glm::vec2()));
-			contourMesh->m_vertices.push_back(Vertex(tempLinePosB, glm::vec3(0, 1, 0), glm::vec2()));
+			//contourMesh->m_vertices.push_back(Vertex(tempLinePosA, glm::vec3(0, 1, 0), glm::vec2()));
+			//contourMesh->m_vertices.push_back(Vertex(tempLinePosB, glm::vec3(0, 1, 0), glm::vec2()));
 
-			contourMesh->m_indices.push_back(j);
-			contourMesh->m_indices.push_back(j+1);
+			//contourMesh->m_indices.push_back(j);
+			//contourMesh->m_indices.push_back(j+1);
+			//if (j > 10)
+			//	break;
 
 		}
+	/*	if (i > 10)
+			break;*/
 	}
+
+
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0, 0), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0, 10), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0.2, 0), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0.2, 10), glm::vec3(0, 3, 0), glm::vec2()));
+
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0,10, 0), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10, 10), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10.2, 0), glm::vec3(0, 3, 0), glm::vec2()));
+	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10.2, 10), glm::vec3(0, 3, 0), glm::vec2()));
+	//////contourMesh->m_indices.push_back(0);
+	//////contourMesh->m_indices.push_back(3);
+	//////contourMesh->m_indices.push_back(2);
+
+	//////contourMesh->m_indices.push_back(0);
+	//////contourMesh->m_indices.push_back(1);
+	//////contourMesh->m_indices.push_back(3);
+
+	//////contourMesh->m_indices.push_back(4);
+	//////contourMesh->m_indices.push_back(7);
+	//////contourMesh->m_indices.push_back(6);
+
+	//////contourMesh->m_indices.push_back(4);
+	//////contourMesh->m_indices.push_back(5);
+	//////contourMesh->m_indices.push_back(7);
+
+	//contourMesh->m_indices.push_back(0);
+	//contourMesh->m_indices.push_back(1);
+	//contourMesh->m_indices.push_back(4);
+	//contourMesh->m_indices.push_back(5);
+
+
+	//indices.push_back(i);
+	//indices.push_back(i + 1 + columns);
+	//indices.push_back(i + columns);
+
+	//indices.push_back(i);
+	//indices.push_back(i + 1);
+	//indices.push_back(i + columns + 1);
+
+	//contourMesh->m_indices.push_back(2);
+
 	//}
 	contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
-	contourMesh->m_drawType = GL_LINE_STRIP;
+	contourMesh->m_drawType = GL_LINES;
 	MeshSystem::initialize(*contourMesh);
 	contourMesh->bDisregardedDuringFrustumCulling = true;
 	

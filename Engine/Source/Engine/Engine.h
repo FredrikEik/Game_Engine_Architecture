@@ -80,6 +80,7 @@ private:
 
 	bool bIsPlaying{ false };
 public:
+	class Shader* getPhongShader() const { return phongShader; }
 	ECSManager* getECSManager() const { return ECS; }
 	float getWindowWidth() const { return windowWidth; }
 	void setWindowWidth(float val) { windowWidth = val; }

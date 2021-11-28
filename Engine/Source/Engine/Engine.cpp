@@ -32,7 +32,7 @@
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
-
+#include <thread>
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
@@ -215,22 +215,24 @@ void Engine::init()
 
 	uint32 contourEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent>(contourEntity);
+	ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity)->bDisregardedDuringFrustumCulling = true;
+
 	TerrainSystem::generateContourLines(contourEntity, terrainEntity, ECS);
 
-	for (int i{}; i < 5; ++i)
-	{
-		for (int j{}; j < 5; ++j)
-		{
-			uint32 entt = ECS->newEntity();
-			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
-			ECS->loadAsset(entt, DefaultAsset::SPHERE);
-			TransformSystem::setPosition(entt, glm::vec3(4 * i + 52 , 200, 52 + 4* j ), ECS);
-			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
-			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
+	//for (int i{}; i < 5; ++i)
+	//{
+	//	for (int j{}; j < 5; ++j)
+	//	{
+	//		uint32 entt = ECS->newEntity();
+	//		ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
+	//		ECS->loadAsset(entt, DefaultAsset::SPHERE);
+	//		TransformSystem::setPosition(entt, glm::vec3(4 * i + 52 , 200, 52 + 4* j ), ECS);
+	//		//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
+	//		MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
 
-		}
+	//	}
 
-	}
+	//}
 	lastFrame = glfwGetTime();
 }
 
