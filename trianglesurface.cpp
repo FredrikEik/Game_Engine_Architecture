@@ -104,7 +104,7 @@ void TriangleSurface::readFile(std::string filnavn)
     }
 
 //Bruker maximum og minimums kordinater til å sette opp mappet i et 5x5 rutenett
-        float squareSize = 10;
+        float squareSize = 5;
         std::vector<float> mapHeights;
         int terrainGridX = 0;
         int terrainGridZ = 0;
@@ -227,17 +227,20 @@ void TriangleSurface::readFile(std::string filnavn)
                 if(j+((i+1)*terrainGridX) < mapHeights.size())
                 {
                 Vertex v{};
-                v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
-                //qDebug() <<"v1: " << j + i*terrainGridX;
-                v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
-                //qDebug() <<"v2: " << j + ((i+1)*terrainGridX);
-                v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
-                //qDebug() <<"v3: " << (j+1) + (i*terrainGridX);
                 v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
                 //qDebug() <<"v4: " <<  (j+1) + (i*terrainGridX);
                 v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
                 //qDebug() <<"v5: " << (j+1) + ((i+1)*terrainGridX);
                 v.set_xyz(((i+1)*squareSize),mapHeights[(j+1) + ((i+1)*terrainGridZ)], ((j+1)*squareSize)); v.set_rgb(255,0,0); getMeshComponent()->mVertices.push_back(v);
+                v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
+                //qDebug() <<"v1: " << j + i*terrainGridX;
+                v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
+
+                //qDebug() <<"v2: " << j + ((i+1)*terrainGridX);
+                v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
+
+                //qDebug() <<"v3: " << (j+1) + (i*terrainGridX);
+
                 //qDebug() <<"v6: " << j + ((i+1)*terrainGridX);
                 }
 

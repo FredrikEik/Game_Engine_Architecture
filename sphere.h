@@ -4,6 +4,7 @@
 #pragma once
 
 #include "gameobject.h"
+#include "trianglesurface.h"
 
 class Sphere : public GameObject
 {
@@ -14,8 +15,18 @@ public:
     void draw() override;
     void init() override;
     void move(float x, float y, float z) override;
+    void setSurface(GameObject* surface) { triangle_surface = surface; }
 
 private:
+
+    gsl::Vector3D old_normal{0.0, 0.0, 1.0};
+    int old_index{0};
+    gsl::Vector3D velocity{0.0,0.0,0.0};
+    gsl::Vector3D acceleration{0.0,0.0,0.0};
+    gsl::Vector3D gForce{0.0,0.0,0.0};
+    gsl::Vector3D gAcceleration{0.0,0.0,9.8};
+    GameObject* triangle_surface;
+    float mass = 0.01;
 
 };
 

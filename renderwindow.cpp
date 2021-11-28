@@ -371,14 +371,16 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
+            factory->mGameObjects[i]->move(0,0,0);
         }
     }
-    if (!editorMode){
+    /*if (!editorMode){
        thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
        inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
+    */
 
 
     //Calculate framerate before
@@ -679,8 +681,6 @@ void RenderWindow::handleInput()
 {
     //Camera
     mCurrentCamera->setSpeed(0.f);  //cancel last frame movement
-    if(editorMode)
-    {
     if(mInput.RMB) //editor
     {
         if(mInput.W)
@@ -696,14 +696,17 @@ void RenderWindow::handleInput()
         if(mInput.E)
             mCurrentCamera->updateHeigth(mCameraSpeed);
     }
-    }
+    /*
 
     else if(!editorMode) //karakter shit her
     {  
       static_cast<Player*>(mPlayer)->movement();
     }
+    */
 	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
+
 }
+
 
 void RenderWindow::saveLevel()
 {

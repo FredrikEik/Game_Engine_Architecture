@@ -25,6 +25,7 @@ public:
     int lightCounter=0;
 
     GameObject* createObject(std::string objectName);
+    GameObject* mGround;
 
     void saveMesh(std::string fileName, std::string nickName);
 

@@ -148,7 +148,6 @@ namespace gsl
         }
     }
 
-
     Vector3D Vector3D::normalized()
     {
         Vector3D normalized;

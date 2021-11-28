@@ -102,6 +102,7 @@ GameObject* Factory::createObject(std::string objectName)
         spherecounter++;
         objectToCreate->mObjectType = "Sphere";
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
+        static_cast<Sphere*>(objectToCreate)->setSurface(mGround);
     }
     else if(objectName == "Camera")
     {
@@ -152,6 +153,7 @@ GameObject* Factory::createObject(std::string objectName)
        objectToCreate = new TriangleSurface("../GEA2021/Maps/kongehuset.txt");
        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+       mGround = objectToCreate;
     }
     else{return nullptr;}
 
