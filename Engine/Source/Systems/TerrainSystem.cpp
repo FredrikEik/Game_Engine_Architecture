@@ -247,40 +247,18 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 	assert(terrainMesh);
 	assert(contourMesh);
 	contourMesh->m_vertices.reserve(terrainMesh->m_indices.size());
-
-	std::vector<glm::vec3>& positions = (*new std::vector<glm::vec3>());
-	std::vector<GLuint>& indices = (*new std::vector<GLuint>());
-
-	auto lerp = [](const glm::vec3& a, const glm::vec3& b, float alpha) -> glm::vec3
-	{
-		return glm::vec3(
-			a.x + ((b.x-a.x)	* alpha), 
-			a.y + ((b.y-a.y)	* alpha),
-			a.z + ((b.z-a.z)	* alpha)
-		);
-	};
-
-	auto getContourPosition = [](const glm::vec3& position, float height) -> glm::vec3
-	{
-		return glm::vec3(position.x, height, position.z);
-	};
-
+	contourMesh->m_indices.reserve(terrainMesh->m_indices.size());
 
 	glm::vec3 tempPosition[4]{};
-	glm::vec3 tempLinePosA{};
-	glm::vec3 tempLinePosB{};
 
-	//int i{};
 	int columns = std::sqrt(terrainMesh->m_vertices.size());
 	int ekviDistance{ 4 };
+	int yMin{ -50 };
 	int yMax{ 50 };
-	//for (auto& it : terrainMesh->m_indices)
-	//{
 	
-
-	auto findCaseToDraw = [contourMesh, lerp](const glm::vec3* pos, float contourHeight, int& index)
+#pragma region MarchingSquares
+	auto drawContourOnSquare = [contourMesh](const glm::vec3* pos, float contourHeight, int& index)
 	{
-
 		/*
 		 __c__
 		|    /|	
@@ -289,11 +267,18 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 		*/
 
 		bool a{}, b{}, c{}, d{};
-		glm::vec3 n(0, 4, 0);
-		glm::vec2 uv{};
 		std::vector<glm::vec3> positions;
 		
-		//auto customPos = [contourHeight](const glm::vec3 pos) {return glm::vec3(pos.x, contourHeight, pos.z); };
+	#pragma region ConvenienceLambdas
+		auto lerp = [](const glm::vec3& a, const glm::vec3& b, float alpha) -> glm::vec3
+		{
+			return glm::vec3(
+				a.x + ((b.x - a.x) * alpha),
+				a.y + ((b.y - a.y) * alpha),
+				a.z + ((b.z - a.z) * alpha)
+			);
+		};
+
 		auto getLerpAlpha = [contourHeight](float lower, float upper) {
 			float height = contourHeight;
 			// Making sure the values are sorted by lowest to highest
@@ -303,64 +288,58 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 				lower = upper;
 				upper = temp;
 			}
-			// Finding out the lerp alpha of height between lower and upper
+			// Subtracts the lowest value to find the difference between the height and max value
+			// The result is the alpha we would use when linear interpolating lower and upper to get height.
 			float shift = lower;
 			upper -= shift;
 			height -= shift;
 			return height / upper;
 		};
+
+		// Convenience lambda to push a point to the mesh.
 		auto pushPoint = [contourMesh, contourHeight](int& index, const glm::vec3& positionToPush)
 		{
-			//contourMesh->m_vertices.push_back(Vertex(glm::vec3(positionToPush.x, contourHeight, positionToPush.z), glm::vec3(0, 4, 0), glm::vec2()));
 			contourMesh->m_vertices.push_back(Vertex(positionToPush, glm::vec3(0, 4, 0), glm::vec2()));
 			contourMesh->m_indices.push_back(index++);
 		};
+		//ConvenienceLambdas
+	#pragma endregion
+
+		// This is essentially where the marching squares are happening
+	#pragma region ContourLineTesting
+		// Tests if the contour line crosses edge A
 		if (pos[0].y <= contourHeight && pos[1].y > contourHeight ||
 			pos[0].y > contourHeight && pos[1].y <= contourHeight)
 		{
 			// along edge A
 			glm::vec3 lerpedPos = lerp(pos[0], pos[1], (getLerpAlpha(pos[0].y, pos[1].y)));
-			//pushPoint(index, lerpedPos);
 			positions.push_back(lerpedPos);
-			if (lerpedPos.x < 0 || lerpedPos.z < 0)
-			{
-				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
-				float lerpAlpha = getLerpAlpha(pos[0].y, pos[1].y);
-				lerpedPos = lerp(pos[0], pos[1], (lerpAlpha));
-			}
 			a = true;
 		}
 
-
+		// Tests if the contour line crosses edge B
 		if (pos[1].y <= contourHeight && pos[3].y > contourHeight || 
 			pos[1].y > contourHeight && pos[3].y <= contourHeight)
 		{
 			// along edge B
 			glm::vec3 lerpedPos = lerp(pos[1], pos[3], (getLerpAlpha(pos[1].y, pos[3].y)));
-			//pushPoint(index, lerpedPos);
 			positions.push_back(lerpedPos);
 
 			b = true;
-
-			if (lerpedPos.x < 0 || lerpedPos.z < 0)
-				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
 		}
 
+		// Tests if the contour line crosses edge C
 		if (pos[2].y <= contourHeight && pos[3].y > contourHeight || 
 			pos[2].y > contourHeight && pos[3].y <= contourHeight)
 		{
 			// along edge C
 			glm::vec3 lerpedPos = lerp(pos[2], pos[3], (getLerpAlpha(pos[2].y, pos[3].y)));
-			//pushPoint(index, lerpedPos);
 			positions.push_back(lerpedPos);
 
-			//std::cout << "edge C\n";
 			c = true;
-			if (lerpedPos.x < 0 || lerpedPos.z < 0)
-				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
-
 		}
 
+		// Tests if the contour line crosses edge D
 		if (pos[0].y <= contourHeight && pos[2].y > contourHeight || 
 			pos[0].y > contourHeight && pos[2].y <= contourHeight)
 		{
@@ -369,330 +348,166 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 			positions.push_back(lerpedPos);
 
 			d = true;
-			if (lerpedPos.x < 0 || lerpedPos.z < 0)
-				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
 		}
+		//ContourLineTesting
+	#pragma endregion 
 
-		auto lerpFloat = [](float a, float b, float alpha) {return a + (b - a) * alpha; };
-		auto getPositionOnTriangleLine = [pos, lerp](float alpha) {return lerp(pos[0], pos[3], alpha); };
-
-		auto getTriangleAlpha = [lerp, lerpFloat, getLerpAlpha, pos](int a1, int a2, int b1, int b2)
-		{
-			float lerpAlphaA = getLerpAlpha(pos[a1].y, pos[a2].y);
-			float lerpAlphaB = getLerpAlpha(pos[b1].y, pos[b2].y);
-			//TESTING CODE
-			
-
-			// END OF TESTING CODE
-			return lerpFloat(lerpAlphaA, lerpAlphaB, 0.5f);
-		};
-
+		// Helper lambdas to find where the contour line intersects the quad diagonal
+		// The goal is to triangulate the result after marching the squares. 
+	#pragma region TriangleIntersection
+		/*
+		* Because the lambda getTriangleIntersectionPoint only finds the closest point to intersection
+		* and not the exact point, the lambda getTriangleIntersectionAlpha reverse engineers the 
+		* approximated point to find the alpha it would have if it were a point 
+		* linear interpolated on the diagonal. 
+		
+		* This can then be used to lerp on the actual diagonal to achieve a much more accurate result.
+		*/
 		auto getTriangleIntersectionAlpha = [pos, lerp](glm::vec3 point)
 		{
 			glm::vec3 a = pos[0];
 			glm::vec3 b = pos[3];
+			// Because Y is where the biggest error in the approximation lies, we flatten the quad by removing Y
 			a.y = 0;
 			b.y = 0;
 			point.y = 0;
+
+			// Making sure a is the shortest vector
 			if (glm::length(a) > glm::length(b))
 			{
 				glm::vec3 temp = a;
 				a = b;
 				b = temp;
 			}
+			// Subtracts a to find out where the point is relative to b
 			b -= a;
 			point -= a;
-			float alpha{ (glm::length(point) / glm::length(b)) };
-			return alpha;
+			return (glm::length(point) / glm::length(b));
 		};
 
-		auto getTriangleIntersectionPoint = [pos, lerp, getTriangleIntersectionAlpha](const glm::vec3& a1, const glm::vec3& a2)
+		// Finds an approximate point where the line intersects with the diagonal of the quad
+		// http://paulbourke.net/geometry/pointlineplane/
+		auto getTriangleIntersectionPoint = [pos, lerp](const glm::vec3& p0, const glm::vec3& p1)
 		{
+			const glm::vec3& p2 = pos[0];
+			const glm::vec3& p3 = pos[3];
 
-			const glm::vec3& b1 = pos[0];
-			const glm::vec3& b2 = pos[3];
+			float dot0232{ glm::dot(p0 - p2, p3 - p2) };
+			float dot3210{ glm::dot(p3 - p2, p1 - p0) };
+			float dot0210{ glm::dot(p0 - p2, p1 - p0) };
+			float dot3232{ glm::dot(p3 - p2, p3 - p2) };
+			float dot2121{ glm::dot(p1 - p0, p1 - p0) };
 
-			float d1343{ glm::dot(a1 - b1, b2 - b1) };
-			float d4321{ glm::dot(b2 - b1, a2 - a1) };
-			float d1321{ glm::dot(a1 - b1, a2 - a1) };
-			float d4343{ glm::dot(b2 - b1, b2 - b1) };
-			float d2121{ glm::dot(a2 - a1, a2 - a1) };
+			float numerator = dot0232 * dot3210 - dot0210 * dot3232;
+			float denominator = dot2121 * dot3232 - dot3210 * dot3210;
+			float mua = numerator / denominator;
+			float mub = (dot0232 + dot3210 * (mua)) / dot3232;
 
-			float denom = d2121 * d4343 - d4321 * d4321;
-			float numer = d1343 * d4321 - d1321 * d4343;
-			float mua = numer / denom;
-			float mub = (d1343 + d4321 * (mua)) / d4343;
+			// The line between pointA and pointB is the shortest line segment
+			// and can be considered as the intersection
+			glm::vec3 pointA = p0 + (mua * (p1 - p0));
+			glm::vec3 pointB = p2 + (mub * (p3 - p2));
 
-			glm::vec3 pointA = a1 + (mua * (a2 - a1));
-			glm::vec3 pointB = b1 + (mub * (b2 - b1));
-			
-
-
+			// returns a point on the middle of the shortest line segment separating the lines.
 			return lerp(pointA, pointB, 0.5f);
-			return pointB;
 		};
+		//TriangleIntersection
+	#pragma endregion
+
+	#pragma region PushingVertices
 		/*
-__c__
-|    /|
-d  /  b
-|/_a__|
-*/
+		 __c__
+		|    /|
+		d  /  b
+		|/_a__|
+		*/
+		// Tests to see if every edge is intersected or only 2 are
 		if (positions.size() == 2)
-		{
-			
-			//
-			if (a && c);
-			else if (a && d);
-			else if (b && c);
-			else if (b && d);
+		{	
+			if (a && c ||
+				a && d ||
+				b && c ||
+				b && d)
+			{
+				// Finds the point where the contour line intersects with the quad triangulation diagonal
+				glm::vec3 diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+					getTriangleIntersectionPoint(positions[0], positions[1])));
+
+				pushPoint(index, positions[0]);
+				pushPoint(index, diagonalIntersectionPoint);
+				pushPoint(index, diagonalIntersectionPoint);
+				pushPoint(index, positions[1]);
+			}
 			else
 			{
+				// The line does not cross the diagonal where the quad is triangulated so we just draw a straight line 
 				pushPoint(index, positions[0]);
 				pushPoint(index, positions[1]);
-				return;
 			}
-			glm::vec3 triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
-				getTriangleIntersectionPoint(positions[0], positions[1])));
-
-			pushPoint(index, positions[0]);
-			pushPoint(index, triangleLinePos);
-			pushPoint(index, triangleLinePos);
-			pushPoint(index, positions[1]);
 		}
 		else if (positions.size() == 4)
 		{
-
-			glm::vec3 triangleLinePos{};
+			/*
+			 __c__
+			|    /|
+			d  /  b
+			|/_a__|
+			*/
+			glm::vec3 diagonalIntersectionPoint{};
 			// a - b
 			pushPoint(index, positions[0]);
 			pushPoint(index, positions[1]);
 
-			// b - c
+			// b - c   The line crosses the quad diagonal, so we draw a point where the lines intersect
 			pushPoint(index, positions[1]);
-			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 2, 3)); 
-			triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+			diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
 				getTriangleIntersectionPoint(positions[1], positions[2])));
-			pushPoint(index, triangleLinePos);
-			pushPoint(index, triangleLinePos);
+			pushPoint(index, diagonalIntersectionPoint);
+			pushPoint(index, diagonalIntersectionPoint);
 			pushPoint(index, positions[2]);
 
 			// c - d
 			pushPoint(index, positions[2]);
 			pushPoint(index, positions[3]);
 
-			// d - a
+			// d - a  The line crosses the quad diagonal, so we draw a point where the lines intersect
 			pushPoint(index, positions[3]);
-			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
-			triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+			diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
 				getTriangleIntersectionPoint(positions[3], positions[0])));
-			pushPoint(index, triangleLinePos);
-			pushPoint(index, triangleLinePos);
+			pushPoint(index, diagonalIntersectionPoint);
+			pushPoint(index, diagonalIntersectionPoint);
 			pushPoint(index, positions[0]);
-
-			//if (a && c)
-			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 2, 3));
-			//else if (a && d)
-			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
-			//else if (b && c)
-			//else if (b && d)
-			//	triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 0, 2));
-
 		}
+		//PushingVertices
+	#pragma endregion
 	};
+	//MarchingSquares
+#pragma endregion
 
-	auto findDrawPoints = [lerp](glm::vec3* positions, float height, glm::vec3& a, glm::vec3& b, glm::vec3& c, glm::vec3& d)
-	{
-		/*	  c
-			d	b
-			  a
-		*/
-		a = lerp(positions[0], positions[1], 0.5f);
-		//a.y = height;
-		b = lerp(positions[3], positions[1], 0.5f);
-		//b.y = height;
-		c = lerp(positions[3], positions[2], 0.5f);
-		//c.y = height;
-		d = lerp(positions[2], positions[0], 0.5f);
-		//d.y = height;
-	};
-
+#pragma region MainLoop
 	int index{ };
-	auto drawCase = [contourMesh, findDrawPoints](int caseToDraw, glm::vec3* positions, float height, int& index)
-	{
-		/*	  c
-			d	b
-			  a
-		*/
-		glm::vec3 a, b, c, d;
-		glm::vec3 normal{ 0,4,0 };
-		glm::vec2 uv{};
-		findDrawPoints(positions, height, a, b, c, d);
-		switch (caseToDraw)
-		{
-		case 1: case 14:
-			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 2: case 13:
-			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 3: case 12:
-			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 4: case 11:
-			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 5:
-			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-
-			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 6: case 9:
-			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-		case 7: case 8:
-			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-
-			break;
-		case 10:
-			contourMesh->m_vertices.push_back(Vertex(d, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(a, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-
-			contourMesh->m_vertices.push_back(Vertex(c, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			contourMesh->m_vertices.push_back(Vertex(b, normal, uv));
-			contourMesh->m_indices.push_back(index++);
-			break;
-
-		default:
-			break;
-		}
-	};
-
-	for (int i{-50}; i < yMax; i += ekviDistance)
+	for (int i{ yMin }; i < yMax; i += ekviDistance)
 	{
 		for (int j{}; j < terrainMesh->m_vertices.size()-columns-1; ++j)
 		{
 			int caseToDraw{};
-			contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
 
 			if ((j + 1) % columns == 0)
 				continue;
-
-			//if((j + columns + 1) >= )
 
 			tempPosition[0] = terrainMesh->m_vertices[j].getPosition();
 			tempPosition[1] = terrainMesh->m_vertices[j + 1].getPosition();
 			tempPosition[2] = terrainMesh->m_vertices[j + columns].getPosition();
 			tempPosition[3] = terrainMesh->m_vertices[j + columns + 1].getPosition();
-			findCaseToDraw(tempPosition, i, index);
-
-			//if (tempPosition[0].y < j && tempPosition[2].y >= j)
-			//{
-			//	contourMesh->m_vertices.push_back(Vertex(getContourPosition(tempPosition[0], i), normal, uv));
-			//	contourMesh->m_indices.push_back(index++);
-			//}
-			////////caseToDraw += withinEkviDistance(tempPosition[0], i);
-			////////caseToDraw += withinEkviDistance(tempPosition[1], i) * 2;
-			////////caseToDraw += withinEkviDistance(tempPosition[2], i) * 4;
-			////////caseToDraw += withinEkviDistance(tempPosition[3], i) * 8;
-
-			////////drawCase(caseToDraw, tempPosition, i, index);
-			
-
-
-			//if (caseToDraw != 15 && caseToDraw > 0)
-			//	std::cout << "CaseToDraw: " << caseToDraw << "\n";
-			//tempLinePosA = lerp(tempPosition[0], tempPosition[2], 0.5f);
-			//tempLinePosB = lerp(tempPosition[1], tempPosition[3], 0.5f);
-
-			//findLineToDraw(tempPosition, tempLinePosA, tempLinePosB);
-			//contourMesh->m_vertices.push_back(Vertex(tempLinePosA, glm::vec3(0, 1, 0), glm::vec2()));
-			//contourMesh->m_vertices.push_back(Vertex(tempLinePosB, glm::vec3(0, 1, 0), glm::vec2()));
-
-			//contourMesh->m_indices.push_back(j);
-			//contourMesh->m_indices.push_back(j+1);
-			//if (j > 10)
-			//	break;
-
+			drawContourOnSquare(tempPosition, i, index);
 		}
-	/*	if (i > 10)
-			break;*/
+
 	}
-
-
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0, 0), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0, 10), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0.2, 0), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 0.2, 10), glm::vec3(0, 3, 0), glm::vec2()));
-
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0,10, 0), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10, 10), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10.2, 0), glm::vec3(0, 3, 0), glm::vec2()));
-	//contourMesh->m_vertices.push_back(Vertex(glm::vec3(0, 10.2, 10), glm::vec3(0, 3, 0), glm::vec2()));
-	//////contourMesh->m_indices.push_back(0);
-	//////contourMesh->m_indices.push_back(3);
-	//////contourMesh->m_indices.push_back(2);
-
-	//////contourMesh->m_indices.push_back(0);
-	//////contourMesh->m_indices.push_back(1);
-	//////contourMesh->m_indices.push_back(3);
-
-	//////contourMesh->m_indices.push_back(4);
-	//////contourMesh->m_indices.push_back(7);
-	//////contourMesh->m_indices.push_back(6);
-
-	//////contourMesh->m_indices.push_back(4);
-	//////contourMesh->m_indices.push_back(5);
-	//////contourMesh->m_indices.push_back(7);
-
-	//contourMesh->m_indices.push_back(0);
-	//contourMesh->m_indices.push_back(1);
-	//contourMesh->m_indices.push_back(4);
-	//contourMesh->m_indices.push_back(5);
-
-
-	//indices.push_back(i);
-	//indices.push_back(i + 1 + columns);
-	//indices.push_back(i + columns);
-
-	//indices.push_back(i);
-	//indices.push_back(i + 1);
-	//indices.push_back(i + columns + 1);
-
-	//contourMesh->m_indices.push_back(2);
-
-	//}
-	contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity);
+	//MainLoop
+#pragma endregion
 	contourMesh->m_drawType = GL_LINES;
 	MeshSystem::initialize(*contourMesh);
 	contourMesh->bDisregardedDuringFrustumCulling = true;
-	
 }
 
 
