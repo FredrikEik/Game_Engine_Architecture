@@ -66,7 +66,7 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step = 7;
+    int step =7;
     float squaresDirection = (step-1);
     float Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
@@ -84,9 +84,10 @@ void LasSurface::readLasFile(std::string filnavn)
             float tempX=0;
             float tempY=0;
             float tempZ=0;
-            VerticesCounter++;
             squareMaxX = i +xOffset;
-            for ( unsigned long long k = 0 ; k<lasVertices.size(); k++){        //sjekker om punktene er innenfor squaren
+            VerticesCounter++;                          //det er problemer med for løkkene slik at vertices counteren ikke blir riktig på noen steps
+
+            for ( double k = 0 ; k<lasVertices.size(); k++){        //sjekker om punktene er innenfor squaren
                 if ( lasVertices[k].getXYZ().getX() < squareMaxX &&
                      lasVertices[k].getXYZ().getX() > i &&
                      lasVertices[k].getXYZ().getZ() < squareMaxZ &&
@@ -112,8 +113,8 @@ void LasSurface::readLasFile(std::string filnavn)
             vertex.set_normal(tempX,1,0);
 
             //qDebug () << numberofPointsInside;
-            //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
-            //qDebug() << lasVertices[squarecounter].getXYZ().x << lasVertices[squarecounter].getXYZ().y << lasVertices[squarecounter].getXYZ().z
+            qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
+            //qDebug() << lasVertices[VerticesCounter].getXYZ().x << lasVertices[VerticesCounter].getXYZ().y << lasVertices[VerticesCounter].getXYZ().z;
             tempVertices.push_back(vertex);                                 //push_backer vertexen
 
         }
@@ -125,7 +126,7 @@ void LasSurface::readLasFile(std::string filnavn)
         for(int i =0; i< Amountsquares-step-1; i++){                       // lager de nye punktene om til trekanter/squares.
 
             if(i == j*step){
-                j++;
+
                 i++;
                                                                // sjekker om alle squarene på en rekke er fylt ut.
             }
@@ -150,7 +151,6 @@ void LasSurface::readLasFile(std::string filnavn)
     //                }
     //            }
 
-    //qDebug() << xMinimum << xMaximum << yMinimum << yMaximum << zMinimum << zMaximum;
 
 
 }
