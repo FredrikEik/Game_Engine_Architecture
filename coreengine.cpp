@@ -116,9 +116,16 @@ void CoreEngine::setUpScene()
 //    t1(HeightMap.readLasFile());
 //    t1.detach();
 
-    HeightMap.readLasFile();
-    //Needs to be pushed to mRenderSystem
+    MeshData HeightMesh = HeightMap.readLasFile();
+
     GameObject *LasGround = mGameObjectManager->addObject("LasGround");
+
+//    LasGround->mMesh->mVAO[0] = HeightMesh.mVertices[0];
+//    LasGround->mMesh->mVertexCount = HeightMesh.mVertexCount;
+//    LasGround->mMesh->mIndexCount = HeightMesh.mIndexCount;
+    LasGround->mMesh->mDrawType = {GL_POINTS};
+    LasGround->mMesh->mColliderRadius = 0.0f;
+
     LasGround->mName = "LasGround";
 //    LasGround->mMesh = HeightMap.readLasFile(); //For now the mesh is the default triangle. Needs conversion from meshdata to an actual mesh.
     mRenderSystem->mGameObjects.push_back(LasGround);
