@@ -19,6 +19,12 @@ MeshHandler::MeshHandler()
 //    mGameObjectManager = &GameObjectManager::getInstance();
 }
 
+MeshHandler &MeshHandler::getInstance()
+{
+    static MeshHandler *mInstance = new MeshHandler();
+    return *mInstance;
+}
+
 int MeshHandler::makeMesh(std::string meshName)
 {
     int meshIndex{-1};

@@ -113,27 +113,37 @@ void CoreEngine::setUpScene()
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
     // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
-    MeshHandler HeightMapMeshHandler;
+    MeshHandler HeightMapMeshData;
 //    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
 //    t1(HeightMap.readLasFile());
 //    t1.detach();
 
     //Get the data from the las file.
-    MeshData HeightMesh = HeightMapMeshHandler.readLasFile();
+    MeshData HeightMesh = HeightMapMeshData.readLasFile();
+    mMeshHandler = &MeshHandler::getInstance();
 
     //Create a new mesh for the Las ground
-    int meshIndex = HeightMapMeshHandler.makeMesh("LasGroundMesh");
+    int meshIndex = HeightMapMeshData.makeMesh("LasGroundMesh");
     MeshComponent* currentMesh = new MeshComponent();
 
     //Fill the mesh with relevant data from heightMesh
-    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO,
-              HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+    std::copy(HeightMesh.mVAO,
+              mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
 
-    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount,
-              HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+    std::copy(HeightMesh.mVertexCount,
+              mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
 
-    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount,
-              HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+    std::copy(HeightMesh.mIndexCount,
+              mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+
+//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO,
+//              HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+
+//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount,
+//              HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+
+//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount,
+//              HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
 
 //    glPointSize(5.0f)
     currentMesh->mDrawType = {GL_POINTS};

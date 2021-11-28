@@ -36,7 +36,7 @@ class MeshHandler : public QOpenGLFunctions_4_1_Core
 {
 public:
     MeshHandler();
-
+    static MeshHandler& getInstance();
 //    GameObjectManager *mGameObjectManager{nullptr};
 
     int makeMesh(std::string meshName);

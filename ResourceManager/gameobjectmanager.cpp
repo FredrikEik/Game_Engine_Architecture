@@ -50,9 +50,14 @@ GameObject *GameObjectManager::addObject(std::string meshName)
 
     //copy all potential LOD levels:
     //std::copy faster than for loop and safer and ca as fast as memcpy
-    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVAO, mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
-    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVertexCount, mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
-    std::copy(mMeshHandler->mMeshes.at(meshIndex).mIndexCount, mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVAO,
+              mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mVertexCount,
+              mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+
+    std::copy(mMeshHandler->mMeshes.at(meshIndex).mIndexCount,
+              mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
 
     currentMesh->mDrawType = mMeshHandler->mMeshes.at(meshIndex).mDrawType;
     currentMesh->mColliderRadius = mMeshHandler->mMeshes.at(meshIndex).mColliderRadius;

@@ -38,6 +38,7 @@ public:
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};
     QTimer *mGameLoopTimer{nullptr};    //timer that drives the gameloop
+    MeshHandler *mMeshHandler{nullptr};
 
     bool isPlaying{false};              //is the game playing?
 
