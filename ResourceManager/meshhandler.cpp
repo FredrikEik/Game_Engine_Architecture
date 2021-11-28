@@ -48,6 +48,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
         if (meshName.find("editorgrid") != std::string::npos)
             meshIndex = makeEditorGrid();
+        if (meshName.find("LasGround") != std::string::npos)
+            meshIndex = readLasFile();
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -371,31 +373,6 @@ MeshData MeshHandler::makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, floa
     return tempMesh;
 }
 
-MeshData MeshHandler::makePoint(MeshData pointsIn, float pointSizeIn, gsl::Vector3D colorIn)
-{
-//    MeshData tempMesh;
-
-//    for(int i = 0; i < pointsIn.mVertexCount()-2; i += 3)
-//    {
-//        tempMesh.mVertices->push_back(Vertex{pointsIn.mVertices[i], pointsIn.mVertices[i+1], pointsIn.mVertices[+2], colorIn.x, colorIn.y, colorIn.z, 0.0f, 0.0f});
-//    }
-//    tempMesh.mDrawType = GL_POINTS;
-
-//    initMesh(tempMesh, 0);
-
-    pointsIn.mDrawType = GL_POINTS;
-
-    initMesh(pointsIn, 0);
-    return pointsIn;
-}
-
-//void MeshHandler::makeMeshFromMeshData(MeshData tempMesh)
-//{
-//    mMeshComponents.emplace_back(tempMesh);
-//    *object->mMesh = mMeshComponents.back();
-
-//    object->mMesh->mVertices->push_back(Vertex(vert[i].getXYZ().x -xPos, lineHeight, vert[i].getXYZ().z, 1,0,0));
-//}
 
 MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 {
@@ -598,7 +575,7 @@ void MeshHandler::makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn)
         meshIn.mColliderRadius = length;
 }
 
-MeshData MeshHandler::readLasFile()
+int MeshHandler::readLasFile()
 {
     float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
 
@@ -696,7 +673,8 @@ MeshData MeshHandler::readLasFile()
     int nrPoints[gridSizeX][gridSizeZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData[gridSizeX][gridSizeZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-    MeshData meshDataPoints; //Used to send meshdata to another function for drawing.
+    mMeshes.emplace_back(MeshData());
+    MeshData &meshDataPoints = mMeshes.back();
 
 
     qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
@@ -741,9 +719,11 @@ for (int x = 0; x < gridSizeX; x++)
 //        planeGrid[x][z].z *= -1;
 //        planeGrid[x][z].y *= -1;
 
-        meshDataPoints.mVertices->emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
-                                                     0.0f, 0.0f, 0.0f, //Normals
-                                                     0.0f, 0.0f}); //UVs
+        meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
+                                                 1.0f, 0.0f, 0.0f, //Normals
+                                                 0.0f, 0.0f}); //UVs
+        meshDataPoints.mDrawType = GL_POINTS;
+        initMesh(meshDataPoints, 0);
     }
 }
 //Print out all points as openGL_Points
@@ -756,7 +736,7 @@ for (int x = 0; x < gridSizeX; x++)
 //    qDebug() << "xMin" << xMin << "yMin" << yMin << "zMin" << zMin;
 //    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
-return meshDataPoints;
+return mMeshes.size()-1;
 
 //    int c = 0;
 //    qDebug() << "Start of triangle creation";

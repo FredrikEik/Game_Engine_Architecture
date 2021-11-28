@@ -54,19 +54,16 @@ public:
     ///Makes a line for debug drawing.
     MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
-    ////Makes the points for debug drawing with some default values other than the point.
-    MeshData makePoint(MeshData pointsIn, float pointSize = 1.0f, gsl::Vector3D colorIn = {0.0f, 1.0f, 0.0f});
-    void makeMeshFromMeshData(MeshData temp);
-
     std::map<std::string, unsigned int> mMeshMap;
     std::vector<MeshData> mMeshes;
-
-//    std::vector<MeshComponent> mMeshComponents;
 
     std::vector<MeshData> get_mMeshes() { return mMeshes; }
     std::map<std::string, unsigned int> get_mMeshMap() { return mMeshMap; }
 
-    MeshData readLasFile();
+    int readLasFile();
+
+    //initalizes the mesh with OpenGL buffers - VAO, VBO, EAB
+    void initMesh(MeshData &currentMesh, int lodLevel);
 
 private:
     int readObj(std::string filename);
@@ -76,9 +73,6 @@ private:
     int makeEditorGrid(int size = 10, int scale = 1);
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
-
-    //initalizes the mesh with OpenGL buffers - VAO, VBO, EAB
-    void initMesh(MeshData &currentMesh, int lodLevel);
 
 //    GameObject* object;
 

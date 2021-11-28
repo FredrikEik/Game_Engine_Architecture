@@ -33,6 +33,7 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn)
 
     mGameObjectManager = &GameObjectManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
+    mMeshHandler = &MeshHandler::getInstance();
 
     mInstance = this;
 
@@ -112,49 +113,43 @@ void CoreEngine::setUpScene()
 
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
-    // https://stackoverflow.com/questions/10673585/start-thread-with-member-function
-    MeshHandler HeightMapMeshData;
-//    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
-//    t1(HeightMap.readLasFile());
-//    t1.detach();
+    // https://stackoverflow.com/questions/10673585/start-thread-with-member-function]
+
+    // Attempt at threading the readLasFile using old mMeshHandler name
+    //    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
+    //    t1(HeightMap.readLasFile());
+    //    t1.detach();
 
     //Get the data from the las file.
-    MeshData HeightMesh = HeightMapMeshData.readLasFile();
-    mMeshHandler = &MeshHandler::getInstance();
+//    int heightMeshData = mMeshHandler->readLasFile();
 
     //Create a new mesh for the Las ground
-    int meshIndex = HeightMapMeshData.makeMesh("LasGroundMesh");
-    MeshComponent* currentMesh = new MeshComponent();
+//    int meshIndex = mMeshHandler->makeMesh("LasGroundMesh"); //Create the mesh, avoids duplication
 
-    //Fill the mesh with relevant data from heightMesh
-    std::copy(HeightMesh.mVAO,
-              mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+//    //Create a new meshcomponent, to fill with data from the mesh
+//    MeshComponent* currentMesh = new MeshComponent();
 
-    std::copy(HeightMesh.mVertexCount,
-              mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+//    //Fill the MeshComponent with relevant data from heightMeshData
+//    std::copy(heightMeshData.mVAO,
+//              mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
 
-    std::copy(HeightMesh.mIndexCount,
-              mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
+//    std::copy(heightMeshData.mVertexCount,
+//              mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
 
-//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO,
-//              HeightMapMeshHandler.mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
+//    std::copy(heightMeshData.mIndexCount,
+//              mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
 
-//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount,
-//              HeightMapMeshHandler.mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
+//    mMeshHandler->initMesh(heightMeshData, 0);
 
-//    std::copy(HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount,
-//              HeightMapMeshHandler.mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
-
-//    glPointSize(5.0f)
-    currentMesh->mDrawType = {GL_POINTS};
-    currentMesh->mColliderRadius = 0.0f;
+////    glPointSize(5.0f)
+//    currentMesh->mDrawType = {GL_POINTS}; //Draw the mesh as points.
+//    currentMesh->mColliderRadius = 0.0f;
 
     //Create the gameobject LasGround
-    GameObject *LasGround = mGameObjectManager->addObject("LasGround");
-    LasGround->mMesh = currentMesh;
-    LasGround->mName = "LasGround";
-    LasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
-    mRenderSystem->mGameObjects.push_back(LasGround);
+    GameObject *lasGround = mGameObjectManager->addObject("LasGround");
+    lasGround->mName = "LasGround";
+    lasGround->mTransform->mMatrix.translate(1.0f, 0.0f, 0.0f);
+    mRenderSystem->mGameObjects.push_back(lasGround);
 
 //---------------------End of Vis & Sim code----------------------------------------
 
