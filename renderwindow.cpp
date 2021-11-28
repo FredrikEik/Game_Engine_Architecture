@@ -254,7 +254,7 @@ void RenderWindow::init()
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+    //Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
 //    int eSize = (int)entities.size();
 //    for(int i = 0; i < eSize; i++){
 //        if(meshCompVec[i]->entity == 16){
@@ -262,10 +262,10 @@ void RenderWindow::init()
 //        }
 //    }
 
-    entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
 
     mSong->pause();
     mMainWindow->updateViewPort();
@@ -797,8 +797,10 @@ void RenderWindow::setCameraSpeed(float value)
     //Keep within some min and max values
     if(mCameraSpeed < 0.01f)
         mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
+    if (mCameraSpeed > 1.f)
+        mCameraSpeed = 1.f;
+
+    qDebug() << "Camera Speed: " << mCurrentCamera->getCameraSpeed();
 }
 
 void RenderWindow::handleInput()
@@ -1015,9 +1017,11 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Z)
     {
+        setCameraSpeed(0.1f);
     }
     if(event->key() == Qt::Key_X)
     {
+        setCameraSpeed(-0.1f);
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -1130,9 +1134,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            setCameraSpeed(0.1f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            setCameraSpeed(-0.1f);
     }
     event->accept();
 }

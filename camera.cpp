@@ -128,6 +128,11 @@ gsl::Vector3D Camera::forward() const
     return Cam.mForward;
 }
 
+float Camera::getCameraSpeed()
+{
+    return Cam.mSpeed;
+}
+
 void Camera::calculateFrustumVectors()
 {
     float halfVheight = mFrustum.mFarPlaneDistance * tanf(gsl::deg2radf(mFrustum.mFOVvertical/2)); //calculate the lenght of the opposite
