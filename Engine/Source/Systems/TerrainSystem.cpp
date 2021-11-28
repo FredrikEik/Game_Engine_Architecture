@@ -254,7 +254,7 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 	auto lerp = [](const glm::vec3& a, const glm::vec3& b, float alpha) -> glm::vec3
 	{
 		return glm::vec3(
-			a.x+  ((b.x-a.x)	* alpha), 
+			a.x + ((b.x-a.x)	* alpha), 
 			a.y + ((b.y-a.y)	* alpha),
 			a.z + ((b.z-a.z)	* alpha)
 		);
@@ -272,23 +272,11 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 	//int i{};
 	int columns = std::sqrt(terrainMesh->m_vertices.size());
-	int ekviDistance{ 2 };
+	int ekviDistance{ 4 };
 	int yMax{ 50 };
 	//for (auto& it : terrainMesh->m_indices)
 	//{
 	
-	// Rename or refactor
-	auto withinEkviDistance = [ekviDistance](const glm::vec3 pos, float contourHeight) -> bool
-	{
-		float heightDifference = pos.y - contourHeight;
-		if (std::abs(heightDifference) < 2)
-		{
-			return true;
-		}
-		return false;
-		return pos.y > contourHeight;
-
-	};
 
 	auto findCaseToDraw = [contourMesh, lerp](const glm::vec3* pos, float contourHeight, int& index)
 	{
@@ -378,10 +366,8 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 		{
 			// along edge D
 			glm::vec3 lerpedPos = lerp(pos[0], pos[2], (getLerpAlpha(pos[0].y, pos[2].y)));
-			//pushPoint(index, lerpedPos);
 			positions.push_back(lerpedPos);
 
-			//std::cout << "edge D\n";
 			d = true;
 			if (lerpedPos.x < 0 || lerpedPos.z < 0)
 				std::cout << "x: " << lerpedPos.x << " y: " << lerpedPos.y << " z: " << lerpedPos.z << "\n";
@@ -389,11 +375,62 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 		auto lerpFloat = [](float a, float b, float alpha) {return a + (b - a) * alpha; };
 		auto getPositionOnTriangleLine = [pos, lerp](float alpha) {return lerp(pos[0], pos[3], alpha); };
-		auto getTriangleAlpha = [lerpFloat, getLerpAlpha, pos](int a1, int a2, int b1, int b2)
+
+		auto getTriangleAlpha = [lerp, lerpFloat, getLerpAlpha, pos](int a1, int a2, int b1, int b2)
 		{
 			float lerpAlphaA = getLerpAlpha(pos[a1].y, pos[a2].y);
 			float lerpAlphaB = getLerpAlpha(pos[b1].y, pos[b2].y);
-			return lerpFloat(lerpAlphaA, lerpAlphaB, 0.5f); };
+			//TESTING CODE
+			
+
+			// END OF TESTING CODE
+			return lerpFloat(lerpAlphaA, lerpAlphaB, 0.5f);
+		};
+
+		auto getTriangleIntersectionAlpha = [pos, lerp](glm::vec3 point)
+		{
+			glm::vec3 a = pos[0];
+			glm::vec3 b = pos[3];
+			a.y = 0;
+			b.y = 0;
+			point.y = 0;
+			if (glm::length(a) > glm::length(b))
+			{
+				glm::vec3 temp = a;
+				a = b;
+				b = temp;
+			}
+			b -= a;
+			point -= a;
+			float alpha{ (glm::length(point) / glm::length(b)) };
+			return alpha;
+		};
+
+		auto getTriangleIntersectionPoint = [pos, lerp, getTriangleIntersectionAlpha](const glm::vec3& a1, const glm::vec3& a2)
+		{
+
+			const glm::vec3& b1 = pos[0];
+			const glm::vec3& b2 = pos[3];
+
+			float d1343{ glm::dot(a1 - b1, b2 - b1) };
+			float d4321{ glm::dot(b2 - b1, a2 - a1) };
+			float d1321{ glm::dot(a1 - b1, a2 - a1) };
+			float d4343{ glm::dot(b2 - b1, b2 - b1) };
+			float d2121{ glm::dot(a2 - a1, a2 - a1) };
+
+			float denom = d2121 * d4343 - d4321 * d4321;
+			float numer = d1343 * d4321 - d1321 * d4343;
+			float mua = numer / denom;
+			float mub = (d1343 + d4321 * (mua)) / d4343;
+
+			glm::vec3 pointA = a1 + (mua * (a2 - a1));
+			glm::vec3 pointB = b1 + (mub * (b2 - b1));
+			
+
+
+			return lerp(pointA, pointB, 0.5f);
+			return pointB;
+		};
 		/*
 __c__
 |    /|
@@ -402,21 +439,20 @@ d  /  b
 */
 		if (positions.size() == 2)
 		{
-			glm::vec3 triangleLinePos{};
-			if (a && c)
-				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 2, 3));
-			else if (a && d)
-				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
-			else if (b && c)
-				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 2, 3));
-			else if (b && d)
-				triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 0, 2));
+			
+			//
+			if (a && c);
+			else if (a && d);
+			else if (b && c);
+			else if (b && d);
 			else
 			{
 				pushPoint(index, positions[0]);
 				pushPoint(index, positions[1]);
 				return;
 			}
+			glm::vec3 triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+				getTriangleIntersectionPoint(positions[0], positions[1])));
 
 			pushPoint(index, positions[0]);
 			pushPoint(index, triangleLinePos);
@@ -434,6 +470,8 @@ d  /  b
 			// b - c
 			pushPoint(index, positions[1]);
 			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(1, 3, 2, 3)); 
+			triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+				getTriangleIntersectionPoint(positions[1], positions[2])));
 			pushPoint(index, triangleLinePos);
 			pushPoint(index, triangleLinePos);
 			pushPoint(index, positions[2]);
@@ -445,6 +483,8 @@ d  /  b
 			// d - a
 			pushPoint(index, positions[3]);
 			triangleLinePos = getPositionOnTriangleLine(getTriangleAlpha(0, 1, 0, 2));
+			triangleLinePos = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+				getTriangleIntersectionPoint(positions[3], positions[0])));
 			pushPoint(index, triangleLinePos);
 			pushPoint(index, triangleLinePos);
 			pushPoint(index, positions[0]);
