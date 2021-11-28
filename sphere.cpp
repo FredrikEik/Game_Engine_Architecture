@@ -62,8 +62,10 @@ void Sphere::move(float x, float y, float z)
 {
     std::vector<Vertex>& vertices = (dynamic_cast<TriangleSurface*>(triangle_surface)->getMeshComponent()->mVertices);
     gsl::Vector3D ballPos = this->getTransformComponent()->mMatrix.getPosition();
+    //qDebug() << this->getTransformComponent()->mMatrix.getPosition();
 
-    for(int i = 0; i <this->getMeshComponent()->mVertices.size(); i+=3)
+
+    for(int i = 0; i < vertices.size(); i+=3)
     {
     gsl::Vector3D p1, p2, p3;
 
@@ -76,7 +78,9 @@ void Sphere::move(float x, float y, float z)
 
     if(baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
         {
-        qDebug() << ballPos.x << ballPos.y << ballPos.z;
+        qDebug() << "Barycoords: " << baryCoords;
+        qDebug() << "Triangle: " << i/3;
+        //qDebug() << ballPos.x << ballPos.y << ballPos.z;
         //qDebug() << velocity.x << velocity.y << velocity.z;
         //qDebug()<< i;
         /*
@@ -94,16 +98,17 @@ void Sphere::move(float x, float y, float z)
         planeNormal.normalize();
         //qDebug()<< planeNormal.x << planeNormal.y << planeNormal.z;
         //gForce = gsml::Vec3(abs(gForce.x), abs(gForce.y), abs(gForce.z));
-        acceleration = gForce ^ planeNormal ^ gsl::Vector3D(0,0,planeNormal.z);
+        acceleration = gsl::Vector3D::cross(gForce,planeNormal);
+        acceleration = gsl::Vector3D::cross(acceleration, gsl::Vector3D(0,planeNormal.y,0));
         //qDebug()<< gForce.x << gForce.y << gForce.z;
         //qDebug()<< acceleration.x << acceleration.y << acceleration.z;
         //if(i==0){velocity = velocity - acceleration * 0.00017;}
         //else{velocity = velocity + acceleration * 0.00017;}
         velocity = velocity + acceleration * 0.17;
-        //qDebug()<< velocity.x << velocity.y << velocity.z;
+        //qDebug()<<"Velocity: " << velocity.x << velocity.y << velocity.z;
         gsl::Vector3D newPos = ballPos + velocity;
-        newPos.z = (baryCoords.x * p1.z + baryCoords.y * p2.z + baryCoords.z * p3.z)+0.25;
-        qDebug() << newPos;
+        newPos.y = (baryCoords.x * p1.y + baryCoords.y * p3.y + baryCoords.z * p2.y);
+        //qDebug() << "Position: " << getTransformComponent()->mMatrix.getPosition();
         getTransformComponent()->mMatrix.setPosition(newPos.x,newPos.y,newPos.z);
 
         //mPosition.translate(velocity.x,velocity.y,velocity.z);
