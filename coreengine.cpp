@@ -121,7 +121,8 @@ void CoreEngine::setUpScene()
     //    t1.detach();
 
     //Get the data from the las file.
-    int heightMeshData = mMeshHandler->readLasFile();
+    int heightMeshData = mMeshHandler->readLasFile(); //Superflous call, beacuse when adding object "LasGround" the function will run
+    //But a nice shortcut for ctrl + left-click
 
     //Create a new mesh for the Las ground
 //    int meshIndex = mMeshHandler->makeMesh("LasGroundMesh"); //Create the mesh, avoids duplication
