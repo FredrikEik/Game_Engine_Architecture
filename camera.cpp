@@ -21,6 +21,7 @@ Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
     Cam.mViewMatrix.setToIdentity();
     Cam.mProjectionMatrix.setToIdentity();
 
+
     Cam.mYawMatrix.setToIdentity();
     Cam.mPitchMatrix.setToIdentity();
 
@@ -74,6 +75,7 @@ void Camera::updateForwardVector()
 
 void Camera::update()
 {
+    Cam.mProjectionMatrix.perspective(mFrustum.mFOVvertical,mFrustum.mAspectRatio,mFrustum.mNearPlaneDistance,mFrustum.mFarPlaneDistance*100);
     Cam.mYawMatrix.setToIdentity();
     Cam.mPitchMatrix.setToIdentity();
 
@@ -124,6 +126,11 @@ gsl::Vector3D Camera::up() const
 gsl::Vector3D Camera::forward() const
 {
     return Cam.mForward;
+}
+
+float Camera::getCameraSpeed()
+{
+    return Cam.mSpeed;
 }
 
 void Camera::calculateFrustumVectors()

@@ -20,7 +20,7 @@
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
-    
+
 {
     //This is sent to QWindow:
     setSurfaceType(QWindow::OpenGLSurface);
@@ -34,7 +34,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
-    
+
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 }
@@ -47,29 +47,29 @@ RenderWindow::~RenderWindow()
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 void RenderWindow::init()
 {
-    
-    
-    
+
+
+
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(mRenderTimer, SIGNAL(timeout()), this, SLOT(render()));
     //********************** General OpenGL stuff **********************
-    
+
     //The OpenGL context has to be set.
     //The context belongs to the instanse of this class!
     if (!mContext->makeCurrent(this)) {
         qDebug() << "makeCurrent() failed";
         return;
     }
-    
+
     //just to make sure we don't init several times
     //used in exposeEvent()
     if (!mInitialized)
         mInitialized = true;
-    
+
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-    
+
     //Print render version info (what GPU is used):
     //(Have to use cout to see text- qDebug just writes numbers...)
     //Nice to see if you use the Intel GPU or the dedicated GPU on your laptop
@@ -78,7 +78,7 @@ void RenderWindow::init()
     std::cout << "  Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "  Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "  Version: " << glGetString(GL_VERSION) << std::endl;
-    
+
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
     int textureUnits;
@@ -86,7 +86,7 @@ void RenderWindow::init()
     std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
     std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
-    
+
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
@@ -124,12 +124,12 @@ void RenderWindow::init()
     //reverts to plain glGetError() on Mac and other unsupported PCs
     // - can be deleted
     startOpenGLDebugger();
-    
+
     //general OpenGL stuff:
     glEnable(GL_DEPTH_TEST);            //enables depth sorting - must then use GL_DEPTH_BUFFER_BIT in glClear
     //glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
-    
+
     //Compile shaders:
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
@@ -137,7 +137,7 @@ void RenderWindow::init()
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-    
+
     mShaderPrograms[1] = new Shader((gsl::ShaderFilePath + "textureshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "textureshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
@@ -149,22 +149,22 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "Skyboxshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "Skyboxshader.frag").c_str());
     qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
-    
+
     setupPlainShader(0);
     setupTextureShader(1);
     setupPhongShader(2);
     setupSkyboxshader(3);
-    
+
 
     //********************** Making the object to be drawn **********************
-    
+
     /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
     /***** should not use separate classes init() - function ****************/
-    
+
     ////*************************************start**////////////
     JSS->JSONSystemInit(this);
     ResSys->ResourceSystemInit(RenderSys);
-    
+
     ///PURE ECS TEST
     entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
     meshCompVec[0]->IsCollidable = false;
@@ -173,11 +173,11 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(5.0f,10.0f,-5.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(10.0f,5.0f,10.0f),2,1);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
-    
+
     entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
     entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
     entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
@@ -185,7 +185,10 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
+
+
 /*
+
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
@@ -199,28 +202,27 @@ void RenderWindow::init()
     //JSS->SaveLevel("Test");
 */
 
-
     SoundManager::getInstance()->init();
-    
+
     mExplosionSound = SoundManager::getInstance()->createSource(
                 "Explosion", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Audio/explosion.wav", false, 1.0f);
     mLaserSound = SoundManager::getInstance()->createSource(
                 "Laser", Vector3(20.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Audio/laser.wav", true, 0.7f);
-    
+
     mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", Vector3(0.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Audio/stereo.wav", false, 1.0f);
-    
+
     mSong = SoundManager::getInstance()->createSource(
                 "Caravan", Vector3(0.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
-    
+
     //********************** Set up camera **********************
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
-    
+
     mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mPlayerCamera->setPosition(gsl::Vector3D(1.f, 10.f, 0.f));
 
@@ -228,31 +230,42 @@ void RenderWindow::init()
     mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 
 
-    
 
+
+
+
+    //player
+
+    if(transformCompVec[9] != nullptr){
+        CurrentPlayer = transformCompVec[9];
+    }
+
+
+    //LASDATA
+    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
+    //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
+   // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
+
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
+    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
+    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    int eSize = (int)entities.size();
-    for(int i = 0; i < eSize; i++){
-        if(meshCompVec[i]->entity == 4){
-            Physics->InitPhysicsSystem(meshCompVec[i], ResSys->getVertexDataByName("bowlSurface.obj"));
-            break;
-        }
-    }
+    //Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+//    int eSize = (int)entities.size();
+//    for(int i = 0; i < eSize; i++){
+//        if(meshCompVec[i]->entity == 16){
+//            break;
+//        }
+//    }
 
-    //player
-/*
-    if(transformCompVec[9] != nullptr){
-        CurrentPlayer = transformCompVec[9];
-    }
-*/
-
-    //LASDATA
-    LASHeightMap map = LASHeightMap("C:../GEA2021/test_las.txt");
-    ResSys->SetIntoMeshDataContainerRUNTIME(map.getPositions(), "LAS");
-    entitySys->construct("LAS", QVector3D(-110.0f,-10.0f,-30.0f), 0,0, GL_POINTS);
+    //entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
+    //entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
 
     mSong->pause();
     mMainWindow->updateViewPort();
@@ -262,23 +275,23 @@ void RenderWindow::init()
 void RenderWindow::render()
 {
     mMainWindow->updateDetails();
-    
+
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
     handleInput();
-    
+
     // Camera update - should be in a general game loop, not directly in the render loop
     mCurrentCamera->update();
-    
+
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
-    
+
     initializeOpenGLFunctions();    //must call this every frame it seems...
-    
+
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
-    
-    
+
+
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
     int eSize = entities.size();
@@ -325,54 +338,80 @@ void RenderWindow::render()
     if(!isPaused)
     {
         //COLLISON AND PHYSICS PART
-        for(int i = 0; i < eSize; i++){
+        for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++){
             if(transformCompVec[i]->entity == 3)
             {
                 transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
                 //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
                 //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
             }
-            if(transformCompVec[i]->entity == 5 && meshCompVec[i]->IsCollidable) //enmtity 4 is the ball
+            if(transformCompVec[i]->entity == 5 ) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 16 ) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 17 ) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 18 ) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+            }
+            if(transformCompVec[i]->entity == 19 ) //enmtity 4 is the ball
             {
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
                 //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
                 break;
             }
+
         }
     }
 
     drawFrostum();      //frustum culling lines! This is a visualisation of frostum
 
-
+/*
     if(bIsPlayerCamera)
     {
         mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));
     }
+    */
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
-    
+
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
-    
+
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
-    
+
     CalcDeltaTime();
-    
+
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
 void RenderWindow::CalcDeltaTime()
 {
     auto newTime = std::chrono::high_resolution_clock::now();
-    
+
     float elapsed_time_ms = std::chrono::duration<double, std::milli>(newTime-oldTime).count();
     oldTime = newTime;
-    
+
     DeltaTime = elapsed_time_ms/1000.f;
 }
 
@@ -570,13 +609,13 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     //if not already initialized - run init() function
     if (!mInitialized)
         init();
-    
+
     //This is just to support modern screens with "double" pixels (Macs and some 4k Windows laptops)
     const qreal retinaScale = devicePixelRatio();
-    
+
     //Set viewport width and height
     glViewport(0, 0, static_cast<GLint>(width() * retinaScale), static_cast<GLint>(height() * retinaScale));
-    
+
     //If the window actually is exposed to the screen we start the main loop
     //isExposed() is a function in QWindow
     if (isExposed())
@@ -586,7 +625,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
         mRenderTimer->start(16);
         mTimeStart.start();
     }
-    
+
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
     //    qDebug() << mAspectratio;
@@ -602,7 +641,7 @@ void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
     static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
-    
+
     if (mMainWindow)            //if no mainWindow, something is really wrong...
     {
         ++frameCount;
@@ -666,7 +705,7 @@ void RenderWindow::startOpenGLDebugger()
         QSurfaceFormat format = temp->format();
         if (! format.testOption(QSurfaceFormat::DebugContext))
             qDebug() << "This system can not use QOpenGLDebugLogger, so we revert to glGetError()";
-        
+
         if(temp->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
         {
             qDebug() << "System can log OpenGL errors!";
@@ -754,12 +793,14 @@ bool RenderWindow::frustumCulling(int Index)
 void RenderWindow::setCameraSpeed(float value)
 {
     mCameraSpeed += value;
-    
+
     //Keep within some min and max values
     if(mCameraSpeed < 0.01f)
         mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
+    if (mCameraSpeed > 1.f)
+        mCameraSpeed = 1.f;
+
+    qDebug() << "Camera Speed: " << mCurrentCamera->getCameraSpeed();
 }
 
 void RenderWindow::handleInput()
@@ -943,7 +984,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     {
         mMainWindow->close();
     }
-    
+
     //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
@@ -976,9 +1017,11 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_Z)
     {
+        setCameraSpeed(0.1f);
     }
     if(event->key() == Qt::Key_X)
     {
+        setCameraSpeed(-0.1f);
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -1086,14 +1129,14 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
-    
+
     //if RMB, change the speed of the camera
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            setCameraSpeed(0.1f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            setCameraSpeed(-0.1f);
     }
     event->accept();
 }
@@ -1102,25 +1145,25 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (mInput.RMB)
     {
-        
+
         setCursor(Qt::BlankCursor);
         QPoint mousePos = mapFromGlobal(QCursor::pos());
         auto origo = QPoint(width()/2, height()/2);
         auto xOffset = mousePos.x()-origo.x();
         auto yOffset = mousePos.y()-origo.y();
         auto multiplier{0.1f};
-        
-        
+
+
         //mCamera.yaw(-1*xOffset*multiplier);
         //mCamera.pitch(-1*yOffset*multiplier);
-        
+
         QCursor::setPos(mapToGlobal(origo));
-        
-        
+
+
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         //mMouseXlast = event->pos().x() - mMouseXlast;
         //mMouseYlast = event->pos().y() - mMouseYlast;
-        
+
         if (mMouseXlast != 0)
             mCurrentCamera->yaw(mCameraRotateSpeed * xOffset * multiplier/*mCameraRotateSpeed * mMouseXlast*/);
         if (mMouseYlast != 0)

@@ -1,9 +1,13 @@
 #include "lasheightmap.h"
+#include "lasheightmap.h"
 #include <qdebug.h>
 
 LASHeightMap::LASHeightMap(std::string fileName)
 {
     ReadDatafromFile(fileName);
+    //make a array data thingie
+    populatePosArr();
+    GenerateHeightMap();
 }
 
 void LASHeightMap::ReadDatafromFile(std::string fileName)
@@ -71,9 +75,49 @@ void LASHeightMap::ReadDatafromFile(std::string fileName)
 
 }
 
+std::vector<Vertex> LASHeightMap::getCountourPoints() const
+{
+    return CountourPoints;
+}
+
+void LASHeightMap::setCountourPoints(const std::vector<Vertex> &value)
+{
+    CountourPoints = value;
+}
+
+
+
+void LASHeightMap::populatePosArr()
+{
+
+    //makes empty populated array
+    for(int i = 0; i < 999 ; i++)
+    {
+        for (int j = 0 ; j < 1999; j++ )
+            PosArr[i][j] = 0.0f;
+    }
+
+
+    for(unsigned long long i = 0; i < positions.size(); i++)
+    {
+        int X =static_cast<int> (positions[i].getVertex().getX());
+        int Z =static_cast<int> (positions[i].getVertex().getZ());
+
+        PosArr[X][Z] = positions[i].getVertex().getY();//(PosArr[X][Z] +  positions[i].getVertex().getY())/2.0f;
+        //qDebug() << (positions[i].getVertex());
+
+    }
+
+}
+
 std::vector<Vertex> LASHeightMap::getPositions() const
 {
     return positions;
+}
+
+std::vector<Vertex> LASHeightMap::getmVertices() const
+{
+    return mVertices;
 }
 
 void LASHeightMap::setPositions(const std::vector<Vertex> &value)
@@ -112,15 +156,186 @@ void LASHeightMap::RemoveDeltaPos()
 
     float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
     qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
+    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
+    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
+    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
+
+
 
     for(auto i = 0; i<positions.size(); i++)
     {
         positions[i].set_xyz(deltaX - positions[i].getVertex().getX() , deltaY - positions[i].getVertex().getY() ,   deltaZ - positions[i].getVertex().getZ());
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
     }
 
-//    for(auto i = 0; i<positions.size(); i++)
-//    {
-//        //positions[i].set_xyz(gsl::Vector3D(positions[i].getVertex().getX() - deltaX, positions[i].getVertex().getY() - deltaY, positions[i].getVertex().getZ() - deltaZ));
-//        qDebug() << positions[i].getVertex();
-//    }
+
+}
+
+void LASHeightMap::GenerateHeightMap()
+{
+    float ofsetx = -100;
+    float ofsetz = -100;
+    float ofsety = -10;
+
+    for(float x = 100; x<700; x+=1)//(float x = 100; x<150; x+=1)//
+        for(float z =100; z<1200; z+=1)//(float z =100; z<150; z+=1)
+        {
+            //get all height data :D
+            float height1 = CalcHeight(    x,    z);
+            float height2 = CalcHeight(  x+1,    z);
+            float height3 = CalcHeight(    x,  z+1);
+            float height4 = CalcHeight(    x,  z+1);
+            float height5 = CalcHeight(  x+1,    z);
+            float height6 = CalcHeight(  x+1,  z+1);
+            //use height date for colouring   //This order is like this because our
+            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height1),ofsetz +   z,       height1/100, height1/100, height1/100,0,0}); //1
+            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height2),ofsetz +   z,       height2/100, height2/100, height2/100,0,0}); //2
+            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height3),ofsetz + z+1,       height3/100, height3/100, height3/100,0,0}); //3
+            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height4),ofsetz + z+1,       height4/100, height4/100, height4/100,0,0}); //4
+            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height5),ofsetz +   z,       height5/100, height5/100, height5/100,0,0}); //5
+            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height6),ofsetz + z+1,       height6/100, height6/100, height6/100,0,0}); //6
+
+
+            //contour line Collector :D
+            int test = static_cast<int>(((height1 + height2 + height3 + height4 + height5 + height6)/6)+ofsety);
+            if(test > 5000 || test < 5){
+            }else{
+                if(std::fmod(test,5)<0.1){
+                    /*if((int)CountourLines.size() != 0){
+                        auto it = CountourLines.begin();
+                        for(; it != CountourLines.end(); it++){
+                            if(it->first == (int)test){
+                                it->second.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                                qDebug()<< "Put new vector at level... ";
+                                break;
+                            }else{
+                                qDebug()<< "Check in new vector and level...";
+                                std::vector<QVector3D> tempVec{QVector3D{ofsetx+x,test+0.1f,ofsetz+z}};
+                                tempVec.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                                CountourLines.push_back(std::make_pair(test, tempVec));
+                                break;
+                                //CountourLines[(int)CountourLines.size()-1].second.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                            }
+                        }
+                    }else{
+                        std::vector<QVector3D> tempVec{QVector3D{ofsetx+x,test+0.1f,ofsetz+z}};
+                        tempVec.push_back(QVector3D{ofsetx+x,test+0.1f,ofsetz+z});
+                        CountourLines.push_back(std::make_pair(test, tempVec));
+                        qDebug()<< "Check in new vector and level...";
+                    }*/
+                    CountourPoints.push_back(Vertex{ofsetx+x, test+0.3f, ofsetz+z, 0,0,0, 0,0});
+                    //qDebug() << CountourPoints[CountourPoints.size()-1].getVertex().getX() << CountourPoints[CountourPoints.size()-1].getVertex().getY() << CountourPoints[CountourPoints.size()-1].getVertex().getZ() << "____________________________________________________________";
+                }
+            }
+        }
+    CalcContourlineOrder();
+}
+
+float LASHeightMap::CalcHeight(float x, float z)
+{
+    float height = 0.0f;
+
+    int resolution =15;
+    int X = static_cast<int>(x);
+    int Z = static_cast<int>(z);
+    int counter =0;
+    float collected = 0;
+    height = PosArr[X][Z];
+
+    if((X>resolution && Z>resolution) /*&& height <= 2.0f */)
+    {
+
+        for(int i = -resolution - 1; i < resolution - 1; i++)
+        {
+            for (int j = -resolution - 1; j <resolution - 1; j++ )
+            {
+                if(PosArr[X + i][Z + j] != 0)
+                {
+                    collected += PosArr[X + i][Z + j];
+                    counter++;
+                }
+            }
+        }
+        height = ( collected)/(counter);
+        //average height of surrounding area
+    }
+    else
+    {
+        height = PosArr[X][Z] ;
+    }
+
+
+    //we find the highest and lowest y values
+
+
+    //check size of y
+    if(height < lowestY && height>20.f)
+    {
+        lowestY =height;
+        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+    }
+    if(height > heighestY)
+    {
+        heighestY = height;
+        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+    }
+
+
+
+
+    //do the average calc
+    //qDebug() << height;
+    //then return its
+    return height;
+}
+
+void LASHeightMap::CalcContourlineOrder()
+{
+    /*
+    gsl::Vector3D Point1, Point2, ClosestPoint;
+    std::vector<gsl::Vector3D> tempPoints;
+
+    tempPoints.push_back(CountourPoints[0].getVertex());
+
+    for(unsigned long long i = 0; i<CountourPoints.size(); i++)
+    {
+        float shortestDistance = 10000.0f;
+
+        Point1 = CountourPoints[i].getVertex();
+        if(Point1.getX() == -10000.0f )
+            Point1 = CountourPoints[i+1].getVertex();
+        //Point2 = CountourPoints[i].getVertex();
+        //ClosestPoint = CountourPoints[i].getVertex();
+        for(unsigned long long j = 0; j<CountourPoints.size() -1; j++)
+        {
+            Point2 = CountourPoints[j].getVertex();
+
+            //distance
+            QVector3D d =(Point1.getQVector() - Point2.getQVector());
+            float distance = d.length();
+
+            if(distance < shortestDistance && distance != 0.0f  )
+            {
+                shortestDistance = distance;
+                ClosestPoint = Point2;
+                CountourPoints[j].set_xyz(-10000.0f);
+            }
+            else if (shortestDistance == 10000.0f) {
+                shortestDistance = distance;
+                ClosestPoint = CountourPoints[j+1].getVertex();
+                CountourPoints[j].set_xyz(-10000.0f);
+            }
+        }
+        //legg inn etter funnet nermeste punkt
+        tempPoints.push_back(ClosestPoint);
+    }
+
+    for(unsigned long long i = 0; i<CountourPoints.size(); i++)
+    {
+        CountourPoints[i].set_xyz(tempPoints[i]);
+        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
+    }
+
+    qDebug() <<"Finished Sorting Contour Lines";
+*/
 }

@@ -10,6 +10,7 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Ve
     mSurfaceData = surfaceData;
     mSurfaceData->collisionRadius = 0.0f;
     vertexData = inVertexData;
+
 }
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
@@ -31,7 +32,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
-            float elasticity = 0.97f;
+            float elasticity = 0.95f;
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
@@ -74,8 +75,8 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     {
         //the vertex positions are flipped because of us using blender for the surface.
         p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
-        p3 = MakeQvec3D(vertexData[i + 1].getVertex());//3
-        p2 = MakeQvec3D(vertexData[i + 2].getVertex());//2
+        p2= MakeQvec3D(vertexData[i + 1].getVertex());//3
+        p3 = MakeQvec3D(vertexData[i + 2].getVertex());//2
         //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
         Baryc = Barysentric( p1 , p2 , p3 , posBall );
@@ -86,7 +87,7 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
             Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
             float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
             //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
-            //  qDebug() << "BARYC HEIGHT: "<<height;
+             //qDebug() << "BARYC HEIGHT: "<<height;
             Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
             //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
             onTriangle = true;
@@ -148,7 +149,7 @@ QVector3D PhysicsSystem::Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVe
     //qDebug() <<"BARISENTRIC COORDINATES: " <<baryc;
 
     //i have no fucking clue why it needs to be negative. but hey it works ;)
-    return (-1*baryc);
+    return (-baryc);
 }
 
 gsl::Vector3D PhysicsSystem::MakeGSLvec3D(QVector3D vec)
