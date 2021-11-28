@@ -673,9 +673,8 @@ int MeshHandler::readLasFile()
     int nrPoints[gridSizeX][gridSizeZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData[gridSizeX][gridSizeZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-    mMeshes.emplace_back(MeshData());
+    mMeshes.emplace_back(MeshData()); //Emulating the triangle function, this still does not work
     MeshData &meshDataPoints = mMeshes.back();
-
 
     qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
 
@@ -720,15 +719,13 @@ for (int x = 0; x < gridSizeX; x++)
 //        planeGrid[x][z].y *= -1;
 
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
-                                                 1.0f, 0.0f, 0.0f, //Normals
+                                                 0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
                                                  0.0f, 0.0f}); //UVs
         meshDataPoints.mDrawType = GL_POINTS;
         initMesh(meshDataPoints, 0);
     }
 }
-//Print out all points as openGL_Points
-//MeshData Points = makePoint(meshDataPoints, 1.0f, (static_cast<void>(0.0f), 1.0f, 0.0f));
-
+//Debug stuff - used to double check function.
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
