@@ -7,6 +7,7 @@
 #include <qvector3d.h>
 #include <qvector2d.h>
 #include <vertex.h>
+#include <algorithm>
 
 #include "components.h"
 
@@ -296,8 +297,6 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 //        float i{0};
         mAllDataPoints.reserve(n);
 
-
-
         for(int i{0}; i<loopLenth;i++)
         {
             inn >> x;
@@ -309,7 +308,6 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
             pos.setY(y);
 
             mAllDataPoints.push_back(pos);
-
 
             static bool once = true;
             if(once)
@@ -390,10 +388,27 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
 
 
     int gridSize {10};
-    float TerrainWidth = 1000;
-    float TerrainLenght = 1460;
+    int TerrainWidth = 1000;
+    int TerrainLenght = 1460;
     const int cols = TerrainWidth / gridSize;
     const int rows = TerrainLenght / gridSize;
+
+//    std::vector<gsl::Vector3D> XallDataPoints = mAllDataPoints;
+//    std::sort(XallDataPoints.begin(), XallDataPoints.end(), lessThanX());
+    std::sort(mAllDataPoints.begin(), mAllDataPoints.end(), lessThanZ());
+
+//    float m2DAllDataPoint[10][10];
+//    int a{0};
+//    for( int j = 0; j < TerrainLenght;j++)
+//    {
+//        for(int i = 0; i < TerrainLenght; i++)
+//        {
+//            m2DAllDataPoint[j][i] = mAllDataPoints.at(a).getX();
+//            a++;
+//        }
+//    }
+
+
 
 //    int vertexesInQuad[100][146]{0};
 //    float tempForAvg[100][146]{0};
@@ -447,9 +462,14 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
             std::vector<float> allHeightsInSquare;
             for(auto it : mAllDataPoints)
             {
+                if(it.z > z+gridSize)
+                {
+                    break;
+                }
                 if(it.x > x-gridSize && it.x < x && it.z > z && it.z < z + gridSize)
                 {
                     //heights2D.push_back(gsl::Vector3D(x,it.y,z));
+
                     allHeightsInSquare.push_back(it.y);
                 }
             }
@@ -840,3 +860,5 @@ void MeshHandler::makeCollisionBox(CollisionComponent* CollisionComp, MeshCompon
 
     init(*CollisionLines,0);
 }
+
+

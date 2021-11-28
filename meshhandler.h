@@ -38,11 +38,34 @@ public:
 
 
 
+
+
 private:
 //    std::vector<GameObject*> mObjects;
 //    std::map<std::string, GameObject> mObjectsMap;
     MeshComponent* terrainMesh{nullptr};
 
+    struct lessThanZ
+    {
+        inline bool operator() (gsl::Vector3D a, gsl::Vector3D b)
+        {
+            if(a.z < b.z) return true;
+            if(a.z > b.z) return false;
+
+            if(a.x < b.x) return true;
+            if(a.x > b.x) return false;
+
+            return false;
+        }
+    };
+
+    struct lessThanX
+    {
+        inline bool operator() (gsl::Vector3D a, gsl::Vector3D b)
+        {
+            return (a.x < b.x);
+        }
+    };
 
 };
 
