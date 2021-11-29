@@ -26,7 +26,7 @@ Player::~Player()
 void Player::centerPlayer()
 {
     gsl::Vector3D mPos = mTransform->mPosition;
-    gsl::Vector3D mRound {std::round(mTransform->mPosition.x), 0, std::round(mTransform->mPosition.z)};
+    gsl::Vector3D mRound {std::round(mPos.x), 0, std::round(mPos.z)};
 
     float xDiff = mRound.x - mPos.x;
     float zDiff = mRound.z - mPos.z;

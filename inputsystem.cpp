@@ -27,7 +27,6 @@ void InputSystem::update(Camera *mCamera, Player* mPlayer, Input mInput)
     }
     else if(mInput.RMB == false)
     {
-        i = mPlayer->mInputComp;
         //        mColSystem->CheckCollision(mPlayer->mCollision, mFactory->myShapes[1]->mCollision);
         if(mInput.W == true)
             //if(mColSystem->playerOnBwallY == false)

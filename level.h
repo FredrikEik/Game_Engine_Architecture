@@ -36,6 +36,7 @@ public:
     void moveEnemy(double randNr);
     void movePlayer();
     void resetGame();
+    void setupSound();
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -43,9 +44,9 @@ public:
     std::vector<Square*> mWall;
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
+    std::vector<SoundSource*> mSounds;
     ShapeFactory mShapeFactory;
     FrustumSystem* mFrustumSystem;
-    SoundSource* mLaserSound{};
     Enemy* mEnemy;
     Player* mPlayer;
     Skybox *mSkyBox;

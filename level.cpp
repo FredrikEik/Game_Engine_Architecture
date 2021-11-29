@@ -128,14 +128,8 @@ void Level::DrawBoard()
     mLight->mMaterial->mShaderProgram = 2;    //Phongshader
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
-    //Skal stå mer her, kommer i neste mld
 
-    //makes the soundmanager
-    //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mLaserSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
+    setupSound();
 }
 
 void Level::createShapes(string shapeID)
@@ -208,6 +202,7 @@ void Level::checkCollision()
             if(trophies < static_cast<int>(mTrophies.size())){
                 if(mTrophies[i]->drawMe == true){
                     trophies++;
+                    mSounds[2]->play();
                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
                 else
                     continue;
@@ -219,25 +214,40 @@ void Level::checkCollision()
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-            hit=true;
-            if(hit == true)
-            {
-                mLives--; hit = false;
-                gsl::Vector3D playerP = {1,CENTER_Y,20};
-                gsl::Vector3D currP = mPlayer->mTransform->mPosition;
-                VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-                vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
-            }
+            mLives--;
+            gsl::Vector3D playerP = {1,CENTER_Y,20};
+            gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+            VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+            vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+
             if(mLives == 0)
             {
-                resetGame();
+                resetGame();mSounds[1]->play();; //death sound
             }
             qDebug() << mLives;
         }
     }
 }
 
-
+void Level::setupSound()
+{
+    SoundSource* tempSound{nullptr};
+    //makes the soundmanager
+    //it is a Singleton!!!
+    SoundManager::getInstance()->init();
+    tempSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/laser.wav", true, 0.7f);
+    mSounds.push_back(tempSound);
+    tempSound = SoundManager::getInstance()->createSource(
+                "Death", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Death.wav", false, 0.7f);
+    mSounds.push_back(tempSound);
+    tempSound = SoundManager::getInstance()->createSource(
+                "Chomp", gsl::Vector3D(20.0f, 0.0f, 0.0f),
+                "../GEA2021/Assets/Chomp.wav", false, 0.7f);
+    mSounds.push_back(tempSound);
+}
 
 bool Level::wallCheck(int x, int z)
 {
@@ -278,30 +288,27 @@ void Level::resetGame()
 
 void Level::movePlayer()
 {
-        int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
-        int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
+    int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
+    int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
 
-        if(mPlayer->mForward.x > 0)
-            EposX = std::ceil(mPlayer->mTransform->mPosition.x);
-        else if(mPlayer->mForward.x <0)
-            EposX = std::floor(mPlayer->mTransform->mPosition.x);
-        else{
-            if(mPlayer->mForward.z >0)
-                EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
-            else if(mPlayer->mForward.z <0)
-                EposZ = std::floor(mPlayer->mTransform->mPosition.z);
-            else
-                qDebug() << "error in Level::moveEnemy";}
-
-        //double a = rand()%10;
-
-        // mEnemies[i]->moveEnemy();
-        if(wallCheck(EposX, EposZ))
-        {
-            mPlayer->centerPlayer();
-        }
+    if(mPlayer->mForward.x > 0)
+        EposX = std::ceil(mPlayer->mTransform->mPosition.x);
+    else if(mPlayer->mForward.x <0)
+        EposX = std::floor(mPlayer->mTransform->mPosition.x);
+    else{
+        if(mPlayer->mForward.z >0)
+            EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
+        else if(mPlayer->mForward.z <0)
+            EposZ = std::floor(mPlayer->mTransform->mPosition.z);
         else
-            mPlayer->movePlayer();
+            qDebug() << "error in Level::movePlayer";}
+
+    if(wallCheck(EposX, EposZ))
+    {
+        mPlayer->centerPlayer();
+    }
+    else
+        mPlayer->movePlayer();
 }
 
 void Level::moveEnemy(double randNr)
@@ -322,9 +329,6 @@ void Level::moveEnemy(double randNr)
             else
                 qDebug() << "error in Level::moveEnemy";}
 
-        //double a = rand()%10;
-
-        // mEnemies[i]->moveEnemy();
         if(wallCheck(EposX, EposZ))
         {
             if(randNr<5){
