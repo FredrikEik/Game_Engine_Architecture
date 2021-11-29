@@ -85,7 +85,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	std::vector<glm::vec3>& normals = (*new std::vector<glm::vec3>());
 	std::vector<GLuint>& indices = (*new std::vector<GLuint>());
 
-	terrainResolution = { 15 };
+	terrainResolution = { 15};
 
 	glm::vec3 min{};
 	glm::vec3 max{};
@@ -257,13 +257,13 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 	int yMax{ 50 };
 	
 #pragma region MarchingSquares
-	auto drawContourOnSquare = [contourMesh](const glm::vec3* pos, float contourHeight, int& index)
+	auto drawContourOnSquare = [contourMesh](const glm::vec3* vertexPositions, float contourHeight, int& index)
 	{
 		/*
-		 __c__
+		2__c__3
 		|    /|	
 		d  /  b
-		|/_a__|
+		0/_a__1
 		*/
 
 		bool a{}, b{}, c{}, d{};
@@ -308,43 +308,43 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 		// This is essentially where the marching squares are happening
 	#pragma region ContourLineTesting
 		// Tests if the contour line crosses edge A
-		if (pos[0].y <= contourHeight && pos[1].y > contourHeight ||
-			pos[0].y > contourHeight && pos[1].y <= contourHeight)
+		if (vertexPositions[0].y <= contourHeight && vertexPositions[1].y > contourHeight ||
+			vertexPositions[0].y > contourHeight && vertexPositions[1].y <= contourHeight)
 		{
 			// along edge A
-			glm::vec3 lerpedPos = lerp(pos[0], pos[1], (getLerpAlpha(pos[0].y, pos[1].y)));
+			glm::vec3 lerpedPos = lerp(vertexPositions[0], vertexPositions[1], (getLerpAlpha(vertexPositions[0].y, vertexPositions[1].y)));
 			positions.push_back(lerpedPos);
 			a = true;
 		}
 
 		// Tests if the contour line crosses edge B
-		if (pos[1].y <= contourHeight && pos[3].y > contourHeight || 
-			pos[1].y > contourHeight && pos[3].y <= contourHeight)
+		if (vertexPositions[1].y <= contourHeight && vertexPositions[3].y > contourHeight || 
+			vertexPositions[1].y > contourHeight && vertexPositions[3].y <= contourHeight)
 		{
 			// along edge B
-			glm::vec3 lerpedPos = lerp(pos[1], pos[3], (getLerpAlpha(pos[1].y, pos[3].y)));
+			glm::vec3 lerpedPos = lerp(vertexPositions[1], vertexPositions[3], (getLerpAlpha(vertexPositions[1].y, vertexPositions[3].y)));
 			positions.push_back(lerpedPos);
 
 			b = true;
 		}
 
 		// Tests if the contour line crosses edge C
-		if (pos[2].y <= contourHeight && pos[3].y > contourHeight || 
-			pos[2].y > contourHeight && pos[3].y <= contourHeight)
+		if (vertexPositions[2].y <= contourHeight && vertexPositions[3].y > contourHeight || 
+			vertexPositions[2].y > contourHeight && vertexPositions[3].y <= contourHeight)
 		{
 			// along edge C
-			glm::vec3 lerpedPos = lerp(pos[2], pos[3], (getLerpAlpha(pos[2].y, pos[3].y)));
+			glm::vec3 lerpedPos = lerp(vertexPositions[2], vertexPositions[3], (getLerpAlpha(vertexPositions[2].y, vertexPositions[3].y)));
 			positions.push_back(lerpedPos);
 
 			c = true;
 		}
 
 		// Tests if the contour line crosses edge D
-		if (pos[0].y <= contourHeight && pos[2].y > contourHeight || 
-			pos[0].y > contourHeight && pos[2].y <= contourHeight)
+		if (vertexPositions[0].y <= contourHeight && vertexPositions[2].y > contourHeight || 
+			vertexPositions[0].y > contourHeight && vertexPositions[2].y <= contourHeight)
 		{
 			// along edge D
-			glm::vec3 lerpedPos = lerp(pos[0], pos[2], (getLerpAlpha(pos[0].y, pos[2].y)));
+			glm::vec3 lerpedPos = lerp(vertexPositions[0], vertexPositions[2], (getLerpAlpha(vertexPositions[0].y, vertexPositions[2].y)));
 			positions.push_back(lerpedPos);
 
 			d = true;
@@ -363,10 +363,10 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 		
 		* This can then be used to lerp on the actual diagonal to achieve a much more accurate result.
 		*/
-		auto getTriangleIntersectionAlpha = [pos, lerp](glm::vec3 point)
+		auto getTriangleIntersectionAlpha = [vertexPositions, lerp](glm::vec3 point)
 		{
-			glm::vec3 a = pos[0];
-			glm::vec3 b = pos[3];
+			glm::vec3 a = vertexPositions[0];
+			glm::vec3 b = vertexPositions[3];
 			// Because Y is where the biggest error in the approximation lies, we flatten the quad by removing Y
 			a.y = 0;
 			b.y = 0;
@@ -387,10 +387,10 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 		// Finds an approximate point where the line intersects with the diagonal of the quad
 		// http://paulbourke.net/geometry/pointlineplane/
-		auto getTriangleIntersectionPoint = [pos, lerp](const glm::vec3& p0, const glm::vec3& p1)
+		auto getTriangleIntersectionPoint = [vertexPositions, lerp](const glm::vec3& p0, const glm::vec3& p1)
 		{
-			const glm::vec3& p2 = pos[0];
-			const glm::vec3& p3 = pos[3];
+			const glm::vec3& p2 = vertexPositions[0];
+			const glm::vec3& p3 = vertexPositions[3];
 
 			float dot0232{ glm::dot(p0 - p2, p3 - p2) };
 			float dot3210{ glm::dot(p3 - p2, p1 - p0) };
@@ -430,7 +430,7 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 				b && d)
 			{
 				// Finds the point where the contour line intersects with the quad triangulation diagonal
-				glm::vec3 diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+				glm::vec3 diagonalIntersectionPoint = lerp(vertexPositions[0], vertexPositions[3], getTriangleIntersectionAlpha(
 					getTriangleIntersectionPoint(positions[0], positions[1])));
 
 				pushPoint(index, positions[0]);
@@ -460,7 +460,7 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 			// b - c   The line crosses the quad diagonal, so we draw a point where the lines intersect
 			pushPoint(index, positions[1]);
-			diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+			diagonalIntersectionPoint = lerp(vertexPositions[0], vertexPositions[3], getTriangleIntersectionAlpha(
 				getTriangleIntersectionPoint(positions[1], positions[2])));
 			pushPoint(index, diagonalIntersectionPoint);
 			pushPoint(index, diagonalIntersectionPoint);
@@ -472,7 +472,7 @@ void TerrainSystem::generateContourLines(uint32 contourEntity, uint32 terrainEnt
 
 			// d - a  The line crosses the quad diagonal, so we draw a point where the lines intersect
 			pushPoint(index, positions[3]);
-			diagonalIntersectionPoint = lerp(pos[0], pos[3], getTriangleIntersectionAlpha(
+			diagonalIntersectionPoint = lerp(vertexPositions[0], vertexPositions[3], getTriangleIntersectionAlpha(
 				getTriangleIntersectionPoint(positions[3], positions[0])));
 			pushPoint(index, diagonalIntersectionPoint);
 			pushPoint(index, diagonalIntersectionPoint);
