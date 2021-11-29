@@ -638,8 +638,8 @@ int MeshHandler::readLasFile()
 
 // This serves as the indexes in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 5;
-    const int arrayZ = 5;
+    const int arrayX = 50;
+    const int arrayZ = 50;
 
     float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
     float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
@@ -674,7 +674,7 @@ int MeshHandler::readLasFile()
     mMeshes.emplace_back(MeshData()); //Emulating the make triangle function
     MeshData &meshDataPoints = mMeshes.back();
 
-    qDebug() << "planeGrid is being filled with data"; //Used to output some progress in application output.
+    qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
 
 for (int x = 0; x < arrayX; x++)
 {
@@ -713,19 +713,19 @@ for (int x = 0; x < arrayX; x++)
         planeGrid[x][z].y /= heigthScale;
 
 //        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
-//        planeGrid[x][z].z *= -1;
+        planeGrid[x][z].z *= -1;
 //        planeGrid[x][z].y *= -1;
 
-        //mVertices 0 beacuse there is no lod.
+        //Only using mVertices 0 beacuse there is no lod.
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
                                                  0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
                                                  0.0f, 0.0f}); //UVs
-//        meshDataPoints.mVertexCount[0]++;
+        meshDataPoints.mVertexCount[0]++;
     }
 }
-//meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertices
+meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertices
 
-//Debug stuff - used to double check stuff.
+//Debug stuff - used to double check variables.
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
     qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
@@ -737,7 +737,7 @@ for (int x = 0; x < arrayX; x++)
 //    initMesh(meshDataPoints, 0);          //With these commented out, it will continue with triangles.
 //    return mMeshes.size()-1;
 
-////Triangle creation
+////Create triangle based on the points
     int c = 0;
     qDebug() << "Start of triangle creation";
 
@@ -751,7 +751,7 @@ for (int x = 0; x < arrayX; x++)
         }
         c++;
 
-//      Create a triangle using the points in this order. Filling only first LOD.
+        //Create a triangle using the points in this order. Filling only first LOD.
         meshDataPoints.mIndices[0].push_back(depth);
         meshDataPoints.mIndices[0].push_back(depth+1);
         meshDataPoints.mIndices[0].push_back(depth+arrayZ);
@@ -760,16 +760,14 @@ for (int x = 0; x < arrayX; x++)
         meshDataPoints.mIndices[0].push_back(depth+1);
         meshDataPoints.mIndices[0].push_back(depth+arrayZ+1);
 
-//        meshDataPoints.mIndexCount[0]++;
+        meshDataPoints.mIndexCount[0]++;
     }
 
-//    meshDataPoints.mIndexCount[0]++;
+    meshDataPoints.mIndexCount[0]++;
     qDebug() << "End of triangle calculation";
 
-    //arrayX = rows = Depth
-    //arrayZ = column = Width
 
-////Normal calculation
+//Normal calculation
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
@@ -794,7 +792,7 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
         p5 = gsl::Vector3D{vert[i-1].mXYZ.x,        vert[i-1].mXYZ.y,        vert[i-1].mXYZ.z};
     }
 
-    //Lager vektorer til alle punktene
+    //Create a vector to all the poitns
     gsl::Vector3D v0 = p0-pCenter;
     gsl::Vector3D v1 = p1-pCenter;
     gsl::Vector3D v2 = p2-pCenter;
@@ -802,7 +800,7 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     gsl::Vector3D v4 = p4-pCenter;
     gsl::Vector3D v5 = p5-pCenter;
 
-/** If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values) */
+    //If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values)
     v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
     v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
     v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
@@ -810,7 +808,7 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
     v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 
-    //Regner ut normalene til alle trekantene rundt punktet
+    //Calulate the normals for each triangle around the point
 
     n0 = v0.cross(v0,v1);
     n0.normalize();
@@ -833,9 +831,10 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
     meshDataPoints.mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z);
-//        }
     }
-meshDataPoints.mDrawType = GL_TRIANGLES;
+
+//Finalize mesh
+meshDataPoints.mDrawType = GL_POINTS;
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
 }
