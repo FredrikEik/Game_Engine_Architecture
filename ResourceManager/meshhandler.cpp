@@ -638,8 +638,8 @@ int MeshHandler::readLasFile()
 
 // This serves as the indexes in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 50;
-    const int arrayZ = 50;
+    const int arrayX = 10;
+    const int arrayZ = 10;
 
     float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
     float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
@@ -675,6 +675,7 @@ int MeshHandler::readLasFile()
     MeshData &meshDataPoints = mMeshes.back();
 
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
+    qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machine";
 
 for (int x = 0; x < arrayX; x++)
 {
@@ -706,9 +707,9 @@ for (int x = 0; x < arrayX; x++)
         //After having found all y-cordinates, subtract min in each coordinate, to get origin at 0
         planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
         planeGrid[x][z].z -= zMin;
-        planeGrid[x][z].y -= yMin; //Might not be needed, have other options for scaling y height
+        planeGrid[x][z].y -= yMin;
 
-        planeGrid[x][z].x /= widthScale; //Gives resonable cordinates to find in scene
+        planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
         planeGrid[x][z].z /= depthScale;
         planeGrid[x][z].y /= heigthScale;
 
@@ -716,7 +717,7 @@ for (int x = 0; x < arrayX; x++)
         planeGrid[x][z].z *= -1;
 //        planeGrid[x][z].y *= -1;
 
-        //Only using mVertices 0 beacuse there is no lod.
+        //Only using mVertices[0] beacuse there is no lod for this mesh.
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
                                                  0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
                                                  0.0f, 0.0f}); //UVs
@@ -809,7 +810,6 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 
     //Calulate the normals for each triangle around the point
-
     n0 = v0.cross(v0,v1);
     n0.normalize();
 
@@ -834,7 +834,7 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     }
 
 //Finalize mesh
-meshDataPoints.mDrawType = GL_POINTS;
+meshDataPoints.mDrawType = GL_TRIANGLES;
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
 }
