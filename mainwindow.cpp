@@ -256,3 +256,8 @@ void MainWindow::on_SwitchTerrain_clicked()
 {
     mRenderWindow->createTerrain();
 }
+
+void MainWindow::on_Physics_clicked(bool checked)
+{
+    mRenderWindow->activatePhysic = checked;
+}

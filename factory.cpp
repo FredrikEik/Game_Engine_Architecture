@@ -153,26 +153,29 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate = new LasTerrainGenerator("../GEA2021/Storhoi.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
-        objectToCreate->mObjectName = "Storhoi";
-        objectToCreate->mObjectType = "StorHoi";
-
+        objectToCreate->mObjectName = "Terrain";
+        objectToCreate->mObjectType = "Terrain";
+        RefToTerrain = objectToCreate;
     }
-    else if (objectName == "TestLasTerrain")
+    else if (objectName == "Terrain")
     {
         objectToCreate = new LasTerrainGenerator("../GEA2021/test_las.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->mObjectName = "Terrain";
         objectToCreate->mObjectType = "Terrain";
-
+        RefToTerrain = objectToCreate;
     }
     else if(objectName == "RollingBall")
     {
         objectToCreate = new RollingBall(3);
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
-        objectToCreate->mObjectName = "Ball";
-        objectToCreate->mObjectType = "Ball";
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        ballcounter++;
+        objectToCreate->mObjectName = "Ball" + std::to_string(ballcounter);
+        objectToCreate->mObjectType = "RollingBall";
+        dynamic_cast<RollingBall*>(objectToCreate)->Terrain = RefToTerrain;
+
     }
 
     else{return nullptr;}

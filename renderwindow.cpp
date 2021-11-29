@@ -37,6 +37,7 @@
 #include "vector4d.h"
 #include "level.h"
 #include "matrix4x4.h"
+#include "rollingball.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -224,6 +225,7 @@ void RenderWindow::initObjects()
     //terrain = factory->createObject("Terrain");
 
 
+
     GameObject *temp = nullptr;
    /* for(int i{0}; i < 50; i++)
     {
@@ -235,16 +237,7 @@ void RenderWindow::initObjects()
             //TODO: Scaling have to be made easier and more automatic than this!
         }
     }*/
-    for(int i{0}; i < 10; i++)
-    {
-        for(int j{0}; j < 10; j++)
-        {
-            temp = factory->createObject("RollingBall");
-            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,0.f,4.f*j);
-            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,0.f,4.f*j);
-            //TODO: Scaling have to be made easier and more automatic than this!
-        }
-    }
+
 
 
             mPlayer = factory->createObject("Player");
@@ -290,6 +283,10 @@ void RenderWindow::render()
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
+            if(factory->mGameObjects[i]->mObjectType == "RollingBall" && activatePhysic == true)
+            {
+                dynamic_cast<RollingBall*>(factory->mGameObjects[i])->move(0.017f);
+            }
 
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
@@ -352,6 +349,7 @@ void RenderWindow::render()
                     }
                 }
             }*/
+
 			}
             else
             {
@@ -392,6 +390,7 @@ void RenderWindow::render()
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
+
 
 
     //Calculate framerate before
@@ -535,11 +534,13 @@ void RenderWindow::createObjectbutton(std::string objectName)
 }
 void RenderWindow::createTerrain()
 {
+    GameObject *temp = nullptr;
     if(terrainOne)
     {
         reset(format());
-        GameObject* TestLasTerrain = factory->createObject("TestLasTerrain");
+        GameObject* TestLasTerrain = factory->createObject("Terrain");
         terrainOne = false;
+
         initObjects();
         dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(TestLasTerrain);
     }
@@ -548,10 +549,23 @@ void RenderWindow::createTerrain()
         reset(format());
         GameObject* TestLasTerrain = factory->createObject("StorhoiTerrain");
         terrainOne = true;
+
         initObjects();
         dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(TestLasTerrain);
     }
+    for(int i{-5}; i < 5; i++)
+    {
+        for(int j{-5}; j < 5; j++)
+        {
+            temp = factory->createObject("RollingBall");
+            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,10.f,4.f*j);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,10.f,4.f*j);
+            //TODO: Scaling have to be made easier and more automatic than this!
+        }
+    }
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
+
 void RenderWindow::playPausebutton(const QSurfaceFormat &format)
 {
     bPause = !bPause;
@@ -596,6 +610,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
+    factory->ballcounter = 0;
 
     initObjects();
 //    factory->mGameObjects.clear();

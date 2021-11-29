@@ -2,6 +2,7 @@
 #define ROLLINGBALL_H
 
 #include "octahedronball.h"
+#include "lasterraingenerator.h"
 
 class RollingBall : public OctahedronBall
 {
@@ -15,6 +16,7 @@ public:
     void setSurface(GameObject* surface) { triangle_surface = surface; }
     void barycentricCoordinates();
     GameObject* LasTerrainGenerator;
+    GameObject* Terrain;
 protected:
     GameObject* triangle_surface;
 private:
@@ -26,6 +28,8 @@ private:
     gsl::Vector3D gAcceleration = {0, 0, 9.8};
     gsl::Vector3D gForce = {0, 0, 0};
     float massKG = 0.01f;
+
+
 
 };
 #endif // ROLLINGBALL_H

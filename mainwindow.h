@@ -55,6 +55,8 @@ private slots:
 
     void on_SwitchTerrain_clicked();
 
+    void on_Physics_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};

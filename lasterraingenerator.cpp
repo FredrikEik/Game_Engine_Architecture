@@ -45,8 +45,6 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
 
         //push backer høyde kordinatene till rett vector i arrayet
         heights[vectorIndex].push_back(mPointsArray[i].getXYZ().getY());
-
-
     }
 
     for(int i = 0; i < heights.size(); i++)
@@ -60,8 +58,6 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
         }
         sum = sum/heights[i].size();
         averageHeights[i] = sum;
-
-
     }
 
     //Lager triangulert overflate her
@@ -84,7 +80,6 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
             getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuads + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuads + quadX]*G/255, B/255, u, v+step));
         }
     }
-
 }
 LasTerrainGenerator::~LasTerrainGenerator()
 {}

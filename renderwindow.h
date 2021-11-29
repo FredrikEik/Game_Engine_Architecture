@@ -59,6 +59,9 @@ public:
     SoundSource* mVideoGameLand{};
     GameObject* skybox;
     GameObject* terrain;
+    bool TerrainExists = false;
+    bool activatePhysic = false;
+
 
     //Javascript engine
     QJSEngine engine;

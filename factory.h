@@ -23,6 +23,7 @@ public:
     int skyboxcounter=0;
     int cameracounter=0;
     int lightCounter=0;
+    int ballcounter = 0;
 
     GameObject* createObject(std::string objectName);
 
@@ -34,7 +35,7 @@ public:
 private:
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
 
-
+    GameObject* RefToTerrain;
 
 protected:
 };
