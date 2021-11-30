@@ -8,6 +8,55 @@
 #include "texturehandler.h"
 //#include "coreengine.h"
 #include "camera.h"
+#include "gameobject.h"
+
+
+struct Physics
+{
+    float radius = 0.25;
+    float mass = 100;
+    float friction = 0.9;
+    float lilleG = 9.81;
+
+    gsl::Vector3D Acceleration{0.0, 0.0, -lilleG};
+    gsl::Vector3D Force{0.0,0.0,0.0};
+    gsl::Vector3D Velocity{0,0,0};
+    gsl::Vector3D VelocityOld{0,0,0};
+    gsl::Vector3D airF{0,0,0};
+
+    bool frittfall{false};
+
+    void freeFall()
+    {
+        frittfall = true;
+        Acceleration = gsl::Vector3D(0, 0, -lilleG);
+        calculateAirF();
+    }
+    void onGround(gsl::Vector3D N)
+    {
+        if(frittfall == true)
+            VelocityOld.z = 0;
+        frittfall = false;
+        Acceleration = gsl::Vector3D(N.x * N.z, N.y * N.z, (N.z*N.z)-1) * lilleG;
+        calculateAirF();
+    }
+    void calculateAirF()
+    {
+        float p = 1.29; //mass density of air on earth
+        gsl::Vector3D u{0-Velocity.x,0-Velocity.y,0-Velocity.z};//flow velocity
+        float A = M_PI * (radius*radius); //Area
+        float dc = 0.47; //drag coefficient
+        //airF = 1/2 p * (u^2) * dc * A;
+        airF = gsl::Vector3D(u.x*u.x, u.y*u.y, u.z * u.z);
+        airF = airF * (0.5 * p);
+        airF = airF * dc;
+        airF = airF * A;
+
+        Force = Acceleration * mass;
+        Force = Force - airF;
+        Acceleration = {Force.x/mass, Force.y/mass, Force.z/mass};
+    }
+};
 
 struct MeshData
 {
@@ -61,7 +110,18 @@ public:
     void lagTriangel(const Vec3& v1, const Vec3& v2, const Vec3& v3, MeshData &tempMesh);
     void subDivide(const Vec3& a, const Vec3& b, const Vec3& c, int n, MeshData &tempMesh);
     void oktaederUnitBall(MeshData &tempMesh);
-
+    void move(float x, float y, float z, MeshData &tempMesh);
+    void moveAlongLAs( float dt);
+    void baryMove(float x, float y, float z);
+    void setSurface2(GameObject* surface);
+    //gsl::Vector3D Get_position();
+    //void setPosition(gsl::Vector3D v);
+    void setHeight(float z, MeshData &tempMesh);
+    void heightAt(MeshData &tempMesh);
+    Physics* p;
+    
+    GameObject* _las;
+    
     //void updateParticles(const float dt);
 
     TextureHandler *mTexture;
@@ -97,6 +157,10 @@ private:
 
     int m_rekursjoner;
     int m_indeks;               // brukes i rekursjon, til å bygge m_vertices
+    gsl::Vector3D m_normal{0.0, 0.0, 1.0};
+    gsl::Vector3D old_normal{0.0, 0.0, 1.0};
+    gsl::Vector3D mN{0.0, 0.0, 1.0};
+    int old_index{0};    
 
     void minMaxNormalize();
     std::vector<Vertex> lasData;
@@ -115,6 +179,7 @@ private:
         float lifetime;
     };
     std::vector< Particle > particles;
+    std::vector<Vertex> surfVertices;
     //float positions[400];
     float PosArr[1000][2000];
 
