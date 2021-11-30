@@ -173,7 +173,7 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
     entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(10.0f,5.0f,10.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
@@ -187,7 +187,7 @@ void RenderWindow::init()
 
 
 
-/*
+    /*
 
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
@@ -244,9 +244,13 @@ void RenderWindow::init()
     //LASDATA
     LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
-   // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
-
+    // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
+    entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
+
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
     entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
     entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
@@ -254,18 +258,14 @@ void RenderWindow::init()
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    //Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
-//    int eSize = (int)entities.size();
-//    for(int i = 0; i < eSize; i++){
-//        if(meshCompVec[i]->entity == 16){
-//            break;
-//        }
-//    }
+    Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+    //    int eSize = (int)entities.size();
+    //    for(int i = 0; i < eSize; i++){
+    //        if(meshCompVec[i]->entity == 16){
+    //            break;
+    //        }
+    //    }
 
-    //entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
-    //entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
-    //entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
-    //entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
 
     mSong->pause();
     mMainWindow->updateViewPort();
@@ -274,6 +274,7 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
+
     mMainWindow->updateDetails();
     
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
@@ -337,51 +338,57 @@ void RenderWindow::render()
 
     if(!isPaused)
     {
+
+        ++physicsCount;
         //COLLISON AND PHYSICS PART
-        for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++){
-            if(transformCompVec[i]->entity == 3)
-            {
-                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
-                //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
-                //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
-            }
-            if(transformCompVec[i]->entity == 5 ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+        if (physicsCount > 1)
+            for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++){
+                {
+                    if(transformCompVec[i]->entity == 3)
+                    {
+                        transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+                        //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
+                        //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+                    }
+                    if(transformCompVec[i]->entity == 5 ) //enmtity 4 is the ball
+                    {
+                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+                    }
+                    if(transformCompVec[i]->entity == 16 ) //enmtity 4 is the ball
+                    {
+                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+                    }
+                    if(transformCompVec[i]->entity == 17 ) //enmtity 4 is the ball
+                    {
+                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+                    }
+                    if(transformCompVec[i]->entity == 18 ) //enmtity 4 is the ball
+                    {
+                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+                    }
+                    //            if(transformCompVec[i]->entity == 19 ) //enmtity 4 is the ball
+                    //            {
+                    //                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                    //                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+                    //                break;
+                    //            }
+                    physicsCount = 0;
+                }
 
             }
-            if(transformCompVec[i]->entity == 16 ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-            }
-            if(transformCompVec[i]->entity == 17 ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-            }
-            if(transformCompVec[i]->entity == 18 ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-            }
-            if(transformCompVec[i]->entity == 19 ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                break;
-            }
-
-        }
     }
 
     drawFrostum();      //frustum culling lines! This is a visualisation of frostum
 
-/*
+    /*
     if(bIsPlayerCamera)
     {
         mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));

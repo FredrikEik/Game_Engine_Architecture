@@ -15,6 +15,10 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Ve
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
 {
+    //friction
+    float my = 0.05f; //friction coefficient
+
+
     QVector3D g = QVector3D(0.0f, -9.8067f*3.f, 0.0f);
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
     FindTriangle(Transf); // finds normal and height of plane
@@ -37,14 +41,25 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
             //get speed
-            float speed = Transf->Velocity.length() * elasticity;
+            float speed = Transf->Velocity.length();// * elasticity;
+
+
+
             //apply speed to new vector direction
             Transf->Velocity =  MakeGSLvec3D( NewVector)*speed ;
             once = false;
 
+            //friction calc
+            QVector3D Friction = -MakeQvec3D(Transf->Velocity);
+            Friction.normalize();
+
+            Friction = my*speed*Friction;
+             Transf->Velocity = Transf->Velocity + MakeGSLvec3D( Friction );
+
             //clipping collision
             ClippingVec =deltaTime*(radius-length)*MakeQvec3D( Data.floorNormal);
             Transf->mMatrix.translate(MakeGSLvec3D( ClippingVec));
+
         }
 
     }

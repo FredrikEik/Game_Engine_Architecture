@@ -81,6 +81,7 @@ private slots:
 
 private:
 
+    int physicsCount = 0;
     void CalcDeltaTime();
     float DeltaTime =0.0;
     std::chrono::steady_clock::time_point oldTime;
