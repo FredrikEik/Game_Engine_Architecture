@@ -31,7 +31,7 @@ struct MeshData
 
 //Because we need OpenGLFunctions, this class can not be static
 
-
+typedef gsl::Vector3D Vec3;
 class MeshHandler : public QOpenGLFunctions_4_1_Core
 {
 public:
@@ -58,6 +58,10 @@ public:
 
     void calculateNormals();
     void initTerrain();
+    void lagTriangel(const Vec3& v1, const Vec3& v2, const Vec3& v3, MeshData &tempMesh);
+    void subDivide(const Vec3& a, const Vec3& b, const Vec3& c, int n, MeshData &tempMesh);
+    void oktaederUnitBall(MeshData &tempMesh);
+
     //void updateParticles(const float dt);
 
     TextureHandler *mTexture;
@@ -79,6 +83,7 @@ private:
     int makeProjectile();
     int makeSkybox();
     int makeTerrain(std::string heightMapName);   
+    int makeBall(int n);
 
     void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
 
@@ -89,6 +94,9 @@ private:
     //void RemoveDeltaPos(MeshData &mesh);
     //void GenerateHeightMap(MeshData &mesh);
     //float CalcHeight(float x = 0, float z = 0);
+
+    int m_rekursjoner;
+    int m_indeks;               // brukes i rekursjon, til å bygge m_vertices
 
     void minMaxNormalize();
     std::vector<Vertex> lasData;

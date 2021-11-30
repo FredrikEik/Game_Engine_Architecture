@@ -112,12 +112,8 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-    Las = mResourceManager->addObject("LAS");
-    //Las->mTransform->mMatrix.translate(0,0,0);
-    Las->mMaterial->mShaderProgram =0;
-    Las->mMaterial->mTextureUnit = 0;
-    //Las->mTransform->mMatrix.scale(50.f);
-    mRenderSystem->mGameObjects.push_back(Las);
+
+    RollingBallSimulation();
 
 
     //Connect the gameloop timer to the render function:
@@ -177,7 +173,33 @@ void CoreEngine::testScene()
     skybox->mTransform->mMatrix.scale(40.f);
     mRenderSystem->mGameObjects.push_back(skybox);
 
+    Las = mResourceManager->addObject("LAS");
+    //Las->mTransform->mMatrix.translate(0,0,0);
+    Las->mMaterial->mShaderProgram =0;
+    Las->mMaterial->mTextureUnit = 0;
+    //Las->mTransform->mMatrix.scale(50.f);
+    mRenderSystem->mGameObjects.push_back(Las);
 
+
+}
+
+void CoreEngine::RollingBallSimulation()
+{
+
+    // setup Las landscape
+    Las = mResourceManager->addObject("LAS");
+    //Las->mTransform->mMatrix.translate(0,0,0);
+    Las->mMaterial->mShaderProgram =0;
+    Las->mMaterial->mTextureUnit = 0;
+    //Las->mTransform->mMatrix.scale(50.f);
+   // mRenderSystem->mGameObjects.push_back(Las);
+
+
+    ball = mResourceManager->addObject("ball");
+    ball->mMaterial->mShaderProgram =1;
+    ball->mMaterial->mTextureUnit = 0;
+    //Las->mTransform->mMatrix.scale(50.f);
+    mRenderSystem->mGameObjects.push_back(ball);
 
 
 }

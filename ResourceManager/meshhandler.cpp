@@ -51,6 +51,8 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeSkybox();
         if (meshName.find("LAS") != std::string::npos)
             meshIndex = makeLAS("test_las.txt");
+        if (meshName.find("ball") != std::string::npos)
+            meshIndex = makeBall(3);
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -675,6 +677,22 @@ int MeshHandler::makeTerrain(std::string heightMapName)
     return mMeshes.size()-1;
 }
 
+int MeshHandler::makeBall(int n)
+{
+    m_rekursjoner = n;
+
+    mMeshes.emplace_back(MeshData());
+    MeshData &tempMesh = mMeshes.back();
+
+    tempMesh.mVertices[0].reserve(3 * 8 * pow(4, m_rekursjoner));
+    oktaederUnitBall(tempMesh);
+
+    tempMesh.mDrawType = GL_TRIANGLES;
+    initMesh(tempMesh, 0);
+
+    return mMeshes.size()-1;
+}
+
 int MeshHandler::makeLAS(std::string fileName)
 {
     mMeshes.emplace_back(MeshData());
@@ -1081,150 +1099,6 @@ void MeshHandler::calculateHeighMapNormals(int width, int depth, MeshData &mesh)
     qDebug() << "Normals for ground calclulated";
 }
 
-//void MeshHandler::RemoveDeltaPos(MeshData &mesh)
-//{
-
-
-//    float smallestX{0}, biggestX{0};
-//    float smallestY{0}, biggestY{0};
-//    float smallestZ{0}, biggestZ{0};
-
-//    //we take biggest delta between x,y and z, then we remove it from the vertexes to get a more appropreate number.
-//    for(auto i = 0; i<mesh .positions.size(); i++)
-//    {
-
-//        //gsml::Vector3d temp = positions[i].getVertex();
-//        float tempX = mesh .positions[i].get_xyz().getX();
-//        float tempY = mesh .positions[i].get_xyz().getY();
-//        float tempZ = mesh .positions[i].get_xyz().getZ();
-//        //qDebug() << "xyz "<< temp;
-//        //check size of x
-//        if(tempX < smallestX)
-//            smallestX = tempX;
-//        if(tempX > biggestX)
-//            biggestX = tempX;
-//        //check size of y
-//        if(tempY < smallestY)
-//            smallestY = tempY;
-//        if(tempY > biggestY)
-//            biggestY = tempY;
-//        //check size of Z
-//        if(tempZ < smallestZ)
-//            smallestZ = tempZ;
-//        if(tempZ > biggestZ)
-//            biggestZ = tempZ;
-//    }
-
-//    for(auto i = 0; i<mesh .positions.size(); i++)
-//    {
-
-//        gsl::Vector3D temp = mesh.positions[i].get_xyz();
-//        //qDebug() << "xyz "<< temp;
-//        //check size of x
-//        if(temp.getX() < smallestX)
-//            smallestX = temp.getX();
-//        if(temp.getX() > biggestX)
-//            biggestX = temp.getX();
-//        //check size of y
-//        if(temp.getY() < smallestY)
-//            smallestY = temp.getY();
-//        if(temp.getY() > biggestY)
-//            biggestY = temp.getY();
-//        //check size of Z
-//        if(temp.getZ() < smallestZ)
-//            smallestZ = temp.getZ();
-//        if(temp.getZ() > biggestZ)
-//            biggestZ = temp.getZ();
-//    }
-
-//    float deltaX{biggestX - smallestX}, deltaY{biggestY - smallestY }, deltaZ{biggestZ - smallestZ };
-//    qDebug() << "Delta x : "<<deltaX<< " Delta y: " << deltaY<< " Delta z: "<< deltaZ<< "\n";
-//    qDebug() << "Biggest x : "<< biggestX<< " smallest x: " << smallestX<< "\n";
-//    qDebug() << "Biggest y : "<<biggestY<< " smallest Y: " << smallestY<< "\n";
-//    qDebug() << "Biggest z : "<<biggestZ<< " smallest z: " << smallestZ<< "\n";
-
-
-//    for(auto i = 0; i<mesh .positions.size(); i++)
-//    {
-//        mesh .positions[i].set_xyz(deltaX - mesh .positions[i].get_xyz().getX(),
-//                             deltaY - mesh .positions[i].get_xyz().getY() ,
-//                             deltaZ - mesh .positions[i].get_xyz().getZ());
-//        //qDebug() << positions[i].getVertex();//.getX() << positions[i].getVertex().getY() << positions[i].getVertex().getZ() ;
-//    }
-
-//}
-
-//void MeshHandler::GenerateHeightMap(MeshData &mesh)
-//{
-
-
-//    float ofsetx = -100;
-//    float ofsetz = -100;
-//    float ofsety = -15;
-
-//    for(float x = 100; x<200; x+=1)
-//        for(float z =100; z<200; z+=1)
-//        {
-//            //get all height data :D
-//            float height1 = CalcHeight(    x,    z);
-//            float height2 = CalcHeight(  x+1,    z);
-//            float height3 = CalcHeight(    x,  z+1);
-//            float height4 = CalcHeight(    x,  z+1);
-//            float height5 = CalcHeight(  x+1,    z);
-//            float height6 = CalcHeight(  x+1,  z+1);
-
-//                                                                                        //use height date for colouring   //This order is like this because our
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height1,ofsetz +   z,       x/900, height1/100, z/1000,0,0}); //1
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height2,ofsetz +   z,       x/900, height2/100, z/1000,0,0}); //2
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height3,ofsetz + z+1,       x/900, height3/100, z/1000,0,0}); //3
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +  x, ofsety +height4,ofsetz + z+1,       x/900, height4/100, z/1000,0,0}); //4
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height5,ofsetz +   z,       x/900, height5/100, z/1000,0,0}); //5
-//            mesh.mVertices[0].push_back(Vertex{ofsetx +x+1, ofsety +height6,ofsetz + z+1,       x/900, height6/100, z/1000,0,0}); //6
-
-
-//        }
-
-//}
-
-//float MeshHandler::CalcHeight(float x, float z)
-//{
-//    float height = 10.0f;
-
-
-//    int X = static_cast<int>(x);
-//    int Z = static_cast<int>(z);
-//    int counter =0;
-//    float collected = 0;
-//    height = PosArr[X][Z];
-
-//    if((X>15 && Z>15) /*&& height <= 2.0f */)
-//    {
-
-//        for(int i = -14; i < 14 ; i++)
-//        {
-//            for (int j = -14 ; j <14; j++ )
-//            {
-//                if(PosArr[X + i][Z + j] != 0)
-//                {
-//                    collected += PosArr[X + i][Z + j];
-//                    counter++;
-//                }
-//            }
-//        }
-//        height = ( collected)/(counter);
-//        //average height of surrounding area
-//    }
-//    else
-//    {
-//        height = PosArr[X][Z] ;
-//    }
-
-
-//    //do the average calc
-//    //qDebug() << height;
-//    //then return its
-//    return height;
-//}
 
 MeshData MeshHandler::makeLineBox(std::string meshName)
 {
@@ -1332,6 +1206,58 @@ void MeshHandler::setPositions(const std::vector<Vertex> &value)
 {
     MeshData tempMesh;
     tempMesh.positions = value;
+}
+
+void MeshHandler::lagTriangel(const Vec3 &v1, const Vec3 &v2, const Vec3 &v3, MeshData &tempMesh )
+{
+    Vertex v{};
+
+    v.set_xyz(v1.x, v1.y, v1.z);		// koordinater v.x = v1.x, v.y=v1.y, v.z=v1.z
+    v.set_normal(v1.x, v1.y, v1.z);	// rgb
+    v.set_st(0.0f, 0.0f);			// kan utelates
+    tempMesh.mVertices[0].push_back(v);
+    v.set_xyz(v2.x, v2.y, v2.z);
+    v.set_normal(v2.x, v2.y, v2.z);
+    v.set_st(1.0f, 0.0f);
+    tempMesh.mVertices[0].push_back(v);
+    v.set_xyz(v3.x, v3.y, v3.z);
+    v.set_normal(v3.x, v3.y, v3.z);
+    v.set_st(0.5f, 1.0f);
+    tempMesh.mVertices[0].push_back(v);
+}
+
+void MeshHandler::subDivide(const Vec3 &a, const Vec3 &b, const Vec3 &c, int n, MeshData &tempMesh)
+{
+    if (n>0) {
+        Vec3 v1 = a+b; v1.normalize();
+        Vec3 v2 = a+c; v2.normalize();
+        Vec3 v3 = c+b; v3.normalize();
+        subDivide(a, v1, v2, n-1, tempMesh);
+        subDivide(c, v2, v3, n-1, tempMesh);
+        subDivide(b, v3, v1, n-1, tempMesh);
+        subDivide(v3, v2, v1, n-1, tempMesh);
+    } else {
+        lagTriangel(a, b, c, tempMesh);
+    }
+}
+
+void MeshHandler::oktaederUnitBall(MeshData &tempMesh)
+{
+    Vec3 v0{0, 0, 1};
+    Vec3 v1{1, 0, 0};
+    Vec3 v2{0, 1, 0};
+    Vec3 v3{-1, 0, 0};
+    Vec3 v4{0, -1, 0};
+    Vec3 v5{0, 0, -1};
+
+    subDivide(v0, v1, v2, m_rekursjoner, tempMesh);
+    subDivide(v0, v2, v3, m_rekursjoner, tempMesh);
+    subDivide(v0, v3, v4, m_rekursjoner, tempMesh);
+    subDivide(v0, v4, v1, m_rekursjoner, tempMesh);
+    subDivide(v5, v2, v1, m_rekursjoner, tempMesh);
+    subDivide(v5, v3, v2, m_rekursjoner, tempMesh);
+    subDivide(v5, v4, v3, m_rekursjoner, tempMesh);
+    subDivide(v5, v1, v4, m_rekursjoner, tempMesh);
 }
 
 

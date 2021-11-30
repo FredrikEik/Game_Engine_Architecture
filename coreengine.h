@@ -41,6 +41,7 @@ public:
     GameObject* projectile;
     GameObject* skybox;
     GameObject* Las;
+    GameObject* ball;
 
     std::vector<GameObject *> enemies;
 
@@ -70,6 +71,7 @@ public:
 
     void setUpScene();
     void testScene();
+    void RollingBallSimulation();
     void updateCamera();
     void updateScene();
 
