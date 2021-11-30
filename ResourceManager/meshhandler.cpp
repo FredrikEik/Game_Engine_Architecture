@@ -636,13 +636,13 @@ int MeshHandler::readLasFile()
 //--------------Done reading las file, on to creating a simplification-------------------//
 
 
-// This serves as the indexes in the planeGrid.
+// This serves as the indexes and "resolution" in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 50;
-    const int arrayZ = 50;
+    const int arrayX = 5;
+    const int arrayZ = 5;
 
-    float widthScale = 10.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
+    float widthScale  = 10.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
+    float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
     float heigthScale = 10.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
@@ -650,12 +650,12 @@ int MeshHandler::readLasFile()
     float distanceBetweenSquaresZ = (zMax - zMin) / arrayZ;
 
     //Various variables needed for the simplification
-    gsl::Vector3D planeGrid[arrayX][arrayZ]; // planeGrid stores a rectangulated x,z and an average y height for all points in the data
-    int pointDataOutOfGrid = pointData.size(); //Used to calculate how many points are missing
-    int nrPoints[arrayX][arrayZ] = {{0}}; //Used to count how many points are in each square
-    float sumPointData[arrayX][arrayZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
+    gsl::Vector3D planeGrid [arrayX][arrayZ] = {{0}}; // planeGrid stores a rectangulated x,z and an average y height for all points in the data
+    int nrPoints            [arrayX][arrayZ] = {{0}}; //Used to count how many points are in each square
+    float sumPointData      [arrayX][arrayZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-    mMeshes.emplace_back(MeshData()); //Emulating the make triangle function
+    //Emulating the make triangle function
+    mMeshes.emplace_back(MeshData());
     MeshData &meshDataPoints = mMeshes.back();
 
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
@@ -677,33 +677,19 @@ for (int x = 0; x < arrayX; x++)
                pointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
                pointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
-                pointDataOutOfGrid--; // Keep track of points in the grid without a value, xMin and zMin isnt necessarily in [0][0].
                 nrPoints[x][z]++;     // Keep track of y positions in spesific x z squares.
                 sumPointData[x][z] += pointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
             }
         }
         ////This is now in the for loop running for x * z
-        if(nrPoints[x][z] == 0) //Given how xMin and zMin is "non-square", have a default y value.
+        if(nrPoints[x][z] == 0) //Given how pointdata isnt perfeclty square, have a default y value if no points are in the grid.
         {
             planeGrid[x][z].y = yMin; //If no point is found in the square, give a suitable y value.
         }
         else planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point IS found, make an average value.
 
-
-        //After having found all y-cordinates, subtract min in each coordinate, to get origin at 0
-        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
-        planeGrid[x][z].z -= zMin;
-        planeGrid[x][z].y -= yMin;
-
-        planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
-        planeGrid[x][z].z /= depthScale;
-        planeGrid[x][z].y /= heigthScale;
-
-//        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
-//        planeGrid[x][z].z *= -1; //The Z flip is the most useful, for messes with normals for now.
-//        planeGrid[x][z].y *= -1;
-
         //Only using mVertices[0] beacuse there is no lod for this mesh.
+        //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
                                                  0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
                                                  0.0f, 0.0f}); //UVs
@@ -720,6 +706,7 @@ for (int x = 0; x < arrayX; x++)
 //    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
 //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
+//    glPointSize(5.0f);
 //    initMesh(meshDataPoints, 0);          //With these commented out, it will continue with triangles.
 //    return mMeshes.size()-1;
 
@@ -749,27 +736,29 @@ for (int x = 0; x < arrayX; x++)
 //        meshDataPoints.mIndexCount[0]++; //Seems superflous? dont want to add anything not absolutely needed.
     }
 //    meshDataPoints.mIndexCount[0]++;
-    qDebug() << "End of triangle calculation";
-    qDebug() << "Indices" << meshDataPoints.mIndices->size();
+//    qDebug() << "End of triangle calculation";
+//    qDebug() << "Indices" << meshDataPoints.mIndices->size();
 
 
-//Normal calculation
+////Normal calculation
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
+    gsl::Vector3D nV;
+    gsl::Vector3D pos;
 
     std::vector<Vertex> vert = meshDataPoints.mVertices[0];
 
 for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
 {
-    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
+    pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
 
     int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX);
     int y1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ);
 
     if(x1 > 0 && y1 > 0 && x1 < arrayX && y1 < arrayZ) //index > 0
     {
-        pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
-
+        pCenter = pos;
+        qDebug() << "If statement triggered";
         p0 = gsl::Vector3D{vert[i-arrayX].mXYZ.x,   vert[i-arrayX].mXYZ.y,   vert[i-arrayX].mXYZ.z};
         p1 = gsl::Vector3D{vert[i+1-arrayX].mXYZ.x, vert[i+1-arrayX].mXYZ.y, vert[i+1-arrayX].mXYZ.z};
         p2 = gsl::Vector3D{vert[i+1].mXYZ.x,        vert[i+1].mXYZ.y,        vert[i+1].mXYZ.z};
@@ -813,15 +802,35 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
     n5 = v5.cross(v5,v0);
     n5.normalize();
 
-    gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+    nV = n0+n1+n2+n3+n4+n5;
 
-    meshDataPoints.mVertices[0][i].set_normal(nV.x, nV.y, nV.z);
+    meshDataPoints.mVertices[0][i].set_normal(nV);
 }
+
+//for(int x = 0; x < arrayX; x++)
+//{
+//    for(int z = 0; z < arrayZ; z++)
+//    {
+//        //After having calulated everything needed for the mesh, make it organized and findable in scene.
+//        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
+//        planeGrid[x][z].z -= zMin;
+//        planeGrid[x][z].y -= yMin;
+
+//        planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
+//        planeGrid[x][z].z /= depthScale;
+//        planeGrid[x][z].y /= heigthScale;
+
+////        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
+////        planeGrid[x][z].z *= -1; //The Z flip is the most useful, for messes with normals for now.
+////        planeGrid[x][z].y *= -1;
+
+//    }
+//}
+
 
 //Finalize mesh
 meshDataPoints.mDrawType = GL_TRIANGLES;
 //glPointSize(5.0f);
-//glPointColor(0.0f, 1.0f, 0.0f);
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
 }

@@ -77,7 +77,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 ////Search through all trianglevertices and get their barycentric coordinates.
     gsl::Vector3D barycoordinates;
 
-    for (int i = 0; i < triangleVertices.size()-2; i += 3) //sycle through trianglevertices three by three.
+    for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
     {
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
         gsl::Vector3D v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ,
