@@ -70,10 +70,10 @@ void RollingBall::move(float dt)
 
             normalvektor = (v1-v0)^(v2-v0);                                             //regner ut normalvektoren til planet
             normalvektor.normalize();                                                   //normaliserer normalvektoren
-            akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,normalvektor.y,0); //regner ut akselerasjon
-//            akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,
-//                                         normalvektor.y*normalvektor.y*9.80665f,
-//                                         normalvektor.z*normalvektor.y*9.80665f)+gKraft;
+            //akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,normalvektor.y,0); //regner ut akselerasjon
+            akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,
+                                         normalvektor.y*normalvektor.y*9.80665f,
+                                         normalvektor.z*normalvektor.y*9.80665f)+gKraft;
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
 
             //if(i==3){
@@ -113,7 +113,7 @@ void RollingBall::move(float dt)
         }
         else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
                  barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
-            //getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, gKraft.getY(), nyPosisjon.z);
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, gKraft.getY(), nyPosisjon.z);
            qDebug() << "The ball is outside";
         }
     }

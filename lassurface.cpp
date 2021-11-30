@@ -66,7 +66,7 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step =7;
+    int step =4;
     float squaresDirection = (step-1);
     float Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
@@ -76,10 +76,10 @@ void LasSurface::readLasFile(std::string filnavn)
     double squareMinX = xmin;
     double squareMaxX;
 
-    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset){     //looper gjennom hver square i z retning
+    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset-0.001f){     //looper gjennom hver square i z retning
         squareMaxZ = j+zOffset;
 
-        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset){       //looper gjennom hver square i x retning
+        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset-0.001f){       //looper gjennom hver square i x retning
             numberofPointsInside=0;
             float tempX=0;
             float tempY=0;
@@ -109,26 +109,27 @@ void LasSurface::readLasFile(std::string filnavn)
                 tempY = tempY/numberofPointsInside;                         // tar gjennomsnitt av alle y verdiene
             }
             vertex.set_xyz(tempX, tempY, tempZ);
-            vertex.set_rgb(0,255,100);
             vertex.set_normal(tempX,1,0);
 
             //qDebug () << numberofPointsInside;
-            qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
-            //qDebug() << lasVertices[VerticesCounter].getXYZ().x << lasVertices[VerticesCounter].getXYZ().y << lasVertices[VerticesCounter].getXYZ().z;
+            //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
+            qDebug() << lasVertices[VerticesCounter].getXYZ().x << lasVertices[VerticesCounter].getXYZ().y << lasVertices[VerticesCounter].getXYZ().z;
             tempVertices.push_back(vertex);                                 //push_backer vertexen
 
         }
     }
 
-    qDebug() <<"Number of Vertices" << VerticesCounter;
-    qDebug() << "Amount of squares" << Amountsquares;
+    //qDebug() <<"Number of Vertices" << VerticesCounter;
+    //qDebug() << "Amount of squares" << Amountsquares;
     float j=1;
-        for(int i =0; i< Amountsquares-step-1; i++){                       // lager de nye punktene om til trekanter/squares.
+    float sqOffset = 0;
+        for(int i =0; i< Amountsquares; i++){                       // lager de nye punktene om til trekanter/squares.
 
-            if(i == j*step){
-
+            if(i == squaresDirection*j){
                 i++;
-                                                               // sjekker om alle squarene på en rekke er fylt ut.
+                j++;                                               // sjekker om alle squarene på en rekke er fylt ut.
+                if (VerticesCounter-i > step )
+                    break;
             }
 
         getMeshComponent()->mVertices.push_back(tempVertices[(i)]);
