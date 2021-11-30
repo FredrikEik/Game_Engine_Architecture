@@ -641,8 +641,8 @@ int MeshHandler::readLasFile()
     const int arrayX = 50;
     const int arrayZ = 50;
 
-    float widthScale = 10.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
-    float depthScale = 10.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
+    float widthScale = 10.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
+    float depthScale = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
     float heigthScale = 10.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
@@ -661,27 +661,13 @@ int MeshHandler::readLasFile()
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
     qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machine";
 
-    planeGrid[0][0].x = xMin;
-    planeGrid[0][0].z = zMin;
-
-    for (int x = 1; x < arrayX; x++)
-    {
-        for (int z = 1; z < arrayZ; z++)
-        {
-            //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
-            planeGrid[x][z].x = distanceBetweenSquaresX + (distanceBetweenSquaresX * x);
-            planeGrid[x][z].z = distanceBetweenSquaresZ + (distanceBetweenSquaresZ * z);
-        }
-    }
-
-
 for (int x = 0; x < arrayX; x++)
 {
     for (int z = 0; z < arrayZ; z++)
     {
         //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
-//        planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
-//        planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
+        planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
+        planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
 
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
@@ -691,37 +677,30 @@ for (int x = 0; x < arrayX; x++)
                pointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
                pointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
-                pointDataOutOfGrid--; // Keep track of missing points.
-                nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
+                pointDataOutOfGrid--; // Keep track of points in the grid without a value, xMin and zMin isnt necessarily in [0][0].
+                nrPoints[x][z]++;     // Keep track of y positions in spesific x z squares.
                 sumPointData[x][z] += pointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
-            }
-            else
-            {
-                qDebug() << "No points found in square" << x << z;
             }
         }
         ////This is now in the for loop running for x * z
-        if(nrPoints[x][z] != 0) //Especially for higher "resoulutions", there might be some squares with 0 points, this makes sure we dont divide by zero
+        if(nrPoints[x][z] == 0) //Given how xMin and zMin is "non-square", have a default y value.
         {
-            planeGrid[x][z].y = sumPointData[x][z]/nrPoints[x][z]; //planeGrid is now filled with a 50x50 square with x,z and average of y coordinates.
+            planeGrid[x][z].y = yMin; //If no point is found in the square, give a suitable y value.
         }
+        else planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point IS found, make an average value.
+
 
         //After having found all y-cordinates, subtract min in each coordinate, to get origin at 0
         planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
         planeGrid[x][z].z -= zMin;
         planeGrid[x][z].y -= yMin;
 
-//        if(planeGrid[x][z].y > yMin)
-//        {
-//            planeGrid[x][z].y = yMin;
-//        }
-
         planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
         planeGrid[x][z].z /= depthScale;
         planeGrid[x][z].y /= heigthScale;
 
 //        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
-        planeGrid[x][z].z *= -1;
+//        planeGrid[x][z].z *= -1; //The Z flip is the most useful, for messes with normals for now.
 //        planeGrid[x][z].y *= -1;
 
         //Only using mVertices[0] beacuse there is no lod for this mesh.
@@ -735,7 +714,6 @@ for (int x = 0; x < arrayX; x++)
 
 //Debug stuff - used to double check variables.
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
-    qDebug() << "Total pointData" << pointData.size() << "Point data not found in search" << pointDataOutOfGrid;
 //    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
 //    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
 //    qDebug() << "xMin" << xMin << "yMin" << yMin << "zMin" << zMin;
@@ -837,12 +815,13 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
 
     gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
-    meshDataPoints.mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z);
+    meshDataPoints.mVertices[0][i].set_normal(nV.x, nV.y, nV.z);
 }
 
 //Finalize mesh
-meshDataPoints.mDrawType = GL_POINTS;
-glPointSize(5.0f);
+meshDataPoints.mDrawType = GL_TRIANGLES;
+//glPointSize(5.0f);
+//glPointColor(0.0f, 1.0f, 0.0f);
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
 }
