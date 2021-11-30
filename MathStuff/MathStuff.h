@@ -24,7 +24,11 @@ vec4 Transform(gsl::Matrix4x4 matrix, vec4 vector);
 
 float dotProduct(gsl::Vector3D a, gsl::Vector3D b);
 
-}
+float min(float x, float y);
+float max(float x, float y);
 
+float distanceVec3D(gsl::Vector3D a, gsl::Vector3D b);
+
+}
 
 #endif // MATHSTUFF_H

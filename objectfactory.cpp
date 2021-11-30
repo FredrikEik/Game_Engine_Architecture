@@ -63,7 +63,7 @@ void ObjectFactory::createObject(std::string objectName)
             storedMeshes.insert(std::pair("Plane", willCreateObject->getMeshComp()));
             qDebug() << "plane mesh saved";
         }
-        willCreateObject->mTexture = 3;
+        willCreateObject->mTexture = 1;
     }
     else
         return;

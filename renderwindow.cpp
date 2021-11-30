@@ -126,7 +126,7 @@ void RenderWindow::init()
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
-    mTextures[1] = new Texture("hund.bmp");
+    mTextures[1] = new Texture("TOG.bmp");
     mTextures[2] = new Texture("cobbleStone.bmp");
     mTextures[3] = new Texture("whitefur.bmp");
     mTextures[4] = new Texture("firesky.bmp");
@@ -201,7 +201,7 @@ void RenderWindow::init()
     mMainWindow->addObjectToWorldList("Player");
     ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
     ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
-    mPlayer = new player(ObjFactory->mGameObject.back());
+    mPlayer = new player(ObjFactory->mGameObject.back());*/
 
     skyBox = new SkyBox();
     skyBox->init();
@@ -215,13 +215,19 @@ void RenderWindow::init()
     setScaleZ(100);
     ObjFactory->setOBJindex(-1);
 
-    MapSpawner = new Spawner(ObjFactory, mMainWindow);
+    /*MapSpawner = new Spawner(ObjFactory, mMainWindow);
     //MapSpawner->spawnRow();
     MapSpawner->spawnRow(100);
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);*/
     ObjFactory->createObject("Plane");
     mMainWindow->addObjectToWorldList("Plane");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(0.1);
+    setScaleY(0.1);
+    setScaleZ(0.1);
+    ObjFactory->setOBJindex(-1);
+
 }
 
 // Called each frame - doing the rendering
@@ -261,7 +267,7 @@ void RenderWindow::render()
 //        //draw the object
 //        mVisualObjects[0]->draw();
 
-    //skyBox->Update(mCurrentCamera->getPosition());
+    skyBox->Update(mCurrentCamera->getPosition());
 
     //MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
 
@@ -275,20 +281,20 @@ void RenderWindow::render()
 
     if(ObjFactory->mGameObject.size() > 0)
     {
-        glUseProgram(mShaderPrograms[0]->getProgram());
-        //glUniform1i(mTextureUniform, 0); // chooses texture slot 0
+        glUseProgram(mShaderPrograms[1]->getProgram());
+        glUniform1i(mTextureUniform, 0); // chooses texture slot 0
 
         for (unsigned int i = 0; i < ObjFactory->mGameObject.size(); i++){
             //send data to shader
-            /*if (mTextureIndex != ObjFactory->mGameObject[i]->mTexture)
+            if (mTextureIndex != ObjFactory->mGameObject[i]->mTexture)
             {
                 mTextureIndex = ObjFactory->mGameObject[i]->mTexture;
                 glUniform1i(mTextureUniform, mTextureIndex);
-            }*/
+            }
 
-            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
+            glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
             if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
             {

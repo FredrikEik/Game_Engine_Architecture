@@ -24,6 +24,7 @@ public:
     void set_xyz(GLfloat *xyz);
     void set_xyz(GLfloat x, GLfloat y, GLfloat z);
     void set_xyz(gsl::Vector3D xyz_in);
+    gsl::Vector3D get_xyz() { return mXYZ; }
     void set_rgb(GLfloat *rgb);
     void set_rgb(GLfloat r, GLfloat g, GLfloat b);
     void set_normal(GLfloat *normal);

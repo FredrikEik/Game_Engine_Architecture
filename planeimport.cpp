@@ -1,5 +1,6 @@
 #include "planeimport.h"
 #include "vertex.h"
+#include "MathStuff/MathStuff.h"
 
 #include "components.h"
 
@@ -7,6 +8,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <math.h>
 
 PlaneImport::PlaneImport(std::string filename) : GameObject()
 {
@@ -85,6 +87,7 @@ void PlaneImport::readFile(std::string filename)
     int num = std::atoi(oneWord.c_str());
     //qDebug() << "Vertices: " << num;
 
+    num = 25000;
     unsigned int temp_index = 0;
 
     for(int i = 0; i < num; i++)
@@ -98,21 +101,103 @@ void PlaneImport::readFile(std::string filename)
 
         gsl::Vector3D tempVertex;
         sStream >> oneWord;
-        tempVertex.x = std::stof(oneWord) - 615200.f;
+        tempVertex.x = std::stof(oneWord); // - 615200.f
         sStream >> oneWord;
-        tempVertex.y = std::stof(oneWord) - 6758325.f;
+        tempVertex.y = std::stof(oneWord); // - 6758325.f
         sStream >> oneWord;
-        tempVertex.z = std::stof(oneWord) - 565.f;
+        tempVertex.z = std::stof(oneWord); // - 565.f
         //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
 
         //Vertex made - pushing it into vertex-vector
         tempVertecies.push_back(tempVertex);
 
         Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
-        if(getMeshComp())
+        /*if(getMeshComp())
         {
             getMeshComp()->mVertices.push_back(tempVert);
             getMeshComp()->mIndices.push_back(temp_index++);
+        }*/
+    }
+
+    gsl::Vector3D minPointPosition = tempVertecies[0];
+    gsl::Vector3D maxPointPosition = tempVertecies[0];
+
+    for( int i = 0; i < num; i++)
+    {
+        minPointPosition.x = tog::min(minPointPosition.x, tempVertecies[i].x); //finds the lowest xyz
+        minPointPosition.y = tog::min(minPointPosition.y, tempVertecies[i].y);
+        minPointPosition.z = tog::min(minPointPosition.z, tempVertecies[i].z);
+        maxPointPosition.x = tog::max(maxPointPosition.x, tempVertecies[i].x); //finds the highest xyz
+        maxPointPosition.y = tog::max(maxPointPosition.y, tempVertecies[i].y);
+        maxPointPosition.z = tog::max(maxPointPosition.z, tempVertecies[i].z);
+    }
+    //qDebug() << "minX: " << minPointPosition.x << " minY: " << minPointPosition.y << " minZ: " << minPointPosition.z;
+    //qDebug() << "maxX: " << maxPointPosition.x << " maxY: " << maxPointPosition.y << " maxZ: " << maxPointPosition.z;
+
+    gsl::Vector3D tempOffset = -minPointPosition;
+
+    for( int i = 0; i < num; i++)
+    {
+        tempVertecies[i] += tempOffset; // putting the points closer to origin
+        //qDebug() << "x: " << tempVertecies[i].x << " y: " << tempVertecies[i].y << " z: " << tempVertecies[i].z;
+    }
+    minPointPosition += tempOffset;
+    maxPointPosition += tempOffset;
+
+    const unsigned triangleNumberX = 50; // sqares in x direction
+    const unsigned triangleNumberY = 50; // sqares in y direction
+    const gsl::Vector2D distance = gsl::Vector2D((maxPointPosition.x - minPointPosition.x) / triangleNumberX, (maxPointPosition.y - minPointPosition.y) / triangleNumberY);
+    //const gsl::Vector2D distance = gsl::Vector2D(maxPointPosition.x - minPointPosition.x / triangleNumberX, maxPointPosition.y - minPointPosition.y / triangleNumberY);
+    gsl::Vector3D tempVector;
+    int closestVert;
+    float vertDistance;
+    float closestVertDistance;
+
+    getMeshComp()->mVertices.resize(triangleNumberX * triangleNumberY);
+    auto verticesVectorGetIndex = [](unsigned x, unsigned y) -> unsigned {return x * triangleNumberY + y; };
+
+    for (unsigned x = 0; x < triangleNumberX; x++)
+    {
+        for (unsigned y = 0; y < triangleNumberY; y++)
+        {
+            tempVector = gsl::Vector3D(x * distance.x, y * distance.y, 0.f);
+
+            closestVertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[0].x, tempVertecies[0].y, 0.f));
+            closestVert = 0;
+
+            for(unsigned i = 0; i < num; i++) // finds closest point to perfect square corner
+            {
+                vertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[i].x, tempVertecies[i].y, 0.f));
+
+                if (vertDistance < closestVertDistance)
+                {
+                    closestVert = i;
+                    closestVertDistance = vertDistance;
+                }
+            }
+            getMeshComp()->mVertices[verticesVectorGetIndex(x, y)] = Vertex(gsl::Vector3D(tempVertecies[closestVert].x, tempVertecies[closestVert].z, tempVertecies[closestVert].y),
+                                                                            gsl::Vector3D(1.f, 0.f, 0.f),
+                                                                            gsl::Vector2D((rand()%101)/10, (rand()%101)/10));
+        }
+    }
+
+    for (unsigned i = 0; i < getMeshComp()->mVertices.size(); i++)
+    {
+        qDebug() << "x: " << getMeshComp()->mVertices[i].get_xyz().x << " y: " << getMeshComp()->mVertices[i].get_xyz().y << " z: " << getMeshComp()->mVertices[i].get_xyz().z;
+    }
+
+    getMeshComp()->mIndices.reserve(triangleNumberX * triangleNumberY * 6);
+
+    for (unsigned x = 0; x < triangleNumberX - 1; x++) // assing indexes for the sqares
+    {
+        for (unsigned y = 0; y < triangleNumberY - 1; y++)
+        {
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y + 1));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
         }
     }
 
