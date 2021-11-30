@@ -241,6 +241,16 @@ void RenderWindow::initObjects()
              hjelpeObjekt = factory->createObject("Cube");
 
              mGround = factory->createObject("TriangleSurface");
+             /*CreateBalls
+             int ballAmount = 100;
+             GameObject* objectToMove;
+
+             for(int i = 0; i<ballAmount; i++)
+             {
+                objectToMove = factory->createObject("Sphere");
+                objectToMove->getTransformComponent()->mMatrix.setPosition(i*5,i,i);
+             }
+             */
 
 }
 

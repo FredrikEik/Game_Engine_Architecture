@@ -64,7 +64,7 @@ public:
 
     GameObject *hjelpeObjekt=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
-
+    GameObject* mGround;
     void moveHelpObjectToSelected();
 
     void saveLevel();
@@ -146,7 +146,7 @@ private:
 
 
     GameObject* mPlayer;
-    GameObject* mGround;
+
     InputComponent mInput;
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;

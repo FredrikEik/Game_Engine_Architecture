@@ -1,14 +1,15 @@
-#include "Sphere.h"
+#include "sphere.h"
 #include "vertex.h"
 #include "vector3d.h"
 #include "trianglesurface.h"
+#include "renderwindow.h"
 #include "objreader.h"
 
 
 Sphere::Sphere()
 {
-    getTransformComponent()->mMatrix.setPosition(50,10,50);
-    gForce = gAcceleration * mass;
+    getTransformComponent()->mMatrix.setPosition(20,10,80);
+    gForce = gsl::Vector3D(0.f,-9.80565f,0.f);
 
 }
 Sphere::~Sphere() {}
@@ -60,63 +61,61 @@ void Sphere::init(/*GLint matrixUniform[4]*/)
 
 void Sphere::move(float x, float y, float z)
 {
-    std::vector<Vertex>& vertices = (dynamic_cast<TriangleSurface*>(triangle_surface)->getMeshComponent()->mVertices);
-    gsl::Vector3D ballPos = this->getTransformComponent()->mMatrix.getPosition();
-    //qDebug() << this->getTransformComponent()->mMatrix.getPosition();
+        std::vector<Vertex>& vertices = (dynamic_cast<TriangleSurface*>(triangle_surface)->getMeshComponent()->mVertices);
+        gsl::Vector3D ballPos = getTransformComponent()->mMatrix.getPosition();
+        //qDebug()<<"Ballposition: " <<ballPos.x << ballPos.y << ballPos.z;
 
-
-    for(int i = 0; i < vertices.size(); i+=3)
-    {
-    gsl::Vector3D p1, p2, p3;
-
-    p1 = gsl::Vector3D(vertices[i].get_xyz());
-    p2 = gsl::Vector3D(vertices[i+1].get_xyz());
-    p3 = gsl::Vector3D(vertices[i+2].get_xyz());
-    gsl::Vector3D baryCoords = ballPos.barycentricCoordinates(p1,p2,p3);
-    //qDebug() <<ballPos.x << ballPos.y << ballPos.z;
-    //qDebug() << i << baryCoords.x << baryCoords.y << baryCoords.z;
-
-    if(baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
+        for(int i = 0; i < vertices.size(); i+=3)
         {
-        qDebug() << "Barycoords: " << baryCoords;
-        qDebug() << "Triangle: " << i/3;
-        //qDebug() << ballPos.x << ballPos.y << ballPos.z;
-        //qDebug() << velocity.x << velocity.y << velocity.z;
-        //qDebug()<< i;
-        /*
-        p1.x = abs(p1.x); p1.y = abs(p1.y); p1.z = abs(p1.z);
-        p2.x = abs(p2.x); p2.y = abs(p2.y); p2.z = abs(p2.z);
-        p3.x = abs(p3.x); p3.y = abs(p3.y); p3.z = abs(p3.z);
-        */
+        gsl::Vector3D p1, p2, p3;
 
-        gsl::Vector3D p12 = p2-p1;
-        gsl::Vector3D p13 = p3-p1;
-        //qDebug()<< p12.x << p12.y << p12.z;
-        //qDebug()<< p13.x << p13.y << p13.z;
-        gsl::Vector3D planeNormal = p12^p13;
-        //qDebug()<< planeNormal.x << planeNormal.y << planeNormal.z;
-        planeNormal.normalize();
-        //qDebug()<< planeNormal.x << planeNormal.y << planeNormal.z;
-        //gForce = gsml::Vec3(abs(gForce.x), abs(gForce.y), abs(gForce.z));
-        acceleration = gsl::Vector3D::cross(gForce,planeNormal);
-        acceleration = gsl::Vector3D::cross(acceleration, gsl::Vector3D(0,planeNormal.y,0));
-        //qDebug()<< gForce.x << gForce.y << gForce.z;
-        //qDebug()<< acceleration.x << acceleration.y << acceleration.z;
-        //if(i==0){velocity = velocity - acceleration * 0.00017;}
-        //else{velocity = velocity + acceleration * 0.00017;}
-        velocity = velocity + acceleration * 0.17;
-        //qDebug()<<"Velocity: " << velocity.x << velocity.y << velocity.z;
-        gsl::Vector3D newPos = ballPos + velocity;
-        newPos.y = (baryCoords.x * p1.y + baryCoords.y * p3.y + baryCoords.z * p2.y);
-        //qDebug() << "Position: " << getTransformComponent()->mMatrix.getPosition();
-        getTransformComponent()->mMatrix.setPosition(newPos.x,newPos.y,newPos.z);
+        p1 = gsl::Vector3D(vertices[i].get_xyz());
+        p2 = gsl::Vector3D(vertices[i+1].get_xyz());
+        p3 = gsl::Vector3D(vertices[i+2].get_xyz());
+        gsl::Vector3D baryCoords = ballPos.barycentricCoordinates(p1,p2,p3);
+        //qDebug() << "p1: "<< p1 <<"p2: " << p2 << "p3: "<< p3;
 
-        //mPosition.translate(velocity.x,velocity.y,velocity.z);
+        //qDebug() << i << baryCoords.x << baryCoords.y << baryCoords.z;
+
+        if(baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
+            {
+
+            gsl::Vector3D p12 = p2-p1;
+            gsl::Vector3D p13 = p3-p1;
+            gsl::Vector3D planeNormal = p12^p13;
+            planeNormal.normalize();
+            /*
+            acceleration = gsl::Vector3D(planeNormal.x*planeNormal.y*9.80565f, planeNormal.y*planeNormal.y*9.80565f, planeNormal.z*planeNormal.y*9.80565f) + gForce;
+            velocity = velocity + acceleration * 0.0017;
+            gsl::Vector3D newPos = ballPos + velocity;
+            newPos.y = (baryCoords.x * p1.y + baryCoords.y * p3.y + baryCoords.z * p2.y);
+            getTransformComponent()->mMatrix.setPosition(newPos.x,newPos.y + 1,newPos.z);
+            */
+            float surfaceY = p1.y*baryCoords.x + p2.y*baryCoords.y + p3.y*baryCoords.z;
+
+            if(ballPos.y < surfaceY+ (1))
+            {
+                //acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
+                acceleration = gsl::Vector3D(planeNormal.x*planeNormal.y*9.80565f, planeNormal.y*planeNormal.y*9.80565f, planeNormal.z*planeNormal.y*9.80565f) + gForce;
+                velocity = velocity + acceleration * 0.0017;
+                gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * 0.0017;
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY, newPosition.z);
+            }
+            else
+            {
+                acceleration = gForce;
+                qDebug() << "Acceleration: " << acceleration;
+                velocity = velocity + acceleration * 0.0017;
+                qDebug() << "Velocity: " << velocity;
+                gsl::Vector3D newPosition = ballPos + velocity * 0.0017;
+                qDebug() << "New position: " << newPosition;
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z);
+            }
+
+            }
         }
+
     }
-
-}
-
 
 void Sphere::draw()
 {

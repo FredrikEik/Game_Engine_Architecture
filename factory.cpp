@@ -90,7 +90,7 @@ GameObject* Factory::createObject(std::string objectName)
 
     else if(objectName == "Sphere")
     {
-        objectToCreate = new Sphere;
+        objectToCreate = new Sphere();
         if(EXISTS("Sphere")) //If Sphere mesh exists
         {
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
@@ -102,7 +102,7 @@ GameObject* Factory::createObject(std::string objectName)
         spherecounter++;
         objectToCreate->mObjectType = "Sphere";
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
-        static_cast<Sphere*>(objectToCreate)->setSurface(mGround);
+        dynamic_cast<Sphere*>(objectToCreate)->setSurface(mGround);
     }
     else if(objectName == "Camera")
     {
