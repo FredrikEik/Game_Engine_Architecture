@@ -641,9 +641,9 @@ int MeshHandler::readLasFile()
     const int arrayX = 10;
     const int arrayZ = 10;
 
-    float widthScale = 25.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
-    float depthScale = 25.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
-    float heigthScale = 25.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
+    float widthScale = 10.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
+    float depthScale = 10.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
+    float heigthScale = 10.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
 
 //Keeping this in case i need further accuracy, including all points
     {
@@ -721,10 +721,10 @@ for (int x = 0; x < arrayX; x++)
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
                                                  0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
                                                  0.0f, 0.0f}); //UVs
-        meshDataPoints.mVertexCount[0]++;
+//        meshDataPoints.mVertexCount[0]++;
     }
 }
-meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertices
+//meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertices
 
 //Debug stuff - used to double check variables.
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
@@ -742,7 +742,7 @@ meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertic
     int c = 0;
     qDebug() << "Start of triangle creation";
 
-    for (int depth = 0; depth < (meshDataPoints.mVertices[0].size()- arrayX - 1); depth++)
+    for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++)
     {
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
         if(c == depth-1)
@@ -761,11 +761,11 @@ meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertic
         meshDataPoints.mIndices[0].push_back(depth+1);
         meshDataPoints.mIndices[0].push_back(depth+arrayZ+1);
 
-        meshDataPoints.mIndexCount[0]++;
+//        meshDataPoints.mIndexCount[0]++; //Seems superflous? dont want to add anything not absolutely needed.
     }
-
-    meshDataPoints.mIndexCount[0]++;
+//    meshDataPoints.mIndexCount[0]++;
     qDebug() << "End of triangle calculation";
+    qDebug() << "Indices" << meshDataPoints.mIndices->size();
 
 
 //Normal calculation
@@ -776,7 +776,7 @@ meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertic
 
 for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
 {
-    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ;
+    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
 
     int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX);
     int y1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ);
@@ -831,7 +831,7 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
     gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
     meshDataPoints.mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z);
-    }
+}
 
 //Finalize mesh
 meshDataPoints.mDrawType = GL_TRIANGLES;
