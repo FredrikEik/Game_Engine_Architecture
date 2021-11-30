@@ -638,28 +638,12 @@ int MeshHandler::readLasFile()
 
 // This serves as the indexes in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 10;
-    const int arrayZ = 10;
+    const int arrayX = 50;
+    const int arrayZ = 50;
 
     float widthScale = 10.0f; //How big the mesh-width will be in scene 1 = normal, higher number = smaller
     float depthScale = 10.0f; //How big the mesh-depth will be in scene 1 = normal, higher number = smaller
     float heigthScale = 10.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
-
-//Keeping this in case i need further accuracy, including all points
-    {
-//Fill outer bounds of a 2D grid.
-//    planeGrid[0][0].x = xMin; //Low left
-//    planeGrid[0][0].y = zMin; //Low left
-
-//    planeGrid[gridSizeX-1][gridSizeZ-1].x = xMax; //top right
-//    planeGrid[gridSizeX-1][gridSizeZ-1].y = zMax; //top right
-
-//    planeGrid[gridSizeX-1][0].x = xMax; //bot right
-//    planeGrid[0][gridSizeX-1].y = zMin; //top left
-
-//    planeGrid[0][gridSizeZ-1].x = xMin; //top left
-//    planeGrid[gridSizeZ-1][0].y = zMax; //bot right
-    }
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
     float distanceBetweenSquaresX = (xMax - xMin) / arrayX;
@@ -677,13 +661,27 @@ int MeshHandler::readLasFile()
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
     qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machine";
 
+    planeGrid[0][0].x = xMin;
+    planeGrid[0][0].z = zMin;
+
+    for (int x = 1; x < arrayX; x++)
+    {
+        for (int z = 1; z < arrayZ; z++)
+        {
+            //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
+            planeGrid[x][z].x = distanceBetweenSquaresX + (distanceBetweenSquaresX * x);
+            planeGrid[x][z].z = distanceBetweenSquaresZ + (distanceBetweenSquaresZ * z);
+        }
+    }
+
+
 for (int x = 0; x < arrayX; x++)
 {
     for (int z = 0; z < arrayZ; z++)
     {
         //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
-        planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
-        planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
+//        planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
+//        planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
 
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
@@ -697,6 +695,10 @@ for (int x = 0; x < arrayX; x++)
                 nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
                 sumPointData[x][z] += pointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
             }
+            else
+            {
+                qDebug() << "No points found in square" << x << z;
+            }
         }
         ////This is now in the for loop running for x * z
         if(nrPoints[x][z] != 0) //Especially for higher "resoulutions", there might be some squares with 0 points, this makes sure we dont divide by zero
@@ -708,6 +710,11 @@ for (int x = 0; x < arrayX; x++)
         planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
         planeGrid[x][z].z -= zMin;
         planeGrid[x][z].y -= yMin;
+
+//        if(planeGrid[x][z].y > yMin)
+//        {
+//            planeGrid[x][z].y = yMin;
+//        }
 
         planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
         planeGrid[x][z].z /= depthScale;
@@ -745,7 +752,7 @@ for (int x = 0; x < arrayX; x++)
     for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++)
     {
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
-        if(c == depth-1)
+        if(c == arrayX-1)
         {
             c = 0;
             continue;
@@ -755,11 +762,11 @@ for (int x = 0; x < arrayX; x++)
         //Create a triangle using the points in this order. Filling only first LOD.
         meshDataPoints.mIndices[0].push_back(depth);
         meshDataPoints.mIndices[0].push_back(depth+1);
-        meshDataPoints.mIndices[0].push_back(depth+arrayZ);
+        meshDataPoints.mIndices[0].push_back(depth+arrayX);
 
-        meshDataPoints.mIndices[0].push_back(depth+arrayZ);
+        meshDataPoints.mIndices[0].push_back(depth+arrayX);
         meshDataPoints.mIndices[0].push_back(depth+1);
-        meshDataPoints.mIndices[0].push_back(depth+arrayZ+1);
+        meshDataPoints.mIndices[0].push_back(depth+arrayX+1);
 
 //        meshDataPoints.mIndexCount[0]++; //Seems superflous? dont want to add anything not absolutely needed.
     }
@@ -774,7 +781,7 @@ for (int x = 0; x < arrayX; x++)
 
     std::vector<Vertex> vert = meshDataPoints.mVertices[0];
 
-for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
+for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
 {
     gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
 
@@ -834,7 +841,8 @@ for (int i = 0; i < (meshDataPoints.mVertices->size() - arrayX); i++)
 }
 
 //Finalize mesh
-meshDataPoints.mDrawType = GL_TRIANGLES;
+meshDataPoints.mDrawType = GL_POINTS;
+glPointSize(5.0f);
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
 }
