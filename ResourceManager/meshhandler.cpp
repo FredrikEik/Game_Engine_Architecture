@@ -638,8 +638,8 @@ int MeshHandler::readLasFile()
 
 // This serves as the indexes and "resolution" in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 5;
-    const int arrayZ = 5;
+    const int arrayX = 50;
+    const int arrayZ = 50;
 
     float widthScale  = 10.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
@@ -688,6 +688,15 @@ for (int x = 0; x < arrayX; x++)
         }
         else planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point IS found, make an average value.
 
+        //After having calulated everything needed for the mesh, make it organized and findable in scene.
+        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
+        planeGrid[x][z].z -= zMin;
+        planeGrid[x][z].y -= yMin;
+
+        planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
+        planeGrid[x][z].z /= depthScale;
+        planeGrid[x][z].y /= heigthScale;
+
         //Only using mVertices[0] beacuse there is no lod for this mesh.
         //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
@@ -712,7 +721,6 @@ for (int x = 0; x < arrayX; x++)
 
 ////Create triangle based on the points
     int c = 0;
-    qDebug() << "Start of triangle creation";
 
     for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++)
     {
@@ -758,7 +766,9 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
     if(x1 > 0 && y1 > 0 && x1 < arrayX && y1 < arrayZ) //index > 0
     {
         pCenter = pos;
-        qDebug() << "If statement triggered";
+
+        qDebug() << i; //with 50x50 the first normal is at 560, and every i until 2449.
+
         p0 = gsl::Vector3D{vert[i-arrayX].mXYZ.x,   vert[i-arrayX].mXYZ.y,   vert[i-arrayX].mXYZ.z};
         p1 = gsl::Vector3D{vert[i+1-arrayX].mXYZ.x, vert[i+1-arrayX].mXYZ.y, vert[i+1-arrayX].mXYZ.z};
         p2 = gsl::Vector3D{vert[i+1].mXYZ.x,        vert[i+1].mXYZ.y,        vert[i+1].mXYZ.z};

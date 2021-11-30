@@ -84,7 +84,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
                       v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ,
                       v2 = ballPosition3D - triangleVertices[i].mXYZ;
 
-        float den = (v0.x * v1.y) - (v1.x * v0.y); //This wont work with if "trianglesurface" is used, beacuse this calculation = 0;
+        float den = (v0.x * v1.y) - (v1.x * v0.y);
         barycoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den; //and you cant divide by 0;
         barycoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
         barycoordinates.z = 1.0f - barycoordinates.x - barycoordinates.y;
