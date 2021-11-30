@@ -16,3 +16,26 @@ float tog::dotProduct(gsl::Vector3D a, gsl::Vector3D b)
     float ans = (a.getX() * b.getX()) + (a.getY() * b.getY()) + (a.getZ() * b.getZ());
     return ans;
 }
+
+float tog::min(float x, float y)
+{
+    if(x < y)
+        return x;
+    else
+        return y;
+
+}
+
+float tog::max(float x, float y)
+{
+    if(x > y)
+        return x;
+    else
+        return y;
+}
+
+float tog::distanceVec3D(gsl::Vector3D a, gsl::Vector3D b)
+{
+    gsl::Vector3D ab = b - a;
+    return ab.length();
+}

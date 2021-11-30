@@ -52,9 +52,6 @@ void ObjectFactory::createObject(std::string objectName)
     }
     else if (objectName == "Surface")
     {
-            //willCreateObject = new ObjImport(".../GEA2021/terrainpoints.txt");
-            //storedMeshes.insert(std::pair("Surface", willCreateObject->getMeshComp()));
-            //mVisualObjects.push_back(new Surface(("../GEA2021/terrainpoints.txt")));
         if (EXISTS("Surface"))
         {
             willCreateObject = new Surface("");

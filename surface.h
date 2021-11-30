@@ -8,11 +8,12 @@
 class Surface : public GameObject
 {
 public:
-    Surface();
     Surface(std::string filename);
     ~Surface() override;
-    void writeFile(std::string filename);
+
+    std::string filename;
     void readFile(std::string filename);
+
     void init() override;
     void draw() override;
 };

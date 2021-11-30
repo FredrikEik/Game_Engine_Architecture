@@ -130,7 +130,7 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
-    mTextures[2] = new Texture("cobbleStone.bmp");
+    mTextures[2] = new Texture("grass.bmp");
     mTextures[3] = new Texture("whitefur.bmp");
     mTextures[4] = new Texture("clouds1_up.bmp");
     mTextures[5] = new Texture("lava.bmp");
@@ -183,7 +183,6 @@ void RenderWindow::init()
 
     mCurrentCamera = mEditorCamera;
     mCurrentCamera->setPosition(gsl::Vector3D(1.f,	0.5f, 4.f)); //normal camera
-    //mCurrentCamera->setPosition(gsl::Vector3D(615199.75f,	6758330.96f,	565.59f)); //supposedly close to coordinates
     qDebug() << "camera is here: " << mCurrentCamera->getPosition();
 
     SoundManager::getInstance()->init();
@@ -205,7 +204,12 @@ void RenderWindow::init()
     //ObjFactory->createObject("Goat");
     ObjFactory->createObject("Surface");
     mMainWindow->addObjectToWorldList("Surface");
-    //mMainWindow->addObjectToWorldList("Player");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(0.1);
+    setScaleY(0.1);
+    setScaleZ(0.1);
+    ObjFactory->setOBJindex(-1);
+
     //ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
     //ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
     //mPlayer = new player(ObjFactory->mGameObject.back());

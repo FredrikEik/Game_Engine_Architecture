@@ -1,18 +1,17 @@
 #include "surface.h"
-#include "cmath" //må ha denne for M_PI
-#include "iostream"
-#include "fstream"
-#include "sstream"
+#include "vertex.h"
+#include "MathStuff/MathStuff.h"
 
-Surface::Surface()
-{
-    //mMatrix.setToIdentity();
-    getTransformComp()->mMatrix.setToIdentity();
-}
+#include "components.h"
 
-Surface::Surface(std::string filename) //går her når filepath er inputta i renderwindow.cpp new Surface.
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <math.h>
+
+Surface::Surface(std::string filename) : GameObject() //går her når filepath er inputta i renderwindow.cpp new Surface.
 {
-    writeFile(filename);
     readFile(filename);
     //mMatrix.setToIdentity();
     getTransformComp()->mMatrix.setToIdentity();
@@ -23,229 +22,188 @@ Surface::~Surface()
 
 }
 
-void Surface::writeFile(std::string filename)
-{
-    /*std::ofstream file;
-    file.open(filename.c_str());
-    if(file.is_open())
-    {
-        //qDebug() << "filen  ble åpnet\n\n";
-        //int n = 32;
-        Vertex vertex;
-        //file << n << "\n";
-
-       float xmin = 0.0f, xmax = 1.0f, ymin = 0.0f, ymax = 1.0f, h = 0.25f;
-        file << ((xmax - xmin) / h) * ((ymax - ymin) / h) * 6 << "\n"; //6 er hvor mange push backs som gjøres.
-        for(auto x = xmin; x < xmax; x += h)
-            for(auto y = ymin; y < ymax; y += h)
-            {
-                float z = sin(M_PI * x) * sin(M_PI * y);
-                mVertices.push_back(Vertex{x,y,z,x,y,z});
-                file << mVertices.back() << std::endl;
-
-                z = sin(M_PI * (x+h)) * sin(M_PI * y);
-                mVertices.push_back(Vertex{x+h,y,z,x,y,z});
-                file << mVertices.back() << std::endl;
-
-                z = sin(M_PI * x) * sin(M_PI * (y+h));
-                mVertices.push_back(Vertex{x,y+h,z,x,y,z});
-                file << mVertices.back() << std::endl;
-
-                mVertices.push_back(Vertex{x,y+h,z,x,y,z});
-                file << mVertices.back() << std::endl;
-
-                z = sin(M_PI * (x+h)) * sin(M_PI * y);
-                mVertices.push_back(Vertex{x+h,y,z,x,y,z});
-                file << mVertices.back() << std::endl;
-
-                z = sin(M_PI * (x+h)) * sin(M_PI * (y+h));
-                mVertices.push_back(Vertex{x+h,y+h,z,x,y,z});
-                file << mVertices.back() << std::endl;
-            }
-
-    }
-    file.close();*/
-}
-
 void Surface::readFile(std::string filename)
 {
-    //******** UNCOMMENT THIS FOR MY READIFLE (DOESNT SHOW PLANE AT THE MOMENT) ********//
-    std::ifstream inn;
-    inn.open(filename.c_str());
-
-    if (inn.is_open())
-    {
-        int n;
-        Vertex vertex;
-        inn >> n;
-        getMeshComp()->mVertices.reserve(n);
-        for (int i=0; i<n; i++) {
-            inn >> vertex;
-            getMeshComp()->mVertices.push_back(vertex);
-            //getMeshComp()->mIndices.push_back();
-            //qDebug() << "vertexes" << i; //reads the correct amount of vertexes
-            //qDebug() << getTransformComp()->mMatrix.getPosition(); //only shows {0,0,0}
-        }
-        qDebug() << "created surface!";
-        inn.close();
-    }
-
     //Open File
-        //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
+    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
+    std::ifstream fileIn;
+    fileIn.open (filename, std::ifstream::in);
+    if(!fileIn)
+        qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
+    //One line at a time-variable
+    std::string oneLine;
+    //One word at a time-variable
+    std::string oneWord;
 
-        //******** UNCOMMENT THIS FOR GUDBRAND READIFLE (SHOWS PLANE BUT VERY BROKEN) ********//
-        /*std::ifstream fileIn;
-        fileIn.open (filename, std::ifstream::in);
-        if(!fileIn)
-            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
+    std::vector<gsl::Vector3D> tempVertecies;
+    std::vector<gsl::Vector3D> tempNormals;
+    std::vector<gsl::Vector2D> tempUVs;
 
-        //One line at a time-variable
-        std::string oneLine;
-        //One word at a time-variable
-        std::string oneWord;
+    std::getline(fileIn, oneLine);
+    std::stringstream sStream;
+    sStream << oneLine;
+    sStream >> oneWord;
+    int num = std::atoi(oneWord.c_str());
+    //qDebug() << "Vertices: " << num;
 
-        std::vector<gsl::Vector3D> tempVertecies;
-        std::vector<gsl::Vector3D> tempNormals;
-        std::vector<gsl::Vector2D> tempUVs;
+    num = 25000;
+    unsigned int temp_index = 0;
 
+    for(int i = 0; i < num; i++)
+    {
         std::getline(fileIn, oneLine);
         std::stringstream sStream;
+        //Pushing line into stream
         sStream << oneLine;
+        //Streaming one word out of line
+        oneWord = ""; //resetting the value or else the last value might survive!
+
+        gsl::Vector3D tempVertex;
         sStream >> oneWord;
-        int num = std::atoi(oneWord.c_str());
-        qDebug() << "Vertices: " << num;
+        tempVertex.x = std::stof(oneWord); // - 615200.f
+        sStream >> oneWord;
+        tempVertex.y = std::stof(oneWord); // - 6758325.f
+        sStream >> oneWord;
+        tempVertex.z = std::stof(oneWord); // - 565.f
+        //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
 
-        unsigned int temp_index = 0;
+        //Vertex made - pushing it into vertex-vector
+        tempVertecies.push_back(tempVertex);
 
-        for(int i = 0; i < num; i++)
+        Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
+        /*if(getMeshComp())
         {
-            std::getline(fileIn, oneLine);
-            std::stringstream sStream;
-            //Pushing line into stream
-            sStream << oneLine;
-            //Streaming one word out of line
-            oneWord = ""; //resetting the value or else the last value might survive!
-            sStream >> oneWord;
-
-            gsl::Vector3D tempVertex;
-            sStream >> oneWord;
-            tempVertex.x = std::stof(oneWord) - 6152000.f; // file reads wrong for no reason
-            tempVertex.x -= 606000.f;
-            sStream >> oneWord;
-            tempVertex.y = std::stof(oneWord) - 565.f;
-            sStream >> oneWord;
-            tempVertex.z = std::stof(oneWord) - 565.f;
-            //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
-
-            //Vertex made - pushing it into vertex-vector
-            tempVertecies.push_back(tempVertex);
-
-            Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
-            if(getMeshComp())
-            {
-                getMeshComp()->mVertices.push_back(tempVert);
-                getMeshComp()->mIndices.push_back(temp_index++);
-            }
+            getMeshComp()->mVertices.push_back(tempVert);
+            getMeshComp()->mIndices.push_back(temp_index++);
         }*/
+    }
+
+    gsl::Vector3D minPointPosition = tempVertecies[0];
+    gsl::Vector3D maxPointPosition = tempVertecies[0];
+
+    for( int i = 0; i < num; i++)
+    {
+        minPointPosition.x = tog::min(minPointPosition.x, tempVertecies[i].x); //finds the lowest xyz
+        minPointPosition.y = tog::min(minPointPosition.y, tempVertecies[i].y);
+        minPointPosition.z = tog::min(minPointPosition.z, tempVertecies[i].z);
+        maxPointPosition.x = tog::max(maxPointPosition.x, tempVertecies[i].x); //finds the highest xyz
+        maxPointPosition.y = tog::max(maxPointPosition.y, tempVertecies[i].y);
+        maxPointPosition.z = tog::max(maxPointPosition.z, tempVertecies[i].z);
+    }
+    //qDebug() << "minX: " << minPointPosition.x << " minY: " << minPointPosition.y << " minZ: " << minPointPosition.z;
+    //qDebug() << "maxX: " << maxPointPosition.x << " maxY: " << maxPointPosition.y << " maxZ: " << maxPointPosition.z;
+
+    gsl::Vector3D tempOffset = -minPointPosition;
+
+    for( int i = 0; i < num; i++)
+    {
+        tempVertecies[i] += tempOffset; // putting the points closer to origin
+        //qDebug() << "x: " << tempVertecies[i].x << " y: " << tempVertecies[i].y << " z: " << tempVertecies[i].z;
+    }
+    minPointPosition += tempOffset;
+    maxPointPosition += tempOffset;
+
+    static constexpr unsigned triangleNumberX = 50; // sqares in x direction
+    static constexpr unsigned triangleNumberY = 50; // sqares in y direction
+    const gsl::Vector2D distance = gsl::Vector2D((maxPointPosition.x - minPointPosition.x) / triangleNumberX, (maxPointPosition.y - minPointPosition.y) / triangleNumberY);
+    //const gsl::Vector2D distance = gsl::Vector2D(maxPointPosition.x - minPointPosition.x / triangleNumberX, maxPointPosition.y - minPointPosition.y / triangleNumberY);
+    gsl::Vector3D tempVector;
+    int closestVert;
+    float vertDistance;
+    float closestVertDistance;
+
+    getMeshComp()->mVertices.resize(triangleNumberX * triangleNumberY);
+    auto verticesVectorGetIndex = [](unsigned x, unsigned y) -> unsigned {return x * triangleNumberY + y; };
+
+    for (unsigned x = 0; x < triangleNumberX; x++)
+    {
+        for (unsigned y = 0; y < triangleNumberY; y++)
+        {
+            tempVector = gsl::Vector3D(x * distance.x, y * distance.y, 0.f);
+
+            closestVertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[0].x, tempVertecies[0].y, 0.f));
+            closestVert = 0;
+
+            for(unsigned i = 0; i < num; i++) // finds closest point to perfect square corner
+            {
+                vertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[i].x, tempVertecies[i].y, 0.f));
+
+                if (vertDistance < closestVertDistance)
+                {
+                    closestVert = i;
+                    closestVertDistance = vertDistance;
+                }
+            }
+            getMeshComp()->mVertices[verticesVectorGetIndex(x, y)] = Vertex(gsl::Vector3D(tempVertecies[closestVert].x, tempVertecies[closestVert].z, tempVertecies[closestVert].y),
+                                                                            gsl::Vector3D(1.f, 0.f, 0.f),
+                                                                            gsl::Vector2D((rand()%101)/10, (rand()%101)/10));
+        }
+    }
+
+    for (unsigned i = 0; i < getMeshComp()->mVertices.size(); i++)
+    {
+        qDebug() << "x: " << getMeshComp()->mVertices[i].get_xyz().x << " y: " << getMeshComp()->mVertices[i].get_xyz().y << " z: " << getMeshComp()->mVertices[i].get_xyz().z;
+    }
+
+    getMeshComp()->mIndices.reserve(triangleNumberX * triangleNumberY * 6);
+
+    for (unsigned x = 0; x < triangleNumberX - 1; x++) // assing indexes for the sqares
+    {
+        for (unsigned y = 0; y < triangleNumberY - 1; y++)
+        {
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y + 1));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
+        }
+    }
+
+    //closing the file after use
+    fileIn.close();
 
 }
 
 void Surface::init()
 {
-    /*mMatrixUniform = matrixUniform;
+    //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
+    //Vertex Array Object - VAO
+    glGenVertexArrays( 1, &getMeshComp()->mVAO );
+    glBindVertexArray( getMeshComp()->mVAO );
 
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers( 1, &getMeshComp()->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
 
-    glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), mVertices.data(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glBufferData( GL_ARRAY_BUFFER, getMeshComp()->mVertices.size()*sizeof(Vertex), getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
+
+    // 1rst attribute buffer : vertices
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
+
+    // 2nd attribute buffer : colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(1);
-    glBindVertexArray(0);*/
 
-    /*initializeOpenGLFunctions();
+    // 3rd attribute buffer : uvs
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glEnableVertexAttribArray(2);
 
-       glGenVertexArrays( 1, &getMeshComp()->mVAO );
-       glBindVertexArray( getMeshComp()->mVAO );
+    //Second buffer - holds the indices (Element Array Buffer - EAB):
+    glGenBuffers(1, &getMeshComp()->mEAB);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mEAB);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mIndices.size() * sizeof(GLuint), getMeshComp()->mIndices.data(), GL_STATIC_DRAW);
 
-
-       glGenBuffers( 1, &getMeshComp()->mVBO );
-       glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
-
-       glBufferData( GL_ARRAY_BUFFER,                     //what buffer type
-                     getMeshComp()->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
-                     getMeshComp()->mVertices.data(),                    //the actual vertices
-                     GL_STATIC_DRAW                       //should the buffer be updated on the GPU
-                     );
-
-       glBindBuffer(GL_ARRAY_BUFFER, getMeshComp()->mVBO);
-
-       // 1rst attribute buffer : coordinates
-
-       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
-       glEnableVertexAttribArray(0);
-
-       // 2nd attribute buffer : colors
-       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(1);
-
-       // 3rd attribute buffer : uvs
-       glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(2);
-
-       glBindVertexArray(0);*/
-
-       initializeOpenGLFunctions();
-
-       //Vertex Array Object - VAO
-       glGenVertexArrays( 1, &getMeshComp()->mVAO );
-       glBindVertexArray( getMeshComp()->mVAO );
-
-       //Vertex Buffer Object to hold vertices - VBO
-       glGenBuffers( 1, &getMeshComp()->mVBO );
-       glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
-
-       glBufferData( GL_ARRAY_BUFFER, getMeshComp()->mVertices.size()*sizeof(Vertex), getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
-
-       // 1rst attribute buffer : vertices
-       glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-       glEnableVertexAttribArray(0);
-
-       // 2nd attribute buffer : colors
-       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(1);
-
-       // 3rd attribute buffer : uvs
-       glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
-       glEnableVertexAttribArray(2);
-
-       //Second buffer - holds the indices (Element Array Buffer - EAB):
-       glGenBuffers(1, &getMeshComp()->mEAB);
-       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mEAB);
-       glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mIndices.size() * sizeof(GLuint), getMeshComp()->mIndices.data(), GL_STATIC_DRAW);
-
-       glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void Surface::draw()
 {
-    /*glBindVertexArray(mVAO);
-    glUniformMatrix4fv(mMatrixUniform, 1, GL_FALSE, mMatrix.constData());
-    glDrawArrays(GL_TRIANGLES, 0, mVertices.size());*/
-
     glBindVertexArray( getMeshComp()->mVAO );
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComp()->mVertices.size());
-    glBindVertexArray(0);
-
-    /*glBindVertexArray( getMeshComp()->mVAO );
     glDrawElements(GL_TRIANGLES, getMeshComp()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
-    glDrawArrays(GL_TRIANGLES, 0, getMeshComp()->mVertices.size());
-    glBindVertexArray(0);*/
+    glBindVertexArray(0);
 }
