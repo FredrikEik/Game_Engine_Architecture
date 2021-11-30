@@ -220,6 +220,8 @@ void RenderWindow::init()
     MapSpawner->spawnRow(100);
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);*/
+    ObjFactory->createObject("Plane");
+    mMainWindow->addObjectToWorldList("Plane");
 }
 
 // Called each frame - doing the rendering

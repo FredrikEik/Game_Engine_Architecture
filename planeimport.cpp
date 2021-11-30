@@ -83,7 +83,7 @@ void PlaneImport::readFile(std::string filename)
     sStream << oneLine;
     sStream >> oneWord;
     int num = std::atoi(oneWord.c_str());
-    qDebug() << "Vertices: " << num;
+    //qDebug() << "Vertices: " << num;
 
     unsigned int temp_index = 0;
 
@@ -95,14 +95,12 @@ void PlaneImport::readFile(std::string filename)
         sStream << oneLine;
         //Streaming one word out of line
         oneWord = ""; //resetting the value or else the last value might survive!
-        sStream >> oneWord;
 
         gsl::Vector3D tempVertex;
         sStream >> oneWord;
-        tempVertex.x = std::stof(oneWord) - 6152000.f; // file reads wrong for no reason
-        tempVertex.x -= 606000.f;
+        tempVertex.x = std::stof(oneWord) - 615200.f;
         sStream >> oneWord;
-        tempVertex.y = std::stof(oneWord) - 565.f;
+        tempVertex.y = std::stof(oneWord) - 6758325.f;
         sStream >> oneWord;
         tempVertex.z = std::stof(oneWord) - 565.f;
         //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
