@@ -15,6 +15,48 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="4" column="1">
+     <widget class="QLabel" name="label">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="FrustumToggle">
+      <property name="text">
+       <string>Disable FRUSTUM</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="pushButton">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Show Wireframe</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="2">
      <widget class="QComboBox" name="ObjectDropdown">
       <property name="mouseTracking">
@@ -133,9 +175,6 @@
       </item>
      </widget>
     </item>
-    <item row="5" column="0" colspan="3">
-     <layout class="QVBoxLayout" name="OpenGLLayout"/>
-    </item>
     <item row="5" column="3">
      <widget class="QWidget" name="widget" native="true">
       <widget class="QListWidget" name="objList">
@@ -160,6 +199,12 @@
          <height>22</height>
         </rect>
        </property>
+       <property name="minimum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
       </widget>
       <widget class="QLabel" name="label_2">
        <property name="geometry">
@@ -182,6 +227,12 @@
          <width>62</width>
          <height>22</height>
         </rect>
+       </property>
+       <property name="minimum">
+        <double>-1000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_3">
@@ -206,6 +257,18 @@
          <height>22</height>
         </rect>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <double>-1000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
       </widget>
       <widget class="QLabel" name="label_4">
        <property name="geometry">
@@ -222,22 +285,13 @@
       </widget>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLabel" name="label">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>20</height>
-       </size>
-      </property>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="LODButton">
       <property name="text">
-       <string>Move and rotate camera by holding down right mouse button and use WASD. Q = down, E = up. Use ScrollWheel to adjust speed.</string>
+       <string>Disable LOD</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -248,29 +302,6 @@
       </property>
       <property name="checkable">
        <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QPushButton" name="pushButton">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Show Wireframe</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="FrustumToggle">
-      <property name="text">
-       <string>Disable FRUSTUM</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -293,15 +324,8 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="LODButton">
-      <property name="text">
-       <string>Disable LOD</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
+    <item row="5" column="0" colspan="3">
+     <layout class="QVBoxLayout" name="OpenGLLayout"/>
     </item>
    </layout>
   </widget>

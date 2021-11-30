@@ -70,28 +70,30 @@ void CoreEngine::SetUpScene()
 //    hmMatrix = &temp->transform->mMatrix;
     mRenderWindow->addToGameObjects(temp);
 
-    temp = mResourceManager->CreateObject("ContourLines");
-    temp->transform->mMatrix.translate(0,0,-150);
-    temp->transform->mMatrix.scale(0.1);
-    temp->material->mShaderProgram = 0;
-    temp->mesh->mDrawType = GL_POINTS;
+//    temp = mResourceManager->CreateObject("ContourLines");
+//    temp->transform->mMatrix.translate(0,0,-150);
+//    temp->transform->mMatrix.scale(0.1);
+//    temp->material->mShaderProgram = 0;
+//    temp->mesh->mDrawType = GL_POINTS;
+//    mRenderWindow->addToGameObjects(temp);
 
+    temp = mResourceManager->CreateObject("ball.obj");
     mRenderWindow->addToGameObjects(temp);
 
 
-//    float z = 0;
-//    for(int i{0}; i < 40; i++)
-//    {
-//        for(int j{0}; j < 40; j++)
-//        {
-//           int b = floor(rand() % 4 + 9);
-//           temp = mResourceManager->CreateObject(treeNames[b]);
-//           //z = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
-//           temp->transform->mMatrix.translate(3.f*i, z/100, -3.f*j);
-//           temp->transform->mMatrix.scale(0.4);
-//           mRenderWindow->addToGameObjects(temp);
-//        }
-//    }
+    float z = 0;
+    for(int i{0}; i < 40; i++)
+    {
+        for(int j{0}; j < 40; j++)
+        {
+           int b = floor(rand() % 4 + 9);
+           temp = mResourceManager->CreateObject(treeNames[b]);
+//           z = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
+           temp->transform->mMatrix.translate(3.f*i, z/100, -3.f*j);
+           temp->transform->mMatrix.scale(0.4);
+           mRenderWindow->addToGameObjects(temp);
+        }
+    }
 
     //********************** Set up cameras **********************
     mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));

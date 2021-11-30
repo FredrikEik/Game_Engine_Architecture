@@ -350,151 +350,151 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
 int ResourceManager::makeHeightMap(std::string filename)
 {
-//    texture = new Texture(filename, false);
+    texture = new Texture(filename, false);
 
-//    unsigned char *mHeights = texture->getmHeights();
-//    int bytesPrPixel = texture->getBytesPerPixel();
-//    float zColorScale = 256.f;
-//    float zScale = 0.02f;
-//    int i = 0;
-//    int j = 0;
+    unsigned char *mHeights = texture->getmHeights();
+    int bytesPrPixel = texture->getBytesPerPixel();
+    float zColorScale = 256.f;
+    float zScale = 0.02f;
+    int i = 0;
+    int j = 0;
 
-//    const int rows = 100;
-//    const int cols = 100;
+    const int rows = 100;
+    const int cols = 100;
 
-//    mRows = rows;
-//    mCols = cols;
+    mRows = rows;
+    mCols = cols;
 
-//    sArrayHeights = new float[rows*cols];
-//    if(!mHeights)
-//    {
-//        qDebug() << "'!mHeights' in ResourceManager::makeHeightMap";
-//        return NULL;
-//    }
-//    //Pusher inn alle vertexene med riktig høyde
-//    for (int y = 0;y<cols;y++){
-//        for (int x = 0;x<rows;x++)
-//        {
-//            float z = float(mHeights[i]);
-//            object->mesh->mVertices[0].push_back(Vertex{x*xyScale, y*xyScale, z*zScale, z/zColorScale, z/zColorScale, z/zColorScale,0,0});
-//            //alle høydene i en array som jeg skal bruke til barysentriske kooridinater
-//            sArrayHeights[j] = z;
-//            j++;
-//            i+=bytesPrPixel;
-//        }
-//    }
+    sArrayHeights = new float[rows*cols];
+    if(!mHeights)
+    {
+        qDebug() << "'!mHeights' in ResourceManager::makeHeightMap";
+        return NULL;
+    }
+    //Pusher inn alle vertexene med riktig høyde
+    for (int y = 0;y<cols;y++){
+        for (int x = 0;x<rows;x++)
+        {
+            float z = float(mHeights[i]);
+            object->mesh->mVertices[0].push_back(Vertex{x*xyScale, y*xyScale, z*zScale, z/zColorScale, z/zColorScale, z/zColorScale,0,0});
+            //alle høydene i en array som jeg skal bruke til barysentriske kooridinater
+            sArrayHeights[j] = z;
+            j++;
+            i+=bytesPrPixel;
+        }
+    }
 
-//    int squareCounter = 0;
-//    int indexCounter = 0;
-//    float XpartOfEight = 0;
-//    float YpartOfEight = 0;
-//    for(int y = 0;y<cols;y++){
-//        for(int x=0; x<rows;x++)
-//        {
-//            object->mesh->mVertices[0][indexCounter].mST.x = XpartOfEight/7;
-//            object->mesh->mVertices[0][indexCounter].mST.y = YpartOfEight/7;
-//            indexCounter++;
-//            squareCounter++;
-//            XpartOfEight+=1;
-//            if(XpartOfEight>rows-1)
-//            {
-//                XpartOfEight = 0;
-//            }
-//        }
-//        YpartOfEight+=1;
-//        if(YpartOfEight>rows-1)
-//        {
-//            YpartOfEight = 0;
-//        }
-//    }
+    int squareCounter = 0;
+    int indexCounter = 0;
+    float XpartOfEight = 0;
+    float YpartOfEight = 0;
+    for(int y = 0;y<cols;y++){
+        for(int x=0; x<rows;x++)
+        {
+            object->mesh->mVertices[0][indexCounter].mST.x = XpartOfEight/7;
+            object->mesh->mVertices[0][indexCounter].mST.y = YpartOfEight/7;
+            indexCounter++;
+            squareCounter++;
+            XpartOfEight+=1;
+            if(XpartOfEight>rows-1)
+            {
+                XpartOfEight = 0;
+            }
+        }
+        YpartOfEight+=1;
+        if(YpartOfEight>rows-1)
+        {
+            YpartOfEight = 0;
+        }
+    }
 
-//    int c=0;
-//    //Pusher inn indeksene i riktig rekkefølge slik at den tegner 1 quad av 2 trekanter per vertex, men ikke på den øverste raden.
-//    for(GLuint i{}; i<object->mesh->mVertices[0].size()-rows-1;i++)
-//    {
-//        //Sjekk for å ungå å tegne en utstrekt skrå quad fra slutten på raden til starten på neste rad
-//        if(c == rows-1)
-//        {
-//            c=0;
-//            continue;
-//        }
-//        object->mesh->mIndices[0].push_back(i);
-//        object->mesh->mIndices[0].push_back(i+1);
-//        object->mesh->mIndices[0].push_back(i+rows);
+    int c=0;
+    //Pusher inn indeksene i riktig rekkefølge slik at den tegner 1 quad av 2 trekanter per vertex, men ikke på den øverste raden.
+    for(GLuint i{}; i<object->mesh->mVertices[0].size()-rows-1;i++)
+    {
+        //Sjekk for å ungå å tegne en utstrekt skrå quad fra slutten på raden til starten på neste rad
+        if(c == rows-1)
+        {
+            c=0;
+            continue;
+        }
+        object->mesh->mIndices[0].push_back(i);
+        object->mesh->mIndices[0].push_back(i+1);
+        object->mesh->mIndices[0].push_back(i+rows);
 
-//        object->mesh->mIndices[0].push_back(i+rows);
-//        object->mesh->mIndices[0].push_back(i+1);
-//        object->mesh->mIndices[0].push_back(i+rows+1);
-//        c++;
-//    }
+        object->mesh->mIndices[0].push_back(i+rows);
+        object->mesh->mIndices[0].push_back(i+1);
+        object->mesh->mIndices[0].push_back(i+rows+1);
+        c++;
+    }
 
-//    //Normals:
-//    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
-//    gsl::Vector3D n0,n1,n2,n3,n4,n5;
+    //Normals:
+    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
+    gsl::Vector3D n0,n1,n2,n3,n4,n5;
 
-//    std::vector<Vertex> vert = object->mesh->mVertices[0];
+    std::vector<Vertex> vert = object->mesh->mVertices[0];
 
-//    for(int i = 1;i<object->mesh->mVertices[0].size()-rows;i++)
-//    {
-//        gsl::Vector3D pos = vert[i].mXYZ;
+    for(int i = 1;i<object->mesh->mVertices[0].size()-rows;i++)
+    {
+        gsl::Vector3D pos = vert[i].mXYZ;
 
-//        if(pos.x > 0 && pos.y > 0 /*&& pos.z > 0*/)
-//        {
-//            pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
+        if(pos.x > 0 && pos.y > 0 /*&& pos.z > 0*/)
+        {
+            pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
 
-//            //p0
-//            p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
+            //p0
+            p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
 
-//            //p1
-//            p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
+            //p1
+            p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
 
-//            //p2
-//            p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
+            //p2
+            p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
 
-//            //p3
-//            p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
+            //p3
+            p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
 
-//            //p4
-//            p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
+            //p4
+            p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
 
-//            //p5
-//            p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
-//        }
-//        //lager vektorer til alle punktene
-//        gsl::Vector3D v0 = p0-pCenter;
-//        gsl::Vector3D v1 = p1-pCenter;
-//        gsl::Vector3D v2 = p2-pCenter;
-//        gsl::Vector3D v3 = p3-pCenter;
-//        gsl::Vector3D v4 = p4-pCenter;
-//        gsl::Vector3D v5 = p5-pCenter;
+            //p5
+            p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
+        }
+        //lager vektorer til alle punktene
+        gsl::Vector3D v0 = p0-pCenter;
+        gsl::Vector3D v1 = p1-pCenter;
+        gsl::Vector3D v2 = p2-pCenter;
+        gsl::Vector3D v3 = p3-pCenter;
+        gsl::Vector3D v4 = p4-pCenter;
+        gsl::Vector3D v5 = p5-pCenter;
 
-//        //Regner ut normalene til alle trekantene rundt punktet
+        //Regner ut normalene til alle trekantene rundt punktet
 
-//        n0 = v0.cross(v0,v1);
-//        n0.normalize();
+        n0 = v0.cross(v0,v1);
+        n0.normalize();
 
-//        n1 = v1.cross(v1,v2);
-//        n1.normalize();
+        n1 = v1.cross(v1,v2);
+        n1.normalize();
 
-//        n2 = v2.cross(v2,v3);
-//        n2.normalize();
+        n2 = v2.cross(v2,v3);
+        n2.normalize();
 
-//        n3 = v3.cross(v3,v4);
-//        n3.normalize();
+        n3 = v3.cross(v3,v4);
+        n3.normalize();
 
-//        n4 = v4.cross(v4,v5);
-//        n4.normalize();
+        n4 = v4.cross(v4,v5);
+        n4.normalize();
 
-//        n5 = v5.cross(v5,v0);
-//        n5.normalize();
+        n5 = v5.cross(v5,v0);
+        n5.normalize();
 
-//        gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+        gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
-//        vert[i].mNormal.x = nV.x;
-//        vert[i].mNormal.y = nV.y;
-//        vert[i].mNormal.z = nV.z;
-//    }
-//    init(*object->mesh, 0);
+        vert[i].mNormal.x = nV.x;
+        vert[i].mNormal.y = nV.y;
+        vert[i].mNormal.z = nV.z;
+    }
+    init(*object->mesh, 0);
 
     return mMeshComponents.size()-1;    //returns index to last object
 }
@@ -549,7 +549,6 @@ int ResourceManager::countourLines()
                 zPos = (a/b)*zStep;
                 object->mesh->mVertices->push_back(Vertex(vert[i].getXYZ().x, lineHeight, vert[i].getXYZ().z -zPos+zStep, 1,0,0));
             }
-
         }
     }
     init(*object->mesh, 0);
