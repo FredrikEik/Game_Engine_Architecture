@@ -209,4 +209,5 @@ struct PhysicsComponent final : public Component
 	float mass{1.f};
 	//float baryCentricErrorMargin{0.985f};
 	bool bIsInAir{false};
+	float restitution{ 0.75 }; // How bouncy/elastic it is.
 };

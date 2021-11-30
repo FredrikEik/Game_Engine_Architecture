@@ -212,27 +212,27 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
+	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 
 	uint32 contourEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent>(contourEntity);
 	ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity)->bDisregardedDuringFrustumCulling = true;
-
 	TerrainSystem::generateContourLines(contourEntity, terrainEntity, ECS);
 
-	//for (int i{}; i < 5; ++i)
-	//{
-	//	for (int j{}; j < 5; ++j)
-	//	{
-	//		uint32 entt = ECS->newEntity();
-	//		ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
-	//		ECS->loadAsset(entt, DefaultAsset::SPHERE);
-	//		TransformSystem::setPosition(entt, glm::vec3(4 * i + 52 , 200, 52 + 4* j ), ECS);
-	//		//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
-	//		MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
+	for (int i{}; i < 50; ++i)
+	{
+		for (int j{}; j < 50; ++j)
+		{
+			uint32 entt = ECS->newEntity();
+			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
+			ECS->loadAsset(entt, DefaultAsset::SPHERE);
+			TransformSystem::setPosition(entt, glm::vec3(10 * i + 52 , 40, 52 + 10* j ), ECS);
+			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
+			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
 
-	//	}
+		}
 
-	//}
+	}
 	lastFrame = glfwGetTime();
 }
 
@@ -268,7 +268,7 @@ void Engine::loop()
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
-			PhysicsSystem::update(terrainEntity, ECS, deltaTime*0.1);
+			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
 		}
 
 		//// RENDER
