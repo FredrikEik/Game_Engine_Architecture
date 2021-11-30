@@ -641,9 +641,9 @@ int MeshHandler::readLasFile()
     const int arrayX = 50;
     const int arrayZ = 50;
 
-    float widthScale  = 10.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
-    float heigthScale = 10.0f; //How "flat" the surface will be, 1 = big difference, 100 = "flatter"
+    float widthScale  = 7.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
+    float depthScale  = 7.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
+    float heigthScale = 5.0f; //How "flat" the surface will be, 1 = normal, higher number = smaller difference
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
     float distanceBetweenSquaresX = (xMax - xMin) / arrayX;
@@ -654,12 +654,12 @@ int MeshHandler::readLasFile()
     int nrPoints            [arrayX][arrayZ] = {{0}}; //Used to count how many points are in each square
     float sumPointData      [arrayX][arrayZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
 
-    //Emulating the make triangle function
+    //Getting a reference of the last created mesh, should be "empty" beacuse it was recently created and filled below.
     mMeshes.emplace_back(MeshData());
     MeshData &meshDataPoints = mMeshes.back();
 
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
-    qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machine";
+    qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machines";
 
 for (int x = 0; x < arrayX; x++)
 {

@@ -149,7 +149,7 @@ void CoreEngine::setUpScene()
     //Create the gameobject LasGround
     GameObject *lasGround = mGameObjectManager->addObject("LasGround");
     lasGround->mName = "LasGround";
-    lasGround->mTransform->mMatrix.translate(1.0f, 0.0f, 0.0f);
+    lasGround->mTransform->mMatrix.translate(-40.0f, -25.0f, -200.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
 
 //---------------------End of Vis & Sim code----------------------------------------
