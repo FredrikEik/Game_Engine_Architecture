@@ -587,20 +587,20 @@ int MeshHandler::readLasFile()
         exit(EXIT_FAILURE);
     }
 
-    std::vector<gsl::Vector3D> pointData; //Used to store all data from file
-    int linesWithPoints = {0}; //Used to store the first line in the document, its an int with
+    std::vector<gsl::Vector3D> allLasPointData; //Used to store all data from file
+    int sizeOfLasFile = {0}; //Used to store the first line in the document, its an int with
     float lasX, lasY, lasZ = {0}; //Temp variables overwritten every line, used to fill Vector3D pointData.
 
     if(inLasFile.is_open())
     {
         qDebug() << "Opening las file"; //Sort of timer functionality, lets me know in application output if something freezes.
-         inLasFile >> linesWithPoints; //read first line, the approximate number of datalines.
-         pointData.reserve(linesWithPoints); //reserve the space for the number of datalines.
+         inLasFile >> sizeOfLasFile; //read first line, the approximate number of datalines.
+         allLasPointData.reserve(sizeOfLasFile); //reserve the space for the number of datalines.
 
-         for(int i = 0; i < linesWithPoints; i++) //for each line of data fill pointData with numbers
+         for(int i = 0; i < sizeOfLasFile; i++) //for each line of data fill pointData with numbers
          {
              inLasFile >> lasX >> lasZ >> lasY; //In the Las file the data is stored x,z,y
-             pointData.emplace_back(lasX, lasY, lasZ); //I fill the pointdata with x,y,z.
+             allLasPointData.emplace_back(lasX, lasY, lasZ); //I fill the pointdata with x,y,z.
              //// NOTE - There is some "noise" after 2 decimals when filling into the vector3d, but not significantly so.
              //// Given all data will use the same pointData vector this wont be a problem.
 
@@ -615,6 +615,7 @@ int MeshHandler::readLasFile()
                  yMax = lasY;
                  once = false;
              }
+
              if(lasX < xMin)
                  xMin = lasX;
              if(lasX > xMax)
@@ -670,15 +671,15 @@ for (int x = 0; x < arrayX; x++)
         planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
 
         //Check how many points there are between each position in the grid using resolution
-        for (int pointDataSearch = 0; pointDataSearch < pointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
+        for (int pointDataSearch = 0; pointDataSearch < allLasPointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
         {
-            if(pointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
-               pointData[pointDataSearch].getZ() >= planeGrid[x][z].z &&
-               pointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
-               pointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
+            if(allLasPointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
+               allLasPointData[pointDataSearch].getZ() >= planeGrid[x][z].z &&
+               allLasPointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
+               allLasPointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
                 nrPoints[x][z]++;     // Keep track of y positions in spesific x z squares.
-                sumPointData[x][z] += pointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
+                sumPointData[x][z] += allLasPointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
             }
         }
         ////This is now in the for loop running for x * z
@@ -688,8 +689,7 @@ for (int x = 0; x < arrayX; x++)
         }
         else planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point IS found, make an average value.
 
-        //After having calulated everything needed for the mesh, make it organized and findable in scene.
-        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
+        planeGrid[x][z].x -= xMin; //Scales the distance between points, to give a resonable size of the mesh in scene
         planeGrid[x][z].z -= zMin;
         planeGrid[x][z].y -= yMin;
 
@@ -716,72 +716,69 @@ for (int x = 0; x < arrayX; x++)
 //    return mMeshes.size()-1;
 
 ////Create triangle based on the points
-    int c = 0;
+qDebug() << "On to triangle calculations (should be much less expensive)";
+    int check = 0;
 
     for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++)
     {
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
-        if(c == arrayX-1)
+        if(check == arrayX-1)
         {
-            c = 0;
-            continue;
+            check = 0;
         }
-        c++;
+        check++;
 
         //Create two triangles using the vertices at these positions of mVertices. Only filling first LOD
         meshDataPoints.mIndices[0].push_back(depth);
-        meshDataPoints.mIndices[0].push_back(depth+1);
-        meshDataPoints.mIndices[0].push_back(depth+arrayX);
+        meshDataPoints.mIndices[0].push_back(depth + 1);
+        meshDataPoints.mIndices[0].push_back(depth + arrayX);
 
-        meshDataPoints.mIndices[0].push_back(depth+arrayX);
-        meshDataPoints.mIndices[0].push_back(depth+1);
-        meshDataPoints.mIndices[0].push_back(depth+arrayX+1);
-
+        meshDataPoints.mIndices[0].push_back(depth + arrayX);
+        meshDataPoints.mIndices[0].push_back(depth + 1);
+        meshDataPoints.mIndices[0].push_back(depth + arrayX + 1);
+{
         //[][][][] //Simplified, quad at "/" position now created.
         //[][][][] //It first fills the horizontal line, then going up one.
         //[][][][]
         //[/][][][]
 
-        //Next for-loop should fill:
+        //Next for-loop should fill: (Or vertically, but that should not matter)?
         //[][][][]
         //[][][][]
         //[][][][]
         //[/][/][][]
-
-//        meshDataPoints.mIndexCount[0]++; //Seems superflous? dont want to add anything not absolutely needed.
+}
     }
-//    meshDataPoints.mIndexCount[0]++;
-//    qDebug() << "End of triangle calculation";
-//    qDebug() << "Indices" << meshDataPoints.mIndices->size();
+    qDebug() << "End of triangle calculation";
 
 
 ////Normal calculation
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
-    std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the positions on the square
+    std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the vertices of the ground-mesh
 
 for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not draw trianlges out of "bounds"
 {
-    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
+    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 
     int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX); //Figure out which square you are in
-    int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ); //in both x and z directions
+    int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ); //in x and z directions
 
-    if (x1 > 0 && z1 > 0 &&         //If x1 & y1 is above 0
+    if (x1 > 0      && z1 > 0 &&    //If position x1 & y1 is above 0
         x1 < arrayX && z1 < arrayZ) //and below arrayX/arrayZ
     {
         pCenter = pos; //Store the position of the point we are currently on
 
-        qDebug() << i; //with 50x50 the first found position is at 560, and every "i" until 2449.
+//        qDebug() << i; //With 50x50 the first found position is at 560, and every "i" until 2449.
 
-        //store the nearest vertices.
-        p0 = gsl::Vector3D{vert[i-arrayX].mXYZ};
-        p1 = gsl::Vector3D{vert[i+1-arrayX].mXYZ};
-        p2 = gsl::Vector3D{vert[i+1].mXYZ};
-        p3 = gsl::Vector3D{vert[i+arrayX].mXYZ};
-        p4 = gsl::Vector3D{vert[i-1+arrayX].mXYZ};
-        p5 = gsl::Vector3D{vert[i-1].mXYZ};
+        //Store the nearest vertices, based on how created triangles.
+        p0 = gsl::Vector3D{vert[i - arrayX    ].mXYZ};
+        p1 = gsl::Vector3D{vert[i + 1 - arrayX].mXYZ};
+        p2 = gsl::Vector3D{vert[i + 1         ].mXYZ};
+        p3 = gsl::Vector3D{vert[i + arrayX    ].mXYZ};
+        p4 = gsl::Vector3D{vert[i - 1 + arrayX].mXYZ};
+        p5 = gsl::Vector3D{vert[i - 1         ].mXYZ};
     }
 
     //Create a vector to all the points
@@ -826,6 +823,7 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 
+{
 //In case i need to scale/adjust parts of the grid as the last step before finishing.
 //for(int x = 0; x < arrayX; x++)
 //{
@@ -846,7 +844,7 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
 
 //    }
 //}
-
+}
 
 //Finalize mesh
 meshDataPoints.mDrawType = GL_TRIANGLES;
