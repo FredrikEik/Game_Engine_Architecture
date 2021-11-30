@@ -219,14 +219,14 @@ void Engine::init()
 	ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity)->bDisregardedDuringFrustumCulling = true;
 	TerrainSystem::generateContourLines(contourEntity, terrainEntity, ECS);
 
-	for (int i{}; i < 50; ++i)
+	for (int i{}; i < 100; ++i)
 	{
-		for (int j{}; j < 50; ++j)
+		for (int j{}; j < 100; ++j)
 		{
 			uint32 entt = ECS->newEntity();
 			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
 			ECS->loadAsset(entt, DefaultAsset::SPHERE);
-			TransformSystem::setPosition(entt, glm::vec3(10 * i + 52 , 40, 52 + 10* j ), ECS);
+			TransformSystem::setPosition(entt, glm::vec3(5 * i + 52 , 40, 52 + 5* j ), ECS);
 			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
 			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
 

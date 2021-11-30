@@ -590,60 +590,14 @@ float TerrainSystem::getHeight(uint32 entity, uint32 terrainEntity, class ECSMan
 
 	int32 tempIndex{};
 	return getHeight(*transform, *mesh, tempIndex);
-
-	glm::vec3 position = glm::vec3(transform->transform[3]);
-	uint32 columns = std::sqrt(mesh->m_vertices.size());
-
-	// Dividing the position by the terrain resolution and flooring the results
-	int positionX = position.x / terrainResolution;
-	int positionZ = position.z / terrainResolution;
-
-	// Converting the worldposition to a position in the vertex array
-	uint32 positionInArray = positionZ + (columns * positionX);
-
-	// Converting the position in the vertex array to a position in the index array
-	uint32 approximateStartIndex = positionInArray * 6;
-
-	/**Because the index array stops one short on every row, a small error builds up
-	* For now, a static variable errorMargin corrects this error and makes the guess very accurate
-	* However, it remains to be tested if this is faster than an unchanging error margin when lots of calls are introduced
-	* 1-2 percent is a safe margin, but will make the guess miss by a few houndred when the index gets large*/
-	//approximateStartIndex = ((float)approximateStartIndex) * 0.99;
-	approximateStartIndex = ((float)approximateStartIndex * errorMargin);
-
-
-	// Makes sure we start at the start of a triangle
-	while (approximateStartIndex % 3 != 0)
-		--approximateStartIndex;
-
-	glm::vec3 p, q, r, baryCoord;
-
-	//std::cout << "Position in array: " << positionInArray << ". Guessed index: " << approximateStartIndex << '\n';
-	for (uint32 i{ approximateStartIndex }; i < mesh->m_indices.size(); i+=3)
-	{
-		if (findTriangle(i, position, *mesh, baryCoord, p, q, r))
-		{
-			int32 error = approximateStartIndex - i;
-			if (error <= -9)
-				errorMargin += 0.00001f;
-			else if (error >= -3 && approximateStartIndex > 12)
-				errorMargin -= 0.00001f;
-
-			//std::cout << "Found triangle after " << i - approximateStartIndex << " loops at index "<<i << " with error: " << error << " and error margin: " << errorMargin << '\n';
-			//std::cout << "Found triangle at index" << i << ". Height is: " << baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y <<" .\n";
-			return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
-		}
-	}
-
-	return 0.0f;
 }
 
 float TerrainSystem::getHeight(const TransformComponent& entityTransform, const MeshComponent& terrainMesh,
 	int32& OUTIndex)
 {
-
 	glm::vec3 position = glm::vec3(entityTransform.transform[3]);
 
+	// As the terrain starts at (0, Y, 0) and is generated in a positive direction we know that X and Z must be positive.
 	if (position.x < 0 || position.z < 0)
 	{
 		OUTIndex = -1;
@@ -656,24 +610,23 @@ float TerrainSystem::getHeight(const TransformComponent& entityTransform, const 
 	int positionX = position.x / terrainResolution;
 	int positionZ = position.z / terrainResolution;
 
+	// If X or Z is bigger than the number of rows/columns we know we are outside of the terrain.
+	if (positionX >= (columns-1 )|| positionZ >= (columns-1))
+	{
+		OUTIndex = -1;
+		return 0.0f;
+	}
+
 	// Converting the worldposition to a position in the vertex array
 	uint32 positionInArray = positionZ + (columns * positionX);
 
 	// Converting the position in the vertex array to a position in the index array
 	uint32 approximateStartIndex = positionInArray * 6;
-
-	/**Because the index array stops one short on every row, a small error builds up
-	* For now, a static variable errorMargin corrects this error and makes the guess very accurate
-	* However, it remains to be tested if this is faster than an unchanging error margin when lots of calls are introduced
-	* 1-2 percent is a safe margin, but will make the guess miss by a few houndred when the index gets large*/
-	//approximateStartIndex = ((float)approximateStartIndex) * 0.99;
-	approximateStartIndex = ((float)approximateStartIndex * errorMargin); // could be per entity
-	//approximateStartIndex = ((float)approximateStartIndex * OUTErrorMargin); // per entity
-
+	approximateStartIndex -= 6 * positionX;
 
 	// Makes sure we start at the start of a triangle
 	while (approximateStartIndex % 3 != 0)
-		--approximateStartIndex;
+		++approximateStartIndex;
 
 	glm::vec3 p, q, r, baryCoord;
 
@@ -682,21 +635,13 @@ float TerrainSystem::getHeight(const TransformComponent& entityTransform, const 
 	{
 		if (findTriangle(i, position, terrainMesh, baryCoord, p, q, r))
 		{
-			int32 error = approximateStartIndex - i;
-			if (error <= -9)
-				errorMargin += 0.00001f;
-			else if (error >= -3 && approximateStartIndex > 12)
-				errorMargin -= 0.00001f;
-
-				//OUTErrorMargin += 0.00001f * (error <= -9);
-				//OUTErrorMargin -= 0.00001f * (error >= -3 && approximateStartIndex > 12);
-
 			OUTIndex = i;
-
 			return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
 		}
 	}
 
+	std::cout << "ERROR: Missed the triangle in "<<__FUNCTION__<<" with position x: "<<position.x<<" y: "<<position.y<<" z: "<<position.z << '\n';
+	OUTIndex = -1;
 	return 0.0f;
 }
 
