@@ -176,12 +176,11 @@ void RenderSystem::render()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
 
-//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Attemt at getting the Vis&Sim groundplane to draw triangles. This works, but removes all other gameobjects, and only draws in black.
-//        {
-//            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-//            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
-//            break;
-//        }
+        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Attemt at getting the Vis&Sim groundplane to draw triangles. This works, but removes all other gameobjects, and only draws in black.
+        {
+            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
+        }
 
         //draw the object
         //***Quick hack*** LOD test:

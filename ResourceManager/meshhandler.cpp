@@ -682,7 +682,7 @@ for (int x = 0; x < arrayX; x++)
             }
         }
         ////This is now in the for loop running for x * z
-        if(nrPoints[x][z] == 0) //Given how pointdata isnt perfeclty square, have a default y value if no points are in the grid.
+        if(nrPoints[x][z] == 0) //Given how pointdata isnt filled with data perfeclty square, have a default y value if no points are in the grid.
         {
             planeGrid[x][z].y = yMin; //If no point is found in the square, give a suitable y value.
         }
@@ -709,14 +709,10 @@ for (int x = 0; x < arrayX; x++)
 
 //Debug stuff - used to double check variables.
     qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
-//    qDebug() << "Nr of points in square [0][39] is" << nrPoints[0][39] << "their total height" << sumPointData[0][39];
-//    qDebug() << "Planegrid at square [0][39]" << planeGrid[0][39];
-//    qDebug() << "xMin" << xMin << "yMin" << yMin << "zMin" << zMin;
-//    qDebug() << "After the for loops" << "x" << planeGrid[0][0].x << "y" << planeGrid[0][0].y << "z" << planeGrid[0][0].z;
 
 //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
 //    glPointSize(5.0f);
-//    initMesh(meshDataPoints, 0);          //With these commented out, it will continue with triangles.
+//    initMesh(meshDataPoints, 0);
 //    return mMeshes.size()-1;
 
 ////Create triangle based on the points
@@ -732,7 +728,7 @@ for (int x = 0; x < arrayX; x++)
         }
         c++;
 
-        //Create a triangle using the points in this order. Filling only first LOD.
+        //Create two triangles using the vertices at these positions of mVertices. Only filling first LOD
         meshDataPoints.mIndices[0].push_back(depth);
         meshDataPoints.mIndices[0].push_back(depth+1);
         meshDataPoints.mIndices[0].push_back(depth+arrayX);
@@ -740,6 +736,17 @@ for (int x = 0; x < arrayX; x++)
         meshDataPoints.mIndices[0].push_back(depth+arrayX);
         meshDataPoints.mIndices[0].push_back(depth+1);
         meshDataPoints.mIndices[0].push_back(depth+arrayX+1);
+
+        //[][][][] //Simplified, quad at "/" position now created.
+        //[][][][] //It first fills the horizontal line, then going up one.
+        //[][][][]
+        //[/][][][]
+
+        //Next for-loop should fill:
+        //[][][][]
+        //[][][][]
+        //[][][][]
+        //[/][/][][]
 
 //        meshDataPoints.mIndexCount[0]++; //Seems superflous? dont want to add anything not absolutely needed.
     }
@@ -751,41 +758,42 @@ for (int x = 0; x < arrayX; x++)
 ////Normal calculation
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
-    gsl::Vector3D nV;
-    gsl::Vector3D pos;
 
-    std::vector<Vertex> vert = meshDataPoints.mVertices[0];
+    std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the positions on the square
 
-for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
+for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not draw trianlges out of "bounds"
 {
-    pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
+    gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertices in LOD 0.
 
-    int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX);
-    int y1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ);
+    int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX); //Figure out which square you are in
+    int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ); //in both x and z directions
 
-    if(x1 > 0 && y1 > 0 && x1 < arrayX && y1 < arrayZ) //index > 0
+    if (x1 > 0 && z1 > 0 &&         //If x1 & y1 is above 0
+        x1 < arrayX && z1 < arrayZ) //and below arrayX/arrayZ
     {
-        pCenter = pos;
+        pCenter = pos; //Store the position of the point we are currently on
 
-        qDebug() << i; //with 50x50 the first normal is at 560, and every i until 2449.
+        qDebug() << i; //with 50x50 the first found position is at 560, and every "i" until 2449.
 
-        p0 = gsl::Vector3D{vert[i-arrayX].mXYZ.x,   vert[i-arrayX].mXYZ.y,   vert[i-arrayX].mXYZ.z};
-        p1 = gsl::Vector3D{vert[i+1-arrayX].mXYZ.x, vert[i+1-arrayX].mXYZ.y, vert[i+1-arrayX].mXYZ.z};
-        p2 = gsl::Vector3D{vert[i+1].mXYZ.x,        vert[i+1].mXYZ.y,        vert[i+1].mXYZ.z};
-        p3 = gsl::Vector3D{vert[i+arrayX].mXYZ.x,   vert[i+arrayX].mXYZ.y,   vert[i+arrayX].mXYZ.z};
-        p4 = gsl::Vector3D{vert[i-1+arrayX].mXYZ.x, vert[i-1+arrayX].mXYZ.y, vert[i-1+arrayX].mXYZ.z};
-        p5 = gsl::Vector3D{vert[i-1].mXYZ.x,        vert[i-1].mXYZ.y,        vert[i-1].mXYZ.z};
+        //store the nearest vertices.
+        p0 = gsl::Vector3D{vert[i-arrayX].mXYZ};
+        p1 = gsl::Vector3D{vert[i+1-arrayX].mXYZ};
+        p2 = gsl::Vector3D{vert[i+1].mXYZ};
+        p3 = gsl::Vector3D{vert[i+arrayX].mXYZ};
+        p4 = gsl::Vector3D{vert[i-1+arrayX].mXYZ};
+        p5 = gsl::Vector3D{vert[i-1].mXYZ};
     }
 
-    //Create a vector to all the poitns
-    gsl::Vector3D v0 = p0-pCenter;
-    gsl::Vector3D v1 = p1-pCenter;
-    gsl::Vector3D v2 = p2-pCenter;
-    gsl::Vector3D v3 = p3-pCenter;
-    gsl::Vector3D v4 = p4-pCenter;
-    gsl::Vector3D v5 = p5-pCenter;
+    //Create a vector to all the points
+    gsl::Vector3D v0 = p0 - pCenter;
+    gsl::Vector3D v1 = p1 - pCenter;
+    gsl::Vector3D v2 = p2 - pCenter;
+    gsl::Vector3D v3 = p3 - pCenter;
+    gsl::Vector3D v4 = p4 - pCenter;
+    gsl::Vector3D v5 = p5 - pCenter;
 
-    //If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values)
+
+    //Get the absolute value, if not, it's dark (Has negative values)
     v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
     v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
     v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
@@ -793,30 +801,32 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++)
     v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
     v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 
+
     //Calulate the normals for each triangle around the point
-    n0 = v0.cross(v0,v1);
+    n0 = v0.cross(v0, v1);
     n0.normalize();
 
-    n1 = v1.cross(v1,v2);
+    n1 = v1.cross(v1, v2);
     n1.normalize();
 
-    n2 = v2.cross(v2,v3);
+    n2 = v2.cross(v2, v3);
     n2.normalize();
 
-    n3 = v3.cross(v3,v4);
+    n3 = v3.cross(v3, v4);
     n3.normalize();
 
-    n4 = v4.cross(v4,v5);
+    n4 = v4.cross(v4, v5);
     n4.normalize();
 
-    n5 = v5.cross(v5,v0);
+    n5 = v5.cross(v5, v0);
     n5.normalize();
 
-    nV = n0+n1+n2+n3+n4+n5;
+    gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 
+//In case i need to scale/adjust parts of the grid as the last step before finishing.
 //for(int x = 0; x < arrayX; x++)
 //{
 //    for(int z = 0; z < arrayZ; z++)

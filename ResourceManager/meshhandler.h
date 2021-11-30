@@ -27,7 +27,6 @@ struct MeshData
     gsl::Vector3D mLowLeftBackCorner{};
     float mColliderRadius{0};
 
-    //Does not work, altough i want to return mVertices of the gameobject calling it.
     std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0]; } //Only need the first, beacuse there is no LOD.
 };
 
