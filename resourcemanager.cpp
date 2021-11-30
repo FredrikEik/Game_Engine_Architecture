@@ -89,6 +89,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
         tempGO->mCollisionComp = new CollisionComponent();
+        tempGO->mBallPhysicsComp = new BallPhysicsComponent();
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {

@@ -5,6 +5,7 @@
 #include "vertex.h"
 #include "matrix4x4.h"
 #include "gltypes.h"
+#include "queue"
 
 #include <al.h>
 #include <alc.h>
@@ -67,11 +68,26 @@ public:
 
 };
 
-//class BallPhysicsComponent
-//{
-//public:
-//    float Radius{0};
-//};
+class BallPhysicsComponent
+{
+public:
+
+    QVector3D mVelocity{0,0,0};
+    float Radius{1};
+    int gridXPos;
+    int gridZPos;
+    float xPosOnTarrain;
+    float zPosOnTarrain;
+    QVector3D inAirNormal{0,-1,0};
+    QVector3D normal{0,0,0};
+    QVector3D collisionNormal{1,0,0};
+    bool normalSetup{true};
+//    QVector3D lastNormal{0,0,0};
+//    QVector3D currentNormal{0,0,0};
+    std::queue<QVector3D> normalLastAndCurrentQ;
+    bool onNewTriangle{false};
+    bool isInAir{true};
+};
 
 class SoundListenerComponent
 {

@@ -16,7 +16,7 @@ public:
     MaterialComponent* mMaterialComp{nullptr};
     CollisionComponent* mCollisionComp{nullptr};
     MeshComponent* mCollisionLines{nullptr};
-    //BallPhysicsComponent* mBallPhysicsComp{nullptr};
+    BallPhysicsComponent* mBallPhysicsComp{nullptr};
 };
 
 #endif // GAMEOBJECT_H

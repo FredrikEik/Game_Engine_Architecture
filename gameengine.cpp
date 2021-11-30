@@ -49,10 +49,10 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(545.f, 30.f, 615.f));
+    mEditorCamera->setPosition(gsl::Vector3D(530.f, 35.f, 635.f));
 //        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
-    mEditorCamera->yaw(70);
+    mEditorCamera->yaw(65);
     mEditorCamera->pitch(30);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
@@ -154,7 +154,8 @@ void GameEngine::SetUpObjects()
     // Ball-Physics:
 
     mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-    mPhysicsBall->mTransformComp->mMatrix.translate(569.1f,14.3f,616.f);
+    mPhysicsBall->mTransformComp->mMatrix.translate(553.91f,25.f,604.1f);
+//    mPhysicsBall->mTransformComp->mMatrix.translate(455.4f,42.9f,674.4f);
     mPhysicsBall->mTransformComp->mMatrix.scale(1);
     mPhysicsBall->mMaterialComp->mShaderProgram = 2;
     mRenderwindow->mGameObjects.push_back(mPhysicsBall);
