@@ -6,7 +6,6 @@ LasPlane::LasPlane(std::string filename)
     :VisualObject()
 {
     filepath = filename;
-    //qDebug() << "basfasdfsdgf!";
 }
 
 //void LasPlane::constructPlane()
@@ -80,37 +79,18 @@ void LasPlane::constructPlane()
 
     qDebug() << "File read!";
 
-    //std::vector<int> test(4, 2000);
-
-    //qDebug()<<min;
-    //qDebug()<<max;
-
-    //first == number of points in square, second == total height.
-//    std::vector<std::pair<int, float>> &squareHeights = (*new std::vector<std::pair<int, float>>);//(std::pair<int, float>(0,0), (int)((max.z() * max.x()) / resoluton));
     std::map<int, std::pair<int, float>> &squareHeights = (*new std::map<int, std::pair<int, float>>);//(std::pair<int, float>(0,0), (int)((max.z() * max.x()) / resoluton));
-
     long long squarePosition{};
-//    squareHeights.resize((((max.z()-min.z())/resoluton) * ((max.x()-min.z())/resoluton)));
-//    squareHeights.reserve((max.z() * max.x()) / resoluton);
-//    ((max.z() * max.x()) / resoluton);
-
 
     for(auto &it : tempLasPos)
     {
-//        tempCollum = (max.x() - it.x()) / resoluton;
-//        tempRow = (max.z() - it.z()) / resoluton;
-//        squarePosition = (it.x() * it.z()) / resoluton;
         long long positionX = (it.x()-min.x())/resoluton;
-//        positionX = positionX >= 0 ? positionX : 0;
-
         long long positionZ = (it.z()-min.z())/resoluton;
-//        positionZ = positionZ >= 0 ? positionZ : 0;
         squarePosition = std::lround(positionX*positionZ);
 
         if(squareHeights.find(squarePosition) == squareHeights.end())
         {
             squareHeights.insert(std::pair<int, std::pair<int, float>>(squarePosition, {1, it.y()}));
-
         }
         else
         {
@@ -126,16 +106,12 @@ void LasPlane::constructPlane()
     int rows{};
     for(const auto& it: squareHeights)
     {
-//        if(squareHeights.at(i).first == 0)
-//            continue;
         if(columns >= columnSize)
         {
             rows++;
             columns = 0;
         }
         temp = it.second.second / (float)it.second.first;
-//        tempPos = QVector3D(tempLasPos.at(i).x(), temp, tempLasPos.at(i).z());
-//        tempPos = QVector3D(rows*resoluton, temp-min.y(), columns*resoluton);
         tempPos = QVector3D(rows*resoluton, temp - min.y(), columns*resoluton);
         positions.push_back(tempPos);
 
@@ -156,26 +132,6 @@ void LasPlane::constructPlane()
             continue;
         }
         tempPos = positions.at(i);
-
-//        tempNormal = calculateNormal(tempPos, i, positions);
-
-        //Bottom triangle
-//        m_indices.push_back(columns+(rows*columnSize));
-//        m_indices.push_back(columns+1+(rows*columnSize));
-//        m_indices.push_back(columns+((rows+1)*columnSize)+1);
-
-//        //Top triangle
-//        m_indices.push_back(columns+((rows+1)*columnSize)+1);
-//        m_indices.push_back(columns+((rows+1)*columnSize));
-//        m_indices.push_back(columns+(rows*columnSize));
-
-//        m_indices.push_back(i);
-//        m_indices.push_back(i+1);
-//        m_indices.push_back(i+columnSize);
-
-//        m_indices.push_back(i+1);
-//        m_indices.push_back(i+columnSize+1);
-//        m_indices.push_back(i+columnSize);
 
         m_indices.push_back(i);
         m_indices.push_back(i+1 + columnSize);
@@ -235,10 +191,9 @@ QVector3D LasPlane::calculateNormal(QVector3D point3D, unsigned int index, const
     x = static_cast<unsigned int>(point3D.x());
     z = static_cast<unsigned int>(point3D.z());
 
-//    columns = tempPosition.size() / 2;
     columns = std::sqrt(tempPosition.size());
-
     rows = columns;
+
 
     if((x == 0 && z == 0) || (x == columns-1 && z == rows-1)) //Corner with 2 triangles
     {
