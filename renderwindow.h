@@ -73,6 +73,8 @@ public:
 
     //PHYSICS
     PhysicsSystem* Physics = new PhysicsSystem();
+    gsl::Vector3D MakeGSLvec3D(QVector3D vec);
+    QVector3D MakeQvec3D(gsl::Vector3D vec);
 
     //player camera
     void togglePlayerCamera();

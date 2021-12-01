@@ -248,28 +248,16 @@ void RenderWindow::init()
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
     entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES); //3
 
-    for(int i{0}; i < 50; i++)
+    for(int i{0}; i < 40; i++)
     {
-        for(int j{0}; j < 50; j++)
+        for(int j{0}; j < 40; j++)
         {
-            entitySys->construct("sphere.obj", QVector3D( 10 + 2*(i) ,10.0f,10 + 2*(j)),2,1);
-
-
+            entitySys->construct("sphere.obj", QVector3D( 10 + 3*(i) ,10.0f,10 + 3*(j)),2,1);
         }
     }
-    /*
-    entitySys->construct("sphere.obj", QVector3D(13.0f,18.0f,15.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,15.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(14.0f,18.0f,15.0f),2,1);
 
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,13.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,12.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,14.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,16.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,17.0f),2,1);
-*/
-    //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
-    //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
+    ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
+    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
@@ -349,25 +337,8 @@ void RenderWindow::render()
             if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
 
         }
-        //HARDCODED COLLIDER BABY
-        //monkey thats moving is entity id 2
-        /*if(transformCompVec[i]->isPhysicsEnabled)
-        {
-            for(unsigned long long j = 0; j < eSize; j++)
-                if(transformCompVec[j]->isPhysicsEnabled)
-                    if(collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
-                    {
-                        gsl::Vector3D BallSpeed1, BallSpeed2;
-                        BallSpeed1 = transformCompVec[i]->Velocity;
-                        BallSpeed2 = transformCompVec[j]->Velocity;
 
-                        //give em the new vec
-                        BallSpeed1 = BallSpeed1 + BallSpeed2*0.01f;
-                        transformCompVec[i]->Velocity = BallSpeed1;
-                        break;
-                    }
-        }*/
-///
+
     }
 
     if(isPhysicsEnabled)
@@ -376,17 +347,31 @@ void RenderWindow::render()
         for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++)
         {
 
-            if(transformCompVec[i]->entity == 3)
-            {
-                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
-                //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
-                //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
-            }
+
             if(transformCompVec[i]->isPhysicsEnabled ) //enmtity 4 is the ball
             {
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
 
             }
+            //HARDCODED COLLIDER BABY
+//            if(transformCompVec[i]->isPhysicsEnabled && isPhysicsEnabled)
+//            {
+//                for(unsigned long long j = 0; j < eSize; j++)
+//                    if(i != j)
+//                        if( collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
+//                        {
+//                            /*
+//                          QVector3D vec1 =MakeQvec3D( transformCompVec[i]->Velocity);
+//                          vec1.normalize();
+//                          QVector3D vec2 =MakeQvec3D( transformCompVec[j]->Velocity);
+//                          vec2.normalize();
+
+//                          transformCompVec[i]->Velocity = transformCompVec[i]->Velocity + MakeGSLvec3D( vec2  ) ;
+//                          transformCompVec[j]->Velocity = transformCompVec[j]->Velocity - MakeGSLvec3D( vec1 );
+//*/
+//                        //KILL M E PLS
+//                        }
+//            }
 
 
         }
@@ -419,6 +404,23 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
+gsl::Vector3D RenderWindow::MakeGSLvec3D(QVector3D vec)
+{
+    gsl::Vector3D temp;
+    temp.setX(vec.x());
+    temp.setY(vec.y());
+    temp.setZ(vec.z());
+    return temp;
+}
+
+QVector3D RenderWindow::MakeQvec3D(gsl::Vector3D vec)
+{
+    QVector3D temp;
+    temp.setX(vec.getX());
+    temp.setY(vec.getY());
+    temp.setZ(vec.getZ());
+    return temp;
+}
 void RenderWindow::CalcDeltaTime()
 {
     auto newTime = std::chrono::high_resolution_clock::now();
