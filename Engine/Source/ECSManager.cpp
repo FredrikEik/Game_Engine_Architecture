@@ -155,7 +155,9 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 	else if (componentType == std::type_index(typeid(ScriptComponent)))
 		removeComponent<ScriptComponent>(entityID);	
 	else if (componentType == std::type_index(typeid(PhysicsComponent)))
-		removeComponent<PhysicsComponent>(entityID);
+		removeComponent<PhysicsComponent>(entityID);	
+	else if (componentType == std::type_index(typeid(TrailComponent)))
+		removeComponent<TrailComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };

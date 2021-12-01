@@ -68,7 +68,7 @@ private:
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
-
+	uint32 trailEntity{};
 	uint32 reservedEntities{};
 
 	static float windowWidth;
@@ -86,6 +86,6 @@ public:
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
-
+	uint32 getTrailEntity() const { return trailEntity; }
 
 };

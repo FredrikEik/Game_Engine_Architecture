@@ -121,17 +121,17 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 
 	// TODO: Make sure this works
 	if (input->getKeyState(KEY_W).bHeld)
-		deltaMovement += forward * 10.f * deltaTime;
+		deltaMovement += forward * 50.f * deltaTime;
 	if (input->getKeyState(KEY_S).bHeld)
-		deltaMovement -= forward * 10.f * deltaTime;
+		deltaMovement -= forward * 50.f * deltaTime;
 	if (input->getKeyState(KEY_D).bHeld)
-		deltaMovement -= right * 10.f * deltaTime;
+		deltaMovement -= right * 50.f * deltaTime;
 	if (input->getKeyState(KEY_A).bHeld)
-		deltaMovement += right * 10.f * deltaTime;
+		deltaMovement += right * 50.f * deltaTime;
 	if (input->getKeyState(KEY_E).bHeld)
-		deltaMovement += glm::vec3(0,1,0) * 10.f * deltaTime;
+		deltaMovement += glm::vec3(0,1,0) * 50.f * deltaTime;
 	if (input->getKeyState(KEY_Q).bHeld)
-		deltaMovement -= glm::vec3(0, 1, 0) * 10.f * deltaTime;
+		deltaMovement -= glm::vec3(0, 1, 0) * 50.f * deltaTime;
 
 	TransformSystem::move(entity, deltaMovement, ECS);
 	//std::cout << currentTransform->transform[3].x << " " 

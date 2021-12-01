@@ -27,18 +27,22 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 		// If airborne there is no surface normal. 
 		tempSurfaceNormal = TerrainSystem::getNormal(*entityTransform, *terrain, tempTerrainIndex) * (float)!tempIsInAir;
 
-		it.velocity += getAcceleration(tempSurfaceNormal, it.mass) *  deltaTime;
+		it.acceleration = getAcceleration(tempSurfaceNormal, it.mass);
+		it.velocity += it.acceleration * deltaTime;
+
 
 		if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
 		{
 			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
-			it.velocity = tempCollisionNormal * glm::length(it.velocity) * it.restitution;
+			if(it.bIsInAir)
+				it.velocity = tempCollisionNormal * glm::length(it.velocity) * it.restitution;
+			else
+				it.velocity = tempCollisionNormal * glm::length(it.velocity);
 		}
 
 		// s = V_0 * t + 1/2*a*t*t
 		TransformSystem::move(*entityTransform, 
 			(it.velocity*deltaTime + 0.5f * glm::vec3(0, -core::GRAVITY,0)*deltaTime*deltaTime));
-
 
 		tempHeight = TerrainSystem::getHeight(*entityTransform, *terrain, tempTerrainIndex);
 		bool isUnderGround = entityTransform->transform[3].y < (tempHeight + tempRadius+0.0001);

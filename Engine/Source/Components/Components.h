@@ -211,3 +211,14 @@ struct PhysicsComponent final : public Component
 	bool bIsInAir{false};
 	float restitution{ 0.75 }; // How bouncy/elastic it is.
 };
+
+struct TrailComponent final : public Component
+{
+	TrailComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	std::vector<std::vector<glm::vec3>> positions;
+
+	float lastRecordedTime{};
+	float recordInterval{ 0.5f };
+	bool bRecording{ false };
+};

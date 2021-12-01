@@ -13,6 +13,7 @@
 #include "../Systems/CameraSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/SphereSystem.h"
+#include "../Systems/TrailSystem.h"
 #include "../Engine/Engine.h"
 
 #include "WorldOutliner.h"
@@ -162,7 +163,10 @@ void Viewport::render()
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			WireFrame = !WireFrame;
 		}
-
+		if (ImGui::Button("Generate Spline Trail"))
+		{
+			TrailSystem::generateBSplines(Engine::Get().getTrailEntity(), ECS, 3, false, 0.05);
+		}
 		
 
 		ImGui::End();

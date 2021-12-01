@@ -18,6 +18,7 @@
 #include "../Systems/SelectionSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/PhysicsSystem.h"
+#include "../Systems/TrailSystem.h"
 
 
 #include "../Input/Input.h"
@@ -60,6 +61,9 @@ void Engine::setIsPlaying(bool isPlaying)
 {
 	bIsPlaying = isPlaying;
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
+	//TrailSystem::toggleRecording(unitEntity, ECS);
+	TrailSystem::toggleRecordings(ECS);
+
 	//if (!isPlaying)
 	//{
 	//	load(Save::getDefaultAbsolutePath());
@@ -88,8 +92,8 @@ void Engine::load(const std::string& path)
 }
 
 Engine* Engine::instance = nullptr;
-float Engine::windowWidth = 800.f;
-float Engine::windowHeight = 600.f;
+float Engine::windowWidth = 1400.f;
+float Engine::windowHeight = 1080.f;
 float Engine::fov = 45.f;	
 
 //sa
@@ -170,20 +174,6 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
 
-
-	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
-	//ECS->loadAsset(terrainEntity, "Assets/grass.png");
-	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	//meshComp->bDisregardedDuringFrustumCulling = true;
-	//ECS->addComponents<TransformComponent>(terrainEntity);
-	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
-	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
-	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-
-
-	//viewport->begin(window, ECS->getNumberOfEntities());
-
-
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
 	ScriptSystem::Init();
@@ -198,10 +188,11 @@ void Engine::init()
 	reservedEntities = ECS->getNumberOfEntities();
 	load(Save::getDefaultAbsolutePath());
 	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, PhysicsComponent>(unitEntity);
+	ECS->addComponents<TransformComponent, PhysicsComponent, TrailComponent>(unitEntity);
 	ECS->loadAsset(unitEntity, DefaultAsset::SPHERE);
 	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
 	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
+	TrailSystem::setRecordInterval(unitEntity, ECS, 1.f);
 
 
 
@@ -210,18 +201,22 @@ void Engine::init()
 	//Load::loadEntities("../saves/entities.json", ECS);
 	terrainEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 	//TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	TerrainSystem::generateGridFromLAS(terrainEntity, "Assets/test_las.txt", ECS);
-	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 
 	uint32 contourEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent>(contourEntity);
 	ECS->getComponentManager<MeshComponent>()->getComponentChecked(contourEntity)->bDisregardedDuringFrustumCulling = true;
 	TerrainSystem::generateContourLines(contourEntity, terrainEntity, ECS);
 
-	for (int i{}; i < 100; ++i)
+	trailEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent>(trailEntity);
+	TrailSystem::generateBSplines(trailEntity, ECS);
+
+	for (int i{}; i < 50; ++i)
 	{
-		for (int j{}; j < 100; ++j)
+		for (int j{}; j < 50; ++j)
 		{
 			uint32 entt = ECS->newEntity();
 			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
@@ -229,10 +224,13 @@ void Engine::init()
 			TransformSystem::setPosition(entt, glm::vec3(5 * i + 52 , 40, 52 + 5* j ), ECS);
 			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
 			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
-
+			//TrailSystem::setRecordInterval(entt, ECS, 4);
 		}
 
 	}
+
+
+
 	lastFrame = glfwGetTime();
 }
 
@@ -269,6 +267,8 @@ void Engine::loop()
 			lastFrame = currentFrame;
 			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
 			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
+			TrailSystem::recordPositions(ECS, currentFrame);
+			//TrailSystem::generateBSplines(trailEntity, ECS);
 		}
 
 		//// RENDER
