@@ -181,10 +181,10 @@ void PlaneImport::readFile(std::string filename)
         }
     }
 
-    for (unsigned i = 0; i < getMeshComp()->mVertices.size(); i++)
+    /*for (unsigned i = 0; i < getMeshComp()->mVertices.size(); i++)
     {
-        qDebug() << "x: " << getMeshComp()->mVertices[i].get_xyz().x << " y: " << getMeshComp()->mVertices[i].get_xyz().y << " z: " << getMeshComp()->mVertices[i].get_xyz().z;
-    }
+        //qDebug() << "x: " << getMeshComp()->mVertices[i].get_xyz().x << " y: " << getMeshComp()->mVertices[i].get_xyz().y << " z: " << getMeshComp()->mVertices[i].get_xyz().z;
+    }*/
 
     getMeshComp()->mIndices.reserve(triangleNumberX * triangleNumberY * 6);
 

@@ -14,7 +14,42 @@ RollingBall::~RollingBall()
 
 void RollingBall::move(float dt)
 {
+    std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
+    gsl::Vector3D ballCoords = getTransformComp()->mMatrix.getPosition();
+    gsl::Vector3D newPosition;
+    gsl::Vector3D normal;
+    gsl::Matrix4x4 position = new gsl::Matrix4x4;
+    position.translate(getTransformComp()->mMatrix.getPosition());
+    gsl::Matrix4x4 sscale = new gsl::Matrix4x4;
+    sscale.scale(getTransformComp()->Scal);
 
+    for(int i = 0; i < (vertices.size() - 2); i += 3)
+    {
+        gsl::Vector3D p0 = gsl::Vector3D(vertices[i].get_xyz());
+        gsl::Vector3D p1 = gsl::Vector3D(vertices[i + 1].get_xyz());
+        gsl::Vector3D p2 = gsl::Vector3D(vertices[i + 2].get_xyz());
+
+        gsl::Vector3D baryCoords = ballCoords.barycentricCoordinates(p0, p1, p2);
+
+        if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
+        {
+            normal = (p1 - p0)^(p2 - p0);
+            normal.normalize();
+            acceleration = force * normal * normal.z;
+
+            if(i == 0) //reverse the acceleration when it passes center
+                acceleration = gsl::Vector3D(-acceleration.x, -acceleration.y, -acceleration.z);
+            mVelocity = mVelocity + acceleration * dt;
+
+            float zOffset = 0.25f;
+            newPosition = position.getPosition() + mVelocity;
+            newPosition.z = p0.z * baryCoords.x + p1.z * baryCoords.y + p2.z * baryCoords.z;
+            position.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
+            ballCoords = position.getPosition();
+        }
+    }
+
+    getTransformComp()->mMatrix = position * sscale;
 }
 
 void RollingBall::init()
