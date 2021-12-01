@@ -205,7 +205,7 @@ void TriangleSurface::readFile(std::string filnavn)
 
         //Normalize height
 
-        for (int i = 0; i<mapHeights.size(); i++)
+        for (int i = 0; i<mapHeights.size()-5; i++)
         {
             //qDebug() << mapMaxZ;
             //qDebug() << mapMinZ;
@@ -226,7 +226,7 @@ void TriangleSurface::readFile(std::string filnavn)
         {
             for(int j = 0; j < terrainGridZ; j++)
             {
-                if(j+((i+1)*terrainGridX) < mapHeights.size())
+                if(j+((i+1)*terrainGridX) < mapHeights.size() - 100)
                 {
                 Vertex v{};
                 /*Bottom Right*/  v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);

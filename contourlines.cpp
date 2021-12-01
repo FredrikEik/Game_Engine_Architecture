@@ -44,6 +44,14 @@ ContourLines::ContourLines(GameObject* mGround, float height)
         v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
         v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
         getMeshComponent()->mVertices.push_back(v);
+
+        v.set_xyz((((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                 (mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2 )/2);
+        v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+        getMeshComponent()->mVertices.push_back(v);
+        getMeshComponent()->mVertices.push_back(v);
+
+
         v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
         v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
         getMeshComponent()->mVertices.push_back(v);
@@ -76,6 +84,14 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                     (mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2)/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -107,6 +123,12 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+2].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -142,6 +164,12 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+2].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -154,6 +182,13 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                     (mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2 )/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -161,6 +196,15 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+
+            v.set_xyz((((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                     (mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2)/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -172,6 +216,14 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                     (mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2)/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+1].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -183,6 +235,12 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+1].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((mGround->getMeshComponent()->mVertices[i].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
@@ -205,6 +263,13 @@ ContourLines::ContourLines(GameObject* mGround, float height)
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);
+
+            v.set_xyz((((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i].get_xyz())/2) +
+                     (mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2 )/2);
+            v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
+            getMeshComponent()->mVertices.push_back(v);
+            getMeshComponent()->mVertices.push_back(v);
+
             v.set_xyz((mGround->getMeshComponent()->mVertices[i+2].get_xyz() + mGround->getMeshComponent()->mVertices[i+5].get_xyz())/2);
             v.set_xyz(v.get_xyz().x, height, v.get_xyz().z);
             getMeshComponent()->mVertices.push_back(v);

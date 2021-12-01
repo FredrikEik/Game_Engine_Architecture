@@ -93,14 +93,14 @@ void Sphere::move(float x, float y, float z)
             */
             float surfaceY = p1.y*baryCoords.x + p2.y*baryCoords.y + p3.y*baryCoords.z;
 
-            if(ballPos.y < surfaceY+1)
+            if(ballPos.y < surfaceY+1.05)
             {
                 //acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
                 acceleration = gsl::Vector3D(planeNormal.x*planeNormal.y*9.80565f, planeNormal.y*planeNormal.y*9.80565f, planeNormal.z*planeNormal.y*9.80565f) + gForce;
                 //qDebug()<<"Acceleration: " << acceleration;
                 velocity = velocity + acceleration * 0.0017;
                 gsl::Vector3D newPosition = ballPos + velocity;
-                getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY, newPosition.z);
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY+1, newPosition.z);
             }
             else
             {

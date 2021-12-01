@@ -238,10 +238,11 @@ void RenderWindow::initObjects()
             mMainWindow->updateOutliner(factory->mGameObjects);
             hjelpeObjekt = factory->createObject("Cube");
             mGround = factory->createObject("TriangleSurface");
-            for(int i =0; i<10; i++)
+           for(int i =0; i<10; i++)
             {
             mContour = factory->createObject("ContourLines");
             }
+
 
 
 
