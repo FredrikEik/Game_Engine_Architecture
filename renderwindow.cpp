@@ -236,14 +236,15 @@ void RenderWindow::initObjects()
 
         surface = factory->createObject("LasSurface");
 
+        ;
 
-        for (int j = 0; j<3; j++){
-        for ( int i =0; i<10; i++){
+        for ( int i =0; i<20; i++){
         rollingBall = factory->createObject("RollingBall");
-        rollingBall->getTransformComponent()->mMatrix.setPosition(-1.5f+i,6.f,3.5f+j);
+        rollingBall->getTransformComponent()->mMatrix.setPosition((rand() % 20+(-10)), 6.f, (rand() % 20+ (-10)));
+        rollingBall->getTransformComponent()->mMatrix.setScale(0.5f,0.5f,0.5f);
         dynamic_cast<RollingBall*>(rollingBall)->setSurface(surface);
         }
-        }
+
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
