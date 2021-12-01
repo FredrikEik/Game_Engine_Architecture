@@ -4,6 +4,7 @@
 #include "xyz.h"
 #include "objimport.h"
 #include "planeimport.h"
+#include "octahedronball.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -64,6 +65,12 @@ void ObjectFactory::createObject(std::string objectName)
             qDebug() << "plane mesh saved";
         }
         willCreateObject->mTexture = 1;
+    }
+    else if (objectName == "Ball")
+    {
+        willCreateObject = new OctahedronBall(5);
+        qDebug() << "ball mesh created";
+        willCreateObject->mTexture = 3;
     }
     else
         return;
