@@ -31,6 +31,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="Physicsbutton">
+        <property name="text">
+         <string>Toggle Physics</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButton">
         <property name="text">
          <string>Toggle Wireframe</string>

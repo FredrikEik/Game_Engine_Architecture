@@ -383,7 +383,7 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
-            if(factory->mGameObjects[i]->mObjectType == "RollingBall")
+            if(togglePhysics == true && factory->mGameObjects[i]->mObjectType == "RollingBall" )
             {
                 dynamic_cast<RollingBall*>(factory->mGameObjects[i])->move(0.017f);
             }
