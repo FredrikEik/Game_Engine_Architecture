@@ -700,15 +700,12 @@ for (int x = 0; x < arrayX; x++)
         //Only using mVertices[0] beacuse there is no lod for this mesh.
         //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
         meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
-                                                 0.0f, 0.0f, 0.0f, //Normals not calculated and possibly not needed for glPoint drawing
-                                                 0.0f, 0.0f}); //UVs
-//        meshDataPoints.mVertexCount[0]++;
+                                                 0.0f, 0.0f, 0.0f, //Normals
+                                                 0.0f, 0.0f});     //UVs
     }
 }
-//meshDataPoints.mVertexCount[0]++; //Doing this to match mVertexCount and mVertices
-
 //Debug stuff - used to double check variables.
-    qDebug() << "planeGrid is now filled"; //As of 26.11-2021 with 50x50 points, this takes about half a minute on my computer.
+    qDebug() << "planeGrid is now filled";
 
 //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
 //    glPointSize(5.0f);
@@ -716,10 +713,10 @@ for (int x = 0; x < arrayX; x++)
 //    return mMeshes.size()-1;
 
 ////Create triangle based on the points
-qDebug() << "On to triangle calculations (should be much less expensive)";
-    int check = 0;
+qDebug() << "Start of triangle calculations (should be much less expensive)";
 
-    for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++)
+    int check = 0;
+    for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++) //This should run for all the rows of the grid, but stop before "overdrawing"
     {
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
         if(check == arrayX-1)
@@ -736,6 +733,7 @@ qDebug() << "On to triangle calculations (should be much less expensive)";
         meshDataPoints.mIndices[0].push_back(depth + arrayX);
         meshDataPoints.mIndices[0].push_back(depth + 1);
         meshDataPoints.mIndices[0].push_back(depth + arrayX + 1);
+        //This does appear to fill the indices with the correct vertices for triangle order.
 {
         //[][][][] //Simplified, quad at "/" position now created.
         //[][][][] //It first fills the horizontal line, then going up one.
@@ -752,18 +750,20 @@ qDebug() << "On to triangle calculations (should be much less expensive)";
     qDebug() << "End of triangle calculation";
 
 
+    qDebug() << "Start of normal calculation";
 ////Normal calculation
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
     std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the vertices of the ground-mesh
 
-for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not draw trianlges out of "bounds"
+
+for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use trianlges out of "bounds"
 {
     gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 
-    int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX); //Figure out which square you are in
-    int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ); //in x and z directions
+    int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX); //Figure out which square you are in in x and z directions
+    int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ);
 
     if (x1 > 0      && z1 > 0 &&    //If position x1 & y1 is above 0
         x1 < arrayX && z1 < arrayZ) //and below arrayX/arrayZ
@@ -791,13 +791,13 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
 
 
     //Get the absolute value, if not, it's dark (Has negative values)
-    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
-    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
-    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
-    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
-    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
-    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
-
+//    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+//    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+//    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+//    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+//    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+//    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+//Commenting out this does create more normalized vectors/triangles, but it still draws some triangles wrong/across the entire grid
 
     //Calulate the normals for each triangle around the point
     n0 = v0.cross(v0, v1);
@@ -822,7 +822,7 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
 
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
-
+    qDebug() << "End of normal calculations";
 {
 //In case i need to scale/adjust parts of the grid as the last step before finishing.
 //for(int x = 0; x < arrayX; x++)
@@ -847,7 +847,7 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
 }
 
 //Finalize mesh
-meshDataPoints.mDrawType = GL_TRIANGLES;
+//meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.
 //glPointSize(5.0f);
 initMesh(meshDataPoints, 0);
 return mMeshes.size()-1;
