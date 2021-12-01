@@ -71,6 +71,8 @@ public:
     void setRotationX(float value);
 
     GameObject* mPhysicsBall{nullptr};
+    GameObject* mPhysicsBall2{nullptr};
+    std::vector<GameObject*> mPhysicsBalls{nullptr};
     void ResetBallVelocity();
 
 private:

@@ -56,9 +56,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mTransformComp = new TransformComponent();
     tempGO->mTransformComp->mMatrix.setToIdentity();
 
-
+    tempGO->mBallPhysicsComp = new BallPhysicsComponent();
 
     tempGO->mMaterialComp = new MaterialComponent();
+
     tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
     if(textureName == "plain" || textureName == " ")
@@ -89,7 +90,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
         tempGO->mCollisionComp = new CollisionComponent();
-        tempGO->mBallPhysicsComp = new BallPhysicsComponent();
+
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {
