@@ -236,10 +236,10 @@ void RenderWindow::init()
     setScaleY(0.25);
     setScaleZ(0.25);
     setPositionX(20);
-    setPositionY(5);
+    setPositionY(20);
     setPositionZ(20);
     ObjFactory->setOBJindex(-1);
-
+    mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
 }
 
 // Called each frame - doing the rendering
@@ -249,7 +249,8 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
-    mRollingBall->move(mTimeStart.nsecsElapsed() / 1000000.f);
+    if (mRollingBall)
+        mRollingBall->move(mTimeStart.nsecsElapsed() / 1000000.f);
 
     mTimeStart.restart(); //restart FPS clock
     mVerticesDrawn = 0;     //reset vertex counter
