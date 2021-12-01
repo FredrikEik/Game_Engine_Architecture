@@ -106,8 +106,8 @@ void ResourceManager::init(Mesh &meshComp, int lod)
 
 float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
 {
-    float px = mCoreEngine->getHeightMapPosition().x;
-    float py = mCoreEngine->getHeightMapPosition().y;
+    float px = getHeightMapPosition().x;
+    float py = getHeightMapPosition().y;
 
     float xPosOnTerrain = (pos.x - px);
     float yPosOnTerrain = (pos.y - py);
@@ -115,7 +115,7 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
     //hvilken grid spilleren er på
     int gridXPos = int(floor(xPosOnTerrain / xyScale));
     int gridYPos = int(floor(yPosOnTerrain / xyScale));
-    if(gridXPos >= 0 && gridYPos >= 0 && gridXPos < mCols && gridYPos < mRows)
+    if(true/*gridXPos >= 0 && gridYPos <= 0 && gridXPos < mCols && gridYPos < mRows*/)
     {   //Koordinat grid
         float xCoordInSquare = fmod(xPosOnTerrain,gridSquareSize)/gridSquareSize;
         float yCoordInSquare = fmod(yPosOnTerrain,gridSquareSize)/gridSquareSize;
@@ -145,7 +145,12 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
             return answer;
         }
     }
-    return NULL;
+    return 10;
+}
+
+gsl::Vector3D ResourceManager::getHeightMapPosition()
+{
+    return mTerrain->transform->mMatrix.getPosition();
 }
 
 int ResourceManager::makeHeightMapFromTxt(std::string filename)
@@ -171,14 +176,16 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
         const int rows = 100;
         const int cols = 100;
-        mRows = rows;
-        mCols = cols;
+        mRows = 100;
+        mCols = 100;
+
+        sArrayHeights = new float[rows*cols];
 
         object->mesh->mVertices[0].reserve(n);
         tempPos.reserve(n);
         sortedPos.reserve(n);
 
-        for (int i=0; i<n; i++)
+        for (int i=0; i<=n; i++)
         {
             inn >> x >> y >> z; // sets x, y and z based on numbers from the provided .txt file
 
@@ -213,13 +220,14 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
             tempForAvg[x1][y1] += tempPos[i].z;
             vertexesInQuad[x1][y1]++;
-            allHeights += tempPos[i].z;
+            allHeights +=tempPos[i].z;
         }
     // If height == 0 at the start of next loop, this will fix the problem. (Decides height based on the average height of all points)
         float ytemp = allHeights / tempPos.size();
-
         float xtemp;
         float ztemp;
+
+        int j = 0;
 
         for (int y=0; y<cols; y++)
         {
@@ -235,6 +243,9 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
                 }
                 else
                     sortedPos.push_back(gsl::Vector3D{ xtemp, ytemp, ztemp});
+
+                sArrayHeights[j] = ytemp-zMin;
+                j++;
             }
         }
         for(int i = 0; i<sortedPos.size(); i++)
@@ -343,6 +354,7 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
     inn.close();
 
     mTerrain = object;
+    //mCoreEngine->updateTerrainPos(object->transform->mMatrix.getPosition().getX(), object->transform->mMatrix.getPosition().getY(), object->transform->mMatrix.getPosition().getZ());
 
     init(*object->mesh, 0);
 

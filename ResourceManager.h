@@ -23,6 +23,7 @@ public:
     void init(Mesh &mesh, int lod);
 
     float getHeightMapHeight(const gsl::Vector2D& pos);
+    gsl::Vector3D getHeightMapPosition();
 
     GameObject* mTerrain{nullptr};
 

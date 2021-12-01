@@ -51,10 +51,13 @@ public:
 
     Camera* getGameCamera();
 
-    gsl::Vector3D getHeightMapPosition();
+    //gsl::Vector3D getHeightMapPosition();
 
     gsl::Matrix4x4 getPlayerMatrix();
 
+//    void updateTerrainPos(float x, float y, float z);
+
+//    GameObject *mTerrainC{nullptr};
 
 
 private slots:
@@ -78,7 +81,6 @@ private:
 
     GameObject *mGameCameraMesh{nullptr};
     GameObject *playerObject{nullptr};
-    GameObject *mTerrain{nullptr};
 
     SoundSource* mStereoSound{nullptr};
 

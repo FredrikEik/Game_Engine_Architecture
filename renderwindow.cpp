@@ -388,8 +388,6 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         //Moving on for now, but this should be done before oblig 3 delivery.
 
         mCoreEngine->shootBullet(/* bulletDirection vector */);
-
-
     }
     else // isplaying == true
     {

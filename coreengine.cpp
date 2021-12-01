@@ -81,15 +81,15 @@ void CoreEngine::SetUpScene()
     mRenderWindow->addToGameObjects(temp);
 
 
-    float z = 0;
-    for(int i{0}; i < 40; i++)
+    float y = 0;
+    for(int i = 0; i < 40; i++)
     {
-        for(int j{0}; j < 40; j++)
+        for(int j = 0; j < 40; j++)
         {
            int b = floor(rand() % 4 + 9);
            temp = mResourceManager->CreateObject(treeNames[b]);
-//           z = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
-           temp->transform->mMatrix.translate(3.f*i, z/100, -3.f*j);
+           y = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
+           temp->transform->mMatrix.translate(3.f*i, y, -3.f*j);
            temp->transform->mMatrix.scale(0.4);
            mRenderWindow->addToGameObjects(temp);
         }
@@ -249,12 +249,17 @@ Camera *CoreEngine::getGameCamera()
     return mGameCamera;
 }
 
-gsl::Vector3D CoreEngine::getHeightMapPosition()
-{
-    return mTerrain->transform->mMatrix.getPosition();
-}
+//gsl::Vector3D CoreEngine::getHeightMapPosition()
+//{
+//    return mResourceManager->mTerrain->transform->mMatrix.getPosition();
+//}
 
 gsl::Matrix4x4 CoreEngine::getPlayerMatrix()
 {
     return playerObject->transform->mMatrix;
 }
+
+//void CoreEngine::updateTerrainPos(float x, float y, float z)
+//{
+//    mTerrainC->transform->mMatrix.setPosition(GLfloat(x), GLfloat(y), GLfloat(z));
+//}
