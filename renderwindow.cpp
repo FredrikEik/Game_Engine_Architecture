@@ -171,19 +171,19 @@ void RenderWindow::init()
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
 
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
-    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
-    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
+    //    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
+    //    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    //    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
+    //    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
+    //    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
+    //    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
     
-    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
-    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
-    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
-    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
-    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
-    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
+    //    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
+    //    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
+    //    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
+    //    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
+    //    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
+    //    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
 
 
@@ -236,8 +236,8 @@ void RenderWindow::init()
 
     //player
 
-    if(transformCompVec[9] != nullptr){
-        CurrentPlayer = transformCompVec[9];
+    if(transformCompVec[2] != nullptr){
+        CurrentPlayer = transformCompVec[2];
     }
 
 
@@ -246,19 +246,35 @@ void RenderWindow::init()
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
     // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
-    entitySys->construct("sphere.obj", QVector3D(9.1f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(10.f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(11.0f,10.0f,10.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(12.0f,10.0f,10.0f),2,1);
+    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES); //3
 
-    ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
-    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES);
-    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
+    for(int i{0}; i < 50; i++)
+    {
+        for(int j{0}; j < 50; j++)
+        {
+            entitySys->construct("sphere.obj", QVector3D( 10 + 2*(i) ,10.0f,10 + 2*(j)),2,1);
+
+
+        }
+    }
+    /*
+    entitySys->construct("sphere.obj", QVector3D(13.0f,18.0f,15.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,15.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(14.0f,18.0f,15.0f),2,1);
+
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,13.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,12.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,14.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,16.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,18.0f,17.0f),2,1);
+*/
+    //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
+    //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
     //send in the necessary data to physics engine
-    Physics->InitPhysicsSystem(meshCompVec[15], map->getmVertices());
+    Physics->InitPhysicsSystem(meshCompVec[3], map->getmVertices());
     //    int eSize = (int)entities.size();
     //    for(int i = 0; i < eSize; i++){
     //        if(meshCompVec[i]->entity == 16){
@@ -274,7 +290,6 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-
     mMainWindow->updateDetails();
     
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
@@ -295,8 +310,8 @@ void RenderWindow::render()
     
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
-    int eSize = entities.size();
-    for(int i = 0; i < eSize; i++)
+    unsigned long long eSize = entities.size();
+    for(unsigned long long i = 0; i < eSize; i++)
     {
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
         {
@@ -334,56 +349,48 @@ void RenderWindow::render()
             if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
 
         }
+        //HARDCODED COLLIDER BABY
+        //monkey thats moving is entity id 2
+        /*if(transformCompVec[i]->isPhysicsEnabled)
+        {
+            for(unsigned long long j = 0; j < eSize; j++)
+                if(transformCompVec[j]->isPhysicsEnabled)
+                    if(collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
+                    {
+                        gsl::Vector3D BallSpeed1, BallSpeed2;
+                        BallSpeed1 = transformCompVec[i]->Velocity;
+                        BallSpeed2 = transformCompVec[j]->Velocity;
+
+                        //give em the new vec
+                        BallSpeed1 = BallSpeed1 + BallSpeed2*0.01f;
+                        transformCompVec[i]->Velocity = BallSpeed1;
+                        break;
+                    }
+        }*/
+///
     }
 
-    if(!isPaused)
+    if(isPhysicsEnabled)
     {
-
-        ++physicsCount;
         //COLLISON AND PHYSICS PART
-        if (physicsCount > 1)
-            for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++){
-                {
-                    if(transformCompVec[i]->entity == 3)
-                    {
-                        transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
-                        //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
-                        //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
-                    }
-                    if(transformCompVec[i]->entity == 5 ) //enmtity 4 is the ball
-                    {
-                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+        for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++)
+        {
 
-                    }
-                    if(transformCompVec[i]->entity == 16 ) //enmtity 4 is the ball
-                    {
-                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-                    }
-                    if(transformCompVec[i]->entity == 17 ) //enmtity 4 is the ball
-                    {
-                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-                    }
-                    if(transformCompVec[i]->entity == 18 ) //enmtity 4 is the ball
-                    {
-                        Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                        //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
-                    }
-                    //            if(transformCompVec[i]->entity == 19 ) //enmtity 4 is the ball
-                    //            {
-                    //                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                    //                //Physics->bounce_floor(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                    //                break;
-                    //            }
-                    physicsCount = 0;
-                }
+            if(transformCompVec[i]->entity == 3)
+            {
+                transformCompVec[i]->mMatrix.translate(0.002f, 0.f,0.f);
+                //setPosition(0.002f + temppos.getX(), temppos.getY(), temppos.getZ());//translate(0.002f, 0.f,0.f);
+                //mSong->setPosition(transformCompVec[i]->mMatrix.getPosition());
+            }
+            if(transformCompVec[i]->isPhysicsEnabled ) //enmtity 4 is the ball
+            {
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
 
             }
+
+
+        }
+
     }
 
     drawFrostum();      //frustum culling lines! This is a visualisation of frostum

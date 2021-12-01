@@ -58,6 +58,10 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
 
         TransComp->mMatrix.setToIdentity();
         TransComp->entity = EntityId;
+
+        if(ObjReader == "sphere.obj")
+            TransComp->isPhysicsEnabled = true;
+
         TransComp->mMatrix.translate(StartPos.x(), StartPos.y(), StartPos.z());
 
         inRW->transformCompVec.push_back(TransComp);

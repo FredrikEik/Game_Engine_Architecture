@@ -69,6 +69,7 @@ public:
 
 
     bool isPaused = false;
+    bool isPhysicsEnabled = false;
 
     //PHYSICS
     PhysicsSystem* Physics = new PhysicsSystem();

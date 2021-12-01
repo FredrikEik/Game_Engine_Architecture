@@ -313,3 +313,12 @@ void MainWindow::on_actionLoad_World_triggered()
       mRenderWindow->JSS->LoadLevel(filename1.toStdString());
     }
 }
+
+void MainWindow::on_StartPhysics_clicked()
+{
+    //togglelator 6000
+    if(mRenderWindow->isPhysicsEnabled)
+        mRenderWindow->isPhysicsEnabled = false;
+    else
+            mRenderWindow->isPhysicsEnabled = true;
+}

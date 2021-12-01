@@ -34,6 +34,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="StartPhysics">
+        <property name="text">
+         <string>Enable Physics</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -87,8 +94,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>437</width>
-                 <height>382</height>
+                 <width>503</width>
+                 <height>360</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,1">
@@ -279,7 +286,7 @@
      <x>0</x>
      <y>0</y>
      <width>1779</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">

@@ -36,7 +36,6 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
-            float elasticity = 0.95f;
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
@@ -54,7 +53,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
             Friction.normalize();
 
             Friction = my*speed*Friction;
-             Transf->Velocity = Transf->Velocity + MakeGSLvec3D( Friction );
+            Transf->Velocity = Transf->Velocity + MakeGSLvec3D( Friction );
 
             //clipping collision
             ClippingVec =deltaTime*(radius-length)*MakeQvec3D( Data.floorNormal);
@@ -85,36 +84,63 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     posBall.setX( Transf->mMatrix.getPosition().getX());
     posBall.setY( Transf->mMatrix.getPosition().getY());
     posBall.setZ( Transf->mMatrix.getPosition().getZ());
+    bool isFound = false; //optimization
     //every third triangle is our triangle.
-    for(int i = 0; i < vertexData.size() ; i = i + 3) // sum mad sketch movement in array
+    int index = Transf->LastTriangeindex;
+    //the vertex positions are flipped because of us using blender for the surface.
+    p1 = MakeQvec3D(vertexData[index + 0].getVertex());//1
+    p2 = MakeQvec3D(vertexData[index + 1].getVertex());//3
+    p3 = MakeQvec3D(vertexData[index + 2].getVertex());//2
+    //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
+
+    Baryc = Barysentric( p1 , p2 , p3 , posBall );
+    //qDebug() << "BARYC: "<<Baryc;
+    if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
     {
-        //the vertex positions are flipped because of us using blender for the surface.
-        p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
-        p2= MakeQvec3D(vertexData[i + 1].getVertex());//3
-        p3 = MakeQvec3D(vertexData[i + 2].getVertex());//2
-        //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
-
-        Baryc = Barysentric( p1 , p2 , p3 , posBall );
-        //qDebug() << "BARYC: "<<Baryc;
-        if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
-        {
-            //use normals from plane here to displace ball in normal direction
-            Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
-            float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
-            //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
-             //qDebug() << "BARYC HEIGHT: "<<height;
-            Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
-            //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
-            onTriangle = true;
-            break;
-        }
-        if(onTriangle)
-            onTriangle = false;
+        //use normals from plane here to displace ball in normal direction
+        Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
+        float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
+        //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
+        //qDebug() << "BARYC HEIGHT: "<<height;
+        Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
+        //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
+        isFound = true;
     }
+    if(!isFound)
+        for(unsigned long long i = 0; i < vertexData.size() ; i = i + 3 ) // sum mad sketch movement in array
+        {
+            //the vertex positions are flipped because of us using blender for the surface.
+            p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
+            p2= MakeQvec3D(vertexData[i + 1].getVertex());//3
+            p3 = MakeQvec3D(vertexData[i + 2].getVertex());//2
+            //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
-
+            Baryc = Barysentric( p1 , p2 , p3 , posBall );
+            //qDebug() << "BARYC: "<<Baryc;
+            if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
+            {
+                //use normals from plane here to displace ball in normal direction
+                Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
+                float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
+                //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
+                //qDebug() << "BARYC HEIGHT: "<<height;
+                Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
+                //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
+                onTriangle = true;
+                Transf->LastTriangeindex = static_cast<int>(i);
+                break;
+            }
+            if(onTriangle)
+                onTriangle = false;
+        }
 
 }
+
+
+
+
+
+
 
 QVector3D PhysicsSystem::CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3)
 {

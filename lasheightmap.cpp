@@ -173,27 +173,27 @@ void LASHeightMap::RemoveDeltaPos()
 
 void LASHeightMap::GenerateHeightMap()
 {
-    float ofsetx = -100;
-    float ofsetz = -100;
-    float ofsety = -10;
-
-    for(float x = 100; x<225; x+=1)//(float x = 100; x<150; x+=1)//
-        for(float z =100; z<225; z+=1)//(float z =100; z<150; z+=1)
+    float ofsetx = -150;
+    float ofsetz = -150;
+    float ofsety = -20;
+    int rez = 30; // 1 i s best quality
+    for(float x = 50; x<300; x+=rez)//(float x = 100; x<150; x+=1)//
+        for(float z =50; z<400; z+=rez)//(float z =100; z<150; z+=1)
         {
             //get all height data :D
-            float height1 = CalcHeight(    x,    z);
-            float height2 = CalcHeight(  x+1,    z);
-            float height3 = CalcHeight(    x,  z+1);
-            float height4 = CalcHeight(    x,  z+1);
-            float height5 = CalcHeight(  x+1,    z);
-            float height6 = CalcHeight(  x+1,  z+1);
+            float height1 = CalcHeight(    x  ,    z);
+            float height2 = CalcHeight(  x+rez,    z);
+            float height3 = CalcHeight(    x  ,  z+rez);
+            float height4 = CalcHeight(    x,  z+rez);
+            float height5 = CalcHeight(  x+rez,    z);
+            float height6 = CalcHeight(  x+rez,  z+rez);
             //use height date for colouring   //This order is like this because our
             mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height1),ofsetz +   z,       height1/100, height1/100, height1/100,0,0}); //1
-            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height2),ofsetz +   z,       height2/100, height2/100, height2/100,0,0}); //2
-            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height3),ofsetz + z+1,       height3/100, height3/100, height3/100,0,0}); //3
-            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height4),ofsetz + z+1,       height4/100, height4/100, height4/100,0,0}); //4
-            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height5),ofsetz +   z,       height5/100, height5/100, height5/100,0,0}); //5
-            mVertices.push_back(Vertex{ofsetx +x+1, (ofsety +height6),ofsetz + z+1,       height6/100, height6/100, height6/100,0,0}); //6
+            mVertices.push_back(Vertex{ofsetx +x+rez, (ofsety +height2),ofsetz +   z,       height2/100, height2/100, height2/100,0,0}); //2
+            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height3),ofsetz + z+rez,       height3/100, height3/100, height3/100,0,0}); //3
+            mVertices.push_back(Vertex{ofsetx +  x, (ofsety +height4),ofsetz + z+rez,       height4/100, height4/100, height4/100,0,0}); //4
+            mVertices.push_back(Vertex{ofsetx +x+rez, (ofsety +height5),ofsetz +   z,       height5/100, height5/100, height5/100,0,0}); //5
+            mVertices.push_back(Vertex{ofsetx +x+rez, (ofsety +height6),ofsetz + z+rez,       height6/100, height6/100, height6/100,0,0}); //6
 
 
             //contour line Collector :D
