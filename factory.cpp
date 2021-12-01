@@ -169,12 +169,20 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "RollingBall")
     {
         objectToCreate = new RollingBall(3);
-        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         ballcounter++;
-        objectToCreate->mObjectName = "Ball" + std::to_string(ballcounter);
+        objectToCreate->mObjectName = "Ball " + std::to_string(ballcounter);
         objectToCreate->mObjectType = "RollingBall";
         dynamic_cast<RollingBall*>(objectToCreate)->Terrain = RefToTerrain;
+    }
+    else if(objectName == "ContourLine")
+    {
+        objectToCreate = new ContourLines;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate->mObjectName = "ContourLine " + std::to_string(ballcounter);
+        objectToCreate->mObjectType = "ContourLine";
 
     }
 

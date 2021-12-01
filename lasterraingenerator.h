@@ -13,7 +13,9 @@ public:
     void init();
     void move(float x, float y, float z);
     void readFile(std::string filename);
+
     void minMaxNormalize();
+
 
     std::vector<Vertex> mPointsArray;
 
@@ -34,6 +36,17 @@ public:
     float step{2.f};
 
     //int maxVertices{1000};
+};
+
+class ContourLines : public GameObject
+{
+public:
+    ContourLines();
+    ~ContourLines() {};
+    void createContourLines();
+    void draw();
+    void init();
+    void move(float x, float y, float z) {0;};
 };
 
 #endif // LASTERRAINGENERATOR_H
