@@ -16,7 +16,7 @@ public:
 private:
     MeshComponent* mMesh;
     LASHeightMap* surface;
-    int iso = 2;
+    int iso = 5;
     int floor = 1;
 };
 

@@ -9,8 +9,8 @@
 class LASHeightMap
 {
 private:
-    static const int X =  800;
-    static const int Z = 1300;
+    static const int X =  500;
+    static const int Z = 400;
 public:
     LASHeightMap(std::string fileName);
 
@@ -32,6 +32,7 @@ public:
 public:
     //contooouurrr
     float mHPoints[X][Z];
+    float getHeighestY(){return heighestY;}
 private:
 
     void ReadDatafromFile(std::string fileName);

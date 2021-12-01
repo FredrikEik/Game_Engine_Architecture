@@ -4,10 +4,9 @@ marchingsquare::marchingsquare(LASHeightMap* mSurf)
 {
     surface = mSurf;
     mMesh = new MeshComponent();
-    setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();
-    setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();
-    setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();
-    setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();setSquares();
+    for(int i = 0; i<mSurf->getHeighestY(); i = i+ iso)
+         {setSquares();}
+
 }
 
 void marchingsquare::setSquares()
