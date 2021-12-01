@@ -240,8 +240,7 @@ void RenderWindow::initObjects()
 
 
         rollingBall = factory->createObject("RollingBall");
-        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,0.6f,0.5f);
-     //   dynamic_cast<RollingBall*>(rollingBall)->LasSurface = surface;
+        rollingBall->getTransformComponent()->mMatrix.setPosition(0.5f,2.f,0.5f);
         dynamic_cast<RollingBall*>(rollingBall)->setSurface(surface);
 
             mPlayer = factory->createObject("Player");

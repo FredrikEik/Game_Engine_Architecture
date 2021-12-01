@@ -66,7 +66,7 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step =50;
+    int step =10;
     float squaresDirection = (step-1);
     float Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;
@@ -128,7 +128,6 @@ void LasSurface::readLasFile(std::string filnavn)
                 i=Amountsquares;
             }
             if(i == squaresDirection*j){
-                //i++;
                 sqOffset++;
                 j++;                                               // sjekker om alle squarene på en rekke er fylt ut.               
             }

@@ -70,23 +70,25 @@ void RollingBall::move(float dt)
 
             normalvektor = (v1-v0)^(v2-v0);                                             //regner ut normalvektoren til planet
             normalvektor.normalize();                                                   //normaliserer normalvektoren
-            //akselerasjon = gKraft ^ normalvektor ^ gsl::Vector3D (0,normalvektor.y,0); //regner ut akselerasjon
-            akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,
+            float planHøyde = v0.y*barycentricCord.x+v1.y*barycentricCord.y+v2.y*barycentricCord.z;              //bruker barysentriske kordinatene til å bestemme nye z posisjonen
+
+            if (ballpos.y < planHøyde + radius*3){
+            akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,        //regner ut akselerasjon
                                          normalvektor.y*normalvektor.y*9.80665f,
                                          normalvektor.z*normalvektor.y*9.80665f)+gKraft;
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
-
-            //if(i==3){
             nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;                                         //oppdaterer posisjonen
-            nyPosisjon.y = v0.y*barycentricCord.x+v1.y*barycentricCord.y+v2.y*barycentricCord.z;   //bruker barysentriske kordinatene til å bestemme nye z posisjonen
-            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y+radius, nyPosisjon.z);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
-           // }
 
-//            else if (i==0){
-//            newPosition = playerPos + hastighet* dt;
-//            newPosition.z = v0.z*barycentricCord.x+v1.z*barycentricCord.y+v2.z*barycentricCord.z;
-//            mPosition.setPosition(newPosition.x, newPosition.y, newPosition.z+radius);
-//            }
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, planHøyde+radius, nyPosisjon.z);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
+            }
+            else {
+            akselerasjon.y = gKraft.y;
+            hastighet = hastighet + akselerasjon *dt;
+            nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y,nyPosisjon.z);
+            }
+
+
 
                     //work in progress
             //avstand = (temp-vertices[0].getXYZ())^normalvektor;
@@ -100,9 +102,9 @@ void RollingBall::move(float dt)
             //qDebug() << nyPosisjon.z;
             //qDebug() << distanseFlyttet.x << distanseFlyttet.y << distanseFlyttet.z;
             //qDebug() << distanseFlyttetNM.x << distanseFlyttetNM.y << distanseFlyttetNM.z;
-           // qDebug() << avstand.x << avstand.y << avstand.z;
-           // qDebug() << projeksjon.x << projeksjon.y << projeksjon.z;
-            qDebug() << hastighet.x << hastighet.z << hastighet.y;
+            //qDebug() << avstand.x << avstand.y << avstand.z;
+            //qDebug() << projeksjon.x << projeksjon.y << projeksjon.z;
+            //qDebug() << hastighet.x << hastighet.z << hastighet.y;
 
             //ting som trengs for akselerasjonsvektor og posisjon
             // *******************************************************
@@ -114,7 +116,10 @@ void RollingBall::move(float dt)
         }
         else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
                  barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
-            //getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, gKraft.getY(), nyPosisjon.z);
+            akselerasjon.y = gKraft.y;
+            hastighet = hastighet + akselerasjon *dt;
+            nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y,nyPosisjon.z);
            qDebug() << "The ball is outside";
         }
     }
