@@ -107,7 +107,7 @@ void ResourceManager::init(Mesh &meshComp, int lod)
 float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
 {
     float px = getHeightMapPosition().x;
-    float py = getHeightMapPosition().y;
+    float py = getHeightMapPosition().z;
 
     float xPosOnTerrain = (pos.x - px);
     float yPosOnTerrain = (pos.y - py);
@@ -115,7 +115,7 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
     //hvilken grid spilleren er på
     int gridXPos = int(floor(xPosOnTerrain / xyScale));
     int gridYPos = int(floor(yPosOnTerrain / xyScale));
-    if(true/*gridXPos >= 0 && gridYPos <= 0 && gridXPos < mCols && gridYPos < mRows*/)
+    if(gridXPos >= 0 && gridYPos >= 0 /*&& gridXPos < mCols && gridYPos < mRows*/)
     {   //Koordinat grid
         float xCoordInSquare = fmod(xPosOnTerrain,gridSquareSize)/gridSquareSize;
         float yCoordInSquare = fmod(yPosOnTerrain,gridSquareSize)/gridSquareSize;
@@ -136,13 +136,13 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
         {
             uvw = barycentricCoordinates(gsl::Vector2D{float(xCoordInSquare),float(yCoordInSquare)},p1,p2,p3);
             answer = p1z*uvw.x+p2z*uvw.y+p3z*uvw.z;
-            return answer;
+            return answer/xStep;
         }
         if(xCoordInSquare > (1-yCoordInSquare))
         {   gsl::Vector2D posInsSquare{xCoordInSquare,yCoordInSquare};
             uvw = barycentricCoordinates(posInsSquare,p2,p4,p3);
             answer = p2z*uvw.x+p4z*uvw.y+p3z*uvw.z;
-            return answer;
+            return answer/xStep;
         }
     }
     return 10;
@@ -212,6 +212,8 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
         int vertexesInQuad[rows][cols]{{0}};  //Amount of vertexes in quad.
         float tempForAvg[rows][cols]{{0.0f}}; //Holds the sum of all z-values in a quad.
         float allHeights = 0;
+
+        scale = zStep/xStep;
 
         for (int i = 0; i < tempPos.size(); i++)
         {
@@ -354,7 +356,7 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
     inn.close();
 
     mTerrain = object;
-    //mCoreEngine->updateTerrainPos(object->transform->mMatrix.getPosition().getX(), object->transform->mMatrix.getPosition().getY(), object->transform->mMatrix.getPosition().getZ());
+
 
     init(*object->mesh, 0);
 

@@ -64,7 +64,7 @@ void CoreEngine::SetUpScene()
 
     temp = mResourceManager->CreateObject("test_las.txt");
 //    temp->transform->mMatrix.rotateX(180); //er terrenget flippet?
-    temp->transform->mMatrix.translate(0,0,-150);
+//    temp->transform->mMatrix.translate(0,0,-150);
     temp->transform->mMatrix.scale(0.1);
 //    temp->material->mShaderProgram = 0;
 //    hmMatrix = &temp->transform->mMatrix;
@@ -82,15 +82,16 @@ void CoreEngine::SetUpScene()
 
 
     float y = 0;
-    for(int i = 0; i < 40; i++)
+    for(int i = 0; i < 100; i++)
     {
-        for(int j = 0; j < 40; j++)
+        for(int j = 0; j < 100; j++)
         {
-           int b = floor(rand() % 4 + 9);
-           temp = mResourceManager->CreateObject(treeNames[b]);
-           y = mResourceManager->getHeightMapHeight(gsl::Vector2D{3.f*i, -3.f*j}); // HVORFOR funker det ikke!
-           temp->transform->mMatrix.translate(3.f*i, y, -3.f*j);
-           temp->transform->mMatrix.scale(0.4);
+//           int b = floor(rand() % 4 + 9);
+//           temp = mResourceManager->CreateObject(treeNames[b]);
+           temp = mResourceManager->CreateObject("ball.obj");
+           y = mResourceManager->getHeightMapHeight(gsl::Vector2D{float(i), float(j)});
+           temp->transform->mMatrix.translate(i, y, j*(mResourceManager->scale));
+           temp->transform->mMatrix.scale(0.1);
            mRenderWindow->addToGameObjects(temp);
         }
     }

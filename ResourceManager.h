@@ -27,6 +27,8 @@ public:
 
     GameObject* mTerrain{nullptr};
 
+    float scale = 0;
+
 private:
     /** Functions */
     ResourceManager();
@@ -58,7 +60,7 @@ private:
     // HeightMap Variables
     gsl::Vector3D HeightMapPos{0,0,0};
     float *sArrayHeights{nullptr};
-    float xyScale = .1f;
+    float xyScale = 1;
 
     int mRows = 0;
     int mCols = 0;
