@@ -179,7 +179,8 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(23.f, 5.f, 18.f));
+    mCurrentCamera->setYaw(130.f);
 
     SoundManager::getInstance()->init();
 
@@ -228,6 +229,17 @@ void RenderWindow::init()
     setScaleZ(0.1);
     ObjFactory->setOBJindex(-1);
 
+    ObjFactory->createObject("RollingBall");
+    mMainWindow->addObjectToWorldList("RollingBall");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(0.25);
+    setScaleY(0.25);
+    setScaleZ(0.25);
+    setPositionX(20);
+    setPositionY(5);
+    setPositionZ(20);
+    ObjFactory->setOBJindex(-1);
+
 }
 
 // Called each frame - doing the rendering
@@ -237,6 +249,7 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
+    mRollingBall->move(mTimeStart.nsecsElapsed() / 1000000.f);
 
     mTimeStart.restart(); //restart FPS clock
     mVerticesDrawn = 0;     //reset vertex counter

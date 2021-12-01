@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     planeimport.cpp \
     player.cpp \
     renderwindow.cpp \
+    rollingball.cpp \
     script.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -70,6 +71,7 @@ HEADERS += \
     planeimport.h \
     player.h \
     renderwindow.h \
+    rollingball.h \
     script.h \
     shader.h \
     mainwindow.h \

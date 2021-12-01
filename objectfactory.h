@@ -4,6 +4,7 @@
 #include "iostream"
 #include "gameobject.h"
 #include "objimport.h"
+#include "planeimport.h"
 #include <map>
 
 class ObjectFactory
@@ -22,6 +23,8 @@ public:
         std::map<std::string, MeshComponent*> storedMeshes;
 
         int OBJindex;
+
+        GameObject* p { nullptr };
 
     protected:
 };

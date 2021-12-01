@@ -16,6 +16,7 @@
 #include "player.h"
 #include "skybox.h"
 #include "script.h"
+#include "rollingball.h"
 
 
 class QOpenGLContext;
@@ -51,6 +52,8 @@ public:
     Camera *mGameCamera{nullptr};
 
     player* mPlayer { nullptr };
+
+    RollingBall* mRollingBall { nullptr };
 
     void playSound();
     void pauseSound();
