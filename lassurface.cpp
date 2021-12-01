@@ -109,7 +109,6 @@ void LasSurface::readLasFile(std::string filnavn)
                 tempY = tempY/numberofPointsInside;                         // tar gjennomsnitt av alle y verdiene
             }
             vertex.set_xyz(tempX, tempY, tempZ);
-            vertex.set_normal(tempX,1,0);
 
             //qDebug () << numberofPointsInside;
             //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
@@ -133,14 +132,38 @@ void LasSurface::readLasFile(std::string filnavn)
             }
 
 
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[i+sqOffset].getXYZ().x,
+                                                 tempVertices[i+sqOffset].getXYZ().y,
+                                                 tempVertices[i+sqOffset].getXYZ().z,
+                                                 0,0,0,
+                                                  0,0));
 
-        getMeshComponent()->mVertices.push_back(tempVertices[(i)+sqOffset]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+sqOffset]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+sqOffset]);
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+step)+sqOffset].getXYZ().x,
+                                                tempVertices[(i+step)+sqOffset].getXYZ().y,
+                                                tempVertices[(i+step)+sqOffset].getXYZ().z,
+                                                0,0,0,
+                                                1,0));
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+1)+sqOffset].getXYZ().x,
+                                                tempVertices[(i+1)+sqOffset].getXYZ().y,
+                                                tempVertices[(i+1)+sqOffset].getXYZ().z,
+                                                0,0,0,
+                                                0,1));
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+(step+1))+sqOffset].getXYZ().x,
+                                                tempVertices[(i+(step+1))+sqOffset].getXYZ().y,
+                                                tempVertices[(i+(step+1))+sqOffset].getXYZ().z,
+                                                0,0,0,
+                                                1,1));
 
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+(step+1))+sqOffset]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+1)+sqOffset]);
-        getMeshComponent()->mVertices.push_back(tempVertices[(i+step)+sqOffset]);
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+1)+sqOffset].getXYZ().x,
+                                                tempVertices[(i+1)+sqOffset].getXYZ().y,
+                                                tempVertices[(i+1)+sqOffset].getXYZ().z,
+                                                0,0,0,
+                                                0,1));
+        getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+step)+sqOffset].getXYZ().x,
+                                                tempVertices[(i+step)+sqOffset].getXYZ().y,
+                                                tempVertices[(i+step)+sqOffset].getXYZ().z,
+                                                0,0,0,
+                                                1,0));
     }
 
     //              sortering algoritme, ikke i bruk

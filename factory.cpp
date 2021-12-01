@@ -151,8 +151,8 @@ GameObject* Factory::createObject(std::string objectName)
     else if (objectName == "LasSurface")
     {
         objectToCreate = new LasSurface("../GEA2021/Assets/LAS/jonas.txt");
-        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->mObjectName = "LasSurface";
         objectToCreate->mObjectType = "LasSurface";
     }
