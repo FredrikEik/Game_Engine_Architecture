@@ -26,6 +26,18 @@ public:
     //! Overloaded ostream operator which reads all vertex data from an open textfile stream
     friend std::istream& operator>> (std::istream&, Vertex&);
 
+    bool operator<(const Vertex &o) const {
+        if (mXYZ.x != o.mXYZ.x) {
+            return mXYZ.y < o.mXYZ.y;
+        }
+        if (mXYZ.y != o.mXYZ.y) {
+            return mXYZ.y < o.mXYZ.y;
+        }
+        return mXYZ.z < o.mXYZ.z;
+    }
+
+
+
     void set_xyz(GLfloat *xyz);
     void set_xyz(GLfloat x, GLfloat y, GLfloat z);
     void set_xyz(gsl::Vector3D xyz_in);
