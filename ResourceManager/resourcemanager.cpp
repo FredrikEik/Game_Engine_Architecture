@@ -233,6 +233,16 @@ MeshData ResourceManager::makeFrustum(const Frustum &frustumIn)
     return mMeshHandler->makeFrustum(frustumIn);
 }
 
+void ResourceManager::setSurface(GameObject *surface, GameObject *ball)
+{
+    mMeshHandler->setSurface2(surface, ball);
+}
+
+void ResourceManager::moveAlongSurface(float dt, GameObject *ball)
+{
+    mMeshHandler->moveAlongLAs(dt, ball);
+}
+
 
 
 

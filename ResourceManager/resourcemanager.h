@@ -36,6 +36,8 @@ public:
     MeshData makeFrustumDrawing();
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
+    void setSurface(GameObject* surface, GameObject* ball);
+    void moveAlongSurface(float dt, GameObject * ball);
 
     MeshHandler* mMeshHandler{nullptr};
 

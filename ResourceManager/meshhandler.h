@@ -75,11 +75,12 @@ struct MeshData
     float mColliderRadius{0};
 
     TransformComponent *mTransform;
+    //MeshComponent* mMeshComponent;
 
 };
 
 //Because we need OpenGLFunctions, this class can not be static
-
+class GameObject;
 typedef gsl::Vector3D Vec3;
 class MeshHandler : public QOpenGLFunctions_4_1_Core
 {
@@ -110,14 +111,18 @@ public:
     void lagTriangel(const Vec3& v1, const Vec3& v2, const Vec3& v3, MeshData &tempMesh);
     void subDivide(const Vec3& a, const Vec3& b, const Vec3& c, int n, MeshData &tempMesh);
     void oktaederUnitBall(MeshData &tempMesh);
-    void move(float x, float y, float z, MeshData &tempMesh);
-    void moveAlongLAs( float dt);
+    void move(float x, float y, float z, GameObject *tempMesh);
+    void moveAlongLAs( float dt, GameObject *ball);
     void baryMove(float x, float y, float z);
-    void setSurface2(GameObject* surface);
+    void setSurface2(GameObject* surface, GameObject* ball);
     //gsl::Vector3D Get_position();
     //void setPosition(gsl::Vector3D v);
-    void setHeight(float z, MeshData &tempMesh);
+    void setHeight(float z, GameObject* ball);
     void heightAt(MeshData &tempMesh);
+
+    gsl::Vector3D(baryCoord(const gsl::Vector2D &p1, const gsl::Vector2D &p2, const gsl::Vector2D &p3, const gsl::Vector2D &pos));
+    float barycentricHeight(const gsl::Vector3D &point, const gsl::Vector3D &corner1, const gsl::Vector3D &corner2, const gsl::Vector3D &corner3);
+
     Physics* p;
     
     GameObject* _las;
@@ -133,6 +138,7 @@ public:
 
     float vertexXStart{0.f};
     float vertexZStart{0.f};
+      //  std::vector<Vertex> surfVertices;
 private:
     int readObj(std::string filename);
     int readObj2(std::string filename);
@@ -179,7 +185,7 @@ private:
         float lifetime;
     };
     std::vector< Particle > particles;
-    std::vector<Vertex> surfVertices;
+
     //float positions[400];
     float PosArr[1000][2000];
 

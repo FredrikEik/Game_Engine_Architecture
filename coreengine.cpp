@@ -192,15 +192,21 @@ void CoreEngine::RollingBallSimulation()
     Las->mMaterial->mShaderProgram =0;
     Las->mMaterial->mTextureUnit = 0;
     //Las->mTransform->mMatrix.scale(50.f);
-   // mRenderSystem->mGameObjects.push_back(Las);
+    mRenderSystem->mGameObjects.push_back(Las);
 
 
     ball = mResourceManager->addObject("ball");
     ball->mMaterial->mShaderProgram =1;
     ball->mMaterial->mTextureUnit = 0;
+    ball->mTransform->mMatrix.setPosition(0,4,0);
     //Las->mTransform->mMatrix.scale(50.f);
     mRenderSystem->mGameObjects.push_back(ball);
 
+    //ball->setSurface(Las);
+    //mMeshHandler->setSurface2(Las, ball);
+    //mMeshHandlerGameObject->setSurface2(Las, ball);
+
+    //mResourceManager->setSurface(Las, ball);
 
 }
 
@@ -260,6 +266,7 @@ void CoreEngine::updateScene()
 
     updateCamera();
 
+    mResourceManager->moveAlongSurface(0.017, ball);
 
     if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);

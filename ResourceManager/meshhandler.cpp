@@ -679,6 +679,9 @@ int MeshHandler::makeTerrain(std::string heightMapName)
 
 int MeshHandler::makeBall(int n)
 {
+
+    p = new Physics;
+
     m_rekursjoner = n;
 
     mMeshes.emplace_back(MeshData());
@@ -1258,6 +1261,182 @@ void MeshHandler::oktaederUnitBall(MeshData &tempMesh)
     subDivide(v5, v3, v2, m_rekursjoner, tempMesh);
     subDivide(v5, v4, v3, m_rekursjoner, tempMesh);
     subDivide(v5, v1, v4, m_rekursjoner, tempMesh);
+}
+
+void MeshHandler::move(float x, float y, float z, GameObject *tempMesh)
+{
+    tempMesh->mTransform->mMatrix.setPosition(x, y, z);
+}
+
+void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
+{
+    gsl::Vector3D bary;
+    //std::vector<gsml::Vertex> vertices = triangle_surface->get_vertices();
+    gsl::Vector2D ballPosXY(ball->mTransform->mMatrix.getPosition().x, ball->mTransform->mMatrix.getPosition().y);
+    for (size_t i=0; i<lasData.size(); i++)
+    {
+        //qDebug() << "ground size: " << vertices.size();
+        gsl::Vector3D p1 = lasData[i].get_xyz();
+        gsl::Vector3D p2 = lasData[++i].get_xyz();
+        gsl::Vector3D p3 = lasData[++i].get_xyz();
+        //qDebug() << "p1: " << p1.x << p1.y << p1.z << "p2: " << p2.x << p2.y << p2.z << "p3: " << p3.x << p3.y << p3.z;
+
+        m_indeks = static_cast<int>(i+1) /3;
+
+        bary = baryCoord(gsl::Vector2D(p1.x, p1.y),
+                                 gsl::Vector2D(p2.x, p2.y),
+                                 gsl::Vector2D(p3.x, p3.y),
+                                 ballPosXY);
+
+        //qDebug() << "bary value: " << bary.x << " " << bary.y << " " << bary.z;
+
+        if (bary.x >=0 && bary.y >=0 && bary.z >=0)
+        {
+            gsl::Vector3D mPos;
+            gsl::Vector3D p12 = p2-p1;
+            gsl::Vector3D p13 = p3-p1;
+            m_normal = p12^p13;
+            m_normal.normalize();
+
+            float mHeight = ball->mTransform->mMatrix.getPosition().z - barycentricHeight(ball->mTransform->mMatrix.getPosition(), p1,p2,p3);
+            mHeight = sqrt(mHeight * mHeight);
+            bool isFalling{false};
+            if(mHeight > p->radius+0.2)
+                isFalling = true;
+            else
+                isFalling = false;
+
+
+            if(isFalling)
+            {
+                p->freeFall();
+                //qDebug() << "Fritt Fall";
+                mN = m_normal;
+                mN.normalize();
+                m_indeks = -1;
+                qDebug() << "mVelocity: " << p->Velocity.x << p->Velocity.y << p->Velocity.z;
+            }
+            else
+            {
+                p->onGround(m_normal);
+                setHeight(barycentricHeight(ball->mTransform->mMatrix.getPosition(), p1,p2,p3), ball);
+                mN = m_normal + old_normal;
+                mN.normalize();
+                qDebug() << "mVelocity: " << p->Velocity.x << p->Velocity.y << p->Velocity.z;
+            }
+            p->Velocity = p->VelocityOld + p->Acceleration * dt;
+            mPos = (p->VelocityOld + p->Velocity) * (dt/2);
+
+            ball->mTransform->mMatrix.translate(mPos.x, mPos.y, mPos.z);
+            //mMatrix = mPosition * mScale;
+
+            if(m_indeks != old_index)
+            {
+                p->Velocity = mN * gsl::Vector3D::dot(p->VelocityOld, mN);
+                p->Velocity = p->VelocityOld - p->Velocity * 2;
+                p->Velocity = p->Velocity * p->friction;
+                //qDebug() << "mVelocity: " << p->Velocity.x << p->Velocity.y << p->Velocity.z;
+            }
+            p->VelocityOld = p->Velocity;
+            old_normal = m_normal;
+            old_index = m_indeks;
+            break;
+        }
+    }
+
+}
+
+void MeshHandler::setSurface2(GameObject *surface, GameObject * ball)
+{
+    _las = surface;
+    int mT = static_cast<int>(lasData.size());
+    if(lasData.size()>100){
+        mT = rand()%mT;
+        qDebug() << mT;
+        gsl::Vector3D v1 =lasData.at(mT).get_xyz();
+        gsl::Vector3D v2 =lasData.at(mT+1).get_xyz();
+        gsl::Vector3D v3 =lasData.at(mT+2).get_xyz();
+        gsl::Vector3D pos = (v1+v2+v3)*0.333;
+        pos.z += 50;
+        ball->mTransform->mMatrix.setPosition(pos.x, pos.y, pos.z);}
+    else
+        move(1,1,5, ball);
+}
+
+void MeshHandler::setHeight(float z, GameObject* ball)
+{
+    gsl::Vector3D HeightVector{0,0,z};
+    gsl::Vector3D Translation{0,0,0};
+    Translation = ball->mTransform->mMatrix.getPosition();
+
+    Translation.z = (HeightVector.z + p->radius);
+
+    if(z !=  ball->mTransform->mMatrix.getPosition().z)
+    {
+        ball->mTransform->mMatrix.setPosition(Translation.x, Translation.y, Translation.z);
+        //mMatrix.setPosition(Translation.x,Translation.y,Translation.z);
+    }
+}
+
+gsl::Vector3D MeshHandler::baryCoord(const gsl::Vector2D &p1, const gsl::Vector2D &p2, const gsl::Vector2D &p3, const gsl::Vector2D &pos)
+{
+    gsl::Vector2D p12 = p2 - p1;
+    gsl::Vector2D p13 = p3 - p1;
+    gsl::Vector3D n = {0.f, 0.f, (p13.x * p12.y) - (p13.y * p12.x)};
+    float A = n.length();
+
+    //u
+    gsl::Vector2D p = p2 - pos;
+    gsl::Vector2D q = p3 - pos;
+    gsl::Vector3D n1 = {0.f, 0.f, (q.x * p.y) - (q.y * p.x)};
+
+    //v
+    p = p3 - pos;
+    q = p1 - pos;
+    gsl::Vector3D n2 = {0.f, 0.f, (q.x * p.y) - (q.y * p.x)};
+
+    //w
+    p = p1 - pos;
+    q = p2 - pos;
+    gsl::Vector3D n3 = {0.f, 0.f, (q.x * p.y) - (q.y * p.x)};
+
+    return gsl::Vector3D{n1.z/A, n2.z/A, n3.z/A};
+}
+
+float MeshHandler::barycentricHeight(const gsl::Vector3D &point, const gsl::Vector3D &corner1, const gsl::Vector3D &corner2, const gsl::Vector3D &corner3)
+{
+    gsl::Vector2D p{point.x, point.y};
+    gsl::Vector2D a{corner1.x, corner1.y};
+    gsl::Vector2D b{corner2.x, corner2.y};
+    gsl::Vector2D c{corner3.x, corner3.y};
+
+    gsl::Vector2D v0 = b - a;
+    gsl::Vector2D v1 = c - a;
+    gsl::Vector2D v2 = p - a;
+
+
+    float d00 = (v0.x * v0.x +  v0.y * v0.y);
+    float d01 = (v0.x * v1.x +  v0.y * v1.y);
+    float d11 = (v1.x * v1.x +  v1.y * v1.y);
+    float d20 = (v2.x * v0.x +  v2.y * v0.y);
+    float d21 = (v2.x * v1.x +  v2.y * v1.y);
+    float invDenom = 1.0f / (d00 * d11 - d01 * d01);
+
+    // u, v, w are the barycentric coordinates
+    float v = (d11 * d20 - d01 * d21) * invDenom;
+    float w = (d00 * d21 - d01 * d20) * invDenom;
+    float u = 1.0f - v - w;
+
+    //        qDebug() << "BaryCords:" << u << v << w;
+
+    float heightOut;
+    if(u >= 0.f && v >= 0.f && w >= 0.f )
+        heightOut = corner1.z * u + corner2.z * v + corner3.z * w;
+    else
+        heightOut = -10000.f;
+
+    return heightOut;
+
 }
 
 

@@ -12,6 +12,7 @@
 class ResourceManager;
 class SoundSystem;
 class RenderSystem;
+class MeshHandler;
 class scene;
 class Camera;
 class QTimer;
@@ -82,6 +83,7 @@ public:
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+    MeshHandler *mMeshHandler{nullptr};
     void playSound(std::string assetName);
 
     Camera *mGameCamera{nullptr};
