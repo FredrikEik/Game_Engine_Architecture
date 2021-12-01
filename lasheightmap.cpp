@@ -174,15 +174,15 @@ void LASHeightMap::RemoveDeltaPos()
 
 void LASHeightMap::GenerateHeightMap()
 {
-    float ofsetx = -150;
-    float ofsetz = -150;
-    float ofsety = -20;
-    int rez = 30; // 1 i s best quality
-    for(float x = 50; x<300; x+=rez)//(float x = 100; x<150; x+=1)// 300/400
-        for(float z =50; z<400; z+=rez)//(float z =100; z<150; z+=1)
+    float ofsetx = 0;
+    float ofsetz = 0;
+    float ofsety = 0;
+    int rez = 1; // 1 i s best quality
+    for(float x = 50; x<X-1; x+=rez)//(float x = 100; x<150; x+=1)// 300/400
+        for(float z =50; z<Z-1; z+=rez)//(float z =100; z<150; z+=1)
         {
             //get all height data :D
-            float height1 = CalcHeight(    x  ,    z);
+            float height1 =  CalcHeight(    x  ,    z);
             float height2 = CalcHeight(  x+rez,    z);
             float height3 = CalcHeight(    x  ,  z+rez);
             float height4 = CalcHeight(    x,  z+rez);
@@ -196,6 +196,7 @@ void LASHeightMap::GenerateHeightMap()
             mVertices.push_back(Vertex{ofsetx + x+ rez, (ofsety + height5), ofsetz +   z  ,       height5/100, height5/100, height5/100,0,0}); //5
             mVertices.push_back(Vertex{ofsetx + x+ rez, (ofsety + height6), ofsetz + z+rez,       height6/100, height6/100, height6/100,0,0}); //6
 
+            mHPoints[static_cast<int>(x)][static_cast<int>(z)] = height1;
 
             //contour line Collector :D
             int avgY = static_cast<int>(((height1 + height2 + height3 + height4 + height5 + height6)/6)+ofsety);
@@ -203,7 +204,9 @@ void LASHeightMap::GenerateHeightMap()
             float avgZ = ((z + z + z+rez + z+rez + z + z+rez)/6)+ofsetz;
             if(avgY > 5000 || avgY < 5){
             }else{
-                if(std::fmod(avgY,5)<0.1){
+                if(std::fmod(avgY,2)<0.1)
+                {
+
                     /*if((int)CountourLines.size() != 0){
                         auto it = CountourLines.begin();
                         for(; it != CountourLines.end(); it++){
@@ -232,7 +235,7 @@ void LASHeightMap::GenerateHeightMap()
                 }
             }
         }
-    CalcContourlineOrder();
+    //CalcContourlineOrder();
 }
 
 float LASHeightMap::CalcHeight(float x, float z)

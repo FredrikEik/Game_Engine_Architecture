@@ -17,6 +17,7 @@
 #include "texture.h"
 #include "components.h"
 #include "rendersystem.h"
+#include "marchingsquare.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -249,7 +250,7 @@ void RenderWindow::init()
     entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES); //3
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
     //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,-1, GL_LINES);
-
+/*
     for(int i{0}; i < 40; i++)
     {
         for(int j{0}; j < 40; j++)
@@ -257,9 +258,10 @@ void RenderWindow::init()
             entitySys->construct("sphere.obj", QVector3D( 10 + 3*(i) ,10.0f,10 + 3*(j)),2,1);
         }
     }
-
-    ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
-    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_POINTS);
+*/
+    marchingsquare *march = new marchingsquare(map);
+    ResSys->SetIntoMeshDataContainerRUNTIME(march->getMeshComp()->mVertices, "LAS-CONT");
+    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_LINES);
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();

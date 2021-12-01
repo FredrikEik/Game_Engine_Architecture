@@ -8,6 +8,9 @@
 
 class LASHeightMap
 {
+private:
+    static const int X =  800;
+    static const int Z = 1300;
 public:
     LASHeightMap(std::string fileName);
 
@@ -16,16 +19,21 @@ public:
     void setPositions(const std::vector<Vertex> &value);
     bool isDivisibleBy5(std::string str)
     {
-        int n = str.length();
+        unsigned long long n = str.length();
 
         return ( ((str[n-1]-'0') == 0) ||
                  ((str[n-1]-'0') == 5));
     }
     std::vector<Vertex> getCountourPoints() const;
     void setCountourPoints(const std::vector<Vertex> &value);
+    int getX(){return X;}
+    int getZ(){return Z;}
 
-
+public:
+    //contooouurrr
+    float mHPoints[X][Z];
 private:
+
     void ReadDatafromFile(std::string fileName);
     std::vector<Vertex> positions;
     std::vector<Vertex> mVertices;
@@ -34,6 +42,8 @@ private:
     void populatePosArr();
 
     float PosArr[1000][2000];
+    float ContourPoints[50][1000];
+    int ContourIndex[50];
     void RemoveDeltaPos();
     void GenerateHeightMap();
     float CalcHeight(float x = 0, float z = 0);
