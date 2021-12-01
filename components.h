@@ -73,6 +73,7 @@ class BallPhysicsComponent
 public:
 
     QVector3D mVelocity{0,0,0};
+    QVector3D mPosition{0,0,0};
     float Radius{1};
     int gridXPos;
     int gridZPos;

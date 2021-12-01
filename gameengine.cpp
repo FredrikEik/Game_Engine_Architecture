@@ -29,7 +29,7 @@ void GameEngine::GameLoop()
     if(bBallPhysicsIsPlaying && mPhysicsBall)
     {
 //        mPhysicsBallSystem->update(*mPhysicsBall);
-//        mPhysicsBallSystem->update(*mPhysicsBall2);
+        mPhysicsBallSystem->update(*mPhysicsBall2);
         for(int i = 1; i < mPhysicsBalls.size(); i++)
         {
             mPhysicsBallSystem->update(*mPhysicsBalls.at(i));
@@ -59,10 +59,11 @@ void GameEngine::SetUpScene()
 
     mEditorCamera = new Camera();
     mEditorCamera->setPosition(gsl::Vector3D(595.f, 17.f, 45.6f));
-//    mEditorCamera->setPosition(gsl::Vector3D(530.f, 35.f, 635.f));
+//    mEditorCamera->setPosition(gsl::Vector3D(425.f, 55.f, 700.f));
 //        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
     mEditorCamera->yaw(145);
+//        mEditorCamera->yaw(45);
     mEditorCamera->pitch(5);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
@@ -135,7 +136,7 @@ void GameEngine::SetUpObjects()
 
 
     mLight = mResourceManager->CreateObject(gsl::MeshFilePath + "light.obj",false);
-        mLight->mTransformComp->mMatrix.setPosition(500,100,511);
+        mLight->mTransformComp->mMatrix.setPosition(500,100,20);
                 //mLight->mTransformComp->mMatrix.setPosition(5,5,5);
 //    mLight->mTransformComp->mMatrix.setPosition(-20,3,-10);
 //    mLight->mTransformComp->mMatrix.setPosition(500,300,500);
@@ -175,9 +176,13 @@ void GameEngine::SetUpObjects()
         std::mt19937 genz(rdz()); // seed the generator
         std::uniform_int_distribution<> distrz(100, 400); // define the range
 
+        std::random_device rdy; // obtain a random number from hardware
+        std::mt19937 geny(rdy()); // seed the generator
+        std::uniform_int_distribution<> distry(100, 100); // define the range
+
 
         mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-        mPhysicsBall->mTransformComp->mMatrix.translate(distrx(genx),200.f,distrz(genz));
+        mPhysicsBall->mTransformComp->mMatrix.translate(distrx(genx),distry(geny),distrz(genz));
     //    mPhysicsBall->mTransformComp->mMatrix.translate(455.4f,42.9f,674.4f);
         mPhysicsBall->mTransformComp->mMatrix.scale(1);
         mPhysicsBall->mMaterialComp->mShaderProgram = 2;
@@ -186,12 +191,12 @@ void GameEngine::SetUpObjects()
 
     }
 
-//    mPhysicsBall2 = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-//    mPhysicsBall2->mTransformComp->mMatrix.translate(distrx(genx),75.f,distrz(genz));
-////    mPhysicsBall->mTransformComp->mMatrix.translate(455.4f,42.9f,674.4f);
-//    mPhysicsBall2->mTransformComp->mMatrix.scale(1);
-//    mPhysicsBall2->mMaterialComp->mShaderProgram = 2;
-//    mRenderwindow->mGameObjects.push_back(mPhysicsBall2);
+    mPhysicsBall2 = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
+    mPhysicsBall2->mTransformComp->mMatrix.translate(455,50.f,675);
+//    mPhysicsBall->mTransformComp->mMatrix.translate(455.4f,42.9f,674.4f);
+    mPhysicsBall2->mTransformComp->mMatrix.scale(1);
+    mPhysicsBall2->mMaterialComp->mShaderProgram = 2;
+    mRenderwindow->mGameObjects.push_back(mPhysicsBall2);
 
     mPhysicsBallSystem->SetTerrainData(*mTerrainObject);
 

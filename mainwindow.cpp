@@ -587,13 +587,13 @@ void MainWindow::on_actionPlay_toggled(bool arg1)
 {
     GameEngine::getInstance()->bBallPhysicsIsPlaying = arg1;
 
-    if(getPosOnce)
-    {
-        lastBallPos.setX(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getX());
-        lastBallPos.setY(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getY());
-        lastBallPos.setZ(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getZ());
-        getPosOnce = false;
-    }
+//    if(getPosOnce)
+//    {
+//        lastBallPos.setX(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getX());
+//        lastBallPos.setY(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getY());
+//        lastBallPos.setZ(GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.getPosition().getZ());
+//        getPosOnce = false;
+//    }
 
 }
 
