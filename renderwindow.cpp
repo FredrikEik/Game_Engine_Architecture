@@ -236,21 +236,13 @@ void RenderWindow::initObjects()
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
             mMainWindow->updateOutliner(factory->mGameObjects);
+            hjelpeObjekt = factory->createObject("Cube");
+            mGround = factory->createObject("TriangleSurface");
 
 
-             hjelpeObjekt = factory->createObject("Cube");
 
-             mGround = factory->createObject("TriangleSurface");
-             /*CreateBalls
-             int ballAmount = 100;
-             GameObject* objectToMove;
 
-             for(int i = 0; i<ballAmount; i++)
-             {
-                objectToMove = factory->createObject("Sphere");
-                objectToMove->getTransformComponent()->mMatrix.setPosition(i*5,i,i);
-             }
-             */
+
 
 }
 
@@ -898,6 +890,22 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_R)
     {
          reset(format());
+    }
+    if(event->key() == Qt::Key_N)
+    {
+        spawnBalls();
+    }
+}
+void RenderWindow::spawnBalls()
+{
+    //CreateBalls
+    int ballAmount = 5;
+    GameObject* objectToMove;
+
+    for(int i = 0; i<ballAmount; i++)
+    {
+       objectToMove = factory->createObject("Sphere");
+       objectToMove->getTransformComponent()->mMatrix.setPosition(rand() % 200 + 1,100,rand() % 200 + 1);
     }
 }
 

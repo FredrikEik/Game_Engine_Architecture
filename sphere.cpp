@@ -8,7 +8,7 @@
 
 Sphere::Sphere()
 {
-    getTransformComponent()->mMatrix.setPosition(20,10,80);
+    getTransformComponent()->mMatrix.setPosition(20,20,80);
     gForce = gsl::Vector3D(0.f,-9.80565f,0.f);
 
 }
@@ -93,22 +93,20 @@ void Sphere::move(float x, float y, float z)
             */
             float surfaceY = p1.y*baryCoords.x + p2.y*baryCoords.y + p3.y*baryCoords.z;
 
-            if(ballPos.y < surfaceY+ (1))
+            if(ballPos.y < surfaceY+1)
             {
                 //acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
                 acceleration = gsl::Vector3D(planeNormal.x*planeNormal.y*9.80565f, planeNormal.y*planeNormal.y*9.80565f, planeNormal.z*planeNormal.y*9.80565f) + gForce;
+                //qDebug()<<"Acceleration: " << acceleration;
                 velocity = velocity + acceleration * 0.0017;
-                gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * 0.0017;
+                gsl::Vector3D newPosition = ballPos + velocity;
                 getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY, newPosition.z);
             }
             else
             {
                 acceleration = gForce;
-                qDebug() << "Acceleration: " << acceleration;
                 velocity = velocity + acceleration * 0.0017;
-                qDebug() << "Velocity: " << velocity;
-                gsl::Vector3D newPosition = ballPos + velocity * 0.0017;
-                qDebug() << "New position: " << newPosition;
+                gsl::Vector3D newPosition = ballPos + velocity;
                 getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z);
             }
 

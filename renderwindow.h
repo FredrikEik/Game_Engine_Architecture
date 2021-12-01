@@ -51,6 +51,7 @@ public:
     void clearLevel();
     bool bPause = true;
     bool editorMode = true;
+    void spawnBalls();
     Factory *getFactory(){return factory;};
 
     SoundSource* mClick{};
