@@ -29,5 +29,21 @@ namespace gsl  //Game School Lib
         MESH,
         MATERIAL
     };
+
+    enum objectTypes
+    {
+        CUBE = 0,
+        PLANE = 1,
+        TRIANGLE = 2,
+        MARIOCUBE = 3,
+        SPHERE = 4,
+        CAMERA = 5,
+        PLAYER = 6,
+        SKYBOX = 7,
+        LIGHT = 8,
+        LASSURFACE = 9,
+        ROLLINGBALL = 10,
+        CONTOURLINES = 11
+    };
 }
 #endif // CONSTANTS_H

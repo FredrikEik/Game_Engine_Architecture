@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     w.move(10, 10);     //Moves the program at start. Nice if you have large screen and editor on one side.
+    w.showMaximized();
     w.show();
     splash.raise();
 

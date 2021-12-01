@@ -9,7 +9,7 @@ Level::Level()
 
 }
 
-void Level::saveLevelAs(QString levelName, std::multimap<std::string, SpawnSettings> objectMap)
+void Level::saveLevelAs(QString levelName, std::multimap<gsl::objectTypes, SpawnSettings> objectMap)
 {
     QString fileName{"../GEA2021/Saves/" + levelName + ".json"};
     QJsonDocument newLevel;
@@ -20,10 +20,8 @@ void Level::saveLevelAs(QString levelName, std::multimap<std::string, SpawnSetti
         qDebug() << "loop iterator";
         QJsonObject temp;
 
-        std::string objType = it->first;
-        QString QObjType = QString::fromStdString(objType);
-
-        temp.insert("objectType", QObjType);
+        int objType = it->first;
+        temp.insert("objectType", objType);
         temp.insert("position", QJsonArray{it->second.initialPos.x,it->second.initialPos.y,it->second.initialPos.z});
         temp.insert("scale", QJsonArray{it->second.initialScale.x,it->second.initialScale.y,it->second.initialScale.z});
         temp.insert("rotation", QJsonArray{it->second.initialRot.x,it->second.initialRot.y,it->second.initialRot.z});
@@ -68,7 +66,7 @@ void Level::read(const QJsonObject &json)
             QJsonObject jsonObject = objectArray[i].toObject();
             SpawnSettings settings;
 
-            std::string objectType;
+            gsl::objectTypes objectType;
             gsl::Vector3D spawnPos;
             gsl::Vector3D spawnRot;
             gsl::Vector3D spawnScale;
@@ -77,11 +75,11 @@ void Level::read(const QJsonObject &json)
             //Gets objectType
             if(jsonObject.contains("objectType") && jsonObject["objectType"].isString())
             {
-                objectType = jsonObject["objectType"].toString().toStdString();
+                objectType = gsl::objectTypes(jsonObject["objectType"].toInt());
             }
             else
             {
-                objectType = "Cube";
+                objectType = gsl::CUBE;
             }
 
             //Gets spawn position
@@ -123,7 +121,7 @@ void Level::read(const QJsonObject &json)
                 spawnRot = gsl::Vector3D(0,0,0);
             }
 
-            objectsInLevel.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+            objectsInLevel.insert(std::pair<gsl::objectTypes, struct SpawnSettings>(objectType, settings));
         }
     }
 }

@@ -5,19 +5,19 @@
 #include "gsl/vector3d.h"
 #include <vector>
 
-//Level scripted from javascript
+//Level loaded from JSON
 class Level
 {
 
 public:
     Level();
 
-    void saveLevelAs(QString levelName, std::multimap<std::string, struct SpawnSettings> objectMap);
+    void saveLevelAs(QString levelName, std::multimap<gsl::objectTypes, struct SpawnSettings> objectMap);
     void loadLevel(QString fileName);
     void write(QJsonDocument document, QString fileName) const;
     void read(const QJsonObject &json);
 
-    std::multimap<std::string, struct SpawnSettings> objectsInLevel;
+    std::multimap<gsl::objectTypes, struct SpawnSettings> objectsInLevel;
 
 };
 struct SpawnSettings

@@ -58,3 +58,6 @@ release/*
 *.vcxproj*
 *_resource.rc
 *.sln
+
+#Doxygen
+html/*

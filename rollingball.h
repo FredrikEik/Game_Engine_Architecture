@@ -19,12 +19,14 @@ public:
 
 private:
 
-    gsl::Vector3D velocity{0.0f, 0.0f, 0.0f};
-    gsl::Vector3D acceleration{0.0f, 0.0f, 0.0f};
+    float gConstant{9.80565f};
+    float massInKg {10.f};
+    gsl::Vector3D velocity;
+    gsl::Vector3D acceleration;
     gsl::Vector3D gForce;
+
     //gsl::Vector3D friction{0.0f, 0.0f, 0.0f};
     //float frictionStrength{2.0f};
-    float massInKg {1.0f};
 
 
     gsl::Vector3D old_normal{0.0, 0.0, 1.0};

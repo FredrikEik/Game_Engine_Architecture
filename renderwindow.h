@@ -45,7 +45,7 @@ public:
     void setPickedObject(int pickedID);
     void cancelPickedObject();
 
-    void createObjectbutton(std::string objectName);
+    void createObjectbutton(gsl::objectTypes objectType);
     void playPausebutton(const QSurfaceFormat &format);
     void reset(const QSurfaceFormat &format);
     void clearLevel();

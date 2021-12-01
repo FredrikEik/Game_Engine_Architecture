@@ -108,9 +108,13 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("Plane");
     ui->createDropDownBox->addItem("Triangle");
     ui->createDropDownBox->addItem("MarioCube");
-    ui->createDropDownBox->addItem("Camera");
     ui->createDropDownBox->addItem("Sphere");
+    ui->createDropDownBox->addItem("Camera");
+    ui->createDropDownBox->addItem("Player");
+    ui->createDropDownBox->addItem("Skybox");
     ui->createDropDownBox->addItem("Light");
+    ui->createDropDownBox->addItem("LASsurface");
+    ui->createDropDownBox->addItem("Rollingball");
     ui->PlayPause->setText("Editor Mode(TAB)");
 
 }
@@ -123,9 +127,9 @@ void MainWindow::on_pushButton_toggled(bool checked)
 
 
 
-void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
+void MainWindow::on_createDropDownBox_currentIndexChanged(int index)
 {
-    itemToSpawn = arg1.toStdString();
+    itemToSpawn = gsl::objectTypes(index);
 }
 
 void MainWindow::on_CreateObject_clicked()

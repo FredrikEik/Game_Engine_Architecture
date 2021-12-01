@@ -39,8 +39,6 @@ public slots:
 private slots:
     void on_pushButton_toggled(bool checked);
 
-    void on_createDropDownBox_currentTextChanged(const QString &arg1);
-
     void on_CreateObject_clicked();
 
     void on_outliner_itemClicked(QTreeWidgetItem *item, int column);
@@ -54,6 +52,8 @@ private slots:
     void on_LoadLevel_clicked();
 
     void on_togglePhysics_toggled(bool checked);
+
+    void on_createDropDownBox_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;
@@ -74,7 +74,7 @@ private:
     float mRotationStep{1.f};
     float mScaleStep{0.1f};
 
-    std::string itemToSpawn;
+    gsl::objectTypes itemToSpawn;
 };
 
 #endif // MAINWINDOW_H

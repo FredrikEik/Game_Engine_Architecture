@@ -32,3 +32,10 @@ void GameObject::checkLodDistance(gsl::Vector3D distance, float cameraDistance)
         //qDebug() << BadLod;
     }
 }
+
+//void GameObject::draw()
+//{
+//    glBindVertexArray( getMeshComponent()->mVAO );
+//    glDrawArrays(getMeshComponent()->mDrawType, 0, getMeshComponent()->mVertices.size());
+//    glBindVertexArray(0);
+//}

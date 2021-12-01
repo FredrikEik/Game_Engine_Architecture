@@ -22,6 +22,12 @@ public:
     //! Overloaded ostream operator which reads all vertex data from an open textfile stream
     friend std::istream& operator>> (std::istream&, Vertex&);
 
+    Vertex operator+(const Vertex &rhs) const;      // v + v
+    Vertex operator/(GLfloat rhs) const;
+
+    void set_x(GLfloat x);
+    void set_y(GLfloat y);
+    void set_z(GLfloat z);
     void set_xyz(GLfloat *xyz);
     void set_xyz(GLfloat x, GLfloat y, GLfloat z);
     void set_xyz(gsl::Vector3D xyz_in);

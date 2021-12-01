@@ -38,6 +38,7 @@
 #include "matrix4x4.h"
 #include "lassurface.h"
 #include "rollingball.h"
+#include "codedmeshes.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -145,6 +146,13 @@ void RenderWindow::init()
 
     //********************** Making the object to be drawn **********************
 
+    CodedMeshes meshes;
+    meshes.init();
+    factory->saveMesh(meshes.cubeVertices, "Cube");
+    factory->saveMesh(meshes.cubeVertices, "TestCube");
+    factory->saveMesh(meshes.planeVertices, "Plane");
+    factory->saveMesh(meshes.triangleVertices, "Triangle");
+    factory->saveMesh(meshes.xyzVertices, "XYZ");
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
@@ -178,8 +186,6 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
-
-
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
@@ -223,9 +229,10 @@ void RenderWindow::init()
 
 void RenderWindow::initObjects()
 {
-    skybox = factory->createObject("Skybox");
+    skybox = factory->createObject(gsl::SKYBOX);
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
+
     //GameObject *temp=nullptr;
     /* for(int i{0}; i < 50; i++)
     {
@@ -239,20 +246,22 @@ void RenderWindow::initObjects()
     }
 
     */
-    surface = factory->createObject("LASsurface");
+    surface = factory->createObject(gsl::LASSURFACE);
 
-    int max = 30;
-    int min = -30;
-    for(int i{0}; i < 80; i++)
+    int max = 20;
+    int min = -20;
+    for(int i{0}; i < 40; i++)
     {
-        GameObject* rb = factory->createObject("Rollingball");
+        GameObject* rb = factory->createObject(gsl::ROLLINGBALL);
         dynamic_cast<Rollingball*>(rb)->LASsurface = surface;
-        int randX = rand()%(max-min+1)+min;
-        int randZ = rand()%(max-min+1)+min;
+        float randX = rand()%(max-min+1)+min;
+        float randZ = rand()%(max-min+1)+min;
         rb->getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
     }
 
-    mPlayer = factory->createObject("Player");
+    /*GameObject* contourLines = */factory->createContourLines(surface);
+
+    mPlayer = factory->createObject(gsl::PLAYER);
     mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
     mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,1.75f,0.f);
     dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
@@ -260,7 +269,7 @@ void RenderWindow::initObjects()
 
 
 
-    hjelpeObjekt = factory->createObject("Cube");
+    hjelpeObjekt = factory->createObject(gsl::CUBE);
 
 
 
@@ -346,9 +355,9 @@ void RenderWindow::render()
                                 */
                                 {
                                    // qDebug() << "Object inside frustum";
-                    factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
-                                                                mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                               mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                                   factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
+                                                                               mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
+                                                                               mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
                                    factory->mGameObjects[i]->draw();
                                    objectsDrawn++;
@@ -393,7 +402,7 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
             */
-            if(factory->mGameObjects[i]->mObjectType == "Rollingball" && togglePhysics == true)
+            if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL && togglePhysics == true)
             {
                 dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
             }
@@ -535,10 +544,10 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderWindow::createObjectbutton(std::string objectName)
+void RenderWindow::createObjectbutton(gsl::objectTypes objectType)
 {
     mClick->play();
-    GameObject* newObject = factory->createObject(objectName);
+    GameObject* newObject = factory->createObject(objectType);
     gsl::Vector3D position = newObject->getTransformComponent()->mMatrix.getPosition();
     gsml::Point2D position2D = std::pair<double, double>(position.getX(), position.getY());
     uint32_t id = newObject->ID;
@@ -734,16 +743,16 @@ void RenderWindow::handleInput()
 
 void RenderWindow::saveLevel()
 {
-    std::multimap<std::string, struct SpawnSettings> objectMap;
+    std::multimap<gsl::objectTypes, struct SpawnSettings> objectMap;
     for(int i = 0; i < factory->mGameObjects.size(); i++)
     {
         SpawnSettings settings;
-        std::string objectType = factory->mGameObjects[i]->mObjectType;
+        gsl::objectTypes objectType = factory->mGameObjects[i]->mObjectType;
         gsl::Matrix4x4 m = factory->mGameObjects[i]->getTransformComponent()->mMatrix;
         settings.initialPos =  m.getPosition();
         settings.initialScale = m.getScale();
         settings.initialRot = m.getRotation();
-        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+        objectMap.insert(std::pair<gsl::objectTypes, struct SpawnSettings>(objectType, settings));
     }
     level.saveLevelAs("savedLevel", objectMap);
 }

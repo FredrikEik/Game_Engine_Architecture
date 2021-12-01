@@ -19,14 +19,12 @@ LASsurface::LASsurface(std::string fileName)
 
     // An array of vectors that hold all the heights for each quad
     // Size of array is hardcoded, unsure how to do it from numOfQuads
-    std::array<std::vector<float>,600> heights;
+    std::array<std::vector<float>,1800> heights;
     //std::array<std::vector<float>,numOfQuads> heights;
 
     //An array that holds the average height of each quad
-    float averageHeights[600];
+    float averageHeights[1800];
     //float averageHeights[numOfQuads];
-
-
 
     //For every vertices
     //qDebug() << "Vertices size" << lasData.size();
@@ -82,54 +80,54 @@ LASsurface::LASsurface(std::string fileName)
 
     //Create triangulated surface
     float R = 10;
-    float G = 50;
-    float B = 75;
+    float G = 20;
+    float B = 40;
     for (float x = xMin; x < xMax-step; x+= step)
     {
-        for(float z = zMin; z < zMax; z+= step)
+        for(float z = zMin; z < zMax-step; z+= step)
         {
             int quadCoordX = (x-xMin)/step;
             int quadCoordZ = (z-zMin)/step;
-            float u{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
-            float v{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
 
+            //x, z
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
                 R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255,
-                u,v));
-
+                0,0));
+            //x, z+1
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
                 R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255,
-                u, v+step));
-
+                0, 1));
+            //x+1,z
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
                 R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255,
-                u+step,v));
+                1,0));
 
-
-
+            //x+1, z+1
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
                 R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, B/255,
-                u+step, v+step));
+                1, 1));
 
+            //x+1, z
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
                 R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255,
-                u+step,v));
+                1,0));
 
+            //x, z+1
             getMeshComponent()
             ->mVertices.push_back(
                 Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
                 R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255,
-                u, v+step));
+                0, 1));
         }
     }
 
@@ -141,6 +139,7 @@ LASsurface::LASsurface(std::string fileName)
 //                 << getMeshComponent()->mVertices[i].getXYZ().getY()
 //                 << getMeshComponent()->mVertices[i].getXYZ().getZ();
 //    }
+    makeContourLines();
 }
 
 LASsurface::~LASsurface()
@@ -220,7 +219,181 @@ void LASsurface::minMaxNormalize()
 //    for(int i = 0; i < 10000; i++)
 //    {
 //        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;
-//    }
+    //    }
+}
+
+void LASsurface::makeContourLines()
+{
+    float contourMin = 0.5f;
+    float contourMax = 9.5f;
+    float contourStep = 1.0f;
+    for(float contourHeight = contourMin; contourHeight < contourMax; contourHeight+=contourStep)
+    {
+        //For each quad
+        for(int i = 0; i < getMeshComponent()->mVertices.size(); i+=6)
+        {
+            //a, d, b, c, b, d
+            Vertex a = getMeshComponent()->mVertices[i];   bool A = false;
+            Vertex b = getMeshComponent()->mVertices[i+2]; bool B = false;
+            Vertex c = getMeshComponent()->mVertices[i+3]; bool C = false;
+            Vertex d = getMeshComponent()->mVertices[i+1]; bool D = false;
+            if(a.getXYZ().getY() > contourHeight){
+                A = 1;
+            }
+            if(b.getXYZ().getY() > contourHeight){
+                B = 1;
+            }
+            if(c.getXYZ().getY() > contourHeight){
+                C = 1;
+            }
+            if(d.getXYZ().getY() > contourHeight){
+                D = 1;
+            }
+            Vertex bd = (b+d)/2;   //Meeting point for case 3, 6, 9, 12
+            Vertex bbd = (b+bd)/2; //Meeting point for case 4, 10, 11
+            Vertex dbd = (d+bd)/2; //Meeting point for case 1, 10, 14
+            Vertex ab = (a+b)/2;
+            Vertex bc = (b+c)/2;
+            Vertex cd = (c+d)/2;
+            Vertex da = (d+a)/2;
+
+            ab.set_y(contourHeight);
+            bc.set_y(contourHeight);
+            cd.set_y(contourHeight);
+            da.set_y(contourHeight);
+
+            bd.set_y(contourHeight);
+            bbd.set_y(contourHeight);
+            dbd.set_y(contourHeight);
+            //        Vertex ab = a;
+            //        ab.set_x(ab.getXYZ().getX() + (step/2));
+            //        ab.set_y(contourHeight);
+            //        Vertex bc = b;
+            //        bc.set_z(ab.getXYZ().getZ() + (step/2));
+            //        bc.set_y(contourHeight);
+            //        Vertex cd = c;
+            //        cd.set_x(ab.getXYZ().getX() - (step/2));
+            //        cd.set_y(contourHeight);
+            //        Vertex da = d;
+            //        da.set_z(ab.getXYZ().getZ() - (step/2));
+            //        da.set_y(contourHeight);
+
+            int state = getState(A,B,C,D);
+
+            switch(state)
+            {
+            case 0:
+                //don't draw line
+                break;
+            case 1:
+                //cd to da
+                contourPoints.push_back(cd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(da);
+                break;
+            case 2:
+                //bc to cd
+                contourPoints.push_back(bc);
+                contourPoints.push_back(cd);
+                break;
+            case 3:
+                //bc to da
+                contourPoints.push_back(bc);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(da);
+                break;
+            case 4:
+                //ab to bc
+                contourPoints.push_back(ab);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bc);
+                break;
+            case 5:
+                //ab to da
+                contourPoints.push_back(ab);
+                contourPoints.push_back(da);
+                //and
+                //bc to cd
+                contourPoints.push_back(bc);
+                contourPoints.push_back(cd);
+                break;
+            case 6:
+                //ab to cd
+                contourPoints.push_back(ab);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(cd);
+                break;
+            case 7:
+                //ab to da
+                contourPoints.push_back(ab);
+                contourPoints.push_back(da);
+                break;
+            case 8:
+                //ab to da
+                contourPoints.push_back(ab);
+                contourPoints.push_back(da);
+                break;
+            case 9:
+                //ab to cd
+                contourPoints.push_back(ab);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(cd);
+                break;
+            case 10:
+                //ab to bc
+                contourPoints.push_back(ab);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bc);
+                //and
+                //cd to da
+                contourPoints.push_back(cd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(da);
+                break;
+            case 11:
+                //ab to bc
+                contourPoints.push_back(ab);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bbd);
+                contourPoints.push_back(bc);
+                break;
+            case 12:
+                //bc to da
+                contourPoints.push_back(bc);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(bd);
+                contourPoints.push_back(da);
+                break;
+            case 13:
+                //bc to cd
+                contourPoints.push_back(bc);
+                contourPoints.push_back(cd);
+                break;
+            case 14:
+                //cd to da
+                contourPoints.push_back(cd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(dbd);
+                contourPoints.push_back(da);
+                break;
+            case 15:
+                //don't draw line
+                break;
+            }
+        }
+    }
+}
+
+int LASsurface::getState(bool A, bool B, bool C, bool D)
+{
+    return 8*A+4*B+2*C+1*D;
 }
 
 void LASsurface::init()
@@ -269,6 +442,7 @@ void LASsurface::move(float x, float y, float z)
     getTransformComponent()->mMatrix.translate(x,y,z);
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
 }
+
 
 
 

@@ -30,7 +30,9 @@ win32 {
 SOURCES += main.cpp \
     bspline.cpp \
     camera.cpp \
+    codedmeshes.cpp \
     components.cpp \
+    contourlines.cpp \
     cube.cpp \
     detailswidget.cpp \
     factory.cpp \
@@ -53,6 +55,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    shape.cpp \
     skybox.cpp \
     sphere.cpp \
     texture.cpp \
@@ -69,8 +72,10 @@ HEADERS += \
     PreCompiledHeaders.h \
     bspline.h \
     camera.h \
+    codedmeshes.h \
     components.h \
     constants.h \
+    contourlines.h \
     cube.h \
     detailswidget.h \
     factory.h \
@@ -94,6 +99,7 @@ HEADERS += \
     rollingball.h \
     shader.h \
     mainwindow.h \
+    shape.h \
     skybox.h \
     sphere.h \
     texture.h \

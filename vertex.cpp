@@ -33,6 +33,18 @@ Vertex::Vertex(QVector3D a, QVector3D b , QVector2D c)
 
 Vertex::~Vertex() { }
 
+void Vertex::set_x(GLfloat x)
+{
+    mXYZ.setX(x);
+}
+void Vertex::set_y(GLfloat y)
+{
+    mXYZ.setY(y);
+}
+void Vertex::set_z(GLfloat z)
+{
+    mXYZ.setZ(z);
+}
 void Vertex::set_xyz(GLfloat *xyz)
 {
     mXYZ.setX(xyz[0]);
@@ -123,4 +135,14 @@ std::istream& operator>> (std::istream& is, Vertex& v) {
     is >> temp >> v.mNormal.x >> temp2 >> v.mNormal.y >> temp3 >> v.mNormal.z >> temp4;
     is >> temp >> v.mST.x >> temp2 >> v.mST.y >> temp3;
     return is;
+}
+
+Vertex Vertex::operator+(const Vertex &rhs) const
+{
+    return Vertex(mXYZ+rhs.mXYZ, mNormal+rhs.mNormal, mST+rhs.mST);
+}
+
+Vertex Vertex::operator/(GLfloat rhs) const
+{
+    return Vertex(mXYZ/rhs, mNormal/rhs, mST/rhs);
 }
