@@ -136,7 +136,6 @@ void RenderSystem::render()
                 continue;
         }
 
-
         /*************************************/
 
         //First object - xyz
@@ -165,8 +164,8 @@ void RenderSystem::render()
         //send data to shader
         if(mIsPlaying)
         {
-            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
         }
         else
         {
@@ -186,7 +185,6 @@ void RenderSystem::render()
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
         {
-
             gsl::Vector3D distanceVector = gobPos - cameraPos;
             //LOD calculation
             float length = distanceVector.length();
@@ -275,14 +273,14 @@ void RenderSystem::render()
     }
 
     //Moves the dog triangle - should be made another way!!!!
-    if(mIsPlaying)
-    {
-//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-        mGameCamera->yaw(0.07f);
-        mGameCamera->update();
-        mUseFrustumCulling = true;
-        mGameCamAsFrustumCulling = true;
-    }
+//    if(mIsPlaying)
+//    {
+////        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+//        mGameCamera->yaw(0.07f);
+//        mGameCamera->update();
+//        mUseFrustumCulling = true;
+//        mGameCamAsFrustumCulling = true;
+//    }
 
     //Immediatly this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
     //Not using the resourcemanager to handle the skybox which could be a gameobject

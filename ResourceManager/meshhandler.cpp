@@ -639,8 +639,8 @@ int MeshHandler::readLasFile()
 
 // This serves as the indexes and "resolution" in the planeGrid.
 // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 50;
-    const int arrayZ = 50;
+    const int arrayX = 5;
+    const int arrayZ = 5;
 
     float widthScale  = 7.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 7.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
@@ -758,7 +758,7 @@ qDebug() << "Start of triangle calculations (should be much less expensive)";
     std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the vertices of the ground-mesh
 
 
-for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use trianlges out of "bounds"
+for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
 {
     gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 

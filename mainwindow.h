@@ -59,6 +59,8 @@ private slots:
 
     void on_actionGrid_toggled(bool arg1);
 
+    void on_actionSimulatePhysics_toggled(bool arg1);
+
 private:
     void init();
 

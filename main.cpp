@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QSplashScreen *mSplash = new QSplashScreen;
-    mSplash->setPixmap(QPixmap(":/AppGraphics/AppIcons/INNgine_splash.png")); // splash picture
+    mSplash->setPixmap(QPixmap(":/AppGraphics/AppIcons/Gautes-splash.png")); // splash picture
     mSplash->show();
 
     //Makes the Qt MainWindow and shows it.

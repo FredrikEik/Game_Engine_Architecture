@@ -41,6 +41,7 @@ public:
     MeshHandler *mMeshHandler{nullptr};
 
     bool isPlaying{false};              //is the game playing?
+    bool simulatePhysics{false};        //Should physics be simulated?
 
     Input mInput;
 

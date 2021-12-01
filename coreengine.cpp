@@ -199,7 +199,7 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-//Rollingball, getting vis & sim collision code integrated into GEA
+//Rollingball, vis & sim collision code integrated into GEA
     temp = mGameObjectManager->addObject("Ball.obj");
     temp->mTransform->mMatrix.translate(0.5f, 1.5f, 0.0f);
     temp->mTransform->mMatrix.scale(0.1f);
@@ -284,8 +284,10 @@ void CoreEngine::gameLoop()
     //Update PhysicsObjects in scene
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
     PhysicsHandler ph(mRenderSystem);
-    ph.movePhysicsObject(mGameObjects);
-
+    if(simulatePhysics)
+    {
+        ph.movePhysicsObject(mGameObjects);
+    }
 //    //Initializing values for the gameplay
 //    GamePlayMechanics tm(mRenderSystem);
 //    int tetrominoNr;

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 #include "rendersystem.h"
 #include "soundsystem.h"
 #include "ResourceManager/gameobjectmanager.h"
@@ -291,3 +290,9 @@ void MainWindow::on_actionGrid_toggled(bool arg1)
 {
     mRenderSystem->mDrawGrid = arg1;
 }
+
+void MainWindow::on_actionSimulatePhysics_toggled(bool arg1)
+{
+    mCoreEngine->simulatePhysics = arg1;
+}
+
