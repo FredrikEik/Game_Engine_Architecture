@@ -66,6 +66,7 @@ public:
     GameObject *hjelpeObjekt=nullptr;
     MeshComponent *hjelpeObjektMesh= nullptr;
     GameObject* mGround;
+    GameObject* mContour;
     void moveHelpObjectToSelected();
 
     void saveLevel();

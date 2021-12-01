@@ -4,8 +4,10 @@
 #include <iostream>
 #include "trianglesurface.h"
 #include "vector3d.h"
+#include "contourlines.h"
 #include "matrix4x4.h"
 #include "vertex.h"
+
 
 TriangleSurface::TriangleSurface() : GameObject()
 {
@@ -232,7 +234,6 @@ void TriangleSurface::readFile(std::string filnavn)
                 /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
                 /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
                 /*Top Right*/  v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
-
                 /*Top Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[(j+1) + ((i+1)*terrainGridZ)], ((j+1)*squareSize)); v.set_rgb(255,0,0); getMeshComponent()->mVertices.push_back(v);
 
                 }
@@ -246,6 +247,8 @@ void TriangleSurface::readFile(std::string filnavn)
         }
         */
 //
+        //Countor lines
+
 }
 
 

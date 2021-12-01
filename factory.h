@@ -23,6 +23,7 @@ public:
     int skyboxcounter=0;
     int cameracounter=0;
     int lightCounter=0;
+    int contourCounter = 0;
 
     GameObject* createObject(std::string objectName);
     GameObject* mGround;

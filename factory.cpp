@@ -11,6 +11,7 @@
 #include "skybox.h"
 #include "player.h"
 #include "trianglesurface.h"
+#include "contourlines.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -154,6 +155,13 @@ GameObject* Factory::createObject(std::string objectName)
        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
        mGround = objectToCreate;
+    }
+    else if (objectName == "ContourLines")
+    {
+       objectToCreate = new ContourLines(mGround, contourCounter*2);
+       objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+       objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+       contourCounter++;
     }
     else{return nullptr;}
 

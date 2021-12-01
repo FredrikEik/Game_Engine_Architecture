@@ -33,6 +33,7 @@ public:
     float mapMinZ{0};
     float mapMaxZ{0};
     Vertex mMapTerrain;
+
 };
 
 #endif // TRIANGLESURFACE_H
