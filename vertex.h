@@ -35,6 +35,8 @@ public:
     void set_uv(GLfloat u, GLfloat v);
 
     gsl::Vector3D getXYZ(){ return mXYZ;}
+    Vertex operator+(Vertex &pnt);
+    Vertex operator/(GLfloat pnt);
 private:
     gsl::Vector3D mXYZ;
     gsl::Vector3D mNormal;

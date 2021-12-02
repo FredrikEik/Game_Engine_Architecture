@@ -148,6 +148,9 @@ void LasSurface::readLasFile(std::string filnavn)
                                                 tempVertices[(i+1)+sqOffset].getXYZ().z,
                                                 0,0,0,
                                                 0,1));
+
+
+
         getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+(step+1))+sqOffset].getXYZ().x,
                                                 tempVertices[(i+(step+1))+sqOffset].getXYZ().y,
                                                 tempVertices[(i+(step+1))+sqOffset].getXYZ().z,
@@ -217,7 +220,49 @@ void LasSurface::minMaxScale()          //skalerer mellom to verdier, gjør dett
 
 void LasSurface::createContourLines()
 {
+   for (float contourHeight = contourMinimum; contourHeight < contourMaximum; contourHeight+=contourStep)
+   {
+       for (int i = 0; i<getMeshComponent()->mVertices.size(); i+=6){
+           Vertex a = getMeshComponent()->mVertices[i];
+           Vertex b = getMeshComponent()->mVertices[i+1];
+           Vertex c = getMeshComponent()->mVertices[i+3];
+           Vertex d = getMeshComponent()->mVertices[i+2];
 
+           bool A = false;
+           bool B = false;
+           bool C = false;
+           bool D = false;
+
+           if(a.getXYZ().getY() > contourHeight){
+               A = true;
+           }
+           if(b.getXYZ().getY() > contourHeight){
+               B = true;
+           }
+           if(c.getXYZ().getY() > contourHeight){
+               C = true;
+           }
+           if(d.getXYZ().getY() > contourHeight){
+               D = true;
+           }
+           Vertex ab = (a+b)/2;
+           ab.set_y(contourHeight);
+           Vertex bc = (b+c)/2;
+           bc.set_y(contourHeight);
+           Vertex cd = (c+d)/2;
+           cd.set_y(contourHeight);
+           Vertex da = (d+a)/2;
+           da.set_y(contourHeight);
+           Vertex bd = (b+d)/2;
+           bd.set_y(contourHeight);
+           Vertex bbd = (b+bd)/2;
+           bbd.set_y(contourHeight);
+           Vertex dbd = (d+bd)/2;
+           dbd.set_y(contourHeight);
+
+
+       }
+   }
 }
 
 void LasSurface::init()

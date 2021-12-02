@@ -124,3 +124,11 @@ std::istream& operator>> (std::istream& is, Vertex& v) {
     is >> temp >> v.mST.x >> temp2 >> v.mST.y >> temp3;
     return is;
 }
+
+Vertex Vertex::operator+(Vertex &pnt){
+    return Vertex(mXYZ+pnt.mXYZ, mNormal+pnt.mNormal, mST+pnt.mST);
+}
+
+Vertex Vertex::operator/(GLfloat pnt){
+    return Vertex(mXYZ/pnt, mNormal/pnt, mST/pnt);
+}
