@@ -639,8 +639,8 @@ int MeshHandler::readLasFile()
 
     // This serves as the indexes and "resolution" in the planeGrid.
     // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 5;
-    const int arrayZ = 5;
+    const int arrayX = 11;
+    const int arrayZ = 11;
 
     float widthScale  = 7.0f;  //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)

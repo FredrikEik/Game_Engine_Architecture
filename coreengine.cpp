@@ -173,9 +173,9 @@ void CoreEngine::setUpScene()
     {
         temp = mGameObjectManager->addObject("Ball.obj");
         //Place the balls randomly between these points.
-        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(30, 101),
-                                            QRandomGenerator::global()->bounded(15,  50),
-                                            QRandomGenerator::global()->bounded(30, 101));
+        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(10, 101), //Include first value, exlude second value
+                                            QRandomGenerator::global()->bounded(15,  31),
+                                            QRandomGenerator::global()->bounded(10, 101));
         temp->mTransform->mMatrix.scale(1.0f);
         temp->mName = "RollingBall_" + std::to_string(i);
         mGameObjectManager->addComponent("PhysicsComponent", temp);

@@ -56,16 +56,15 @@ if(simulatePhysics == true)
     gsl::Vector3D groundPosition3D = {groundObject.mTransform->mMatrix.getPosition()};
 //    qDebug() << "Groundposition:           " <<groundPosition3D;
 
-
     //Get the details of the ball
     std::string searchGameName{0};
-    GameObject physicsBall[51];
+    GameObject physicsBall;
     gsl::Vector3D ballPosition3D;
 
 //    gsl::Vector3D barycoordinates[51]; //Dont really see a point for this? given the code will run 51 times either way?
 
 //// Run through rest of code per ball
-    for (int ball = 0; ball <= 0/*numberOfSimulatedBalls*/; ball++)
+    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
     {
         for (int i = 0; i < mGameObjects.size(); i++)
         {
@@ -74,14 +73,15 @@ if(simulatePhysics == true)
             if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
             {
 //                qDebug() << "ball nr" << ball << "found on gameobject nr" << i;
-                physicsBall[ball].mName = mGameObjects[i]->mName;
-                physicsBall[ball].mMesh = mGameObjects[i]->mMesh;
-                physicsBall[ball].mMaterial = mGameObjects[i]->mMaterial;
-                physicsBall[ball].mTransform = mGameObjects[i]->mTransform;
-                physicsBall[ball].mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
+                physicsBall.mName = mGameObjects[i]->mName;
+                physicsBall.mMesh = mGameObjects[i]->mMesh;
+                physicsBall.mMaterial = mGameObjects[i]->mMaterial;
+                physicsBall.mTransform = mGameObjects[i]->mTransform;
+                physicsBall.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
                 //Find the Vector3D position of the ball
-                ballPosition3D = physicsBall[ball].mTransform->mMatrix.getPosition();
+                ballPosition3D = physicsBall.mTransform->mMatrix.getPosition();
+                break;
             }
         }
 
@@ -121,11 +121,11 @@ if(simulatePhysics == true)
                 gsl::Vector3D newBallPosition = ballPosition3D + velocity;
                 float ballYOffset = 0.15f;
 
-//               newBallPosition.y = (barycoordinates.x * triangleVertices[i].mXYZ.y +
-//                                   barycoordinates.y * triangleVertices[i+1].mXYZ.y + /*ballYOffset +*/
-//                                   barycoordinates.z * triangleVertices[i+2].mXYZ.y);
+                newBallPosition.y = (baryCoordinates.x * triangleVertices[i].mXYZ.y +
+                                     baryCoordinates.y * triangleVertices[i+1].mXYZ.y + ballYOffset +
+                                     baryCoordinates.z * triangleVertices[i+2].mXYZ.y);
 
-                physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+                physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //                qDebug() << "ball is moving towards " << newBallPosition;
                 break; //Break out of the for loop, the triangle is found, its normal calculated and ball position updated.
             }
@@ -139,7 +139,7 @@ if(simulatePhysics == true)
 
             gsl::Vector3D newBallPosition = ballPosition3D + velocity;
 
-            physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+            physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //            qDebug() << "Ball is falling";
         }
 

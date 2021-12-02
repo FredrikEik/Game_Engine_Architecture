@@ -49,7 +49,7 @@ public:
 
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
 
-    float mCameraSpeed{0.05f};
+    float mCameraSpeed{0.5f};
     float mCameraRotateSpeed{0.1f};
 
     Frustum mFrustum;
