@@ -639,8 +639,8 @@ int MeshHandler::readLasFile()
 
     // This serves as the indexes and "resolution" in the planeGrid.
     // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 50;
-    const int arrayZ = 50;
+    const int arrayX = 5;
+    const int arrayZ = 5;
 
     float widthScale  = 7.0f;  //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
@@ -748,27 +748,31 @@ int MeshHandler::readLasFile()
 
     std::vector<Vertex> vert = meshDataPoints.mVertices[0]; //Get all the vertices of the ground-mesh
 
-    for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
+    for (int i = 1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
     {
         gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 
-        int x1 = static_cast<int>((pos.x) / distanceBetweenSquaresX); //Figure out which square you are in in x and z directions
-        int z1 = static_cast<int>((pos.z) / distanceBetweenSquaresZ);
-
-        if (x1 > 0      && z1 > 0 &&    //If position x1 & y1 is above 0
-            x1 < arrayX && z1 < arrayZ) //and below arrayX/arrayZ
+        if(pos.x > 0 && pos.z > 0)
         {
             pCenter = pos; //Store the position of the point we are currently on
 
 //            qDebug() << "Normal calculated" << i;
 
             // Store the nearest vertices, based on how created triangles.
-            p0 = gsl::Vector3D{vert[i - arrayX    ].mXYZ};
-            p1 = gsl::Vector3D{vert[i + 1 - arrayX].mXYZ};
-            p2 = gsl::Vector3D{vert[i + 1         ].mXYZ};
-            p3 = gsl::Vector3D{vert[i + arrayX    ].mXYZ};
-            p4 = gsl::Vector3D{vert[i - 1 + arrayX].mXYZ};
-            p5 = gsl::Vector3D{vert[i - 1         ].mXYZ};
+//            p0 = gsl::Vector3D{vert[i - arrayX    ].mXYZ};
+//            p1 = gsl::Vector3D{vert[i + 1 - arrayX].mXYZ};
+//            p2 = gsl::Vector3D{vert[i + 1         ].mXYZ};
+//            p3 = gsl::Vector3D{vert[i + arrayX    ].mXYZ};
+//            p4 = gsl::Vector3D{vert[i - 1 + arrayX].mXYZ};
+//            p5 = gsl::Vector3D{vert[i - 1         ].mXYZ};
+
+            p0 = meshDataPoints.mVertices[0][i - arrayX    ].mXYZ;
+            p1 = meshDataPoints.mVertices[0][i + 1 - arrayX].mXYZ;
+            p2 = meshDataPoints.mVertices[0][i + 1         ].mXYZ;
+            p3 = meshDataPoints.mVertices[0][i + arrayX    ].mXYZ;
+            p4 = meshDataPoints.mVertices[0][i - 1 + arrayX].mXYZ;
+            p5 = meshDataPoints.mVertices[0][i - 1         ].mXYZ;
+
         }
 
     //Create a vector to all the points
@@ -787,8 +791,6 @@ int MeshHandler::readLasFile()
 //    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
 //    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
 //    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
-    //Commenting out this does create more normalized vectors/triangles, but it still draws some triangles wrong/across the entire grid
-
 
     //Calulate the normals for each triangle around the point
     n0 = v0.cross(v0, v1);
