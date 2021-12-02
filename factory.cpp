@@ -156,6 +156,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectName = "Terrain";
         objectToCreate->mObjectType = "Terrain";
         RefToTerrain = objectToCreate;
+
     }
     else if (objectName == "Terrain")
     {
@@ -178,7 +179,7 @@ GameObject* Factory::createObject(std::string objectName)
     }
     else if(objectName == "ContourLine")
     {
-        objectToCreate = new ContourLines;
+        objectToCreate = new ContourLines(RefToTerrain);
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "ContourLine " + std::to_string(ballcounter);

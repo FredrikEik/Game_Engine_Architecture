@@ -33,8 +33,8 @@ public:
 
 
     //mins and maxes must be uniform with step
-    float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{20.f}, yMax{15.f}, zMax{30.0f};
-    float step{8.f};
+    float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{30.f}, yMax{15.f}, zMax{30.0f};
+    float step{2.f};
 
     //int maxVertices{1000};
 };
@@ -42,13 +42,13 @@ public:
 class ContourLines : public GameObject
 {
 public:
-    ContourLines();
+    ContourLines(GameObject* terrain);
     ~ContourLines() {};
-    void createContourLines();
+    void createContourLines(GameObject* terrainw);
     void draw();
     void init();
-    void move(float x, float y, float z) {0;};
-    std::vector<Vertex> contourLineVertexData;
+    void move(float x, float y, float z);
+
 };
 
 #endif // LASTERRAINGENERATOR_H

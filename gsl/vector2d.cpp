@@ -70,7 +70,7 @@ namespace gsl
 
     Vector2D Vector2D::operator/(Vector2D lhs) const
     {
-        return {x / lhs.x / lhs.y};
+        return {x / lhs.x, y / lhs.y};
     }
 
     GLfloat Vector2D::length() const
