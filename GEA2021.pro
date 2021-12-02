@@ -20,9 +20,11 @@ SOURCES += main.cpp \
     lasplane.cpp \
     lightsource.cpp \
     mathfunctions.cpp \
+    octahedronball.cpp \
     plane.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
+    rollingball.cpp \
     skybox.cpp \
     texture.cpp \
     vertex.cpp \
@@ -55,9 +57,11 @@ HEADERS += \
     lightsource.h \
     math_constants.h \
     mathfunctions.h \
+    octahedronball.h \
     plane.h \
     renderwindow.h \
     mainwindow.h \
+    rollingball.h \
     skybox.h \
     texture.h \
     vertex.h \

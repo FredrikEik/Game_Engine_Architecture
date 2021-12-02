@@ -29,6 +29,7 @@
 #include "constants.h"
 #include "skybox.h"
 #include "lasplane.h"
+#include "rollingball.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -141,6 +142,15 @@ void RenderWindow::init()
     m_world->setShader(m_shaderProgramMap["phong"]);
     m_world->setObjectName("Las World");
 
+    //rollingBall
+    m_ball = new RollingBall(3);
+    m_ball->setShader(m_shaderProgramMap["phong"]);
+    m_ball->setObjectName("Ball");
+    m_ball->setPosition(QVector3D(10.f, 10.f, 10.f));
+    dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
+
+    qDebug() << m_ball->getSurface();
+
     //Skybox
     m_skybox = new SkyBox();
     m_skybox->setShader(m_shaderProgramMap["cubemap"]);
@@ -158,6 +168,7 @@ void RenderWindow::init()
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
+    m_ball->init(m_ball->getShader()->getModelMatrixUniform());
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -201,6 +212,7 @@ void RenderWindow::render()
     //Put these in a container?
     m_world->draw();
     m_light->draw();
+    m_ball->draw();
 
 
     //Calculate framerate before

@@ -15,6 +15,8 @@ public:
     void constructPlane();
     QVector3D calculateNormal(QVector3D point3D, unsigned int index, const std::vector<QVector3D> &tempPosition);
 
+
+    std::vector<Vertex>& get_vertices() { return m_vertices; }
 private:
     std::string filepath{};
 

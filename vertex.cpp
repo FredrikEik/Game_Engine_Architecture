@@ -62,6 +62,26 @@ Vertex::Vertex(QVector3D posVec, QVector3D normalVec, QVector2D UVvec)
     m_uv[1] = UVvec.y();
 }
 
+void Vertex::set_xyz(float x, float y, float z)
+{
+    m_xyz[0] = x;
+    m_xyz[1] = y;
+    m_xyz[2] = z;
+}
+
+void Vertex::set_normal(float x, float y, float z)
+{
+    m_normal[0] = x;
+    m_normal[1] = y;
+    m_normal[2] = z;
+}
+
+void Vertex::set_uv(float x, float y)
+{
+    m_uv[0] = x;
+    m_uv[1] = y;
+}
+
 QVector3D Vertex::getPosition()
 {
     return QVector3D(m_xyz[0], m_xyz[1], m_xyz[2]);

@@ -122,6 +122,8 @@ void LasPlane::constructPlane()
         columns++;
     }
 
+    qDebug() << "Vertices created!";
+
     columns=0;
     rows=1;
     for(int i{0}; i < (long long)(positions.size() - columnSize - 1); i++)
@@ -140,8 +142,10 @@ void LasPlane::constructPlane()
         m_indices.push_back(i);
         m_indices.push_back(i+1);
         m_indices.push_back(i+columnSize+1);
-        qDebug()<<"pushing vert at "<<tempPos;
+        //qDebug()<<"pushing vert at "<<tempPos;
     }
+
+    qDebug() << "Indices created!";
 }
 
 void LasPlane::readFile(const std::string &filename, QVector3D &max, QVector3D &min, std::vector<QVector3D> &tempLasPos)
@@ -335,6 +339,8 @@ QVector3D LasPlane::calculateNormal(QVector3D point3D, unsigned int index, const
 void LasPlane::init(GLint matrixUniform)
 {
     constructPlane();
+
+    qDebug() << "LAS plane constructed!";
 
     m_matrixUniform = matrixUniform;
 

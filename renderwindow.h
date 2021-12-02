@@ -50,6 +50,7 @@ private:
     VisualObject* m_world{nullptr}; //The scene map
     VisualObject* m_skybox{nullptr}; //The skybox
     class Player* m_player{nullptr};  //The player
+    class RollingBall* m_ball{nullptr}; //The ball
 
     //Camera
     Camera* m_camera{nullptr};

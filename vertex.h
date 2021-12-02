@@ -18,6 +18,11 @@ public:
     Vertex(float x, float y, float z, float r, float g, float b, float u, float v);
     Vertex(class QVector3D posVec, class QVector3D normalVec);
     Vertex(class QVector3D posVec, class QVector3D normalVec, class QVector2D UVvec);
+
+    void set_xyz(float x, float y, float z);
+    void set_normal(float x, float y, float z);
+    void set_uv(float x, float y);
+
     QVector3D getPosition();
 private:
     float m_xyz[3];
