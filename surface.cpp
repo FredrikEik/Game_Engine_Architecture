@@ -165,10 +165,6 @@ void Surface::readFile(std::string filename)
 
         }
     }
-    for(int i = 0; i < getMeshComp()->mVertices.size()-1; i++)
-    {
-        qDebug() << getMeshComp()->mVertices[i].get_xyz();
-    }
 
     //closing the file after use
     fileIn.close();
