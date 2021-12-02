@@ -22,6 +22,7 @@ win32 {
 SOURCES += main.cpp \
     MathStuff/MathStuff.cpp \
     camera.cpp \
+    contours.cpp \
     cube.cpp \
     gameobject.cpp \
     gsl/matrix3x3.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    contours.h \
     cube.h \
     gameobject.h \
     gltypes.h \

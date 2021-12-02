@@ -210,6 +210,14 @@ void RenderWindow::init()
     setScaleZ(0.1);
     ObjFactory->setOBJindex(-1);
 
+    for(int i = 0; i < 10; i++)
+    {
+        ObjFactory->createObject("Contours");
+        mMainWindow->addObjectToWorldList("Contour");
+        ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+        //qDebug() <<
+    }
+
     //ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
     //ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
     //mPlayer = new player(ObjFactory->mGameObject.back());

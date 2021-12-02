@@ -10,11 +10,14 @@
 #include <string>
 #include <math.h>
 
+//MeshComponent* contourLineMesh;
+
 Surface::Surface(std::string filename) : GameObject() //går her når filepath er inputta i renderwindow.cpp new Surface.
 {
     readFile(filename);
     //mMatrix.setToIdentity();
     getTransformComp()->mMatrix.setToIdentity();
+    //contourLineMesh = getMeshComp();
 }
 
 Surface::~Surface()
@@ -153,12 +156,18 @@ void Surface::readFile(std::string filename)
         for (unsigned y = 0; y < triangleNumberY - 1; y++)
         {
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y + 1));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
+
         }
+    }
+    for(int i = 0; i < getMeshComp()->mVertices.size()-1; i++)
+    {
+        qDebug() << getMeshComp()->mVertices[i].get_xyz();
     }
 
     //closing the file after use

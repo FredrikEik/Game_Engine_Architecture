@@ -18,4 +18,16 @@ public:
     void draw() override;
 };
 
+class ContourLines : public GameObject
+{
+public:
+    ContourLines();
+    ~ContourLines() {};
+    void createContourLines();
+    void draw();
+    void init();
+    void move(float x, float y, float z) {0;};
+    std::vector<Vertex> contourLineVertexData;
+};
+
 #endif // SURFACE_H

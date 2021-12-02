@@ -4,6 +4,7 @@
 #include "xyz.h"
 #include "objimport.h"
 #include "surface.h"
+#include "contours.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -64,9 +65,20 @@ void ObjectFactory::createObject(std::string objectName)
             storedMeshes.insert(std::pair("Surface", willCreateObject->getMeshComp()));
             qDebug() << "surface mesh saved";
         }
+        mSurface = willCreateObject;
         willCreateObject->mTexture = 2;
 
     }
+    else if (objectName == "Contours")
+        {
+           willCreateObject = new Contours(mSurface, contourTick*2);
+           //willCreateObject->getMaterialComp()->mShaderProgram = 0;
+           //willCreateObject->getMaterialComp()->mTextureUnit = 0;
+           contourTick++;
+           willCreateObject->mTexture = 5;
+           //qDebug() << "Contour msurface: " <<mSurface;
+
+        }
     else
         return;
 

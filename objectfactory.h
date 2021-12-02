@@ -20,6 +20,9 @@ public:
     void setOBJindex(int index) { OBJindex = index; }
     int getOBJindex() { return OBJindex; }
 
+    int contourTick;
+    GameObject* mSurface {nullptr};
+
     private:
         std::map<std::string, MeshComponent*> storedMeshes;
 

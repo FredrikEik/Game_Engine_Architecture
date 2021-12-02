@@ -76,6 +76,11 @@ public:
     void setScaleZ(double value);
     void setScale(double x, double y, double z, int index);
 
+    GameObject* mSurface;
+    GameObject* mContour;
+
+
+
     void updateMatrix();
 
     void toggleGameMode();
