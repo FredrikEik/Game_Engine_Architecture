@@ -28,6 +28,7 @@ win32 {
 
 
 SOURCES += main.cpp \
+    bsplinepath.cpp \
     camera.cpp \
     components.cpp \
     contourlines.cpp \
@@ -65,6 +66,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     PreCompiledHeaders.h \
+    bsplinepath.h \
     camera.h \
     components.h \
     constants.h \

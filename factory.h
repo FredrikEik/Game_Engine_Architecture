@@ -27,6 +27,7 @@ public:
 
     GameObject* createObject(std::string objectName);
     GameObject* mGround;
+    GameObject* mBall;
 
     void saveMesh(std::string fileName, std::string nickName);
 

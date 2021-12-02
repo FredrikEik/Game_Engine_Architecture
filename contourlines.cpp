@@ -31,7 +31,7 @@ ContourLines::ContourLines(GameObject* mGround, float height)
         }
 
         int state = topLeft * 8 + topRight * 4 + bottomRight * 2 + bottomLeft * 1;
-        qDebug() << state;
+        //qDebug() << state;
 
         Vertex v;
 

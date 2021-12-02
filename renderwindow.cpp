@@ -238,7 +238,7 @@ void RenderWindow::initObjects()
             mMainWindow->updateOutliner(factory->mGameObjects);
             hjelpeObjekt = factory->createObject("Cube");
             mGround = factory->createObject("TriangleSurface");
-           for(int i =0; i<10; i++)
+            for(int i =0; i<10; i++)
             {
             mContour = factory->createObject("ContourLines");
             }
@@ -528,6 +528,11 @@ void RenderWindow::createObjectbutton(std::string objectName)
 
     mQuadtree.insert(position2D, id, newObject);
       mMainWindow->updateOutliner(factory->mGameObjects);
+
+      if(objectName == "Sphere")
+      {
+          newObject = factory->createObject("SplineCurve");
+      }
 }
 
 void RenderWindow::playPausebutton(const QSurfaceFormat &format)
@@ -906,11 +911,14 @@ void RenderWindow::spawnBalls()
     //CreateBalls
     int ballAmount = 5;
     GameObject* objectToMove;
+    GameObject* splinePath;
 
     for(int i = 0; i<ballAmount; i++)
     {
        objectToMove = factory->createObject("Sphere");
-       objectToMove->getTransformComponent()->mMatrix.setPosition(rand() % 200 + 1,100,rand() % 200 + 1);
+       gsl::Vector3D position(rand() % 200 + 1,100,rand() % 200 + 1);
+       objectToMove->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
+       splinePath = factory->createObject("SplineCurve");
     }
 }
 

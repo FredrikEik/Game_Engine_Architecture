@@ -229,12 +229,12 @@ void TriangleSurface::readFile(std::string filnavn)
                 if(j+((i+1)*terrainGridX) < mapHeights.size() - 100)
                 {
                 Vertex v{};
-                /*Bottom Right*/  v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); getMeshComponent()->mVertices.push_back(v);
-                /*Top Right*/  v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
-                /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
-                /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,0,255); getMeshComponent()->mVertices.push_back(v);
-                /*Top Right*/  v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,255,0); getMeshComponent()->mVertices.push_back(v);
-                /*Top Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[(j+1) + ((i+1)*terrainGridZ)], ((j+1)*squareSize)); v.set_rgb(255,0,0); getMeshComponent()->mVertices.push_back(v);
+                /*Bottom Right*/  v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); v.set_uv(0,0); getMeshComponent()->mVertices.push_back(v);
+                /*Top Right*/  v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,0,255);v.set_uv(0,1); getMeshComponent()->mVertices.push_back(v);
+                /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,255,0);v.set_uv(1,0); getMeshComponent()->mVertices.push_back(v);
+                /*Bottom Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[j + ((i+1)*terrainGridZ)]  , (j*squareSize)); v.set_rgb(1,0,255);v.set_uv(1,0); getMeshComponent()->mVertices.push_back(v);
+                /*Top Right*/  v.set_xyz((i*squareSize)  ,mapHeights[(j+1) + (i*terrainGridZ)]  , ((j+1)*squareSize)); v.set_rgb(1,255,0);v.set_uv(0,1); getMeshComponent()->mVertices.push_back(v);
+                /*Top Left*/  v.set_xyz(((i+1)*squareSize),mapHeights[(j+1) + ((i+1)*terrainGridZ)], ((j+1)*squareSize)); v.set_rgb(255,0,0);v.set_uv(1,1); getMeshComponent()->mVertices.push_back(v);
 
                 }
 

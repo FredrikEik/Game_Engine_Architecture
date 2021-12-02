@@ -11,6 +11,7 @@
 #include "skybox.h"
 #include "player.h"
 #include "trianglesurface.h"
+#include "bsplinepath.h"
 #include "contourlines.h"
 #include <QDebug>
 
@@ -104,6 +105,16 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->mObjectType = "Sphere";
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
         dynamic_cast<Sphere*>(objectToCreate)->setSurface(mGround);
+        mBall = objectToCreate;
+    }
+    else if(objectName == "SplineCurve")
+    {
+        objectToCreate = new bSplinePath(mBall,mGround);
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        dynamic_cast<bSplinePath*>(objectToCreate)->setSurface(mGround);
+        objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter) + " SplineCurve";
+
     }
     else if(objectName == "Camera")
     {
