@@ -26,6 +26,8 @@ if(simulatePhysics == true)
     GameObject groundObject;
     std::vector<Vertex> triangleVertices;
 
+    float speed = 1.5f;
+
 //Get the details of the plane the physicsobject is going to interact with.
     for(int i = 0; i < mGameObjects.size(); i++)
     {
@@ -58,7 +60,7 @@ if(simulatePhysics == true)
     //Get the details of the ball
     std::string searchGameName{0};
     GameObject physicsBall[51];
-    gsl::Vector3D ballPosition3D[51];
+    gsl::Vector3D ballPosition3D;
 
 //    gsl::Vector3D barycoordinates[51]; //Dont really see a point for this? given the code will run 51 times either way?
 
@@ -79,7 +81,7 @@ if(simulatePhysics == true)
                 physicsBall[ball].mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
                 //Find the Vector3D position of the ball
-                ballPosition3D[ball] = physicsBall[ball].mTransform->mMatrix.getPosition();
+                ballPosition3D = physicsBall[ball].mTransform->mMatrix.getPosition();
             }
         }
 
@@ -90,7 +92,7 @@ if(simulatePhysics == true)
             //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
             gsl::Vector3D v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ,
                           v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ,
-                          v2 = ballPosition3D[ball] - triangleVertices[i].mXYZ;
+                          v2 = ballPosition3D - triangleVertices[i].mXYZ;
 
             float den = (v0.x * v1.y) - (v1.x * v0.y);
             baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den; //and you cant divide by 0;
@@ -114,16 +116,16 @@ if(simulatePhysics == true)
 
                 ////Move the ball
                 gsl::Vector3D acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
-                velocity = velocity + acceleration * 0.17f;
+                velocity = velocity + acceleration * 0.17f * speed;
 
-                gsl::Vector3D newBallPosition = ballPosition3D[ball] + velocity;
+                gsl::Vector3D newBallPosition = ballPosition3D + velocity;
                 float ballYOffset = 0.15f;
 
 //               newBallPosition.y = (barycoordinates.x * triangleVertices[i].mXYZ.y +
 //                                   barycoordinates.y * triangleVertices[i+1].mXYZ.y + /*ballYOffset +*/
 //                                   barycoordinates.z * triangleVertices[i+2].mXYZ.y);
 
-                physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition.x, (newBallPosition.y), newBallPosition.z);
+                physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //                qDebug() << "ball is moving towards " << newBallPosition;
                 break; //Break out of the for loop, the triangle is found, its normal calculated and ball position updated.
             }
@@ -133,9 +135,9 @@ if(simulatePhysics == true)
         {
             gsl::Vector3D acceleration = (-gravity * 0.01f);
 
-            velocity = velocity + (acceleration * 0.17f);
+            velocity = velocity + (acceleration * 0.17f * speed);
 
-            gsl::Vector3D newBallPosition = ballPosition3D[ball] + velocity;
+            gsl::Vector3D newBallPosition = ballPosition3D + velocity;
 
             physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //            qDebug() << "Ball is falling";
