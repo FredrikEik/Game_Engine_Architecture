@@ -244,7 +244,7 @@ float LASHeightMap::CalcHeight(float x, float z)
 {
     float height = 0.0f;
 
-    int resolution =30; // 15
+    int resolution =15; // 15
     int X = static_cast<int>(x);
     int Z = static_cast<int>(z);
     int counter =0;

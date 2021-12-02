@@ -223,13 +223,13 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
     mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
-    mPlayerCamera->setPosition(gsl::Vector3D(1.f, 10.f, 0.f));
+    mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
-    mEditorCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
+    mEditorCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
 
 
@@ -244,7 +244,7 @@ void RenderWindow::init()
 
 
     //LASDATA
-    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt",  20);
+    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt",  1);
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
     // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
@@ -252,7 +252,7 @@ void RenderWindow::init()
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
     //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,-1, GL_LINES);
 
-    LASHeightMap *mapPhys = new LASHeightMap("C:../GEA2021/test_las.txt", 20); //physics surface
+    LASHeightMap *mapPhys = new LASHeightMap("C:../GEA2021/test_las.txt", 15); //physics surface
     Physics->InitPhysicsSystem(meshCompVec[3], mapPhys->getmVertices());
     //send in the necessary data to physics engine
     //    int eSize = (int)entities.size();
@@ -266,7 +266,7 @@ void RenderWindow::init()
     {
         for(int j{0}; j < 10; j++)
         {
-            entitySys->construct("sphere.obj", QVector3D( 150 + 3*(i) ,100.0f,150 + 3*(j)),2,1);
+            entitySys->construct("sphere.obj", QVector3D( 400 + 8*(i) ,90.0f,300 + 8*(j)),2,1);
             //for(int x = 0; x < (int)transformCompVec.size(); x++){
             //    if(transformCompVec[x]->entity == 3*(j)){
             //        transformCompVec[x]->PosOverTime.push_back(gsl::Vector3D( 10 + 3*(i)));
@@ -429,7 +429,7 @@ void RenderWindow::render()
 
 void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
 {
-    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getY() < -10.0f))
+    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getY() < -1000.0f))
     {
         Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
         Transform->mMatrix.setPosition(SpawnPoint.getX(), SpawnPoint.getY(), SpawnPoint.getZ());
