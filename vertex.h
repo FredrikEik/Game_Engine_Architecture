@@ -37,6 +37,13 @@ public:
     gsl::Vector3D getNormal(){return mNormal;}
     gsl::Vector2D getST(){return mST;}
 
+    Vertex operator+(const Vertex &rhs) const;      // v + v
+    Vertex operator/(GLfloat rhs) const;
+
+    void set_x(GLfloat x);
+    void set_y(GLfloat y);
+    void set_z(GLfloat z);
+
 private:
     gsl::Vector3D mXYZ;
     gsl::Vector3D mNormal;

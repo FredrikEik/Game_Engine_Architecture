@@ -49,7 +49,8 @@ void RollingBall::move(float dt)
 
             if(BallPosition.y < surfaceY + (yOffset*2))
             {
-                acceleration = gsl::Vector3D(pNormal.x*pNormal.y*9.8, pNormal.y*pNormal.y*9.8) + gForce;
+                //acceleration = gsl::Vector3D(pNormal.x*pNormal.y*9.8, pNormal.y*pNormal.y*9.8) + gForce;
+                acceleration = gsl::Vector3D(pNormal.x * pNormal.y * 9.80565f, pNormal.y * pNormal.y * 9.80565f, pNormal.z * pNormal.y * 9.80565f) + gForce;
                 velocity = velocity + acceleration * dt;
                 gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
                 getTransformComponent()->mMatrix.setPosition(newPosition.x, surfaceY + yOffset, newPosition.z);
@@ -59,7 +60,7 @@ void RollingBall::move(float dt)
                 acceleration = gForce;
                 velocity = velocity + acceleration * dt;
                 gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
-                getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y + yOffset, newPosition.z);
+                getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z);
             }
             BallPosition = getTransformComponent()->mMatrix.getPosition();
         }

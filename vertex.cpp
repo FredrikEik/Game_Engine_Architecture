@@ -17,6 +17,15 @@ Vertex::Vertex(float x, float y, float z, float r, float g, float b, float s, fl
     mST.setY(t);
 }
 
+Vertex Vertex::operator+(const Vertex &rhs) const
+{
+    return Vertex(mXYZ+rhs.mXYZ, mNormal+rhs.mNormal, mST+rhs.mST);
+}
+Vertex Vertex::operator/(GLfloat rhs) const
+{
+    return Vertex(mXYZ/rhs, mNormal/rhs, mST/rhs);
+}
+
 Vertex::Vertex(gsl::Vector3D a, gsl::Vector3D b , gsl::Vector2D c)
 {
     mXYZ = a;
@@ -44,6 +53,19 @@ void Vertex::set_xyz(GLfloat x, GLfloat y, GLfloat z)
 {
     mXYZ.setX(x);
     mXYZ.setY(y);
+    mXYZ.setZ(z);
+}
+
+void Vertex::set_x(GLfloat x)
+{
+    mXYZ.setX(x);
+}
+void Vertex::set_y(GLfloat y)
+{
+    mXYZ.setY(y);
+}
+void Vertex::set_z(GLfloat z)
+{
     mXYZ.setZ(z);
 }
 

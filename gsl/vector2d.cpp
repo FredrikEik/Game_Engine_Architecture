@@ -68,6 +68,11 @@ namespace gsl
         return {x * lhs.x, y * lhs.y};
     }
 
+    Vector2D Vector2D::operator/(Vector2D lhs) const
+    {
+        return {x / lhs.x / lhs.y};
+    }
+
     GLfloat Vector2D::length() const
     {
         return std::sqrt(std::pow(x, 2.f) + std::pow(y, 2.f));

@@ -24,6 +24,8 @@ public:
     Vector2D operator-() const;                     // -v
     Vector2D operator*(GLfloat lhs) const;          // v * f
     Vector2D operator*(Vector2D lhs) const;
+    Vector2D operator/(Vector2D lhs) const;
+
     const Vector2D& operator =(const Vector2D &rhs);    // v = v
 
     //Functions
