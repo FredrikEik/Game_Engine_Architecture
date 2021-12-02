@@ -16,6 +16,7 @@ public:
     void draw() override;
     void move(float x, float y, float z) override;
     void minMaxScale();
+    void createContourLines();
     std::vector<Vertex> mVertices;
     float xmin=-20.f, xmax=20.f, zmin=-20.f, zmax=20.f, ymin = -5.f, ymax =5.f, h=0.f;
     double xMinimum = 0, xMaximum = 1, yMinimum = 0, yMaximum=1, zMinimum = 0, zMaximum=1;
