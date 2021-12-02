@@ -7,7 +7,7 @@
 class contourLines : public GameObject
 {
 public:
-    contourLines();
+    contourLines(std::vector<Vertex> contourPoints);
     ~contourLines();
 
     void draw() override;

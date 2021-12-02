@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "lassurface.h"
+#include "contourlines.h"
 
 
 LasSurface::LasSurface(std::string filnavn)
@@ -136,7 +137,7 @@ void LasSurface::readLasFile(std::string filnavn)
                                                  tempVertices[i+sqOffset].getXYZ().y,
                                                  tempVertices[i+sqOffset].getXYZ().z,
                                                  0,0,0,
-                                                  0,0));
+                                                 0,0));
 
         getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+step)+sqOffset].getXYZ().x,
                                                 tempVertices[(i+step)+sqOffset].getXYZ().y,
@@ -233,17 +234,17 @@ void LasSurface::createContourLines()
            bool C = false;
            bool D = false;
 
-           if(a.getXYZ().getY() > contourHeight){
-               A = true;
+           if(a.getXYZ().y > contourHeight){
+               A = 1;
            }
-           if(b.getXYZ().getY() > contourHeight){
-               B = true;
+           if(b.getXYZ().y > contourHeight){
+               B = 1;
            }
-           if(c.getXYZ().getY() > contourHeight){
-               C = true;
+           if(c.getXYZ().y > contourHeight){
+               C = 1;
            }
-           if(d.getXYZ().getY() > contourHeight){
-               D = true;
+           if(d.getXYZ().y > contourHeight){
+               D = 1;
            }
            Vertex ab = (a+b)/2;
            ab.set_y(contourHeight);
@@ -260,9 +261,105 @@ void LasSurface::createContourLines()
            Vertex dbd = (d+bd)/2;
            dbd.set_y(contourHeight);
 
+           int state = getstate(A,B,C,D);
 
+           switch (state)
+           {
+           case 0:
+               break;
+           case 1:
+               //da to cd
+               contourPoints.push_back(da);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(cd);
+               break;
+           case 2:
+               //bc to cd
+               contourPoints.push_back(bc);
+               contourPoints.push_back(cd);
+               break;
+           case 3:
+               contourPoints.push_back(da);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bc);
+               break;
+           case 4:
+               contourPoints.push_back(ab);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(bc);
+               break;
+           case 5:
+               contourPoints.push_back(da);
+               contourPoints.push_back(ab);
+               contourPoints.push_back(cd);
+               contourPoints.push_back(bc);
+               break;
+           case 6:
+               contourPoints.push_back(ab);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(cd);
+               break;
+           case 7:
+               contourPoints.push_back(da);
+               contourPoints.push_back(ab);
+               break;
+           case 8:
+               contourPoints.push_back(ab);
+               contourPoints.push_back(da);
+               break;
+           case 9:
+               contourPoints.push_back(cd);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(ab);
+               break;
+           case 10:
+               contourPoints.push_back(da);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(cd);
+
+               contourPoints.push_back(ab);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(bc);
+               break;
+           case 11:
+               contourPoints.push_back(bc);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(bbd);
+               contourPoints.push_back(ab);
+               break;
+           case 12:
+               contourPoints.push_back(da);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bd);
+               contourPoints.push_back(bc);
+               break;
+           case 13:
+               contourPoints.push_back(cd);
+               contourPoints.push_back(bc);
+               break;
+           case 14:
+               contourPoints.push_back(cd);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(dbd);
+               contourPoints.push_back(da);
+               break;
+           case 15:
+               break;
+           }
        }
    }
+}
+
+int LasSurface::getstate(bool A, bool B, bool C, bool D)
+{
+    return 8*A+4*B+2*C+1*D;
 }
 
 void LasSurface::init()

@@ -1,8 +1,8 @@
 #include "contourlines.h"
 
-contourLines::contourLines()
+contourLines::contourLines(std::vector<Vertex> contourPoints)
 {
-
+    getMeshComponent()->mVertices = contourPoints;
 }
 
 contourLines::~contourLines()

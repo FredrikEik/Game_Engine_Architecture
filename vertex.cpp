@@ -100,6 +100,21 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
+void Vertex::set_x(GLfloat x)
+{
+    mXYZ.setX(x);
+}
+
+void Vertex::set_y(GLfloat y)
+{
+    mXYZ.setY(y);
+}
+
+void Vertex::set_z(GLfloat z)
+{
+    mXYZ.setZ(z);
+}
+
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";

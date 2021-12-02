@@ -33,6 +33,9 @@ public:
     void set_st(GLfloat *st);
     void set_st(GLfloat s, GLfloat t);
     void set_uv(GLfloat u, GLfloat v);
+    void set_x(GLfloat x);
+    void set_y(GLfloat y);
+    void set_z(GLfloat z);
 
     gsl::Vector3D getXYZ(){ return mXYZ;}
     Vertex operator+(Vertex &pnt);
