@@ -115,11 +115,11 @@ void RollingBall::move(float dt)
             // må også flytte samme distansen d langs nye hastighetsvektoren
             return;
         }
-//        else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
-//                 barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
-//           qDebug() << "The ball is outside";
+        else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
+                 barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
+           qDebug() << "The ball is outside";
 
-//        }
+        }
 
     }
         hastighet = gsl::Vector3D{0.f,0.f,0.f};
