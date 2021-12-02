@@ -215,6 +215,11 @@ void LasSurface::minMaxScale()          //skalerer mellom to verdier, gjør dett
     }
 }
 
+void LasSurface::createContourLines()
+{
+
+}
+
 void LasSurface::init()
 {
     //must call this to use OpenGL functions

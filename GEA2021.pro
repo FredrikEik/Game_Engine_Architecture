@@ -30,6 +30,7 @@ win32 {
 SOURCES += main.cpp \
     camera.cpp \
     components.cpp \
+    contourlines.cpp \
     cube.cpp \
     detailswidget.cpp \
     factory.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    contourlines.h \
     cube.h \
     detailswidget.h \
     factory.h \
