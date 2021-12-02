@@ -183,6 +183,11 @@ void MainWindow::on_actionPlay_triggered(bool checked)
         ui->actionPlay->setText("Play");
 }
 
+void MainWindow::on_actionSimulatePhysics_toggled(bool checked)
+{
+    mCoreEngine->togglePhysicsPlay(checked);
+}
+
 void MainWindow::on_actionKudos_to_triggered()
 {
     QMessageBox::about(this, "Kudos to:",
@@ -291,8 +296,4 @@ void MainWindow::on_actionGrid_toggled(bool arg1)
     mRenderSystem->mDrawGrid = arg1;
 }
 
-void MainWindow::on_actionSimulatePhysics_toggled(bool arg1)
-{
-    mCoreEngine->simulatePhysics = arg1;
-}
 

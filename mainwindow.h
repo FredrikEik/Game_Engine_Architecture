@@ -30,6 +30,8 @@ public slots:
 
     void on_actionPlay_triggered(bool checked);
 
+    void on_actionSimulatePhysics_toggled(bool checked);
+
 private slots:
     void on_actionToggle_backside_culling_toggled(bool checked);
 
@@ -59,7 +61,7 @@ private slots:
 
     void on_actionGrid_toggled(bool arg1);
 
-    void on_actionSimulatePhysics_toggled(bool arg1);
+
 
 private:
     void init();

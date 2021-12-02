@@ -172,6 +172,7 @@
    <addaction name="separator"/>
    <addaction name="actionPlay"/>
    <addaction name="separator"/>
+   <addaction name="actionSimulatePhysics"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidgetOutliner">
@@ -468,6 +469,10 @@
   <action name="actionSimulatePhysics">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="AppIconResources.qrc">
+     <normaloff>:/Icons/AppIcons/icons8-play-100.png</normaloff>:/Icons/AppIcons/icons8-play-100.png</iconset>
    </property>
    <property name="text">
     <string>SimulatePhysics</string>

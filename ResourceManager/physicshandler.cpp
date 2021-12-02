@@ -10,7 +10,10 @@ PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {re
     mGameObjectManager = &GameObjectManager::getInstance();
 }
 
-void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
+void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics)
+{
+
+if(simulatePhysics == true)
 {
 //Get the map of GameObjects and their meshdata from CoreEngine.
     std::map<std::string, unsigned int> GameObjectMap = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->get_mMeshMap();
@@ -33,7 +36,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             groundObject.mTransform = mGameObjects[i]->mTransform;
             groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
-            auto placement = GameObjectMap.find(searchGameName +".obj");
+            auto placement = GameObjectMap.find(searchGameName);
 
             triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices();
 //            qDebug() << "Gameobject" << QString::fromStdString(searchGameName) << "found"; //Nice way to get from a std::string to qDebug printable string.
@@ -132,7 +135,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
             physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //            qDebug() << "Ball is falling";
     }
-
+} ////End of simulatePhysics-bool loop
 ////------------Old Method - delivered in compulsery 2 for vis & sim - not scalable to multiple meshes with more than 2 triangles.---------
 
 ////Find the distance between the balls position and vertices of the trianglesurface

@@ -36,6 +36,7 @@ public:
     std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
 
     bool mIsPlaying{false};
+    bool mSimulatePhysics{false};
 
     Camera *mEditorCamera{nullptr};
     Camera *mGameCamera{nullptr};

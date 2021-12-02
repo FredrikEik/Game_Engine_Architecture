@@ -61,6 +61,11 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
     mRenderSystem->mIsPlaying = isPlaying;
 }
 
+void CoreEngine::togglePhysicsPlay(bool shouldSimulate)
+{
+    isSimulatingPhysics = shouldSimulate;
+}
+
 void CoreEngine::readJSScene()
 {
     //Create script engine
@@ -243,17 +248,17 @@ void CoreEngine::gameLoop()
     mEditorCamera->update();
     //SoundSystem::getInstance()->update(mRenderSystem);
 
+
     //Update PhysicsObjects in scene
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
     PhysicsHandler ph(mRenderSystem);
-    if(simulatePhysics)
-    {
-        ph.movePhysicsObject(mGameObjects);
-    }
+
+    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics);
+
 //    //Initializing values for the gameplay
 //    GamePlayMechanics tm(mRenderSystem);
 //    int tetrominoNr;
-////    std::vector<GameObject*> gameBlock;
+////    std::vector<GameObject*> gameBlock;z
 
 //    while(mGameObjects.size() < 40) //this line never s
 //    {

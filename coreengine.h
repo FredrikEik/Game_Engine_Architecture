@@ -27,6 +27,8 @@ public:
     static CoreEngine* getInstance();
 
     void togglePlayMode(bool shouldPlay);
+    void togglePhysicsPlay(bool shouldSimulate);
+
     void setUpScene();
     void handleInput();
 
@@ -40,8 +42,8 @@ public:
     QTimer *mGameLoopTimer{nullptr};    //timer that drives the gameloop
     MeshHandler *mMeshHandler{nullptr};
 
-    bool isPlaying{false};              //is the game playing?
-    bool simulatePhysics{false};        //Should physics be simulated?
+    bool isPlaying{false};           //is the game playing?
+    bool isSimulatingPhysics{false}; //is physics simulating?
 
     Input mInput;
 
