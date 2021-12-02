@@ -34,7 +34,7 @@ public:
 
     //mins and maxes must be uniform with step
     float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{20.f}, yMax{15.f}, zMax{30.0f};
-    float step{8.f};
+    float step{2.f};
 
     //int maxVertices{1000};
 };
