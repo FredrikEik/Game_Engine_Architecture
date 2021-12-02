@@ -214,7 +214,7 @@ void RenderWindow::init()
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 
     initObjects();
-	mMainWindow->updateOutliner(factory->mGameObjects);
+    mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 void RenderWindow::initObjects()
@@ -235,8 +235,9 @@ void RenderWindow::initObjects()
 //    }
 
         surface = factory->createObject("LasSurface");
+        factory->createContourLines(surface);
 
-        ;
+
 
         for ( int i =0; i<20; i++){
         rollingBall = factory->createObject("RollingBall");
@@ -289,11 +290,11 @@ void RenderWindow::render()
 
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
-		{	
+        {
 
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
-			//send data to shader
+            //send data to shader
             //qDebug() << shaderProgramIndex;
             if(shaderProgramIndex == 1)
             {
@@ -313,7 +314,7 @@ void RenderWindow::render()
             //factory->mGameObjects[i]->draw();
 
             if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
-			{
+            {
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
             if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
@@ -352,7 +353,7 @@ void RenderWindow::render()
                     }
                 }
             }*/
-			}
+            }
             else
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
@@ -704,10 +705,10 @@ void RenderWindow::handleInput()
     }
 
     else if(!editorMode) //player movement
-    {  
+    {
       static_cast<Player*>(mPlayer)->movement();
     }
-	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
+    skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
 }
 
 void RenderWindow::saveLevel()

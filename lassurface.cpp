@@ -67,7 +67,7 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step =10;
+    int step =20;
     float squaresDirection = (step-1);
     float Amountsquares = squaresDirection*squaresDirection;
     float xOffset = (xmax-xmin)/step;

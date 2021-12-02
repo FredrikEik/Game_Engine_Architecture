@@ -12,6 +12,7 @@
 #include "player.h"
 #include "lassurface.h"
 #include "rollingball.h"
+#include "contourlines.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -22,6 +23,23 @@ Factory::Factory()
     {
         mAvailableIDs.push(ID);
     }
+}
+
+GameObject* Factory::createContourLines(GameObject *contourSurface)
+{
+    GameObject* objectToCreate;
+
+    objectToCreate = new contourLines(static_cast<LasSurface*>(contourSurface)->contourPoints);
+    objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+    objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+    objectToCreate->mObjectType = "ContourLines";
+
+    objectToCreate->init();
+    objectToCreate->ID = mAvailableIDs.front();
+    mAvailableIDs.pop();
+
+    mGameObjects.push_back(objectToCreate);
+    return objectToCreate;
 }
 
 GameObject* Factory::createObject(std::string objectName)

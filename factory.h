@@ -26,6 +26,7 @@ public:
     int ballcounter=0;
 
     GameObject* createObject(std::string objectName);
+    GameObject* createContourLines(GameObject* contourSurface);
 
     void saveMesh(std::string fileName, std::string nickName);
 
