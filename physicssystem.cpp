@@ -16,7 +16,7 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Ve
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
 {
     //friction
-    float my = 0.05f; //friction coefficient
+    float my = 0.03f; //friction coefficient
 
 
     QVector3D g = QVector3D(0.0f, -9.8067f*3.f, 0.0f);
@@ -39,6 +39,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
+            NewVector.setY(NewVector.y()*(1.0f-my));
             //get speed
             float speed = Transf->Velocity.length();// * elasticity;
 
@@ -106,6 +107,7 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
         //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
         isFound = true;
     }
+
     if(!isFound)
         for(unsigned long long i = 0; i < vertexData.size() ; i = i + 3 ) // sum mad sketch movement in array
         {

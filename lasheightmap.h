@@ -12,7 +12,7 @@ private:
     static const int X =  800;
     static const int Z = 1000;
 public:
-    LASHeightMap(std::string fileName);
+    LASHeightMap(std::string fileName, int inResolution);
 
     std::vector<Vertex> getPositions() const;
     std::vector<Vertex> getmVertices() const;
@@ -34,7 +34,7 @@ public:
     float mHPoints[X][Z];
     float getHeighestY(){return heighestY;}
 private:
-
+    int Resolution = 1; //1 is default and higest rez.
     void ReadDatafromFile(std::string fileName);
     std::vector<Vertex> positions;
     std::vector<Vertex> mVertices;

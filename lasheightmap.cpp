@@ -3,10 +3,11 @@
 #include <qdebug.h>
 #include <algorithm>
 
-LASHeightMap::LASHeightMap(std::string fileName)
+LASHeightMap::LASHeightMap(std::string fileName, int inResolution)
 {
     ReadDatafromFile(fileName);
     //make a array data thingie
+    Resolution = inResolution;
     populatePosArr();
     GenerateHeightMap();
 }
@@ -177,31 +178,30 @@ void LASHeightMap::GenerateHeightMap()
     float ofsetx = 0;
     float ofsetz = 0;
     float ofsety = 0;
-    int rez = 1; // 1 i s best quality
-    for(float x = 50; x<X-1; x+=rez)//(float x = 100; x<150; x+=1)// 300/400
-        for(float z =50; z<Z-1; z+=rez)//(float z =100; z<150; z+=1)
+    for(float x = 50; x<X-1; x+=Resolution)//(float x = 100; x<150; x+=1)// 300/400
+        for(float z =50; z<Z-1; z+=Resolution)//(float z =100; z<150; z+=1)
         {
             //get all height data :D
             float height1 =  CalcHeight(    x  ,    z);
-            float height2 = CalcHeight(  x+rez,    z);
-            float height3 = CalcHeight(    x  ,  z+rez);
-            float height4 = CalcHeight(    x,  z+rez);
-            float height5 = CalcHeight(  x+rez,    z);
-            float height6 = CalcHeight(  x+rez,  z+rez);
+            float height2 = CalcHeight(  x+Resolution,    z);
+            float height3 = CalcHeight(    x  ,  z+Resolution);
+            float height4 = CalcHeight(    x,  z+Resolution);
+            float height5 = CalcHeight(  x+Resolution,    z);
+            float height6 = CalcHeight(  x+Resolution,  z+Resolution);
             //use height date for colouring   //This order is like this because our
             mVertices.push_back(Vertex{ofsetx +    x  , (ofsety + height1), ofsetz +   z  ,       height1/100, height1/100, height1/100,0,0}); //1
-            mVertices.push_back(Vertex{ofsetx + x+ rez, (ofsety + height2), ofsetz +   z  ,       height2/100, height2/100, height2/100,0,0}); //2
-            mVertices.push_back(Vertex{ofsetx +    x  , (ofsety + height3), ofsetz + z+rez,       height3/100, height3/100, height3/100,0,0}); //3
-            mVertices.push_back(Vertex{ofsetx +    x  , (ofsety + height4), ofsetz + z+rez,       height4/100, height4/100, height4/100,0,0}); //4
-            mVertices.push_back(Vertex{ofsetx + x+ rez, (ofsety + height5), ofsetz +   z  ,       height5/100, height5/100, height5/100,0,0}); //5
-            mVertices.push_back(Vertex{ofsetx + x+ rez, (ofsety + height6), ofsetz + z+rez,       height6/100, height6/100, height6/100,0,0}); //6
+            mVertices.push_back(Vertex{ofsetx + x+ Resolution, (ofsety + height2), ofsetz +   z  ,       height2/100, height2/100, height2/100,0,0}); //2
+            mVertices.push_back(Vertex{ofsetx +    x  , (ofsety + height3), ofsetz + z+Resolution,       height3/100, height3/100, height3/100,0,0}); //3
+            mVertices.push_back(Vertex{ofsetx +    x  , (ofsety + height4), ofsetz + z+Resolution,       height4/100, height4/100, height4/100,0,0}); //4
+            mVertices.push_back(Vertex{ofsetx + x+ Resolution, (ofsety + height5), ofsetz +   z  ,       height5/100, height5/100, height5/100,0,0}); //5
+            mVertices.push_back(Vertex{ofsetx + x+ Resolution, (ofsety + height6), ofsetz + z+Resolution,       height6/100, height6/100, height6/100,0,0}); //6
 
             mHPoints[static_cast<int>(x)][static_cast<int>(z)] = height1;
 
             //contour line Collector :D
             int avgY = static_cast<int>(((height1 + height2 + height3 + height4 + height5 + height6)/6)+ofsety);
-            float avgX = ((x + x+rez + x + x + x+rez + x+rez)/6)+ofsetx;
-            float avgZ = ((z + z + z+rez + z+rez + z + z+rez)/6)+ofsetz;
+            float avgX = ((x + x+Resolution + x + x + x+Resolution + x+Resolution)/6)+ofsetx;
+            float avgZ = ((z + z + z+Resolution + z+Resolution + z + z+Resolution)/6)+ofsetz;
             if(avgY > 5000 || avgY < 5){
             }else{
                 if(std::fmod(avgY,2)<0.1)
@@ -242,7 +242,7 @@ float LASHeightMap::CalcHeight(float x, float z)
 {
     float height = 0.0f;
 
-    int resolution =15; // 15
+    int resolution =30; // 15
     int X = static_cast<int>(x);
     int Z = static_cast<int>(z);
     int counter =0;
@@ -279,12 +279,12 @@ float LASHeightMap::CalcHeight(float x, float z)
     if(height < lowestY && height>20.f)
     {
         lowestY =height;
-        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+        //qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
     }
     if(height > heighestY)
     {
         heighestY = height;
-        qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
+        //qDebug() << "heighestY y : "<<heighestY<< " lowestY Y: " << lowestY<< "\n";
     }
 
 
@@ -293,7 +293,7 @@ float LASHeightMap::CalcHeight(float x, float z)
     //do the average calc
     //qDebug() << height;
     //then return its
-    return height;
+    return -height + 90;
 }
 
 void LASHeightMap::CalcContourlineOrder()

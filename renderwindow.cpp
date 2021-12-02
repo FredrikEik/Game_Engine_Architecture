@@ -243,36 +243,38 @@ void RenderWindow::init()
 
 
     //LASDATA
-    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt");
+    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt",  20);
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
     // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
     ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
     entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES); //3
     //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
     //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,-1, GL_LINES);
-/*
-    for(int i{0}; i < 40; i++)
-    {
-        for(int j{0}; j < 40; j++)
-        {
-            entitySys->construct("sphere.obj", QVector3D( 10 + 3*(i) ,10.0f,10 + 3*(j)),2,1);
-        }
-    }
-*/
-    marchingsquare *march = new marchingsquare(map);
-    ResSys->SetIntoMeshDataContainerRUNTIME(march->getMeshComp()->mVertices, "LAS-CONT");
-    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_LINES);
 
-    //physics code
-    oldTime = std::chrono::high_resolution_clock::now();
+    LASHeightMap *mapPhys = new LASHeightMap("C:../GEA2021/test_las.txt", 20); //physics surface
+    Physics->InitPhysicsSystem(meshCompVec[3], mapPhys->getmVertices());
     //send in the necessary data to physics engine
-    Physics->InitPhysicsSystem(meshCompVec[3], map->getmVertices());
     //    int eSize = (int)entities.size();
     //    for(int i = 0; i < eSize; i++){
     //        if(meshCompVec[i]->entity == 16){
     //            break;
     //        }
     //    }
+
+    for(int i{0}; i < 20; i++)
+    {
+        for(int j{0}; j < 20; j++)
+        {
+            entitySys->construct("sphere.obj", QVector3D(200 + 5*(i) ,90.0f,200 + 5*(j)),2,1);
+        }
+    }
+
+    marchingsquare *march = new marchingsquare(map);
+    ResSys->SetIntoMeshDataContainerRUNTIME(march->getMeshComp()->mVertices, "LAS-CONT");
+    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_LINES);
+
+    //physics code
+    oldTime = std::chrono::high_resolution_clock::now();
 
 
     mSong->pause();
@@ -309,6 +311,10 @@ void RenderWindow::render()
         {
             //frustum culling
             //frustumCulling(i);
+
+            //killZ :D
+
+            killZ(transformCompVec[i], gsl::Vector3D(255  ,90.0f,250 ));
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
 
@@ -358,24 +364,24 @@ void RenderWindow::render()
 
             }
             //HARDCODED COLLIDER BABY
-//            if(transformCompVec[i]->isPhysicsEnabled && isPhysicsEnabled)
-//            {
-//                for(unsigned long long j = 0; j < eSize; j++)
-//                    if(i != j)
-//                        if( collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
-//                        {
-//                            /*
-//                          QVector3D vec1 =MakeQvec3D( transformCompVec[i]->Velocity);
-//                          vec1.normalize();
-//                          QVector3D vec2 =MakeQvec3D( transformCompVec[j]->Velocity);
-//                          vec2.normalize();
+            //            if(transformCompVec[i]->isPhysicsEnabled && isPhysicsEnabled)
+            //            {
+            //                for(unsigned long long j = 0; j < eSize; j++)
+            //                    if(i != j)
+            //                        if( collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
+            //                        {
+            //                            /*
+            //                          QVector3D vec1 =MakeQvec3D( transformCompVec[i]->Velocity);
+            //                          vec1.normalize();
+            //                          QVector3D vec2 =MakeQvec3D( transformCompVec[j]->Velocity);
+            //                          vec2.normalize();
 
-//                          transformCompVec[i]->Velocity = transformCompVec[i]->Velocity + MakeGSLvec3D( vec2  ) ;
-//                          transformCompVec[j]->Velocity = transformCompVec[j]->Velocity - MakeGSLvec3D( vec1 );
-//*/
-//                        //KILL M E PLS
-//                        }
-//            }
+            //                          transformCompVec[i]->Velocity = transformCompVec[i]->Velocity + MakeGSLvec3D( vec2  ) ;
+            //                          transformCompVec[j]->Velocity = transformCompVec[j]->Velocity - MakeGSLvec3D( vec1 );
+            //*/
+            //                        //KILL M E PLS
+            //                        }
+            //            }
 
 
         }
@@ -406,6 +412,15 @@ void RenderWindow::render()
     CalcDeltaTime();
     
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+}
+
+void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
+{
+    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getY() < -10.0f))
+    {
+        Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
+        Transform->mMatrix.setPosition(SpawnPoint.getX(), SpawnPoint.getY(), SpawnPoint.getZ());
+    }
 }
 
 gsl::Vector3D RenderWindow::MakeGSLvec3D(QVector3D vec)

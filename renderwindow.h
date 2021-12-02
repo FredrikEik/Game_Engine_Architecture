@@ -84,6 +84,7 @@ private slots:
 
 private:
 
+    void killZ(TransformComponent* Transform, gsl::Vector3D  SpawnPoint);
     int physicsCount = 0;
     void CalcDeltaTime();
     float DeltaTime =0.0;
