@@ -111,8 +111,8 @@ void Camera::setCameraSpeed(float value)
     //Keep within some min and max values
     if(mCameraSpeed < 0.01f)
         mCameraSpeed = 0.01f;
-    if (mCameraSpeed > 0.3f)
-        mCameraSpeed = 0.3f;
+    if (mCameraSpeed > 0.5f)
+        mCameraSpeed = 0.5f;
 }
 
 void Camera::calculateFrustumVectors()

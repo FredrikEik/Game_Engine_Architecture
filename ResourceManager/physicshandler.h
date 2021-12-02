@@ -11,7 +11,7 @@ class PhysicsHandler
 public:
     PhysicsHandler(RenderSystem *renderSystemIn);
 
-    void movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics);
+    void movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics, int numberOfSimulatedBalls);
 
     RenderSystem *mRenderSystem{nullptr};
     GameObjectManager *mGameObjectManager{nullptr};

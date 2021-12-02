@@ -698,6 +698,8 @@ int MeshHandler::readLasFile()
             planeGrid[x][z].z /= depthScale;
             planeGrid[x][z].y /= heigthScale;
 
+
+
             //Only using mVertices[0] beacuse there is no lod for this mesh.
             //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
             meshDataPoints.mVertices[0].emplace_back(Vertex{planeGrid[x][z].x, planeGrid[x][z].y, planeGrid[x][z].z, //Positions
@@ -742,13 +744,13 @@ int MeshHandler::readLasFile()
 
 
     qDebug() << "Start of normal calculation";
+{
+//    gsl::Vector3D triangleNormal{0};
+//    int count = 0;
 
-    gsl::Vector3D triangleNormal{0};
-    int count = 0;
-
-    for(int i = 0; i < meshDataPoints.mVertices[0].size() - 2; i +=3)
-    {
-        count++;
+//    for(int i = 0; i < meshDataPoints.mVertices[0].size() - 2; i +=3)
+//    {
+//        count++;
         ////Calculating triangle normals variant 1 (Used in phsycicshandler)
 //        triangleNormal = (meshDataPoints.mVertices[0][i+1].mXYZ - meshDataPoints.mVertices[0][i].mXYZ) ^
 //                         (meshDataPoints.mVertices[0][i+1].mXYZ - meshDataPoints.mVertices[0][i+2].mXYZ);
@@ -758,7 +760,7 @@ int MeshHandler::readLasFile()
 //        meshDataPoints.mVertices[0][i].set_normal(triangleNormal);
 
         ////Calculating triangle normals variant 2 - https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
-        ///"Pseudo-code"
+        ///"Pseudo-code" example
 //        gsl::Vector3D U = meshDataPoints.mVertices[0][i+1].mXYZ - meshDataPoints.mVertices[0][i].mXYZ;
 //        gsl::Vector3D V = meshDataPoints.mVertices[0][i+2].mXYZ - meshDataPoints.mVertices[0][i].mXYZ;
 
@@ -766,74 +768,74 @@ int MeshHandler::readLasFile()
 //        triangleNormal.y = (U.z * V.x) - (U.x * V.z);
 //        triangleNormal.z = (U.x * V.y) - (U.y * V.x);
 
-        meshDataPoints.mVertices[0][i].set_normal(triangleNormal);
-    }
-    qDebug() << "Number of triangle normals calculated" << count;
-
+//        meshDataPoints.mVertices[0][i].set_normal(triangleNormal);
+//    }
+//    qDebug() << "Number of triangle normals calculated" << count;
+}
       ////Calculating triangle normals variant 3 (original)
-//    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
-//    gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
+    gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
+    gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
-//    for (int i = 1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
-//    {
-//        gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
+    for (int i = 1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
+    {
+        gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 
-//        if(pos.x > 0 && pos.z > 0)
-//        {
-//            pCenter = pos; //Store the position of the point we are currently on
+        if(pos.x > 0 && pos.z > 0)
+        {
+            pCenter = pos; //Store the position of the point we are currently on
 
-////            qDebug() << "Normal calculated" << i;
+//            qDebug() << "Normal calculated" << i;
 
-//            // Store the nearest vertices, based on how the triangles been created.
-//            p0 = meshDataPoints.mVertices[0][i - arrayX    ].mXYZ;
-//            p1 = meshDataPoints.mVertices[0][i + 1 - arrayX].mXYZ;
-//            p2 = meshDataPoints.mVertices[0][i + 1         ].mXYZ;
-//            p3 = meshDataPoints.mVertices[0][i + arrayX    ].mXYZ;
-//            p4 = meshDataPoints.mVertices[0][i - 1 + arrayX].mXYZ;
-//            p5 = meshDataPoints.mVertices[0][i - 1         ].mXYZ;
+            // Store the nearest vertices, based on how the triangles been created.
+            p0 = meshDataPoints.mVertices[0][i - arrayX    ].mXYZ;
+            p1 = meshDataPoints.mVertices[0][i + 1 - arrayX].mXYZ;
+            p2 = meshDataPoints.mVertices[0][i + 1         ].mXYZ;
+            p3 = meshDataPoints.mVertices[0][i + arrayX    ].mXYZ;
+            p4 = meshDataPoints.mVertices[0][i - 1 + arrayX].mXYZ;
+            p5 = meshDataPoints.mVertices[0][i - 1         ].mXYZ;
 
-//        }
+        }
 
-//    //Create a vector to all the points
-//    gsl::Vector3D v0 = p0 - pCenter;
-//    gsl::Vector3D v1 = p1 - pCenter;
-//    gsl::Vector3D v2 = p2 - pCenter;
-//    gsl::Vector3D v3 = p3 - pCenter;
-//    gsl::Vector3D v4 = p4 - pCenter;
-//    gsl::Vector3D v5 = p5 - pCenter;
+    //Create a vector to all the points
+    gsl::Vector3D v0 = p0 - pCenter;
+    gsl::Vector3D v1 = p1 - pCenter;
+    gsl::Vector3D v2 = p2 - pCenter;
+    gsl::Vector3D v3 = p3 - pCenter;
+    gsl::Vector3D v4 = p4 - pCenter;
+    gsl::Vector3D v5 = p5 - pCenter;
 
 
-//    //Get the absolute value, if not, it's dark (Has negative values)
-////    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
-////    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
-////    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
-////    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
-////    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
-////    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+    //Get the absolute value, if not, it's dark (Has negative values)
+//    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+//    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+//    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+//    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+//    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+//    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 
-//    //Calulate the normals for each triangle around the point
-//    n0 = v0.cross(v0, v1);
-//    n0.normalize();
+    //Calulate the normals for each triangle around the point
+    n0 = v0.cross(v0, v1);
+    n0.normalize();
 
-//    n1 = v1.cross(v1, v2);
-//    n1.normalize();
+    n1 = v1.cross(v1, v2);
+    n1.normalize();
 
-//    n2 = v2.cross(v2, v3);
-//    n2.normalize();
+    n2 = v2.cross(v2, v3);
+    n2.normalize();
 
-//    n3 = v3.cross(v3, v4);
-//    n3.normalize();
+    n3 = v3.cross(v3, v4);
+    n3.normalize();
 
-//    n4 = v4.cross(v4, v5);
-//    n4.normalize();
+    n4 = v4.cross(v4, v5);
+    n4.normalize();
 
-//    n5 = v5.cross(v5, v0);
-//    n5.normalize();
+    n5 = v5.cross(v5, v0);
+    n5.normalize();
 
-//    gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
+    gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
-//    meshDataPoints.mVertices[0][i].set_normal(nV);
-//}
+    meshDataPoints.mVertices[0][i].set_normal(nV);
+}
 qDebug() << "End of normal calculations";
 {
 //In case i need to scale/adjust parts of the grid as the last step before finishing.
@@ -857,7 +859,6 @@ qDebug() << "End of normal calculations";
 //    }
 //}
 }
-
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.

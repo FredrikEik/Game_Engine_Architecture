@@ -119,7 +119,7 @@ void CoreEngine::setUpScene()
     //Create the gameobject LasGround
     GameObject *lasGround = mGameObjectManager->addObject("LasGround"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
     lasGround->mName = "LasGround";
-    lasGround->mTransform->mMatrix.translate(-40.0f, -25.0f, -150.0f);
+    lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
 
     //End of Vis & Sim code
@@ -167,12 +167,20 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
 //Rollingball, vis & sim collision code integrated into GEA
-    temp = mGameObjectManager->addObject("Ball.obj");
-    temp->mTransform->mMatrix.translate(0.5f, 1.5f, 0.0f);
-    temp->mTransform->mMatrix.scale(0.1f);
-    temp->mName = "RollingBall";
-    mGameObjectManager->addComponent("PhysicsComponent", temp);
-    mRenderSystem->mGameObjects.push_back(temp);
+
+    //Create many balls to "simulate" rain.
+    for(int i = 0; i <= numberOfSimulatedBalls; i++)
+    {
+        temp = mGameObjectManager->addObject("Ball.obj");
+        //Place the balls randomly between these points.
+        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(30, 101),
+                                            QRandomGenerator::global()->bounded(15,  50),
+                                            QRandomGenerator::global()->bounded(30, 101));
+        temp->mTransform->mMatrix.scale(1.0f);
+        temp->mName = "RollingBall_" + std::to_string(i);
+        mGameObjectManager->addComponent("PhysicsComponent", temp);
+        mRenderSystem->mGameObjects.push_back(temp);
+    }
 
     temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
     temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
@@ -182,12 +190,16 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
+    mEditorCamera->mPosition = gsl::Vector3D(50.0f, 50.0f, -50.0f);
+//    mEditorCamera->mForward = gsl::Vector3D(90.0f, 0.0f, 0.0f);
+    mEditorCamera->mYaw = 180.0f;
+    mEditorCamera->mPitch = -25.0f;
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     //mGameObjectManager->setUpAllTextures();
 
     mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
+    mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:
@@ -253,7 +265,7 @@ void CoreEngine::gameLoop()
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
     PhysicsHandler ph(mRenderSystem);
 
-    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics);
+    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
 
 //    //Initializing values for the gameplay
 //    GamePlayMechanics tm(mRenderSystem);

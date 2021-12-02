@@ -238,19 +238,19 @@ void RenderSystem::render()
 }
 
     //Quick hack test to check if frustum line mesh is OK
-    if(true)
-    {
-        ShaderHandler* tempShader = mGameObjectManager->mShaders[0];
-        glUseProgram(tempShader->mProgram);
-        MeshData frustum = CoreEngine::getInstance()->mGameObjectManager->makeFrustum(mGameCamera->mFrustum);
-        gsl::Matrix4x4 temp(true);
-        temp.translate(mGameCamera->mPosition);
-        temp.rotateY(-mGameCamera->mYaw);
-        temp.rotateX(mGameCamera->mPitch);
+////  if(true)
+////  {
+////      ShaderHandler* tempShader = mGameObjectManager->mShaders[0];
+////      glUseProgram(tempShader->mProgram);
+////      MeshData frustum = CoreEngine::getInstance()->mGameObjectManager->makeFrustum(mGameCamera->mFrustum);
+////      gsl::Matrix4x4 temp(true);
+////      temp.translate(mGameCamera->mPosition);
+////      temp.rotateY(-mGameCamera->mYaw);
+////      temp.rotateX(mGameCamera->mPitch);
 
-        glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
-        glBindVertexArray( frustum.mVAO[0] );
-        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+////      glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+////      glBindVertexArray( frustum.mVAO[0] );
+////      glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
         //Drawing forward vector of gameCam
 //        gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
@@ -269,7 +269,7 @@ void RenderSystem::render()
 //        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
 //        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
 
-    }
+////    }
 
     //Moves the dog triangle - should be made another way!!!!
 //    if(mIsPlaying)
