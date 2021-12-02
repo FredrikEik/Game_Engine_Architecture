@@ -9,8 +9,8 @@
 class LASHeightMap
 {
 private:
-    static const int X =  500;
-    static const int Z = 400;
+    static const int X =  800;
+    static const int Z = 1000;
 public:
     LASHeightMap(std::string fileName);
 

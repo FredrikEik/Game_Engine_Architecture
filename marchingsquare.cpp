@@ -102,6 +102,6 @@ int marchingsquare::getCase(int a, int b, int c, int d)
 
 void marchingsquare::drawLine(gsl::Vector2D a, gsl::Vector2D b)
 {
-    mMesh->mVertices.push_back(Vertex{a.x,static_cast<float>(iso*floor)+ 0.2f , a.y, 1 + 0.2f, 0,0, 0,0});
-    mMesh->mVertices.push_back(Vertex{b.x,static_cast<float>(iso*floor)+ 0.2f , b.y, 1 + 0.2f, 0,0, 0,0});
+    mMesh->mVertices.push_back(Vertex{a.x,static_cast<float>(iso*floor)+ 0.2f , a.y, 0,0,0, 0,0});
+    mMesh->mVertices.push_back(Vertex{b.x,static_cast<float>(iso*floor)+ 0.2f , b.y, 0,0,0, 0,0});
 }
