@@ -181,7 +181,7 @@ void LasSurface::readLasFile(std::string filnavn)
     //                }
     //            }
 
-
+    createContourLines();
 
 }
 
