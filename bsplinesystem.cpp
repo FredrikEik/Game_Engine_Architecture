@@ -1,18 +1,18 @@
 #include "bsplinesystem.h"
-bsplinesystem::bsplinesystem(int dID)
+#include "renderwindow.h"
+
+
+
+
+bsplinesystem::bsplinesystem(RenderWindow * inRW)
 {
-    std::string sID = std::to_string(dID);
-    mTxt = mTxt + sID;
-    mTxt = mTxt + ".txt";
-//    mMesh = new Mesh;
-//    mMatrix.setToIdentity();
-//    mMesh->mDrawType = GL_LINE_STRIP;
-    initialize();
+    RW = inRW;
 }
 
-void bsplinesystem::initialize()
+void bsplinesystem::initialize(int inEntity)
 {
-    addC(mTxt);
+    targetEntity = inEntity;
+    addC();
     for(double x = t[0]; x<t[n]; x+=0.05)
     {
         gsl::Vector3D punkt = deBoor(x);
@@ -20,6 +20,12 @@ void bsplinesystem::initialize()
         v.set_xyz(punkt.x, punkt.y, punkt.z); v.set_rgb(1,0,0);
         mVertices.push_back(v);
     }
+    seedNumber++;
+    std::string objName = "BSplineOBJ"+std::to_string(targetEntity);
+    RW->ResSys->SetIntoMeshDataContainerRUNTIME(mVertices,objName);
+    RW->entitySys->construct(objName,QVector3D(0,0,0),0,0,-1,GL_LINE_STRIP);
+    mVertices.clear();
+    c.clear();
 }
 
 
@@ -53,25 +59,12 @@ int bsplinesystem::findKnotInterval(float x)
 }
 
 
-void bsplinesystem::addC(std::string filnavn)
-{
-    std::ifstream inn;
-    inn.open(filnavn.c_str());
-
-    if (inn.is_open())
-    {
-        int m;
-        gsl::Vector3D temp;
-        inn >> m;
-        mVertices.reserve(m);
-        for (int i=0; i<m; i++){
-            inn >> temp.x;
-            inn >> temp.y;
-            inn >> temp.z;
-
-            c.push_back(temp);
+void bsplinesystem::addC()
+{    
+    for(int i = 0; i < (int)RW->transformCompVec.size(); i++){
+        if(RW->transformCompVec[i]->entity == targetEntity){
+            c=RW->transformCompVec[i]->PosOverTime;
         }
-        inn.close();
     }
     n = static_cast<int>(c.size());
 }

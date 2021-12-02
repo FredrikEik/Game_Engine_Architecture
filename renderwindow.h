@@ -14,6 +14,7 @@
 #include "entitysystem.h"
 #include "collisionsystem.h"
 #include "physicssystem.h"
+#include "bsplinesystem.h"
 
 #include "soundmanager.h"
 #include "soundsource.h"
@@ -52,6 +53,7 @@ public:
     resourceSystem * ResSys = new resourceSystem();
     EntitySystem * entitySys = new EntitySystem(this);
     collisionSystem* collisionSys = new collisionSystem();
+    bsplinesystem * bSSys;
     JSONSystem * JSS = new JSONSystem();
 
     std::vector<int> entities;

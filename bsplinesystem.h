@@ -5,19 +5,20 @@
 class bsplinesystem
 {
 public:
-    bsplinesystem(int dID);
-    void initialize();
+    bsplinesystem(class RenderWindow * RW);
+    void initialize(int entity);
     gsl::Vector3D deBoor(double x);
     int findKnotInterval(float x);
-    void addC(std::string filnavn);
+    void addC();
 private:
-    std::string mTxt = "../GEA2021/BSpline";
-    int n = 9; //Antall kontrollpunkter
+    class RenderWindow * RW;
+    int n = 50; //Antall kontrollpunkter
     int d = 2; //grad
+    int seedNumber=0;
     std::vector<gsl::Vector3D> c; //Kontrollpunkter
     std::vector<double> t {0,0,0,1,2,3,4,5,6,7,7,7}; //Skjøtevektor
     std::vector<Vertex> mVertices;
-    //Posisjon etc i visualObject
+    int targetEntity;
 };
 
 #endif // BSPLINESYSTEM_H

@@ -36,6 +36,8 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
+            gsl::Vector3D posInCol(pos.getX(),pos.getY(),pos.getZ());
+            Transf->PosOverTime.push_back(posInCol);
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
