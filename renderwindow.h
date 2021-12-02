@@ -55,6 +55,9 @@ public:
 
     RollingBall* mRollingBall { nullptr };
 
+    bool bRoll { false };
+    void startRoll() { bRoll = true; }
+
     void playSound();
     void pauseSound();
     void stopSound();

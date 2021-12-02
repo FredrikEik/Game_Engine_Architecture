@@ -14,23 +14,28 @@ RollingBall::~RollingBall()
 
 void RollingBall::move(float dt)
 {
-    /*std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
+    dt = dt/100000;
+
+    std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
     std::vector<GLuint>& indices = plane->getMeshComp()->mIndices;
-    gsl::Vector3D ballCoords = getTransformComp()->mMatrix.getPosition();
     gsl::Vector3D newPosition;
     gsl::Vector3D normal;
     gsl::Matrix4x4 position = new gsl::Matrix4x4;
     position.translate(getTransformComp()->mMatrix.getPosition());
+    position.setPosition(position.getPosition().x, position.getPosition().z, position.getPosition().y);
     gsl::Matrix4x4 sscale = new gsl::Matrix4x4;
     sscale.scale(getTransformComp()->Scal);
-    bool hit = false;
+    gsl::Vector3D ballCoords = position.getPosition();
+    qDebug() << "ball x: " << ballCoords.x << "y: " << ballCoords.y << " z: " << ballCoords.z;
 
     for(int i = 0; i < (indices.size() - 2); i += 3)
     {
+        // Finne trekant
         gsl::Vector3D p0 = gsl::Vector3D(vertices[indices[i]].get_xyz());
         gsl::Vector3D p1 = gsl::Vector3D(vertices[indices[i + 1]].get_xyz());
         gsl::Vector3D p2 = gsl::Vector3D(vertices[indices[i + 2]].get_xyz());
 
+        //finne trekanten ballen er på
         gsl::Vector3D baryCoords = ballCoords.barycentricCoordinates(p0, p1, p2);
         //qDebug() << "x: " << baryCoords.x << "y: " << baryCoords.y << " z: " << baryCoords.z;
         if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
@@ -39,8 +44,6 @@ void RollingBall::move(float dt)
             normal.normalize();
             acceleration = force * normal * normal.z;
 
-            if(i == 0) //reverse the acceleration when it passes center
-                acceleration = gsl::Vector3D(-acceleration.x, -acceleration.y, -acceleration.z);
             mVelocity = mVelocity + acceleration * dt;
 
             float zOffset = 0.25f;
@@ -49,22 +52,16 @@ void RollingBall::move(float dt)
             position.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
             ballCoords = position.getPosition();
             qDebug() << "x: " << newPosition.x << "y: " << newPosition.y << " z: " << newPosition.z;
-            hit = true;
         }
     }
-    if (hit == false)
-    {
-        acceleration = force;
-        mVelocity = mVelocity + acceleration * dt;
-        float zOffset = 0.25f;
-        newPosition = position.getPosition() + mVelocity;
-        position.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
-        qDebug() << "x: " << newPosition.x << "y: " << newPosition.y << " z: " << newPosition.z;
-    }
+    //qDebug() << "Accel: " << acceleration << " dt: " << dt;
 
+    position.translate(mVelocity);
+
+    position.setPosition(position.getPosition().x, position.getPosition().z, position.getPosition().y);
     getTransformComp()->mMatrix = position * sscale;
     getTransformComp()->mTrueScaleMatrix = position;
-    //qDebug() << "x: " << getTransformComp()->mMatrix.getPosition().x << "y: " << getTransformComp()->mMatrix.getPosition().y << " z: " << getTransformComp()->mMatrix.getPosition().z;*/
+    //qDebug() << "x: " << getTransformComp()->mMatrix.getPosition().x << "y: " << getTransformComp()->mMatrix.getPosition().y << " z: " << getTransformComp()->mMatrix.getPosition().z;
 }
 
 void RollingBall::init()

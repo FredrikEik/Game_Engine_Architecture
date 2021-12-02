@@ -249,7 +249,7 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
-    if (mRollingBall)
+    if (mRollingBall && bRoll)
         mRollingBall->move(mTimeStart.nsecsElapsed() / 1000000.f);
 
     mTimeStart.restart(); //restart FPS clock
