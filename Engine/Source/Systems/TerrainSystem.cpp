@@ -24,7 +24,6 @@ void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 		for (uint64 j{}; j < columns; ++j)
 		{
 			positions.push_back(glm::vec3(i, 0, j));
-			//positions.push_back(glm::vec3(i, std::rand()%10, j));
 		}
 	}
 	int rowsLooped{ 1 };
@@ -36,13 +35,6 @@ void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 			rowsLooped++;
 			continue;
 		}
-		//indices.push_back(i);
-		//indices.push_back(i+1);
-		//indices.push_back(i+columns);
-
-		//indices.push_back(i+1);
-		//indices.push_back(i+1+columns);
-		//indices.push_back(i+columns);		
 		
 		indices.push_back(i);
 		indices.push_back(i+1+columns);
@@ -61,13 +53,9 @@ void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 	{
 		if (((i + 1) % (columns * rowsLooped)) == 0)
 		{
-			//columnsLooped = 0;
 			rowsLooped++;
 		}
 		mesh->m_vertices.push_back(Vertex(positions[i], normals[i], glm::vec2((1-(rowsLooped % 2)), (i%2))));
-		//mesh->m_vertices.push_back(Vertex(positions[i], normals[i], glm::vec2((1-(rowsLooped % 2)), (columnsLooped %2))));
-		//++columnsLooped;
-		//mesh->m_vertices.push_back(Vertex(it, glm::vec3(0, 1, 0), glm::vec2(0, 0)));
 	}
 	mesh->m_indices = indices;
 	MeshSystem::initialize(*mesh);
@@ -92,16 +80,17 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	bool initialized{ false };
 	float x, y, z;
 	int32 points{};
+#pragma region ReadingLAS
+
 
 	file >> points; // The first line does not contain position info
 	lasPositions.reserve(points);
 
-	auto start = std::chrono::system_clock::now();
 	while (file)
 	{
 		file >> x;
 		file >> z;
-		file >> y;
+		file >> y; // y is the up vector, so z and y is flipped.
 
 		if (!initialized)
 		{
@@ -122,7 +111,10 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 
 		lasPositions.push_back(glm::vec3(x, y, z));
 	}
+	//ReadingLas
+#pragma endregion
 
+#pragma region CalculatingHeight
 
 	/* @brief A map that will contain the height values, sorted based on the position they will have
 	 @param int position in array
@@ -149,42 +141,24 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 		}
 	};
 
-	auto addPositionToAvgHeightNew =
-		[tempTerrainResolution, min](std::map<int, std::pair<float, int>>& container, const glm::vec3& position)
-	{
-		float positionRow = (position.x - min.x + 1) / terrainResolution;
-		float positionColumn = (position.z - min.z + 1) / terrainResolution;
-		long positionInArray = std::lroundf(positionColumn * positionRow);
-		if (container.find(positionInArray) != container.end())
-		{
-			container.at(positionInArray).first += position.y;
-			container.at(positionInArray).second++;
-		}
-		else
-		{
-			container.insert(std::pair<int, std::pair<float, int>>(positionInArray, std::pair<float, int>(position.y, 1)));
-		}
-	};
-
 
 	// Looping through all positions and gets the average height per vertex
 	for (const auto& it : lasPositions)
 	{
 		addPositionToAvgHeight(averageHeightPerSquare, it);
 	}
-	auto end = std::chrono::system_clock::now();
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	std::cout << "finished computation at " << std::ctime(&end_time)
-		<< "elapsed time: " << elapsed_seconds.count() << "s\n";
-	glm::vec3 center = (min + max) / 2.f;
+	//CalculatingHeight
+#pragma endregion
+
 	
-	uint64 columns = std::sqrt(averageHeightPerSquare.size());
 	normals.reserve(averageHeightPerSquare.size());
 	indices.reserve(averageHeightPerSquare.size());
 	positions.reserve(averageHeightPerSquare.size());
-	std::cout << "Size of terrain: " << columns << "^2\n";
-	// Using the for each loop as a regular nested for loop to ensure there are no gaps
+
+#pragma region PushingPositions
+
+	// Treating the for each loop as a regular nested for loop to ensure there are no gaps
+	glm::vec3 center = (min + max) / 2.f;
 	uint64 columnsLooped = 0;
 	uint64 rowsLooped = 0;
 	for (auto& it : averageHeightPerSquare)
@@ -200,9 +174,14 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 		z = columnsLooped;
 		z *= terrainResolution;
 		positions.push_back(glm::vec3(x, it.second.first - center.y, z));
-		//positions.push_back(glm::vec3(x, 0, z));
+
 		++columnsLooped;
 	}
+	//PushingPositions
+#pragma endregion
+
+#pragma region PushingIndices
+	uint64 columns = std::sqrt(averageHeightPerSquare.size());
 
 	rowsLooped = { 1 };
 	for (uint64 i{}; i < positions.size() - columns - 1; i++)
@@ -222,8 +201,12 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 		indices.push_back(i + 1);
 		indices.push_back(i + columns + 1);
 	}
+	//PushingIndices
+#pragma endregion
 
 	calculateNormals(positions, columns, terrainResolution, terrainResolution, normals);
+
+#pragma region PushingVertices
 
 	rowsLooped = 1;
 	for (int32 i{}; i < positions.size(); ++i)
@@ -234,6 +217,8 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 		}
 		mesh->m_vertices.push_back(Vertex(positions[i], normals[i], glm::vec2((1 - (rowsLooped % 2)), (i % 2))));
 	}
+	//PushingVertices
+#pragma endregion
 	mesh->m_indices = indices;
 	MeshSystem::initialize(*mesh);
 	mesh->bDisregardedDuringFrustumCulling = true;
@@ -690,6 +675,51 @@ bool TerrainSystem::findTriangle(uint64 index, const glm::vec3& position, const 
 		return true;
 	}
 	return false;
+}
+
+void TerrainSystem::TOOL_heightCalculator()
+{
+	glm::vec2 p, q, r;
+	glm::vec3 outP, outQ, outR, outBaryCoord;
+	glm::vec3 a{ 0,0,0 }, b{ 3,3,0 }, c{ 0,3,3 }, d{ 3,0,3 };
+	glm::vec3 position{ 2.56589f, 0.930889f, 0.434111f };
+	// first finding the triangle by searching with 2d vector
+	// then get the height of all 3 vertices when the triangle is found
+	//p = glm::vec2(a.x, a.z);
+
+	//q = glm::vec2(d.x, d.z);
+	//r = glm::vec2(c.x, c.z);
+
+	p = glm::vec2(a.x, a.z);
+
+	q = glm::vec2(d.x, d.z);
+	r = glm::vec2(c.x, c.z);
+	glm::vec2 pos(position.x, position.z);
+	float height;
+	outBaryCoord = baryCentricCoordinates(pos, p, q, r);
+	if (outBaryCoord.x >= 0 && outBaryCoord.y >= 0 && outBaryCoord.z >= 0)
+	{
+		//outP = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[0],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[1],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[index]].m_xyz[2]);
+
+		//outQ = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[0],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[1],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[(index + 1)]].m_xyz[2]);
+
+		//outR = glm::vec3(terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[0],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[1],
+		//	terrainMesh.m_vertices[terrainMesh.m_indices[(index + 2)]].m_xyz[2]);
+		// 
+	//if (findTriangle(i, position, terrainMesh, baryCoord, p, q, r))
+	//{
+	//	OUTIndex = i;
+	//	return baryCoord.x * p.y + baryCoord.y * q.y + baryCoord.z * r.y;
+	//}
+		height = outBaryCoord.x * a.y + outBaryCoord.y * c.y + outBaryCoord.z * d.y;
+		std::cout << "Height is: " << height;
+	}
+
 }
 
 glm::vec3 TerrainSystem::baryCentricCoordinates(const glm::vec2& position, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3)

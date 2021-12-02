@@ -160,6 +160,8 @@ void Engine::init()
 
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);	
+	TransformSystem::move(editorCameraEntity, glm::vec3(10, 20, 50), ECS);
+
 	gameCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(gameCameraEntity);
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
@@ -190,9 +192,9 @@ void Engine::init()
 	unitEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, PhysicsComponent, TrailComponent>(unitEntity);
 	ECS->loadAsset(unitEntity, DefaultAsset::SPHERE);
-	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
+	TransformSystem::setPosition(unitEntity, glm::vec3(70, 0, 50), ECS);
 	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
-	TrailSystem::setRecordInterval(unitEntity, ECS, 1.f);
+	//TrailSystem::setRecordInterval(unitEntity, ECS, 1.f);
 
 
 
@@ -228,8 +230,6 @@ void Engine::init()
 		}
 
 	}
-
-
 
 	lastFrame = glfwGetTime();
 }

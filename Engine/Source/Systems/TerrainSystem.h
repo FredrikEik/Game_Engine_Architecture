@@ -21,12 +21,14 @@ public:
 	static glm::vec3 getNormal(const struct TransformComponent& entityTransform,
 		const struct MeshComponent& terrainMesh, const int32& Index);
 
+	static void TOOL_heightCalculator();
 private:
 	static void calculateNormals(const std::vector<glm::vec3>& positions, uint32 rowSize, 
 		float stepDistanceX, float stepDistanceY, std::vector<glm::vec3>& OUTNormals);
 
 	static bool findTriangle(uint64 index, const glm::vec3& position, const struct MeshComponent& terrainMesh,
 		glm::vec3& outBaryCoord, glm::vec3& outP, glm::vec3& outQ, glm::vec3& outR);
+
 
 	static glm::vec3 baryCentricCoordinates(const glm::vec2& position, const glm::vec2& p1,
 		const glm::vec2& p2, const glm::vec2& p3);
