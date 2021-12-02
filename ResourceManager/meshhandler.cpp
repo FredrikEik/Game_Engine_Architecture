@@ -669,6 +669,7 @@ for (int x = 0; x < arrayX; x++)
         //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
         planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
         planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
+        planeGrid[x][z].y = (yMax + yMin) / 2;
 
         //Check how many points there are between each position in the grid using resolution
         for (int pointDataSearch = 0; pointDataSearch < allLasPointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
@@ -678,16 +679,16 @@ for (int x = 0; x < arrayX; x++)
                allLasPointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
                allLasPointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
             {
-                nrPoints[x][z]++;     // Keep track of y positions in spesific x z squares.
+                nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
                 sumPointData[x][z] += allLasPointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
             }
         }
+
         ////This is now in the for loop running for x * z
-        if(nrPoints[x][z] == 0) //Given how pointdata isnt filled with data perfeclty square, have a default y value if no points are in the grid.
+        if(nrPoints[x][z] != 0) //if points are found, create an average height for the point.
         {
-            planeGrid[x][z].y = yMin; //If no point is found in the square, give a suitable y value.
+            planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point is found, make an average value.
         }
-        else planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point IS found, make an average value.
 
         planeGrid[x][z].x -= xMin; //Scales the distance between points, to give a resonable size of the mesh in scene
         planeGrid[x][z].z -= zMin;
@@ -704,8 +705,7 @@ for (int x = 0; x < arrayX; x++)
                                                  0.0f, 0.0f});     //UVs
     }
 }
-//Debug stuff - used to double check variables.
-    qDebug() << "planeGrid is now filled";
+    qDebug() << "planeGrid is now filled"; //Basic progress functionality. Let the user know the program hasnt crashed.
 
 //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
 //    glPointSize(5.0f);
@@ -719,9 +719,11 @@ qDebug() << "Start of triangle calculations (should be much less expensive)";
     for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++) //This should run for all the rows of the grid, but stop before "overdrawing"
     {
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
-        if(check == arrayX-1)
+        if(check == arrayX-2)
         {
+            qDebug() << "Check triggered";
             check = 0;
+            continue;
         }
         check++;
 
@@ -733,18 +735,21 @@ qDebug() << "Start of triangle calculations (should be much less expensive)";
         meshDataPoints.mIndices[0].push_back(depth + arrayX);
         meshDataPoints.mIndices[0].push_back(depth + 1);
         meshDataPoints.mIndices[0].push_back(depth + arrayX + 1);
+
         //This does appear to fill the indices with the correct vertices for triangle order.
 {
-        //[][][][] //Simplified, quad at "/" position now created.
-        //[][][][] //It first fills the horizontal line, then going up one.
-        //[][][][]
-        //[/][][][]
+        //...........
+        //[][][][]... //Simplified, triangles at "/" position now created.
+        //[][][][]... //It first fills the horizontal line, then going up one.
+        //[][][][]...
+        //[/][][][]...
 
         //Next for-loop should fill: (Or vertically, but that should not matter)?
-        //[][][][]
-        //[][][][]
-        //[][][][]
-        //[/][/][][]
+        //...........
+        //[][][][]...
+        //[][][][]...
+        //[][][][]...
+        //[/][/][][]...
 }
     }
     qDebug() << "End of triangle calculation";
@@ -791,12 +796,12 @@ for (int i = 0; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arra
 
 
     //Get the absolute value, if not, it's dark (Has negative values)
-//    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
-//    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
-//    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
-//    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
-//    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
-//    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 //Commenting out this does create more normalized vectors/triangles, but it still draws some triangles wrong/across the entire grid
 
     //Calulate the normals for each triangle around the point

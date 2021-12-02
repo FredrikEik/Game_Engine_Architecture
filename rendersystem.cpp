@@ -174,13 +174,6 @@ void RenderSystem::render()
         }
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
-
-        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Get the Vis&Sim groundplane to draw triangles.
-        {
-            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
-        }
-
         //Draw the object
         //***Quick hack*** LOD test:
         if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
@@ -217,6 +210,12 @@ void RenderSystem::render()
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
+        }
+
+        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Get the Vis&Sim groundplane to draw triangles.
+        {
+            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
         }
 
         //Quick hack test to check if linebox/circle works:
