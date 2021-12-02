@@ -358,14 +358,21 @@ void ContourLines::createContourLines()
             {
                 D = 1;
             }
-            Vertex ab = (a+b)/2; ab.set_y(height);
-            Vertex bc = (b+c)/2; bc.set_y(height);
-            Vertex cd = (c+d)/2; cd.set_y(height);
-            Vertex da = (b+a)/2; da.set_y(height);
-            Vertex bd = (b+d)/2; bd.set_y(height);
-            Vertex bbd = (b+bd)/2; bbd.set_y(height);
-            Vertex dbd = (d+bd)/2; dbd.set_y(height);
+            Vertex ab = (a+b)/2;
+            Vertex bc = (b+c)/2;
+            Vertex cd = (c+d)/2;
+            Vertex da = (d+a)/2;
+            Vertex bd = (b+d)/2;
+            Vertex bbd = (b+bd)/2;
+            Vertex dbd = (d+bd)/2;
 
+            ab.set_y(height);
+            bc.set_y(height);
+            cd.set_y(height);
+            da.set_y(height);
+            bd.set_y(height);
+            bbd.set_y(height);
+            dbd.set_y(height);
             int marchingsquaresValue = 8 * A + 4 * B + 2 * C + 1 * D;
             //qDebug() << "Marching squares value: " << marchingsquaresValue;
 
@@ -375,101 +382,101 @@ void ContourLines::createContourLines()
                 break;
             case 1:
                             //cd to da
-                            contourLineVertexData.push_back(cd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 2:
                             //bc to cd
-                            contourLineVertexData.push_back(bc);
-                            contourLineVertexData.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(cd);
                             break;
                         case 3:
                             //bc to da
-                            contourLineVertexData.push_back(bc);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 4:
                             //ab to bc
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bc);
                             break;
                         case 5:
                             //ab to da
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(da);
                             //and
                             //bc to cd
-                            contourLineVertexData.push_back(bc);
-                            contourLineVertexData.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(cd);
                             break;
                         case 6:
                             //ab to cd
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(cd);
                             break;
                         case 7:
                             //ab to da
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 8:
                             //ab to da
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 9:
                             //ab to cd
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(cd);
                             break;
                         case 10:
                             //ab to bc
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bc);
                             //and
                             //cd to da
-                            contourLineVertexData.push_back(cd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 11:
                             //ab to bc
-                            contourLineVertexData.push_back(ab);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bbd);
-                            contourLineVertexData.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(ab);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bbd);
+                            getMeshComponent()->mVertices.push_back(bc);
                             break;
                         case 12:
                             //bc to da
-                            contourLineVertexData.push_back(bc);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(bd);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(bd);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                         case 13:
                             //bc to cd
-                            contourLineVertexData.push_back(bc);
-                            contourLineVertexData.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(bc);
+                            getMeshComponent()->mVertices.push_back(cd);
                             break;
                         case 14:
                             //cd to da
-                            contourLineVertexData.push_back(cd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(dbd);
-                            contourLineVertexData.push_back(da);
+                            getMeshComponent()->mVertices.push_back(cd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(dbd);
+                            getMeshComponent()->mVertices.push_back(da);
                             break;
                 case 15:
                 {
@@ -479,7 +486,7 @@ void ContourLines::createContourLines()
             }
         }
     }
-    getMeshComponent()->mVertices = contourLineVertexData;
+   // getMeshComponent()->mVertices = contourLineVertexData;
 }
 
 

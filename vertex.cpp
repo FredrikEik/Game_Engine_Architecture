@@ -130,7 +130,7 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
 //   return os;
 //}
 
-std::ostream& operator<< (std::ostream& os, const Vertex& v) {
+std::ostream& operator << (std::ostream& os, const Vertex& v) {
     os << std::fixed;
     os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
     os << "(" << v.mNormal.getX() << ", " << v.mNormal.getY() << ", " << v.mNormal.getZ() << ") ";
@@ -138,7 +138,7 @@ std::ostream& operator<< (std::ostream& os, const Vertex& v) {
     return os;
 }
 
-std::istream& operator>> (std::istream& is, Vertex& v) {
+std::istream& operator >> (std::istream& is, Vertex& v) {
     // needs 4 temps to get commas and parenthesis
     char temp, temp2, temp3, temp4;
     is >> temp >> v.mXYZ.x >> temp2 >> v.mXYZ.y >> temp3 >> v.mXYZ.z >> temp4;

@@ -557,9 +557,9 @@ void RenderWindow::createTerrain()
     {
         for(int j{-5}; j < 5; j++)
         {
-            temp = factory->createObject("RollingBall");
-            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,10.f,4.f*j);
-            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,10.f,4.f*j);
+//            temp = factory->createObject("RollingBall");
+//            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,10.f,4.f*j);
+//            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,10.f,4.f*j);
 
         }
     }
