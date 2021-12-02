@@ -204,7 +204,7 @@ void RenderSystem::render()
                 mObjectsDrawn++;
             }
         }
-        else    //no LOD exists
+        else if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)    //no LOD exists
         {
             glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
