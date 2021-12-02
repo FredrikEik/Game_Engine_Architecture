@@ -772,7 +772,7 @@ int MeshHandler::readLasFile()
 //    }
 //    qDebug() << "Number of triangle normals calculated" << count;
 }
-      ////Calculating triangle normals variant 3 (original)
+    ////Calculating triangle normals variant 3 (original) and so far best
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 

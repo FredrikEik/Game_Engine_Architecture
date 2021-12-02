@@ -63,11 +63,11 @@ if(simulatePhysics == true)
 //    gsl::Vector3D barycoordinates[51]; //Dont really see a point for this? given the code will run 51 times either way?
 
 //// Run through rest of code per ball
-    for (int ball = 0; ball <= 0 /*numberOfSimulatedBalls*/; ball++)
+    for (int ball = 0; ball <= 0/*numberOfSimulatedBalls*/; ball++)
     {
         for (int i = 0; i < mGameObjects.size(); i++)
         {
-            searchGameName = "RollingBall_0";// + std::to_string(ball);
+            searchGameName = "RollingBall_" + std::to_string(ball);
 
             if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
             {
@@ -108,10 +108,9 @@ if(simulatePhysics == true)
                 gsl::Vector3D triangleNormal;
                 triangleNormal = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
                                  (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
-
-//              qDebug() << "Triangle normal is:" << triangleNormal;
+                qDebug() << "Triangle normal is:" << triangleNormal;
                 triangleNormal.normalize();
-//              qDebug() << "Normalized Triangle is:" << triangleNormal;
+                qDebug() << "Normalized Triangle is:" << triangleNormal;
 
                 ////Move the ball
                 gsl::Vector3D acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
