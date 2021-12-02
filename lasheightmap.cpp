@@ -178,8 +178,10 @@ void LASHeightMap::GenerateHeightMap()
     float ofsetx = 0;
     float ofsetz = 0;
     float ofsety = 0;
+
     for(float x = 50; x<X-1; x+=Resolution)//(float x = 100; x<150; x+=1)// 300/400
         for(float z =50; z<Z-1; z+=Resolution)//(float z =100; z<150; z+=1)
+
         {
             //get all height data :D
             float height1 =  CalcHeight(    x  ,    z);

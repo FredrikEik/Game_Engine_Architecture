@@ -18,6 +18,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    bsplinesystem.cpp \
     camera.cpp \
     cameracomponent.cpp \
     collisionsystem.cpp \
@@ -45,6 +46,7 @@ SOURCES += main.cpp \
     vertex.cpp
 
 HEADERS += \
+    bsplinesystem.h \
     camera.h \
     cameracomponent.h \
     collisionsystem.h \
