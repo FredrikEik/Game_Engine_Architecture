@@ -15,6 +15,7 @@ RollingBall::~RollingBall()
 void RollingBall::move(float dt)
 {
     std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
+    std::vector<GLuint>& indices = plane->getMeshComp()->mIndices;
     gsl::Vector3D ballCoords = getTransformComp()->mMatrix.getPosition();
     gsl::Vector3D newPosition;
     gsl::Vector3D normal;
@@ -23,14 +24,13 @@ void RollingBall::move(float dt)
     gsl::Matrix4x4 sscale = new gsl::Matrix4x4;
     sscale.scale(getTransformComp()->Scal);
 
-    for(int i = 0; i < (vertices.size() - 2); i += 3)
+    for(int i = 0; i < (indices.size() - 2); i += 3)
     {
-        gsl::Vector3D p0 = gsl::Vector3D(vertices[i].get_xyz());
-        gsl::Vector3D p1 = gsl::Vector3D(vertices[i + 1].get_xyz());
-        gsl::Vector3D p2 = gsl::Vector3D(vertices[i + 2].get_xyz());
+        gsl::Vector3D p0 = gsl::Vector3D(vertices[indices[i]].get_xyz());
+        gsl::Vector3D p1 = gsl::Vector3D(vertices[indices[i + 1]].get_xyz());
+        gsl::Vector3D p2 = gsl::Vector3D(vertices[indices[i + 2]].get_xyz());
 
         gsl::Vector3D baryCoords = ballCoords.barycentricCoordinates(p0, p1, p2);
-
         if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
         {
             normal = (p1 - p0)^(p2 - p0);
@@ -46,10 +46,12 @@ void RollingBall::move(float dt)
             newPosition.z = p0.z * baryCoords.x + p1.z * baryCoords.y + p2.z * baryCoords.z;
             position.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
             ballCoords = position.getPosition();
+            //qDebug() << "x: " << newPosition.x << "y: " << newPosition.y << " z: " << newPosition.z;
         }
     }
 
     getTransformComp()->mMatrix = position * sscale;
+    //qDebug() << "x: " << getTransformComp()->mMatrix.getPosition().x << "y: " << getTransformComp()->mMatrix.getPosition().y << " z: " << getTransformComp()->mMatrix.getPosition().z;
 }
 
 void RollingBall::init()

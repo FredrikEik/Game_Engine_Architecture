@@ -236,7 +236,7 @@ void RenderWindow::init()
     setScaleY(0.25);
     setScaleZ(0.25);
     setPositionX(20);
-    setPositionY(20);
+    setPositionY(5);
     setPositionZ(20);
     ObjFactory->setOBJindex(-1);
     mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
