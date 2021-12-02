@@ -639,12 +639,12 @@ int MeshHandler::readLasFile()
 
     // This serves as the indexes and "resolution" in the planeGrid.
     // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
-    const int arrayX = 5;
-    const int arrayZ = 5;
+    const int arrayX = 50;
+    const int arrayZ = 50;
 
-    float widthScale  = 7.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller
-    float heigthScale = 5.0f; //How "flat" the surface will be, 1 = normal, higher number = smaller difference
+    float widthScale  = 7.0f;  //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
+    float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
+    float heigthScale = 5.0f;  //How "flat" the surface will be, 1 = normal, higher number = smaller difference
 
     //Fill the rest of the grid with evenly spaced coordinates between min and max.
     float distanceBetweenSquaresX = (xMax - xMin) / arrayX;
@@ -657,7 +657,7 @@ int MeshHandler::readLasFile()
 
     //Getting a reference of the last created mesh, should be "empty" beacuse it was recently created and filled below.
     mMeshes.emplace_back(MeshData());
-    MeshData &meshDataPoints = mMeshes.back();
+    MeshData &meshDataPoints = mMeshes.back(); //Used to store scaled and positioned correctly vector3d's
 
     qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
     qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machines in debug mode";
@@ -669,7 +669,7 @@ int MeshHandler::readLasFile()
             //Fill the array with evenly spaced coordinates "enclosing" all pointData positions
             planeGrid[x][z].x = xMin + (distanceBetweenSquaresX * x);
             planeGrid[x][z].z = zMin + (distanceBetweenSquaresZ * z);
-            planeGrid[x][z].y = (yMax + yMin) / 2;
+            planeGrid[x][z].y = yMin;
 
             //Check how many points there are between each position in the grid using resolution
             for (int pointDataSearch = 0; pointDataSearch < allLasPointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
@@ -690,9 +690,9 @@ int MeshHandler::readLasFile()
                 planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point is found, make an average value.
             }
 
-            planeGrid[x][z].x -= xMin; //Scales the distance between points, to give a resonable size of the mesh in scene
+            planeGrid[x][z].x -= xMin; // Gives new positions to points, to give a resonable origin of the mesh in scene
             planeGrid[x][z].z -= zMin;
-            planeGrid[x][z].y -= yMin;
+            planeGrid[x][z].y -= yMin + 1;
 
             planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
             planeGrid[x][z].z /= depthScale;
@@ -706,6 +706,9 @@ int MeshHandler::readLasFile()
         }
     }
     qDebug() << "planeGrid is now filled"; //Basic progress functionality. Let the user know the program hasnt crashed.
+
+    distanceBetweenSquaresX /= widthScale; //To make normal calculation work. Makes the distances scale according to cordinates in grid
+    distanceBetweenSquaresZ /= depthScale;
 
     //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
     //    glPointSize(5.0f);
@@ -721,7 +724,6 @@ int MeshHandler::readLasFile()
         //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
         if(check == arrayX - 1)
         {
-            qDebug() << "Check triggered";
             check = 0;
             continue;
         }
@@ -735,22 +737,6 @@ int MeshHandler::readLasFile()
         meshDataPoints.mIndices[0].push_back(depth + arrayX);
         meshDataPoints.mIndices[0].push_back(depth + 1);
         meshDataPoints.mIndices[0].push_back(depth + arrayX + 1);
-
-        //This does appear to fill the indices with the correct vertices for triangle order.
-        {
-            //...........
-            //[][][][]... //Simplified, triangles at "/" position now created.
-            //[][][][]... //It first fills the horizontal line, then going up one.
-            //[][][][]...
-            //[/][][][]...
-
-            //Next for-loop should fill: (Or vertically, but that should not matter)?
-            //...........
-            //[][][][]...
-            //[][][][]...
-            //[][][][]...
-            //[/][/][][]...
-        }
     }
     qDebug() << "End of triangle calculation";
 
@@ -774,15 +760,17 @@ int MeshHandler::readLasFile()
         {
             pCenter = pos; //Store the position of the point we are currently on
 
-            //Store the nearest vertices, based on how created triangles.
+//            qDebug() << "Normal calculated" << i;
+
+            // Store the nearest vertices, based on how created triangles.
             p0 = gsl::Vector3D{vert[i - arrayX    ].mXYZ};
             p1 = gsl::Vector3D{vert[i + 1 - arrayX].mXYZ};
             p2 = gsl::Vector3D{vert[i + 1         ].mXYZ};
             p3 = gsl::Vector3D{vert[i + arrayX    ].mXYZ};
             p4 = gsl::Vector3D{vert[i - 1 + arrayX].mXYZ};
             p5 = gsl::Vector3D{vert[i - 1         ].mXYZ};
-
         }
+
     //Create a vector to all the points
     gsl::Vector3D v0 = p0 - pCenter;
     gsl::Vector3D v1 = p1 - pCenter;
@@ -793,12 +781,12 @@ int MeshHandler::readLasFile()
 
 
     //Get the absolute value, if not, it's dark (Has negative values)
-    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
-    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
-    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
-    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
-    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
-    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
+//    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
+//    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
+//    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
+//    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
+//    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
+//    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
     //Commenting out this does create more normalized vectors/triangles, but it still draws some triangles wrong/across the entire grid
 
 
@@ -826,7 +814,6 @@ int MeshHandler::readLasFile()
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 qDebug() << "End of normal calculations";
-
 {
 //In case i need to scale/adjust parts of the grid as the last step before finishing.
 //for(int x = 0; x < arrayX; x++)
@@ -849,6 +836,7 @@ qDebug() << "End of normal calculations";
 //    }
 //}
 }
+
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.

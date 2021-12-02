@@ -110,49 +110,15 @@ void CoreEngine::setUpScene()
 
     //********************** Making the objects to be drawn *********************
 
-
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
-    // https://www.tutorialcup.com/cplusplus/multithreading.htm#Initializing_thread_with_an_object
-    // https://stackoverflow.com/questions/10673585/start-thread-with-member-function]
-
-    // Attempt at threading the readLasFile using old mMeshHandler name
-    //    std::thread t1(&MeshHandler::HeightMap, HeightMap.readLasFile());
-    //    t1(HeightMap.readLasFile());
-    //    t1.detach();
-
-    //Get the data from the las file.
-//    int heightMeshData = mMeshHandler->readLasFile(); //Superflous call, beacuse when adding object "LasGround" the function will run
-    //But a nice shortcut for ctrl + left-click
-
-    //Create a new mesh for the Las ground
-//    int meshIndex = mMeshHandler->makeMesh("LasGroundMesh"); //Create the mesh, avoids duplication
-
-//    //Create a new meshcomponent, to fill with data from the mesh
-//    MeshComponent* currentMesh = new MeshComponent();
-
-//    //Fill the MeshComponent with relevant data from heightMeshData
-//    std::copy(heightMeshData.mVAO,
-//              mMeshHandler->mMeshes.at(meshIndex).mVAO+3, currentMesh->mVAO);
-
-//    std::copy(heightMeshData.mVertexCount,
-//              mMeshHandler->mMeshes.at(meshIndex).mVertexCount+3, currentMesh->mVertexCount);
-
-//    std::copy(heightMeshData.mIndexCount,
-//              mMeshHandler->mMeshes.at(meshIndex).mIndexCount+3, currentMesh->mIndexCount);
-
-//    mMeshHandler->initMesh(heightMeshData, 0);
-
-////    glPointSize(5.0f)
-//    currentMesh->mDrawType = {GL_POINTS}; //Draw the mesh as points.
-//    currentMesh->mColliderRadius = 0.0f;
-
     //Create the gameobject LasGround
-    GameObject *lasGround = mGameObjectManager->addObject("LasGround");
+    GameObject *lasGround = mGameObjectManager->addObject("LasGround"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
     lasGround->mName = "LasGround";
-    lasGround->mTransform->mMatrix.translate(-40.0f, -25.0f, -200.0f);
+    lasGround->mTransform->mMatrix.translate(-40.0f, -25.0f, -150.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
 
-//---------------------End of Vis & Sim code----------------------------------------
+    //End of Vis & Sim code
+
 
     //Axis
     temp = mGameObjectManager->addObject("axis");
@@ -168,10 +134,6 @@ void CoreEngine::setUpScene()
     //Adds sound to moving triangle:
     mGameObjectManager->addComponent("caravan_mono.wav", temp);
 
-//    //groundObject
-//    temp = mGameObjectManager->addObject("Ground");
-//    temp->mName = "Ground";
-//    mRenderSystem->mGameObjects.push_back(temp);
 
     //Hack to test sound system
     if(temp->mSoundComponent)

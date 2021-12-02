@@ -18,7 +18,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects)
 
 
 //Search for the gameobject called "name" and create a gameobject using it.
-    std::string searchGameName = "CrookedTriangleSurface";
+    std::string searchGameName = "LasGround";
     GameObject groundObject;
     std::vector<Vertex> triangleVertices;
 
