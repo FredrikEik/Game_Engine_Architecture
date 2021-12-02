@@ -154,6 +154,7 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 	normals.reserve(averageHeightPerSquare.size());
 	indices.reserve(averageHeightPerSquare.size());
 	positions.reserve(averageHeightPerSquare.size());
+	uint64 columns = std::sqrt(averageHeightPerSquare.size());
 
 #pragma region PushingPositions
 
@@ -181,8 +182,6 @@ void TerrainSystem::generateGridFromLAS(uint32 entity, std::filesystem::path pat
 #pragma endregion
 
 #pragma region PushingIndices
-	uint64 columns = std::sqrt(averageHeightPerSquare.size());
-
 	rowsLooped = { 1 };
 	for (uint64 i{}; i < positions.size() - columns - 1; i++)
 	{
