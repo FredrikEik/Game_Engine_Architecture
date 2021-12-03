@@ -18,7 +18,7 @@ public:
     void setSurface(GameObject* surface) { LasSurface = surface; }
     double radius = 0.25;
 
-    GameObject* LasSurface;
+    GameObject* LasSurface;             // endret fra TriangleSurface til LasSurface
 
 private:
                         //lager vektorer som brukes til forskjellig utregning

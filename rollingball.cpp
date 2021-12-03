@@ -55,7 +55,7 @@ void RollingBall::move(float dt)
 {
 
     std::vector<Vertex>& vertices = dynamic_cast<class LasSurface*>(LasSurface)->getMeshComponent()->mVertices;             //skaffer vertices
-    for (int i=0; i < vertices.size()-2; i+=3){
+    for (int i=0; i < vertices.size()-2; i+=3){                         //looper gjennom alle trianglene til surfacen
         v0 = gsl::Vector3D(vertices[i].getXYZ());
         v1 = gsl::Vector3D(vertices[i+1].getXYZ());
         v2 = gsl::Vector3D(vertices[i+2].getXYZ());
@@ -72,52 +72,26 @@ void RollingBall::move(float dt)
             normalvektor.normalize();                                                   //normaliserer normalvektoren
             float planHøyde = v0.y*barycentricCord.x+v1.y*barycentricCord.y+v2.y*barycentricCord.z;              //bruker barysentriske kordinatene til å bestemme nye z posisjonen
 
-            if (ballpos.y < planHøyde + radius*3){
+            if (ballpos.y < planHøyde + radius*3){                                       //sjekker om ballen er nærme surfacen
             akselerasjon = gsl::Vector3D(normalvektor.x*normalvektor.y*9.80665f,        //regner ut akselerasjon
                                          normalvektor.y*normalvektor.y*9.80665f,
                                          normalvektor.z*normalvektor.y*9.80665f)+gKraft;
             hastighet = hastighet + akselerasjon * dt;                                  //regner ut hastighet
-            nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;                                         //oppdaterer posisjonen
+            nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt; //oppdaterer posisjonen
 
-            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, planHøyde+radius, nyPosisjon.z);      //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
+            getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, planHøyde+radius, nyPosisjon.z);  //setter den nye posisjonen, plusser også på radiusen på z'en til ballen så den ligger oppå planet
             }
-            else {
+            else{                                                                    //hvis ballen ikke er i nærheten av surfacen, vil ballen falle fritt.
             akselerasjon.y = gKraft.y;
             hastighet = hastighet + akselerasjon *dt;
             nyPosisjon = getTransformComponent()->mMatrix.getPosition() + hastighet*dt;
             getTransformComponent()->mMatrix.setPosition(nyPosisjon.x, nyPosisjon.y,nyPosisjon.z);
             }
 
-
-
-                    //work in progress
-            //avstand = (temp-vertices[0].getXYZ())^normalvektor;
-            //projeksjon = normalvektor^(avstand^normalvektor);
-            //distanseFlyttet = hastighet * dt;
-            //distanseFlyttetNM = normalvektor^(distanseFlyttet ^normalvektor);
-            //mPosition.setPosition(hastighet.x, hastighet.y, nyPosisjon.z+radius);
-
-                    //Test greier
-            //qDebug() << pow(normalvektor.z,2)-1;
-            //qDebug() << nyPosisjon.z;
-            //qDebug() << distanseFlyttet.x << distanseFlyttet.y << distanseFlyttet.z;
-            //qDebug() << distanseFlyttetNM.x << distanseFlyttetNM.y << distanseFlyttetNM.z;
-            //qDebug() << avstand.x << avstand.y << avstand.z;
-            //qDebug() << projeksjon.x << projeksjon.y << projeksjon.z;
-            //qDebug() << hastighet.x << hastighet.z << hastighet.y;
-
-            //ting som trengs for akselerasjonsvektor og posisjon
-            // *******************************************************
-            //normalvektor n-> , avstanden til planet y og projeksjonen y->n->= n->*(y->*n->)
-            //Avstanden ballen har flyttet seg langs normalvektoren =ds->n-> = n->*(ds->*n->)
-            //Tyngdepunktet til ballen ligger enten over eller under planet (y->*n->)/||y->|| = +-1
-            //negativt = under, må flytte tilbake posisjon med d=r-y langs normalvektor til planet,
-            // må også flytte samme distansen d langs nye hastighetsvektoren
             return;
         }
         else if (barycentricCord.x < 0 && barycentricCord.y < 0 && barycentricCord.z < 0 &&     //sjekker at ballen ikke er innenfor trianglene
                  barycentricCord.x > 1 && barycentricCord.y > 1 && barycentricCord.z > 1) {
-           qDebug() << "The ball is outside";
 
         }
 
