@@ -13,10 +13,10 @@ uniform vec3 lightColor = vec3(1, 1, 0.7); // ~Bright yellow
 uniform vec3 objectColor = vec3(0.7, 0.7, 0.7); // grey
 uniform vec3 cameraPosition = vec3(50.f, 5.f, 50.f);
 
-uniform float specularStrength = 0.5;
-uniform int specularExponent = 64;
+uniform float specularStrength = 0.1;
+uniform int specularExponent = 16;
 
-uniform vec3 lightPosition = vec3(10.f, 50.f, 0.f);
+uniform vec3 lightPosition = vec3(0.f, 800.f, 0.f);
 
 uniform int bUsingTexture = 0;
 uniform sampler2D textureSampler;

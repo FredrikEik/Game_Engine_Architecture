@@ -10,6 +10,8 @@ public:
 	void render();
 	void end();
 	void setCurrentEntity(int32 entityID);
+
+	int selectedEntity{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 protected:
 	void togglePlay();
 protected:
@@ -18,7 +20,7 @@ protected:
 	class WorldOutliner* worldOutliner{};
 	class Details* details{};
 	int32 reservedEntities{};
-	int selectedEntity{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
+
 	std::string playButtonText;
 	bool bIsPlaying{ false };
 };

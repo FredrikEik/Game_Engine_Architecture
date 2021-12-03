@@ -114,6 +114,8 @@ std::type_index ECSManager::getAssetTypeIndex(DefaultAsset defaultAsset)
 {
 	if (defaultAsset == DefaultAsset::CUBE)
 		return std::type_index(typeid(MeshComponent));
+	else if(defaultAsset == DefaultAsset::SPHERE)
+		return std::type_index(typeid(MeshComponent));
 	else
 		assert(false);
 
@@ -154,6 +156,8 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<TextureComponent>(entityID);
 	else if (componentType == std::type_index(typeid(ScriptComponent)))
 		removeComponent<ScriptComponent>(entityID);
+	else if (componentType == std::type_index(typeid(PhysicsComponent)))
+		removeComponent<PhysicsComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };

@@ -2,8 +2,10 @@
 #include "glm/glm.hpp"
 #include "../CoreMinimal.h"
 #include <iostream>
+
 //#define DEBUG
 //#define DEBUG_BROADPHASE
+
 
 class Engine
 {
@@ -53,6 +55,7 @@ private:
 	static float fov;
 
 	//TODO: Move these into appropriate classes. 
+	struct MeshComponent* LASMesh{ nullptr };
 	class ECSManager* ECS{};
 	class Shader* ourShader{};
 	class Shader* phongShader{};
@@ -64,6 +67,11 @@ private:
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
+
+
+	uint32 LASEntity{};
+	uint32 GridEntity{};
+	uint32 ContourEntity{};
 
 	uint32 reservedEntities{};
 

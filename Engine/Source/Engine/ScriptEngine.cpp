@@ -17,9 +17,14 @@ ScriptEngine::~ScriptEngine()
 	mono_jit_cleanup(m_Domain);
 	mono_assembly_name_free(m_AsmName);
 	
-	if(m_ScriptEngineInst != nullptr)
-		delete m_ScriptEngineInst;
-	m_ScriptEngineInst = nullptr;
+	//delete m_Domain;
+	//m_Domain = nullptr;
+	//delete m_CSharpAssembly;
+	//m_CSharpAssembly = nullptr;
+	//delete m_MonoImage;
+	//m_MonoImage = nullptr;
+	//delete m_AsmName;
+	//m_AsmName = nullptr;
 }
 
 bool ScriptEngine::InitScriptEngine()
@@ -42,7 +47,7 @@ bool ScriptEngine::InitScriptEngine()
 
 	m_MonoImage = mono_assembly_get_image(m_CSharpAssembly);
 
-	MonoAssemblyName* aname = mono_assembly_name_new("mscorlib");
+	m_AsmName = mono_assembly_name_new("mscorlib");
 
 	return true;
 }

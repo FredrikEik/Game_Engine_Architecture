@@ -20,6 +20,7 @@
 
 #include "Engine/Engine.h"	
 #include "Engine/ScriptEngine.h"
+#include "Systems/TerrainDataSystem.h"
 
 
 

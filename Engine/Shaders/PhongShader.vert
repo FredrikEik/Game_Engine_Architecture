@@ -19,8 +19,8 @@ void main() {
     //color = colorIn;   //passing on the vertex color
 //    fragmentPosition = vec3(u_model * vec4(aPos, 1.0));
     fragmentPosition = vec3(u_model * vec4(aPos, 1.0));
-//    normalTransposed = mat3(transpose(inverse(u_model))) * aColor; // TODO: This should be done on the CPU and sent in via uniform instead
-    normalTransposed = mat3(transpose(inverse(u_model))) * vec3(aTexCoord, 0); // TODO: This should be done on the CPU and sent in via uniform instead
+    normalTransposed = mat3(transpose(inverse(u_model))) * aNormals; // TODO: This should be done on the CPU and sent in via uniform instead
+//    normalTransposed = mat3(transpose(inverse(u_model))) * vec3(aTexCoord, 0); // TODO: This should be done on the CPU and sent in via uniform instead
 //    normalTransposed = aColor;
     gl_Position = u_projection * u_view * u_model * vec4(aPos, 1.0);     //calculate the position of the model
     color = vec4(aNormals, 1);

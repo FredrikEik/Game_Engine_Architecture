@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 #include <vector>
 #include "../Vertex.h"
+#include "../Line.h"
 #include "glm/glm.hpp"
 #include <unordered_map>
 #include "../Assets/DefaultAssets.h"
@@ -91,6 +92,13 @@ public:
 
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
+};
+
+struct PhysicsComponent final :public Component
+{
+	PhysicsComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::vec3 v0{0.0f,0.0f,0.0f};
 };
 
 

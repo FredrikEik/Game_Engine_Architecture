@@ -36,6 +36,9 @@
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
+#include "../Systems/TerrainDataSystem.h"
+
+#include "../Systems/PhysicsSystem.h"
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -66,13 +69,13 @@ void Engine::setIsPlaying(bool isPlaying)
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
 	if (!isPlaying)
 	{
-		load(Save::getDefaultAbsolutePath());
-		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
-		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+		//load(Save::getDefaultAbsolutePath());
+		//TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
+		//CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
 	}
 	else
 	{
-		save();
+		//save();
 	}
 	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
@@ -144,11 +147,12 @@ void Engine::init()
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	//glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
+	//glEnable(GL_STENCIL_TEST);
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
+	glLineWidth(1);
 
 
 
@@ -166,13 +170,13 @@ void Engine::init()
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 
-	RTSSelectionEntity = ECS->newEntity();
+	//RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
 	//mesh comp
 	// opacity shader
-	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
+	//ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
 
-
+	/*
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
@@ -182,13 +186,14 @@ void Engine::init()
 	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-
+	*/
 
 	//viewport->begin(window, ECS->getNumberOfEntities());
 
 
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
+	/*
 	ScriptSystem::Init();
 
 	unitEntity = ECS->newEntity();
@@ -196,6 +201,7 @@ void Engine::init()
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
+	*/
 
 
 	reservedEntities = ECS->getNumberOfEntities();
@@ -203,7 +209,54 @@ void Engine::init()
 	viewport->begin(window, reservedEntities);
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
-	load(Save::getDefaultAbsolutePath());
+	//load(Save::getDefaultAbsolutePath());
+
+
+
+	////////////////////////////////////////////////////////////////////////// VISIM //////////////////////////////////////////////////////////////////////////
+
+
+	LASEntity = ECS->newEntity();
+	std::vector<Vertex> verts = TerrainDataSystem::readLAS("Assets/test_las.txt");
+	std::cout << "entity id: " << LASEntity;
+
+
+	ECS->addComponents<TransformComponent, MeshComponent>(LASEntity);
+	//MeshSystem::setConsideredForFrustumCulling(LASEntity, ECS, false);
+	LASMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(LASEntity);
+	//ECS->loadAsset(LASEntity, "Assets/grass.png");
+	TransformSystem::setPosition(LASEntity, glm::vec3(0, 0, 0), ECS);
+	LASMesh->bDisregardedDuringFrustumCulling = true;
+	LASMesh->bShouldRender = true;
+	
+
+	GridEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent>(GridEntity);
+	MeshSystem::setConsideredForFrustumCulling(GridEntity, ECS, false);
+	MeshComponent* gridMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(GridEntity);
+	gridMesh->m_drawType = GL_LINES;
+
+	ContourEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent>(ContourEntity);
+	MeshSystem::setConsideredForFrustumCulling(ContourEntity, ECS, false);
+	MeshComponent* contourMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(ContourEntity);
+	contourMesh->m_drawType = GL_LINES;// _LOOP;
+
+
+
+	auto tuple = TerrainDataSystem::generateLAS(verts, gridMesh, *LASMesh, ECS);
+	TerrainDataSystem::makeGrid(std::get<0>(tuple), std::get<1>(tuple), std::get<2>(tuple), std::get<3>(tuple), std::get<4>(tuple), std::get<5>(tuple), 50, verts, LASEntity, GridEntity, ContourEntity, ECS);
+	MeshSystem::initialize(*ECS->getComponentManager<MeshComponent>()->getComponentChecked(LASEntity));
+	MeshSystem::initialize(*ECS->getComponentManager<MeshComponent>()->getComponentChecked(ContourEntity));
+	MeshSystem::initialize(*ECS->getComponentManager<MeshComponent>()->getComponentChecked(GridEntity));
+	////////////////////////////////////////////////////////////////////////// VISIM //////////////////////////////////////////////////////////////////////////
+
+	unitEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, PhysicsComponent>(unitEntity);
+	ECS->loadAsset(unitEntity, DefaultAsset::SPHERE);
+	TransformSystem::setPosition(unitEntity, glm::vec3(1, 0, 1), ECS);
+	MeshSystem::setConsideredForFrustumCulling(unitEntity, ECS, false);
+
 
 }
 
@@ -216,18 +269,30 @@ void Engine::loop()
 		//// input
 		processInput(window);
 
-		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
+		cameraEntity = bIsPlaying ? editorCameraEntity : editorCameraEntity;
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 10000.f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
-		CollisionBroadphaseDatastructure->update();
+		//CollisionBroadphaseDatastructure->update();
+		LASMesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(LASEntity);
+		if (Input::getInstance()->getKeyState(KEY_F).bPressed)
+		{
+			
+			TransformSystem::setPosition(cameraEntity, glm::vec3(LASMesh->m_vertices[0].m_xyz[0], 0.0f, LASMesh->m_vertices[0].m_xyz[2]), ECS);
 
-
+			//MeshComponent selectedMesh = *ECS->getComponentManager<MeshComponent>()->getComponentChecked(LASEntity);
+			
+		}
+		
+		
 		//// RENDER
 		// Selection Render
+		/*
 		if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
 		{
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -278,10 +343,11 @@ void Engine::loop()
 				// flip a bool maybe in meshcomp for being selected, or make a new selectable component
 			}
 		}
-
+		*/
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 
 		if (bIsPlaying)
 		{
@@ -290,10 +356,11 @@ void Engine::loop()
 
 			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
-			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
-
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
+			//CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
+			PhysicsSystem::UpdatePhysics(ECS, LASEntity, deltaTime);
 			//temp placement -- calls update on scripts
-			ScriptSystem::Invoke("Update", ECS);
+			//ScriptSystem::Invoke("Update", ECS);
 		}
 		else
 		{
@@ -301,7 +368,15 @@ void Engine::loop()
 			//TODO: Draw a game camera here
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
-
+		//CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
+		CameraSystem::draw(cameraEntity, phongShader, ECS);
+		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
+		//lightPos += 0.01f;
+		//TerrainDataSystem::drawGrid(ourShader, "u_model", ECS, GridEntity);
+		//TerrainDataSystem::drawTerrain(phongShader, "u_model", ECS, *LASMesh);
+		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
+		//MeshSystem::draw(ourShader, "u_model", ECS, cameraEntity);
+		/*
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
 		glStencilMask(0xFF); // enable writing to the stencil buffer
 	
@@ -313,6 +388,7 @@ void Engine::loop()
 		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
+
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -339,11 +415,11 @@ void Engine::loop()
 				ECS->removeComponent<AxisAlignedBoxComponent>(RTSSelectionEntity);
 			}
 
-			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
+			//SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 		}
-
+		*/
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -352,6 +428,7 @@ void Engine::loop()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	}
 }
 

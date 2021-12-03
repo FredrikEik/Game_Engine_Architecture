@@ -111,10 +111,12 @@ void Viewport::render()
 		}
 		if (ImGui::Button("New Entity From Prefab"))
 		{
+			/*
 			std::string path;
 			if (FileSystemHelpers::getPathFromFileExplorer(path))
 				Load::loadEntities(path, ECS);
 			//Load::loadEntities()
+			*/
 		}
 		if (ImGui::Button("Save All"))
 		{
@@ -153,7 +155,17 @@ void Viewport::render()
 		{
 			Save::saveEntityPrefab(selectedEntity, ECS);
 		}
+		if (ImGui::Button("Toggle wireframe"))
+		{
+			static bool bWireFrameToggled = true;
+			if(bWireFrameToggled)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+
+			bWireFrameToggled = !bWireFrameToggled;
+		}
 		
 
 		ImGui::End();
