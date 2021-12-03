@@ -570,7 +570,7 @@ void RenderWindow::createBalls()
             float Y = rand()%(10+10+1)-10;
             temp = factory->createObject("RollingBall");
             temp->getTransformComponent()->mMatrix.setPosition(X*i,20.f,Y*j);
-            temp->getTransformComponent()->mMatrix.setScale(0.1,0.1,0.1);
+            temp->getTransformComponent()->mMatrix.setScale(0.4,0.4,0.4);
             temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,20.f,2.f*j);
 
         }

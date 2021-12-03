@@ -8,7 +8,7 @@ MeshComponent* contourLineMesh;
 LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
 {
     readFile(fileName);
-    minMaxNormalize(); //Thobias Ovastrøm kode
+    minMaxNormalize();
 
     //kordinater som brukes til å sjekke hvilket quad vertexene er på
     int quadX = 0;
@@ -217,6 +217,7 @@ void LasTerrainGenerator::move(float x, float y, float z)
 
 void LasTerrainGenerator::minMaxNormalize()
 {
+    //Thobias Ovastrøm kode
     for(unsigned long long i = 0; i < mPointsArray.size(); i++)
     {
         float nx = xMin+(((mPointsArray[i].getXYZ().getX() - lowestX)*(xMax-xMin)) / (highestX - lowestX));

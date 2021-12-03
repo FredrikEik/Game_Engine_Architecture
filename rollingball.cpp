@@ -5,10 +5,6 @@
 
 RollingBall::RollingBall(int n) : OctahedronBall(n)
 {
-    //mVelocity = gsml::Vector3d{1.0f, 1.0f, -0.05f};
-    //mPosition.setPosition(-1.0,0.0,1);
-    //mScale.scale(0.25,0.25,0.25);
-   // gForce = gAcceleration * massKG;
     gForce = gsl::Vector3D(0.f,-9.80565f,0.f);
 }
 RollingBall::~RollingBall()
@@ -26,7 +22,7 @@ void RollingBall::move(float dt)
 
     //gsl::Vector3D barycCoords;
     gsl::Vector3D BallPosition = getTransformComponent()->mMatrix.getPosition();
-    float yOffset = 0.1f;
+    float yOffset = 0.4f;
 
     for(unsigned long long i = 0; i < vertices.size() - 2; i+=3)
     {
@@ -49,7 +45,6 @@ void RollingBall::move(float dt)
 
             if(BallPosition.y < surfaceY + (yOffset*2))
             {
-                //acceleration = gsl::Vector3D(pNormal.x*pNormal.y*9.8, pNormal.y*pNormal.y*9.8) + gForce;
                 acceleration = gsl::Vector3D(pNormal.x * pNormal.y * 9.80565f, pNormal.y * pNormal.y * 9.80565f, pNormal.z * pNormal.y * 9.80565f) + gForce;
                 velocity = velocity + acceleration * dt;
                 gsl::Vector3D newPosition = getTransformComponent()->mMatrix.getPosition() + velocity * dt;
@@ -72,31 +67,8 @@ void RollingBall::move(float dt)
 
     velocity = gsl::Vector3D{0.f, 0.f, 0.f};
     getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
-
-
-            /*gForce.x = abs(gForce.x);
-            gForce.y = abs(gForce.y);
-            gForce.z = abs(gForce.z);*/
-
-           // acceleration = gForce ^ pNormal ^ gsml::Vec3(0,0,pNormal.z);
-           // velocity = velocity + acceleration * dt;
-
-
-            //gsl::Vector3D newPosition = mPosition.getPosition() + velocity;
-            //newPosition.z = (p1.z*BaryCord.x + p2.z*BaryCord.y + p3.z*BaryCord.z)+0.25;
-            //mPosition.setPosition(newPosition.x, newPosition.y, newPosition.z);
-
-
-            //qDebug() << "BallPosition: " << BallPosition.x << BallPosition.y << BallPosition.z;
-
-
-
-
-
-    //mMatrix = mPosition * mScale;
-
-
 }
+
 void RollingBall::init()
 {
     initializeOpenGLFunctions();
