@@ -637,8 +637,8 @@ int MeshHandler::readLasFile()
     //--------------Done reading las file, on to creating a simplification-------------------//
 
 
-    // This serves as the indexes and "resolution" in the planeGrid.
-    // Using 5 and 5 for speed atm, but does work with arbitrary numers. f.eks 50 and above.
+    // This serves as "resolution" for planeGrid[arrayX][arrayZ].
+    // Using and 11 beacuse it is the highest allowed to simulate balls on, but the grid does work with arbitrary numers. f.eks 50 and above for increased fidelity.
     const int arrayX = 11;
     const int arrayZ = 11;
 
@@ -675,9 +675,9 @@ int MeshHandler::readLasFile()
             for (int pointDataSearch = 0; pointDataSearch < allLasPointData.size(); pointDataSearch++) //This becomes a huge for-loop, trying to get out of it with the data i need.
             {
                 if(allLasPointData[pointDataSearch].getX() >= planeGrid[x][z].x && //If a pointData coordinate is bigger then current planeGrid position
-                        allLasPointData[pointDataSearch].getZ() >= planeGrid[x][z].z &&
-                        allLasPointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
-                        allLasPointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
+                   allLasPointData[pointDataSearch].getZ() >= planeGrid[x][z].z &&
+                   allLasPointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
+                   allLasPointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
                 {
                     nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
                     sumPointData[x][z] += allLasPointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
@@ -697,8 +697,6 @@ int MeshHandler::readLasFile()
             planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
             planeGrid[x][z].z /= depthScale;
             planeGrid[x][z].y /= heigthScale;
-
-
 
             //Only using mVertices[0] beacuse there is no lod for this mesh.
             //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
@@ -837,28 +835,6 @@ int MeshHandler::readLasFile()
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 qDebug() << "End of normal calculations";
-{
-//In case i need to scale/adjust parts of the grid as the last step before finishing.
-//for(int x = 0; x < arrayX; x++)
-//{
-//    for(int z = 0; z < arrayZ; z++)
-//    {
-//        //After having calulated everything needed for the mesh, make it organized and findable in scene.
-//        planeGrid[x][z].x -= xMin; //This should make the origin of the datapoints at 0 in scene.
-//        planeGrid[x][z].z -= zMin;
-//        planeGrid[x][z].y -= yMin;
-
-//        planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
-//        planeGrid[x][z].z /= depthScale;
-//        planeGrid[x][z].y /= heigthScale;
-
-////        planeGrid[x][z].x *= -1; //to flip the cordinates if needed, less camerawork in scene.
-////        planeGrid[x][z].z *= -1; //The Z flip is the most useful, for messes with normals for now.
-////        planeGrid[x][z].y *= -1;
-
-//    }
-//}
-}
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.
