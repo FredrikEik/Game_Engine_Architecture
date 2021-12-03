@@ -11,7 +11,7 @@ GameObject* ResourceManager::CreateMainCharacter(std::string filename)
 {
     //makeMainCharacter
     object = CreateObject(filename);
-    object->transform->mMatrix.translate(57.f, -1.f, 6.f); //Input character start position.
+    object->transform->mMatrix.translate(57.f, 8.5f, 147.5f); //Input character start position.
 
     return object;
 }
@@ -46,7 +46,7 @@ GameObject* ResourceManager::CreateObject(std::string filename)
             meshIndex = makeHeightMap(filename);
 
         else if (filename == "ContourLines")
-            meshIndex = countourLines();
+            meshIndex = contourLines();
 
         mMeshIndexMap.emplace(filename, meshIndex);
         mMeshComponents[meshIndex] = *object->mesh;
@@ -57,8 +57,6 @@ GameObject* ResourceManager::CreateObject(std::string filename)
 
     if(object->mesh->mVertices[1].size() == 0) //If this is true, the object has no LOD variants
         object->mesh->bLodEnabled = false;
-
-
 
     return object;
 }
@@ -115,7 +113,7 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
     //hvilken grid spilleren er på
     int gridXPos = int(floor(xPosOnTerrain / xyScale));
     int gridYPos = int(floor(yPosOnTerrain / xyScale));
-    if(gridXPos >= 0 && gridYPos >= 0 /*&& gridXPos < mCols && gridYPos < mRows*/)
+    if(gridXPos >= 0 && gridYPos >= 0)
     {   //Koordinat grid
         float xCoordInSquare = fmod(xPosOnTerrain,gridSquareSize)/gridSquareSize;
         float yCoordInSquare = fmod(yPosOnTerrain,gridSquareSize)/gridSquareSize;
@@ -134,7 +132,7 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
         //Finne hvilken av de to trekantene spilleren står på
         if(xCoordInSquare <= (1-yCoordInSquare))
         {
-            uvw = barycentricCoordinates(gsl::Vector2D{float(xCoordInSquare),float(yCoordInSquare)},p1,p2,p3);
+            uvw = barycentricCoordinates(gsl::Vector2D{float(xCoordInSquare), float(yCoordInSquare)},p1,p2,p3);
             answer = p1z*uvw.x+p2z*uvw.y+p3z*uvw.z;
             return answer/xStep;
         }
@@ -145,7 +143,7 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
             return answer/xStep;
         }
     }
-    return 10;
+    return 0;
 }
 
 gsl::Vector3D ResourceManager::getHeightMapPosition()
@@ -155,44 +153,46 @@ gsl::Vector3D ResourceManager::getHeightMapPosition()
 
 int ResourceManager::makeHeightMapFromTxt(std::string filename)
 {
-    mMeshComponents.emplace_back(Mesh());
-    *object->mesh = mMeshComponents.back();
+    mMeshComponents.emplace_back(Mesh());   // Push a new mesh into mMeshcomponents.
+    *object->mesh = mMeshComponents.back(); // Assign the new mesh to current object. Current object is created in ResourceManager::CreateObject().
 
-    std::vector<gsl::Vector3D> tempPos;
-    std::vector<gsl::Vector3D> sortedPos;
+    std::vector<gsl::Vector3D> tempPos;     // Used to hold all coordinates from the given .txt file.
+    std::vector<gsl::Vector3D> sortedPos;   // Holds coordinates after they have been sorted and reduced to 10,000 points.
 
     std::ifstream inn;
     inn.open(filename.c_str());
 
-    if (inn.is_open())
+    if (inn.is_open()) //If txt-file is open
     {
-        int n; //Amount of coordinates
-        inn >> n;
+        int n;      // n = Amount of lines/coordinates.
+        inn >> n;   // Reads the first line in the .txt. Which tells us how many coordinates are in the file.
 
-        std::string coord = "";
+        float x = 0.0f, y = 0.0f, z = 0.0f;     // Temporary to hold the coord-values obtained from the txt file.
+        float xMin = 0.0f, xMax = 0.0f, yMin = 0.0f, yMax = 0.0f;   // Used later to find out where the corners of the height-map is.
 
-        float x = 0.0f, y = 0.0f, z = 0.0f;
-        float xMin = 0.0f, xMax = 0.0f, yMin = 0.0f, yMax = 0.0f; // x and z.
+        const int rows = 100;   // Decides how many rows and columns the grid gets split into.  (the resolution of the heightmap)
+        const int cols = 100;   // These are const int because we need to use them in to make arrays. Which in c++ can not have variable lengths.
+        mRows = rows;   // Public variable in ResourceManager that holds number of rows. Public because i need rows & cols in other funcions, like CountourLines().
+        mCols = cols;   // These are int variables, not const int.
 
-        const int rows = 100;
-        const int cols = 100;
-        mRows = 100;
-        mCols = 100;
-
+    // Reserves the needed space in memory for these vectors/arrays.
         sArrayHeights = new float[rows*cols];
-
-        object->mesh->mVertices[0].reserve(n);
+        object->mesh->mVertices[0].reserve(rows*cols);
+        object->mesh->mIndices[0].reserve(rows*cols*6);
+        sortedPos.reserve(rows*cols);
         tempPos.reserve(n);
-        sortedPos.reserve(n);
 
+    // Loops through all lines in the txt file. (n == amount of lines)
         for (int i=0; i<=n; i++)
         {
-            inn >> x >> y >> z; // sets x, y and z based on numbers from the provided .txt file
+            inn >> x >> y >> z;     // sets x, y and z based on numbers from the provided .txt file
 
-            tempPos.push_back(gsl::Vector3D{x, y, z}); //Pushes position into a temporary vector that holds all vertexes
+            tempPos.push_back(gsl::Vector3D{x, y, z});  //Pushes position into a temporary vector that holds all vertexes
 
         // Calculates corners of the map in 2D space.
-            if(x < xMin || i == 0) //if i == 0, xMin and yMin is 0. result would be xMin and yMin == 0 at the end of loop
+        // To begin with, min and max variables is 0, which is a problem because xMin,yMin,zMin would never change.
+        // So when i == 0 we give the variables below the first value we find.
+            if(x < xMin || i == 0)
                 xMin = x;
             if(y < yMin || i == 0)
                 yMin = y;
@@ -204,47 +204,53 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
                 yMax = y;
             if(z > zMax || i == 0)
                 zMax = z;
-
         }
 
-        xStep = (xMax-xMin)/rows;       //Distance between the corners in a quad (x-axis)
-        zStep = (yMax-yMin)/cols;       //Distance between the corners in a quad (y-axis)
-        int vertexesInQuad[rows][cols]{{0}};  //Amount of vertexes in quad.
-        float tempForAvg[rows][cols]{{0.0f}}; //Holds the sum of all z-values in a quad.
-        float allHeights = 0;
+        xStep = (xMax-xMin)/rows;   // Distance between the corners in a quad (x-axis)
+        zStep = (yMax-yMin)/cols;   // Distance between the corners in a quad (z-axis)
 
-        scale = zStep/xStep;
+        int vertexesInQuad[rows][cols]{{0}};  // Amount of vertexes in each quad.
+        float tempForAvg[rows][cols]{{0.0f}}; // Holds the sum of all z-values in a quad.
 
+        float allHeights = 0;   // Used later to calculate the average height of all points.
+
+        scale = zStep/xStep;    // Need this to calculate barycentric coordinates correctly.
+                                // Because every triangle in the surface is a bit stretched in the z-axis.
+
+    // tempPos.size() == rows*cols. In this case 10,000.
         for (int i = 0; i < tempPos.size(); i++)
         {
+        // Calculates which grid-square/quad the current coordinate is inside.
+        // This optimizes the code a lot from my previous version. (Removes the need for a triple for loop).
             int x1 = static_cast<int>((tempPos[i].x-xMin) / xStep);
             int y1 = static_cast<int>((tempPos[i].y-yMin) / zStep);
 
-            tempForAvg[x1][y1] += tempPos[i].z;
-            vertexesInQuad[x1][y1]++;
-            allHeights +=tempPos[i].z;
+            tempForAvg[x1][y1] += tempPos[i].z; // Adds up the height of all points in current quad.
+            vertexesInQuad[x1][y1]++;   // Adds up how many points we have in the current quad.
+            allHeights += tempPos[i].z; // Adds up the sum of all heights in the height-map.
         }
-    // If height == 0 at the start of next loop, this will fix the problem. (Decides height based on the average height of all points)
+    // If height == 0 at the start of next loop, this will fix the problem.
+    // (Decides height based on the average height of all points in the height-map).
         float ytemp = allHeights / tempPos.size();
-        float xtemp;
-        float ztemp;
+        float xtemp = 0;
+        float ztemp = 0;
 
         int j = 0;
-
         for (int y=0; y<cols; y++)
         {
             for (int x=0; x<rows; x++)
             {
-                xtemp = xMin+(x*xStep);
-                ztemp = yMin+(y*zStep);
+                xtemp = xMin+(x*xStep); // Calculates x-coordinate of current vertex.
+                ztemp = yMin+(y*zStep); // Calculates z-coordinate of current vertex.
 
+            // If tempForAvg != 0, there are data-points in this quad.
                 if(tempForAvg[x][y] != 0)
                 {
                     ytemp = tempForAvg[x][y] / vertexesInQuad[x][y];
                     sortedPos.push_back(gsl::Vector3D{ xtemp, ytemp, ztemp});
                 }
-                else
-                    sortedPos.push_back(gsl::Vector3D{ xtemp, ytemp, ztemp});
+                else // If there are no data-points in this quad.
+                    sortedPos.push_back(gsl::Vector3D{ xtemp, ytemp, ztemp}); // Using ytemp (which will be the same y-value as the previous point).
 
                 sArrayHeights[j] = ytemp-zMin;
                 j++;
@@ -252,67 +258,61 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
         }
         for(int i = 0; i<sortedPos.size(); i++)
         {
-//            float a = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        // Puts values from sortedPos into mVertices, but subtracts 'min' values so that the height-map spawns in world coordinates: {0,0,0}.
             object->mesh->mVertices[0].push_back(Vertex{sortedPos[i].x-xMin, sortedPos[i].y-zMin, sortedPos[i].z-yMin, 0,0,0});
         }
             int c = 0;
             for(int i = 0; i<object->mesh->mVertices[0].size()-rows-1;i++)
             {
-                //Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
+            // Check to avoid drawing a triangle from one side of the terrain all the way over to the other side.
+            // Skips the last point in a row because we draw triangles between (i & i+rows) and next point (i+1 & i+rows+1)
                 if(c == rows-1)
                 {
                     c=0;
-                    continue;
+                    continue;   // Continue to the next index in the for loop. (don't run any code below this).
                 }
                 c++;
 
-                //Indices decide the order of which the vertices gets drawn.
-                object->mesh->mIndices[0].push_back(i);
-                object->mesh->mIndices[0].push_back(i+1);
-                object->mesh->mIndices[0].push_back(i+rows);
+            //Indices decide the order of which the vertices get drawn. //   |\      // Creates two triangles
+                object->mesh->mIndices[0].push_back(i);                 //   | \     // in current quad.
+                object->mesh->mIndices[0].push_back(i+1);               //   |  \    //   ______
+                object->mesh->mIndices[0].push_back(i+rows);            //   |___\   //   |\   |   //
+                                                                        //   _____   //   | \  |   //
+                object->mesh->mIndices[0].push_back(i+rows);            //   \   |   //   |  \ |   //
+                object->mesh->mIndices[0].push_back(i+1);               //    \  |   //   |___\|   //
+                object->mesh->mIndices[0].push_back(i+rows+1);          //     \ |   //
+            }                                                           //      \|   //
 
-                object->mesh->mIndices[0].push_back(i+rows);
-                object->mesh->mIndices[0].push_back(i+1);
-                object->mesh->mIndices[0].push_back(i+rows+1);
-            }
-
+    /** Calculate Normals */
+        // This is the same code that i used for 3DProg21 (semester 4), but with some tweaks to make it fit this project.
 
         gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5;
         gsl::Vector3D n0,n1,n2,n3,n4,n5;
 
-        std::vector<Vertex> vert = object->mesh->mVertices[0];
+        std::vector<Vertex> vert = object->mesh->mVertices[0]; // Holds mVertices, just used to make the code more readable.
 
         for(int i = 0; i<object->mesh->mVertices[0].size()-rows; i++)
         {
             gsl::Vector3D pos = object->mesh->mVertices[0][i].mXYZ;
 
+        // Calculates which grid-square/quad the current coordinate is inside.
             int x1 = static_cast<int>((pos.x) / xStep);
             int y1 = static_cast<int>((pos.z) / zStep);
 
-            if(x1 > 0 && y1 > 0 && x1 < rows && y1 < cols) //index > 0
+        // If grid-square is inside the boundaries of the height-map. (I probably don't need to check this).
+            if(x1 > 0 && y1 > 0 && x1 < rows && y1 < cols)
             {
+            // Positions of center (i) and all points around center.
                 pCenter = gsl::Vector3D{pos.x, pos.y, pos.z};
-
-                //p0
                 p0 = gsl::Vector3D{vert[i-rows].mXYZ.x, vert[i-rows].mXYZ.y, vert[i-rows].mXYZ.z};
-
-                //p1
                 p1 = gsl::Vector3D{vert[i+1-rows].mXYZ.x, vert[i+1-rows].mXYZ.y, vert[i+1-rows].mXYZ.z};
-
-                //p2
                 p2 = gsl::Vector3D{vert[i+1].mXYZ.x, vert[i+1].mXYZ.y, vert[i+1].mXYZ.z};
-
-                //p3
                 p3 = gsl::Vector3D{vert[i+rows].mXYZ.x, vert[i+rows].mXYZ.y, vert[i+rows].mXYZ.z};
-
-                //p4
                 p4 = gsl::Vector3D{vert[i-1+rows].mXYZ.x, vert[i-1+rows].mXYZ.y, vert[i-1+rows].mXYZ.z};
-
-                //p5
                 p5 = gsl::Vector3D{vert[i-1].mXYZ.x, vert[i-1].mXYZ.y, vert[i-1].mXYZ.z};
             }
 
-            //lager vektorer til alle punktene
+        // Makes vectors from the center to all points around.
             gsl::Vector3D v0 = p0-pCenter;
             gsl::Vector3D v1 = p1-pCenter;
             gsl::Vector3D v2 = p2-pCenter;
@@ -320,7 +320,7 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
             gsl::Vector3D v4 = p4-pCenter;
             gsl::Vector3D v5 = p5-pCenter;
 
-        /** If i get the absolute values the terrain gets lit. If not, it's dark (Has negative values) */
+        // If i get the absolute values (std::abs) the terrain gets lit up. If not, it's dark (because of negative values)
             v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
             v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
             v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
@@ -328,8 +328,7 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
             v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
             v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
 
-            //Regner ut normalene til alle trekantene rundt punktet
-
+        // Calculates normals of all triangles around the center-point using cross-product and normalizing vector afterwards.
             n0 = v0.cross(v0,v1);
             n0.normalize();
 
@@ -350,17 +349,16 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 
             gsl::Vector3D nV = n0+n1+n2+n3+n4+n5;
 
-            object->mesh->mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z);
+            object->mesh->mVertices[0].at(i).set_normal(nV.x, nV.y, nV.z); // Assigns calculated normal to current vertex.
         }
     }
-    inn.close();
+    inn.close(); // Close txt file after use.
 
-    mTerrain = object;
+    mTerrain = object; // Assigns the object to mTerrain, so that we can use mTerrain later for height-map related changes.
 
+    init(*object->mesh, 0); // Initialize object.
 
-    init(*object->mesh, 0);
-
-    return mMeshComponents.size()-1;
+    return mMeshComponents.size()-1; // Return index of last meshComponent, which is this objects mesh.
 }
 
 int ResourceManager::makeHeightMap(std::string filename)
@@ -514,27 +512,46 @@ int ResourceManager::makeHeightMap(std::string filename)
     return mMeshComponents.size()-1;    //returns index to last object
 }
 
-int ResourceManager::countourLines()
+/*
+ * Function that creates contour-lines (høyde-kurver) on mTerrain. (Height-map read from txt-file).
+ * There is some confusion between y and z values because the txt-file uses z as height, but this game-engine uses y as 'up',
+ * so there are some variables that should be renamed (switch from y to z).
+ *
+ * The function checks between two points, and decides wether or not it should place a point on that line.
+ * If there should be a point there, it will calculate where on the line the point needs to be placed.
+ * It checks all four outer lines in each quad, and after that, it draws a line between the two points it finds.
+ *
+ * To calculate the position of a point, we need:
+ * -    a = lineheight - (the point that is above lineheight).
+ * -    b = (the point that is above lineheight) - (the point that is below lineheight).
+ * based on the height of two corners in the quad, we calculate the position of a contour-line point
+ * by doing either 'pos = -(a/b)*step' or 'pos = (a/b)*step'
+ */
+int ResourceManager::contourLines()
 {
-    mMeshComponents.emplace_back(Mesh());
-    *object->mesh = mMeshComponents.back();
+    mMeshComponents.emplace_back(Mesh());   // Push a new mesh into mMeshcomponents.
+    *object->mesh = mMeshComponents.back(); // Assign the new mesh to current object. Current object is created in ResourceManager::CreateObject().
 
-    std::vector<Vertex> vert = mTerrain->mesh->mVertices[0];
+    std::vector<Vertex> vert = mTerrain->mesh->mVertices[0];    // Holds mVertices, just used to make the code more readable.
 
-    glPointSize(5);
 
     int c = 0;
     float a=0, b=0, xPos=0, zPos=0;
-    for(int lineHeight = 0; lineHeight<zMax; lineHeight += 5){
+    int lineSpacing = 3; //y-distance between curvature-lines.
+
+// Loops through values between 0 and the highest point in y-coords (zMax)
+    for(int lineHeight = 0; lineHeight<zMax; lineHeight += lineSpacing){
         for(int i = 0; i < vert.size()-mRows; i++)
         {
+        // Skips the last point in each row, because there are quads to the right of that point.
             if(c == mRows-1)
             {
                 c=0;
-                continue;
+                continue; // Continue to the next index in the for loop. (don't run any code below this).
             }
             c++;
 
+        // Checks if bottom line of quad should have a contourLine.
             if(vert[i].getXYZ().y < lineHeight && vert[i+1].getXYZ().y > lineHeight)
             {
                 a = lineHeight - vert[i].getXYZ().y;
@@ -549,8 +566,8 @@ int ResourceManager::countourLines()
                 xPos = (a/b)*xStep;
                 object->mesh->mVertices->push_back(Vertex(vert[i].getXYZ().x -xPos+xStep, lineHeight, vert[i].getXYZ().z, 1,0,0));
             }
-
-            else if(vert[i].getXYZ().y < lineHeight && vert[i+mRows].getXYZ().y > lineHeight)
+        // Checks if left-side line of quad should have a contourLine.
+            if(vert[i].getXYZ().y < lineHeight && vert[i+mRows].getXYZ().y > lineHeight)
             {
                 a = lineHeight - vert[i].getXYZ().y;
                 b = vert[i+mRows].getXYZ().y - vert[i].getXYZ().y;
@@ -564,13 +581,46 @@ int ResourceManager::countourLines()
                 zPos = (a/b)*zStep;
                 object->mesh->mVertices->push_back(Vertex(vert[i].getXYZ().x, lineHeight, vert[i].getXYZ().z -zPos+zStep, 1,0,0));
             }
+        // Checks if top line of quad should have a contourLine.
+            if(vert[i+mRows].getXYZ().y < lineHeight && vert[i+mRows+1].getXYZ().y > lineHeight)
+            {
+                a = lineHeight - vert[i+mRows].getXYZ().y;
+                b = vert[i+mRows+1].getXYZ().y - vert[i+mRows].getXYZ().y;
+                xPos = -(a/b)*xStep;
+                object->mesh->mVertices->push_back(Vertex(vert[i+mRows].getXYZ().x -xPos, lineHeight, vert[i+mRows].getXYZ().z, 1,0,0));
+            }
+            else if(vert[i+mRows].getXYZ().y > lineHeight && vert[i+mRows+1].getXYZ().y < lineHeight)
+            {
+                a = lineHeight - vert[i+mRows+1].getXYZ().y;
+                b = vert[i+mRows].getXYZ().y - vert[i+mRows+1].getXYZ().y;
+                xPos = (a/b)*xStep;
+                object->mesh->mVertices->push_back(Vertex(vert[i+mRows].getXYZ().x -xPos+xStep, lineHeight, vert[i+mRows].getXYZ().z, 1,0,0));
+            }
+        // Checks if right-side line of quad should have a contourLine.
+            if(vert[i+1].getXYZ().y < lineHeight && vert[i+mRows+1].getXYZ().y > lineHeight)
+            {
+                a = lineHeight - vert[i+1].getXYZ().y;
+                b = vert[i+mRows+1].getXYZ().y - vert[i+1].getXYZ().y;
+                zPos = -(a/b)*zStep;
+                object->mesh->mVertices->push_back(Vertex(vert[i+1].getXYZ().x, lineHeight, vert[i+1].getXYZ().z - zPos, 1,0,0));
+            }
+            else if(vert[i+1].getXYZ().y > lineHeight && vert[i+mRows+1].getXYZ().y < lineHeight)
+            {
+                a = lineHeight - vert[i+mRows+1].getXYZ().y;
+                b = vert[i+1].getXYZ().y - vert[i+mRows+1].getXYZ().y;
+                zPos = (a/b)*zStep;
+                object->mesh->mVertices->push_back(Vertex(vert[i+1].getXYZ().x, lineHeight, vert[i+1].getXYZ().z -zPos+zStep, 1,0,0));
+            }
         }
     }
-    init(*object->mesh, 0);
+    init(*object->mesh, 0); // Initialize the 'contour-lines' mesh.
 
-    return mMeshComponents.size()-1;
+    return mMeshComponents.size()-1; // Return index of last meshComponent, which is this objects mesh.
 }
-
+/*
+ * Calculates barycentric coordinates for an object that is on top of a triangle in the mTerrain-surface.
+ * pos is the position of the object. And p1,p2,p3 is the corners of the triangle that the object is on top of.
+ */
 gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, const gsl::Vector2D &p1,
                                                       const gsl::Vector2D &p2, const gsl::Vector2D &p3)
 {
@@ -579,9 +629,9 @@ gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, 
     gsl::Vector3D p12{p12a.x, p12a.y, 0};
     gsl::Vector3D p13{p13a.x, p13a.y, 0};
     gsl::Vector3D n = gsl::Vector3D::cross(p12, p13);
-    float areal_123 = n.length(); // dobbelt areal
+    float areal_123 = n.length();
     gsl::Vector3D baryc;
-    // u
+
     gsl::Vector2D p0 = p2 - pos;
     gsl::Vector2D q0 = p3 - pos;
     gsl::Vector3D p{p0.x, p0.y, 0};
@@ -589,7 +639,7 @@ gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, 
 
     n = gsl::Vector3D::cross(p,q);
     baryc.setX(n.z/areal_123);
-    // v
+
     p0 = p3 - pos;
     q0 = p1 - pos;
     p = gsl::Vector3D{p0.x, p0.y, 0};
@@ -597,7 +647,7 @@ gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, 
 
     n = gsl::Vector3D::cross(p,q);
     baryc.setY(n.z/areal_123);
-    // w
+
     p0 = p1 - pos;
     q0 = p2 - pos;
     p = gsl::Vector3D{p0.x, p0.y, 0};
@@ -605,6 +655,7 @@ gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, 
 
     n = gsl::Vector3D::cross(p,q);
     baryc.setZ(n.z/areal_123);
+
     return baryc;
 }
 void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)

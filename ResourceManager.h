@@ -27,7 +27,7 @@ public:
 
     GameObject* mTerrain{nullptr};
 
-    float scale = 0;
+    double scale = 0;
 
 private:
     /** Functions */
@@ -35,7 +35,7 @@ private:
 
     int makeHeightMapFromTxt(std::string filename);
     int makeHeightMap(std::string filename);
-    int countourLines();
+    int contourLines();
 
     gsl::Vector3D barycentricCoordinates(const gsl::Vector2D& dette, const gsl::Vector2D& p1,
                                          const gsl::Vector2D& p2, const gsl::Vector2D& p3);

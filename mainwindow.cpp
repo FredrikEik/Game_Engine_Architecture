@@ -118,7 +118,7 @@ void MainWindow::on_startGameButton_toggled(bool checked)
     if(checked){
         ui->startGameButton->setText("Stop Game / Open Editor");
         mCoreEngine->playStartGameSound();
-        mRenderWindow->toggleWireframe(false);
+//        mRenderWindow->toggleWireframe(false);
         mRenderWindowContainer->setFocus();
     }
     else{

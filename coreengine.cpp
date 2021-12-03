@@ -43,8 +43,11 @@ void CoreEngine::SetUpScene()
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(playerObject); //57.f, -1.f, 6.f
 
+    gsl::Vector3D gameCameraPos{57, 10, 120};
+    gsl::Vector3D editorCameraPos{25, 10, 90};
+
     mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
-    mGameCameraMesh->transform->mMatrix.translate(gsl::Vector3D(57.f, .5f, 9.f));
+    mGameCameraMesh->transform->mMatrix.translate(gameCameraPos);
     mGameCameraMesh->transform->mMatrix.rotateX(20);
     mGameCameraMesh->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(mGameCameraMesh);
@@ -62,44 +65,41 @@ void CoreEngine::SetUpScene()
 //    hmMatrix = temp->transform->mMatrix;
 //    mRenderWindow->addToGameObjects(temp);
 
+/** Terrain from txt file */
     temp = mResourceManager->CreateObject("test_las.txt");
-//    temp->transform->mMatrix.rotateX(180); //er terrenget flippet?
-//    temp->transform->mMatrix.translate(0,0,-150);
-    temp->transform->mMatrix.scale(0.1);
-//    temp->material->mShaderProgram = 0;
-//    hmMatrix = &temp->transform->mMatrix;
+    temp->transform->mMatrix.scale(0.1f);
     mRenderWindow->addToGameObjects(temp);
 
-//    temp = mResourceManager->CreateObject("ContourLines");
-//    temp->transform->mMatrix.translate(0,0,-150);
-//    temp->transform->mMatrix.scale(0.1);
-//    temp->material->mShaderProgram = 0;
-//    temp->mesh->mDrawType = GL_POINTS;
-//    mRenderWindow->addToGameObjects(temp);
-
-    temp = mResourceManager->CreateObject("ball.obj");
+/** Høydekurver (contour-lines) */
+    temp = mResourceManager->CreateObject("ContourLines");
+    temp->transform->mMatrix.scale(0.1f);
+    temp->material->mShaderProgram = 0;
+    temp->mesh->mDrawType = GL_LINES;
     mRenderWindow->addToGameObjects(temp);
 
-
+/**
+  * Spawns balls (raindrops) on the terrain (mTerrain).
+  * Uses barycentric coordinates to calculate the height.
+  */
     float y = 0;
-    for(int i = 0; i < 100; i++)
+    for(int i = 1; i < 90; i++)
     {
-        for(int j = 0; j < 100; j++)
+        for(int j = 1; j < 40; j++)
         {
 //           int b = floor(rand() % 4 + 9);
 //           temp = mResourceManager->CreateObject(treeNames[b]);
            temp = mResourceManager->CreateObject("ball.obj");
            y = mResourceManager->getHeightMapHeight(gsl::Vector2D{float(i), float(j)});
-           temp->transform->mMatrix.translate(i, y, j*(mResourceManager->scale));
-           temp->transform->mMatrix.scale(0.1);
+           temp->transform->mMatrix.translate(i, y, j*mResourceManager->scale);
+           temp->transform->mMatrix.scale(0.2f);
            mRenderWindow->addToGameObjects(temp);
         }
     }
 
-    //********************** Set up cameras **********************
-    mGameCamera->setPosition(gsl::Vector3D(57.f, .5f, 9.f));
+//********************** Set up cameras **********************
+    mGameCamera->setPosition(gsl::Vector3D(gameCameraPos));
 
-    mEditorCamera->setPosition(gsl::Vector3D(25.f, .5f, 4.f));
+    mEditorCamera->setPosition(gsl::Vector3D(editorCameraPos));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
