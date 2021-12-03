@@ -206,10 +206,10 @@ void LasSurface::minMaxScale()          //skalerer mellom to verdier, gjør dett
 
 void LasSurface::createContourLines()
 {
-   for (float contourHeight = contourMinimum; contourHeight < contourMaximum; contourHeight+=contourStep)
+   for (float contourHeight = høydeKurveMin; contourHeight < høydeKurveMax; contourHeight+=høydeKurveStep)      //looper mellom høydekurvemin og max
    {
-       for (int i = 0; i<getMeshComponent()->mVertices.size(); i+=6){
-           Vertex a = getMeshComponent()->mVertices[i];
+       for (int i = 0; i<getMeshComponent()->mVertices.size(); i+=6){           //leser inn en og en square
+           Vertex a = getMeshComponent()->mVertices[i];                         //setter vertexene til å være lik hver sin kant av en square
            Vertex b = getMeshComponent()->mVertices[i+1];
            Vertex c = getMeshComponent()->mVertices[i+3];
            Vertex d = getMeshComponent()->mVertices[i+2];
@@ -220,7 +220,7 @@ void LasSurface::createContourLines()
            bool D = false;
 
            if(a.getXYZ().y > contourHeight){
-               A = 1;
+               A = 1;           //A er 1 når vertex a sin y er større enn contourHeight
            }
            if(b.getXYZ().y > contourHeight){
                B = 1;
@@ -231,7 +231,7 @@ void LasSurface::createContourLines()
            if(d.getXYZ().y > contourHeight){
                D = 1;
            }
-           Vertex ab = (a+b)/2;
+           Vertex ab = (a+b)/2;     //lager en vertex for alle linjer
            ab.set_y(contourHeight);
            Vertex bc = (b+c)/2;
            bc.set_y(contourHeight);
@@ -246,9 +246,9 @@ void LasSurface::createContourLines()
            Vertex dbd = (d+bd)/2;
            dbd.set_y(contourHeight);
 
-           int state = getstate(A,B,C,D);
+           int state = getstate(A,B,C,D);       //get state
 
-           switch (state)
+           switch (state)                       //switch statement som går gjennom alle muligheter
            {
            case 0:
                break;
@@ -344,7 +344,7 @@ void LasSurface::createContourLines()
 
 int LasSurface::getstate(bool A, bool B, bool C, bool D)
 {
-    return 8*A+4*B+2*C+1*D;
+    return 8*A+4*B+2*C+1*D;         //regner ut hvilken state det skal være
 }
 
 void LasSurface::init()
