@@ -272,7 +272,7 @@ void RenderWindow::init()
     {
         for(int j{0}; j < 5; j++)
         {
-            entitySys->construct("sphere.obj", QVector3D( 400 + 8*(i) ,90.0f,300 + 8*(j)),2,1);
+            entitySys->construct("sphere.obj", QVector3D( 200 + 8*(i) ,100.0f,200 + 8*(j)),2,1);
         }
     }
     //for(int i = 0; i < transformCompVec.size(); i++){
@@ -294,7 +294,7 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-    if(isPhysicsEnabled){
+    if(isPhysicsEnabled && RecordBSplines){
         frameCountForPointIntake++;
         if(frameCountForPointIntake > 50){
             frameCountForPointIntake = 0;
@@ -335,7 +335,7 @@ void RenderWindow::render()
 
             //killZ :D
 
-            killZ(transformCompVec[i], gsl::Vector3D(255  ,90.0f,250 ));
+            killZ(transformCompVec[i], gsl::Vector3D(200  ,100.0f,200 ));
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
 

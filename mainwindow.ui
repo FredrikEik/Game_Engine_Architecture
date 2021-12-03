@@ -41,6 +41,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="RecordBSplines">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Record B Splines</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -94,8 +104,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>503</width>
-                 <height>360</height>
+                 <width>437</width>
+                 <height>382</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,1">
@@ -286,7 +296,7 @@
      <x>0</x>
      <y>0</y>
      <width>1779</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">

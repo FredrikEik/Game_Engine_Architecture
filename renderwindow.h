@@ -72,6 +72,7 @@ public:
 
     bool isPaused = false;
     bool isPhysicsEnabled = false;
+    bool RecordBSplines = false;
 
     //PHYSICS
     PhysicsSystem* Physics = new PhysicsSystem();

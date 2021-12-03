@@ -317,8 +317,22 @@ void MainWindow::on_actionLoad_World_triggered()
 void MainWindow::on_StartPhysics_clicked()
 {
     //togglelator 6000
-    if(mRenderWindow->isPhysicsEnabled)
+    if(mRenderWindow->isPhysicsEnabled){
         mRenderWindow->isPhysicsEnabled = false;
-    else
-            mRenderWindow->isPhysicsEnabled = true;
+    }else{
+        mRenderWindow->isPhysicsEnabled = true;
+        ui->RecordBSplines->setEnabled(true);
+    }
+
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+
+}
+
+void MainWindow::on_RecordBSplines_clicked()
+{
+    mRenderWindow->RecordBSplines = true;
+    ui->RecordBSplines->setEnabled(false);
 }
