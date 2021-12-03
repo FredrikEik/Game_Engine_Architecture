@@ -28,7 +28,8 @@ public:
     int ballCounter=0;
 
     GameObject* createObject(gsl::objectTypes type);
-    GameObject *createContourLines(GameObject *surfaceToContour);
+    GameObject* createContourLines(GameObject *surfaceToContour);
+    GameObject* createBSpline(GameObject* rollingBall);
 
     void saveMesh(std::string fileName, std::string nickName);
     void saveMesh(std::vector<Vertex> vertices, std::string nickName);

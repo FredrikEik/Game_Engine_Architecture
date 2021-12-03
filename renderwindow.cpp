@@ -260,14 +260,17 @@ void RenderWindow::initObjects()
         rb->getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
     }
 
+    /*VISSIM Folder Assignment 4*/
     GameObject* VISSIMBALL1 = factory->createObject(gsl::ROLLINGBALL);
-    //GameObject* VISSIMBALL2 = factory->createObject(gsl::ROLLINGBALL);
-    VISSIMBALL1->getTransformComponent()->mMatrix.setPosition(5.f, 7.81f, 5.f);
-    //VISSIMBALL2->getTransformComponent()->mMatrix.setPosition(-5.f,5.36f,-5.f);
+    GameObject* VISSIMBALL2 = factory->createObject(gsl::ROLLINGBALL);
+    VISSIMBALL1->getTransformComponent()->mMatrix.setPosition(9.f, 50.f, 9.f);
+    VISSIMBALL2->getTransformComponent()->mMatrix.setPosition(-5.f,50.f,-5.f);
     dynamic_cast<Rollingball*>(VISSIMBALL1)->LASsurface = surface;
-    //dynamic_cast<Rollingball*>(VISSIMBALL2)->LASsurface = surface;
-    dynamic_cast<Rollingball*>(VISSIMBALL1)->bPredictPath = true;
-    //dynamic_cast<Rollingball*>(VISSIMBALL2)->bPredictPath = true;
+    dynamic_cast<Rollingball*>(VISSIMBALL2)->LASsurface = surface;
+    GameObject* VISSIMBSPLINE1 = factory->createBSpline(VISSIMBALL1);
+    GameObject* VISSIMBSPLINE2 = factory->createBSpline(VISSIMBALL2);
+
+
 
     /*GameObject* contourLines = */factory->createContourLines(surface);
 
@@ -370,16 +373,6 @@ void RenderWindow::render()
                                                                                mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
                                    factory->mGameObjects[i]->draw();
-
-                                   if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL)
-                                   {
-                                       if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bDrawPath)
-                                       {
-                                           GameObject* spline = dynamic_cast<Rollingball*>(factory->mGameObjects[i])->mSpline;
-                                           glUniformMatrix4fv( mMatrixUniform[0], 1, GL_TRUE, spline->getTransformComponent()->mMatrix.constData());
-                                           spline->draw();
-                                       }
-                                   }
                                    objectsDrawn++;
                                 }
             }
@@ -396,13 +389,6 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->draw();
 
-                if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL)
-                {
-                    if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bDrawPath)
-                    {
-                        dynamic_cast<Rollingball*>(factory->mGameObjects[i])->mSpline->draw();
-                    }
-                }
             }
 
 
@@ -436,11 +422,6 @@ void RenderWindow::render()
                 {
                     dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
                 }
-                if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bPredictPath)
-                {
-                    dynamic_cast<Rollingball*>(factory->mGameObjects[i])->predictPath(0.10f);
-                }
-
             }
         }
     }

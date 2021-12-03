@@ -43,7 +43,8 @@ namespace gsl  //Game School Lib
         LIGHT = 8,
         LASSURFACE = 9,
         ROLLINGBALL = 10,
-        CONTOURLINES = 11
+        CONTOURLINES = 11,
+        BSPLINE = 12
     };
 }
 #endif // CONSTANTS_H

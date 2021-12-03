@@ -14,6 +14,7 @@
 #include "rollingball.h"
 #include "contourlines.h"
 #include "shape.h"
+#include "bspline.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -25,15 +26,34 @@ Factory::Factory()
         mAvailableIDs.push(ID);
     }
 }
+GameObject* Factory::createBSpline(GameObject *rollingBall)
+{
+    GameObject* objectToCreate;
+    objectToCreate = new BSpline(rollingBall);
+    objectToCreate->getMeshComponent()->mDrawType = GL_LINE_STRIP;
+    objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+    objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+    objectToCreate->mObjectType = gsl::BSPLINE;
+    objectToCreate->mObjectName = "BSpline";
+
+    objectToCreate->init();
+    objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
+    mAvailableIDs.pop();                        //Pop ID from queue of available IDs
+
+    mGameObjects.push_back(objectToCreate);
+    return objectToCreate;
+
+}
 GameObject* Factory::createContourLines(GameObject* surfaceToContour)
 {
     GameObject* objectToCreate;
 
     objectToCreate = new ContourLines(static_cast<LASsurface*>(surfaceToContour)->contourPoints);
     objectToCreate->getMeshComponent()->mDrawType = GL_LINES;
-    objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+    objectToCreate->getMaterialComponent()->mShaderProgram = 0;
     objectToCreate->getMaterialComponent()->mTextureUnit = 0;
     objectToCreate->mObjectType = gsl::CONTOURLINES;
+    objectToCreate->mObjectName = "ContourLines";
 
     objectToCreate->init();
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
@@ -187,7 +207,6 @@ GameObject* Factory::createObject(gsl::objectTypes type)
         break;
 
     }
-
     objectToCreate->init();
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
     mAvailableIDs.pop();                        //Pop ID from queue of available IDs
