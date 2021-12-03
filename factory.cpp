@@ -25,7 +25,6 @@ Factory::Factory()
         mAvailableIDs.push(ID);
     }
 }
-
 GameObject* Factory::createContourLines(GameObject* surfaceToContour)
 {
     GameObject* objectToCreate;
@@ -43,7 +42,6 @@ GameObject* Factory::createContourLines(GameObject* surfaceToContour)
     mGameObjects.push_back(objectToCreate);
     return objectToCreate;
 }
-
 GameObject* Factory::createObject(gsl::objectTypes type)
 {
 
@@ -167,8 +165,8 @@ GameObject* Factory::createObject(gsl::objectTypes type)
         break;
 
     case gsl::LASSURFACE:
-        //objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
-        objectToCreate = new LASsurface("../GEA2021/Assets/LAS/kongehuset.txt");
+        objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
+        //objectToCreate = new LASsurface("../GEA2021/Assets/LAS/kongehuset.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
         objectToCreate->mObjectType = gsl::LASSURFACE;

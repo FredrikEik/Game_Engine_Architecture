@@ -32,6 +32,7 @@ LASsurface::LASsurface(std::string fileName)
     {
         //.. find what column the vertex is on
         for(int j = xMin; j < xMax; j+=step) // j = -5.0f, -3.0f, -1.0f, 1.0f, 3.0f, 5.0f
+
         {
             if(lasData[i].getXYZ().getX() > j && lasData[i].getXYZ().getX() < j + step)
             {
@@ -238,16 +239,16 @@ void LASsurface::makeContourLines()
             Vertex c = getMeshComponent()->mVertices[i+3]; bool C = false;
             Vertex d = getMeshComponent()->mVertices[i+1]; bool D = false;
             if(a.getXYZ().getY() > contourHeight){
-                A = 1;
+                A = true;
             }
             if(b.getXYZ().getY() > contourHeight){
-                B = 1;
+                B = true;
             }
             if(c.getXYZ().getY() > contourHeight){
-                C = 1;
+                C = true;
             }
             if(d.getXYZ().getY() > contourHeight){
-                D = 1;
+                D = true;
             }
             Vertex bd = (b+d)/2;   //Meeting point for case 3, 6, 9, 12
             Vertex bbd = (b+bd)/2; //Meeting point for case 4, 10, 11

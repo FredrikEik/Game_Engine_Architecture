@@ -1,11 +1,12 @@
 #include "rollingball.h"
 #include "lassurface.h"
+#include "bspline.h"
 
 Rollingball::Rollingball(int n) : OctahedronBall(n)
 {
     gForce = gsl::Vector3D(0.f,-9.80565f*massInKg,0.f);
-
     velocity = {0.f, -gConstant*0.17f, 0.f};
+    prevPosition = getTransformComponent()->mMatrix.getPosition();
 }
 Rollingball::~Rollingball()
 {
@@ -72,7 +73,7 @@ void Rollingball::move(float dt)
             //acceleration = acceleration + friction;
 
             //newPosition.y = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
-            ballPosition = getTransformComponent()->mMatrix.getPosition();
+            //ballPosition = getTransformComponent()->mMatrix.getPosition();
 
             //mPosition.translate(velocity.x, velocity.y, velocity.z);
             //qDebug() << "pos after:    " << ballPosition.x << ballPosition.y << ballPosition.z;
@@ -89,6 +90,67 @@ void Rollingball::move(float dt)
 
 }
 
+void Rollingball::predictPath(float dt)
+{
+    std::vector<Vertex>& vertices = dynamic_cast<class LASsurface*>(LASsurface)->getMeshComponent()->mVertices;
+
+    gsl::Vector3D barycCoords;
+    float yOffset = 0.2f;
+
+    for(int i = 0; i < vertices.size() - 2; i+= 3)
+    {
+        gsl::Vector3D p1, p2, p3;
+        p1 = gsl::Vector3D(vertices[i].getXYZ());
+        p2 = gsl::Vector3D(vertices[i+1].getXYZ());
+        p3 = gsl::Vector3D(vertices[i+2].getXYZ());
+
+        barycCoords = prevPosition.barycentricCoordinates(p1, p2, p3);
+
+        if(barycCoords.x >= 0 && barycCoords.y >= 0 && barycCoords.z >= 0)
+        {
+            gsl::Vector3D p12 = p2-p1;
+            gsl::Vector3D p13 = p3-p1;
+            gsl::Vector3D pNormal = p12^p13;
+
+            pNormal.normalize();
+            float surfaceY = p1.y*barycCoords.x + p2.y*barycCoords.y + p3.y*barycCoords.z;
+
+            predictedAcceleration = gsl::Vector3D(pNormal.x*pNormal.y*gConstant, pNormal.y*pNormal.y*gConstant, pNormal.z*pNormal.y*gConstant) + gsl::Vector3D(0,-gConstant, 0);
+            predictedVelocity = predictedVelocity + predictedAcceleration * dt;
+            prevPosition = prevPosition + predictedVelocity * dt;
+            mPredictedPath.push_back(Vertex(prevPosition.x, surfaceY + yOffset, prevPosition.z, 255, 0, 0));
+
+//            if(prevPosition.y < surfaceY + (yOffset*2))
+//            {
+//                predictedAcceleration = gsl::Vector3D(pNormal.x*pNormal.y*gConstant, pNormal.y*pNormal.y*gConstant, pNormal.z*pNormal.y*gConstant) + gsl::Vector3D(0,-gConstant, 0);
+//                predictedVelocity = predictedVelocity + predictedAcceleration * dt;
+//                prevPosition = prevPosition + predictedVelocity * dt;
+//                mPredictedPath.push_back(Vertex(prevPosition.x, surfaceY + yOffset, prevPosition.z, 255, 0, 0));
+//            }
+//            else
+//            {
+//                predictedAcceleration = gsl::Vector3D(0,-gConstant, 0);
+//                predictedVelocity = predictedVelocity + predictedAcceleration * dt;
+//                prevPosition = prevPosition + predictedVelocity * dt;
+//                mPredictedPath.push_back(Vertex(prevPosition.x, prevPosition.y, prevPosition.z, 255, 0, 0));
+//            }
+            return;
+        }
+    }
+    createBSpline();
+}
+
+void Rollingball::createBSpline()
+{
+    qDebug() << "createBSpline()";
+    bPredictPath = false;
+    mSpline = new BSpline(mPredictedPath);
+    mSpline->getMaterialComponent()->mShaderProgram = 1;
+    mSpline->getMaterialComponent()->mTextureUnit = 0;
+    mSpline->getMeshComponent()->mDrawType = GL_LINES;
+    mSpline->init();
+    bDrawPath = true;
+}
 
 void Rollingball::init()
 {

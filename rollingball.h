@@ -12,10 +12,17 @@ public:
     void draw() override;
     void move(float x, float y, float z) override;
     void move(float dt);
+    void predictPath(float dt);
+    void createBSpline();
 
     void setPosition(float x, float y, float z);
 
     GameObject* LASsurface;
+    GameObject* mSpline;
+    std::vector<Vertex> mPredictedPath;
+
+    bool bPredictPath{false};
+    bool bDrawPath{false};
 
 private:
 
@@ -23,7 +30,10 @@ private:
     float massInKg {10.f};
     gsl::Vector3D velocity;
     gsl::Vector3D acceleration;
+    gsl::Vector3D predictedVelocity;
+    gsl::Vector3D predictedAcceleration;
     gsl::Vector3D gForce;
+    gsl::Vector3D prevPosition;
 
     //gsl::Vector3D friction{0.0f, 0.0f, 0.0f};
     //float frictionStrength{2.0f};

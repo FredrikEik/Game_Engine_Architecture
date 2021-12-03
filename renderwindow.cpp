@@ -39,6 +39,7 @@
 #include "lassurface.h"
 #include "rollingball.h"
 #include "codedmeshes.h"
+#include "bspline.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -259,6 +260,15 @@ void RenderWindow::initObjects()
         rb->getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
     }
 
+    GameObject* VISSIMBALL1 = factory->createObject(gsl::ROLLINGBALL);
+    //GameObject* VISSIMBALL2 = factory->createObject(gsl::ROLLINGBALL);
+    VISSIMBALL1->getTransformComponent()->mMatrix.setPosition(5.f, 7.81f, 5.f);
+    //VISSIMBALL2->getTransformComponent()->mMatrix.setPosition(-5.f,5.36f,-5.f);
+    dynamic_cast<Rollingball*>(VISSIMBALL1)->LASsurface = surface;
+    //dynamic_cast<Rollingball*>(VISSIMBALL2)->LASsurface = surface;
+    dynamic_cast<Rollingball*>(VISSIMBALL1)->bPredictPath = true;
+    //dynamic_cast<Rollingball*>(VISSIMBALL2)->bPredictPath = true;
+
     /*GameObject* contourLines = */factory->createContourLines(surface);
 
     mPlayer = factory->createObject(gsl::PLAYER);
@@ -360,6 +370,16 @@ void RenderWindow::render()
                                                                                mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
                                    factory->mGameObjects[i]->draw();
+
+                                   if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL)
+                                   {
+                                       if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bDrawPath)
+                                       {
+                                           GameObject* spline = dynamic_cast<Rollingball*>(factory->mGameObjects[i])->mSpline;
+                                           glUniformMatrix4fv( mMatrixUniform[0], 1, GL_TRUE, spline->getTransformComponent()->mMatrix.constData());
+                                           spline->draw();
+                                       }
+                                   }
                                    objectsDrawn++;
                                 }
             }
@@ -371,10 +391,18 @@ void RenderWindow::render()
             else
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
-                                                            mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                           mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                                                                     mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
+                                                                     mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
                 factory->mGameObjects[i]->draw();
+
+                if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL)
+                {
+                    if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bDrawPath)
+                    {
+                        dynamic_cast<Rollingball*>(factory->mGameObjects[i])->mSpline->draw();
+                    }
+                }
             }
 
 
@@ -402,9 +430,17 @@ void RenderWindow::render()
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
             */
-            if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL && togglePhysics == true)
+            if(factory->mGameObjects[i]->mObjectType == gsl::ROLLINGBALL)
             {
-                dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
+                if(togglePhysics == true)
+                {
+                    dynamic_cast<Rollingball*>(factory->mGameObjects[i])->move(0.017f);
+                }
+                if(dynamic_cast<Rollingball*>(factory->mGameObjects[i])->bPredictPath)
+                {
+                    dynamic_cast<Rollingball*>(factory->mGameObjects[i])->predictPath(0.10f);
+                }
+
             }
         }
     }
