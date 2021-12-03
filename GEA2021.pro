@@ -30,6 +30,7 @@ SOURCES += main.cpp \
     mousepicker.cpp \
     objectfactory.cpp \
     objimport.cpp \
+    octahedronball.cpp \
     player.cpp \
     renderwindow.cpp \
     script.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     mousepicker.h \
     objectfactory.h \
     objimport.h \
+    octahedronball.h \
     player.h \
     renderwindow.h \
     script.h \

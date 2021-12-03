@@ -212,6 +212,9 @@ void RenderWindow::init()
     setScaleZ(0.1);
     ObjFactory->setOBJindex(-1);*/
 
+    //ObjFactory->createObject("Ball");
+    //mMainWindow->addObjectToWorldList("Ball");
+
     ObjFactory->createObject("Terrain");
     mMainWindow->addObjectToWorldList("Terrain");
 
@@ -225,6 +228,18 @@ void RenderWindow::init()
     //ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);
     //ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
     //mPlayer = new player(ObjFactory->mGameObject.back());
+
+    ObjFactory->createObject("Ball");
+    mMainWindow->addObjectToWorldList("Ball");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(0.25);
+    setScaleY(0.25);
+    setScaleZ(0.25);
+    setPositionX(0);
+    setPositionY(10);
+    setPositionZ(0);
+    ObjFactory->setOBJindex(-1);
+    //mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
 
     skyBox = new SkyBox();
     skyBox->init();

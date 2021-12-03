@@ -6,6 +6,7 @@
 #include "surface.h"
 #include "contours.h"
 #include "terrain.h"
+#include "octahedronball.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -95,7 +96,6 @@ void ObjectFactory::createObject(std::string objectName)
 
 
     }
-
     else if (objectName == "Contours")
         {
            willCreateObject = new Contours(mSurface, contourTick * 2);
@@ -106,6 +106,13 @@ void ObjectFactory::createObject(std::string objectName)
            //qDebug() << "Contour msurface: " <<mSurface;
 
         }
+
+    else if (objectName == "Ball")
+    {
+         willCreateObject = new OctahedronBall(5);
+         qDebug() << "ball mesh created";
+         willCreateObject->mTexture = 3;
+    }
     else
         return;
 
