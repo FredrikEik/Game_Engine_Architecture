@@ -58,12 +58,12 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-    mEditorCamera->setPosition(gsl::Vector3D(595.f, 17.f, 45.6f));
-//    mEditorCamera->setPosition(gsl::Vector3D(425.f, 55.f, 700.f));
+//    mEditorCamera->setPosition(gsl::Vector3D(595.f, 17.f, 45.6f));
+    mEditorCamera->setPosition(gsl::Vector3D(425.f, 55.f, 700.f));
 //        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
-    mEditorCamera->yaw(145);
-//        mEditorCamera->yaw(45);
+//    mEditorCamera->yaw(145);
+        mEditorCamera->yaw(45);
     mEditorCamera->pitch(5);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
@@ -158,7 +158,7 @@ void GameEngine::SetUpObjects()
     mHeightCurveObject = mResourceManager->CreateObject("HeightCurve",false,"plain");
     mHeightCurveObject->mMaterialComp->mShaderProgram = 0;
     mHeightCurveObject->mMaterialComp->mTextureUnit = 0;
-//    mHeightCurveObject->mTransformComp->mMatrix.scale(1,0.5f,1);
+//    mHeightCurveObject->mTransformComp->mMatrix.scale(1,0.01f,1);
     mHeightCurveObject->mTransformComp->mMatrix.translateY(0.01f);
     mRenderwindow->mGameObjects.push_back(mHeightCurveObject);
 
@@ -178,7 +178,7 @@ void GameEngine::SetUpObjects()
 
         std::random_device rdy; // obtain a random number from hardware
         std::mt19937 geny(rdy()); // seed the generator
-        std::uniform_int_distribution<> distry(100, 100); // define the range
+        std::uniform_int_distribution<> distry(75, 100); // define the range
 
 
         mPhysicsBall = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
@@ -192,7 +192,7 @@ void GameEngine::SetUpObjects()
     }
 
     mPhysicsBall2 = mResourceManager->CreateObject(gsl::MeshFilePath + "sphere.obj", false, "blue.bmp");
-    mPhysicsBall2->mTransformComp->mMatrix.translate(455,50.f,675);
+    mPhysicsBall2->mTransformComp->mMatrix.translate(449,75.f,671.8f);
 //    mPhysicsBall->mTransformComp->mMatrix.translate(455.4f,42.9f,674.4f);
     mPhysicsBall2->mTransformComp->mMatrix.scale(1);
     mPhysicsBall2->mMaterialComp->mShaderProgram = 2;

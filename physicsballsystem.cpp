@@ -22,18 +22,22 @@ void PhysicsBallSystem::update(GameObject& ballInn)
     float dt = 0.17f;
     ballInn.mBallPhysicsComp->mVelocity = ballInn.mBallPhysicsComp->mVelocity + aVector * dt;
 
-    if(ballInn.mBallPhysicsComp->onNewTriangle)
+    if(ballInn.mBallPhysicsComp->onNewTriangle && !ballInn.mBallPhysicsComp->isInAir)
     {
-        QVector3D m = ballInn.mBallPhysicsComp->normalLastAndCurrentQ.front();
-        QVector3D n = ballInn.mBallPhysicsComp->normalLastAndCurrentQ.back();
+//        QVector3D m = ballInn.mBallPhysicsComp->normalLastAndCurrentQ.front();
+//        QVector3D n = ballInn.mBallPhysicsComp->normalLastAndCurrentQ.back();
 
-        float dot = QVector3D::dotProduct(ballInn.mBallPhysicsComp->mVelocity, n);
-        ballInn.mBallPhysicsComp->collisionNormal = (ballInn.mBallPhysicsComp->mVelocity - 2.f * dot * n);
+
+        float dot = QVector3D::dotProduct(ballInn.mBallPhysicsComp->mVelocity, ballInn.mBallPhysicsComp->normal);
+        ballInn.mBallPhysicsComp->collisionNormal = (ballInn.mBallPhysicsComp->mVelocity - 2.f * dot * ballInn.mBallPhysicsComp->normal);
         ballInn.mBallPhysicsComp->collisionNormal.normalize();
+//        qDebug() << "CollisionNormal: " << ballInn.mBallPhysicsComp->collisionNormal;
 
 //        QVector3D tempColVec =
-
-        ballInn.mBallPhysicsComp->mVelocity = ballInn.mBallPhysicsComp->collisionNormal * ballInn.mBallPhysicsComp->mVelocity.length();
+        if(ballInn.mBallPhysicsComp->isInAir)
+            ballInn.mBallPhysicsComp->mVelocity = ballInn.mBallPhysicsComp->collisionNormal * ballInn.mBallPhysicsComp->mVelocity.length() / 1.0f;
+        else
+            ballInn.mBallPhysicsComp->mVelocity = ballInn.mBallPhysicsComp->collisionNormal * ballInn.mBallPhysicsComp->mVelocity.length() / 1.3f;
 
 
 
@@ -47,13 +51,14 @@ void PhysicsBallSystem::update(GameObject& ballInn)
 
     ballInn.mBallPhysicsComp->mPosition = ballInn.mBallPhysicsComp->mPosition + (ballInn.mBallPhysicsComp->mVelocity + 0.5 * QVector3D{0,-9.81,0}) * dt * dt;
     ballInn.mTransformComp->mMatrix.setPosition(ballInn.mBallPhysicsComp->mPosition.x(), ballInn.mBallPhysicsComp->mPosition.y(), ballInn.mBallPhysicsComp->mPosition.z() );
-
+//                qDebug() << ballInn.mBallPhysicsComp->isInAir;
 
 //    ballInn.mTransformComp->mMatrix.translate(ballInn.mBallPhysicsComp->mVelocity.x(),ballInn.mBallPhysicsComp->mVelocity.y(),ballInn.mBallPhysicsComp->mVelocity.z());
 //    if(ballInn.mBallPhysicsComp->isInAir == false)
-//        ballInn.mTransformComp->mMatrix.setPosition(ballInn.mTransformComp->mMatrix.getPosition().x,
-//                                                getHeightbyBarycentricCoordinates(ballInn)+0.99f,
-//                                                ballInn.mTransformComp->mMatrix.getPosition().z );
+    if(ballInn.mTransformComp->mMatrix.getPosition().y < getHeightbyBarycentricCoordinates(ballInn) + ballInn.mBallPhysicsComp->Radius-0.05f)
+        ballInn.mTransformComp->mMatrix.setPosition(ballInn.mTransformComp->mMatrix.getPosition().x,
+                                                getHeightbyBarycentricCoordinates(ballInn)+0.99f,
+                                                ballInn.mTransformComp->mMatrix.getPosition().z );
 }
 
 void PhysicsBallSystem::SetTerrainData(GameObject &TerrainInn)
@@ -233,7 +238,7 @@ QVector3D PhysicsBallSystem::getAkselerationVector(GameObject& ballInn)
             }
             if(ballInn.mBallPhysicsComp->normalLastAndCurrentQ.back() != ballInn.mBallPhysicsComp->normal && ballInn.mBallPhysicsComp->isInAir == false)
             {
-//                qDebug() << "COLLISION\nCOLLISION\nCOLLISION\nCOLLISION\n";
+//                qDebug() << "COLLISION\n\n";
                 ballInn.mBallPhysicsComp->normalLastAndCurrentQ.pop();
                 ballInn.mBallPhysicsComp->normalLastAndCurrentQ.push(ballInn.mBallPhysicsComp->normal);
                 ballInn.mBallPhysicsComp->onNewTriangle = true;
@@ -245,6 +250,10 @@ QVector3D PhysicsBallSystem::getAkselerationVector(GameObject& ballInn)
             QVector3D aVec{9.81f*ballInn.mBallPhysicsComp->normal.x()*ballInn.mBallPhysicsComp->normal.y(),
                         9.81f*((ballInn.mBallPhysicsComp->normal.y()*ballInn.mBallPhysicsComp->normal.y())-1),
                         9.81f*ballInn.mBallPhysicsComp->normal.y()*ballInn.mBallPhysicsComp->normal.z()};
+//            QVector3D aVec = (1.f /ballInn.mBallPhysicsComp->Mass) *
+//                    ((ballInn.mBallPhysicsComp->Mass*9.81f*ballInn.mBallPhysicsComp->normal*ballInn.mBallPhysicsComp->normal.y())
+//                     + ballInn.mBallPhysicsComp->Mass * QVector3D{0,-9.81f,0});
+//            QVector3D aVec{0.3f,0,0};
 
             if(ballInn.mBallPhysicsComp->isInAir)
                 return QVector3D{0,-1,0};
@@ -280,7 +289,7 @@ QVector3D PhysicsBallSystem::getAkselerationVector(GameObject& ballInn)
 
             if(ballInn.mBallPhysicsComp->normalLastAndCurrentQ.back() != ballInn.mBallPhysicsComp->normal && ballInn.mBallPhysicsComp->isInAir == false)
             {
-//                qDebug() << "COLLISION\nCOLLISION\nCOLLISION\nCOLLISION\n";
+//                qDebug() << "COLLISION\n\n";
                 ballInn.mBallPhysicsComp->isInAir = false;
                 ballInn.mBallPhysicsComp->normalLastAndCurrentQ.pop();
                 ballInn.mBallPhysicsComp->normalLastAndCurrentQ.push(ballInn.mBallPhysicsComp->normal);
@@ -291,6 +300,10 @@ QVector3D PhysicsBallSystem::getAkselerationVector(GameObject& ballInn)
             }
 
             QVector3D aVec{9.81f*ballInn.mBallPhysicsComp->normal.x()*ballInn.mBallPhysicsComp->normal.y(),9.81f*((ballInn.mBallPhysicsComp->normal.y()*ballInn.mBallPhysicsComp->normal.y())-1),9.81f*ballInn.mBallPhysicsComp->normal.y()*ballInn.mBallPhysicsComp->normal.z()};
+//            QVector3D aVec = (1.f /ballInn.mBallPhysicsComp->Mass) *
+//                    ((ballInn.mBallPhysicsComp->Mass*9.81f*ballInn.mBallPhysicsComp->normal*ballInn.mBallPhysicsComp->normal.y())
+//                     + ballInn.mBallPhysicsComp->Mass * QVector3D{0,-9.81f,0});
+//            QVector3D aVec{0.3f,0,0};
 
             if(ballInn.mBallPhysicsComp->isInAir)
                 return QVector3D{0,-1,0};

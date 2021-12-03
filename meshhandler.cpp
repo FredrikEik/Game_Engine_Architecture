@@ -271,7 +271,7 @@ void MeshHandler::createXYZAxis(MeshComponent *MeshComp, CollisionComponent *Col
         init(*CollLines,0);
 }
 
-void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
+void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
 {
 
     std::vector<gsl::Vector3D> mAllDataPoints;
@@ -393,37 +393,13 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     const int cols = TerrainWidth / gridSize;
     const int rows = TerrainLenght / gridSize;
 
-//    std::vector<gsl::Vector3D> XallDataPoints = mAllDataPoints;
-//    std::sort(XallDataPoints.begin(), XallDataPoints.end(), lessThanX());
     std::sort(mAllDataPoints.begin(), mAllDataPoints.end(), lessThanZ());
 
-//    float m2DAllDataPoint[10][10];
-//    int a{0};
-//    for( int j = 0; j < TerrainLenght;j++)
-//    {
-//        for(int i = 0; i < TerrainLenght; i++)
-//        {
-//            m2DAllDataPoint[j][i] = mAllDataPoints.at(a).getX();
-//            a++;
-//        }
-//    }
 
 
 
-//    int vertexesInQuad[100][146]{0};
-//    float tempForAvg[100][146]{0};
-//    float allHeights = 0;
 
-//    for(int i = 0; i < mAllDataPoints.size(); i++)
-//    {
-//        int X = static_cast<int>((mAllDataPoints.at(i).x-xMin)/gridSize);
-//        int Z = static_cast<int>((mAllDataPoints.at(i).z-zMin)/gridSize);
-//        tempForAvg[X][Z] += mAllDataPoints.at(i).y;
-//        vertexesInQuad[X][Z]++;
-//        allHeights += mAllDataPoints.at(i).y;
-//    }
 
-//    heights2D.reserve((xMax*zMax/gridSize));
 
     // hardcoded to 1000 because TerrainWidth = 1000 wide
 //    float ytemp = allHeights / mAllDataPoints.size();
@@ -434,31 +410,6 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
     {
         for(int x = TerrainWidth;x > xMin; x-=gridSize)
         {
-
-            //---Quick mode test---
-//            xtemp = xMin + (x*10);
-//            ztemp = zMin + (z*10);
-//            if(tempForAvg[x/gridSize][z/gridSize] != 0)
-//            {
-//                ytemp = tempForAvg[x/gridSize][z/gridSize] / vertexesInQuad[x/gridSize][z/gridSize];
-//                MeshComp->mVertices[0].push_back(Vertex(xtemp,ytemp,ztemp, 0,0,0, 0,0));
-//            }
-//            else if(!MeshComp->mVertices->empty())
-//            {
-//                float lastHeight = MeshComp->mVertices[0].at(MeshComp->mVertices->size()-1).mXYZ.getY();
-//                MeshComp->mVertices[0].push_back(Vertex(xtemp,lastHeight,ztemp, 0,0,0, 0,0));
-
-//                continue;
-//            }
-//            else
-//            {
-//                MeshComp->mVertices[0].push_back(Vertex(x,0,z, 0,1,0,  0,0));
-//                continue;
-//            }
-
-
-            //---------------
-
             std::vector<float> allHeightsInSquare;
             for(auto it : mAllDataPoints)
             {
@@ -517,6 +468,7 @@ void MeshHandler::createCreateTerrain(std::string filename, MeshComponent *MeshC
         MeshComp->mIndices->push_back(i+(int(TerrainWidth/gridSize))+1);
         c++;
     }
+
 MeshComp->mDrawType = GL_TRIANGLES;
 //glPointSize(5.f);
 
@@ -551,6 +503,7 @@ for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
         //p5
         p5 = QVector3D{MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.x,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.y,MeshComp->mVertices[0].at(i-(TerrainWidth/gridSize)-1).mXYZ.z};
     }
+
     //lager vektorer til alle punktene
     QVector3D v0 = p0-pCenter;
     QVector3D v1 = p1-pCenter;
@@ -562,22 +515,22 @@ for(int i = 1;i < MeshComp->mVertices[0].size() - (TerrainWidth/gridSize);i++)
 
     //Regner ut normalene til alle trekantene rundt punktet
     //n0
-    n0 = v0.crossProduct(v0,v1);
+    n0 = QVector3D::crossProduct(v0,v1);
     n0.normalize();
     //n1
     n1 = QVector3D::crossProduct(v1,v2);
     n1.normalize();
     //n2
-    n2 = v2.crossProduct(v2,v3);
+    n2 = QVector3D::crossProduct(v2,v3);
     n2.normalize();
     //n3
-    n3 = v3.crossProduct(v3,v4);
+    n3 = QVector3D::crossProduct(v3,v4);
     n3.normalize();
     //n4
-    n4 = v4.crossProduct(v4,v5);
+    n4 = QVector3D::crossProduct(v4,v5);
     n4.normalize();
     //n5
-    n5 = v5.crossProduct(v5,v0);
+    n5 = QVector3D::crossProduct(v5,v0);
     n5.normalize();
 
     nV = n0+n1+n2+n3+n4+n5;
@@ -772,10 +725,10 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
             }
             c++;
         }
-
     }
 
     MeshComp->mDrawType = GL_LINES;
+
     init(*MeshComp,0);
 }
 

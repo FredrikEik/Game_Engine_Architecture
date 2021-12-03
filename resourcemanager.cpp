@@ -108,7 +108,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             }
             if (filepath.find("test_las.txt") != std::string::npos)
             {
-                mMeshHandler->createCreateTerrain(filepath, tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
+                mMeshHandler->createTerrain(filepath, tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
             }
             if (filepath.find("HeightCurve") != std::string::npos)
             {
