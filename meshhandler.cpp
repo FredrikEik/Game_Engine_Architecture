@@ -308,7 +308,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
             pos.setY(y);
 
             mAllDataPoints.push_back(pos);
-
+            // initielle min maks verider
             static bool once = true;
             if(once)
             {
@@ -320,6 +320,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
                 yMax = y;
                 once = false;
             }
+            // setter min maks
             if(x < xMin)
                 xMin = x;
 
@@ -340,7 +341,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
 
         }
     inn.close();
-
+        // skalerer det ned til slik at flatern begynner i 0,0,0
         for(unsigned long long i = 0; i < loopLenth;i++)
         {
             mAllDataPoints[i].setX(mAllDataPoints[i].getX() - xMin);
@@ -355,6 +356,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
     yMax = yMax-yMin;
     yMin = yMin-yMin;
 
+    // setup for game objectet (ikke relevant for Mappen)...
     CollisionComponent->minCorner.setX(xMin);
     CollisionComponent->minCorner.setY(yMin);
     CollisionComponent->minCorner.setZ(zMin);
@@ -384,7 +386,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
 
     CollLines->mDrawType = GL_LINES;
     init(*CollLines,0);
-
+// ...setup ferdig
 
 
     int gridSize {10};
@@ -393,16 +395,8 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
     const int cols = TerrainWidth / gridSize;
     const int rows = TerrainLenght / gridSize;
 
+    // sorterer etter z slik at søkingen skal gå fortere.
     std::sort(mAllDataPoints.begin(), mAllDataPoints.end(), lessThanZ());
-
-
-
-
-
-
-
-    // hardcoded to 1000 because TerrainWidth = 1000 wide
-//    float ytemp = allHeights / mAllDataPoints.size();
 
     float xtemp;
     float ztemp;
@@ -413,20 +407,21 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
             std::vector<float> allHeightsInSquare;
             for(auto it : mAllDataPoints)
             {
+                //siden den er sorter etter z så kan jeg slippe å søke de radene jeg allerde har søkt igjennom.
                 if(it.z > z+gridSize)
                 {
                     break;
                 }
+                // om høydeverdien er innenfor ruten jeg har satt av.
                 if(it.x > x-gridSize && it.x < x && it.z > z && it.z < z + gridSize)
                 {
-                    //heights2D.push_back(gsl::Vector3D(x,it.y,z));
-
                     allHeightsInSquare.push_back(it.y);
                 }
             }
             if(!allHeightsInSquare.empty())
             {
                 float averageHeight{0};
+                // utregning av gjennomsittshøyden
                 for(auto it: allHeightsInSquare)
                 {
                     averageHeight += it;
@@ -454,7 +449,7 @@ void MeshHandler::createTerrain(std::string filename, MeshComponent *MeshComp, C
     int nrOfTerrainVertices = MeshComp->mVertices[0].size();
     for(GLuint i{}; i < nrOfTerrainVertices - (TerrainWidth/gridSize) - 1; i++)
     {
-        if(c == (TerrainWidth/gridSize) - 1)
+        if(c == (TerrainWidth/gridSize) - 1) // for å ungå å tenge en trekant fra ene siden til andre siden i neste rad.
         {
             c=0;
             continue;
@@ -618,9 +613,9 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
             gsl::Vector2D p3 {terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getX(),terrainMesh->mVertices[0].at(i+(int(TerrainWidth/gridSize))+1).mXYZ.getY()};
 
             // Lower triangle
-
             if(p0.y < h && p1.y > h)
             {
+                //utregning av posisjon langs de to punktene i forhold til p0
                 float a = h - p0.y;
                 float b = p1.y - p0.y;
                 float pros = a/b;
@@ -629,6 +624,7 @@ void MeshHandler::createHeightCurves(MeshComponent *MeshComp, CollisionComponent
             }
             else if (p0.y > h && p1.y < h)
             {
+                // samme utregning for de andre bare i forhold til relevant punkt.
                 float a = h - p1.y;
                 float b = p0.y - p1.y;
                 float pros = a/b;

@@ -58,12 +58,12 @@ void GameEngine::SetUpScene()
     mGameLoopRenderTimer = new QTimer(this);
 
     mEditorCamera = new Camera();
-//    mEditorCamera->setPosition(gsl::Vector3D(595.f, 17.f, 45.6f));
-    mEditorCamera->setPosition(gsl::Vector3D(425.f, 55.f, 700.f));
+    mEditorCamera->setPosition(gsl::Vector3D(595.f, 17.f, 45.6f));
+//    mEditorCamera->setPosition(gsl::Vector3D(425.f, 55.f, 700.f));
 //        mEditorCamera->setPosition(gsl::Vector3D(450.f, 70.f, 680.f));
 //            mEditorCamera->setPosition(gsl::Vector3D(500.f, 200.f, 500.f));
-//    mEditorCamera->yaw(145);
-        mEditorCamera->yaw(45);
+    mEditorCamera->yaw(145);
+//        mEditorCamera->yaw(45);
     mEditorCamera->pitch(5);
     mRenderwindow->mCurrentCamera = mEditorCamera;
 
