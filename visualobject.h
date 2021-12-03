@@ -17,7 +17,7 @@ public:
 
     virtual void init(GLint matrixUniform) = 0;
     virtual void draw() = 0;
-    virtual void readFile(const std::string &filename);
+    void readFile(const std::string &filename);
     virtual void writeFile(const std::string &filename);
     virtual void updateModelMatrix();
 

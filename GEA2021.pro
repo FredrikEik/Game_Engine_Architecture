@@ -71,6 +71,7 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Assets/Meshes/sphere.obj \
     Assets/Meshes/suzanne.obj \
     Assets/Meshes/suzanne_L01.obj \
     Assets/Meshes/suzanne_L02.obj \

@@ -1,11 +1,17 @@
 #include "rollingball.h"
 #include "lasplane.h"
 #include "mathfunctions.h"
+#include "constants.h"
 
-RollingBall::RollingBall(int n) : OctahedronBall (n)
+RollingBall::RollingBall(int loadedMeshIndex)
 {
-    m_position.translate(-0.5,-0.5,1.0);
     m_scale.scale(0.25,0.25,0.25);
+    meshIndex = loadedMeshIndex;
+}
+
+RollingBall::~RollingBall()
+{
+
 }
 
 void RollingBall::move(float dt)
@@ -95,7 +101,7 @@ void RollingBall::doCollition()
     velocity = velocity - collisonNormal * 2.f * (velocity * collisonNormal);
 }
 
-void RollingBall::init(GLint matrixUniform)
+void RollingBall::init(GLint matrixUniform, const std::vector<Vertex> &vertices)
 {
    m_matrixUniform = matrixUniform;
    initializeOpenGLFunctions();
@@ -108,7 +114,8 @@ void RollingBall::init(GLint matrixUniform)
    glGenBuffers( 1, &m_VBO );
    glBindBuffer( GL_ARRAY_BUFFER, m_VBO );
 
-   glBufferData( GL_ARRAY_BUFFER, m_vertices.size()*sizeof(Vertex), m_vertices.data(), GL_STATIC_DRAW );
+   //glBufferData( GL_ARRAY_BUFFER, m_vertices.size()*sizeof(Vertex), m_vertices.data(), GL_STATIC_DRAW );
+   glBufferData( GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), vertices.data(), GL_STATIC_DRAW );
 
    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*)0);
@@ -120,11 +127,21 @@ void RollingBall::init(GLint matrixUniform)
    glBindVertexArray(0);
 }
 
-void RollingBall::draw()
+
+void RollingBall::draw(const std::vector<Vertex> &vertices)
 {
    glBindVertexArray( m_VAO );
    glUniformMatrix4fv( m_matrixUniform, 1, GL_TRUE, m_modelMatrix.constData());
-   glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
+   glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
 
+void RollingBall::init(GLint matrixUniform)
+{
+
+}
+
+void RollingBall::draw()
+{
+
+}
 

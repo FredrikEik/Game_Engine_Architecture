@@ -108,6 +108,7 @@ void RenderWindow::init()
     //ECS Coordinator:
     //Make sure only one instance is created!
     ECScord = std::make_unique<ECScoordinator>();
+    ECScord->init();
 
     //Compile shaders:
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -123,6 +124,9 @@ void RenderWindow::init()
 
     //textures
     m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture(gsl::TextureFilePath + "hund.bmp")});
+
+    //Meshes
+    sphere = ECScord->readObj(gsl::MeshFilePath + "sphere.obj");
 
     //Set textures to a texture unit
     glActiveTexture(GL_TEXTURE1);
@@ -143,13 +147,12 @@ void RenderWindow::init()
     m_world->setObjectName("Las World");
 
     //rollingBall
-    m_ball = new RollingBall(3);
+    m_ball = new RollingBall(sphere);
     m_ball->setShader(m_shaderProgramMap["phong"]);
     m_ball->setObjectName("Ball");
-    m_ball->setPosition(QVector3D(10.f, 10.f, 10.f));
+    m_ball->setPosition(QVector3D(20.f, 20.f, 20.f));
     dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
-
-    qDebug() << m_ball->getSurface();
+    //m_ball->setSurface(m_world);
 
     //Skybox
     m_skybox = new SkyBox();
@@ -168,7 +171,7 @@ void RenderWindow::init()
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
-    m_ball->init(m_ball->getShader()->getModelMatrixUniform());
+    m_ball->init(m_ball->getShader()->getModelMatrixUniform(), ECScord->getMeshVertices(sphere));
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -212,7 +215,8 @@ void RenderWindow::render()
     //Put these in a container?
     m_world->draw();
     m_light->draw();
-    m_ball->draw();
+    m_ball->move(0.017f);
+    m_ball->draw(ECScord->getMeshVertices(sphere));
 
 
     //Calculate framerate before

@@ -8,8 +8,11 @@ namespace gsl  //Game School Lib
     const std::string ProjectFolderName{"../GEA2021/"};
     const std::string AssetFilePath{ProjectFolderName + "Assets/"};
     const std::string TextureFilePath{AssetFilePath + "Textures/"};
+    const std::string MeshFilePath{AssetFilePath + "Meshes/"};
     const std::string SkyboxFilePath{AssetFilePath + "Skybox/"};
     const std::string ShaderFilePath{ProjectFolderName + "Shaders/"};
+
+    const std::string LODLevelPrefix{"_L0"};
 
     enum Shaders
     {

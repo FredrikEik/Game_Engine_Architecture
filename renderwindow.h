@@ -64,6 +64,8 @@ private:
     int m_mouseXlast{0};
     int m_mouseYlast{0};
 
+    int sphere{-1};
+
     //Debug
     bool bWiremode{false};
     bool bKeyReleased{true};

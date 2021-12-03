@@ -94,6 +94,17 @@ public:
         m_SystemManager->SetSignature<T>(signature);
     }
 
+    //Object functionality:
+    int readObj(std::string filepath)
+    {
+        return m_ResourceManager->readObj(filepath);
+    }
+
+    std::vector<Vertex> getMeshVertices(int meshIndex)
+    {
+        return m_ResourceManager->getMeshVertices(meshIndex);
+    }
+
 private:
     std::unique_ptr<ComponentManager> m_ComponentManager;
     std::unique_ptr<EntityManager> m_EntityManager;
