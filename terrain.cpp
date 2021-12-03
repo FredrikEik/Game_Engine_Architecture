@@ -66,23 +66,6 @@ Terrain::Terrain(std::string fileName)
             int quadX = (x - xMin) / step;
             int quadZ = (z - zMin) / step;
 
-            /*getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[quadZ * amountOfQuadsZ + quadX], z,
-                                               R/255, averageHeights[quadZ * amountOfQuadsZ + quadX] * G/255, B/255, 0, 0));
-
-            getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[(quadZ + 1) * amountOfQuadsZ + quadX], z + step,
-                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX] * G/255, B/255, 0, 1));
-
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
-
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 1));
-
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
-
-            getMeshComp()->mVertices.push_back(Vertex(x, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX],
-                                               R/255, averageHeights[(quadY + 1)*amountOfQuadsY + quadX] * G/255, B/255, 0, 1));*/
             getMeshComp()
                     ->mVertices.push_back(
                         Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z,
@@ -205,6 +188,7 @@ void Terrain::readFile(std::string filename)
     }
 
 }
+
 void Terrain::init()
 {
     //must call this to use OpenGL functions
@@ -248,7 +232,7 @@ void Terrain::draw()
 
 }
 
-void Terrain::minMaxNormalize()
+void Terrain::minMaxNormalize() //Credit for this one goes to Thobias Ovastrom
 {
     for(int i = 0; i < mPointsArray.size(); i++)
     {
@@ -259,5 +243,4 @@ void Terrain::minMaxNormalize()
         mPointsArray[i].set_xyz(nx,ny,nz);
 
     }
-
 }

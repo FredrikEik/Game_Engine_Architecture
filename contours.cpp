@@ -282,6 +282,7 @@ Contours::Contours(GameObject* mSurface, float height)
 
         }
 }
+
 Contours::~Contours()
 {
 
