@@ -26,6 +26,8 @@ public:
 
         GameObject* p { nullptr };
 
+        float count { 0.f };
+
     protected:
 };
 

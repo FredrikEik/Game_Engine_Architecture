@@ -28,9 +28,9 @@ void RollingBall::move(float dt)
     for(int i = 0; i < (indices.size() - 2); i += 3)
     {
         // gets triangle
-        gsl::Vector3D p0 = gsl::Vector3D(vertices[indices[i]].get_xyz());
-        gsl::Vector3D p1 = gsl::Vector3D(vertices[indices[i + 1]].get_xyz());
-        gsl::Vector3D p2 = gsl::Vector3D(vertices[indices[i + 2]].get_xyz());
+        gsl::Vector3D p0 = gsl::Vector3D(vertices[i].get_xyz());
+        gsl::Vector3D p1 = gsl::Vector3D(vertices[i + 1].get_xyz());
+        gsl::Vector3D p2 = gsl::Vector3D(vertices[i + 2].get_xyz());
 
         // gets barysentric coordinates to determine if the ball is above current triangle
         gsl::Vector3D baryCoords = ballCoords.barycentricCoordinates(p0, p1, p2);

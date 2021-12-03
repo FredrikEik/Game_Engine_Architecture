@@ -13,7 +13,121 @@
 PlaneImport::PlaneImport(std::string filename) : GameObject()
 {
     readFile(filename);
-    getTransformComp()->mMatrix.setToIdentity();
+    minMaxNormalize();
+
+    int quadX = 0;
+    int quadZ = 0;
+
+    const int amountOfQuadsZ = abs(zMax-zMin)/step;
+
+    std::array<std::vector<float>, 1800> heights;
+
+    float averageHeights[1800];
+
+    for(int i = 0; i < mPointsArray.size(); i++)
+    {
+        for(int j = xMin; j < xMax; j += step)
+        {
+            if(mPointsArray[i].get_xyz().getX() > j && mPointsArray[i].get_xyz().getX() < j + step)
+            {
+                quadX = (j-xMin)/step;
+            }
+
+        }
+
+        for(int j = zMin; j < zMax; j += step)
+        {
+            if(mPointsArray[i].get_xyz().getZ() > j && mPointsArray[i].get_xyz().getZ() < j + step)
+            {
+                quadZ = (j-zMin)/step;
+            }
+
+        }
+
+        //Konverterer fra rekke og kolonne til vector array indexen
+        int vectorIndex = quadZ*amountOfQuadsZ + quadX;
+
+        //pusher back høydekoordinatene til rett vector i arrayet
+        heights[vectorIndex].push_back(mPointsArray[i].get_xyz().getY());
+
+    }
+
+    for(int i = 0; i < heights.size(); i++)
+    {
+        float sum = 0;
+
+        for(int j = 0; j < heights[i].size(); j++)
+        {
+            sum += heights[i][j];
+        }
+        sum = sum / heights[i].size();
+        averageHeights[i] = sum;
+    }
+
+    float R, G, B = 1;
+
+    for(float x = xMin; x < xMax - step; x += step)
+    {
+        for(float z = zMin; z < zMax; z += step)
+        {
+            int quadX = (x - xMin) / step;
+            int quadZ = (z - zMin) / step;
+
+            /*getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[quadZ * amountOfQuadsZ + quadX], z,
+                                               R/255, averageHeights[quadZ * amountOfQuadsZ + quadX] * G/255, B/255, 0, 0));
+            getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[(quadZ + 1) * amountOfQuadsZ + quadX], z + step,
+                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX] * G/255, B/255, 0, 1));
+            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
+                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
+            getMeshComp()->mVertices.push_back(Vertex(x + step, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1],
+                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 1));
+            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
+                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
+            getMeshComp()->mVertices.push_back(Vertex(x, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX],
+                                               R/255, averageHeights[(quadY + 1)*amountOfQuadsY + quadX] * G/255, B/255, 0, 1));*/
+            getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z,
+                        R/255, averageHeights[quadZ*amountOfQuadsZ + quadX]*G/255, B/255,
+                        0,0));
+                    //x, z+1
+            getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,
+                        R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255,
+                        0, 1));
+                    //x+1,z
+            getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,
+                        R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255,
+                        1,0));
+
+                    //x+1, z+1
+                    getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x+step, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1], z+step,
+                        R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1]*G/255, B/255,
+                        1, 1));
+
+                    //x+1, z
+                    getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,
+                        R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255,
+                        1,0));
+
+                    //x, z+1
+                    getMeshComp()
+                    ->mVertices.push_back(
+                        Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,
+                        R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255,
+                        0, 1));
+
+
+
+        }
+    }
 }
 
 PlaneImport::~PlaneImport()
@@ -25,6 +139,7 @@ void PlaneImport::init()
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
+
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &getMeshComp()->mVAO );
     glBindVertexArray( getMeshComp()->mVAO );
@@ -33,10 +148,13 @@ void PlaneImport::init()
     glGenBuffers( 1, &getMeshComp()->mVBO );
     glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
 
-    glBufferData( GL_ARRAY_BUFFER, getMeshComp()->mVertices.size()*sizeof(Vertex), getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
+    //Vertex Buffer Object to hold vertices - VBO
+    glBufferData( GL_ARRAY_BUFFER,
+                  getMeshComp()->mVertices.size()*sizeof( Vertex ),
+                  getMeshComp()->mVertices.data(), GL_STATIC_DRAW );
 
     // 1rst attribute buffer : vertices
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0  );          // array buffer offset
     glEnableVertexAttribArray(0);
 
     // 2nd attribute buffer : colors
@@ -44,13 +162,8 @@ void PlaneImport::init()
     glEnableVertexAttribArray(1);
 
     // 3rd attribute buffer : uvs
-    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
     glEnableVertexAttribArray(2);
-
-    //Second buffer - holds the indices (Element Array Buffer - EAB):
-    glGenBuffers(1, &getMeshComp()->mEAB);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mEAB);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, getMeshComp()->mIndices.size() * sizeof(GLuint), getMeshComp()->mIndices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
@@ -58,149 +171,93 @@ void PlaneImport::init()
 void PlaneImport::draw()
 {
     glBindVertexArray( getMeshComp()->mVAO );
-    glDrawElements(GL_TRIANGLES, getMeshComp()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawArrays(GL_TRIANGLES, 0, getMeshComp()->mVertices.size());
     glBindVertexArray(0);
 }
 
 void PlaneImport::readFile(std::string filename)
 {
-    //Open File
-    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
-    std::ifstream fileIn;
-    fileIn.open (filename, std::ifstream::in);
-    if(!fileIn)
-        qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
-
-    //One line at a time-variable
-    std::string oneLine;
-    //One word at a time-variable
-    std::string oneWord;
-
-    std::vector<gsl::Vector3D> tempVertecies;
-    std::vector<gsl::Vector3D> tempNormals;
-    std::vector<gsl::Vector2D> tempUVs;
-
-    std::getline(fileIn, oneLine);
-    std::stringstream sStream;
-    sStream << oneLine;
-    sStream >> oneWord;
-    int num = std::atoi(oneWord.c_str());
-    //qDebug() << "Vertices: " << num;
-
-    num = 25000;
-    unsigned int temp_index = 0;
-
-    for(int i = 0; i < num; i++)
+    //Leser Fila
+    std::ifstream inn;
+    inn.open(filename.c_str());
+    bool first = true;
+    if (!inn.is_open())
     {
-        std::getline(fileIn, oneLine);
-        std::stringstream sStream;
-        //Pushing line into stream
-        sStream << oneLine;
-        //Streaming one word out of line
-        oneWord = ""; //resetting the value or else the last value might survive!
+        qDebug() << "Error, file did not open";
+    }
+    if (inn.is_open()) {
+        int numberOfVertices;
+        inn >> numberOfVertices;
+        mPointsArray.reserve(numberOfVertices);
+        Vertex vertex{0,0,0};
+        double tempX, tempY, tempZ;
 
-        gsl::Vector3D tempVertex;
-        sStream >> oneWord;
-        tempVertex.x = std::stof(oneWord); // - 615200.f
-        sStream >> oneWord;
-        tempVertex.y = std::stof(oneWord); // - 6758325.f
-        sStream >> oneWord;
-        tempVertex.z = std::stof(oneWord); // - 565.f
-        //qDebug() << "x: " << tempVertex.x << " y: " << tempVertex.y << " z: " << tempVertex.z;
-
-        //Vertex made - pushing it into vertex-vector
-        tempVertecies.push_back(tempVertex);
-
-        Vertex tempVert(tempVertex, gsl::Vector3D(1.f, 0.f, 0.f), gsl::Vector2D(0.f, 0.f));
-        /*if(getMeshComp())
+        for (int i=0; i < numberOfVertices; i++)
         {
-            getMeshComp()->mVertices.push_back(tempVert);
-            getMeshComp()->mIndices.push_back(temp_index++);
-        }*/
-    }
 
-    gsl::Vector3D minPointPosition = tempVertecies[0];
-    gsl::Vector3D maxPointPosition = tempVertecies[0];
+             inn >> tempX;
+             inn >> tempZ;
+             inn >> tempY;
+             //convert to float
+             x = tempX;
+             y = tempY;
+             z = tempZ;
 
-    for( int i = 0; i < num; i++)
-    {
-        minPointPosition.x = tog::min(minPointPosition.x, tempVertecies[i].x); //finds the lowest xyz
-        minPointPosition.y = tog::min(minPointPosition.y, tempVertecies[i].y);
-        minPointPosition.z = tog::min(minPointPosition.z, tempVertecies[i].z);
-        maxPointPosition.x = tog::max(maxPointPosition.x, tempVertecies[i].x); //finds the highest xyz
-        maxPointPosition.y = tog::max(maxPointPosition.y, tempVertecies[i].y);
-        maxPointPosition.z = tog::max(maxPointPosition.z, tempVertecies[i].z);
-    }
-    //qDebug() << "minX: " << minPointPosition.x << " minY: " << minPointPosition.y << " minZ: " << minPointPosition.z;
-    //qDebug() << "maxX: " << maxPointPosition.x << " maxY: " << maxPointPosition.y << " maxZ: " << maxPointPosition.z;
+             if(first)
+             {
+                 maxPointX = x;
+                 maxPointY = y;
+                 maxPointZ = z;
+                 minPointX = x;
+                 minPointY = y;
+                 minPointZ = z;
+                 first = false;
+             }
 
-    gsl::Vector3D tempOffset = -minPointPosition;
+             if(x > maxPointX)
+             {
+                 maxPointX = x;
+             }
+             if(y > maxPointY)
+             {
+                 maxPointY = y;
+             }
+             if(z > maxPointZ)
+             {
+                 maxPointZ = z;
+             }
+             if(x < minPointX)
+             {
+                 minPointX = x;
+             }
+             if(y < minPointY)
+             {
+                 minPointY = y;
+             }
+             if(z < minPointZ)
+             {
+                 minPointZ = z;
+             }
 
-    for( int i = 0; i < num; i++)
-    {
-        tempVertecies[i] += tempOffset; // putting the points closer to origin
-        //qDebug() << "x: " << tempVertecies[i].x << " y: " << tempVertecies[i].y << " z: " << tempVertecies[i].z;
-    }
-    minPointPosition += tempOffset;
-    maxPointPosition += tempOffset;
+             vertex.set_xyz(x, y, z);
 
-    const unsigned triangleNumberX = 50; // sqares in x direction
-    const unsigned triangleNumberY = 50; // sqares in y direction
-    const gsl::Vector2D distance = gsl::Vector2D((maxPointPosition.x - minPointPosition.x) / triangleNumberX, (maxPointPosition.y - minPointPosition.y) / triangleNumberY);
-    //const gsl::Vector2D distance = gsl::Vector2D(maxPointPosition.x - minPointPosition.x / triangleNumberX, maxPointPosition.y - minPointPosition.y / triangleNumberY);
-    gsl::Vector3D tempVector;
-    int closestVert;
-    float vertDistance;
-    float closestVertDistance;
 
-    getMeshComp()->mVertices.resize(triangleNumberX * triangleNumberY);
-    auto verticesVectorGetIndex = [](unsigned x, unsigned y) -> unsigned {return x * triangleNumberY + y; };
-
-    for (unsigned x = 0; x < triangleNumberX; x++)
-    {
-        for (unsigned y = 0; y < triangleNumberY; y++)
-        {
-            tempVector = gsl::Vector3D(x * distance.x, y * distance.y, 0.f);
-
-            closestVertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[0].x, tempVertecies[0].y, 0.f));
-            closestVert = 0;
-
-            for(unsigned i = 0; i < num; i++) // finds closest point to perfect square corner
-            {
-                vertDistance = tog::distanceVec3D(tempVector, gsl::Vector3D(tempVertecies[i].x, tempVertecies[i].y, 0.f));
-
-                if (vertDistance < closestVertDistance)
-                {
-                    closestVert = i;
-                    closestVertDistance = vertDistance;
-                }
-            }
-            getMeshComp()->mVertices[verticesVectorGetIndex(x, y)] = Vertex(gsl::Vector3D(tempVertecies[closestVert].x, tempVertecies[closestVert].z, tempVertecies[closestVert].y),
-                                                                            gsl::Vector3D(1.f, 0.f, 0.f),
-                                                                            gsl::Vector2D((rand()%101)/10, (rand()%101)/10));
+             mPointsArray.push_back(vertex);
         }
+        inn.close();
+    }
+}
+
+void PlaneImport::minMaxNormalize()
+{
+    for(int i = 0; i < mPointsArray.size(); i++)
+    {
+        float nx = xMin+(((mPointsArray[i].get_xyz().getX() - minPointX)*(xMax-xMin)) / (maxPointX - minPointX));
+        float ny = yMin+(((mPointsArray[i].get_xyz().getY() - minPointY)*(yMax-yMin)) / (maxPointY - minPointY));
+        float nz = zMin+(((mPointsArray[i].get_xyz().getZ() - minPointZ)*(zMax-zMin)) / (maxPointZ - minPointZ));
+        //qDebug() << "NY: " << ny;
+        mPointsArray[i].set_xyz(nx,ny,nz);
+
     }
 
-    /*for (unsigned i = 0; i < getMeshComp()->mVertices.size(); i++)
-    {
-        //qDebug() << "x: " << getMeshComp()->mVertices[i].get_xyz().x << " y: " << getMeshComp()->mVertices[i].get_xyz().y << " z: " << getMeshComp()->mVertices[i].get_xyz().z;
-    }*/
-
-    getMeshComp()->mIndices.reserve(triangleNumberX * triangleNumberY * 6);
-
-    for (unsigned x = 0; x < triangleNumberX - 1; x++) // assing indexes for the sqares
-    {
-        for (unsigned y = 0; y < triangleNumberY - 1; y++)
-        {
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y + 1));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
-        }
-    }
-
-    //closing the file after use
-    fileIn.close();
 }

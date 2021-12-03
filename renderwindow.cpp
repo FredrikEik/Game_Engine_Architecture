@@ -179,7 +179,7 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(23.f, 5.f, 18.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(23.f, 10.f, 18.f));
     mCurrentCamera->setYaw(130.f);
 
     SoundManager::getInstance()->init();
@@ -223,11 +223,13 @@ void RenderWindow::init()
     //MapSpawner->addObjectToEditor(object);*/
     ObjFactory->createObject("Plane");
     mMainWindow->addObjectToWorldList("Plane");
-    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
-    setScaleX(0.1);
-    setScaleY(0.1);
-    setScaleZ(0.1);
-    ObjFactory->setOBJindex(-1);
+
+    for(unsigned i = 0; i < 10; i++) // spwaning 10 contour lines. toggle woreframe to get them to show better
+    {
+        ObjFactory->createObject("ContourLines");
+        mMainWindow->addObjectToWorldList("Contour");
+        ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    }
 
     ObjFactory->createObject("RollingBall");
     mMainWindow->addObjectToWorldList("RollingBall");
@@ -235,11 +237,12 @@ void RenderWindow::init()
     setScaleX(0.25);
     setScaleY(0.25);
     setScaleZ(0.25);
-    setPositionX(20);
-    setPositionY(5);
-    setPositionZ(20);
+    setPositionX(0);
+    setPositionY(10);
+    setPositionZ(0);
     ObjFactory->setOBJindex(-1);
     mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
+
 }
 
 // Called each frame - doing the rendering
@@ -312,8 +315,8 @@ void RenderWindow::render()
             //draw the object
             if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
             {
-                if(frustumCulling(i))
-                    continue;
+                //if(frustumCulling(i))
+                  //  continue;
             }
             ObjFactory->mGameObject[i]->draw();
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);

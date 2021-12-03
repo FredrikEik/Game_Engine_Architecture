@@ -6,6 +6,7 @@
 #include "planeimport.h"
 #include "octahedronball.h"
 #include "rollingball.h"
+#include "contourlines.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -79,6 +80,13 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new RollingBall(5, p);
         qDebug() << "RollingBall created";
         willCreateObject->mTexture = 3;
+    }
+    else if (objectName == "ContourLines")
+    {
+        willCreateObject = new ContourLines(p, count * 2.f);
+        qDebug() << "ContourLine created";
+        willCreateObject->mTexture = 3;
+        count++;
     }
     else
         return;
