@@ -152,7 +152,7 @@ GameObject* Factory::createObject(std::string objectName)
     {
         objectToCreate = new LasTerrainGenerator("../GEA2021/Storhoi.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
         objectToCreate->mObjectName = "Terrain";
         objectToCreate->mObjectType = "Terrain";
         RefToTerrain = objectToCreate;
@@ -161,14 +161,14 @@ GameObject* Factory::createObject(std::string objectName)
     {
         objectToCreate = new LasTerrainGenerator("../GEA2021/test_las.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
         objectToCreate->mObjectName = "Terrain";
         objectToCreate->mObjectType = "Terrain";
         RefToTerrain = objectToCreate;
     }
     else if(objectName == "RollingBall")
     {
-        objectToCreate = new RollingBall(3);
+        objectToCreate = new RollingBall(1);
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         ballcounter++;
@@ -179,11 +179,10 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "ContourLine")
     {
         objectToCreate = new ContourLines;
-        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "ContourLine " + std::to_string(ballcounter);
         objectToCreate->mObjectType = "ContourLine";
-
     }
 
     else{return nullptr;}

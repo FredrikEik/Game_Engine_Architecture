@@ -52,6 +52,7 @@ public:
     bool editorMode = true;
     bool terrainOne = true;
     void createTerrain();
+    void createBalls();
     Factory *getFactory(){return factory;};
 
 

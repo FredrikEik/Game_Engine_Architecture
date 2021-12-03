@@ -12,7 +12,7 @@ public:
     void draw();
     void init();
     void move(float x, float y, float z);
-    void readFile(std::string filename);
+    void readFile(std::string fileName);
 
     void minMaxNormalize();
 
@@ -33,8 +33,8 @@ public:
 
 
     //mins and maxes must be uniform with step
-    float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{20.f}, yMax{15.f}, zMax{30.0f};
-    float step{2.f};
+    float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{30.f}, yMax{5.f}, zMax{30.0f};
+    float step{1.f};
 
     //int maxVertices{1000};
 };

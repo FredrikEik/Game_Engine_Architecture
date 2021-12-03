@@ -57,6 +57,8 @@ private slots:
 
     void on_Physics_clicked(bool checked);
 
+    void on_SpawnBalls_clicked();
+
 private:
     Ui::MainWindow *ui;
     class DetailsWidget* mDetailsWidget{nullptr};

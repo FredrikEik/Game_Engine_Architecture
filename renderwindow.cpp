@@ -155,7 +155,8 @@ void RenderWindow::init()
     */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 20.f, 30.f));
+
 
     //Compile shaders:
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -553,18 +554,28 @@ void RenderWindow::createTerrain()
         initObjects();
         dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(TestLasTerrain);
     }
-    for(int i{-5}; i < 5; i++)
+
+    factory->createObject("ContourLine");
+    mMainWindow->updateOutliner(factory->mGameObjects);
+}
+
+void RenderWindow::createBalls()
+{
+    GameObject *temp = nullptr;
+    for(int i{-2}; i < 2; i++)
     {
-        for(int j{-5}; j < 5; j++)
+        for(int j{-2}; j < 2; j++)
         {
-//            temp = factory->createObject("RollingBall");
-//            temp->getTransformComponent()->mMatrix.setPosition(4.f*i,10.f,4.f*j);
-//            temp->getSphereCollisionComponent()->center = gsl::Vector3D(4.f*i,10.f,4.f*j);
+            float X = rand()%(10+10+1)-10;
+            float Y = rand()%(10+10+1)-10;
+            temp = factory->createObject("RollingBall");
+            temp->getTransformComponent()->mMatrix.setPosition(X*i,20.f,Y*j);
+            temp->getTransformComponent()->mMatrix.setScale(0.1,0.1,0.1);
+            temp->getSphereCollisionComponent()->center = gsl::Vector3D(2.f*i,20.f,2.f*j);
 
         }
     }
-    factory->createObject("ContourLine");
-    mMainWindow->updateOutliner(factory->mGameObjects);
+        mMainWindow->updateOutliner(factory->mGameObjects);
 }
 
 void RenderWindow::playPausebutton(const QSurfaceFormat &format)
@@ -1038,9 +1049,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            setCameraSpeed(0.001f);
+            setCameraSpeed(0.005f);
         if (numDegrees.y() > 1)
-            setCameraSpeed(-0.001f);
+            setCameraSpeed(-0.005f);
     }
     event->accept();
 }

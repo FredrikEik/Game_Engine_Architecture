@@ -112,6 +112,7 @@ void MainWindow::init()
     ui->createDropDownBox->addItem("Sphere");
     ui->PlayPause->setText("Editor Mode(TAB)");
     ui->createDropDownBox->addItem("Light");
+    ui->createDropDownBox->addItem("RollingBall");
 
 
 }
@@ -260,4 +261,9 @@ void MainWindow::on_SwitchTerrain_clicked()
 void MainWindow::on_Physics_clicked(bool checked)
 {
     mRenderWindow->activatePhysic = checked;
+}
+
+void MainWindow::on_SpawnBalls_clicked()
+{
+    mRenderWindow->createBalls();
 }

@@ -15,17 +15,17 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
     int quadZ = 0;
 
     //Quads i hver rettning
-     const int amountOfQuadsX = abs(xMax-xMin)/step;
+    //const int amountOfQuadsX = abs(xMax-xMin)/step;
     const int amountOfQuadsZ = abs(zMax-zMin)/step;
 
     //Et Array med alle høyde verdiene til alle quads
-    std::array<std::vector<float>,1800> heights;
+    std::array<std::vector<float>,3600> heights;
 
     //Et array med gjennomsnittet av høydene
-    float averageHeights[1800];
+    float averageHeights[3600];
 
     //For alle vertices..
-    for(int i = 0; i < mPointsArray.size(); i++)
+    for(unsigned long long i = 0; i < mPointsArray.size(); i++)
     {
         //..finner kolonnen
         for(int j = xMin; j < xMax; j+=step)
@@ -50,12 +50,12 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
         heights[vectorIndex].push_back(mPointsArray[i].getXYZ().getY());
     }
 
-    for(int i = 0; i < heights.size(); i++)
+    for(unsigned long long i = 0; i < heights.size(); i++)
     {
         //Calculate the average of all heights in quad
         //.. and put it in the array of averageHeights
         float sum = 0;
-        for(int j = 0; j < heights[i].size(); j++)
+        for(unsigned long long j = 0; j < heights[i].size(); j++)
         {
             sum += heights[i][j];
         }
@@ -64,77 +64,34 @@ LasTerrainGenerator::LasTerrainGenerator(std::string fileName)
     }
 
     //Lager triangulert overflate her
-    float R, B, G = 1; //Må ha rgb
+    float R = 1, G = 1, B = 1; //Må ha rgb
 
-    for (float x = xMin; x < xMax-step; x+= step)
+    for (int x = xMin; x < xMax-step; x+= step)
     {
-        for(float z = zMin; z < zMax; z+= step)
+        for(int z = zMin; z < zMax; z+= step)
         {
             int quadX = (x-xMin)/step;
             int quadZ = (z-zMin)/step;
-            float u{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
-            float v{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
+            float u = 0;//{(x + abs(xMin)) / (xMax + abs(xMin) + step)};
+            float v = 0;//{(z + abs(zMin)) / (zMax + abs(zMin) + step)};
 
-//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z,R/255, averageHeights[quadZ*amountOfQuadsZ + quadX]*G/255, B/255,u,v));
-//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255, u, v+step));
-//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step,v));
-//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1], z+step, R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step, v+step));
-//            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step,v));
-//            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255, u, v+step));
-
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z,
-                R/255, averageHeights[quadZ*amountOfQuadsZ + quadX]*G/255, B/255,
-                0,0));
-            //x, z+1
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,
-                R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255,
-                0, 1));
-            //x+1,z
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,
-                R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255,
-                1,0));
-
-            //x+1, z+1
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x+step, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1], z+step,
-                R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1]*G/255, B/255,
-                1, 1));
-
-            //x+1, z
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,
-                R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255,
-                1,0));
-
-            //x, z+1
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,
-                R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255,
-                0, 1));
-
-
-
-
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z, R / 255, averageHeights[quadZ*amountOfQuadsZ + quadX]*G/255, B/255,u,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255, u, v+step));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1], z+step, R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step, v+step));
+            getMeshComponent()->mVertices.push_back(Vertex(x+step, averageHeights[quadZ*amountOfQuadsZ + quadX+1], z,R/255, averageHeights[quadZ*amountOfQuadsZ + quadX+1]*G/255, B/255, u+step,v));
+            getMeshComponent()->mVertices.push_back(Vertex(x, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX], z+step,R/255, averageHeights[(quadZ+1)*amountOfQuadsZ + quadX]*G/255, B/255, u, v+step));
         }
     }
     contourLineMesh = getMeshComponent();
 }
 LasTerrainGenerator::~LasTerrainGenerator()
 {}
-void LasTerrainGenerator::readFile(std::string filename)
+void LasTerrainGenerator::readFile(std::string fileName)
 {
     //Leser Fila
     std::ifstream inn;
-    inn.open(filename.c_str());
+    inn.open(fileName.c_str());
     bool first = true;
     if (!inn.is_open())
     {
@@ -260,7 +217,7 @@ void LasTerrainGenerator::move(float x, float y, float z)
 
 void LasTerrainGenerator::minMaxNormalize()
 {
-    for(int i = 0; i < mPointsArray.size(); i++)
+    for(unsigned long long i = 0; i < mPointsArray.size(); i++)
     {
         float nx = xMin+(((mPointsArray[i].getXYZ().getX() - lowestX)*(xMax-xMin)) / (highestX - lowestX));
         float ny = yMin+(((mPointsArray[i].getXYZ().getY() - lowestY)*(yMax-yMin)) / (highestY - lowestY));
@@ -325,343 +282,166 @@ void ContourLines::draw()
 void ContourLines::createContourLines()
 {
     qDebug() << "Making ContourLines!";
-    float min = 0.5f;
-    float max = 10.5f;
-    float step = 1.f;
+    float min = -10.5f;
+    float max = 20.5f;
+    float step = 0.5f;
     //int A,B,C,D = 0;
-    for(float height = min; height<max; height+=step)
+    for(auto height = min; height<max; height+=step)
     {
-      //  qDebug() << "for";
-        for(unsigned long long i = 0; i < contourLineMesh->mVertices.size(); i += 6)
+        for(auto i = 0; i < contourLineMesh->mVertices.size(); i += 6)
         {
             Vertex a = contourLineMesh->mVertices [i];
             Vertex b = contourLineMesh->mVertices [i+2];
             Vertex c = contourLineMesh->mVertices [i+3];
             Vertex d = contourLineMesh->mVertices [i+1];
-            bool A = false;
-            bool B = false;
-            bool C = false;
-            bool D = false;
+            bool TOPLEFT = false;
+            bool TOPRIGHT = false;
+            bool BOTTOMLEFT = false;
+            bool BOTTOMRIGHT = false;
             if(a.getXYZ().y > height)
             {
-                A = 1;
+                TOPLEFT = 1;
             }
             if(b.getXYZ().y > height)
             {
-                B = 1;
+                TOPRIGHT = 1;
             }
             if(c.getXYZ().y > height)
             {
-                C = 1;
+                BOTTOMRIGHT = 1;
             }
             if(d.getXYZ().y > height)
             {
-                D = 1;
+                BOTTOMLEFT = 1;
             }
-            Vertex ab = (a+b)/2;
-            Vertex bc = (b+c)/2;
-            Vertex cd = (c+d)/2;
-            Vertex da = (d+a)/2;
-            Vertex bd = (b+d)/2;
-            Vertex bbd = (b+bd)/2;
-            Vertex dbd = (d+bd)/2;
+            Vertex ab = (a+b)/2; ab.set_y(height);
+            Vertex bc = (b+c)/2; bc.set_y(height);
+            Vertex cd = (c+d)/2; cd.set_y(height);
+            Vertex da = (d+a)/2; da.set_y(height);
+            Vertex bd = (b+d)/2; bd.set_y(height);
+            Vertex bbd = (b+bd)/2; bbd.set_y(height);
+            Vertex dbd = (d+bd)/2; dbd.set_y(height);
 
-            ab.set_y(height);
-            bc.set_y(height);
-            cd.set_y(height);
-            da.set_y(height);
-            bd.set_y(height);
-            bbd.set_y(height);
-            dbd.set_y(height);
-            int marchingsquaresValue = 8 * A + 4 * B + 2 * C + 1 * D;
+            int marchingsquaresValue = 8 * TOPLEFT + 4 * TOPRIGHT + 2 * BOTTOMRIGHT + 1 * BOTTOMLEFT;
             //qDebug() << "Marching squares value: " << marchingsquaresValue;
 
             switch(marchingsquaresValue)
             {
+            //Topleft = a,
+            //topright = b,
+            //bottomRIGHT = c,
+            //bottomLEFT = d.
             case 0:
+                //ingenting å pushe
                 break;
             case 1:
-                            //cd to da
-                            getMeshComponent()->mVertices.push_back(cd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //nederst høyre - nederst venstre til øverst venstre (cd-da)
+                            contourLineVertexData.push_back(cd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 2:
-                            //bc to cd
-                            getMeshComponent()->mVertices.push_back(bc);
-                            getMeshComponent()->mVertices.push_back(cd);
+                            //øverst høyre - nederst høyre til nederst venstre (bc to cd)
+                            contourLineVertexData.push_back(bc);
+                            contourLineVertexData.push_back(cd);
                             break;
                         case 3:
-                            //bc to da
-                            getMeshComponent()->mVertices.push_back(bc);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //øverst høyre - nederst høyre til nederst høre - øverst venstre (bc to da)
+                            contourLineVertexData.push_back(bc);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 4:
-                            //ab to bc
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bc);
+                            //øverst venstre - øverst høyre til nederst høyre (ab to bc)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bc);
                             break;
                         case 5:
-                            //ab to da
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //øverst venstre - øverst høyre til (ab to da)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(da);
                             //and
-                            //bc to cd
-                            getMeshComponent()->mVertices.push_back(bc);
-                            getMeshComponent()->mVertices.push_back(cd);
+                            //øverst høyre - nederst høyre til øverst høyre - nederst venstre (bc to cd)
+                            contourLineVertexData.push_back(bc);
+                            contourLineVertexData.push_back(cd);
                             break;
                         case 6:
-                            //ab to cd
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(cd);
+                            //øverst venstre - øverst høyre til nederst høyre - nederst venstre (ab to cd)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(cd);
                             break;
                         case 7:
-                            //ab to da
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //øverst venstre - øverst høyre til nederst venstre - øverst venstre(ab to da)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 8:
-                            //ab to da
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //øverst venstre - øverst høyre til nedest høyre il øverst venstre(ab to da)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 9:
-                            //ab to cd
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(cd);
+                            //øverst venstre - øverst høyre til nederst høyre - nederst venstre (ab to cd)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(cd);
                             break;
                         case 10:
-                            //ab to bc
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bc);
+                            //øverst venstre - øvert høyre til øverst(ab to bc)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bc);
                             //and
-                            //cd to da
-                            getMeshComponent()->mVertices.push_back(cd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //nederst høyre - nederst venstre til nederst venstre - øverst høyre (cd to da)
+                            contourLineVertexData.push_back(cd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 11:
-                            //ab to bc
-                            getMeshComponent()->mVertices.push_back(ab);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bbd);
-                            getMeshComponent()->mVertices.push_back(bc);
+                            //øverst venstre - øverst høyre til øverst høyre - nedest høyre(ab to bc)
+                            contourLineVertexData.push_back(ab);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bbd);
+                            contourLineVertexData.push_back(bc);
                             break;
                         case 12:
-                            //bc to da
-                            getMeshComponent()->mVertices.push_back(bc);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(bd);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //øverst høyre - nederst høyre til nedest venstre til øverst venstre(bc to da)
+                            contourLineVertexData.push_back(bc);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(bd);
+                            contourLineVertexData.push_back(da);
                             break;
                         case 13:
-                            //bc to cd
-                            getMeshComponent()->mVertices.push_back(bc);
-                            getMeshComponent()->mVertices.push_back(cd);
+                            //øverst høyre - nederst høyre til nederst høyre - nederst venstre (bc to cd)
+                            contourLineVertexData.push_back(bc);
+                            contourLineVertexData.push_back(cd);
                             break;
                         case 14:
-                            //cd to da
-                            getMeshComponent()->mVertices.push_back(cd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(dbd);
-                            getMeshComponent()->mVertices.push_back(da);
+                            //nederst høyre - nederst venstre til nederst venstre - øverst venstre (cd to da)
+                            contourLineVertexData.push_back(cd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(dbd);
+                            contourLineVertexData.push_back(da);
                             break;
                 case 15:
                 {
+                    //ingenting å pushe
                     break;
                 }
-
             }
         }
     }
-   // getMeshComponent()->mVertices = contourLineVertexData;
+    getMeshComponent()->mVertices = contourLineVertexData;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /*  float gridSize = 10;
-    float terrainWidth = 1000;
-    float terrainLength = 1460;
-    float xMax = 997;
-    float yMax = 95;
-    float zMax = 1457;
-    float ekv = 5.f;
-    int c {0};
-
-   // qDebug() << "contourlines size: " << contourLineMesh->mVertices.size()- (terrainWidth/gridSize);
-     //for(int i = 0; i < contourLineMesh->mVertices.size() - (terrainWidth/gridSize)-1; i++)
-     //{
-      //  qDebug() << " " << contourLineMesh->mVertices.at(i+(int(terrainWidth/gridSize))+1).getXYZ().getX();
-     //}
-
-   for(int h = {0}; h < yMax; h += ekv)
-    {
-        for(int i = 0; i < contourLineMesh->mVertices.size() - (terrainWidth/gridSize)-1; i++)
-        {
-
-            if (c == (terrainWidth/gridSize) -1)
-            {
-                c = 0;
-                continue;
-            }
-            gsl::Vector2D p0 {contourLineMesh->mVertices.at(i).getXYZ().getX(), contourLineMesh->mVertices.at(i).getXYZ().getY()};
-            gsl::Vector2D p1 {contourLineMesh->mVertices.at(i+1).getXYZ().getX(), contourLineMesh->mVertices.at(i+1).getXYZ().getY()};
-            gsl::Vector2D p2 {contourLineMesh->mVertices.at(i+int(terrainWidth/gridSize)).getXYZ().getX(), contourLineMesh->mVertices.at(i+int(terrainWidth/gridSize)).getXYZ().getY()};
-            gsl::Vector2D p3 {contourLineMesh->mVertices.at(i+(int(terrainWidth/gridSize))+1).getXYZ().getX(),contourLineMesh->mVertices.at(i+(int(terrainWidth/gridSize))+1).getXYZ().getY()};
-
-        if(p0.y < h && p1.y > h)
-        {
-            float a = h - p0.y;
-            float b = p1.y - p0.y;
-            float pros = a/b;
-            float posx = pros*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i).getXYZ().getX() - posx, h, contourLineMesh->mVertices.at(i).getXYZ().getZ(), 0,1,0,   0,0));
-        }
-        else if (p0.y > h && p1.y < h)
-        {
-            float a = h - p1.y;
-            float b = p0.y - p1.y;
-            float pros = a/b;
-            float posx = (1-pros)* gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i).getXYZ().getX() - posx, h, contourLineMesh->mVertices.at(i).getXYZ().getZ(), 0,1,0,  0,0));
-        }
-
-        if(p0.y < h && p2.y > h)
-        {
-            float a = h - p0.y;
-            float b = p2.y - p0.y;
-            float pros = a/b;
-            float posz = pros*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i).getXYZ().getX(), h, contourLineMesh->mVertices.at(i).getXYZ().getZ() + posz, 0,1,0,  0,0));
-        }
-        else if (p0.y > h && p2.y < h)
-        {
-            float a = h - p0.y;
-            float b = p0.y - p2.y;
-            float pros = a/b;
-            float posz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i).getXYZ().getX(), h, contourLineMesh->mVertices.at(i).getXYZ().getZ() - posz, 0,1,0,  0,0));
-        }
-
-        if(p1.y < h && p2.y > h)
-        {
-            float a = h - p1.y;
-            float b = p2.y - p1.y;
-            float pros = a/b;
-            float posxz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().getX() + posxz, h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() + posxz , 0,1,0,  0,0));
-        }
-        else if (p1.y > h && p2.y < h)
-        {
-            float a = h - p1.y;
-            float b = p1.y - p2.y;
-            float pros = a/b;
-            float posxz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().getX() - posxz, h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() - posxz, 0,1,0,  0,0));
-        }
-
-
-
-        if(p2.y < h && p3.y > h)
-        {
-            float a = h - p2.y;
-            float b = p3.y - p2.y;
-            float pros = a/b;
-            float posx = pros*gridSize;
-           getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+(terrainWidth/gridSize)).getXYZ().x  - posx, h, contourLineMesh->mVertices.at(i+100).getXYZ().getZ(), 0,1,0,  0,0));
-        }
-        else if (p2.y > h && p3.y < h)
-        {
-            float a = h - p3.y;
-            float b = p2.y - p3.y;
-            float pros = a/b;
-            float posx = (1-pros)* gridSize;
-           getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+(terrainWidth/gridSize)).getXYZ().getX()  - posx, h, contourLineMesh->mVertices.at(i+(terrainWidth/gridSize)).getXYZ().getZ(), 0,1,0,  0,0));
-        }
-
-        if(p1.y < h && p3.y > h)
-        {
-            float a = h - p1.y;
-            float b = p3.y - p1.y;
-            float pros = a/b;
-            float posz = pros*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().x, h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() + posz, 0,1,0,  0,0));
-        }
-        else if (p1.y > h && p3.y < h)
-        {
-            float a = h - p1.y;
-            float b = p1.y - p3.y;
-            float pros = a/b;
-            float posz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().getX(), h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() - posz, 0,1,0,  0,0));
-        }
-
-        if(p1.y < h && p2.y > h)
-        {
-            float a = h - p1.y;
-            float b = p2.y - p1.y;
-            float pros = a/b;
-            float posxz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().getX() + posxz, h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() + posxz , 0,1,0,  0,0));
-        }
-        else if (p1.y > h && p2.y < h)
-        {
-            float a = h - p1.y;
-            float b = p1.y - p2.y;
-            float pros = a/b;
-            float posxz = (pros)*gridSize;
-            getMeshComponent()->mVertices.push_back(Vertex(contourLineMesh->mVertices.at(i+1).getXYZ().getX() - posxz, h, contourLineMesh->mVertices.at(i+1).getXYZ().getZ() - posxz, 0,1,0,  0,0));
-        }
-        c++;
-    }
-
-  }
-   */
-   // contourLineMesh->mDrawType = GL_LINES;
-
-
-
-
 
 
 

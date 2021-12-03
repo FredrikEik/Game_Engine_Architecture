@@ -26,7 +26,7 @@ void RollingBall::move(float dt)
 
     //gsl::Vector3D barycCoords;
     gsl::Vector3D BallPosition = getTransformComponent()->mMatrix.getPosition();
-    float yOffset = 1.0f;
+    float yOffset = 0.1f;
 
     for(unsigned long long i = 0; i < vertices.size() - 2; i+=3)
     {
@@ -63,8 +63,15 @@ void RollingBall::move(float dt)
                 getTransformComponent()->mMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z);
             }
             BallPosition = getTransformComponent()->mMatrix.getPosition();
+             return;
         }
+
     }
+    float randX = rand()%(20+20+1)-20;
+    float randZ = rand()%(20+20+1)-20;
+
+    velocity = gsl::Vector3D{0.f, 0.f, 0.f};
+    getTransformComponent()->mMatrix.setPosition(randX, 50, randZ);
 
 
             /*gForce.x = abs(gForce.x);

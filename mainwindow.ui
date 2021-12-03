@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1120</width>
+    <width>1130</width>
     <height>788</height>
    </rect>
   </property>
@@ -20,7 +20,14 @@
       <item>
        <widget class="QPushButton" name="SwitchTerrain">
         <property name="text">
-         <string>SwitchTerrain</string>
+         <string>Spawn Terrain</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="SpawnBalls">
+        <property name="text">
+         <string>Spawn Balls</string>
         </property>
        </widget>
       </item>
@@ -134,8 +141,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1120</width>
-     <height>25</height>
+     <width>1130</width>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -195,8 +202,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>276</width>
-          <height>331</height>
+          <width>280</width>
+          <height>338</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">
