@@ -193,10 +193,10 @@ void PlaneImport::readFile(std::string filename)
         for (unsigned y = 0; y < triangleNumberY - 1; y++)
         {
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y));
-            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y + 1));
+            getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x + 1, y));
             getMeshComp()->mIndices.push_back(verticesVectorGetIndex(x, y + 1));
         }
     }

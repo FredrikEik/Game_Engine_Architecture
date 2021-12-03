@@ -48,8 +48,8 @@ public:
         Vector3D p12 = p2-p1;
         Vector3D p13 = p3-p1;
         // Ikke bruk z-koordinatene. Vi jobber med trekanter i 2D her og projiserer
-        p12.z = 0.0;
-        p13.z = 0.0;
+        p12.y = 0.0;
+        p13.y = 0.0;
         Vector3D n = p12^p13;
         float areal_123 = n.length(); // dobbelt areal
 
@@ -58,17 +58,17 @@ public:
         Vector3D p = p2 - *this;
         Vector3D q = p3 - *this;
         n = p^q;
-        baryc.x = n.z/areal_123;
+        baryc.x = n.y/areal_123;
         // v
         p = p3 - *this;
         q = p1 - *this;
         n = p^q;
-        baryc.y = n.z/areal_123;
+        baryc.y = n.y/areal_123;
         // w
         p = p1 - *this;
         q = p2 - *this;
         n = p^q;
-        baryc.z = n.z/areal_123;
+        baryc.z = n.y/areal_123;
 
         return baryc;
     }

@@ -2,7 +2,7 @@
 
 RollingBall::RollingBall(int n, GameObject* p) : OctahedronBall (n)
 {
-    force.z = -9.81f;
+    force.y = -9.81f;
     plane = p;
     mTexture = 3;
 }
@@ -18,47 +18,47 @@ void RollingBall::move(float dt)
 
     std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
     std::vector<GLuint>& indices = plane->getMeshComp()->mIndices;
-    gsl::Vector3D newPosition;
-    gsl::Vector3D normal;
     gsl::Matrix4x4 position = new gsl::Matrix4x4;
     position.translate(getTransformComp()->mMatrix.getPosition());
-    position.setPosition(position.getPosition().x, position.getPosition().z, position.getPosition().y);
     gsl::Matrix4x4 sscale = new gsl::Matrix4x4;
     sscale.scale(getTransformComp()->Scal);
     gsl::Vector3D ballCoords = position.getPosition();
-    qDebug() << "ball x: " << ballCoords.x << "y: " << ballCoords.y << " z: " << ballCoords.z;
+    //qDebug() << "ball x: " << ballCoords.x << "y: " << ballCoords.y << " z: " << ballCoords.z;
 
     for(int i = 0; i < (indices.size() - 2); i += 3)
     {
-        // Finne trekant
+        // gets triangle
         gsl::Vector3D p0 = gsl::Vector3D(vertices[indices[i]].get_xyz());
         gsl::Vector3D p1 = gsl::Vector3D(vertices[indices[i + 1]].get_xyz());
         gsl::Vector3D p2 = gsl::Vector3D(vertices[indices[i + 2]].get_xyz());
 
-        //finne trekanten ballen er på
+        // gets barysentric coordinates to determine if the ball is above current triangle
         gsl::Vector3D baryCoords = ballCoords.barycentricCoordinates(p0, p1, p2);
         //qDebug() << "x: " << baryCoords.x << "y: " << baryCoords.y << " z: " << baryCoords.z;
-        if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0)
+        if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0) // barycentric coordinates are wrong for some reson
         {
-            normal = (p1 - p0)^(p2 - p0);
+            qDebug() << "Hallo!?";
+            gsl::Vector3D normal = (p1 - p0)^(p2 - p0);
             normal.normalize();
-            acceleration = force * normal * normal.z;
 
-            mVelocity = mVelocity + acceleration * dt;
+            float planeHeight = p0.y * baryCoords.x + p1.y * baryCoords.y + p2.y * baryCoords.z;
 
-            float zOffset = 0.25f;
-            newPosition = position.getPosition() + mVelocity;
-            newPosition.z = p0.z * baryCoords.x + p1.z * baryCoords.y + p2.z * baryCoords.z;
-            position.setPosition(newPosition.x, newPosition.y, newPosition.z + zOffset);
+            if(ballCoords.y < planeHeight + 0.25f) // ball has collided and will be rolling
+            {
+                acceleration = force * normal * normal.y;
+
+            }
+            else // ball is in free fall
+            {
+                acceleration = force;
+            }
+
+            mVelocity = mVelocity + acceleration * dt; // set velocity and translate
+            position.translate(mVelocity);
             ballCoords = position.getPosition();
-            qDebug() << "x: " << newPosition.x << "y: " << newPosition.y << " z: " << newPosition.z;
         }
     }
-    //qDebug() << "Accel: " << acceleration << " dt: " << dt;
 
-    position.translate(mVelocity);
-
-    position.setPosition(position.getPosition().x, position.getPosition().z, position.getPosition().y);
     getTransformComp()->mMatrix = position * sscale;
     getTransformComp()->mTrueScaleMatrix = position;
     //qDebug() << "x: " << getTransformComp()->mMatrix.getPosition().x << "y: " << getTransformComp()->mMatrix.getPosition().y << " z: " << getTransformComp()->mMatrix.getPosition().z;
