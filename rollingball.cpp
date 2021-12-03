@@ -9,11 +9,7 @@ RollingBall::RollingBall(int loadedMeshIndex)
 {
     m_scale.scale(0.25,0.25,0.25);
     meshIndex = loadedMeshIndex;
-}
-
-RollingBall::~RollingBall()
-{
-
+    m_modelMatrix.setToIdentity();
 }
 
 void RollingBall::move(float dt)
@@ -151,11 +147,11 @@ void RollingBall::init(GLint matrixUniform, const std::vector<Vertex> &vertices,
     glBindVertexArray(0);
 }
 
-
-void RollingBall::draw(Meshdata& meshData)
+void RollingBall::draw(const MeshData& meshData)
 {
     initializeOpenGLFunctions();
-    glBindVertexArray(m_VAO);
+    //glBindVertexArray(m_VAO);
+    glBindVertexArray(meshData.mVAO[0]);
 
     glUniformMatrix4fv(m_shader->getModelMatrixUniform(), 1, GL_FALSE, m_modelMatrix.constData());
 
@@ -164,7 +160,8 @@ void RollingBall::draw(Meshdata& meshData)
     glUniform1i(m_shader->getSpecularExponentUniform(), m_specularExponent);
     glUniform1f(m_shader->getObjectAlphaUniform(), m_objectAlpha);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+    //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+    glDrawElements(GL_TRIANGLES, meshData.mIndices[0].size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void RollingBall::init(GLint matrixUniform)

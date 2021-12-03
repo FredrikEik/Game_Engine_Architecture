@@ -150,7 +150,7 @@ void RenderWindow::init()
     m_ball = new RollingBall(sphere);
     m_ball->setShader(m_shaderProgramMap["phong"]);
     m_ball->setObjectName("Ball");
-    m_ball->setPosition(QVector3D(20.f, 20.f, 20.f));
+    m_ball->setPosition(QVector3D(50.f, 50.f, 50.f));
     dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
     //m_ball->setSurface(m_world);
 
