@@ -82,7 +82,7 @@ void bSplinePath::makeControlPoints()
 
     for(int k = 0; k<1000; k++)
     {
-        float timeStep = 1;
+        float timeStep = 0.0017;
 
 
 
@@ -110,10 +110,10 @@ void bSplinePath::makeControlPoints()
 
             float surfaceY = p1.y*baryCoords.x + p2.y*baryCoords.y + p3.y*baryCoords.z;
 
-            if(currentPosition.y < surfaceY+1.05)
+            if(currentPosition.y < surfaceY+1)
             {
                 Vertex v;
-                v.set_xyz(currentPosition);
+                v.set_xyz(currentPosition.x, surfaceY+1, currentPosition.z);
                 getMeshComponent()->mVertices.push_back(v);
                 //acceleration = gForce ^ pNormal ^ gsl::Vector3D(0, pNormal.y, 0);
                 acceleration = gsl::Vector3D(planeNormal.x*planeNormal.y*9.80565f, planeNormal.y*planeNormal.y*9.80565f, planeNormal.z*planeNormal.y*9.80565f) + gForce;
@@ -148,7 +148,7 @@ void bSplinePath::makeControlPoints()
 void bSplinePath::draw()
 {
     glBindVertexArray( getMeshComponent()->mVAO );
-    glDrawArrays(GL_LINES, 0, getMeshComponent()->mVertices.size());
+    glDrawArrays(GL_LINE_STRIP, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
 

@@ -226,7 +226,7 @@ void TriangleSurface::readFile(std::string filnavn)
         {
             for(int j = 0; j < terrainGridZ; j++)
             {
-                if(j+((i+1)*terrainGridX) < mapHeights.size() - 100)
+                if(j+((i+1)*terrainGridX) < mapHeights.size())
                 {
                 Vertex v{};
                 /*Bottom Right*/  v.set_xyz((i*squareSize)  ,mapHeights[j + i*terrainGridZ]      , (j*squareSize)); v.set_rgb(1,0,0); v.set_uv(0,0); getMeshComponent()->mVertices.push_back(v);
