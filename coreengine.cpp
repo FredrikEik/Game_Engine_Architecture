@@ -182,10 +182,16 @@ void CoreEngine::setUpScene()
         mRenderSystem->mGameObjects.push_back(temp);
     }
 
+    temp = mGameObjectManager->addObject("ball.obj");
+    temp->mTransform->mMatrix.translate(0.5f, 2.0f, -0.25f);
+    temp->mTransform->mMatrix.scale(0.15f);
+    temp->mName = "RulleBall";
+    mRenderSystem->mGameObjects.push_back(temp);
+
     temp = mGameObjectManager->addObject("CrookedTriangleSurface.obj");
     temp->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     temp->mTransform->mMatrix.scale(1.0f);
-    temp->mTransform->mMatrix.rotateY(0); //If rotation is applied, vertices does not match their actual locations in world
+    temp->mTransform->mMatrix.rotateY(0);
     temp->mName = "CrookedTriangleSurface";
     mRenderSystem->mGameObjects.push_back(temp);
 

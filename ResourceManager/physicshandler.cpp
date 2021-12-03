@@ -22,11 +22,9 @@ if(simulatePhysics == true)
 
 
 //Search for the gameobject called "name" and create a gameobject using it.
-    std::string searchGroundName = "LasGround";
+    std::string searchGroundName = "CrookedTriangleSurface";
     GameObject groundObject;
     std::vector<Vertex> triangleVertices;
-
-    float speed = 1.5f;
 
 //Get the details of the plane the physicsobject is going to interact with.
     for(int i = 0; i < mGameObjects.size(); i++)
@@ -39,17 +37,11 @@ if(simulatePhysics == true)
             groundObject.mTransform = mGameObjects[i]->mTransform;
             groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
-            auto placement = GameObjectMap.find(searchGroundName);
+            auto placement = GameObjectMap.find(searchGroundName + ".obj"); //with the name found, find the index in the gameObjectMap
 
-            triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices();
-//            qDebug() << "Gameobject" << QString::fromStdString(searchGameName) << "found"; //Nice way to get from a std::string to qDebug printable string.
-//            qDebug() << triangleVertices.size();
-            break;
+            triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices(); //Get the vertices, the "second" value from the GameObjectMeshData
+//            break;
         }
-//        if (i == mGameObjects.size()-1) //if entirety of gameobjects is searched and not found, the game-engine crashes trying to log two strings.
-//        {
-//            mLogger->logText("No gameobject named" + name, LColor::LOG);
-//        }
     }
 
 //Find the vector3d position of the ground
@@ -61,14 +53,16 @@ if(simulatePhysics == true)
     GameObject physicsBall;
     gsl::Vector3D ballPosition3D;
 
+    float speed = 1.5f;
+
 //    gsl::Vector3D barycoordinates[51]; //Dont really see a point for this? given the code will run 51 times either way?
 
 //// Run through rest of code per ball
-    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
-    {
+//    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
+//    {
         for (int i = 0; i < mGameObjects.size(); i++)
         {
-            searchGameName = "RollingBall_" + std::to_string(ball);
+            searchGameName = "RulleBall"; //+ std::to_string(ball);
 
             if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
             {
@@ -95,7 +89,7 @@ if(simulatePhysics == true)
                           v2 = ballPosition3D - triangleVertices[i].mXYZ;
 
             float den = (v0.x * v1.y) - (v1.x * v0.y);
-            baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den; //and you cant divide by 0;
+            baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den;
             baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
             baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
 
@@ -121,9 +115,9 @@ if(simulatePhysics == true)
                 gsl::Vector3D newBallPosition = ballPosition3D + velocity;
                 float ballYOffset = 0.15f;
 
-                newBallPosition.y = (baryCoordinates.x * triangleVertices[i].mXYZ.y +
-                                     baryCoordinates.y * triangleVertices[i+1].mXYZ.y + ballYOffset +
-                                     baryCoordinates.z * triangleVertices[i+2].mXYZ.y);
+//                newBallPosition.y = (baryCoordinates.x * triangleVertices[i].mXYZ.y +
+//                                     baryCoordinates.y * triangleVertices[i+1].mXYZ.y + ballYOffset +
+//                                     baryCoordinates.z * triangleVertices[i+2].mXYZ.y);
 
                 physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
 //                qDebug() << "ball is moving towards " << newBallPosition;
@@ -143,7 +137,7 @@ if(simulatePhysics == true)
 //            qDebug() << "Ball is falling";
         }
 
-    }////End of for loop for the 51 balls
+//    }////End of for loop for the 51 balls
 } ////End of simulatePhysics-bool loop
 
 
