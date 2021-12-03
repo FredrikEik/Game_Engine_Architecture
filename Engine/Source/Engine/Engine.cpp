@@ -223,7 +223,8 @@ void Engine::init()
 			uint32 entt = ECS->newEntity();
 			ECS->addComponents<TransformComponent, PhysicsComponent>(entt);
 			ECS->loadAsset(entt, DefaultAsset::SPHERE);
-			TransformSystem::setPosition(entt, glm::vec3(5 * i + 52 , 40, 52 + 5* j ), ECS);
+			//TransformSystem::setPosition(entt, glm::vec3(5 * i + 52 , 40, 52 + 5* j ), ECS);
+			TransformSystem::setPosition(entt, glm::vec3(std::rand()%1000 + 52 , 20 + std::rand()%100, 52 + std::rand()%1000), ECS);
 			//TransformSystem::setHeight(entt, TerrainSystem::getHeight(entt, terrainEntity, ECS), ECS);
 			MeshSystem::setConsideredForFrustumCulling(entt, ECS, false);
 			//TrailSystem::setRecordInterval(entt, ECS, 4);

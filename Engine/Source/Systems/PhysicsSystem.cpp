@@ -34,7 +34,7 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 		if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
 		{
 			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
-			if(it.bIsInAir)
+			if(it.bIsInAir) // if entity was in air last frame
 				it.velocity = tempCollisionNormal * glm::length(it.velocity) * it.restitution;
 			else
 				it.velocity = tempCollisionNormal * glm::length(it.velocity);

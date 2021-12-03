@@ -529,10 +529,7 @@ void TerrainSystem::calculateNormals(const std::vector<glm::vec3>& positions, ui
 		if (i < (positions.size() - 1) && i > 0)
 		{
 			if (((i) % (rowSize * rowsLooped)) == 0)
-			{
 				return 0.f;
-				//rowsLooped++;
-			}
 			else
 				return positions[i].y;
 		}

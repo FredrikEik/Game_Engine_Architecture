@@ -2,7 +2,8 @@
 #include "../ECSManager.h"
 #include "MeshSystem.h"
 #include <chrono>
-void TrailSystem::generateBSplines(uint32 trailEntity, ECSManager* ECS, int orderOfCurve, bool bDrawControlPoints, float resolution)
+void TrailSystem::generateBSplines(uint32 trailEntity, ECSManager* ECS, int orderOfCurve, bool bDrawControlPoints, 
+	float stepDistance)
 {
 	const auto& trailEntities = ECS->getComponentManager<TrailComponent>()->getComponentArray();
 	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(trailEntity);
@@ -13,14 +14,16 @@ void TrailSystem::generateBSplines(uint32 trailEntity, ECSManager* ECS, int orde
 	{
 		for (auto& position : it.positions)
 		{
-			generateBSpline(mesh, position, ECS, orderOfCurve, bDrawControlPoints, resolution);
+			generateBSpline(mesh, position, ECS, orderOfCurve, bDrawControlPoints, stepDistance);
 		}
 	}
 	mesh->m_drawType = GL_LINES;
 	MeshSystem::initialize(*mesh);
 	mesh->bDisregardedDuringFrustumCulling = true;
 }
-void TrailSystem::generateBSpline(MeshComponent* trailMesh, const std::vector<glm::vec3>& recordedPositions, ECSManager* ECS, int orderOfCurve, bool bDrawControlPoints, float resolution)
+
+void TrailSystem::generateBSpline(MeshComponent* trailMesh, const std::vector<glm::vec3>& recordedPositions, 
+	ECSManager* ECS, int orderOfCurve, bool bDrawControlPoints, float stepDistance)
 {
 #pragma region ConvenienceLambdas
 	auto nearlyEqual = [](float a, float b) -> bool
@@ -54,7 +57,7 @@ void TrailSystem::generateBSpline(MeshComponent* trailMesh, const std::vector<gl
 	int range[2] = { knotVector[0], knotVector.back() };
 	std::vector<glm::vec3> positions;
 
-	for (float positionOnCurve = range[0]; positionOnCurve < (float)range[1]-0.0001; positionOnCurve += resolution)
+	for (float positionOnCurve = range[0]; positionOnCurve < (float)range[1]-0.0001; positionOnCurve += stepDistance)
 	{
 		glm::vec4 u(positionOnCurve * positionOnCurve * positionOnCurve, positionOnCurve * positionOnCurve, positionOnCurve,1);
 		glm::vec3 point{};
@@ -64,7 +67,7 @@ void TrailSystem::generateBSpline(MeshComponent* trailMesh, const std::vector<gl
 			--num;
 		for (int i{ num }; i < num + orderOfCurve; ++i)
 		{
-			// De boor's recursive algorithm happens here in getKnotCoefficient
+			// De boor's recursive algorithm happens here
 			glm::vec4 coefficient = getKnotCoefficient(i, orderOfCurve, positionOnCurve, knotVector);
 
 			point += glm::dot(u, coefficient) * recordedPositions[i];
@@ -79,7 +82,7 @@ void TrailSystem::generateBSpline(MeshComponent* trailMesh, const std::vector<gl
 	for (int i{ index }; i < trailMesh->m_vertices.size()-2; ++i)
 	{
 		trailMesh->m_indices.push_back(i + bHadIndexes);
-		trailMesh->m_indices.push_back(i +1+ bHadIndexes);
+		trailMesh->m_indices.push_back(i + 1 + bHadIndexes);
 	}
 	//GenerateBSpline
 #pragma endregion
