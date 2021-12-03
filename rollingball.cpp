@@ -96,6 +96,7 @@ void RollingBall::move(float dt)
         }
 
     }
+    akselerasjon = gsl::Vector3D{0.f,0.f,0.f};
         hastighet = gsl::Vector3D{0.f,0.f,0.f};
-        getTransformComponent()->mMatrix.setPosition((rand() % 20+(-10)), 6.f, (rand() % 20+ (-10)));
+        getTransformComponent()->mMatrix.setPosition((rand() % 20+(-10)), 10.f, (rand() % 20+ (-10)));
 }

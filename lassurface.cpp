@@ -67,35 +67,35 @@ void LasSurface::readLasFile(std::string filnavn)
 
 
     int VerticesCounter=0;
-    int step =20;
-    float squaresDirection = (step-1);
-    float Amountsquares = squaresDirection*squaresDirection;
-    float xOffset = (xmax-xmin)/step;
+    int step =20;                         //step = hvor mange vertices det skal være i x og z retning. Her blir det 20*20 = 400 vertices tilsammen
+    float squaresDirection = (step-1);      // squaresDirection = hvor mange squares det er i hver retning.
+    float Amountsquares = squaresDirection*squaresDirection;    //gir total mengde med squares.
+    float xOffset = (xmax-xmin)/step;                           // gir verdien på hvor stor hver square blir
     float zOffset = (zmax-zmin)/step;
-    double squareMinZ =zmin;
-    double squareMaxZ;
+    double squareMinZ =zmin;                                    //minimum verdien til en square z retning
+    double squareMaxZ;                                          //maximum verdien til en square z retning
     double squareMinX = xmin;
     double squareMaxX;
 
-    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset-0.001f){     //looper gjennom hver square i z retning
+    for (double j=squareMinZ; j<=zmax-zOffset; j+=zOffset-0.001f){     //looper gjennom hver square i z retning, må minuse en liten verdi slik at alle squarene blir lagd
         squareMaxZ = j+zOffset;
 
-        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset-0.001f){       //looper gjennom hver square i x retning
+        for (double i =squareMinX; i<= xmax-xOffset; i+=xOffset-0.001f){       //looper gjennom hver square i x retning, må minuse en liten verdi her også
             numberofPointsInside=0;
             float tempX=0;
             float tempY=0;
             float tempZ=0;
             squareMaxX = i +xOffset;
-            VerticesCounter++;                          //det er problemer med for løkkene slik at vertices counteren ikke blir riktig på noen steps
+            VerticesCounter++;
 
-            for ( double k = 0 ; k<lasVertices.size(); k++){        //sjekker om punktene er innenfor squaren
-                if ( lasVertices[k].getXYZ().getX() < squareMaxX &&
+            for ( double k = 0 ; k<lasVertices.size(); k++){        //looper gjennom alle vertices
+                if ( lasVertices[k].getXYZ().getX() < squareMaxX &&     //sjekker om punktet er innenfor squaren
                      lasVertices[k].getXYZ().getX() > i &&
                      lasVertices[k].getXYZ().getZ() < squareMaxZ &&
                      lasVertices[k].getXYZ().getZ() > j){
                     numberofPointsInside++;
 
-                    tempY = tempY+ lasVertices[k].getXYZ().y;
+                    tempY = tempY+ lasVertices[k].getXYZ().y;           //samler opp y verdiene på alle punktene som er innenfor
 
 
                 }
@@ -111,28 +111,24 @@ void LasSurface::readLasFile(std::string filnavn)
             }
             vertex.set_xyz(tempX, tempY, tempZ);
 
-            //qDebug () << numberofPointsInside;
-            //qDebug() << vertex.getXYZ().x << vertex.getXYZ().y << vertex.getXYZ().z;
-           //qDebug() << lasVertices[VerticesCounter].getXYZ().x << lasVertices[VerticesCounter].getXYZ().y << lasVertices[VerticesCounter].getXYZ().z;
+
             tempVertices.push_back(vertex);                                 //push_backer vertexen
 
         }
     }
 
-    //qDebug() <<"Number of Vertices" << VerticesCounter;
-    //qDebug() << "Amount of squares" << Amountsquares;
     float j=1;
     float sqOffset = 0;
         for(int i =0; i< Amountsquares; i++){                       // lager de nye punktene om til trekanter/squares.
             if (VerticesCounter-i < step ){
                 i=Amountsquares;
             }
-            if(i == squaresDirection*j){
-                sqOffset++;
-                j++;                                               // sjekker om alle squarene på en rekke er fylt ut.               
+            if(i == squaresDirection*j){                            // sjekker om alle squarene på en rekke er fylt ut
+                sqOffset++;                                         //må offsette det sånn at den ikke prøver å lage et triangel på enden av rekken.
+                j++;
             }
 
-
+            //push_back det første triangelet
         getMeshComponent()->mVertices.push_back(Vertex(tempVertices[i+sqOffset].getXYZ().x,
                                                  tempVertices[i+sqOffset].getXYZ().y,
                                                  tempVertices[i+sqOffset].getXYZ().z,
@@ -151,7 +147,7 @@ void LasSurface::readLasFile(std::string filnavn)
                                                 0,1));
 
 
-
+        //push-back det andre triangelet
         getMeshComponent()->mVertices.push_back(Vertex(tempVertices[(i+(step+1))+sqOffset].getXYZ().x,
                                                 tempVertices[(i+(step+1))+sqOffset].getXYZ().y,
                                                 tempVertices[(i+(step+1))+sqOffset].getXYZ().z,
@@ -170,18 +166,7 @@ void LasSurface::readLasFile(std::string filnavn)
                                                 1,0));
     }
 
-    //              sortering algoritme, ikke i bruk
-    //        for (l = 0; l < n-1; l++)
-    //        {
-    //            min_index = l;
-    //            for (j=l+1 ; j<n; j++)
-    //            {
-    //                if (a[j] < a[min_index]){
-    //                 min_index = j;
-    //                }
-    //            }
-
-    createContourLines();
+    createContourLines();               //lager høydekurver til terrenget
 
 }
 
