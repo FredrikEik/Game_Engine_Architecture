@@ -2,7 +2,7 @@
 
 RollingBall::RollingBall(int n, GameObject* p) : OctahedronBall (n)
 {
-    force.y = -9.81f;
+    force = gsl::Vector3D(0.f, -9.81f, 0.f);
     plane = p;
     mTexture = 3;
 }
@@ -15,17 +15,12 @@ RollingBall::~RollingBall()
 void RollingBall::move(float dt)
 {
     dt = dt/100000;
-
+    gsl::Vector3D newPosition { 0.f };
     std::vector<Vertex>& vertices = plane->getMeshComp()->mVertices;
-    std::vector<GLuint>& indices = plane->getMeshComp()->mIndices;
-    gsl::Matrix4x4 position = new gsl::Matrix4x4;
-    position.translate(getTransformComp()->mMatrix.getPosition());
-    gsl::Matrix4x4 sscale = new gsl::Matrix4x4;
-    sscale.scale(getTransformComp()->Scal);
-    gsl::Vector3D ballCoords = position.getPosition();
+    gsl::Vector3D ballCoords = getTransformComp()->mMatrix.getPosition();
     //qDebug() << "ball x: " << ballCoords.x << "y: " << ballCoords.y << " z: " << ballCoords.z;
 
-    for(int i = 0; i < (indices.size() - 2); i += 3)
+    for(int i = 0; i < (vertices.size() - 2); i += 3)
     {
         // gets triangle
         gsl::Vector3D p0 = gsl::Vector3D(vertices[i].get_xyz());
@@ -37,30 +32,33 @@ void RollingBall::move(float dt)
         //qDebug() << "x: " << baryCoords.x << "y: " << baryCoords.y << " z: " << baryCoords.z;
         if (baryCoords.x >= 0 && baryCoords.y >= 0 && baryCoords.z >= 0) // barycentric coordinates are wrong for some reson
         {
-            qDebug() << "Hallo!?";
+            //qDebug() << "Hallo!?";
             gsl::Vector3D normal = (p1 - p0)^(p2 - p0);
             normal.normalize();
 
-            float planeHeight = p0.y * baryCoords.x + p1.y * baryCoords.y + p2.y * baryCoords.z;
-
-            if(ballCoords.y < planeHeight + 0.25f) // ball has collided and will be rolling
+            float planeHeight = p0.y * baryCoords.x + p1.y * baryCoords.y + p2.y * baryCoords.z + 0.50f;
+            //qDebug() << " PlaneHeight: " << planeHeight + 0.25 << " BallHeight: " << ballCoords.y;
+            if(ballCoords.y <= planeHeight) // ball has collided and will be rolling
             {
-                acceleration = force * normal * normal.y;
-
+                //qDebug() << "x: " << normal.x << "y: " << normal.y << " z: " << normal.z;
+                acceleration = gsl::Vector3D(-normal.x * normal.y * force.y, -normal.y * normal.y * force.y, -normal.z * normal.y * force.y) + force; //idk why but putting - before normal makes it roll the correct way
+                mVelocity = mVelocity + acceleration * dt; // set velocity and translate
+                newPosition = ballCoords + mVelocity;
+                newPosition.setY(planeHeight - 0.25f);
+                //qDebug() << "new pos x: " << newPosition.x << "y: " << newPosition.y << " z: " << newPosition.z;
             }
             else // ball is in free fall
             {
                 acceleration = force;
+                mVelocity = mVelocity + acceleration * dt/10; // set velocity and translate
+                newPosition = ballCoords + mVelocity;
             }
 
-            mVelocity = mVelocity + acceleration * dt; // set velocity and translate
-            position.translate(mVelocity);
-            ballCoords = position.getPosition();
+            getTransformComp()->mTrueScaleMatrix.setPosition(newPosition.x, newPosition.y, newPosition.z);
+            getTransformComp()->mMatrix = getTransformComp()->mTrueScaleMatrix;
+            getTransformComp()->mMatrix.scale(getTransformComp()->Scal);
         }
     }
-
-    getTransformComp()->mMatrix = position * sscale;
-    getTransformComp()->mTrueScaleMatrix = position;
     //qDebug() << "x: " << getTransformComp()->mMatrix.getPosition().x << "y: " << getTransformComp()->mMatrix.getPosition().y << " z: " << getTransformComp()->mMatrix.getPosition().z;
 }
 

@@ -179,8 +179,7 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(23.f, 10.f, 18.f));
-    mCurrentCamera->setYaw(130.f);
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 10.f, 5.f));
 
     SoundManager::getInstance()->init();
 
