@@ -85,6 +85,8 @@ private slots:
     void render();
 
 private:
+    int frameCountForPointIntake = 0;
+
 
     void killZ(TransformComponent* Transform, gsl::Vector3D  SpawnPoint);
     int physicsCount = 0;

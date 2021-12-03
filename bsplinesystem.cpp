@@ -20,7 +20,6 @@ void bsplinesystem::initialize(int inEntity)
         v.set_xyz(punkt.x, punkt.y, punkt.z); v.set_rgb(1,0,0);
         mVertices.push_back(v);
     }
-    seedNumber++;
     std::string objName = "BSplineOBJ"+std::to_string(targetEntity);
     RW->ResSys->SetIntoMeshDataContainerRUNTIME(mVertices,objName);
     RW->entitySys->construct(objName,QVector3D(0,0,0),0,0,-1,GL_LINE_STRIP);

@@ -46,6 +46,12 @@ RenderWindow::~RenderWindow()
 }
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
+
+
+/*!
+ * \brief RenderWindow::init
+ *
+ */
 void RenderWindow::init()
 {
 
@@ -262,20 +268,16 @@ void RenderWindow::init()
     //        }
     //    }
 
-    for(int i{0}; i < 10; i++)
+    for(int i{0}; i < 5; i++)
     {
-        for(int j{0}; j < 10; j++)
+        for(int j{0}; j < 5; j++)
         {
             entitySys->construct("sphere.obj", QVector3D( 400 + 8*(i) ,90.0f,300 + 8*(j)),2,1);
-            //for(int x = 0; x < (int)transformCompVec.size(); x++){
-            //    if(transformCompVec[x]->entity == 3*(j)){
-            //        transformCompVec[x]->PosOverTime.push_back(gsl::Vector3D( 10 + 3*(i)));
-            //        break;
-            //    }
-            //}
         }
     }
-
+    //for(int i = 0; i < transformCompVec.size(); i++){
+    //    transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
+    //}
 
     marchingsquare *march = new marchingsquare(map);
     ResSys->SetIntoMeshDataContainerRUNTIME(march->getMeshComp()->mVertices, "LAS-CONT");
@@ -292,6 +294,17 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
+    if(isPhysicsEnabled){
+        frameCountForPointIntake++;
+        if(frameCountForPointIntake > 50){
+            frameCountForPointIntake = 0;
+            qDebug() << "INSERTED";
+            for(int i = 0; i < transformCompVec.size(); i++){
+                transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
+            }
+        }
+    }
+
     mMainWindow->updateDetails();
 
     //Keyboard / mouse input - should be in a general game loop, not directly in the render loop
