@@ -183,7 +183,7 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	10.f, 4.f)); //normal camera
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f,	10.f, 5.f)); //normal camera
     qDebug() << "camera is here: " << mCurrentCamera->getPosition();
 
     SoundManager::getInstance()->init();
@@ -217,6 +217,7 @@ void RenderWindow::init()
 
     ObjFactory->createObject("Terrain");
     mMainWindow->addObjectToWorldList("Terrain");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
 
     for(int i = 0; i < 10; i++)
     {
@@ -229,7 +230,7 @@ void RenderWindow::init()
     //ObjFactory->mGameObject.back()->TransformComp->mTrueScaleMatrix.setPosition(3.f, 0.51f, 0.f);
     //mPlayer = new player(ObjFactory->mGameObject.back());
 
-    ObjFactory->createObject("Ball");
+    /*ObjFactory->createObject("Ball"); //Again, ball is here but invisible on my pc.
     mMainWindow->addObjectToWorldList("Ball");
     ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
     setScaleX(0.25);
@@ -238,8 +239,9 @@ void RenderWindow::init()
     setPositionX(0);
     setPositionY(10);
     setPositionZ(0);
-    ObjFactory->setOBJindex(-1);
+    ObjFactory->setOBJindex(-1);*/
     //mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
+
 
     skyBox = new SkyBox();
     skyBox->init();
@@ -258,6 +260,18 @@ void RenderWindow::init()
     //MapSpawner->spawnRow(100);
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);
+
+    ObjFactory->createObject("RollingBall");
+    mMainWindow->addObjectToWorldList("RollingBall");
+    ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
+    setScaleX(0.25f);
+    setScaleY(0.25f);
+    setScaleZ(0.25f);
+    setPositionX(0.f);
+    setPositionY(10.f);
+    setPositionZ(0.f);
+    ObjFactory->setOBJindex(-1);
+    mRollingBall = reinterpret_cast<RollingBall*>(ObjFactory->mGameObject.back());
 }
 
 // Called each frame - doing the rendering
@@ -267,6 +281,10 @@ void RenderWindow::render()
     handleInput();
 
     mCurrentCamera->update();
+    if (mRollingBall && bRoll)
+    {
+         mRollingBall->move(mTimeStart.nsecsElapsed() / 100000.f);
+    }
 
     mTimeStart.restart(); //restart FPS clock
     mVerticesDrawn = 0;     //reset vertex counter
@@ -302,12 +320,12 @@ void RenderWindow::render()
     //MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
 
     unsigned int cullSafe;
-    if(bPlayGame)
+    /*if(bPlayGame)
         cullSafe = 0; // original -1
     else
     {
         cullSafe = 1;
-    }
+    }*/
 
     if(ObjFactory->mGameObject.size() > 0)
     {
@@ -326,11 +344,11 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
             //draw the object
-            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
+            /*if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
             {
                 if(frustumCulling(i))
                     continue;
-            }
+            }*/
             ObjFactory->mGameObject[i]->draw();
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
 //            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(0.5f);

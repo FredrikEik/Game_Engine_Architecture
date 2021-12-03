@@ -7,6 +7,7 @@
 #include "contours.h"
 #include "terrain.h"
 #include "octahedronball.h"
+#include "rollingball.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -107,12 +108,20 @@ void ObjectFactory::createObject(std::string objectName)
 
         }
 
-    else if (objectName == "Ball")
+    else if (objectName == "Ball") //WORKS PERFECTLY BUT DOESN'T APPEAR ON MY PC FOR LITERALLY NO REASON WHATSOEVER
     {
          willCreateObject = new OctahedronBall(5);
          qDebug() << "ball mesh created";
          willCreateObject->mTexture = 3;
     }
+
+    else if (objectName == "RollingBall") //INHERITS FROM CUBE DUE TO INEXPLAINABLE BALL BUG
+        {
+            willCreateObject = new RollingBall(mSurface);
+            qDebug() << "RollingBall created";
+            willCreateObject->mTexture = 3;
+            //willCreateObject = new Cube;
+        }
     else
         return;
 

@@ -17,6 +17,7 @@
 #include "skybox.h"
 #include "script.h"
 #include "terrain.h"
+#include "rollingball.h"
 
 
 class QOpenGLContext;
@@ -52,6 +53,11 @@ public:
     Camera *mGameCamera{nullptr};
 
     player* mPlayer { nullptr };
+
+    RollingBall* mRollingBall { nullptr };
+
+    bool bRoll { false };
+    void startRoll() { bRoll = true; }
 
     void playSound();
     void pauseSound();

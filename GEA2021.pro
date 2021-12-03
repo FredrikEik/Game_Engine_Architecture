@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     octahedronball.cpp \
     player.cpp \
     renderwindow.cpp \
+    rollingball.cpp \
     script.cpp \
     shader.cpp \
     mainwindow.cpp \
@@ -72,6 +73,7 @@ HEADERS += \
     octahedronball.h \
     player.h \
     renderwindow.h \
+    rollingball.h \
     script.h \
     shader.h \
     mainwindow.h \
