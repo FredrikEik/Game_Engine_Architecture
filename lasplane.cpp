@@ -8,72 +8,13 @@ LasPlane::LasPlane(std::string filename)
     filepath = filename;
 }
 
-//void LasPlane::constructPlane()
-//{
-//    if(!m_heightMap)
-//        qDebug() << "ERROR: Height map does not exist!";
-
-    //Create vertex positions
-//    int bytesize = m_heightMap->bytesPrPixel();
-//    for(int i{0}; i<rows; i++) //Z-axis
-//    {
-//        for(int j{0}; j<columns; j++) //X-axis
-//        {
-//            height = m_heightMap->bitmap()[((i*rows)+j)*bytesize]/25.f; //Retrieves every 3rd rgb value.
-
-
-//            //qDebug() << "X: " << j << "Height: " << height << "Z: " << i;
-//            tempPosition.push_back(QVector3D(j, height, i));
-//        }
-//    }
-
-//    qDebug() << "Map vertices created!";
-
-//    QVector3D tempPos{}, tempNorm{};
-
-
-//    //Calcualte vertex normals
-//    for(int i{0}; i<rows; i++)
-//    {
-//        for(int j{0}; j<columns; j++)
-//        {
-//            tempPos = tempPosition.at((i*columns)+j);
-//            tempNorm = calculateNormal(tempPosition.at((i*columns)+j), (i*columns)+j);
-//            m_vertices.push_back(Vertex(tempPos.x(), tempPos.y(), tempPos.z(), tempNorm.x(), tempNorm.y(), tempNorm.z()));
-//        }
-//    }
-
-//    qDebug() << "Map normals calculated!";
-
-//    //Create triangles
-//    for(int i{0}; i<rows-1; i++)
-//    {
-//        for(int j{0}; j<columns-1; j++)
-//        {
-//            //Bottom triangle
-//            m_indices.push_back(j+(i*columns));
-//            m_indices.push_back(j+1+(i*columns));
-//            m_indices.push_back(j+((i+1)*columns)+1);
-
-//            //Top triangle
-//            m_indices.push_back(j+((i+1)*columns)+1);
-//            m_indices.push_back(j+((i+1)*columns));
-//            m_indices.push_back(j+(i*columns));
-//        }
-//    }
-
-//    qDebug() << "Map triangles drawn!";
-
-//    tempPosition.clear();
-//}
-
 void LasPlane::constructPlane()
 {
     qDebug() << "Started constructing plane!";
 
     std::vector<QVector3D> tempLasPos{},  positions{};
     QVector3D max{}, min{}, tempPos{}, tempNormal{};
-    float resoluton{50}, temp{};
+    float resoluton{30}, temp{};
 
     readFile(filepath, max, min, tempLasPos);
 
