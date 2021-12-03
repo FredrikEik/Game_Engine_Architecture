@@ -16,6 +16,7 @@
 #include "player.h"
 #include "skybox.h"
 #include "script.h"
+#include "terrain.h"
 
 
 class QOpenGLContext;
@@ -138,6 +139,7 @@ private:
     SoundSource* mJump;
     class Spawner* MapSpawner;
     class SkyBox* skyBox { nullptr };
+    class Terrain* terrain { nullptr };
 
     Input mInput;
     float mCameraSpeed{0.05f};

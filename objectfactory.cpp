@@ -5,6 +5,7 @@
 #include "objimport.h"
 #include "surface.h"
 #include "contours.h"
+#include "terrain.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -65,17 +66,43 @@ void ObjectFactory::createObject(std::string objectName)
             storedMeshes.insert(std::pair("Surface", willCreateObject->getMeshComp()));
             qDebug() << "surface mesh saved";
         }
-        mSurface = willCreateObject;
         willCreateObject->mTexture = 2;
 
     }
+    else if (objectName == "Terrain")
+    {
+        //willCreateObject = new Terrain("../GEA2021/test_las.txt");
+        //willCreateObject->getMaterialComp()->mShaderProgram = 1;
+        //willCreateObject->getMaterialComp()->mTextureUnit = 1;
+        //willCreateObject->mTexture = 2;
+        //mSurface = willCreateObject;
+
+        if (EXISTS("Terrain"))
+        {
+            willCreateObject = new Terrain("");
+            willCreateObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Terrain"]));
+            qDebug() << "Terrain mesh extracted";
+        }
+        else
+        {
+            willCreateObject = new Terrain("../GEA2021/test_las.txt");
+            storedMeshes.insert(std::pair("Terrain", willCreateObject->getMeshComp()));
+            qDebug() << "Terrain mesh saved";
+
+        }
+        willCreateObject->mTexture = 2;
+        mSurface = willCreateObject;
+
+
+    }
+
     else if (objectName == "Contours")
         {
-           willCreateObject = new Contours(mSurface, contourTick*2);
-           //willCreateObject->getMaterialComp()->mShaderProgram = 0;
-           //willCreateObject->getMaterialComp()->mTextureUnit = 0;
+           willCreateObject = new Contours(mSurface, contourTick * 2);
+           willCreateObject->getMaterialComp()->mShaderProgram = 0;
+           willCreateObject->getMaterialComp()->mTextureUnit = 0;
            contourTick++;
-           willCreateObject->mTexture = 5;
+           //willCreateObject->mTexture = 5;
            //qDebug() << "Contour msurface: " <<mSurface;
 
         }

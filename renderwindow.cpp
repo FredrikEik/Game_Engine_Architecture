@@ -23,6 +23,7 @@
 #include "MathStuff/MathStuff.h"
 #include "spawner.h"
 #include "surface.h"
+#include "terrain.h"
 
 #include "cube.h"
 #include "objimport.h"
@@ -182,7 +183,7 @@ void RenderWindow::init()
     mEditorCamera = new Camera();
 
     mCurrentCamera = mEditorCamera;
-    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	0.5f, 4.f)); //normal camera
+    mCurrentCamera->setPosition(gsl::Vector3D(1.f,	10.f, 4.f)); //normal camera
     qDebug() << "camera is here: " << mCurrentCamera->getPosition();
 
     SoundManager::getInstance()->init();
@@ -202,20 +203,23 @@ void RenderWindow::init()
     mMainWindow->setMouseTracking(true);
 
     //ObjFactory->createObject("Goat");
-    ObjFactory->createObject("Surface");
+
+    /*ObjFactory->createObject("Surface");
     mMainWindow->addObjectToWorldList("Surface");
     ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
     setScaleX(0.1);
     setScaleY(0.1);
     setScaleZ(0.1);
-    ObjFactory->setOBJindex(-1);
+    ObjFactory->setOBJindex(-1);*/
+
+    ObjFactory->createObject("Terrain");
+    mMainWindow->addObjectToWorldList("Terrain");
 
     for(int i = 0; i < 10; i++)
     {
-        ObjFactory->createObject("Contours");
+        ObjFactory->createObject("Contours"); // TOGGLE WIREFRAME FOR BETTER VIEW :)
         mMainWindow->addObjectToWorldList("Contour");
         ObjFactory->setOBJindex(ObjFactory->mGameObject.size() - 1);
-        //qDebug() <<
     }
 
     //ObjFactory->mGameObject.back()->TransformComp->mMatrix.setPosition(3.f, 0.51f, 0.f);

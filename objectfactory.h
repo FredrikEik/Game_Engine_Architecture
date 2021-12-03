@@ -20,7 +20,7 @@ public:
     void setOBJindex(int index) { OBJindex = index; }
     int getOBJindex() { return OBJindex; }
 
-    int contourTick;
+    int contourTick = 0;
     GameObject* mSurface {nullptr};
 
     private:
