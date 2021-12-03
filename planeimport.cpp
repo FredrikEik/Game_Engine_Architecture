@@ -73,18 +73,6 @@ PlaneImport::PlaneImport(std::string filename) : GameObject()
             int quadX = (x - xMin) / step;
             int quadZ = (z - zMin) / step;
 
-            /*getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[quadZ * amountOfQuadsZ + quadX], z,
-                                               R/255, averageHeights[quadZ * amountOfQuadsZ + quadX] * G/255, B/255, 0, 0));
-            getMeshComp()->mVertices.push_back(Vertex(x, averageHeights[(quadZ + 1) * amountOfQuadsZ + quadX], z + step,
-                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX] * G/255, B/255, 0, 1));
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[(quadY + 1) * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 1));
-            getMeshComp()->mVertices.push_back(Vertex(x + step, y, averageHeights[quadY * amountOfQuadsY + quadX + 1],
-                                               R/255, averageHeights[quadY * amountOfQuadsY + quadX + 1] * G/255, B/255, 1, 0));
-            getMeshComp()->mVertices.push_back(Vertex(x, y + step, averageHeights[(quadY + 1) * amountOfQuadsY + quadX],
-                                               R/255, averageHeights[(quadY + 1)*amountOfQuadsY + quadX] * G/255, B/255, 0, 1));*/
             getMeshComp()
                     ->mVertices.push_back(
                         Vertex(x, averageHeights[quadZ*amountOfQuadsZ + quadX], z,
