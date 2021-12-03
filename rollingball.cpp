@@ -2,6 +2,8 @@
 #include "lasplane.h"
 #include "mathfunctions.h"
 #include "constants.h"
+#include "Shaders/shader.h"
+#include "ECS/ResourceManager/resourcemanager.h"
 
 RollingBall::RollingBall(int loadedMeshIndex)
 {
@@ -42,6 +44,15 @@ bool RollingBall::findTriangle(unsigned int index, QVector3D &position, QVector3
     QVector3D p, q, r;
     std::vector<Vertex>& vertices = dynamic_cast<LasPlane*>(las_plane)->get_vertices();
 
+
+//    qDebug()<<"SIZE: "<<m_indices.size();
+//    p = vertices[m_indices[index]].getPosition();
+//    q = vertices[m_indices[index+1]].getPosition();
+//    r = vertices[m_indices[index+2]].getPosition();
+
+    if((index+2)>=vertices.size())
+        return false;
+
     p = vertices[index].getPosition();
     q = vertices[index+1].getPosition();
     r = vertices[index+2].getPosition();
@@ -54,6 +65,9 @@ bool RollingBall::findTriangle(unsigned int index, QVector3D &position, QVector3
         outP = vertices[index].getPosition();
         outQ = vertices[index+1].getPosition();
         outR = vertices[index+2].getPosition();
+//        outP = vertices[m_indices[index]].getPosition();
+//        outQ = vertices[m_indices[index+1]].getPosition();
+//        outR = vertices[m_indices[index+2]].getPosition();
         return true;
     }
 
@@ -101,38 +115,56 @@ void RollingBall::doCollition()
     velocity = velocity - collisonNormal * 2.f * (velocity * collisonNormal);
 }
 
-void RollingBall::init(GLint matrixUniform, const std::vector<Vertex> &vertices)
+void RollingBall::init(GLint matrixUniform, const std::vector<Vertex> &vertices, const std::vector<Vertex> &indices)
 {
-   m_matrixUniform = matrixUniform;
-   initializeOpenGLFunctions();
+    m_matrixUniform = matrixUniform;
 
-   //Vertex Array Object - VAO
-   glGenVertexArrays( 1, &m_VAO );
-   glBindVertexArray( m_VAO );
+    initializeOpenGLFunctions();
 
-   //Vertex Buffer Object to hold vertices - VBO
-   glGenBuffers( 1, &m_VBO );
-   glBindBuffer( GL_ARRAY_BUFFER, m_VBO );
+    //Vertex Array Object - VAO
+    glGenVertexArrays(1, &m_VAO);
+    glBindVertexArray(m_VAO);
 
-   //glBufferData( GL_ARRAY_BUFFER, m_vertices.size()*sizeof(Vertex), m_vertices.data(), GL_STATIC_DRAW );
-   glBufferData( GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), vertices.data(), GL_STATIC_DRAW );
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers(1, &m_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
-   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-   glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE,sizeof(Vertex), (GLvoid*)0);
-   glEnableVertexAttribArray(0);
+    // 1st attribute buffer : vertices
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glEnableVertexAttribArray(0);
 
-   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
-   glEnableVertexAttribArray(1);
+    // 2nd attribute buffer : colors (normals)
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
-   glBindVertexArray(0);
+    // 3rd attribute buffer : UV.
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
+    //Indices Buffer Object - IBO
+    glGenBuffers(1, &m_IBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
 }
 
 
-void RollingBall::draw(const std::vector<Vertex> &vertices)
+void RollingBall::draw(Meshdata& meshData)
 {
-   glBindVertexArray( m_VAO );
-   glUniformMatrix4fv( m_matrixUniform, 1, GL_TRUE, m_modelMatrix.constData());
-   glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+    initializeOpenGLFunctions();
+    glBindVertexArray(m_VAO);
+
+    glUniformMatrix4fv(m_shader->getModelMatrixUniform(), 1, GL_FALSE, m_modelMatrix.constData());
+
+    glUniform3fv(m_shader->getObjectColorUniform(), 1, &m_objectColor[0]);
+    glUniform1f(m_shader->getSpecularStrengthUniform(), m_specularStrenght);
+    glUniform1i(m_shader->getSpecularExponentUniform(), m_specularExponent);
+    glUniform1f(m_shader->getObjectAlphaUniform(), m_objectAlpha);
+
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
 }
 
 void RollingBall::init(GLint matrixUniform)

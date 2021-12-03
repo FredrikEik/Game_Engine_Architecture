@@ -54,7 +54,7 @@ int ResourceManager::readObj(std::string filepath)
         else
             tempName = filepath + gsl::LODLevelPrefix + std::to_string(lod);
 
-        tempName = gsl::MeshFilePath + tempName + ".obj";
+        tempName = tempName + ".obj";
         std::ifstream fileIn;
         fileIn.open (tempName, std::ifstream::in);
         if(!fileIn)
@@ -194,13 +194,55 @@ int ResourceManager::readObj(std::string filepath)
         //beeing a nice boy and closing the file after use
         fileIn.close();
 
-//        initMesh(temp, lod);
+        initMesh(temp, lod);
     }
 
     return m_meshes.size()-1;    //returns index to last object
 }
 
-std::vector<Vertex> ResourceManager::getMeshVertices(int meshIndex)
+void ResourceManager::initMesh(MeshData &tempMesh, int lodLevel)
 {
-    return m_meshes.at(meshIndex).mVertices[0];
+    //must call this to use OpenGL functions
+    initializeOpenGLFunctions();
+
+    //Vertex Array Object - VAO
+    glGenVertexArrays( 1, &tempMesh.mVAO[lodLevel] );
+    glBindVertexArray( tempMesh.mVAO[lodLevel] );
+
+    //Vertex Buffer Object to hold vertices - VBO
+    glGenBuffers( 1, &tempMesh.mVBO[lodLevel] );
+    glBindBuffer( GL_ARRAY_BUFFER, tempMesh.mVBO[lodLevel] );
+
+    glBufferData( GL_ARRAY_BUFFER, tempMesh.mVertices[lodLevel].size()*sizeof(Vertex),
+                  tempMesh.mVertices[lodLevel].data(), GL_STATIC_DRAW );
+
+    // 1st attribute buffer : position
+    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    // 2nd attribute buffer : normal
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(1);
+
+    // 3rd attribute buffer : uvs
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof( Vertex ), (GLvoid*)( 6 * sizeof( GLfloat ) ));
+    glEnableVertexAttribArray(2);
+
+    //Second buffer - holds the indices (Element Array Buffer - EAB):
+    if(tempMesh.mIndices[lodLevel].size() > 0) {
+        glGenBuffers(1, &tempMesh.mEAB[lodLevel]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mEAB[lodLevel]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, tempMesh.mIndices[lodLevel].size() * sizeof(GLuint),
+                     tempMesh.mIndices[lodLevel].data(), GL_STATIC_DRAW);
+    }
+
+    glBindVertexArray(0);
+
+    tempMesh.mIndexCount[lodLevel] = tempMesh.mIndices[lodLevel].size();
+    tempMesh.mVertexCount[lodLevel] = tempMesh.mVertices[lodLevel].size();
+}
+
+MeshData ResourceManager::getMeshdata(int meshIndex)
+{
+    return m_meshes.at(meshIndex);
 }

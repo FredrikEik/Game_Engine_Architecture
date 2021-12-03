@@ -100,9 +100,9 @@ public:
         return m_ResourceManager->readObj(filepath);
     }
 
-    std::vector<Vertex> getMeshVertices(int meshIndex)
+    MeshData getMeshData(int MeshIndex)
     {
-        return m_ResourceManager->getMeshVertices(meshIndex);
+        return m_ResourceManager->getMeshdata(MeshIndex);
     }
 
 private:

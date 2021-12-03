@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "components.h"
 #include "constants.h"
+#include "qopenglfunctions_4_1_core.h"
 
 struct MeshData
 {
@@ -25,7 +26,7 @@ struct MeshData
     float mColliderRadius{0};
 };
 
-class ResourceManager
+class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
     friend class ECScoordinator;
 
@@ -33,8 +34,10 @@ public:
     int LoadAsset(std::string Filepath);
     gsl::AssetType FindAssetType(std::string AssetName);
     int readObj(std::string filepath);
+    void initMesh(MeshData &tempMesh, int lodLevel);
 
-    std::vector<Vertex> getMeshVertices(int meshIndex);
+    MeshData getMeshdata(int meshIndex);
+
 private:
     //Private constructor called from Create(), only possible from ECScoordinator.
     ResourceManager();

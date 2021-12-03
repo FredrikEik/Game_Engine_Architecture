@@ -73,7 +73,7 @@ void LasPlane::constructPlane()
 
     std::vector<QVector3D> tempLasPos{},  positions{};
     QVector3D max{}, min{}, tempPos{}, tempNormal{};
-    float resoluton{10}, temp{};
+    float resoluton{50}, temp{};
 
     readFile(filepath, max, min, tempLasPos);
 

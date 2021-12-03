@@ -171,7 +171,7 @@ void RenderWindow::init()
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
-    m_ball->init(m_ball->getShader()->getModelMatrixUniform(), ECScord->getMeshVertices(sphere));
+    //m_ball->init(m_ball->getShader()->getModelMatrixUniform(), ECScord->getMeshVertices(sphere), ECScord->getMeshIndices(sphere));
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -216,7 +216,7 @@ void RenderWindow::render()
     m_world->draw();
     m_light->draw();
     m_ball->move(0.017f);
-    m_ball->draw(ECScord->getMeshVertices(sphere));
+    m_ball->draw(ECScord->getMeshData(sphere));
 
 
     //Calculate framerate before

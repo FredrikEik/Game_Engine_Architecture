@@ -3,6 +3,8 @@
 
 #include "visualobject.h"
 
+struct Meshdata;
+
 class RollingBall : public VisualObject
 {
 public:
@@ -12,8 +14,8 @@ public:
     virtual void init(GLint matrixUniform) override;
     virtual void draw() override;
 
-    virtual void init(GLint matrixUniform, const std::vector<Vertex> &vertices);
-    virtual void draw(const std::vector<Vertex> &vertices);
+    virtual void init(GLint matrixUniform, const std::vector<Vertex> &vertices, const std::vector<Vertex> &indices);
+    virtual void draw(Meshdata& meshData);
     void move(float dt);
     bool findTriangle(unsigned int index, QVector3D& position, QVector3D& outBaryCords, QVector3D& outP, QVector3D& outQ, QVector3D& outR) const;
     float getHeight(QVector3D& positon);
