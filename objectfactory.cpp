@@ -115,7 +115,7 @@ void ObjectFactory::createObject(std::string objectName)
          willCreateObject->mTexture = 3;
     }
 
-    else if (objectName == "RollingBall") //INHERITS FROM CUBE DUE TO INEXPLAINABLE BALL BUG
+    else if (objectName == "RollingBall") //STILL DOES NOT SHOW MESH BUT ROLLING BALL WORKS
         {
             willCreateObject = new RollingBall(mSurface);
             qDebug() << "RollingBall created";
