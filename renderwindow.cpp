@@ -263,8 +263,8 @@ void RenderWindow::initObjects()
     /*VISSIM Folder Assignment 4*/
     GameObject* VISSIMBALL1 = factory->createObject(gsl::ROLLINGBALL);
     GameObject* VISSIMBALL2 = factory->createObject(gsl::ROLLINGBALL);
-    VISSIMBALL1->getTransformComponent()->mMatrix.setPosition(9.f, 50.f, 9.f);
-    VISSIMBALL2->getTransformComponent()->mMatrix.setPosition(-5.f,50.f,-5.f);
+    VISSIMBALL1->getTransformComponent()->mMatrix.setPosition(4.f, 50.f, 4.f);
+    VISSIMBALL2->getTransformComponent()->mMatrix.setPosition(-4.f,50.f,-4.f);
     dynamic_cast<Rollingball*>(VISSIMBALL1)->LASsurface = surface;
     dynamic_cast<Rollingball*>(VISSIMBALL2)->LASsurface = surface;
     GameObject* VISSIMBSPLINE1 = factory->createBSpline(VISSIMBALL1);

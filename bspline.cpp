@@ -64,7 +64,7 @@ void BSpline::move(float x, float y, float z)
 void BSpline::predictPath(float step)
 {
     std::vector<Vertex>& vertices = dynamic_cast<class LASsurface*>(surfaceRef)->getMeshComponent()->mVertices;
-
+    std::vector<GLuint>& indices = dynamic_cast<class LASsurface*>(surfaceRef)->getMeshComponent()->mIndices;
     gsl::Vector3D barycCoords;
 
     float yOffset = 0.2f;
@@ -74,12 +74,12 @@ void BSpline::predictPath(float step)
 
     for(float i = 0; i < predictPeriod; i += predictStep)
     {
-        for(int i = 0; i < vertices.size() - 2; i+= 3)
+        for(int i = 0; i < indices.size() - 2; i+= 3)
         {
             gsl::Vector3D p1, p2, p3;
-            p1 = gsl::Vector3D(vertices[i].getXYZ());
-            p2 = gsl::Vector3D(vertices[i+1].getXYZ());
-            p3 = gsl::Vector3D(vertices[i+2].getXYZ());
+            p1 = gsl::Vector3D(vertices[indices[i]].getXYZ());
+            p2 = gsl::Vector3D(vertices[indices[i+1]].getXYZ());
+            p3 = gsl::Vector3D(vertices[indices[i+2]].getXYZ());
 
             barycCoords = currentCPoint.barycentricCoordinates(p1, p2, p3);
 
