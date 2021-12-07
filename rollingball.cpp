@@ -14,32 +14,25 @@ Rollingball::~Rollingball()
 void Rollingball::move(float dt)
 {
     std::vector<Vertex>& vertices = dynamic_cast<class LASsurface*>(LASsurface)->getMeshComponent()->mVertices;
+    std::vector<GLuint>& indices = dynamic_cast<class LASsurface*>(LASsurface)->getMeshComponent()->mIndices;
 
     gsl::Vector3D barycCoords;
     gsl::Vector3D ballPosition = getTransformComponent()->mMatrix.getPosition();
     float yOffset = 0.2f;
 
-    for(int i = 0; i < vertices.size() - 2; i+= 3)
+    for(int i = 0; i < indices.size(); i+= 3)
     {
         gsl::Vector3D p1, p2, p3;
-        p1 = gsl::Vector3D(vertices[i].getXYZ());
-        p2 = gsl::Vector3D(vertices[i+1].getXYZ());
-        p3 = gsl::Vector3D(vertices[i+2].getXYZ());
-        //qDebug() << "p1:" << p1.x<<p1.y<<p1.z << " p2:" << p2.x<<p2.y<<p3.z << " p3:" << p3.x<<p3.y<<p3.z;
+        p1 = gsl::Vector3D(vertices[indices[i]].getXYZ());
+        p2 = gsl::Vector3D(vertices[indices[i+1]].getXYZ());
+        p3 = gsl::Vector3D(vertices[indices[i+2]].getXYZ());
 
         barycCoords = ballPosition.barycentricCoordinates(p1, p2, p3);
-        //qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;
 
         if(barycCoords.x >= 0 && barycCoords.y >= 0 && barycCoords.z >= 0)
         {
-            //qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;
-
-            //qDebug() << "pos before:   " << ballPosition.x << ballPosition.y << ballPosition.z;
-            //qDebug() << "barycentric index: " i << barycCoords.x << barycCoords.y << barycCoords.z;
-
             gsl::Vector3D p12 = p2-p1;
             gsl::Vector3D p13 = p3-p1;
-            //qDebug() << "p12, p13" << p12.x << p12.y << p12.z << p13.x << p13.y << p13.z;
             gsl::Vector3D pNormal = p12^p13;
 
             //qDebug() << "pNormal not normalized: " << pNormal.x << pNormal.y << pNormal.z;

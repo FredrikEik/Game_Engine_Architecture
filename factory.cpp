@@ -185,8 +185,8 @@ GameObject* Factory::createObject(gsl::objectTypes type)
         break;
 
     case gsl::LASSURFACE:
-        objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
-        //objectToCreate = new LASsurface("../GEA2021/Assets/LAS/kongehuset.txt");
+        //objectToCreate = new LASsurface("../GEA2021/Assets/LAS/test_las.txt");
+        objectToCreate = new LASsurface("../GEA2021/Assets/LAS/kongehuset.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
         objectToCreate->mObjectType = gsl::LASSURFACE;
