@@ -63,6 +63,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
             ClippingVec =deltaTime*(radius-length)*MakeQvec3D( Data.floorNormal);
             Transf->mMatrix.translate(MakeGSLvec3D( ClippingVec));
 
+            Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(),Data.heightOfFloor.getY() + radius,Transf->mMatrix.getPosition().getZ());
         }
 
     }
