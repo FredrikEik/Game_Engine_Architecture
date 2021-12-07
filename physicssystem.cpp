@@ -21,7 +21,8 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
 
     QVector3D g = QVector3D(0.0f, -9.8067f*3.f, 0.0f);
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
-    FindTriangle(Transf); // finds normal and height of plane
+    if((pos.getX() >0.0f & pos.getX() < 600) && (pos.getZ() >0.0f & pos.getZ() < 700) && pos.getY() >0.0f)
+        FindTriangle(Transf); // finds normal and height of plane
 
     //add velocity component V = v0 + at
     Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX(), Transf->Velocity.getY() +( g.y() * deltaTime ), Transf->Velocity.getZ());
