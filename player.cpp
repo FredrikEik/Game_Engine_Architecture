@@ -81,15 +81,16 @@ void Player::movement()
     if(surfaceToWalkOn)
     {
         std::vector<Vertex>& vertices = dynamic_cast<class LASsurface*>(surfaceToWalkOn)->getMeshComponent()->mVertices;
+        std::vector<GLuint>& indices  = dynamic_cast<class LASsurface*>(surfaceToWalkOn)->getMeshComponent()->mIndices;
         gsl::Vector3D barycCoords;
         gsl::Vector3D playerPos = getTransformComponent()->mMatrix.getPosition();
 
-        for(int i = 0; i < vertices.size() - 2; i+= 3)
+        for(int i = 0; i < indices.size() - 2; i+= 3)
         {
             gsl::Vector3D p1, p2, p3;
-            p1 = gsl::Vector3D(vertices[i].getXYZ());
-            p2 = gsl::Vector3D(vertices[i+1].getXYZ());
-            p3 = gsl::Vector3D(vertices[i+2].getXYZ());
+            p1 = gsl::Vector3D(vertices[indices[i]].getXYZ());
+            p2 = gsl::Vector3D(vertices[indices[i+1]].getXYZ());
+            p3 = gsl::Vector3D(vertices[indices[i+2]].getXYZ());
 
             barycCoords = playerPos.barycentricCoordinates(p1, p2, p3);
             //qDebug() << i << barycCoords.x << barycCoords.y << barycCoords.z;

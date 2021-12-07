@@ -13,17 +13,20 @@ LASsurface::LASsurface(std::string fileName)
     int quadCoordZ = 0;
 
     // Using min, max and step to find how many quads the TriangleSurface has in each direction
-    const int quadAmountX = abs(xMax-xMin)/step; //qDebug() << quadAmountX;
-    const int quadAmountZ = abs(zMax-zMin)/step; //qDebug() << quadAmountZ;
+    const int quadAmountX = (xMax-xMin)/step; //qDebug() << quadAmountX;
+    const int quadAmountZ = (zMax-zMin)/step; //qDebug() << quadAmountZ;
     //const int numOfQuads = quadAmountX*quadAmountZ; //qDebug() << numOfQuads;
 
     // An array of vectors that hold all the heights for each quad
     // Size of array is hardcoded, unsure how to do it from numOfQuads
-    std::array<std::vector<float>,1800> heights;
+    //std::array<std::vector<float>,900> heights;
     //std::array<std::vector<float>,numOfQuads> heights;
 
     //An array that holds the average height of each quad
-    float averageHeights[1800];
+    //float averageHeights[900];
+
+    std::array<std::array<std::vector<float>,80>,80> heights;
+    float averageHeights[80][80];
     //float averageHeights[numOfQuads];
 
     //For every vertices
@@ -32,7 +35,6 @@ LASsurface::LASsurface(std::string fileName)
     {
         //.. find what column the vertex is on
         for(int j = xMin; j < xMax; j+=step) // j = -5.0f, -3.0f, -1.0f, 1.0f, 3.0f, 5.0f
-
         {
             if(lasData[i].getXYZ().getX() > j && lasData[i].getXYZ().getX() < j + step)
             {
@@ -48,84 +50,64 @@ LASsurface::LASsurface(std::string fileName)
             }
         }
 
-        //Converts from row&column to vector-array index
-        int vectorIndex = quadCoordZ*quadAmountZ + quadCoordX; //0-1199
-
         //Pushes the height(y) to the correct vector in the array
-        heights[vectorIndex].push_back(lasData[i].getXYZ().getY());
+        //heights[vectorIndex].push_back(lasData[i].getXYZ().getY());
+
+        heights[quadCoordX][quadCoordZ].push_back(lasData[i].getXYZ().getY());
     }
 
-    //qDebug() << "size of height array " << heights.size();
+    float average = 0;
     for(int i = 0; i < heights.size(); i++)
     {
-        //qDebug() << "size of height vector " << i << heights[i].size();
-
-        //Calculate the average of all heights in quad
-        //.. and put it in the array of averageHeights
-
-        //float sum = std::accumulate(heights[i].begin(), heights[i].end(), 0);
-
-        float sum = 0;
         for(int j = 0; j < heights[i].size(); j++)
         {
-            sum += heights[i][j];
-        }
-        sum = sum/heights[i].size();
-        averageHeights[i] = sum;
-    }
+            average = 0;
 
-//    for(int i = 0; i < 25 ; i++)
-//    {
-//        qDebug() << "averageheight:" << i << " " << averageHeights[i];
-//    }
+            if(heights[i][j].size()>0)
+            {
+                for(int k = 0; k < heights[i][j].size(); k++)
+                {
+                    average += heights[i][j][k];
+                    average = average/heights[i][j].size();
+                    averageHeights[i][j] = average;
+                }
+            }
+            else{
+                averageHeights[i][j] = 0.f;
+            }
+        }
+    }
 
     //Create triangulated surface
     float R = 10;
     float G = 20;
     float B = 40;
-    for (float x = xMin; x < xMax-step; x+= step)
+    for (float z = zMin; z < zMax; z+= step)
     {
-        for(float z = zMin; z < zMax-step; z+= step)
+        for(float x = xMin; x < xMax; x+= step)
         {
             int quadCoordX = (x-xMin)/step;
             int quadCoordZ = (z-zMin)/step;
 
-            // index 0 // x, z //index 1
             getMeshComponent()
             ->mVertices.push_back(
-                Vertex(x, averageHeights[quadCoordZ*quadAmountZ + quadCoordX], z,
-                R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX]*G/255, B/255,
-                0,0));
-            //index 1 //x, z+1 //index 2
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX], z+step,
-                R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX]*G/255, B/255,
-                0, 1));
-            //index 2 //x+1,z //index 3
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x+step, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1], z,
-                R/255, averageHeights[quadCoordZ*quadAmountZ + quadCoordX+1]*G/255, B/255,
-                1,0));
-
-            //index 3 //x+1, z+1 //index 4
-            getMeshComponent()
-            ->mVertices.push_back(
-                Vertex(x+step, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1], z+step,
-                R/255, averageHeights[(quadCoordZ+1)*quadAmountZ + quadCoordX+1]*G/255, B/255,
-                1, 1));
+                Vertex(x, averageHeights[quadCoordX][quadCoordZ], z,
+                R/255, averageHeights[quadCoordX][quadCoordZ]*G/255, B/255,
+                quadCoordX,quadCoordZ));
         }
     }
 
-    for(int i = 0; i < 0; i+=2)
+    for(int i = 0; i < quadAmountX-1; i++)
     {
-        getMeshComponent()->mIndices.push_back(i  );
-        getMeshComponent()->mIndices.push_back(i+1);
-        getMeshComponent()->mIndices.push_back(i+2);
-        getMeshComponent()->mIndices.push_back(i+3);
-        getMeshComponent()->mIndices.push_back(i+2);
-        getMeshComponent()->mIndices.push_back(i+1);
+        for(int j = 0; j < quadAmountZ-1; j++)
+        {
+            /*x0z0*/getMeshComponent()->mIndices.push_back(  i+( j   *quadAmountZ)); /*0 */
+            /*x0z1*/getMeshComponent()->mIndices.push_back(  i+((j+1)*quadAmountZ)); /*30*/
+            /*x1z0*/getMeshComponent()->mIndices.push_back(1+i+( j   *quadAmountZ)); /*1 */
+            /*x1z1*/getMeshComponent()->mIndices.push_back(1+i+((j+1)*quadAmountZ)); /*31*/
+            /*x1z0*/getMeshComponent()->mIndices.push_back(1+i+( j   *quadAmountZ)); /*1 */
+            /*x0z1*/getMeshComponent()->mIndices.push_back(  i+((j+1)*quadAmountZ)); /*30*/
+        }
     }
     /* Print all vertices in trianglesurface*/
 //    for(int i = 0; i < getMeshComponent()->mVertices.size(); i++)
@@ -209,29 +191,26 @@ void LASsurface::minMaxNormalize()
 
         lasData[i].set_xyz(nX,nY,nZ);
     }
-
-    /*Print normalized las data*/
-//    for(int i = 0; i < 10000; i++)
-//    {
-//        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;
-    //    }
 }
 
 void LASsurface::makeContourLines()
 {
-    float contourMin = 0.5f;
-    float contourMax = 9.5f;
-    float contourStep = 1.0f;
+    float contourMin = yMin+0.5f;
+    float contourMax = yMax-0.5f;
+    float contourStep = 0.5f;
+    std::vector<Vertex> vertices = getMeshComponent()->mVertices;
+    std::vector<GLuint> indices = getMeshComponent()->mIndices;
+
     for(float contourHeight = contourMin; contourHeight < contourMax; contourHeight+=contourStep)
     {
         //For each quad
-        for(int i = 0; i < getMeshComponent()->mVertices.size(); i+=4)
+        for(int i = 0; i < getMeshComponent()->mIndices.size(); i+=6)
         {
             //a, d, b, c, b, d
-            Vertex a = getMeshComponent()->mVertices[i];   bool A = false;
-            Vertex b = getMeshComponent()->mVertices[i+2]; bool B = false;
-            Vertex c = getMeshComponent()->mVertices[i+3]; bool C = false;
-            Vertex d = getMeshComponent()->mVertices[i+1]; bool D = false;
+            Vertex a = vertices[indices[i]];   bool A = false;
+            Vertex b = vertices[indices[i+2]]; bool B = false;
+            Vertex c = vertices[indices[i+3]]; bool C = false;
+            Vertex d = vertices[indices[i+1]]; bool D = false;
             if(a.getXYZ().getY() > contourHeight){
                 A = true;
             }
@@ -393,44 +372,7 @@ int LASsurface::getState(bool A, bool B, bool C, bool D)
 
 void LASsurface::init()
 {
-    /*
-    //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-
-
-    //Vertex Array Object - VAO
-    glGenVertexArrays( 1, &getMeshComponent()->mVAO );
-    glBindVertexArray( getMeshComponent()->mVAO );
-
-    //Vertex Buffer Object to hold vertices - VBO
-    glGenBuffers( 1, &getMeshComponent()->mVBO );
-    glBindBuffer( GL_ARRAY_BUFFER, getMeshComponent()->mVBO );
-
-    //Vertex Buffer Object to hold vertices - VBO
-    glBufferData( GL_ARRAY_BUFFER,
-                  getMeshComponent()->mVertices.size()*sizeof( Vertex ),
-                  getMeshComponent()->mVertices.data(), GL_STATIC_DRAW );
-
-    // 1rst attribute buffer : vertices
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0  );          // array buffer offset
-    glEnableVertexAttribArray(0);
-
-    // 2nd attribute buffer : colors
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  (GLvoid*)(3 * sizeof(GLfloat)) );
-    glEnableVertexAttribArray(1);
-
-    // 3rd attribute buffer : uvs
-    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
-    glEnableVertexAttribArray(2);
-
-    glBindVertexArray(0);
-    */
-    initializeOpenGLFunctions();
-
-       // Set what shader you want to use to render this object
-       //mMaterial->setActiveShader(ShaderType::TEXTURE_SHADER);
-       //mMaterial->setActiveTextureSlot(2);
-       //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
     glBindVertexArray( getMeshComponent()->mVAO );
@@ -470,7 +412,8 @@ void LASsurface::init()
 void LASsurface::draw()
 {
     glBindVertexArray(getMeshComponent()->mVAO );
-    glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, &getMeshComponent()->mIndices);
+    glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
+    //glDrawArrays(GL_LINE_STRIP, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
 

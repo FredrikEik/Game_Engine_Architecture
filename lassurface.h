@@ -27,7 +27,7 @@ private:
     int getState(bool A, bool B, bool C, bool D);
 
     //mins and maxes must be uniform with step
-    float xMin{-30.f}, yMin{-5.f}, zMin{-30.f}, xMax{30.f}, yMax{15.f}, zMax{30.0f};
+    float xMin{-40.f}, yMin{0.f}, zMin{-40.f}, xMax{40.f}, yMax{1000.f}, zMax{40.0f};
     float step{2.f};
 
     float highestX, highestY, highestZ, lowestX, lowestY, lowestZ;
