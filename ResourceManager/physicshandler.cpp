@@ -34,7 +34,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                 groundObject.mTransform = mGameObjects[i]->mTransform;
                 groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
-                auto placement = GameObjectMap.find(searchGroundName); //with the name found, find the index in the gameObjectMap
+                auto placement = GameObjectMap.find("Data"); //with the name found, find the index in the gameObjectMap
 
                 triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices(); //Get the vertices, the "second" value from the GameObjectMeshData
             }
@@ -43,7 +43,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     //Find the vector3d position of the ground
     gsl::Vector3D groundPosition3D = {groundObject.mTransform->mMatrix.getPosition()};
 
-    //Get the details of the ball
+//    Get the details of the ball
     std::string searchGameName{0};
     GameObject physicsBall[51];
     gsl::Vector3D ballPosition3D[51];
@@ -57,12 +57,15 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     gsl::Vector3D velocity[51];
     gsl::Vector3D newBallPosition[51];
 
+    searchGameName = "RulleBall";
+
     //// Run through rest of code per ball
-    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
-    {
+//    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
+//    {
+        int ball = 0;
         for (int i = 0; i < mGameObjects.size(); i++)
         {
-            searchGameName = "RollingBall_" + std::to_string(ball);
+//            searchGameName = "RollingBall_" + std::to_string(i);
 
             if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
             {
@@ -76,7 +79,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                 ballPosition3D[ball] = physicsBall[ball].mTransform->mMatrix.getPosition();
             }
         }
-
+//qDebug() << triangleVertices.size();
         ////Search through all trianglevertices and get barycentric based on ball coordinates.
         for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
         {
@@ -90,11 +93,12 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
             baryCoordinates[ball].y = (v0[ball].x * v2[ball].y - v2[ball].x * v0[ball].y) / den[ball];
             baryCoordinates[ball].z = 1.0f - baryCoordinates[ball].x - baryCoordinates[ball].y;
 
+//    qDebug() << baryCoordinates[0];
+
             //If barycentric is 0 or above, current closest triangle have been found.
             if (baryCoordinates[ball].x >= 0.0f && baryCoordinates[ball].y >= 0.0f && baryCoordinates[ball].z >= 0.0f)
             {
                 ////Normal of triangle is calculated.
-
                 triangleNormal[ball] = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
                                        (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
                 triangleNormal[ball].normalize();
@@ -104,10 +108,6 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                 velocity[ball] = velocity[ball] + acceleration[ball] * 0.17f;
 
                 newBallPosition[ball] = ballPosition3D[ball] + velocity[ball];
-
-                newBallPosition[ball].y = (baryCoordinates[ball].x * triangleVertices[i].mXYZ.y +
-                                           baryCoordinates[ball].y * triangleVertices[i+1].mXYZ.y + 0.25f +
-                                           baryCoordinates[ball].z * triangleVertices[i+2].mXYZ.y);
 
                 physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition[ball].x, newBallPosition[ball].y, newBallPosition[ball].z);
             }
@@ -122,6 +122,11 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
                 physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition[ball].x, newBallPosition[ball].y, newBallPosition[ball].z);
             }
-        }////End of for loop for the 51 balls
+//        }////End of for loop for the 51 balls
     }////End of simulatePhysics-bool loop
 }
+
+
+//newBallPosition[ball].y = (baryCoordinates[ball].x * triangleVertices[i].mXYZ.y +
+//                           baryCoordinates[ball].y * triangleVertices[i+1].mXYZ.y + 0.25f +
+//                           baryCoordinates[ball].z * triangleVertices[i+2].mXYZ.y);

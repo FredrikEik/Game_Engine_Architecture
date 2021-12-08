@@ -48,8 +48,9 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
         if (meshName.find("editorgrid") != std::string::npos)
             meshIndex = makeEditorGrid();
-        if (meshName.find("LasGround") != std::string::npos)
+        if (meshName.find("Data") != std::string::npos)
             meshIndex = readLasFile();
+
 
         //If nothing matches meshName - just make a triangle
         //Fix - this will make duplicate triangles
@@ -579,16 +580,16 @@ int MeshHandler::readLasFile()
     float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
 
     std::ifstream inLasFile;
-    inLasFile.open(gsl::ProjectFolderName + "Assets/test_las.txt"); //Open file using a constant adress, called test_las.txt
+    inLasFile.open(gsl::ProjectFolderName + "Assets/data.txt"); //Open file using a constant adress, called test_las.txt
 
     if(!inLasFile) //if file not found
     {
-        qDebug() << "unable to open file test_las.txt";
+        qDebug() << "unable to open .las file";
         exit(EXIT_FAILURE);
     }
 
     std::vector<gsl::Vector3D> allLasPointData; //Used to store all data from file
-    int sizeOfLasFile = {0}; //Used to store the first line in the document, its an int with
+    int sizeOfLasFile = {0}; //Used to store the first line in the document, its an int with the number of lines in the las file.
     float lasX, lasY, lasZ = {0}; //Temp variables overwritten every line, used to fill Vector3D pointData.
 
     if(inLasFile.is_open())
@@ -638,17 +639,16 @@ int MeshHandler::readLasFile()
 
 
     // This serves as "resolution" for planeGrid[arrayX][arrayZ].
-    // Using and 11 beacuse it is the highest allowed to simulate balls on, but the grid does work with arbitrary numers. f.eks 50 and above for increased fidelity.
-    const int arrayX = 11;
-    const int arrayZ = 11;
+    const int arrayX = 6; //Using 6x6 to get 5x5 squares.
+    const int arrayZ = 6;
 
-    float widthScale  = 7.0f;  //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale  = 10.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
-    float heigthScale = 5.0f;  //How "flat" the surface will be, 1 = normal, higher number = smaller difference
+    float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
+    float depthScale  = 1.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
+    float heigthScale = 1.0f; //How "flat" the surface will be, 1 = normal, higher number = smaller difference
 
-    //Fill the rest of the grid with evenly spaced coordinates between min and max.
-    float distanceBetweenSquaresX = (xMax - xMin) / arrayX;
-    float distanceBetweenSquaresZ = (zMax - zMin) / arrayZ;
+    //The assignment specified a 5x5 meter grid.
+    float distanceBetweenSquaresX = 5.0f;//(xMax - xMin) / arrayX;
+    float distanceBetweenSquaresZ = 5.0f;//(zMax - zMin) / arrayZ;
 
     //Various variables needed for the simplification
     gsl::Vector3D planeGrid [arrayX][arrayZ] = {{0}}; // planeGrid stores a rectangulated x,z and an average y height for all points in the data
@@ -690,13 +690,27 @@ int MeshHandler::readLasFile()
                 planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point is found, make an average value.
             }
 
+//            if(nrPoints[x][z] == 0)
+//            {
+//                qDebug() << "No heights found square" << x << z;
+//            }
+
+//            else if (x > 0) //if no points are found, create a height based on neighbours.
+//            {
+//                planeGrid[x][z].y = planeGrid[x-1][z].y;
+//            }
+//            else
+//            {
+//                planeGrid[x][z].y = planeGrid[x+1][z].y;
+//            }
+
             planeGrid[x][z].x -= xMin; // Gives new positions to points, to give a resonable origin of the mesh in scene
             planeGrid[x][z].z -= zMin;
-            planeGrid[x][z].y -= yMin + 1;
+            planeGrid[x][z].y -= yMin;
 
-            planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
-            planeGrid[x][z].z /= depthScale;
-            planeGrid[x][z].y /= heigthScale;
+//            planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
+//            planeGrid[x][z].z /= depthScale;
+//            planeGrid[x][z].y /= heigthScale;
 
             //Only using mVertices[0] beacuse there is no lod for this mesh.
             //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
@@ -835,6 +849,9 @@ int MeshHandler::readLasFile()
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 qDebug() << "End of normal calculations";
+
+gsl::Vector3D triangleNormal21 = (0.4433220326900482f, 5.360808372497559f, 0.020591527223587036f);
+triangleNormal21.normalize();
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.

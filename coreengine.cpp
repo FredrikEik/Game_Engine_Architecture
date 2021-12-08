@@ -117,10 +117,20 @@ void CoreEngine::setUpScene()
 
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     //Create the gameobject LasGround
-    GameObject *lasGround = mGameObjectManager->addObject("LasGround"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
+    GameObject *lasGround = mGameObjectManager->addObject("Data"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
     lasGround->mName = "LasGround";
     lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
+
+
+    //615197.0, 6758309.0
+    temp = mGameObjectManager->addObject("Ball.obj");
+    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation
+    temp->mTransform->mMatrix.scale(0.5f);
+    temp->mName = "RulleBall";
+    mGameObjectManager->addComponent("PhysicsComponent", temp);
+    mRenderSystem->mGameObjects.push_back(temp);
+
 
     //End of Vis & Sim code
 
@@ -168,19 +178,19 @@ void CoreEngine::setUpScene()
 
 //Rollingball, vis & sim collision code integrated into GEA
 
-    //Create many balls to "simulate" rain.
-    for(int i = 0; i <= numberOfSimulatedBalls; i++)
-    {
-        temp = mGameObjectManager->addObject("Ball.obj");
-        //Place the balls randomly between these points.
-        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(10, 101), //Include first value, exlude second value
-                                            QRandomGenerator::global()->bounded(15,  31),
-                                            QRandomGenerator::global()->bounded(10, 101));
-        temp->mTransform->mMatrix.scale(1.0f);
-        temp->mName = "RollingBall_" + std::to_string(i);
-        mGameObjectManager->addComponent("PhysicsComponent", temp);
-        mRenderSystem->mGameObjects.push_back(temp);
-    }
+//    //Create many balls to "simulate" rain.
+//    for(int i = 0; i <= numberOfSimulatedBalls; i++)
+//    {
+//        temp = mGameObjectManager->addObject("Ball.obj");
+//        //Place the balls randomly between these points.
+//        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(10, 101), //Include first value, exlude second value
+//                                            QRandomGenerator::global()->bounded(15,  31),
+//                                            QRandomGenerator::global()->bounded(10, 101));
+//        temp->mTransform->mMatrix.scale(1.0f);
+//        temp->mName = "RollingBall_" + std::to_string(i);
+//        mGameObjectManager->addComponent("PhysicsComponent", temp);
+//        mRenderSystem->mGameObjects.push_back(temp);
+//    }
 
 //    temp = mGameObjectManager->addObject("ball.obj");
 //    temp->mTransform->mMatrix.translate(0.5f, 2.0f, -0.25f);
@@ -196,7 +206,7 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(50.0f, 50.0f, -50.0f);
+    mEditorCamera->mPosition = gsl::Vector3D(20.0f, 20.0f, -50.0f);
 //    mEditorCamera->mForward = gsl::Vector3D(90.0f, 0.0f, 0.0f);
     mEditorCamera->mYaw = 180.0f;
     mEditorCamera->mPitch = -25.0f;
