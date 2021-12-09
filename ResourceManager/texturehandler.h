@@ -34,8 +34,8 @@ private:
     int makeBMP(const std::string &filename, bool cubeMap = false);
     int readBitmap(const std::string &filename);
     void setTexture(Texture &textureIn);
-//    int readCubeMap(const std::string &filename);
-//    void setCubemapTexture(Texture &textureIn);
+    int readCubeMap(const std::string &filename);
+    void setCubemapTexture(Texture &textureIn);
 
     class Logger* mLogger{nullptr};
 

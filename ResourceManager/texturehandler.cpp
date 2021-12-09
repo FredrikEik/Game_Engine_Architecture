@@ -34,9 +34,9 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
         mTextures.emplace_back(Texture());
         if (filename.find(".bmp") != std::string::npos)
         {
-//            if(cubeMap)
-//                textureIndex = readCubeMap(filename);
-//            else
+            if(cubeMap)
+                textureIndex = readCubeMap(filename);
+            else
                 textureIndex = readBitmap(filename);
         }
         if(filename == "none")
@@ -151,4 +151,22 @@ void TextureHandler::setTexture(Texture &textureIn)
                      GL_BGRA, GL_UNSIGNED_BYTE, textureIn.mBitmap);
 
     glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+int TextureHandler::readCubeMap(const std::string &filename)
+{
+//
+
+return 1;
+}
+
+void TextureHandler::setCubemapTexture(Texture &textureIn)
+{
+//    glDepthMask(GL_FALSE);
+//    skyboxShader.use();
+//    // ... set view and projection matrix
+//    glBindVertexArray(skyboxVAO);
+//    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glDepthMask(GL_TRUE);
 }

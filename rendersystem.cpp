@@ -282,13 +282,10 @@ void RenderSystem::render()
     }
 
     //Immediatly this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
-    //Not using the resourcemanager to handle the skybox which could be a gameobject
     //This seems based on code for using only a very limited amount of shaders, so i dont know how the rendersystem handles this.
     //I know there are hard-coded integers for shaders somewhere, will look into.
     //Seems like the rendersystem dont know about the skybox fragment and vertex shader
     //Also how it interacts with the cubemap-functionality in texturehandler.
-
-
 //    //Draw cube
 //    shader->use();
 //    glm::mat4 model = glm::mat4(1.0f);

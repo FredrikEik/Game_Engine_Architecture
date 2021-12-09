@@ -283,9 +283,9 @@ void CoreEngine::gameLoop()
 //    //Initializing values for the gameplay
 //    GamePlayMechanics tm(mRenderSystem);
 //    int tetrominoNr;
-////    std::vector<GameObject*> gameBlock;z
+////    std::vector<GameObject*> gameBlock;
 
-//    while(mGameObjects.size() < 40) //this line never s
+//    while(mGameObjects.size() < 40)
 //    {
 ////        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
 //        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
