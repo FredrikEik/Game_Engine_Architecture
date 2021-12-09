@@ -164,8 +164,8 @@ void RenderSystem::render()
         //send data to shader
         if(mIsPlaying)
         {
-            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mEditorCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mEditorCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mGameCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mGameCamera->mProjectionMatrix.constData());
         }
         else
         {
@@ -212,11 +212,11 @@ void RenderSystem::render()
             mObjectsDrawn++;
         }
 
-        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Get the Vis&Sim groundplane to draw triangles.
-        {
-            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
-        }
+//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Get the Vis&Sim groundplane to draw triangles.
+//        {
+//            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+//            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
+//        }
 
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)
@@ -237,49 +237,49 @@ void RenderSystem::render()
         glBindVertexArray(0);
 }
 
-    //Quick hack test to check if frustum line mesh is OK
-////  if(true)
-////  {
-////      ShaderHandler* tempShader = mGameObjectManager->mShaders[0];
-////      glUseProgram(tempShader->mProgram);
-////      MeshData frustum = CoreEngine::getInstance()->mGameObjectManager->makeFrustum(mGameCamera->mFrustum);
-////      gsl::Matrix4x4 temp(true);
-////      temp.translate(mGameCamera->mPosition);
-////      temp.rotateY(-mGameCamera->mYaw);
-////      temp.rotateX(mGameCamera->mPitch);
+//Quick hack test to check if frustum line mesh is OK
+  if(true)
+  {
+      ShaderHandler* tempShader = mGameObjectManager->mShaders[0];
+      glUseProgram(tempShader->mProgram);
+      MeshData frustum = CoreEngine::getInstance()->mGameObjectManager->makeFrustum(mGameCamera->mFrustum);
+      gsl::Matrix4x4 temp(true);
+      temp.translate(mGameCamera->mPosition);
+      temp.rotateY(-mGameCamera->mYaw);
+      temp.rotateX(mGameCamera->mPitch);
 
-////      glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
-////      glBindVertexArray( frustum.mVAO[0] );
-////      glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+      glUniformMatrix4fv( tempShader->mMatrixUniform, 1, GL_TRUE, temp.constData());
+      glBindVertexArray( frustum.mVAO[0] );
+      glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
-        //Drawing forward vector of gameCam
-//        gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
-//        MeshData forwardVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-//        glBindVertexArray( forwardVector.mVAO[0] );
-//        temp.setToIdentity();
-//        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-//        glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
+//Drawing forward vector of gameCam
+//    gsl::Vector3D tempEnd = mGameCamera->mPosition + mGameCamera->mForward;
+//    MeshData forwardVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+//    glBindVertexArray( forwardVector.mVAO[0] );
+//    temp.setToIdentity();
+//    glUniformMatrix4fv( mShaders[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//    glDrawArrays(forwardVector.mDrawType, 0, forwardVector.mVertexCount[0]);
 
-//        //Drawing FOV vector of gameCam on right side
-//        tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
-//        MeshData frustumCullRightVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->
-//                makeLine(mGameCamera->mPosition, tempEnd, 1.f);
-//        glBindVertexArray( frustumCullRightVector.mVAO[0] );
-//        temp.setToIdentity();
-//        glUniformMatrix4fv( mShaderPrograms[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
-//        glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
+//    //Drawing FOV vector of gameCam on right side
+//    tempEnd = mGameCamera->mPosition + mGameCamera->mFrustum.mRightPlane;
+//    MeshData frustumCullRightVector = CoreEngine::getInstance()->mGameObjectManager->mMeshHandler->
+//            makeLine(mGameCamera->mPosition, tempEnd, 1.f);
+//    glBindVertexArray( frustumCullRightVector.mVAO[0] );
+//    temp.setToIdentity();
+//    glUniformMatrix4fv( mShaderProgram[0]->mMatrixUniform, 1, GL_TRUE, temp.constData());
+//    glDrawArrays(frustumCullRightVector.mDrawType, 0, frustumCullRightVector.mVertexCount[0]);
 
-////    }
+    }
 
     //Moves the dog triangle - should be made another way!!!!
-//    if(mIsPlaying)
-//    {
-////        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-//        mGameCamera->yaw(0.07f);
-//        mGameCamera->update();
-//        mUseFrustumCulling = true;
-//        mGameCamAsFrustumCulling = true;
-//    }
+    if(mIsPlaying)
+    {
+//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
+        mGameCamera->yaw(0.07f);
+        mGameCamera->update();
+        mUseFrustumCulling = true;
+        mGameCamAsFrustumCulling = true;
+    }
 
     //Immediatly this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
     //Not using the resourcemanager to handle the skybox which could be a gameobject
@@ -416,6 +416,7 @@ void RenderSystem::setPickedObject(int pickedID)
 {
     mIndexToPickedObject = pickedID;
 }
+
 void RenderSystem::cancelPickedObject()
 {
     mIndexToPickedObject = -1;
@@ -491,7 +492,7 @@ bool RenderSystem::frustumCulling(int gobIndex)
     Frustum &frustum = cullCamera->mFrustum;
 
     //Avoid culling objects still slightly in frame
-    float padding{0.2f};
+    float padding{0.3f};
 
     //Project vector down to frustum normals:
     //Right plane:

@@ -115,68 +115,25 @@ void CoreEngine::setUpScene()
 
     //********************** Making the objects to be drawn *********************
 
+    //Vis & Sim code
+    {
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     //Create the gameobject LasGround
-    GameObject *lasGround = mGameObjectManager->addObject("Data"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
-    lasGround->mName = "LasGround";
-    lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
-    mRenderSystem->mGameObjects.push_back(lasGround);
+//    GameObject *lasGround = mGameObjectManager->addObject("Data"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
+//    lasGround->mName = "LasGround";
+//    lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
+//    mRenderSystem->mGameObjects.push_back(lasGround);
 
 
     //615197.0, 6758309.0
-    temp = mGameObjectManager->addObject("Ball.obj");
-    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation
-    temp->mTransform->mMatrix.scale(0.5f);
-    temp->mName = "RulleBall";
-    mGameObjectManager->addComponent("PhysicsComponent", temp);
-    mRenderSystem->mGameObjects.push_back(temp);
-
-
-    //End of Vis & Sim code
-
-
-    //Axis
-    temp = mGameObjectManager->addObject("axis");
-    temp->mName = "Axis";
-    mRenderSystem->mGameObjects.push_back(temp);
-
-    //dog triangle
-    temp = mGameObjectManager->addObject("triangle");
-    temp->mName = "DogTriangle";
-    temp->mMaterial = mGameObjectManager->getMaterial("Texture");
-
-    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
-    //Adds sound to moving triangle:
-    mGameObjectManager->addComponent("caravan_mono.wav", temp);
-
-
-    //Hack to test sound system
-    if(temp->mSoundComponent)
-        temp->mSoundComponent->shouldPlay = true;
-
-    mRenderSystem->mGameObjects.push_back(temp);
-
-    //Suzannes:
-//    for(int i{0}; i < 10; i++)
-//    {
-//        for(int j{0}; j < 1; j++)
-//        {
-//            temp = mGameObjectManager->addObject("suzanne.obj");
-//            temp->mTransform->mMatrix.translate(3.f*i, -4.f, -3.f*j);
-//            temp->mTransform->mMatrix.scale(0.5f);
-//            temp->mMesh->mColliderRadius *= 0.3f;   //this should be done automatically
-//            temp->mTransform->mScale.setAlltoSame(0.5f);
-//            temp->mName = "Monkey " + std::to_string(i+j);
-//            mRenderSystem->mGameObjects.push_back(temp);
-//        }
-//    }
-
-//    temp = mGameObjectManager->addObject("suzanne.obj");
-//    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
+//    temp = mGameObjectManager->addObject("Ball.obj");
+//    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation
 //    temp->mTransform->mMatrix.scale(0.5f);
+//    temp->mName = "RulleBall";
+//    mGameObjectManager->addComponent("PhysicsComponent", temp);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-//Rollingball, vis & sim collision code integrated into GEA
+    //Rollingball, vis & sim collision code integrated into GEA
 
 //    //Create many balls to "simulate" rain.
 //    for(int i = 0; i <= numberOfSimulatedBalls; i++)
@@ -204,18 +161,58 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.rotateY(0);
 //    temp->mName = "CrookedTriangleSurface";
 //    mRenderSystem->mGameObjects.push_back(temp);
+    }
+
+    //Axis
+    temp = mGameObjectManager->addObject("axis");
+    temp->mName = "Axis";
+    mRenderSystem->mGameObjects.push_back(temp);
+
+    //dog triangle
+    temp = mGameObjectManager->addObject("triangle");
+    temp->mName = "DogTriangle";
+    temp->mMaterial = mGameObjectManager->getMaterial("Texture");
+    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    //Adds sound to moving triangle:
+    mGameObjectManager->addComponent("caravan_mono.wav", temp);
+
+    //Hack to test sound system
+    if(temp->mSoundComponent)
+        temp->mSoundComponent->shouldPlay = true;
+
+    mRenderSystem->mGameObjects.push_back(temp);
+
+    //Suzannes:
+    for(int i = 0; i <= 20; i++)
+    {
+        for(int j = 0; j < 5; j++)
+        {
+            temp = mGameObjectManager->addObject("suzanne.obj");
+            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
+            temp->mTransform->mMatrix.scale(0.5f);
+            temp->mMesh->mColliderRadius *= 0.3f;
+            temp->mTransform->mScale.setAlltoSame(0.5f);
+            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
+            mRenderSystem->mGameObjects.push_back(temp);
+        }
+    }
+
+//    temp = mGameObjectManager->addObject("suzanne.obj");
+//    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
+//    temp->mTransform->mMatrix.scale(0.5f);
+//    mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(20.0f, 20.0f, -50.0f);
+    mEditorCamera->mPosition = gsl::Vector3D(10.0f, 10.0f, 15.0f);
 //    mEditorCamera->mForward = gsl::Vector3D(90.0f, 0.0f, 0.0f);
-    mEditorCamera->mYaw = 180.0f;
+//    mEditorCamera->mYaw = 180.0f;
     mEditorCamera->mPitch = -25.0f;
     mRenderSystem->mEditorCamera = mEditorCamera;
 
     //mGameObjectManager->setUpAllTextures();
 
     mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
-    mGameCamera->mYaw = 180.0f;
+//    mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:

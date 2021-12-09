@@ -25,7 +25,7 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     void toggleWireframe(bool buttonState);
-    void toggleBacksideCulling(bool state);
+    void toggleBacksideCulling(bool state = false);
 
     //Editor functions
     void setPickedObject(int pickedID);
@@ -47,7 +47,7 @@ public:
 //    void addToGameObjects(GameObject *obj);
 
     bool mUseFrustumCulling{true};
-    bool mGameCamAsFrustumCulling{false};
+    bool mGameCamAsFrustumCulling{true};
 
     bool mDrawAxis{true};
     bool mDrawGrid{true};
