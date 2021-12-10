@@ -197,3 +197,28 @@ struct SoundComponent final : public Component
 	bool loopSound{false};
 	uint32 buffer{}; // Todo: Can be a vector of all the buffers
 };
+
+struct PhysicsComponent final : public Component
+{
+	PhysicsComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::vec3 acceleration{};
+	glm::vec3 velocity{};
+	glm::vec3 lastSurfaceNormal{};
+	int32 lastTriangleIndex{};
+	float mass{ 1.f };
+	//float baryCentricErrorMargin{0.985f};
+	bool bIsInAir{ false };
+	float restitution{ 0.75 }; // How bouncy/elastic it is.
+};
+
+struct TrailComponent final : public Component
+{
+	TrailComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	std::vector<std::vector<glm::vec3>> positions;
+
+	float lastRecordedTime{};
+	float recordInterval{ 0.5f };
+	bool bRecording{ false };
+};
