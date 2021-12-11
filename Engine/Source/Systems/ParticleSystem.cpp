@@ -257,6 +257,7 @@ void ParticleSystem::spawnParticles(ParticleComponent& emitter, uint32 spawnAmou
 {
     if (spawnAmount > emitter.spawnRate)
         spawnAmount = emitter.spawnRate;
+    // TODO: Fix this shit
     if (emitter.lastUsedParticle > 10)
         return;
     uint32 start = (emitter.lastUsedParticle) % emitter.maxParticles;
