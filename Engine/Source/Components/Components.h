@@ -222,3 +222,41 @@ struct TrailComponent final : public Component
 	float recordInterval{ 0.5f };
 	bool bRecording{ false };
 };
+
+struct ParticleComponent final : public Component
+{
+	ParticleComponent(uint32 entity, uint32 componentID) : Component(entity, componentID),
+		mesh(entity, componentID), texture(entity, componentID){}
+
+	struct Particle 
+	{
+		glm::vec4 color{};
+		glm::vec3 position{};
+		glm::vec3 velocity{};
+		glm::vec3 acceleration{};
+		float speed{}, life{}, cameraDistance{ -1.f }, size{1};
+		bool active{ false };
+		bool operator<(const Particle& other)
+		{
+			return this->active && this->cameraDistance > other.cameraDistance;
+		}
+	};
+
+
+	MeshComponent mesh;
+	TextureComponent texture;
+	std::vector<Particle> particles;
+	std::vector<float> positionData;
+	std::vector<float> colorData;
+	//glm::vec3 emitterPosition;
+	uint32 maxParticles{};
+	uint32 activeParticles{};
+	uint32 lastUsedParticle{};
+	uint32 spawnRate{};
+
+	Particle particleBlueprint;
+
+	GLuint positionBuffer{};
+	GLuint colorBuffer{};
+
+};

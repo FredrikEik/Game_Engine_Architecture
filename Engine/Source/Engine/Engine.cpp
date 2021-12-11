@@ -33,6 +33,7 @@
 #include "../imgui/docking/imgui_impl_glfw.h"
 
 #include "../Systems/ScriptSystem.h"
+#include "../Systems/ParticleSystem.h"
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
@@ -145,7 +146,7 @@ void Engine::init()
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
@@ -156,6 +157,7 @@ void Engine::init()
 	phongShader = new Shader("Shaders/PhongShader.vert", "Shaders/PhongShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
+	particleShader = new Shader("Shaders/ParticleShader.vert", "Shaders/ParticleShader.frag");
 
 
 	editorCameraEntity = ECS->newEntity();
@@ -196,7 +198,7 @@ void Engine::init()
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
-
+	MeshSystem::setHiddenInGame(unitEntity, ECS, true);
 
 	reservedEntities = ECS->getNumberOfEntities();
 
@@ -205,6 +207,18 @@ void Engine::init()
 	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
 
+
+	ParticleComponent::Particle particle;
+	particle.life = 5.f;
+	particle.acceleration = glm::vec3(0, 0, 0);
+	particle.velocity = glm::vec3(0, 5, 0);
+	particle.color = glm::vec4(0, 1, 0,1);
+	particle.position = glm::vec3(1, 5, 1);
+
+	//TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
+
+	ECS->addComponent<ParticleComponent>(unitEntity);
+	ParticleSystem::init(unitEntity, 50000, 50, particle, ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
@@ -219,9 +233,12 @@ void Engine::loop()
 		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 
 		CollisionBroadphaseDatastructure->update();
 
@@ -343,6 +360,9 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 		}
+		CameraSystem::draw(cameraEntity, particleShader, ECS);
+
+		ParticleSystem::update(cameraEntity, particleShader, ECS, deltaTime);
 
 		//// Render dear imgui into screen
 		//ImGui::Render();

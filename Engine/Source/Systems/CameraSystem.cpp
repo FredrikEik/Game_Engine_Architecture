@@ -245,7 +245,7 @@ void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
 	assert(camera);
 	assert(mesh);
 	mesh->bDisregardedDuringFrustumCulling = true;
-	mesh->m_drawType = GL_LINE_STRIP;
+	mesh->m_drawType = GL_LINES;
 
 	glm::mat4 inverseProjViewMatrix = glm::inverse((camera->m_projectionMatrix * camera->m_viewMatrix));
 
