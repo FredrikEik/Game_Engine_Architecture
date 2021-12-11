@@ -168,6 +168,11 @@ void CoreEngine::setUpScene()
     temp->mName = "Axis";
     mRenderSystem->mGameObjects.push_back(temp);
 
+    //Ground
+    temp = mGameObjectManager->addObject("FlatGround.obj"); //Something wrong with normals from Blender, not looking into it now.
+    temp->mName = "Ground";
+    mRenderSystem->mGameObjects.push_back(temp);
+
     //dog triangle
     temp = mGameObjectManager->addObject("triangle");
     temp->mName = "DogTriangle";

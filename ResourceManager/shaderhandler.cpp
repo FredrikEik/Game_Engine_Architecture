@@ -1,4 +1,4 @@
-#include "shaderhandler.h"
+﻿#include "shaderhandler.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -89,11 +89,25 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     glDeleteShader( fragment );
 }
 
-void ShaderHandler::setupShader(bool useTexture)
+void ShaderHandler::setupShader(bool useTexture, bool useLight)
 {
     mMatrixUniform = glGetUniformLocation( mProgram, "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mProgram, "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mProgram, "pMatrix" );
     if(useTexture)
         mTextureUniform = glGetUniformLocation(mProgram, "textureSampler");
+    if(useLight)
+    {
+        mCameraPosition = glGetUniformLocation( mProgram, "cameraPosition" );
+        mLightPosition = glGetUniformLocation( mProgram, "lightPosition" );
+        mLightDirection = glGetUniformLocation( mProgram, "lightDirection" );
+        mLightColor = glGetUniformLocation( mProgram, "lightColor" );
+        mObjectColor = glGetUniformLocation( mProgram, "objectColor" );
+        mAmbientColor = glGetUniformLocation( mProgram, "ambientColor");
+        mAmbientStrength = glGetUniformLocation( mProgram, "ambientStrengt" );
+        mLightStrength = glGetUniformLocation( mProgram, "lightStrengt" );
+        mSpecularStrength = glGetUniformLocation( mProgram, "specularStrength" );
+        mSpecularExponent = glGetUniformLocation( mProgram, "specularExponent" );
+
+    }
 }

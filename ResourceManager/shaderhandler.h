@@ -1,4 +1,4 @@
-#ifndef SHADERHANDLER_H
+﻿#ifndef SHADERHANDLER_H
 #define SHADERHANDLER_H
 
 #include <QOpenGLFunctions_4_1_Core>
@@ -14,14 +14,30 @@ public:
     // Constructor generates the shader on the fly
     ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
 
-    void setupShader(bool useTexture);
+    void setupShader(bool useTexture = false, bool useLight = false);
 
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
+
     GLint mTextureUniform{-1};
 
-    ///OpenGL program ID for this shader
+    GLint mCameraPosition{-1};
+
+    GLint mLightPosition{-1};
+
+    GLint mLightDirection{-1};
+
+    GLint mLightColor{-1};
+    GLint mObjectColor{-1};
+
+    GLint mAmbientColor{-1};
+    GLint mAmbientStrength{-1};
+    GLint mLightStrength{-1};
+    GLint mSpecularStrength{-1};
+    GLint mSpecularExponent{-1};
+
+    //OpenGL program ID for this shader
     GLuint mProgram;
     std::string mName{"none"};
 
