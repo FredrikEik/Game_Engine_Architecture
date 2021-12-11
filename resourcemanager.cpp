@@ -12,6 +12,7 @@
 #include "components.h"
 #include "constants.h"
 #include "texture.h"
+#include "transformsystem.h"
 
 #include <QOpenGLFunctions>
 
@@ -23,22 +24,8 @@
 
 ResourceManager::ResourceManager()
 {
-    // >> MAYBE I STILL NEED THIS
-    // Create the first object just to get into the forloop
-//    tempGO = new GameObject();
-//    tempGO = new GameObject();
-//    tempGO->mMeshComp = new MeshComponent();
-//    tempGO->mTransformComp = new TransformComponent();
-//    tempGO->mTransformComp->mMatrix.setToIdentity();
-//    tempGO->mMaterialComp = new MaterialComponent();
-
-//    //Burde ikke hardkode dette
-//    tempGO->mMaterialComp->mShaderProgram = 1;
-//    tempGO->mMaterialComp->mTextureUnit = 1;
-//    mObjectsMap.insert(std::pair<std::string, GameObject>{"baseInvisible",*tempGO});
-
-
     mMeshHandler = new MeshHandler();
+    mTransformsystem = TransformSystem::getInstance();
 }
 
 GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, std::string textureName)
@@ -262,26 +249,17 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
             if (singleObject.contains("rotationx") && singleObject["rotationx"].isDouble())
             {
                 rotx = float(singleObject["rotationx"].toDouble());
-                float x = rotx - gameObj->mTransformComp->mRotation.getX();
-                gameObj->mTransformComp->mRotation.setX(x+gameObj->mTransformComp->mRotation.getX());
-                gameObj->mTransformComp->mMatrix.rotateX(x);
             }
 
 
             if (singleObject.contains("rotationy") && singleObject["rotationy"].isDouble())
             {
                 roty = float(singleObject["rotationy"].toDouble());
-                float y = roty - gameObj->mTransformComp->mRotation.getY();
-                gameObj->mTransformComp->mRotation.setY(y+gameObj->mTransformComp->mRotation.getY());
-                gameObj->mTransformComp->mMatrix.rotateY(y);
             }
 
             if (singleObject.contains("rotationz") && singleObject["rotationz"].isDouble())
             {
                 rotz = float(singleObject["rotationz"].toDouble());
-                float z = rotz - gameObj->mTransformComp->mRotation.getZ();
-                gameObj->mTransformComp->mRotation.setZ(z+gameObj->mTransformComp->mRotation.getZ());
-                gameObj->mTransformComp->mMatrix.rotateZ(z);
             }
 
             if (singleObject.contains("scalex") && singleObject["scalex"].isDouble())
@@ -299,17 +277,13 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                 scalz =float(singleObject["scalez"].toDouble());
             }
 
-            //scale
-            gameObj->mTransformComp->mMatrix.scale(1/gameObj->mTransformComp->mScale.getX(),
-                                                   1/gameObj->mTransformComp->mScale.getY(),
-                                                   1/gameObj->mTransformComp->mScale.getZ());
-            gameObj->mTransformComp->mMatrix.scale(scalx,scaly,scalz);
-            gameObj->mTransformComp->mScale.setX(scalx);
-            gameObj->mTransformComp->mScale.setY(scaly);
-            gameObj->mTransformComp->mScale.setZ(scalz);
-
             //setposition
-            gameObj->mTransformComp->mMatrix.setPosition(x,y,z);
+            mTransformsystem->setPosition(gameObj, gsl::Vector3D(x,y,z));
+            //rotation
+            mTransformsystem->setRotation(gameObj, gsl::Vector3D(rotx,roty,rotz));
+            //scale
+            mTransformsystem->setScale(gameObj, gsl::Vector3D(scalx,scaly,scalz));
+
 
 
             if (singleObject.contains("shader") && singleObject["shader"].isDouble())

@@ -13,6 +13,7 @@ class GameObject;
 class MeshHandler;
 class MaterialComponent;
 class Texture;
+class TransformSystem;
 
 class ResourceManager  : public QOpenGLFunctions_4_1_Core {
 
@@ -41,6 +42,7 @@ private:
     int CreateMaterial(std::string textureName);
     GameObject* tempGO{nullptr};
     MeshHandler* mMeshHandler{nullptr};
+    TransformSystem* mTransformsystem{nullptr};
     ResourceManager *mInstance{nullptr};
 
     int setMaterial(std::string textureName);
