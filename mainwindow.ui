@@ -467,8 +467,8 @@
    </property>
   </action>
   <action name="actionSimulatePhysics">
-   <property name="checkable">
-    <bool>true</bool>
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="AppIconResources.qrc">

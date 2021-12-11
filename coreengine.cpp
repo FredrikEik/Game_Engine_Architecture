@@ -276,7 +276,7 @@ void CoreEngine::gameLoop()
 
     //Update PhysicsObjects in scene
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
-    PhysicsHandler ph(mRenderSystem);
+    PhysicsHandler ph;
 
     ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
 

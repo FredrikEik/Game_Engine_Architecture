@@ -1,7 +1,6 @@
 ﻿#ifndef GAMEOBJECTMANAGER_H
 #define GAMEOBJECTMANAGER_H
 
-
 #include <string>
 #include <map>
 #include <vector>
@@ -16,6 +15,12 @@ class MeshHandler;
 class TextureHandler;
 struct MeshData;
 class ShaderHandler;
+
+/**
+  In GameObjectManager, resource-managing tied to gameobjects are handled.
+  The class works by fist initializing all the possible pre-made "assets" that might be added to a gameobject,
+  so that during runtime adding gameobjects dont need to read/do expensive functions.
+ */
 
 class GameObjectManager //: public QOpenGLFunctions_4_1_Core
 {

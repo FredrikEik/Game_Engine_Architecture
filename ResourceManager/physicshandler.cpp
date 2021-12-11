@@ -1,10 +1,10 @@
 ﻿#include "ResourceManager/physicshandler.h"
 #include "gameobject.h"
-#include "rendersystem.h"
+
 #include "coreengine.h"
 #include "gameobjectmanager.h"
 
-PhysicsHandler::PhysicsHandler(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
+PhysicsHandler::PhysicsHandler()
 {
     mLogger = Logger::getInstance();
     mGameObjectManager = &GameObjectManager::getInstance();
@@ -59,7 +59,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
     searchGameName = "RulleBall";
 
-    //// Run through rest of code per ball
+    //Run through rest of code per ball
 //    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
 //    {
         int ball = 0;
@@ -80,7 +80,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
             }
         }
 //qDebug() << triangleVertices.size();
-        ////Search through all trianglevertices and get barycentric based on ball coordinates.
+        //Search through all trianglevertices and get barycentric based on ball coordinates.
         for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
         {
             //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
@@ -98,12 +98,12 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
             //If barycentric is 0 or above, current closest triangle have been found.
             if (baryCoordinates[ball].x >= 0.0f && baryCoordinates[ball].y >= 0.0f && baryCoordinates[ball].z >= 0.0f)
             {
-                ////Normal of triangle is calculated.
+                //Normal of triangle is calculated.
                 triangleNormal[ball] = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
                                        (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
                 triangleNormal[ball].normalize();
 
-                ////Move the ball
+                //Move the ball
                 acceleration[ball] = gravity * 0.05f ^ triangleNormal[ball] ^ gsl::Vector3D(0, triangleNormal[ball].y, 0);
                 velocity[ball] = velocity[ball] + acceleration[ball] * 0.17f;
 
@@ -122,11 +122,11 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
                 physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition[ball].x, newBallPosition[ball].y, newBallPosition[ball].z);
             }
-//        }////End of for loop for the 51 balls
-    }////End of simulatePhysics-bool loop
+//        }//End of for loop for the 51 balls
+    }//End of simulatePhysics-bool loop
 }
 
-
+//Only needed when simulating a single ball
 //newBallPosition[ball].y = (baryCoordinates[ball].x * triangleVertices[i].mXYZ.y +
 //                           baryCoordinates[ball].y * triangleVertices[i+1].mXYZ.y + 0.25f +
 //                           baryCoordinates[ball].z * triangleVertices[i+2].mXYZ.y);

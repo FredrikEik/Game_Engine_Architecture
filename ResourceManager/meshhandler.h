@@ -6,8 +6,14 @@
 #include "gltypes.h"
 #include "components.h"
 
-//class GameObjectManager;
-//class GameObject;
+/**
+  MeshHandler handles the potential meshes for gameobjects.
+  The struct MeshData stores all relevant details for the 3D-models creation and managment. For example each mesh's lod information, and a Vector of all vertices in mVertices.
+  There are three "types" of functions here;
+  1. Creating meshes and reading files for mesh creation.
+  2. Various debug, simple line, collision and visualization tools.
+  3. Functions that return information about the meshes of gameobjects
+ */
 
 struct MeshData
 {
@@ -36,7 +42,6 @@ class MeshHandler : public QOpenGLFunctions_4_1_Core
 public:
     MeshHandler();
     static MeshHandler& getInstance();
-//    GameObjectManager *mGameObjectManager{nullptr};
 
     int makeMesh(std::string meshName);
 
@@ -46,11 +51,10 @@ public:
 
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
-    ///Makes a line for debug drawing.
-    /// positionIn is origin
+    //Makes a line for debug drawing, positionIn is origin
     MeshData makeLine(gsl::Vector3D &positionIn, int direction = 1, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
-    ///Makes a line for debug drawing.
+    //Makes a line for debug drawing.
     MeshData makeLine(gsl::Vector3D &startIn, gsl::Vector3D endIn, float lenght = 1.f, gsl::Vector3D colorIn = {1.f, 0.301f, 0.933f});
 
     std::map<std::string, unsigned int> mMeshMap;
@@ -72,8 +76,6 @@ private:
     int makeEditorGrid(int size = 10, int scale = 1);
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);
-
-//    GameObject* object;
 
     class Logger* mLogger{nullptr};
 };

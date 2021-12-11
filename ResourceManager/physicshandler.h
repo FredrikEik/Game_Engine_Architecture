@@ -3,19 +3,22 @@
 
 //Forward declaration
 class GameObject;
-class RenderSystem;
 class GameObjectManager;
+
+/**
+  The PhsysicsHandler is from the Visualization & simulation course.
+  Mostly not used now, but contains function for simulating balls rolling down meshes.
+  Integrated with the GameObjectManager to get references to the gameobjects needed for the simualtion.
+ */
 
 class PhysicsHandler
 {
 public:
-    PhysicsHandler(RenderSystem *renderSystemIn);
+    PhysicsHandler();
 
     void movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics, int numberOfSimulatedBalls);
 
-    RenderSystem *mRenderSystem{nullptr};
     GameObjectManager *mGameObjectManager{nullptr};
-
 
     gsl::Vector3D gravity{0.0f, 9.8f, 0.0f};
 

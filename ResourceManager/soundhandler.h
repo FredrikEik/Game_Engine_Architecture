@@ -7,7 +7,10 @@
 #include <cstdio>
 #include "altypes.h"
 
-/// Structure to contain WAVE file data.
+/**
+  Structure to contain WAVE file data.
+  Various settings to store audio data.
+*/
 struct WaveRawData
 {
     //Data from the header of the wav-file
@@ -28,8 +31,10 @@ struct WaveRawData
     ALuint mALBuffer{0};
 };
 
-/// Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
-/// Also set up ALBuffer and can connect ALBuffer to ALSource
+/**
+  Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
+  Also set up ALBuffer and can connect ALBuffer to ALSource
+*/
 class SoundHandler
 {
 public:
