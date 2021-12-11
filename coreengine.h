@@ -9,6 +9,11 @@ class Camera;
 class QTimer;
 class MainWindow;
 
+/**
+   CoreEngine er en samling av mange systemer.
+   Her finner en objekter av ressurshåndteringsklassene og game-loopen.
+ */
+
 //Made from QObject to use a Qt slots...
 class CoreEngine : public QObject
 {

@@ -13,7 +13,8 @@ namespace Ui {
 class MainWindow;
 }
 /**
-
+   I MainWindow håndteres input og systemer knyttet til editor-UI-en.
+   Mange av funksjonene er knyttet til knapper og drop-downs i QT-editor-vinduet.
  */
 class MainWindow : public QMainWindow
 {

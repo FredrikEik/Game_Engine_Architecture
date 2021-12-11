@@ -2,7 +2,10 @@
 #define CONSTANTS_H
 
 #include<string>
-
+/**
+  Diverse konstanter for prosjektet.
+  Blandt annet lokasjonen på hvor å finne relevante mapper i filstruktur og int-er for shaders, componenter og forhåndslagde ressurser.
+ */
 namespace gsl  //Game School Lib
 {
     const std::string ProjectFolderName{"../GEA2021/"};

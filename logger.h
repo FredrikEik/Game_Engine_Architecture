@@ -3,6 +3,10 @@
 
 #include <string>
 
+/**
+  Denne loggeren integreres med spillmotor-editoren, så en kan se logge og debugge i editoren.
+ */
+
 enum class LColor
 {
     LOG = 0,

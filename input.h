@@ -2,8 +2,8 @@
 #define INPUT_H
 
 /**
-    This struct defines the keys we want usually want to use.
-    You have to set the state of this table manually
+  Denne structen inneholder informasjon om tastene vi bruker.
+  Statusen på tastene individuelt håndteres i renderwindow, om de er trykket ned, holdes nede eller er sluppet.
  */
 struct Input
 {

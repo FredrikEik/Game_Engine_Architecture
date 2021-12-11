@@ -1,11 +1,15 @@
 #ifndef GAMEPLAYMECHANICS_H
 #define GAMEPLAYMECHANICS_H
 
-//Forward declaration
+//Forward declarations
 class GameObject;
 class GameObjectManager;
 class RenderSystem;
 
+/**
+  Her foregår spill-logikken, i dette tilfellet til Tetris.
+  Dette for å skille spillmotor og spill hvertfall delvis.
+ */
 
 class GamePlayMechanics
 {

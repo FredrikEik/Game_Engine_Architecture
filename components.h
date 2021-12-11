@@ -2,8 +2,11 @@
 #define COMPONENTS_H
 #include "meshhandler.h"
 
-// Components try to hold only runtime relevant data, and as small as possible
-
+/**
+    Componenter som skal holde informasjon i sanntid.
+    Komponentene er lagt til på "GameObjects" for å legge til funksjonalitet
+    Dette er en del av ECS systemet, legge forhåndslagde komponenter på spillobjeckter/entites
+*/
 struct TransformComponent
 {
     TransformComponent()
