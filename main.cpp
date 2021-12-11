@@ -4,6 +4,9 @@
 
 int main(int argc, char *argv[])
 {
+    /** Testing Doxygen Compile, This is in main.cpp
+        Here some OpenGL, the QApplication, the splash-screen and the QT window gets made.
+     */
     //Forces the usage of desktop OpenGL
     //Attribute must be set before Q(Gui)Application is constructed:
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
