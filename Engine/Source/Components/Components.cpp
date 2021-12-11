@@ -50,8 +50,6 @@ void MeshComponent::jsonParse(const JSON& json)
 	bIsTranslucent = json["bIsTranslucent"];
 	bDisregardedDuringFrustumCulling = json["bDisregardedDuringFrustumCulling"];
 	bShouldRender = json["bShouldRender"];
-
-	std::cout << json;
 }
 
 JSON AxisAlignedBoxComponent::json()
