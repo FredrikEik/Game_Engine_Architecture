@@ -7,7 +7,7 @@ Level::Level(Camera* cam)
     script = new Script();
     DrawBoard();
     //checkCoints();
-    // SoundHandler();
+    SoundHandler();
     //initObjects();
     //readJS();
 }
@@ -38,7 +38,7 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
    {1,0,4,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
-   {1,0,0,1,0,0,0,0,0,0,0,0,4,0,0,1,0,0,1},// 5
+   {1,0,0,1,0,0,0,3,0,0,0,0,4,0,0,1,0,0,1},// 5
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
@@ -53,7 +53,7 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
    {1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
-   {1,3,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //21
 
 
@@ -140,12 +140,24 @@ void Level::DrawBoard()
     mFrustumSystem->init();
 
     //------------------------Skybox----------------------//
-    mSkyBox = new Skybox(/*&mTexture[2]*/);
-    mSkyBox->move(12.f, 0.f, 10.f);
-    mSkyBox->init();
-    mVisualObjects.push_back(mSkyBox);
-    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
-    mSkyBox->mMaterial->mTextureUnit =2;
+
+
+    temp = mShapeFactory.createShape("Square");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 3;   //plain shader
+    temp->move(9.f, 0.f, 9.f);
+    temp->mTransform->mMatrix.scale(30);
+    mVisualObjects.push_back(temp);
+    mTransformComp.push_back(temp->mTransform);
+    temp->mMaterial->mTextureUnit = 2;
+    mNameComp.push_back(temp->mNameComp);
+
+//    mSkyBox = new Skybox(/*&mTexture[2]*/);
+//    mSkyBox->move(12.f, 0.f, 10.f);
+//    mSkyBox->init();
+//    mVisualObjects.push_back(mSkyBox);
+//    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
+//    mSkyBox->mMaterial->mTextureUnit =2;
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 3;    //Phongshader
@@ -154,31 +166,30 @@ void Level::DrawBoard()
 
     //makes the soundmanager
     //it is a Singleton!!!
-    SoundManager::getInstance()->init();
-    mSound = SoundManager::getInstance()->createSource(
-                "Laser", gsl::Vector3D(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/laser.wav", true, 0.7f);
+//    SoundManager::getInstance()->init();
+
 
     xyz = new XYZ;
     xyz->init();
     mVisualObjects.push_back(xyz);
-   // spawnParticle();
+
+
+    // spawnParticle();
 
 
 
 }
 
 
-std::string Level::createShapes(string shapeID)
+void Level::createShapes(string shapeID)
 {
     VisualObject* temp = mShapeFactory.createShape(shapeID);
+    temp->move(1,4,1);
     temp->init();
-    temp->move(1,1,0.5);
     temp->mMaterial->mShaderProgram = 0;    //plain shader
     mTransformComp.push_back(temp->mTransform);
     mNameComp.push_back(temp->mNameComp);
     mVisualObjects.push_back(temp);
-    return temp->mNameComp->ObjectName;
 }
 
 void Level::readJS()
@@ -237,37 +248,15 @@ void Level::winner()
 
 void Level::checkCollision()
 {
-//    mPlayer->onRwallX = {false};
-//    mPlayer->onLwallX = {false};
-//    mPlayer->onFwallY = {false};
-//    mPlayer->onBwallY = {false};
-//    //kollisjon fungerer foreløpig ikke for flere objekter
-//    //kollisjon mot vegger
-//    for(int i{0}; i<static_cast<int>(mWall.size()); i++){
-//        if(mColSystem->CheckSphOnBoxCol(mPlayer->mCollision, mWall[i]->mCollision))
-//        {
-//            //qDebug() <<"Collision detected"; //testing collision
-//            mWall[i]->CheckPlayerCol(mPlayer);
-
-//            if(mWall[i]->onLwallX){
-//                mPlayer->onLwallX = true; mPlayer->onRwallX = false;}
-//            else if(mWall[i]->onRwallX){
-//                mPlayer->onRwallX = true; mPlayer->onLwallX = false;}
-//            if(mWall[i]->onBwallY){
-//                mPlayer->onBwallY = true; mPlayer->onFwallY = false;}
-//            else if(mWall[i]->onFwallY){
-//                mPlayer->onFwallY = true; mPlayer->onBwallY = false;}
-//        }
-//        else
-//            mWall[i]->noCol(); //må finne en annen måte å gjøre dette på
-//    }
 
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
         {
+
             if(trophies < static_cast<int>(mTrophies.size())){
                 if(mTrophies[i]->drawMe == true){
+                    playSound(1);
                     trophies++;
                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
                 else
@@ -279,19 +268,17 @@ void Level::checkCollision()
     }
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
         if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
-         {
-            hit=true;
-            if(hit == true)
-            {
+        {
 
-                mLives--; hit = false;
-                gsl::Vector3D playerP = {1,CENTER_Y,20};
-                gsl::Vector3D currP = mPlayer->mTransform->mPosition;
-                VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-                vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
-            }
+            mLives--;
+            gsl::Vector3D playerP = {1,CENTER_Y,20};
+            gsl::Vector3D currP = mPlayer->mTransform->mPosition;
+            VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
+            vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+
             if(mLives == 0)
             {
+                playSound(0);
                 resetGame();
             }
             qDebug() << mLives;
@@ -316,7 +303,7 @@ void Level::resetGame()
             mVisualObjects[i]->drawMe = true;
         }
         trophies = 0;
-        mLives = 2;
+        mLives = 3;
         int eID = 0;
         for(int i = 0; i<DIM_Z;i++)
         {
@@ -353,17 +340,30 @@ void Level::resetGame()
 void Level::SoundHandler()
 {
     SoundManager::getInstance()->init();
+    SoundSource* tempSound;
 
-    mSound = SoundManager::getInstance()->createSource(
-                "laser", gsl::Vector3D(20.0f, 20.0f, 20.0f),
-                "../GEA2021/Assets/Sound/pacman_chomp.wav", false, 0.7f);
-    mSound->play();
-    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-    mSound->stop();
+    tempSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(0.0f, 0.0f, 20.0f),
+                "../GEA2021/Assets/Sound/Pac-ManDeath.wav", false, 1.0f);
+    mSound.push_back(tempSound);
+
+
+    tempSound = mDeathSound = SoundManager::getInstance()->createSource(
+                "Laser", gsl::Vector3D(0.0f, 0.0f, 20.0f),
+                "../GEA2021/Assets/Sound/pacman_chomp.wav", false, 1.0f);
+    mSound.push_back(tempSound);
+
+
+
 
 }
 
-bool Level::wallCheck(int z, int x)
+void Level::playSound(int SoundID)
+{
+    mSound[SoundID]->play();
+}
+
+bool Level::wallCheck(int x, int z)
 {
     if(GameBoard[z][x] == 1)
         return true;
@@ -373,30 +373,29 @@ bool Level::wallCheck(int z, int x)
 
 void Level::movePlayer()
 {
-        int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
-        int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
+    int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
+    int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
 
-        if(mPlayer->mForward.x > 0)
-            EposX = std::ceil(mPlayer->mTransform->mPosition.x);
-        else if(mPlayer->mForward.x <0)
-            EposX = std::floor(mPlayer->mTransform->mPosition.x);
-        else{
-            if(mPlayer->mForward.z >0)
-                EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
-            else if(mPlayer->mForward.z <0)
-                EposZ = std::floor(mPlayer->mTransform->mPosition.z);
-            else
-                qDebug() << "error in Level::moveEnemy";}
-
-        //double a = rand()%10;
-
-        // mEnemies[i]->moveEnemy();
-        if(wallCheck(EposX, EposZ))
-        {
-            mPlayer->centerPlayer();
-        }
+    if(mPlayer->mForward.x > 0)
+        EposX = std::ceil(mPlayer->mTransform->mPosition.x);
+    else if(mPlayer->mForward.x <0)
+        EposX = std::floor(mPlayer->mTransform->mPosition.x);
+    else{
+        if(mPlayer->mForward.z >0)
+            EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
+        else if(mPlayer->mForward.z <0)
+            EposZ = std::floor(mPlayer->mTransform->mPosition.z);
         else
-            mPlayer->movePlayer();
+            qDebug() << "error in Level::moveEnemy";}
+
+
+    // mEnemies[i]->moveEnemy();
+    if(wallCheck(EposX, EposZ))
+    {
+        mPlayer->centerPlayer();
+    }
+    else
+        mPlayer->movePlayer();
 }
 
 void Level::moveEnemy(int randNum)

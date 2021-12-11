@@ -13,6 +13,7 @@ struct CollisionComponent
     gsl::Vector3D center;
     gsl::Vector3D BoundingBoxMin;
     gsl::Vector3D BoundingBoxMax;
+
 };
 
 class CollisionSystem

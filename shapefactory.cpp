@@ -25,7 +25,6 @@ Plain::Plain()
 }
 
 
-
 ObjMesh::ObjMesh()
 {
     mTransform = new TransformComponent();
@@ -328,7 +327,7 @@ void ShapeFactory::makeVertices()
     y = 0.1;
     z = 0.1;
     m->mVertices.push_back(Vertex{-x,-y,-z,  0,1,1});
-    m->mVertices.push_back(Vertex{ x,-y,-z,  0,1,1});       // bottom surface
+    m->mVertices.push_back(Vertex{ x,-y,-z,  0,1,1});
     m->mVertices.push_back(Vertex{-x, y,-z,  0,1,1});
 
     m->mVertices.push_back(Vertex{ x,-y,-z,  0,1,1});

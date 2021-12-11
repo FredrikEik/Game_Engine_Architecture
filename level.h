@@ -31,7 +31,7 @@ class Level : public QObject
 public:
     Level(Camera* cam);
     ~Level();
-    std::string createShapes(string shapeID);
+    void createShapes(string shapeID);
     void readJS();
     void winner();
     void checkCollision();
@@ -46,24 +46,28 @@ public:
     std::vector<Square*> mWall;
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
+    std::vector<SoundSource*> mSound;
 //    std::vector<ParticleMesh*> mParticlePool;
+    void playSound(int SoundID);
 
     ShapeFactory mShapeFactory;
     FrustumSystem *mFrustumSystem;
-    SoundSource *mSound{};
+
+    SoundSource *mDeathSound;
+    SoundSource *mChompSound;
     Enemy *mEnemy;
     Player *mPlayer;
     Skybox *mSkyBox;
     XYZ *xyz;
     Light *mLight{nullptr};
     Particles *mParticle;
-    int trophies{0};
+
+
     bool wallCheck(int z, int x);
     void moveEnemy(int randNum);
     void movePlayer();
     void resetGame();
     void GameLoop();
-    bool hit =false;
     //void spawnParticle();
 
 private:
@@ -72,13 +76,15 @@ private:
     static const int CENTER_Y = 0;
     static int GameBoard[DIM_Z][DIM_X];
     void DrawBoard();
+
     Script *script{nullptr};
     Camera* mCam;
     CollisionSystem* mColSystem;
+
     int mLives{3};
     bool isValidPos = false;
     int angle =0;
-
+    int trophies{0};
 };
 
 #endif // LEVEL_H

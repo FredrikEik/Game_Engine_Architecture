@@ -153,7 +153,7 @@ void RenderWindow::init()
     mCollisionSystem = new CollisionSystem();
 
     mLvl = new Level(&mPlayCamera);
-    mSkyBox = mLvl->mSkyBox;
+   // mSkyBox = mLvl->mSkyBox;
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
     mMainWindow->update();
@@ -187,7 +187,7 @@ void RenderWindow::drawObjects()
             modelMatrix = mMatrixUniform1;
             glUniform1i(mTextureUniform, mLvl->mVisualObjects[i]->mMaterial->mTextureUnit);
         }
-        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 2)//PhongShader
+        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 2) //PhongShader
         {
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
@@ -196,7 +196,7 @@ void RenderWindow::drawObjects()
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, mLight->mLightColor.x(), mLight->mLightColor.y(), mLight->mLightColor.z());
         }
-        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 3)//SkyboxShader
+        else if (mLvl->mVisualObjects[i]->mMaterial->mShaderProgram == 3) //SkyboxShader
         {
             viewMatrix = vMatrixUniform3;
             projectionMatrix = pMatrixUniform3;
@@ -225,10 +225,10 @@ void RenderWindow::drawObjects()
     glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
     glBindVertexArray(0);
 
-    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mSkyBox->mTransform->mMatrix.constData());
-    glBindVertexArray(mSkyBox->mMesh->mVAO );
-    glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
-    glBindVertexArray(0);
+//    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mSkyBox->mTransform->mMatrix.constData());
+//    glBindVertexArray(mSkyBox->mMesh->mVAO );
+//    glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
+//    glBindVertexArray(0);
 
     if(playM==false){
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
@@ -394,6 +394,7 @@ void RenderWindow::playMode(bool p)
     else
     {
         mCurrentCamera = &mEditorCamera;
+        mLvl->resetGame();
         //mLaserSound->stop();
         playM = false;
     }
@@ -581,7 +582,7 @@ void RenderWindow::setupPhongShader(int shaderIndex)
     pMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 
 
-  //  mUsingTextureUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "usingTextures" );
+   // mUsingTextureUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "usingTextures" );
     mLightColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightColor" );
     mObjectColorUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "objectColor" );
     mAmbientLightStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientStrengt" );

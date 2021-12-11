@@ -33,7 +33,6 @@ SOURCES += main.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
-    skybox.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
@@ -68,7 +67,6 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     shapefactory.h \
-    skybox.h \
     soundmanager.h \
     soundsource.h \
     stb_image.h \

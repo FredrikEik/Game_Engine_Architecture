@@ -18,10 +18,6 @@ Particles::Particles(ShapeFactory* f)
     mNameComp->ObjectID = factoryPtr->getCount();
     factoryPtr->addCount();
 
-//    mPlayer->mBackward.x = direction.x;
-//    mPlayer->mBackward.z = direction.z;
-//    direction.x = mVelocity.x;
-//    direction.z = mVelocity.z;
 
 }
 
@@ -50,3 +46,5 @@ void Particles::getRandParticle()
 {
 
 }
+
+
