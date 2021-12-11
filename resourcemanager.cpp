@@ -70,6 +70,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
+        tempGO->mCollisionComp->mMatrix.setToIdentity();
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
@@ -77,6 +78,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
         tempGO->mCollisionComp = new CollisionComponent();
+        tempGO->mCollisionComp->mMatrix.setToIdentity();
 
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
@@ -230,8 +232,6 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     gameObj->mMeshComp->bUsingLOD = singleObject["usingLOD"].toBool();
                     }
                 }
-
-
                 //might not need this
                 gameObj->filepath = singleObject["filepath"].toString().toStdString();
 

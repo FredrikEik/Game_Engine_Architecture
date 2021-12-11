@@ -19,6 +19,7 @@
 #include "resourcemanager.h"
 #include "soundmanager.h"
 #include "gameengine.h"
+#include "transformsystem.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -381,7 +382,31 @@ void RenderWindow::render()
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
         }
+        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
+        {
+        //send data to shader
+            gsl::Matrix4x4 tempRotation = mGameObjects[i]->mTransformComp->mMatrix;
+            if(mGameObjects[i]->mCollisionComp->bRotated){
+//                mGameObjects[i]->mCollisionComp->mMatrix = mGameObjects[i]->mTransformComp->mMatrix;
+                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,90,0));
+            }else
+               TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,0,0));
 
+            glUseProgram(mShaderPrograms[2]->getProgram() );
+            glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+            GameObject* light = GameEngine::getInstance()->mLight;
+            gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
+            gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
+
+            glUniform1i(mPhongTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
+            glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
+            glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
+            glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);
+
+            mGameObjects[i]->mTransformComp->mMatrix = tempRotation;
+        }
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
         if( bShowAllCollisionBoxes )

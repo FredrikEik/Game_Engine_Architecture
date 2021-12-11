@@ -66,6 +66,11 @@ public:
 
     float mRaidus{0};
 
+    // AABB is axis oriented so it only has two orientations.
+    bool bRotated{false};
+    gsl::Vector3D mRotation{0.f,0.f,0.f};
+    gsl::Matrix4x4 mMatrix;
+        gsl::Matrix4x4 mScaleMatrix;
 };
 
 class BallPhysicsComponent

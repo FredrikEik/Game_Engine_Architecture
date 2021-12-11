@@ -14,9 +14,12 @@ public:
     void setPosition(GameObject* obj, gsl::Vector3D moveToPos);
     void setScale(GameObject* obj, gsl::Vector3D scaleToValue);
     void setRotation(GameObject* obj, gsl::Vector3D rotateToValue);
+    void setCollisionRotation(GameObject* obj, float deg);
 private:
     void updateMatrix(GameObject* obj);
     static TransformSystem* mInstance;
+
+    bool rotateOnce{true};
 };
 
 #endif // TRANSFORMSYSTEM_H

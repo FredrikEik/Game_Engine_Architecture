@@ -20,7 +20,6 @@ TransformSystem *TransformSystem::getInstance()
 
 void TransformSystem::setPosition(GameObject *obj, gsl::Vector3D moveToPos)
 {
-    gsl::Vector3D curretPos = obj->mTransformComp->mScaleMatrix.getPosition();
     obj->mTransformComp->mScaleMatrix.setPosition(moveToPos.x,moveToPos.y,moveToPos.z);
 
     updateMatrix(obj);
@@ -43,6 +42,60 @@ void TransformSystem::setRotation(GameObject *obj, gsl::Vector3D rotateToValue)
     obj->mTransformComp->mScaleMatrix.rotateX(x);
     obj->mTransformComp->mScaleMatrix.rotateY(y);
     obj->mTransformComp->mScaleMatrix.rotateZ(z);
+
+    float yrot = obj->mTransformComp->mRotation.y;
+    if((yrot > 45 && yrot < 135) || ((yrot > 220 && yrot < 315)))
+    {
+        obj->mCollisionComp->bRotated = true;
+        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+        if(rotateOnce)
+        {
+            float tempMaxX = obj->mCollisionComp->maxCorner.x();
+            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
+            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+
+            float tempMinX = obj->mCollisionComp->minCorner.x();
+            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
+            obj->mCollisionComp->minCorner.setZ(tempMinX);
+            rotateOnce = false;
+        }
+    }
+    else if((yrot < -45 && yrot > -135) || ((yrot < -220 && yrot > -315)))
+    {
+        obj->mCollisionComp->bRotated = true;
+        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+        if(rotateOnce)
+        {
+            float tempMaxX = obj->mCollisionComp->maxCorner.x();
+            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
+            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+
+            float tempMinX = obj->mCollisionComp->minCorner.x();
+            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
+            obj->mCollisionComp->minCorner.setZ(tempMinX);
+            rotateOnce = false;
+        }
+    }else
+    {
+        obj->mCollisionComp->bRotated = false;
+        rotateOnce = true;
+    }
+        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+
+    updateMatrix(obj);
+}
+
+void TransformSystem::setCollisionRotation(GameObject *obj, float deg)
+{
+
+    float y = deg - obj->mCollisionComp->mRotation.getY();
+
+
+    obj->mCollisionComp->mRotation.setY(y+obj->mCollisionComp->mRotation.getY());
+
+
+    obj->mCollisionComp->mScaleMatrix.rotateY(y);
+
 
     updateMatrix(obj);
 }

@@ -358,6 +358,8 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
         return;
     gsl::Vector3D currentRot = GameObjects[ObjectListIndex]->mTransformComp->mRotation;
     TransformSystem::getInstance()->setRotation(GameObjects[ObjectListIndex], gsl::Vector3D(arg1, currentRot.y, currentRot.z));
+//    if(GameObjects[ObjectListIndex]->mTransformComp->mRotation.getY());
+
 }
 
 void MainWindow::on_RotateYspinBox_valueChanged(double arg1)

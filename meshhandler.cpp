@@ -775,15 +775,15 @@ void MeshHandler::makeCollisionBox(CollisionComponent* CollisionComp, MeshCompon
     float maxY = CollisionComp->maxCorner.y();
     float maxZ = CollisionComp->maxCorner.z();
 
-    CollisionLines->mVertices->push_back(Vertex(minX, minY, maxZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(maxX, minY, maxZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(maxX, maxY, maxZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(minX, maxY, maxZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(minX, minY, maxZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(maxX, minY, maxZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(maxX, maxY, maxZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(minX, maxY, maxZ,   1,0,0,  0,0));
 
-    CollisionLines->mVertices->push_back(Vertex(minX, minY, minZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(maxX, minY, minZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(maxX, maxY, minZ,   1,0,0,  0,0));
-    CollisionLines->mVertices->push_back(Vertex(minX, maxY, minZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(minX, minY, minZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(maxX, minY, minZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(maxX, maxY, minZ,   1,0,0,  0,0));
+    CollisionLines->mVertices[0].push_back(Vertex(minX, maxY, minZ,   1,0,0,  0,0));
 
 //    CollisionLines->mVertices[0].insert( CollisionLines->mVertices[0].end(),
 //      {//Vertex data for front points       color                       uv
