@@ -321,7 +321,7 @@ void MainWindow::on_StartPhysics_clicked()
         mRenderWindow->isPhysicsEnabled = false;
     }else{
         mRenderWindow->isPhysicsEnabled = true;
-        ui->RecordBSplines->setEnabled(true);
+        //ui->RecordBSplines->setEnabled(true);
     }
 
 }

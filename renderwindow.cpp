@@ -106,6 +106,7 @@ void RenderWindow::init()
     mTextures[6] = new Texture("SpaceInvaderBoss1.bmp");
     mTextures[7] = new Texture("SpaceInvadersBoss2.bmp");
     mTextures[8] = new Texture("skybox", true); //bitmap
+    mTextures[9] = new Texture("truck.obj"); //bitmap
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
@@ -125,6 +126,8 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[7]->mGLTextureID);
     glActiveTexture(GL_TEXTURE8);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[8]->mGLTextureID); //cubemap
+    glActiveTexture(GL_TEXTURE9);
+    glBindTexture(GL_TEXTURE_2D, mTextures[9]->mGLTextureID);
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
     //Supported on most Windows machines
@@ -179,23 +182,24 @@ void RenderWindow::init()
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
 
     entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    //    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    //    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    //    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
-    //    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
-    //    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
-    //    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
+    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
+    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
+    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
+    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
+    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
 
-    //    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
-    //    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
-    //    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
-    //    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
-    //    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
-    //    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
+    Physics->InitPhysicsSystem(meshCompVec[4],ResSys->getVertexDataByName("bowlSurface.obj"));
+    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
+    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
+    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
+    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
+    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
+    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
 
 
-    /*
+
 
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
@@ -208,7 +212,7 @@ void RenderWindow::init()
         }
     }
     //JSS->SaveLevel("Test");
-*/
+
 
     SoundManager::getInstance()->init();
 
@@ -250,23 +254,7 @@ void RenderWindow::init()
 
 
     //LASDATA
-    LASHeightMap *map = new LASHeightMap("C:../GEA2021/test_las.txt",  1);
-    //ResSys->SetIntoMeshDataContainerRUNTIME(map->getPositions(), "LAS");
-    // entitySys->construct("LAS", QVector3D(-100,0,-100), 0,0,-1, GL_TRIANGLES);
-    ResSys->SetIntoMeshDataContainerRUNTIME(map->getmVertices(), "LAS");
-    entitySys->construct("LAS", QVector3D(0,0,0), 0,0,-1, GL_TRIANGLES); //3
-    //ResSys->SetIntoMeshDataContainerRUNTIME(map->getCountourPoints(), "LAS-CONT");
-    //entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,-1, GL_LINES);
 
-    LASHeightMap *mapPhys = new LASHeightMap("C:../GEA2021/test_las.txt", 15); //physics surface
-    Physics->InitPhysicsSystem(meshCompVec[3], mapPhys->getmVertices());
-    //send in the necessary data to physics engine
-    //    int eSize = (int)entities.size();
-    //    for(int i = 0; i < eSize; i++){
-    //        if(meshCompVec[i]->entity == 16){
-    //            break;
-    //        }
-    //    }
 
     for(int i{0}; i < 5; i++)
     {
@@ -279,9 +267,7 @@ void RenderWindow::init()
     //    transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
     //}
 
-    marchingsquare *march = new marchingsquare(map);
-    ResSys->SetIntoMeshDataContainerRUNTIME(march->getMeshComp()->mVertices, "LAS-CONT");
-    entitySys->construct("LAS-CONT", QVector3D(0,0,0), 0,0,600, GL_LINES);
+
 
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
@@ -294,16 +280,16 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-    if(isPhysicsEnabled && RecordBSplines){
-        frameCountForPointIntake++;
-        if(frameCountForPointIntake > 50){
-            frameCountForPointIntake = 0;
-            qDebug() << "INSERTED";
-            for(int i = 0; i < transformCompVec.size(); i++){
-                transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
-            }
-        }
-    }
+    //    if(isPhysicsEnabled && RecordBSplines){
+    //        frameCountForPointIntake++;
+    //        if(frameCountForPointIntake > 50){
+    //            frameCountForPointIntake = 0;
+    //            qDebug() << "INSERTED";
+    //            for(int i = 0; i < transformCompVec.size(); i++){
+    //                transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
+    //            }
+    //        }
+    //    }
 
     mMainWindow->updateDetails();
 
@@ -343,6 +329,18 @@ void RenderWindow::render()
             switchProgram(i);   //assignes propper values for programs
             switchLOD(i);       //switches to correct lod
 
+
+            if(isPhysicsEnabled && transformCompVec[i]->isPhysicsEnabled)
+            {
+
+                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
+
+
+
+            }
+
+
+
             RenderSys->draw(meshCompVec[i],
                             MaterialCompVec[i],
                             transformCompVec[i],
@@ -351,77 +349,24 @@ void RenderWindow::render()
                             modelMatrix,
                             mCurrentCamera);
 
-            /*//----------------------------------------------------
-            //HARDCODED COLLIDER BABY
-            //monkey thats moving is entity id 2
-            if(transformCompVec[2]->entity == 2 && meshCompVec[2]->entity == 2 && meshCompVec[2]->IsCollidable ){
-                if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[i],transformCompVec[i]))
-                {
-                    //run collision code
-                    if(meshCompVec[i]->entity != 2 && meshCompVec[i]->entity != 0)
-                        meshCompVec[i]->isDrawable = false;
-                }
-            }
-            //------------------------------------------------------
-            */
-
             if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
 
+
         }
 
 
     }
 
-    if(isPhysicsEnabled)
-    {
-        //COLLISON AND PHYSICS PART
-        for(unsigned long long i = 0; i < static_cast<unsigned long long>(eSize); i++)
-        {
 
 
-            if(transformCompVec[i]->isPhysicsEnabled ) //enmtity 4 is the ball
-            {
-                Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-                if(transformCompVec[i]->PosOverTime.size() == 10 && !transformCompVec[i]->bBSExists){
-                    bSSys->initialize(i);
-                    transformCompVec[i]->bBSExists = true;
-                    mMainWindow->updateViewPort();
-                }
-
-            }
-            //HARDCODED COLLIDER BABY
-            //            if(transformCompVec[i]->isPhysicsEnabled && isPhysicsEnabled)
-            //            {
-            //                for(unsigned long long j = 0; j < eSize; j++)
-            //                    if(i != j)
-            //                        if( collisionSys->isColliding(meshCompVec[i],transformCompVec[i],meshCompVec[j],transformCompVec[j]))
-            //                        {
-            //                            /*
-            //                          QVector3D vec1 =MakeQvec3D( transformCompVec[i]->Velocity);
-            //                          vec1.normalize();
-            //                          QVector3D vec2 =MakeQvec3D( transformCompVec[j]->Velocity);
-            //                          vec2.normalize();
-
-            //                          transformCompVec[i]->Velocity = transformCompVec[i]->Velocity + MakeGSLvec3D( vec2  ) ;
-            //                          transformCompVec[j]->Velocity = transformCompVec[j]->Velocity - MakeGSLvec3D( vec1 );
-            //*/
-            //                        //KILL M E PLS
-            //                        }
-            //            }
+    //drawFrostum();      //frustum culling lines! This is a visualisation of frostum
 
 
-        }
-
-    }
-
-    drawFrostum();      //frustum culling lines! This is a visualisation of frostum
-
-    /*
     if(bIsPlayerCamera)
     {
         mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));
     }
-    */
+
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time

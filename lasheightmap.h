@@ -16,7 +16,8 @@ public:
 
     std::vector<Vertex> getPositions() const;
     std::vector<Vertex> getmVertices() const;
-    void setPositions(const std::vector<Vertex> &value);
+
+
     bool isDivisibleBy5(std::string str)
     {
         unsigned long long n = str.length();
@@ -35,21 +36,22 @@ public:
     float getHeighestY(){return heighestY;}
 private:
     int Resolution = 1; //1 is default and higest rez.
-    void ReadDatafromFile(std::string fileName);
+    float PosArr[1000][2000];
+    float ContourPoints[50][1000];
+    int ContourIndex[50];
+
     std::vector<Vertex> positions;
     std::vector<Vertex> mVertices;
     std::vector<Vertex> CountourPoints;
     std::pair<int,Vertex> CountourLines;
+
+    void ReadDatafromFile(std::string fileName);
     void populatePosArr();
 
-    float PosArr[1000][2000];
-    float ContourPoints[50][1000];
-    int ContourIndex[50];
     void RemoveDeltaPos();
     void GenerateHeightMap();
     float CalcHeight(float x = 0, float z = 0);
 
-    void CalcContourlineOrder();
 
     float heighestY = 0;
     float lowestY = 0;

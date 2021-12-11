@@ -27,8 +27,6 @@ SOURCES += main.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
     jsonsystem.cpp \
-    lasheightmap.cpp \
-    marchingsquare.cpp \
     openal/soundmanager.cpp \
     openal/soundsource.cpp \
     openal/vector3.cpp \
@@ -59,8 +57,6 @@ HEADERS += \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
     jsonsystem.h \
-    lasheightmap.h \
-    marchingsquare.h \
     openal/soundmanager.h \
     openal/soundsource.h \
     openal/vector3.h \
