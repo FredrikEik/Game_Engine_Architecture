@@ -9,7 +9,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
 //        //qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
 //        //qDebug() << "INPUT: " << QString::fromStdString(input);
 //        //qDebug() << "meshDataContainer Size: " << meshDataContainer.size();
-        for(int i = 0; i < (int)meshDataContainer.size(); i++){
+        for(unsigned long long i = 0; i < (int)meshDataContainer.size(); i++){
             //qDebug() << "Comparing: " << QString::fromStdString(input) << " to: " << QString::fromStdString(meshDataContainer[i].first);
             if(input == meshDataContainer[i].first){
                 //qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
@@ -24,7 +24,7 @@ void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh
                     //qDebug() << "LOD Enabled";
                     std::string sLOD1 = getPureName(meshDataContainer[i].first) + "_L01.obj", sLOD2 = getPureName(meshDataContainer[i].first) + "_L02.obj";
                     //qDebug() << "LOD1 Name: " << QString::fromStdString(sLOD1) << " LOD2 Name: "  << QString::fromStdString(sLOD2);
-                    for(int k = 0; k < (int)meshDataContainer.size(); k++){
+                    for(unsigned long long k = 0; k < (int)meshDataContainer.size(); k++){
                         if(sLOD1 == meshDataContainer[k].first){
                             //qDebug() << "FOUND LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
                             mesh->mVAO[1] = meshDataContainer[k].second.VAO;

@@ -20,6 +20,10 @@ struct TransformComponent
     int entity = 0;
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
+    bool isPhysicsEnabled = false;
+    int LastTriangeindex = 0;
+    std::vector<gsl::Vector3D> PosOverTime;
+    bool bBSExists = false;
 };
 
 struct MeshComponent
@@ -64,8 +68,6 @@ struct PhysicsComponent
     float g = 9.81f;
     QVector3D GravityVec = QVector3D(0.f,-g,0.f);
     QVector3D VelocityVec = QVector3D(0.0f,0.0f,0.0f);
-
-
 };
 
 #endif // COMPONENTS_H

@@ -313,3 +313,26 @@ void MainWindow::on_actionLoad_World_triggered()
       mRenderWindow->JSS->LoadLevel(filename1.toStdString());
     }
 }
+
+void MainWindow::on_StartPhysics_clicked()
+{
+    //togglelator 6000
+    if(mRenderWindow->isPhysicsEnabled){
+        mRenderWindow->isPhysicsEnabled = false;
+    }else{
+        mRenderWindow->isPhysicsEnabled = true;
+        ui->RecordBSplines->setEnabled(true);
+    }
+
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+
+}
+
+void MainWindow::on_RecordBSplines_clicked()
+{
+    mRenderWindow->RecordBSplines = true;
+    ui->RecordBSplines->setEnabled(false);
+}

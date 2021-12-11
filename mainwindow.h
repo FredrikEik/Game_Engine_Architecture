@@ -77,6 +77,12 @@ private slots:
 
     void on_actionLoad_World_triggered();
 
+    void on_StartPhysics_clicked();
+
+    void on_pushButton_11_clicked();
+
+    void on_RecordBSplines_clicked();
+
 private:
     void init();
     Ui::MainWindow *ui;

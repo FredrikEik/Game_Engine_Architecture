@@ -18,6 +18,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    bsplinesystem.cpp \
     camera.cpp \
     cameracomponent.cpp \
     collisionsystem.cpp \
@@ -27,6 +28,7 @@ SOURCES += main.cpp \
     gsl/matrix4x4.cpp \
     jsonsystem.cpp \
     lasheightmap.cpp \
+    marchingsquare.cpp \
     openal/soundmanager.cpp \
     openal/soundsource.cpp \
     openal/vector3.cpp \
@@ -44,6 +46,7 @@ SOURCES += main.cpp \
     vertex.cpp
 
 HEADERS += \
+    bsplinesystem.h \
     camera.h \
     cameracomponent.h \
     collisionsystem.h \
@@ -57,6 +60,7 @@ HEADERS += \
     gsl/matrix4x4.h \
     jsonsystem.h \
     lasheightmap.h \
+    marchingsquare.h \
     openal/soundmanager.h \
     openal/soundsource.h \
     openal/vector3.h \

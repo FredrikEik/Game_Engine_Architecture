@@ -125,6 +125,9 @@ Vertex::Vertex(QVector3D vec1, QVector3D vec2)
 }
 
 
+
+
+
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";

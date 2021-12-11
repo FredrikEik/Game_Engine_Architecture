@@ -24,10 +24,10 @@ private:
     bool onTriangle = false;
     MeshComponent* mSurfaceData = new MeshComponent();
     std::vector<Vertex> vertexData;
-    gsl::Vector3D MakeGSLvec3D(QVector3D vec);
     void FindTriangle(TransformComponent* Transf);
     QVector3D CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3);
     QVector3D Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVector3D pos);
+    gsl::Vector3D MakeGSLvec3D(QVector3D vec);
     QVector3D MakeQvec3D(gsl::Vector3D vec);
     QVector3D MirrorVector(QVector3D Vector, QVector3D normal);
     QVector3D DistanceTraveled(QVector3D Velocity, QVector3D Acceleration, float DT);
