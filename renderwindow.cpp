@@ -220,7 +220,7 @@ void RenderWindow::initObjects()
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
     GameObject *temp=nullptr;
-   /* for(int i{0}; i < 50; i++)
+    for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -231,7 +231,7 @@ void RenderWindow::initObjects()
         }
     }
 
-    */
+
             mPlayer = factory->createObject("Player");
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
@@ -239,6 +239,7 @@ void RenderWindow::initObjects()
 
 
              hjelpeObjekt = factory->createObject("Cube");
+             hjelpeObjektMesh = new MeshComponent;
 
 }
 
@@ -279,7 +280,7 @@ void RenderWindow::render()
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
-            //qDebug() << shaderProgramIndex;
+            ////qDebug() << shaderProgramIndex;
             if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
@@ -350,7 +351,7 @@ void RenderWindow::render()
             if (i==mIndexToPickedObject) {
 
                 //driver å må lage noe hjelpe objekt.
-            hjelpeObjektMesh = new MeshComponent;
+
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
             hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
