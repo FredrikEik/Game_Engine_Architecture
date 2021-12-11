@@ -16,7 +16,9 @@ class SoundSourceComponent;
 class MainWindow;
 class PhysicsBallSystem;
 class CollisionSystem;
+class TransformSystem;
 
+///Core Engine class to handle
 class GameEngine : public QObject
 {
     Q_OBJECT
@@ -27,6 +29,9 @@ public:
     GameEngine();
     void SetUpScene();
 
+    /**
+      Testing can you see this!
+     */
     void SetUpObjects();
     void HandleInput();
     void togglePlay(bool bInIsPlaying);
@@ -52,6 +57,7 @@ public:
 
     /// Object needs filepaht, if using lod, texture name
     void CreateObject(std::string filePath, bool bUsingLOD, std::string textureName);
+
 
 
 
@@ -81,6 +87,7 @@ private:
     ResourceManager *mResourceManager{nullptr};
     PhysicsBallSystem *mPhysicsBallSystem{nullptr};
     CollisionSystem *mCollisionSystem{nullptr};
+    TransformSystem *mTransformSystem{nullptr};
 
     //std::vector<GameObject*> mGameObjects;
 

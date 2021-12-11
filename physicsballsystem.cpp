@@ -66,7 +66,7 @@ void PhysicsBallSystem::SetTerrainData(GameObject &TerrainInn)
 
 void PhysicsBallSystem::move(float dt)
 {
-S
+
 }
 
 QVector3D PhysicsBallSystem::barycentricCoordinates(const QVector2D &dette, const QVector2D &p1, const QVector2D &p2, const QVector2D &p3)

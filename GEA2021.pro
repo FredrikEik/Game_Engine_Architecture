@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
+    transformsystem.cpp \
     vector2d.cpp \
     vector3d.cpp \
     vertex.cpp
@@ -54,6 +55,7 @@ HEADERS += \
     soundmanager.h \
     soundsource.h \
     texture.h \
+    transformsystem.h \
     vector2d.h \
     vector3d.h \
     vertex.h

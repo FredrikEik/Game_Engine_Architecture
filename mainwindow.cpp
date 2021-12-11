@@ -11,6 +11,7 @@
 
 #include "renderwindow.h"
 #include "gameengine.h"
+#include "transformsystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -321,13 +322,14 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
     lastIndex = currentRow;
 }
 
+
 void MainWindow::on_TranslateXspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
 
-    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(arg1,pos.y(),pos.z());
+    gsl::Vector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition();
+    TransformSystem::getInstance()->setPosition(GameObjects[ObjectListIndex], gsl::Vector3D(arg1,pos.y,pos.z));
 }
 
 
@@ -336,8 +338,8 @@ void MainWindow::on_TranslateYspinBox_valueChanged(double arg1)
     if(ObjectListIndex == 0)
         return;
 
-    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),arg1,pos.z());
+    gsl::Vector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition();
+    TransformSystem::getInstance()->setPosition(GameObjects[ObjectListIndex], gsl::Vector3D(pos.x,arg1,pos.z));
 }
 
 void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
@@ -345,8 +347,8 @@ void MainWindow::on_TranslateZspinBox_valueChanged(double arg1)
     if(ObjectListIndex == 0)
         return;
 
-    QVector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition().getQVector();
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.setPosition(pos.x(),pos.y(),arg1);
+    gsl::Vector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition();
+    TransformSystem::getInstance()->setPosition(GameObjects[ObjectListIndex], gsl::Vector3D(pos.x,pos.y,arg1));
 }
 
 
@@ -354,16 +356,8 @@ void MainWindow::on_RotateXspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-
-    float x = arg1 - GameObjects[ObjectListIndex]->mTransformComp->mRotation.getX();
-    GameObjects[ObjectListIndex]->mTransformComp->mRotation.setX(x+GameObjects[ObjectListIndex]->mTransformComp->mRotation.getX());
-    GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix.rotateX(x);
-
-
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix = GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix;
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(GameObjects[ObjectListIndex]->mTransformComp->mScale.x,
-                                                                GameObjects[ObjectListIndex]->mTransformComp->mScale.y,
-                                                                GameObjects[ObjectListIndex]->mTransformComp->mScale.z);
+    gsl::Vector3D currentRot = GameObjects[ObjectListIndex]->mTransformComp->mRotation;
+    TransformSystem::getInstance()->setRotation(GameObjects[ObjectListIndex], gsl::Vector3D(arg1, currentRot.y, currentRot.z));
 }
 
 void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
@@ -371,9 +365,8 @@ void MainWindow::on_RotateYspinBox_valueChanged(double arg1)
     if(ObjectListIndex == 0)
         return;
 
-    float y = arg1 - GameObjects[ObjectListIndex]->mTransformComp->mRotation.getY();
-    GameObjects[ObjectListIndex]->mTransformComp->mRotation.setY(y+GameObjects[ObjectListIndex]->mTransformComp->mRotation.getY());
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateY(y);
+    gsl::Vector3D currentRot = GameObjects[ObjectListIndex]->mTransformComp->mRotation;
+    TransformSystem::getInstance()->setRotation(GameObjects[ObjectListIndex], gsl::Vector3D(currentRot.x, arg1, currentRot.z));
 }
 
 void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
@@ -381,37 +374,34 @@ void MainWindow::on_RotateZspinBox_valueChanged(double arg1)
     if(ObjectListIndex == 0)
         return;
 
-    float z = arg1 - GameObjects[ObjectListIndex]->mTransformComp->mRotation.getZ();
-    GameObjects[ObjectListIndex]->mTransformComp->mRotation.setZ(z+GameObjects[ObjectListIndex]->mTransformComp->mRotation.getZ());
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.rotateZ(z);
+    gsl::Vector3D currentRot = GameObjects[ObjectListIndex]->mTransformComp->mRotation;
+    TransformSystem::getInstance()->setRotation(GameObjects[ObjectListIndex], gsl::Vector3D(currentRot.x, currentRot.y, arg1));
 }
 
 void MainWindow::on_ScaleXspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-
-    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(arg1);
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix = GameObjects[ObjectListIndex]->mTransformComp->mScaleMatrix;
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(GameObjects[ObjectListIndex]->mTransformComp->mScale);
-//    scaleX = float(arg1);
-//    Scale();
+    gsl::Vector3D curScale = GameObjects[ObjectListIndex]->mTransformComp->mScale;
+    TransformSystem::getInstance()->setScale(GameObjects[ObjectListIndex], gsl::Vector3D(arg1,curScale.y,curScale.z));
 }
 
 void MainWindow::on_ScaleYspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-    scaleY = float(arg1);
-    Scale();
+
+    gsl::Vector3D curScale = GameObjects[ObjectListIndex]->mTransformComp->mScale;
+    TransformSystem::getInstance()->setScale(GameObjects[ObjectListIndex], gsl::Vector3D(curScale.x,arg1,curScale.z));
 }
 
 void MainWindow::on_ScaleZspinBox_valueChanged(double arg1)
 {
     if(ObjectListIndex == 0)
         return;
-    scaleZ = float(arg1);
-    Scale();
+
+    gsl::Vector3D curScale = GameObjects[ObjectListIndex]->mTransformComp->mScale;
+    TransformSystem::getInstance()->setScale(GameObjects[ObjectListIndex], gsl::Vector3D(curScale.x,curScale.y,arg1));
 }
 
 
