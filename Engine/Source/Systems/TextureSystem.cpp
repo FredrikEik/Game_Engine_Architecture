@@ -15,6 +15,14 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 
 	assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
 
+	GLenum format{ GL_RGB };
+	if (textureComponent->numberOfChannels == 1)
+		format = GL_RED;
+	else if (textureComponent->numberOfChannels == 3)
+		format = GL_RGB;
+	else if (textureComponent->numberOfChannels == 4)
+		format = GL_RGBA;
+
 	glGenTextures(1, &textureComponent->textureID);
 	glBindTexture(GL_TEXTURE_2D, textureComponent->textureID);
 
@@ -23,8 +31,22 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureComponent->width, textureComponent->height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureComponent->rgbImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, textureComponent->width, textureComponent->height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureComponent->rgbImage);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(textureComponent->rgbImage);
+}
+
+void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, std::map<std::string, std::string> nameFileMap)
+{
+	for (auto it : nameFileMap)
+	{
+		std::string name = std::get<0>(it);
+		auto filename = std::get<1>(it);
+
+		TextureComponent tex(MaterialComp->entityID, MaterialComp->ID);
+		loadImage(0,filename,&tex);
+
+		MaterialComp->textures.insert(std::make_pair(name,tex));
+	}
 }

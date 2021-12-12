@@ -16,9 +16,10 @@ struct Light {
     float Radius;
 };
 
-const int NR_LIGHTS = 32;
-uniform Light lights[NR_LIGHTS];
-uniform vec3 viewPos;
+const int MAX_NUM_LIGHTS = 256;
+uniform int u_NumLights;
+uniform Light u_Lights[MAX_NUM_LIGHTS];
+uniform vec3 u_CameraPos;
 
 void main() {
 
@@ -30,22 +31,23 @@ void main() {
 
      // blinn-phong
     vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component
-    vec3 viewDir  = normalize(viewPos - FragPos);
-    for(int i = 0; i < NR_LIGHTS; ++i)
+    vec3 viewDir  = normalize(u_CameraPos - FragPos);
+    for(int i = 0; i < u_NumLights; ++i)
     {
         // calculate distance between light source and current fragment
-        float distance = length(lights[i].Position - FragPos);
-        if(distance < lights[i].Radius)
+        
+        float dist = length(u_Lights[i].Position - FragPos);
+        if(dist < u_Lights[i].Radius)
         {
             // diffuse
-            vec3 lightDir = normalize(lights[i].Position - FragPos);
-            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
+            vec3 lightDir = normalize(u_Lights[i].Position - FragPos);
+            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * u_Lights[i].Color;
             // specular
             vec3 halfwayDir = normalize(lightDir + viewDir);  
             float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-            vec3 specular = lights[i].Color * spec * Specular;
+            vec3 specular = u_Lights[i].Color * spec * Specular;
             // attenuation
-            float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
+            float attenuation = 1.0 / (1.0 + u_Lights[i].Linear * dist + u_Lights[i].Quadratic * dist * dist);
             diffuse *= attenuation;
             specular *= attenuation;
             lighting += diffuse + specular;

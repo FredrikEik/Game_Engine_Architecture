@@ -313,7 +313,7 @@ void Engine::loop()
 			//TODO: Draw a game camera here
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
-
+		
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
 		glStencilMask(0xFF); // enable writing to the stencil buffer
 	
@@ -321,10 +321,15 @@ void Engine::loop()
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
 		//lightPos += 0.01f;
+		/*
 		CameraSystem::draw(cameraEntity, phongShader, ECS);
 		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
+		*/
+
+		// contains camera draw and mesh system draw.
+		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

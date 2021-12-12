@@ -167,6 +167,14 @@ struct TextureComponent final : public Component
 	void jsonParse(const JSON& json) override;
 };
 
+struct MaterialComponent : public Component
+{
+	MaterialComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	//id naming convention is "texture_?????" where ????? can e.g. be diffuse   
+	std::map<std::string, TextureComponent> textures;
+};
+
 
 struct ScriptComponent final : public Component
 {
@@ -237,6 +245,8 @@ struct LightComponent final : public Component
 
 struct GBufferComponent final : public Component
 {
+	GBufferComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
 	uint gBuffer;
 	uint gPosition;
 	uint gNormal;
