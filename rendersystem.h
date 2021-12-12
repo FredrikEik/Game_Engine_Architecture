@@ -34,7 +34,7 @@ public:
     //Just to test mousePickingRay
     int mIndexToPickedObject{-1};
 
-    std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
+    std::vector<GameObject*> mGameObjects;
 
     bool mIsPlaying{false};
     bool mSimulatePhysics{false};

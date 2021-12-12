@@ -13,7 +13,7 @@ GamePlayMechanics::GamePlayMechanics(RenderSystem *renderSystemIn) : mRenderSyst
     mGameObjectManager = &GameObjectManager::getInstance();
 }
 
-std::vector<GameObject*> GamePlayMechanics::TetrominoMaker(int tetromino)
+/*GameObject */ void GamePlayMechanics::TetrominoMaker(int tetromino)
 {
     bool tetrominoCraftGrid[4][3] = {{0}};
     std::string GameBlockName = {};
@@ -154,7 +154,7 @@ switch (tetromino)
 }
 
     // I create a tetromino out og four gameobjects.
-    std::vector<GameObject*> GameBlock;
+    GameObject *GameBlock;
     GameBlockName = "Tetromino"; //for testing purposes
 
     for (int i = 0; i < 4; i++) //Need to go through the entire tetrominoCraftGrid
@@ -163,16 +163,17 @@ switch (tetromino)
         {
             if (tetrominoCraftGrid[i][j] == true) //If there is something in the grid coordinate, create a block with the position.
             {                                     //Only four hits will be made.
-                GameBlock.emplace_back(mGameObjectManager->addObject("Cube.obj"));
-                GameBlock[i]->mTransform->mMatrix.translate(i, 0.0f, j);
-                GameBlock[i]->mTransform->mMatrix.scale(1.0f);
-                GameBlock[i]->mName = GameBlockName + std::to_string(i);
-                mRenderSystem->mGameObjects.push_back(GameBlock[i]);
+                GameBlock = mGameObjectManager->addObject("Cube.obj");
+                GameBlock->mTransform->mMatrix.translate(i, 0.0f, j);
+                GameBlock->mTransform->mMatrix.scale(1.0f);
+                GameBlock->mName = GameBlockName + std::to_string(i);
+                qDebug() << "Tetrominoblock made";
             }
         }
     }
+    mRenderSystem->mGameObjects.emplace_back(GameBlock);
 //    qDebug() << "Testing variables, need a breakpoint";
-    return GameBlock;
+//    return GameBlock;
 }
 
 

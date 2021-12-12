@@ -158,10 +158,10 @@ void MainWindow::on_actionCull_With_EditorCam_toggled(bool checked)
 void MainWindow::on_actionBasic_Editor_Controls_triggered()
 {
     QMessageBox::about(this, "Basic Controls",
-                       "Move and rotate camera by holding down right mouse button,"
-                       "\nand move with WASD and Q = down, E = up."
-                       "\nUse ScrollWheel to adjust speed." // and Left Shift
-                       "\nUse F to move camera to selected object.");
+                             "Move and rotate camera by holding down right mouse button,"
+                             "\nand move with WASD and Q = down, E = up."
+                             "\nUse ScrollWheel to adjust speed." // and Left Shift
+                             "\nUse F to move camera to selected object.");
 }
 
 void MainWindow::on_actionWireframe_triggered(bool checked)

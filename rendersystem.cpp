@@ -141,8 +141,10 @@ void RenderSystem::render()
         //First object - xyz
         //what shader to use
         //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        ShaderHandler *tempShader{nullptr};
+
         int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
-        ShaderHandler *tempShader = mGameObjectManager->mShaders[shaderIndex];
+        tempShader = mGameObjectManager->mShaders[shaderIndex];
         glUseProgram(tempShader->mProgram);
 
         //This block sets up the uniforms for the shader used in the material
@@ -159,6 +161,15 @@ void RenderSystem::render()
         {
             //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+        }
+        else if(tempShader->mTextureUniform == 3)
+        {
+            viewMatrix = vMatrixUniform3;
+            projectionMatrix = pMatrixUniform3;
+            modelMatrix = mMatrixUniform3;
+
+            glUniform1i(mTextureUniform3, mLvl->mVisualObjects[i]->mMaterial->mTextureUnit);
+
         }
 
         //send data to shader
@@ -281,7 +292,7 @@ void RenderSystem::render()
         mGameCamAsFrustumCulling = true;
     }
 
-    //Immediatly this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
+    //immediately this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
     //This seems based on code for using only a very limited amount of shaders, so i dont know how the rendersystem handles this.
     //I know there are hard-coded integers for shaders somewhere, will look into.
     //Seems like the rendersystem dont know about the skybox fragment and vertex shader

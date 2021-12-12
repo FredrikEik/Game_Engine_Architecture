@@ -329,18 +329,18 @@ void GameObjectManager::setUpAllShaders()
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
     ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainshader.vert").c_str(),
-            (gsl::ShaderFilePath + "plainshader.frag").c_str());
+                                                  (gsl::ShaderFilePath + "plainshader.frag").c_str());
     tempShader->mName = "PlainShader";
     mShaders.push_back(tempShader);
     std::string tempString;
     tempString += "Plain shader program id: " + std::to_string(mShaders[0]->mProgram);
     mLogger->logText(tempString);
     mShaders.back()->setupShader(false);
-
     mShaderMap.emplace("plain", 0);
 
+
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
+                                   (gsl::ShaderFilePath + "textureshader.frag").c_str());
     tempShader->mName = "TextureShader";
     mShaders.push_back(tempShader);
     tempString.clear();
@@ -348,6 +348,28 @@ void GameObjectManager::setUpAllShaders()
     mLogger->logText(tempString);
     mShaders[1]->setupShader(true);
     mShaderMap.emplace("texture", 1);
+
+
+    tempShader = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                   (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    tempShader->mName = "PhongShader";
+    mShaders.push_back(tempShader);
+    tempString.clear();
+    tempString += "Plain shader program id: " + std::to_string(mShaders[2]->mProgram);
+    mLogger->logText(tempString);
+    mShaders[2]->setupShader(true);
+    mShaderMap.emplace("phong", 2);
+
+
+    tempShader = new ShaderHandler((gsl::ShaderFilePath + "skybox.vert").c_str(),
+                                   (gsl::ShaderFilePath + "skybox.frag").c_str());
+    tempShader->mName = "SkyboxShader";
+    mShaders.push_back(tempShader);
+    tempString.clear();
+    tempString += "Skybox shader program id: " + std::to_string(mShaders[3]->mProgram);
+    mLogger->logText(tempString);
+    mShaders[3]->setupShader(true);
+    mShaderMap.emplace("skybox", 3);
 }
 
 MeshData GameObjectManager::makeLineBox(std::string meshName)

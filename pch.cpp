@@ -3,7 +3,7 @@
 /** \mainpage Gautes spillmotor
 
    \section intro_sec Introduksjon
-   Spillmotor laget gjennom 5. semester (2021) i Spillmotorarkitektur-faget. Dette er en del av Spillteknologi og Simulering bacheleor-studie på høyskolen i innlandet. Dette er dokumentasjonen og forklaringen av strukturen.
+   Spillmotor laget gjennom 5. semester (2021) i Spillmotorarkitektur-faget. Dette er en del av Spillteknologi og Simulering bachelor-studie på høyskolen i innlandet. Dette er dokumentasjonen og forklaringen av strukturen.
 
 
    \section install_sec Kompilering

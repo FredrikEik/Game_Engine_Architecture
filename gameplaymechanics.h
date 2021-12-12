@@ -19,7 +19,7 @@ public:
     int GetTetromino();
     void ActiveTetromino(int tetromino);
     void ManageGameplayLines(bool gameField);
-    std::vector<GameObject*> TetrominoMaker(int tetromino);
+    /*GameObject*/ void TetrominoMaker(int tetromino);
 
     GameObjectManager *mGameObjectManager{nullptr};
     RenderSystem *mRenderSystem{nullptr};

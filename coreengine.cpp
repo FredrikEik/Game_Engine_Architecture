@@ -187,20 +187,27 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mGameObjects.push_back(temp);
 
+    temp = mGameObjectManager->addObject("Cube.obj");
+    temp->mName = "Skybox";
+    temp->mMaterial->mShaderProgram = 3; // Skybox-shader
+    temp->mTransform->mMatrix.scale(30);
+    mRenderSystem->mGameObjects.push_back(temp);
+
+
     //Suzannes:
-    for(int i = 0; i <= 20; i++)
-    {
-        for(int j = 0; j < 5; j++)
-        {
-            temp = mGameObjectManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
-            temp->mTransform->mMatrix.scale(0.5f);
-            temp->mMesh->mColliderRadius *= 0.3f;
-            temp->mTransform->mScale.setAlltoSame(0.5f);
-            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
-            mRenderSystem->mGameObjects.push_back(temp);
-        }
-    }
+//    for(int i = 0; i <= 5; i++)
+//    {
+//        for(int j = 0; j < 2; j++)
+//        {
+//            temp = mGameObjectManager->addObject("suzanne.obj");
+//            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
+//            temp->mTransform->mMatrix.scale(0.5f);
+//            temp->mMesh->mColliderRadius *= 0.3f;
+//            temp->mTransform->mScale.setAlltoSame(0.5f);
+//            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
+//            mRenderSystem->mGameObjects.push_back(temp);
+//        }
+//    }
 
 //    temp = mGameObjectManager->addObject("suzanne.obj");
 //    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
@@ -278,29 +285,26 @@ void CoreEngine::gameLoop()
     mEditorCamera->update();
     //SoundSystem::getInstance()->update(mRenderSystem);
 
+    //Vis & Sim Code
+    {
+//    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
+//    PhysicsHandler ph;
 
-    //Update PhysicsObjects in scene
+//    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
+    }
+
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
-    PhysicsHandler ph;
 
-    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
-
-//    //Initializing values for the gameplay
-//    GamePlayMechanics tm(mRenderSystem);
-//    int tetrominoNr;
-////    std::vector<GameObject*> gameBlock;
+    //Initializing values for the gameplay
+    GamePlayMechanics tm(mRenderSystem);
+    int tetrominoNr;
 
 //    while(mGameObjects.size() < 40)
 //    {
-////        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
+//        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
 //        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
 
-//        //This line compiles, but mGameObjects does not expand with the push backs from inside the tetrominomaker function
-//        mGameObjects = tm.TetrominoMaker(tetrominoNr); //Returns four tetrominos as four gameobjects to be used in the scene.
-
-//        //With these lines i get convert-type errors. c2440 From '_Ty' to '_objty'
-////        mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
-////        mRenderSystem->mGameObjects.emplace_back(tm.TetrominoMaker(tetrominoNr));
+//        tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
 
 //        //If there is a tetromino in scene, let player rotate and drop tetromino
 //        for (int x = 0; x > mGameObjects.size(); x++)
@@ -309,7 +313,7 @@ void CoreEngine::gameLoop()
 //            {
 //                if(mGameObjects[x]->mName == "Tetromino")
 //                {
-//                    qDebug() << "Gameobject and subsecquent tetrominoes found";
+//                    qDebug() << "Gameobject and tetromino found";
 //                    qDebug() << QString::fromStdString(mGameObjects[i]->mName);
 //                }
 //            }

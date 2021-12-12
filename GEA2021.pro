@@ -114,6 +114,8 @@ FORMS += \
     widgetmaterial.ui
 
 DISTFILES += \
+    Shaders/phongshader.frag \
+    Shaders/phongshader.vert \
     Shaders/plainshader.frag \
     Shaders/plainshader.vert \
     Shaders/skybox.frag \
