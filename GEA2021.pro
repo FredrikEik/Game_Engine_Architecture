@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     objreader.cpp \
     plane.cpp \
     player.cpp \
+    postprocessing.cpp \
     quadtree.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     objreader.h \
     plane.h \
     player.h \
+    postprocessing.h \
     quadtree.h \
     renderwindow.h \
     shader.h \
@@ -106,6 +108,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/hdr.frag \
+    Shaders/hdr.vert \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \

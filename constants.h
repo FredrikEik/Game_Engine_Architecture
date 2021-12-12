@@ -17,7 +17,7 @@ namespace gsl  //Game School Lib
         PHONGSHADER
     };
 
-    const int NumberOfShaders{4};
+    const int NumberOfShaders{5};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
     const std::uint32_t MAX_OBJECTS{5000};

@@ -180,12 +180,22 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
+     mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "hdr.vert").c_str(),
+                                     (gsl::ShaderFilePath + "hdr.frag").c_str());
+                                      qDebug() << "hdr shader program id: " << mShaderPrograms[4]->getProgram();
+
 
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
+    setupHdrShader(4);
+    postFBO = new PostProcessing();
+    QWindow* test = new QWindow();
+
+    test->FullScreen;
+
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -269,6 +279,8 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
+
+
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnable(GL_CULL_FACE);
@@ -286,12 +298,12 @@ void RenderWindow::render()
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
-
+            postFBO->bindFramebuffer(0, 600,600);
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             //qDebug() << shaderProgramIndex;
-            if(shaderProgramIndex == 1 || shaderProgramIndex == 2)
+            if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
@@ -349,9 +361,10 @@ void RenderWindow::render()
                     factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                                 mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                                mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                                    factory->mGameObjects[i]->draw();
 
-                                   factory->mGameObjects[i]->draw();
-                                   objectsDrawn++;
+                                     objectsDrawn++;
+
                                 }
             }
                         /*}
@@ -359,14 +372,20 @@ void RenderWindow::render()
                 }
             }*/
 			}
+
             else
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                             mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                           mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
-
+                                                            mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
                 factory->mGameObjects[i]->draw();
             }
+
+
+
+
+
+
 
             if (i==mIndexToPickedObject) {
 
@@ -390,14 +409,20 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
+            postFBO->unbindCurrentFramebuffer();
         }
+
+
     }
+
     if (!editorMode){
        thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
        inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
+
+
 
 
     //Calculate framerate before
@@ -411,6 +436,7 @@ void RenderWindow::render()
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
+
     mContext->swapBuffers(this);
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
@@ -419,7 +445,6 @@ void RenderWindow::render()
     //qDebug() << "Rendered objects: ";
     //qDebug() << objectsDrawn;
     objectsDrawn = 0;
-
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -465,6 +490,16 @@ void RenderWindow::setupLightShader(int shaderIndex)
     mLinearUniform               = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "linear" );
     mQuadraticUniform            = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "quadratic" );
     mPhongTextureUniform         = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+
+void RenderWindow::setupHdrShader(int shaderIndex)
+{
+
+
+    mMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+
 }
 
 //This function is called from Qt when window is exposed (shown)

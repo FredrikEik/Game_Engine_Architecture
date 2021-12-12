@@ -15,6 +15,7 @@
 #include "quadtree.h"
 #include "light.h"
 #include "player.h"
+#include "postprocessing.h"
 
 class QOpenGLContext;
 class Shader;
@@ -103,6 +104,7 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
+    void setupHdrShader(int shaderIndex);
 
     void generateShadowDepthMap();
 
@@ -154,6 +156,8 @@ private:
     InputComponent mInput;
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;
+
+    PostProcessing* postFBO;
 
 
     float mCameraSpeed{0.05f};
