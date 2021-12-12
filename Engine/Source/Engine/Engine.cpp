@@ -218,7 +218,7 @@ void Engine::init()
 	//TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
 
 	ECS->addComponent<ParticleComponent>(unitEntity);
-	ParticleSystem::init(unitEntity, 500, 1, particle, ECS);
+	ParticleSystem::init(unitEntity, 50000, 500, particle, ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented

@@ -1,8 +1,8 @@
 #version 460 core
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec4 aBillboardCenter;
-layout(location = 2) in vec4 aColor;
-layout(location = 3) in vec2 aTexCoord;
+layout(location = 1) in vec2 aTexCoord;
+layout(location = 2) in vec4 aBillboardCenter;
+layout(location = 3) in vec4 aColor;
 
 uniform mat4 modelMatrix;
 uniform mat4 u_projection;
@@ -21,6 +21,7 @@ void main(void)
 {
 
     vec3 billboardCenter = vec3(aBillboardCenter);
+    vec3 pos = aPos * aBillboardCenter.w;
 //    vec3 billboardCenter = vec3(u_center);
 //    billboardCenter.x = billboardCenter.x + gl_InstanceID;
     billboardCenter.x = billboardCenter.x;
@@ -32,7 +33,8 @@ void main(void)
 
 //    if(bSpherical)
 //    {
-       vec3 vertexPosition = billboardCenter + (cameraRight * aPos.x) + ( cameraUp * aPos.y);
+       vec3 vertexPosition = billboardCenter + (cameraRight * pos.x) + ( cameraUp * pos.y);
+//       vertexPosition = vertexPosition * aBillboardCenter.w;
 //    }
 
     gl_Position = u_projection * u_view * vec4(vertexPosition, 1.0);
@@ -47,6 +49,7 @@ void main(void)
 //    else
 //    {
     color = aColor;
+//    color = vec4(aTexCoord.x, 0, aTexCoord.y, 1);
 //    color = u_color;
 //    }
 }

@@ -7,7 +7,8 @@ out vec4 fragmentColor;
 
 void main(void)
 {
-//    fragmentColor = texture2D(textureSampler, UV).rgba;
-    fragmentColor = color;
+    fragmentColor = texture2D(textureSampler, UV).rgba * color;
+//    fragmentColor = color;
+//    fragmentColor = vec4(UV.x, 0, UV.y, 1);
 //    fragmentColor = vec4(1,1,1,1);
 }

@@ -253,6 +253,7 @@ struct ParticleComponent final : public Component
 	uint32 lastUsedParticle{};
 	uint32 spawnRate{};
 	float timeSinceLastSpawn{};
+	float emitterLifeTime{};
 
 	Particle particleBlueprint;
 
