@@ -112,6 +112,14 @@ void MainWindow::refreshList()
 void MainWindow::setID(int ID)
 {
     listWidget->setCurrentRow(ID);
+    if(GameObjects[ID]->mAIComponent != nullptr)
+    {
+                qDebug() << "dead";
+        GameObjects[ID]->mAIComponent->hp--;
+        if(GameObjects[ID]->mAIComponent->hp <1)
+            on_actionDelete_Selected_triggered();
+    }else
+        qDebug() << "this item is not ai";
 }
 
 void MainWindow::clean()
@@ -271,6 +279,11 @@ void MainWindow::init()
 
 }
 
+const std::string MainWindow::getCurrentLevelName() const
+{
+    return currentLevelName;
+}
+
 int MainWindow::getObjectListIndex() const
 {
     return ObjectListIndex;
@@ -313,7 +326,6 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
     ui->ScaleZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mScale.getZ());
 
     ui->usingFrustumCulling->setChecked(GameObjects[ObjectListIndex]->mMeshComp->bUsingFrustumCulling);
-    ui->CollisionBoxRotated->setChecked(GameObjects[ObjectListIndex]->mCollisionComp->bRotated);
 
 
     // --Visible Selection in 3D window--
@@ -611,9 +623,4 @@ void MainWindow::on_usingFrustumCulling_toggled(bool checked)
 }
 
 
-void MainWindow::on_CollisionBoxRotated_toggled(bool checked)
-{
-    GameObjects[ObjectListIndex]->mCollisionComp->bRotated = checked;
-    CollisionSystem::updateCollisionBox(GameObjects[ObjectListIndex]);
-}
 

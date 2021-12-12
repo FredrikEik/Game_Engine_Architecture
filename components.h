@@ -81,6 +81,7 @@ class AIComponent
 {
 public:
     bool isAlive{true};
+    int hp{25};
 };
 
 class BallPhysicsComponent

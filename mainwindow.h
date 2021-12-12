@@ -37,10 +37,14 @@ public:
 
     int getObjectListIndex() const;
 
+    const std::string getCurrentLevelName() const;
+    std::string levelName{""};
 public slots:
 
     void on_PlayStop_toggled(bool checked);
         void on_actionDelete_Selected_triggered();
+
+            void on_loadScene_clicked();
 
 private slots:
 
@@ -74,7 +78,7 @@ private slots:
 
     void on_saveScene_clicked();
 
-    void on_loadScene_clicked();
+
 
     void on_actionLOD_toggle_toggled(bool arg1);
 
@@ -114,8 +118,6 @@ private slots:
 
     void on_usingFrustumCulling_toggled(bool checked);
 
-    void on_CollisionBoxRotated_toggled(bool checked);
-
 private:
     void init();
     Ui::MainWindow *ui;
@@ -154,7 +156,6 @@ private:
     int currentMeshIndex{0};
     int currentLevelIndex{0};
 
-    std::string levelName{""};
     std::string currentLevelName{"default"};
 
 };

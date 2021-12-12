@@ -13,7 +13,6 @@ public:
     CollisionSystem();
 
     static bool isColliding(GameObject * player, std::vector<GameObject*> objects, QVector3D playerNextPos);
-    static void updateCollisionBox(GameObject *obj);
 };
 
 #endif // COLLISIONSYSTEM_H

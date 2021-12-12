@@ -46,7 +46,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mBallPhysicsComp = new BallPhysicsComponent();
 
     tempGO->mMaterialComp = new MaterialComponent();
-    tempGO->mAIComponent = new AIComponent();
+//    tempGO->mAIComponent = new AIComponent();
 
     tempGO->mCollisionComp = new CollisionComponent();
     tempGO->mCollisionComp->mMatrix.setToIdentity();
@@ -77,6 +77,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 //        tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
 //        tempGO->mCollisionComp->mMatrix.setToIdentity();
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
+        if (filepath.find("cacodemon") != std::string::npos)
+        {
+            tempGO->mAIComponent = new AIComponent();
+        }
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
@@ -85,7 +89,6 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 //        tempGO->mCollisionComp = new CollisionComponent();
 //        tempGO->mCollisionComp->mMatrix.setToIdentity();
 
-        mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
         {
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
@@ -96,6 +99,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             {
                 if (filepath.find("cacodemon") != std::string::npos)
                 {
+                    qDebug() << "Added AI";
                     tempGO->mAIComponent = new AIComponent();
                 }
                 mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
@@ -113,6 +117,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
                 mMeshHandler->createHeightCurves(tempGO->mMeshComp,tempGO->mCollisionComp, tempGO->mCollisionLines);
             }
         }
+        mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         meshCompCounter++;
     }
 

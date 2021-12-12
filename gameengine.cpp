@@ -294,9 +294,8 @@ void GameEngine::togglePlay(bool bInIsPlaying)
 
         mRenderwindow->mCurrentCamera = mEditorCamera;
         mPlayer->mTransformComp->mMatrix.setPosition(initPlayerPos.x,initPlayerPos.y,initPlayerPos.z);
-
 //        mRenderwindow->mGameObjects.clear();
-//        mMainWindow->clean();
+        mMainWindow->on_loadScene_clicked();
 //        SetUpScene();
     }
 }
