@@ -3,6 +3,7 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec2 aTexCoord;
 layout(location = 2) in vec4 aBillboardCenter;
 layout(location = 3) in vec4 aColor;
+layout(location = 4) in vec2 aUVblend;
 
 uniform mat4 modelMatrix;
 uniform mat4 u_projection;
@@ -39,8 +40,19 @@ void main(void)
 
     gl_Position = u_projection * u_view * vec4(vertexPosition, 1.0);
 //    gl_Position = aBillboardCenter + vec4(aPos, 1);
+//    float posX = aUVblend.z - (aUVblend.x*floor(aUVblend.z/aUVblend.x));
+//    float posY = floor(aUVblend.z / aUVblend.y)+1;
+//    float uvX= aTexCoord.x+(posX / aUVblend.x);
+//    float uvY = aTexCoord.y*(posY / aUVblend.y);
 
-    UV = aTexCoord;
+    float posX = aUVblend.y - (aUVblend.x*floor(aUVblend.y/aUVblend.x));
+    float posY = floor(aUVblend.y / aUVblend.x);
+    float blend = 1/aUVblend.x;
+    float uvX= (posX / aUVblend.x)+(aTexCoord.x*blend);
+    float uvY = (posY / aUVblend.x)+(aTexCoord.y*blend);
+
+    UV = vec2(uvX, uvY);
+//    UV = aTexCoord;
     
 //    if(aBillboardCenter.y > 5)
 //    {
@@ -49,7 +61,7 @@ void main(void)
 //    else
 //    {
     color = aColor;
-//    color = vec4(aTexCoord.x, 0, aTexCoord.y, 1);
+//    color = vec4(uvX, 0, uvY, 1);
 //    color = u_color;
 //    }
 }

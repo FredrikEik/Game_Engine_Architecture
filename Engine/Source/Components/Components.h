@@ -235,6 +235,7 @@ struct ParticleComponent final : public Component
 		glm::vec3 velocity{};
 		glm::vec3 acceleration{};
 		float speed{}, life{}, cameraDistance{ -1.f }, size{1};
+		float textureRows{ 1 }, textureIndex{ 1 };
 		bool active{ false };
 		bool operator<(const Particle& other)
 		{
@@ -242,12 +243,14 @@ struct ParticleComponent final : public Component
 		}
 	};
 
-
 	MeshComponent mesh;
 	TextureComponent texture;
 	std::vector<Particle> particles;
 	std::vector<float> positionData;
 	std::vector<float> colorData;
+	std::vector<float> uvBlendingData;
+
+
 	uint32 maxParticles{};
 	uint32 activeParticles{};
 	uint32 lastUsedParticle{};
@@ -259,5 +262,6 @@ struct ParticleComponent final : public Component
 
 	GLuint positionBuffer{};
 	GLuint colorBuffer{};
+	GLuint uvBlendingBuffer{};
 
 };
