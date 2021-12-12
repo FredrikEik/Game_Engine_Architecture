@@ -4,7 +4,7 @@
             {
                 "struct ParticleComponent": {
                     "emitterLifeTime": 0.0,
-                    "maxParticles": 500000,
+                    "maxParticles": 5000000,
                     "mesh": {
                         "LODType": 0,
                         "bDisregardedDuringFrustumCulling": false,
@@ -16,57 +16,58 @@
                     },
                     "particleBlueprint": {
                         "accelerationMaxOffset": [
-                            0.0,
-                            0.0,
-                            0.0
+                            6.800000190734863,
+                            6.900000095367432,
+                            5.900000095367432
                         ],
                         "accelerationMinOffset": [
-                            0.0,
-                            0.0,
-                            0.0
+                            -5.400000095367432,
+                            -12.899999618530273,
+                            -8.800000190734863
                         ],
                         "colorMaxOffset": [
                             0.0,
-                            0.0,
-                            0.0,
+                            0.5289999842643738,
+                            0.47099998593330383,
                             0.0
                         ],
                         "colorMinOffset": [
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0
+                            -0.5879999995231628,
+                            -0.05900000035762787,
+                            -0.2939999997615814,
+                            -0.42899999022483826
                         ],
                         "lifeMaxOffset": 0.0,
-                        "lifeMinOffset": 0.0,
+                        "lifeMinOffset": -2.5,
                         "particle": {
                             "acceleration": [
                                 0.0,
                                 0.0,
-                                0.0
+                                29.100000381469727
                             ],
-                            "currentLife": 0.5,
+                            "currentLife": 3.0,
                             "endColor": [
-                                0.0,
+                                0.8121547102928162,
                                 0.0,
                                 0.0,
                                 0.0
                             ],
+                            "endSize": 1.0,
                             "position": [
                                 1.0,
                                 5.0,
                                 1.0
                             ],
-                            "size": 30.0,
                             "startColor": [
-                                1.0,
-                                1.0,
-                                1.0,
+                                0.5459064841270447,
+                                0.5966850519180298,
+                                0.05604225769639015,
                                 1.0
                             ],
+                            "startSize": 2.0,
                             "velocity": [
                                 0.0,
-                                0.0,
+                                8.100000381469727,
                                 0.0
                             ]
                         },
@@ -81,25 +82,25 @@
                             0.0
                         ],
                         "sizeMaxOffset": 0.0,
-                        "sizeMinOffset": 0.0,
+                        "sizeMinOffset": -5.0,
                         "velocityMaxOffset": [
-                            0.0,
-                            0.0,
-                            0.0
+                            2.700000047683716,
+                            7.0,
+                            4.699999809265137
                         ],
                         "velocityMinOffset": [
-                            0.0,
-                            0.0,
-                            0.0
+                            -3.5999999046325684,
+                            -5.0,
+                            -5.5
                         ]
                     },
-                    "spawnRate": 2000,
+                    "spawnRate": 10000,
                     "texture": {
-                        "path": "Assets/particleAtlas.png",
+                        "path": "C:\\Github_Projects\\School\\GEA2021\\Engine\\Assets\\particleAlpha.png",
                         "reusable": true,
                         "wrapMode": 10497
                     },
-                    "textureRows": 8
+                    "textureRows": 1
                 }
             },
             {

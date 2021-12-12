@@ -13,6 +13,8 @@ public:
 		core::MAX_ENTITIES>& entities, 
 		uint32 startIndex, class ECSManager* ECS);
 	static void saveEntityPrefab(uint32 entityID, class ECSManager* ECS);
+	static void saveComponent(uint32 entityID, std::type_index type, class ECSManager* ECS);
+
 
 	static std::string getDefaultAbsolutePath();
 

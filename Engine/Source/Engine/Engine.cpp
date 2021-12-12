@@ -167,6 +167,7 @@ void Engine::init()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
+	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
 
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -214,7 +215,7 @@ void Engine::init()
 	particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
 	particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
 	particleBlueprint.particle.position = glm::vec3(1, 5, 1);
-	particleBlueprint.particle.size = 30;
+	particleBlueprint.particle.startSize = 30;
 
 	//////TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
 	//uint32 particleEntity = ECS->newEntity();

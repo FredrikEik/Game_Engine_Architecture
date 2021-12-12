@@ -62,6 +62,20 @@ void Save::saveEntityPrefab(uint32 entityID, ECSManager* ECS)
 	file.close();
 }
 
+void Save::saveComponent(uint32 entityID, std::type_index type, class ECSManager* ECS)
+{
+	std::string path;
+	if (!FileSystemHelpers::getSavePathFromFileExplorer(path))
+		return;
+	JSON component;
+	auto entity = ECS->getEntity(entityID);
+	addComponentToJson(type, entityID, component, ECS);
+	std::ofstream file(path);
+	assert(file);
+	file << std::setw(4) << component << std::endl;
+	file.close();
+}
+
 std::string Save::getDefaultAbsolutePath()
 {
 	return std::string(defaultSaveLocation + defaultSaveName);

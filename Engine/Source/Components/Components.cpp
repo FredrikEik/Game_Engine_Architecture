@@ -107,7 +107,8 @@ JSON ParticleComponent::json()
 			{"velocity", Save::vec3JSON(particleBlueprint.particle.velocity)},
 			{"acceleration", Save::vec3JSON(particleBlueprint.particle.acceleration)},
 			{"currentLife", particleBlueprint.particle.currentLife},
-			{"size", particleBlueprint.particle.size}
+			{"startSize", particleBlueprint.particle.startSize},
+			{"endSize", particleBlueprint.particle.endSize}
 			}
 		},
 		{"positionMinOffset", Save::vec3JSON(particleBlueprint.positionMinOffset)},
@@ -154,7 +155,8 @@ void ParticleComponent::jsonParse(const JSON& json)
 	particleBlueprint.particle.velocity = vec3(bpParticle["velocity"]);
 	particleBlueprint.particle.acceleration = vec3(bpParticle["acceleration"]);
 	particleBlueprint.particle.currentLife = bpParticle["currentLife"];
-	particleBlueprint.particle.size = bpParticle["size"];
+	particleBlueprint.particle.startSize = bpParticle["startSize"];
+	particleBlueprint.particle.endSize = bpParticle["endSize"];
 
 	particleBlueprint.positionMinOffset = vec3(bp["positionMinOffset"]);
 	particleBlueprint.positionMaxOffset = vec3(bp["positionMaxOffset"]);

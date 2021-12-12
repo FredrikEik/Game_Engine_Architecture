@@ -234,7 +234,7 @@ struct ParticleComponent final : public Component
 		glm::vec3 position{};
 		glm::vec3 velocity{};
 		glm::vec3 acceleration{};
-		float totalLife{}, currentLife{}, cameraDistance{ -1.f }, size{ 1 };
+		float totalLife{}, currentLife{}, cameraDistance{ -1.f }, startSize{ 1 }, endSize{ 1 };
 		float textureIndex{ 1 };
 		bool active{ false };
 		bool operator<(const Particle& other)

@@ -39,6 +39,33 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 	file.close();
 }
 
+void Load::loadComponent(const std::filesystem::path& filePath, Component* component)
+{
+	std::ifstream file(filePath);
+	if (!file)
+		return;
+
+	JSON json;
+	file >> json;
+
+	for (const auto& entity : json)
+	{
+
+		for (const auto& it : entity.items())
+		{
+
+			component->jsonParse(it.value());
+		}
+			
+	
+	}
+
+	
+
+	file.close();
+
+}
+
 Component* Load::createComponent(std::string componentName, JSON jsonValue, uint32 entityID, ECSManager* ECS)
 {
 	Component* component{};

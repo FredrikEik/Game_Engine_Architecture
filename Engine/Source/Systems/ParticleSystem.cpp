@@ -289,11 +289,10 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
         TransformComponent* emitterTransform = transformManager->getComponentChecked(it.entityID);
         //spawnParticles(it, deltaTime, glm::vec3(emitterTransform->transform[3]), cameraPosition);
 
-        if (lastSpawned > 1.f)
-        {
+
         spawnParticles(it, deltaTime, glm::vec3(emitterTransform->transform[3]), cameraPosition);
         lastSpawned = 0;
-        }
+        
         if (it.activeParticles <= 0)
             continue;
         std::sort(&it.particles[0], &it.particles[it.lastUsedParticle]);
@@ -325,7 +324,7 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             it.positionData[4 * i + 0] = p.position.x + emitterTransform->transform[3].x;
             it.positionData[4 * i + 1] = p.position.y + emitterTransform->transform[3].y;
             it.positionData[4 * i + 2] = p.position.z + emitterTransform->transform[3].z;
-            it.positionData[4 * i + 3] = p.size;
+            it.positionData[4 * i + 3] = p.startSize;
 
             it.colorData[4 * i + 0] = p.startColor.x;
             it.colorData[4 * i + 1] = p.startColor.y;
@@ -409,11 +408,12 @@ void ParticleSystem::spawnParticles(ParticleComponent& emitter, float deltaTime,
 
         particle = bp.particle;
         particle.active = true;
-        particle.cameraDistance = cameraDistance;
 
         particle.currentLife += randf(bp.lifeMinOffset, bp.lifeMaxOffset);
         particle.totalLife = particle.currentLife;
-        particle.size += randf(bp.sizeMinOffset, bp.sizeMaxOffset);
+        float sizeOffset{ randf(bp.sizeMinOffset, bp.sizeMaxOffset) };
+        particle.startSize += sizeOffset;
+        particle.endSize += sizeOffset;
 
         particle.startColor += glm::vec4(
             randf(bp.colorMinOffset.x, bp.colorMaxOffset.x), 
@@ -445,6 +445,7 @@ void ParticleSystem::spawnParticles(ParticleComponent& emitter, float deltaTime,
             randf(bp.positionMinOffset.z, bp.positionMaxOffset.z)
         );
 
+        particle.cameraDistance = glm::length((particle.position + emitterLocation) - cameraLocation);
         emitter.lastUsedParticle = index+1;
         emitter.activeParticles = emitter.lastUsedParticle;
     }

@@ -10,6 +10,7 @@
 #include "MeshWidget.h"
 #include "TextureWidget.h"
 #include "BoxColliderWidget.h"
+#include "ParticleWidget.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
 #include "../FileSystemHelpers.h"
@@ -92,6 +93,21 @@ void Details::update(int32 inEntityID)
 			textureWidget->update(entityID, bEntityChanged);
 			textureWidget->end();
 			delete textureWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
+		}
+		else if (index == TYPE(typeid(ParticleComponent)))
+		{
+			bool bEntityChanged{};
+			ParticleWidget* particleWidget = new ParticleWidget(windowName, ECS);
+			ImGui::NewLine();
+			particleWidget->begin(viewport, reservedEntities);
+			particleWidget->update(entityID, bEntityChanged);
+			particleWidget->end();
+			delete particleWidget;
 			if (bEntityChanged)
 			{
 				entity = ECS->getEntity(entityID);
