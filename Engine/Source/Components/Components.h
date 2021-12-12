@@ -238,7 +238,7 @@ struct ParticleComponent final : public Component
 		bool active{ false };
 		bool operator<(const Particle& other)
 		{
-			return this->active && this->cameraDistance > other.cameraDistance;
+			return (this->active && this->cameraDistance > other.cameraDistance) || (this->active && !other.active);
 		}
 	};
 
@@ -248,11 +248,11 @@ struct ParticleComponent final : public Component
 	std::vector<Particle> particles;
 	std::vector<float> positionData;
 	std::vector<float> colorData;
-	//glm::vec3 emitterPosition;
 	uint32 maxParticles{};
 	uint32 activeParticles{};
 	uint32 lastUsedParticle{};
 	uint32 spawnRate{};
+	float timeSinceLastSpawn{};
 
 	Particle particleBlueprint;
 

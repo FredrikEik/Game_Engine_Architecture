@@ -12,6 +12,7 @@ public:
 
 private:
 	static void constructQuad(struct MeshComponent& mesh);
-	static void spawnParticles(struct ParticleComponent& emitter, uint32 spawnAmount);
+	static void spawnParticles(struct ParticleComponent& emitter, float deltaTime,
+		const glm::vec3& emitterLocation, const glm::vec3& cameraLocation);
 };
 

@@ -93,8 +93,8 @@ void Engine::load(const std::string& path)
 }
 
 Engine* Engine::instance = nullptr;
-float Engine::windowWidth = 800.f;
-float Engine::windowHeight = 600.f;
+float Engine::windowWidth = 1400.f;
+float Engine::windowHeight = 1000.f;
 float Engine::fov = 45.f;	
 
 //sa
@@ -146,7 +146,7 @@ void Engine::init()
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
@@ -218,7 +218,7 @@ void Engine::init()
 	//TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
 
 	ECS->addComponent<ParticleComponent>(unitEntity);
-	ParticleSystem::init(unitEntity, 50000, 50, particle, ECS);
+	ParticleSystem::init(unitEntity, 500, 1, particle, ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
