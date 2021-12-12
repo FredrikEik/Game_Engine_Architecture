@@ -10,12 +10,12 @@ uniform sampler2D textureSampler;
 uniform vec3 lightPosition = vec3(0.0,0.0,0.0);
 uniform vec3 cameraPosition;
 
-uniform float ambientStrengt = 0.15f;
-uniform vec3 ambientColor = vec3(0.8f, 0.8f, 0.15f);
-uniform float lightStrengt = 1.5f;
-uniform vec3 lightColor = vec3(0.5f, 0.5f, 0.0f);
+uniform float ambientStrength = 0.15f;
+uniform vec3  ambientColor = vec3(0.8f, 0.8f, 0.15f);
+uniform float lightStrength = 1.5f;
+uniform vec3  lightColor = vec3(0.5f, 0.5f, 0.0f);
 uniform float specularStrength = 0.7f;
-uniform int specularExponent = 32;
+uniform int   specularExponent = 32;
 uniform float constant = 1.0f;
 uniform float linear = 0.14f;
 uniform float quadratic = 0.07f;
@@ -28,13 +28,13 @@ void main() {
     float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 
     //ambient
-    vec3 ambient = ambientStrengt * ambientColor;
+    vec3 ambient = ambientStrength * ambientColor;
 
     //diffuse
     vec3 normalCorrected = normalize(normalTransposed);
     vec3 lightDirection = normalize(lightPosition - fragmentPosition);
     float angleFactor = max(dot(normalCorrected, lightDirection), 0.0);
-    vec3 diffuse = angleFactor * objectColor * lightColor * lightStrengt;
+    vec3 diffuse = angleFactor * objectColor * lightColor * lightStrength;
 
     //specular
     vec3 viewDirection = normalize(cameraPosition - fragmentPosition);

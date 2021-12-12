@@ -35,6 +35,9 @@ public:
     gsl::Vector3D getScale();
     gsl::Vector3D oldScale{1,1,1};
 
+    void setX(GLfloat x);
+    void setY(GLfloat y);
+    void setZ(GLfloat z);
     //gsl::Vector3D getScale();
     //gsl::Vector3D getRotation();
 

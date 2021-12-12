@@ -16,15 +16,15 @@ public:
     void move(float x, float y, float z) override;
 
     // Ambient
-    GLfloat mAmbientStrenght;
+    GLfloat mAmbientStrength;
     gsl::Vector3D mAmbientColor;
 
     // Light
-    GLfloat mLightStrenght;
+    GLfloat mLightStrength;
     gsl::Vector3D mLightColor;
 
     // Specular
-    GLfloat mSpecularStrenght;
+    GLfloat mSpecularStrength;
     GLint mSpecularExponent;
 
     // Attenuation (falloff)

@@ -100,6 +100,19 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
+void Vertex::set_x(GLfloat x)
+{
+    mXYZ.x = x;
+}
+void Vertex::set_y(GLfloat y)
+{
+    mXYZ.y = y;
+}
+void Vertex::set_z(GLfloat z)
+{
+    mXYZ.z = z;
+}
+
 //std::ostream& operator<<(std::ostream& os, const Vertex& v)
 //{
 //   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
@@ -123,4 +136,14 @@ std::istream& operator>> (std::istream& is, Vertex& v) {
     is >> temp >> v.mNormal.x >> temp2 >> v.mNormal.y >> temp3 >> v.mNormal.z >> temp4;
     is >> temp >> v.mST.x >> temp2 >> v.mST.y >> temp3;
     return is;
+}
+
+Vertex Vertex::operator+(const Vertex &rhs) const
+{
+    return Vertex(mXYZ+rhs.mXYZ, mNormal+rhs.mNormal, mST+rhs.mST);
+}
+
+Vertex Vertex::operator/(GLfloat rhs) const
+{
+    return Vertex(mXYZ/rhs, mNormal/rhs, mST/rhs);
 }

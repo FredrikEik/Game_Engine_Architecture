@@ -109,6 +109,12 @@ void RenderWindow::init()
     mTextures[0] = new Texture();
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    mTextures[3] = new Texture("wood.bmp");
+    glActiveTexture(GL_TEXTURE4);
+    mTextures[4] = new Texture("groundgrass.bmp");
+    glActiveTexture(GL_TEXTURE5);
+    mTextures[5] = new Texture("stone.bmp");
     glActiveTexture(GL_TEXTURE2);
     mTextures[2] = new Texture("right.bmp",
                                "left.bmp",
@@ -123,6 +129,9 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -219,8 +228,11 @@ void RenderWindow::initObjects()
     skybox = factory->createObject("Skybox");
     skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
     skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
-    GameObject *temp=nullptr;
-   /* for(int i{0}; i < 50; i++)
+
+    surface = factory->createObject("TriangleSurface");
+
+    //GameObject *temp=nullptr;
+    /* for(int i{0}; i < 50; i++)
     {
         for(int j{0}; j < 10; j++)
         {
@@ -232,13 +244,15 @@ void RenderWindow::initObjects()
     }
 
     */
-            mPlayer = factory->createObject("Player");
-            mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-            mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-            mMainWindow->updateOutliner(factory->mGameObjects);
+    mPlayer = factory->createObject("Player");
+    mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+    mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
+    mMainWindow->updateOutliner(factory->mGameObjects);
+    lightRef = static_cast<Light*>(factory->createObject("Light"));
 
 
-             hjelpeObjekt = factory->createObject("Cube");
+    hjelpeObjekt = factory->createObject("Cube");
 
 }
 
@@ -260,9 +274,6 @@ void RenderWindow::render()
     //glEnable(GL_CULL_FACE);
     glUseProgram(0); //reset shader type before rendering
 
-
-    //Light* lightRef = static_cast<Light*>(factory->mGameObjects["Light"]);
-
     //Draws the objects
 
     //mCurrentCamera->draw();
@@ -280,22 +291,32 @@ void RenderWindow::render()
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             //qDebug() << shaderProgramIndex;
-            if(shaderProgramIndex == 1)
+            if(shaderProgramIndex == 1 || shaderProgramIndex == 2)
             {
-                glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+            }
+            if(shaderProgramIndex == 2)
+            {
+                glUniform3f(mLightPositionUniform, lightRef->getTransformComponent()->mMatrix.getPosition().getX(), lightRef->getTransformComponent()->mMatrix.getPosition().getY(), lightRef->getTransformComponent()->mMatrix.getPosition().getZ());
+                glUniform3f(mCameraPositionUniform, mCurrentCamera->position().getX(), mCurrentCamera->position().getY(), mCurrentCamera->position().getZ());
+                glUniform3f(mLightColorUniform, lightRef->mLightColor.getX(), lightRef->mLightColor.getY(), lightRef->mLightColor.getZ());
+                glUniform1f(mSpecularStrengthUniform, lightRef->mSpecularStrength);
+                glUniform1i(mSpecularExponentUniform, lightRef->mSpecularExponent);
+                glUniform1f(mAmbientLightStrengthUniform, lightRef->mAmbientStrength);
+                glUniform3f(mAmbientColor, lightRef->mAmbientColor.getX(), lightRef->mAmbientColor.getY(), lightRef->mAmbientColor.getZ());
+                glUniform1f(mLightPowerUniform, lightRef->mLightStrength);
+                glUniform1f(mConstantUniform, lightRef->constant);
+                glUniform1f(mLinearUniform, lightRef->linear);
+                glUniform1f(mQuadraticUniform, lightRef->quadratic);
+                glUniform1i(mPhongTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
             if(shaderProgramIndex == 3)
             {
-               glUniform1i(mSkyboxUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
-
-            //glUniform1i(mSkyboxUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            //glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
-
-            //factory->mGameObjects[i]->draw();
 
             if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
 			{
@@ -413,7 +434,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mTextureUniform             = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
    // factory->mGameObjects[shaderIndex]->getMaterialComponent()->mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
@@ -422,16 +443,28 @@ void RenderWindow::setupSkyboxShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mSkyboxUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
+    mSkyboxUniform              = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
 }
 
 void RenderWindow::setupLightShader(int shaderIndex)
 
 {
-    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mLightColorUniform           = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightColor" );
+    mObjectColorUniform          = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "objectColor" );
+    mAmbientLightStrengthUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientStrength" );
+    mAmbientColor                = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientColor" );
+    mLightPositionUniform        = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPosition" );
+    mSpecularStrengthUniform     = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularStrength" );
+    mSpecularExponentUniform     = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularExponent" );
+    mLightPowerUniform           = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightStrength" );
+    mCameraPositionUniform       = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
+    mConstantUniform             = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "constant" );
+    mLinearUniform               = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "linear" );
+    mQuadraticUniform            = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "quadratic" );
+    mPhongTextureUniform         = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
 //This function is called from Qt when window is exposed (shown)

@@ -43,6 +43,7 @@ private:
                               const std::string &back);
     void setTexture();
     void setCubemapTexture();
+    void generateShadowDepthMap();
     GLuint mId{0};
 
     //this is put inside this class to avoid spamming the main namespace

@@ -55,6 +55,7 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     SoundCode/scr/vector3.cpp \
+    trianglesurface.cpp \
     vertex.cpp \
     SoundCode/scr/wavfilehandler.cpp \
     xyz.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
+    trianglesurface.h \
     vertex.h \
     xyz.h \
     triangle.h \

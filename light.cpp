@@ -7,15 +7,15 @@
 Light::Light()
 {
     // Ambient
-    mAmbientStrenght = 0.15f;
-    mAmbientColor = gsl::Vector3D(0.8f, 0.8f, 0.15f);
+    mAmbientStrength = 0.15f;
+    mAmbientColor = gsl::Vector3D(0.3f, 0.3f, 0.8f);
 
     // Light
-    mLightStrenght = 1.5f;
-    mLightColor = gsl::Vector3D(0.8f, 0.8f, 0.15f);
+    mLightStrength = 1.5f;
+    mLightColor = gsl::Vector3D(0.8f, 0.8f, 0.8f);
 
     // Specular
-    mSpecularStrenght = 0.7f;
+    mSpecularStrength = 0.7f;
     mSpecularExponent = 32;
 
     // Attenuation (falloff)
@@ -41,10 +41,10 @@ Light::Light()
     // Vertices
     getMeshComponent()-> mVertices.insert( getMeshComponent()-> mVertices.end(),
     {
-        Vertex(-0.25f, -0.25f,  0.25f,    0.8f, 0.8f, 0.3f,     0.f,  0.f),   //Left low
-        Vertex( 0.25f, -0.25f,  0.25f,    0.8f, 0.8f, 0.3f,     1.f,  0.f),   //Right low
-        Vertex( 0.0f,  0.25f,  0.0f,      0.8f, 0.8f, 0.3f,     0.5f, 0.5f),  //Top
-        Vertex( 0.0f, -0.25f, -0.25f,     0.8f, 0.8f, 0.3f,     0.5f, 0.5f)   //Back low
+        Vertex(-0.25f,  0.25f,  -0.25f,   0.8f, 0.8f, 0.8f,     0.f,  0.f),   //Left low
+        Vertex( 0.25f,  0.25f,  -0.25f,   0.8f, 0.8f, 0.8f,     1.f,  0.f),   //Right low
+        Vertex( 0.0f,   0.0f,    0.25f,   0.8f, 0.8f, 0.8f,     0.5f, 0.5f),  //Top
+        Vertex( 0.0f,  -0.25f,  -0.25f,   0.8f, 0.8f, 0.8f,     0.5f, 0.5f)   //Back low
     });
 
     getMeshComponent()-> mIndices.insert( getMeshComponent()-> mIndices.end(),
@@ -60,19 +60,9 @@ Light::~Light()
 
 }
 
-void move(float x, float y, float z)
-{
-
-}
-
 void Light::init()
 {
     initializeOpenGLFunctions();
-
-       // Set what shader you want to use to render this object
-       //mMaterial->setActiveShader(ShaderType::TEXTURE_SHADER);
-       //mMaterial->setActiveTextureSlot(2);
-       //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
@@ -107,14 +97,14 @@ void Light::init()
 
 void Light::draw()
 {
-//    glUseProgram(mMaterial.mShader->getProgram());
     glBindVertexArray(getMeshComponent()-> mVAO );
-//    mMaterial.mShader->transmitUniformData(&mMatrix, &mMaterial);
-    glUniformMatrix4fv(getMeshComponent()-> mMatrixUniform, 1, GL_FALSE, getTransformComponent()-> mMatrix.constData());
+    //glUniformMatrix4fv(getMeshComponent()-> mMatrixUniform, 1, GL_FALSE, getTransformComponent()-> mMatrix.constData());
     glDrawElements(GL_TRIANGLES, getMeshComponent()-> mIndices.size(), GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
 }
 
 void Light::move(float x, float y, float z)
 {
-    //getTransformComponent()->mMatrix.translate(x,y,z);
+    getTransformComponent()->mMatrix.translate(x,y,z);
+    getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
 }

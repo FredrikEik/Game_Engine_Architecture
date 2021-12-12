@@ -9,6 +9,7 @@
 #include "objreader.h"
 #include "constants.h"
 #include "skybox.h"
+#include "trianglesurface.h"
 #include "player.h"
 #include <QDebug>
 
@@ -50,7 +51,7 @@ GameObject* Factory::createObject(std::string objectName)
         {
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Plane"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         planecounter++;
         objectToCreate->mObjectType = "Plane";
@@ -94,7 +95,7 @@ GameObject* Factory::createObject(std::string objectName)
         {
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.25;
@@ -131,7 +132,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Light"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         lightCounter++;
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
     }
@@ -142,9 +143,18 @@ GameObject* Factory::createObject(std::string objectName)
         {
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Wario"]));
         }
-        objectToCreate->getMaterialComponent()->mShaderProgram = 0;
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
+    }
+    else if(objectName == "TriangleSurface")
+    {
+        objectToCreate = new TriangleSurface("../GEA2021/Assets/test_las.txt");
+        //objectToCreate = new TriangleSurface("../GEA2021/Assets/LAS/kongehuset.txt");
+        objectToCreate->getMaterialComponent()->mShaderProgram = 2;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
+        objectToCreate->mObjectType = "TriangleSurface";
+        objectToCreate->mObjectName = "TriangleSurface";
     }
     else{return nullptr;}
 

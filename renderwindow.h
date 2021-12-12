@@ -55,6 +55,8 @@ public:
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
     GameObject* skybox;
+    GameObject* surface;
+    Light* lightRef;
 
     //Javascript engine
     QJSEngine engine;
@@ -92,6 +94,7 @@ private:
 
     void handleInput();
 
+    //MVP matrix uniforms
     GLint mMatrixUniform[4];
     GLint vMatrixUniform[4];
     GLint pMatrixUniform[4];
@@ -101,14 +104,17 @@ private:
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
 
-    GLint mTextureUniform[4];
+    void generateShadowDepthMap();
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-    // Skybox shader uniforms
-    GLint mSkyboxUniform[4];
+    // Skybox shader uniform
+    GLint mSkyboxUniform;
+
+    //Texture shader uniform
+    GLint mTextureUniform;
 
     // Phong shader uniforms
     GLint mLightColorUniform{-1};
