@@ -134,6 +134,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         lightCounter++;
+        objectToCreate->mObjectType = "Light";
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
     }
     else if (objectName == "Player")

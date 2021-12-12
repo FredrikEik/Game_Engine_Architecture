@@ -291,7 +291,7 @@ void RenderWindow::render()
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             //qDebug() << shaderProgramIndex;
-            if(shaderProgramIndex == 1 || shaderProgramIndex == 2)
+            if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }

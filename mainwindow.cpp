@@ -162,6 +162,7 @@ void MainWindow::selectObjectByIndex(int indexIn)
         mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
         mCurrentEditItem->setSelected(true);
 
+
         on_outliner_itemClicked(mCurrentEditItem, 0);
     }
 

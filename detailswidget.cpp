@@ -5,6 +5,8 @@
 #include "matrix4x4.h"
 #include "renderwindow.h"
 #include "components.h"
+#include <QColorDialog>
+#include <QColor>
 
 DetailsWidget::DetailsWidget(QWidget *parent, float positionPace, float rotationPace, float scalePace) :
     QWidget(parent), ui(new Ui::DetailsWidget), mPositionPace{positionPace}, mRotationPace{rotationPace}, mScalePace{scalePace}
@@ -26,6 +28,8 @@ void DetailsWidget::init(Factory *factory, int index)
     readPosition();
     readRotation();
     readScale();
+    readTextureAndShader();
+    readLightStrengths();
     clearFocus();
 }
 
@@ -54,7 +58,25 @@ void DetailsWidget::readScale()
     ui->DoubleSpinBoxYScale->setValue(scale.y);
     ui->DoubleSpinBoxZScale->setValue(scale.z);
 }
-
+void DetailsWidget::readTextureAndShader()
+{
+    int shaderIndex = mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram;
+    int textureIndex = mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit;
+    ui->comboBox->setCurrentIndex(shaderIndex);
+    ui->comboBox_2->setCurrentIndex(textureIndex);
+}
+void DetailsWidget::readLightStrengths()
+{
+    if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    {
+        float ambientStrength =  dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mAmbientStrength;
+        float lightStrength =    dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mLightStrength;
+        float specularStrength = dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mSpecularStrength;
+        ui->horizontalSlider->setValue(ambientStrength*100);
+        ui->horizontalSlider_2->setValue(lightStrength*100);
+        ui->horizontalSlider_3->setValue(specularStrength*100);
+    }
+}
 void DetailsWidget::setPosition()
 {
         mfactory->mGameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
@@ -135,4 +157,81 @@ void DetailsWidget::on_DoubleSpinBoxZScale_valueChanged(double arg1)
 }
 
 
+
+
+void DetailsWidget::on_comboBox_currentIndexChanged(int index)
+{
+    mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram = index;
+}
+
+
+void DetailsWidget::on_comboBox_2_currentIndexChanged(int index)
+{
+    mfactory->mGameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit = index;
+}
+
+
+void DetailsWidget::on_pushButton_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this, "Choose Color");
+    if (color.isValid())
+    {
+        QRgb rgb = color.rgb();
+        gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
+        if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        {
+            dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mAmbientColor = vectorRGB;
+            //qDebug() << "tried to change ambient color";
+        }
+    }
+}
+
+
+void DetailsWidget::on_horizontalSlider_sliderMoved(int position)
+{
+    if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    {
+        float ambientStrength = float(position)/100;
+        dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mAmbientStrength = ambientStrength;
+        //qDebug() << "tried to change ambient strength";
+    }
+}
+
+
+void DetailsWidget::on_horizontalSlider_2_sliderMoved(int position)
+{
+    if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    {
+        float lightStrength = float(position)/100;
+        dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mLightStrength = lightStrength;
+        //qDebug() << "tried to change light strength";
+    }
+}
+
+
+void DetailsWidget::on_pushButton_2_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this, "Choose Color");
+    if (color.isValid())
+    {
+        QRgb rgb = color.rgb();
+        gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
+        if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        {
+            dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mLightColor = vectorRGB;
+            //qDebug() << "tried to change light color";
+        }
+    }
+}
+
+
+void DetailsWidget::on_horizontalSlider_3_sliderMoved(int position)
+{
+    if(mfactory->mGameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    {
+        float specularStrength = float(position)/100;
+        dynamic_cast<Light*>(mfactory->mGameObjects[inSceneArrayIndex])->mSpecularStrength = specularStrength;
+        //qDebug() << "tried to change specular strength";
+    }
+}
 

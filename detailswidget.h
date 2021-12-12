@@ -43,12 +43,28 @@ private slots:
 
     void on_DoubleSpinBoxZScale_valueChanged(double arg1);
 
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_comboBox_2_currentIndexChanged(int index);
+
+    void on_pushButton_clicked();
+
+    void on_horizontalSlider_sliderMoved(int position);
+
+    void on_horizontalSlider_2_sliderMoved(int position);
+
+    void on_pushButton_2_clicked();
+
+    void on_horizontalSlider_3_sliderMoved(int position);
+
 private:
     Ui::DetailsWidget *ui;
 
     void readPosition();
     void readRotation();
     void readScale();
+    void readTextureAndShader();
+    void readLightStrengths();
     void setPosition();
     void setRotation();
     void setScale();
