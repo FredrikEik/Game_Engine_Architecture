@@ -56,11 +56,31 @@ void WidgetTransform::readScale()
 
 void WidgetTransform::setPosition()
 {
+//    qDebug() << "setPosition called";
     gsl::Vector3D position;
     position.x = ui->doubleSpinBoxXPosition->value();
     position.y = ui->doubleSpinBoxYPosition->value();
     position.z = ui->doubleSpinBoxZPosition->value();
     mRenderSystem->mGameObjects[indexInSceneArray]->mTransform->mMatrix.setPosition(position);
+}
+
+void WidgetTransform::setRotation()
+{
+//    gsl::Vector3D rotation; //Creating more problems than it solves.
+//    rotation.x = ui->doubleSpinBoxXRotation->value();
+//    rotation.y = ui->doubleSpinBoxYRotation->value();
+//    rotation.z = ui->doubleSpinBoxZRotation->value();
+//    mRenderSystem->mGameObjects[indexInSceneArray]->mTransform->mMatrix.setRotationToVector(rotation);
+}
+
+void WidgetTransform::setScale()
+{
+//    qDebug() << "setScale function called.";
+//    gsl::Vector3D scale;
+//    scale.x = ui->doubleSpinBoxXScale->value();
+//    scale.y = ui->doubleSpinBoxYScale->value();
+//    scale.z = ui->doubleSpinBoxZScale->value();
+//    mRenderSystem->mGameObjects[indexInSceneArray]->mTransform->mMatrix.scale(scale);
 }
 
 void WidgetTransform::setStepRates()
@@ -120,6 +140,7 @@ void WidgetTransform::on_doubleSpinBoxZPosition_valueChanged(double arg1)
 
 void WidgetTransform::on_doubleSpinBoxXScale_valueChanged(double arg1)
 {
+    setScale();
 //    mRenderSystem->mTransforms[indexInSceneArray].scale.x = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.scale.x = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();
@@ -127,6 +148,7 @@ void WidgetTransform::on_doubleSpinBoxXScale_valueChanged(double arg1)
 
 void WidgetTransform::on_doubleSpinBoxYScale_valueChanged(double arg1)
 {
+    setScale();
 //    mRenderSystem->mTransforms[indexInSceneArray].scale.y = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.scale.y = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();
@@ -134,6 +156,7 @@ void WidgetTransform::on_doubleSpinBoxYScale_valueChanged(double arg1)
 
 void WidgetTransform::on_doubleSpinBoxZScale_valueChanged(double arg1)
 {
+    setScale();
 //    mRenderSystem->mTransforms[indexInSceneArray].scale.z = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.scale.z = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();
@@ -146,6 +169,7 @@ void WidgetTransform::on_doubleSpinBoxXRotation_valueChanged(double arg1)
         arg1 = 0.0;
         ui->doubleSpinBoxXRotation->setValue(arg1);
     }
+    setRotation();
 //    mRenderSystem->mTransforms[indexInSceneArray].rotation.x = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.rotation.x = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();
@@ -158,6 +182,7 @@ void WidgetTransform::on_doubleSpinBoxYRotation_valueChanged(double arg1)
         arg1 = 0.0;
         ui->doubleSpinBoxYRotation->setValue(arg1);
     }
+    setRotation();
 //    mRenderSystem->mTransforms[indexInSceneArray].rotation.y = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.rotation.y = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();
@@ -170,6 +195,7 @@ void WidgetTransform::on_doubleSpinBoxZRotation_valueChanged(double arg1)
         arg1 = 0.0;
         ui->doubleSpinBoxZRotation->setValue(arg1);
     }
+    setRotation();
 //    mRenderSystem->mTransforms[indexInSceneArray].rotation.z = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->mTransform.rotation.z = arg1;
 //    mCurrentScene->mVisualObjects.at(indexInSceneArray)->updateMatrix();

@@ -1,6 +1,8 @@
 #ifndef WIDGETTRANSFORM_H
 #define WIDGETTRANSFORM_H
-
+/**
+  In the game-engine-editor, there are re-positionable sub-windows, WidgetTransform controls positions on gameobjects.
+ */
 class RenderSystem;
 
 namespace Ui {
@@ -28,7 +30,10 @@ private:
     void readPosition();
     void readRotation();
     void readScale();
+
     void setPosition();
+    void setRotation();
+    void setScale();
 
     void setStepRates();
     Ui::WidgetTransform *ui;

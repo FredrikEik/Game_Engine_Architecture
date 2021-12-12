@@ -8,7 +8,6 @@
 #include <fstream>
 #include <ctime>
 
-
 //Qt
 #include <QObject>
 #include <QOpenGLFunctions_4_1_Core>

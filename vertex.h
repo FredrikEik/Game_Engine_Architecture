@@ -5,6 +5,13 @@
 #include "vector2d.h"
 #include "gltypes.h"
 
+/**
+  Vertex cointains all info on each point in a mesh.
+  In Meshdata, mVertices is an array of Vertexes.
+  There are functions for filling and getting relevant information in multiple ways.
+  For example the three "set_XYZ" allows for inputting of data from multiple types of variables.
+ */
+
 class Vertex {
 public:
     Vertex();
