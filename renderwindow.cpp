@@ -239,6 +239,7 @@ void RenderWindow::initObjects()
 
 
              hjelpeObjekt = factory->createObject("Cube");
+             hjelpeObjekt->mObjectName = "HjelpeObjekt";
              hjelpeObjektMesh = new MeshComponent;
 
 }
@@ -350,7 +351,7 @@ void RenderWindow::render()
 
             if (i==mIndexToPickedObject) {
 
-                //driver å må lage noe hjelpe objekt.
+                //Setter meshen til hjelpeobjektet
 
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
             hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
@@ -364,11 +365,11 @@ void RenderWindow::render()
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
             }
-            else if (hjelpeObjekt == factory->mGameObjects[i]){
+            else {
                 mIndexToPickedObject = 0;
             }
 
-                factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
         }
     }

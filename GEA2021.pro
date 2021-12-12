@@ -28,6 +28,7 @@ win32 {
 
 
 SOURCES += main.cpp \
+    billboard.cpp \
     camera.cpp \
     components.cpp \
     cube.cpp \
@@ -63,6 +64,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     PreCompiledHeaders.h \
+    billboard.h \
     camera.h \
     components.h \
     constants.h \
