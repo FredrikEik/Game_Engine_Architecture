@@ -46,6 +46,11 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mBallPhysicsComp = new BallPhysicsComponent();
 
     tempGO->mMaterialComp = new MaterialComponent();
+    tempGO->mAIComponent = new AIComponent();
+
+    tempGO->mCollisionComp = new CollisionComponent();
+    tempGO->mCollisionComp->mMatrix.setToIdentity();
+    mMeshHandler->createCollisionCorners(filepath, tempGO->mCollisionComp);
 
     tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
@@ -69,16 +74,16 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     if(foundAtIndex != mObjectsMeshesMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
-        tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
-        tempGO->mCollisionComp->mMatrix.setToIdentity();
+//        tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
+//        tempGO->mCollisionComp->mMatrix.setToIdentity();
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
-        tempGO->mCollisionComp = new CollisionComponent();
-        tempGO->mCollisionComp->mMatrix.setToIdentity();
+//        tempGO->mCollisionComp = new CollisionComponent();
+//        tempGO->mCollisionComp->mMatrix.setToIdentity();
 
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
         if(UsingLOD)
@@ -89,6 +94,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         }else{
             if (filepath.find(".obj") != std::string::npos)
             {
+                if (filepath.find("cacodemon") != std::string::npos)
+                {
+                    tempGO->mAIComponent = new AIComponent();
+                }
                 mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
             }
             if (filepath.find("xyz") != std::string::npos)
@@ -179,6 +188,7 @@ void ResourceManager::saveScene(std::vector<GameObject *> &objects, std::string 
 
         levelObjects["shader"] = int(it2->mMaterialComp->mShaderProgram);
         levelObjects["usingLOD"] = it2->mMeshComp->bUsingLOD;
+        levelObjects["usingFrustumCulling"] = it2->mMeshComp->bUsingFrustumCulling;
 
         objectarray.append(levelObjects);
     }
@@ -205,9 +215,7 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
     // CoreObject
     QJsonObject loadDocJsonObject = loadDoc.object();
 
-        objects.clear();
-
-
+    objects.clear();
 
     if (loadDocJsonObject.contains("objects") && loadDocJsonObject["objects"].isArray())
     {
@@ -284,7 +292,10 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
             //scale
             mTransformsystem->setScale(gameObj, gsl::Vector3D(scalx,scaly,scalz));
 
-
+            if (singleObject.contains("usingFrustumCulling") && singleObject["usingFrustumCulling"].isBool())
+            {
+                gameObj->mMeshComp->bUsingFrustumCulling = singleObject["usingFrustumCulling"].toBool();
+            }
 
             if (singleObject.contains("shader") && singleObject["shader"].isDouble())
             {

@@ -43,44 +43,81 @@ void TransformSystem::setRotation(GameObject *obj, gsl::Vector3D rotateToValue)
     obj->mTransformComp->mScaleMatrix.rotateY(y);
     obj->mTransformComp->mScaleMatrix.rotateZ(z);
 
+
+    if(obj->mCollisionComp->bSetRotatedOnce)
+    {
+        obj->mCollisionComp->maxCornerRotated.setX(obj->mCollisionComp->maxCorner.z());
+        obj->mCollisionComp->maxCornerRotated.setZ(obj->mCollisionComp->maxCorner.x());
+
+        obj->mCollisionComp->minCornerRotated.setX(obj->mCollisionComp->minCorner.z());
+        obj->mCollisionComp->minCornerRotated.setZ(obj->mCollisionComp->minCorner.x());
+        obj->mCollisionComp->bSetRotatedOnce = false;
+    }
     float yrot = obj->mTransformComp->mRotation.y;
     if((yrot > 45 && yrot < 135) || ((yrot > 220 && yrot < 315)))
     {
-        obj->mCollisionComp->bRotated = true;
-        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
-        if(rotateOnce)
-        {
-            float tempMaxX = obj->mCollisionComp->maxCorner.x();
-            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
-            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+        obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCornerRotated.x());
+        obj->mCollisionComp->maxCorner.setZ(obj->mCollisionComp->maxCornerRotated.z());
 
-            float tempMinX = obj->mCollisionComp->minCorner.x();
-            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
-            obj->mCollisionComp->minCorner.setZ(tempMinX);
-            rotateOnce = false;
-        }
+        obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCornerRotated.x());
+        obj->mCollisionComp->minCorner.setZ(obj->mCollisionComp->minCornerRotated.z());
     }
     else if((yrot < -45 && yrot > -135) || ((yrot < -220 && yrot > -315)))
     {
-        obj->mCollisionComp->bRotated = true;
-        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
-        if(rotateOnce)
-        {
-            float tempMaxX = obj->mCollisionComp->maxCorner.x();
-            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
-            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+//        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+        obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCornerRotated.x());
+        obj->mCollisionComp->maxCorner.setZ(obj->mCollisionComp->maxCornerRotated.z());
 
-            float tempMinX = obj->mCollisionComp->minCorner.x();
-            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
-            obj->mCollisionComp->minCorner.setZ(tempMinX);
-            rotateOnce = false;
-        }
+        obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCornerRotated.x());
+        obj->mCollisionComp->minCorner.setZ(obj->mCollisionComp->minCornerRotated.z());
     }else
     {
-        obj->mCollisionComp->bRotated = false;
-        rotateOnce = true;
+        obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.x());
+        obj->mCollisionComp->maxCorner.setZ(obj->mCollisionComp->maxCorner.z());
+
+        obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.x());
+        obj->mCollisionComp->minCorner.setZ(obj->mCollisionComp->minCorner.z());
+//        qDebug() << "maxcorneNOTROTATED: " << obj->mCollisionComp->maxCorner << "mincornerNOTROTATED: " << obj->mCollisionComp->minCorner;
     }
-        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+
+//    float yrot = obj->mTransformComp->mRotation.y;
+//    if((yrot > 45 && yrot < 135) || ((yrot > 220 && yrot < 315)))
+//    {
+//        obj->mCollisionComp->bRotated = true;
+////        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+//        if(rotateOnce)
+//        {
+//            float tempMaxX = obj->mCollisionComp->maxCorner.x();
+//            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
+//            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+
+//            float tempMinX = obj->mCollisionComp->minCorner.x();
+//            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
+//            obj->mCollisionComp->minCorner.setZ(tempMinX);
+//            rotateOnce = false;
+//        }
+//    }
+//    else if((yrot < -45 && yrot > -135) || ((yrot < -220 && yrot > -315)))
+//    {
+//        obj->mCollisionComp->bRotated = true;
+////        qDebug() << "maxcornen: " << obj->mCollisionComp->maxCorner << "mincorner: " << obj->mCollisionComp->minCorner;
+//        if(rotateOnce)
+//        {
+//            float tempMaxX = obj->mCollisionComp->maxCorner.x();
+//            obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.z());
+//            obj->mCollisionComp->maxCorner.setZ(tempMaxX);
+
+//            float tempMinX = obj->mCollisionComp->minCorner.x();
+//            obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.z());
+//            obj->mCollisionComp->minCorner.setZ(tempMinX);
+//            rotateOnce = false;
+//        }
+//    }else
+//    {
+//        obj->mCollisionComp->bRotated = false;
+//        rotateOnce = true;
+////        qDebug() << "maxcorneNOTROTATED: " << obj->mCollisionComp->maxCorner << "mincornerNOTROTATED: " << obj->mCollisionComp->minCorner;
+//    }
 
     updateMatrix(obj);
 }
@@ -88,13 +125,13 @@ void TransformSystem::setRotation(GameObject *obj, gsl::Vector3D rotateToValue)
 void TransformSystem::setCollisionRotation(GameObject *obj, float deg)
 {
 
-    float y = deg - obj->mCollisionComp->mRotation.getY();
+//    float y = deg - obj->mCollisionComp->mRotation.getY();
 
 
-    obj->mCollisionComp->mRotation.setY(y+obj->mCollisionComp->mRotation.getY());
+//    obj->mCollisionComp->mRotation.setY(y+obj->mCollisionComp->mRotation.getY());
 
 
-    obj->mCollisionComp->mScaleMatrix.rotateY(y);
+//    obj->mCollisionComp->mScaleMatrix.rotateY(y);
 
 
     updateMatrix(obj);

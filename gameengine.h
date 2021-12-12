@@ -86,7 +86,7 @@ private:
 
     ResourceManager *mResourceManager{nullptr};
     PhysicsBallSystem *mPhysicsBallSystem{nullptr};
-    CollisionSystem *mCollisionSystem{nullptr};
+//    CollisionSystem *mCollisionSystem{nullptr};
     TransformSystem *mTransformSystem{nullptr};
 
     //std::vector<GameObject*> mGameObjects;
@@ -109,6 +109,7 @@ private:
     void UpdateGameCameraFollow();
 
     std::vector<GameObject*> objBeforePlaying;
+
 
 };
 

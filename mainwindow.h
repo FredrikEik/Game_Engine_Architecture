@@ -112,6 +112,10 @@ private slots:
 
     void on_actionReset_Ball_triggered();
 
+    void on_usingFrustumCulling_toggled(bool checked);
+
+    void on_CollisionBoxRotated_toggled(bool checked);
+
 private:
     void init();
     Ui::MainWindow *ui;

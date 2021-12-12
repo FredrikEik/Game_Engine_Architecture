@@ -46,4 +46,34 @@ bool CollisionSystem::isColliding(GameObject *player, std::vector<GameObject*> o
     return false;
 }
 
+void CollisionSystem::updateCollisionBox(GameObject *obj)
+{
+    if(obj->mCollisionComp->bRotated)
+    {
+        if(obj->mCollisionComp->bSetRotatedOnce)
+        {
+            obj->mCollisionComp->maxCornerRotated.setX(obj->mCollisionComp->maxCorner.z());
+            obj->mCollisionComp->maxCornerRotated.setZ(obj->mCollisionComp->maxCorner.x());
+
+            obj->mCollisionComp->minCornerRotated.setX(obj->mCollisionComp->minCorner.z());
+            obj->mCollisionComp->minCornerRotated.setZ(obj->mCollisionComp->minCorner.x());
+            obj->mCollisionComp->bSetRotatedOnce = false;
+        }
+        obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCornerRotated.x());
+        obj->mCollisionComp->maxCorner.setZ(obj->mCollisionComp->maxCornerRotated.z());
+
+        obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCornerRotated.x());
+        obj->mCollisionComp->minCorner.setZ(obj->mCollisionComp->minCornerRotated.z());
+    }
+    else
+    {
+        obj->mCollisionComp->maxCorner.setX(obj->mCollisionComp->maxCorner.x());
+        obj->mCollisionComp->maxCorner.setZ(obj->mCollisionComp->maxCorner.z());
+
+        obj->mCollisionComp->minCorner.setX(obj->mCollisionComp->minCorner.x());
+        obj->mCollisionComp->minCorner.setZ(obj->mCollisionComp->minCorner.z());
+//        qDebug() << "maxcorneNOTROTATED: " << obj->mCollisionComp->maxCorner << "mincornerNOTROTATED: " << obj->mCollisionComp->minCorner;
+    }
+}
+
 

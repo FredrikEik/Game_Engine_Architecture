@@ -16,6 +16,7 @@ public:
     MaterialComponent* mMaterialComp{nullptr};
     CollisionComponent* mCollisionComp{nullptr};
     MeshComponent* mCollisionLines{nullptr};
+    AIComponent* mAIComponent{nullptr};
     BallPhysicsComponent* mBallPhysicsComp{nullptr};
 };
 

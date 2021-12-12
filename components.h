@@ -46,6 +46,7 @@ public:
 
     GLenum mDrawType{GL_TRIANGLES};
     bool bUsingLOD{false};
+    bool bUsingFrustumCulling{true};
 };
 
 class MaterialComponent
@@ -63,20 +64,28 @@ public:
 
     QVector3D maxCorner{0,0,0};
     QVector3D minCorner{0,0,0};
+    QVector3D maxCornerRotated{0,0,0};
+    QVector3D minCornerRotated{0,0,0};
 
     float mRaidus{0};
 
     // AABB is axis oriented so it only has two orientations.
     bool bRotated{false};
-    gsl::Vector3D mRotation{0.f,0.f,0.f};
+//    gsl::Vector3D mRotation{0.f,0.f,0.f};
     gsl::Matrix4x4 mMatrix;
-        gsl::Matrix4x4 mScaleMatrix;
+//        gsl::Matrix4x4 mScaleMatrix;
+    bool bSetRotatedOnce{true};
+};
+
+class AIComponent
+{
+public:
+    bool isAlive{true};
 };
 
 class BallPhysicsComponent
 {
 public:
-
     QVector3D mVelocity{0,0,0};
     QVector3D mPosition{0,0,0};
     float Radius{1};

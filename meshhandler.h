@@ -28,6 +28,7 @@ public:
 
     //this takes inn to many arguments...
     void readFile(std::string filename, MeshComponent *MeshComp, int LODlvl, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
+    void createCollisionCorners(std::string filename, CollisionComponent *CollisionComponent);
     void createXYZAxis(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
     void createTerrain(std::string filename, MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
     void createHeightCurves(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines);
@@ -43,6 +44,8 @@ public:
 private:
 //    std::vector<GameObject*> mObjects;
 //    std::map<std::string, GameObject> mObjectsMap;
+
+    // code from VisSim
     MeshComponent* terrainMesh{nullptr};
 
     struct lessThanZ

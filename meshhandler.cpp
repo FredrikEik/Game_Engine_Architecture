@@ -223,6 +223,81 @@ void MeshHandler::readFile(std::string filename, MeshComponent *MeshComp, int LO
     init(*MeshComp, LODlvl);
 }
 
+void MeshHandler::createCollisionCorners(std::string filename, CollisionComponent *CollComp)
+{
+    std::string tempFileName{0};
+        tempFileName = filename;
+
+    //qDebug() << "HERE filename: " << QString::fromStdString(tempFileName);
+    std::ifstream fileIn;
+    fileIn.open (tempFileName, std::ifstream::in);
+    if(!fileIn)
+        qDebug() << "Could not open file for reading: " << QString::fromStdString(tempFileName);
+
+    //One line at a time-variable
+    std::string oneLine;
+    //One word at a time-variable
+    std::string oneWord;
+
+    std::vector<QVector3D> tempVertecies;
+    std::vector<QVector3D> tempNormals;
+    std::vector<QVector2D> tempUVs;
+
+    //    std::vector<Vertex> mVertices;    //made in VisualObject
+    //    std::vector<GLushort> mIndices;   //made in VisualObject
+
+    // Varible for constructing the indices vector
+    unsigned int temp_index = 0;
+
+    //Reading one line at a time from file to oneLine
+    while(std::getline(fileIn, oneLine))
+    {
+        //Doing a trick to get one word at a time
+        std::stringstream sStream;
+        //Pushing line into stream
+        sStream << oneLine;
+        //Streaming one word out of line
+        oneWord = ""; //resetting the value or else the last value might survive!
+        sStream >> oneWord;
+
+        if (oneWord == "#")
+        {
+            //Ignore this line
+            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+            continue;
+        }
+        if (oneWord == "")
+        {
+            //Ignore this line
+            //            qDebug() << "Line is blank ";
+            continue;
+        }
+        if (oneWord == "v")
+        {
+            //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+            QVector3D tempVertex;
+            sStream >> oneWord;
+            tempVertex.setX(std::stof(oneWord));
+            sStream >> oneWord;
+            tempVertex.setY(std::stof(oneWord));
+            sStream >> oneWord;
+            tempVertex.setZ(std::stof(oneWord));
+
+            //Vertex made - pushing it into vertex-vector
+            tempVertecies.push_back(tempVertex);
+
+
+            // For making the collision box
+
+            findCollisionCorners(CollComp, tempVertex);
+
+            continue;
+        }
+    }
+    //beeing a nice boy and closing the file after use
+    fileIn.close();
+}
+
 void MeshHandler::createXYZAxis(MeshComponent *MeshComp, CollisionComponent *CollisionComponent, MeshComponent *CollLines)
 {
     MeshComp->mVertices[0].push_back(Vertex{0,0,0,1,0,0});

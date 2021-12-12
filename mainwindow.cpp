@@ -12,6 +12,7 @@
 #include "renderwindow.h"
 #include "gameengine.h"
 #include "transformsystem.h"
+#include "collisionsystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -311,13 +312,18 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
     ui->ScaleYspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mScale.getY());
     ui->ScaleZspinBox->setValue(GameObjects[ObjectListIndex]->mTransformComp->mScale.getZ());
 
+    ui->usingFrustumCulling->setChecked(GameObjects[ObjectListIndex]->mMeshComp->bUsingFrustumCulling);
+    ui->CollisionBoxRotated->setChecked(GameObjects[ObjectListIndex]->mCollisionComp->bRotated);
+
 
     // --Visible Selection in 3D window--
     // Turn off collision box of the last selected
-    if(GameObjects.size()>2){
-    GameObjects[lastIndex]->mTransformComp->bShowCollisionBox = false;
-
-    GameObjects[ObjectListIndex]->mTransformComp->bShowCollisionBox = true;
+        bool &isPlaying = GameEngine::getInstance()->bIsPlaying;
+    if(GameObjects.size()>2)
+    {
+        GameObjects[lastIndex]->mTransformComp->bShowCollisionBox = false;
+        if(!isPlaying)
+            GameObjects[ObjectListIndex]->mTransformComp->bShowCollisionBox = true;
     }
     lastIndex = currentRow;
 }
@@ -596,5 +602,18 @@ void MainWindow::on_actionReset_Ball_triggered()
     GameEngine::getInstance()->ResetBallVelocity();
     GameEngine::getInstance()->mPhysicsBall->mTransformComp->mMatrix.setPosition(lastBallPos.x(),lastBallPos.y(),lastBallPos.z());
 
+}
+
+
+void MainWindow::on_usingFrustumCulling_toggled(bool checked)
+{
+    GameObjects[ObjectListIndex]->mMeshComp->bUsingFrustumCulling = checked;
+}
+
+
+void MainWindow::on_CollisionBoxRotated_toggled(bool checked)
+{
+    GameObjects[ObjectListIndex]->mCollisionComp->bRotated = checked;
+    CollisionSystem::updateCollisionBox(GameObjects[ObjectListIndex]);
 }
 

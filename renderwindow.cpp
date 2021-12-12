@@ -219,7 +219,7 @@ void RenderWindow::render()
 
         float  distanceCamToObj = (objPos - mCurrentCamera->position()).length();
         // ----- end -----
-        if(bUsingFrustumCulling)
+        if(bUsingFrustumCulling && mGameObjects[i]->mMeshComp->bUsingFrustumCulling)
         {
             if(distanceToRightObject - mGameObjects[i]->mCollisionComp->mRaidus > 0)
             {
@@ -382,31 +382,19 @@ void RenderWindow::render()
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
         }
-        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
-        {
-        //send data to shader
-            gsl::Matrix4x4 tempRotation = mGameObjects[i]->mTransformComp->mMatrix;
-            if(mGameObjects[i]->mCollisionComp->bRotated){
-//                mGameObjects[i]->mCollisionComp->mMatrix = mGameObjects[i]->mTransformComp->mMatrix;
-                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,90,0));
-            }else
-               TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,0,0));
-
-            glUseProgram(mShaderPrograms[2]->getProgram() );
-            glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-            GameObject* light = GameEngine::getInstance()->mLight;
-            gsl::Vector3D lightPos = light->mTransformComp->mMatrix.getPosition();
-            gsl::Vector3D lightColor{0.9f, 0.9f, 0.9f};
-
-            glUniform1i(mPhongTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
-            glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
-            glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
-            glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);
-
-            mGameObjects[i]->mTransformComp->mMatrix = tempRotation;
-        }
+        // Hack to render the collison box only in correct collision direction either 90 or 0
+//        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
+//        {
+//            gsl::Vector3D tempRotation = mGameObjects[i]->mTransformComp->mRotation;
+//            if(mGameObjects[i]->mCollisionComp->bRotated){
+//                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,90,0));
+//            }else
+//            {
+//                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,0,0));
+//            }
+//            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
+//            TransformSystem::getInstance()->setRotation(mGameObjects[i], tempRotation);
+//        }
 
         // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
         if( bShowAllCollisionBoxes )
@@ -835,7 +823,9 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
     }
     if (event->button() == Qt::MiddleButton)
         input.MMB = true;
-    if(input.LMB)
+
+
+    if(input.LMB )
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         xMousePos = event->pos().x();
@@ -845,6 +835,8 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
 
     mMouseXlast = event->pos().x();
     mMouseYlast = event->pos().y();
+
+//    if(isPlaying && input)
 }
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -909,6 +901,8 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 //            mCurrentCamera->yaw(mCameraRotateSpeed * mMouseXlast);
 //        if (mMouseYlast != 0)
 //            mCurrentCamera->pitch(mCameraRotateSpeed * mMouseYlast);
+
+
 
 
         mMouseXlast = width()/2;
