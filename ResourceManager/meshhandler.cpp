@@ -401,55 +401,97 @@ int MeshHandler::makeSkybox()
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
 
-    temp.mVertices[0].insert( temp.mVertices[0].end(),
-    {// front
-     Vertex{gsl::Vector3D(-1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.333f)},
-     Vertex{gsl::Vector3D( 1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.333f)},
-     Vertex{gsl::Vector3D(-1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.666f)},
-     Vertex{gsl::Vector3D( 1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.666f)},
+//    temp.mVertices[0].insert( temp.mVertices[0].end(),
+//    {// front
+//     Vertex{gsl::Vector3D(-1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.333f)},
+//     Vertex{gsl::Vector3D( 1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.333f)},
+//     Vertex{gsl::Vector3D(-1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.666f)},
+//     Vertex{gsl::Vector3D( 1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.666f)},
 
-     // right
-     Vertex{gsl::Vector3D(1.f, -1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.333f)},
-     Vertex{gsl::Vector3D(1.f, -1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.333f)},
-     Vertex{gsl::Vector3D(1.f,  1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
-     Vertex{gsl::Vector3D(1.f,  1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.666f)},
+//     // right
+//     Vertex{gsl::Vector3D(1.f, -1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.333f)},
+//     Vertex{gsl::Vector3D(1.f, -1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.333f)},
+//     Vertex{gsl::Vector3D(1.f,  1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
+//     Vertex{gsl::Vector3D(1.f,  1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.666f)},
 
-     // back
-     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.333f)},
-     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.333f)},
-     Vertex{gsl::Vector3D( 1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.666f)},
-     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.666f)},
+//     // back
+//     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.333f)},
+//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.333f)},
+//     Vertex{gsl::Vector3D( 1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.666f)},
+//     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.666f)},
 
-     // left
-     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.333f)},
-     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
-     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.666f)},
-     Vertex{gsl::Vector3D(-1.f,  1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f,   0.666f)},
+//     // left
+//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.333f)},
+//     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
+//     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.666f)},
+//     Vertex{gsl::Vector3D(-1.f,  1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f,   0.666f)},
 
-     // bottom
-     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.f)},
-     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.f)},
-     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
-     Vertex{gsl::Vector3D( 1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.333f)},
+//     // bottom
+//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.f)},
+//     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.f)},
+//     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
+//     Vertex{gsl::Vector3D( 1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.333f)},
 
-     // top
-     Vertex{gsl::Vector3D(-1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.666f)},
-     Vertex{gsl::Vector3D( 1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
-     Vertex{gsl::Vector3D(-1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.999f)},
-     Vertex{gsl::Vector3D( 1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.999f)}
-                      });
+//     // top
+//     Vertex{gsl::Vector3D(-1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.666f)},
+//     Vertex{gsl::Vector3D( 1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
+//     Vertex{gsl::Vector3D(-1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.999f)},
+//     Vertex{gsl::Vector3D( 1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.999f)}
+//                      });
 
-    temp.mIndices[0].insert( temp.mIndices[0].end(),
-    { 0,  2,  1,  1,  2,  3,
-      4,  6,  5,  5,  6,  7,
-      8,  10,  9, 9,  10, 11,
-      12, 14, 13, 13, 14, 15,
-      16, 18, 17, 17, 18, 19,
-      20, 22, 21, 21, 22, 23
-                     });
+//    temp.mIndices[0].insert( temp.mIndices[0].end(),
+//    { 0,  2,  1,  1,  2,  3,
+//      4,  6,  5,  5,  6,  7,
+//      8,  10,  9, 9,  10, 11,
+//      12, 14, 13, 13, 14, 15,
+//      16, 18, 17, 17, 18, 19,
+//      20, 22, 21, 21, 22, 23
+//                     });
+
+
+    temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f, -1.0f ,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f, -1.0f, -1.0f ,1,1,1});
+    temp.mVertices[0].push_back(Vertex{ 1.0f, -1.0f, -1.0f ,1,1,1});
+    temp.mVertices[0].push_back(Vertex{ 1.0f, -1.0f, -1.0f ,1,1,1});
+    temp.mVertices[0].push_back(Vertex{ 1.0f,  1.0f, -1.0f ,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f, -1.0f ,1,1,1});
+
+    temp.mVertices[0].push_back(Vertex{-1.0f, -1.0f,  1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f, -1.0f, -1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f, -1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f, -1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f,  1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{-1.0f, -1.0f,  1.0f,1,1,1});
+
+    temp.mVertices[0].push_back(Vertex{1.0f, -1.0f, -1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{1.0f, -1.0f,  1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{1.0f,  1.0f,  1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{1.0f,  1.0f,  1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{1.0f,  1.0f, -1.0f,1,1,1});
+    temp.mVertices[0].push_back(Vertex{1.0f, -1.0f, -1.0f,1,1,1});
+
+    temp.mVertices[0].push_back(Vertex(-1.0f,  -1.0f, 1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( -1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex(1.0f,  -1.0f, 1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex(-1.0f, - 1.0f, 1.0f,1,1,1));
+
+    temp.mVertices[0].push_back(Vertex(-1.0f,  1.0f, -1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f,  1.0f, -1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex(-1.0f,  1.0f,  1.0f,1,1,1));
+    temp.mVertices[0].push_back(Vertex(-1.0f,  1.0f, -1.0f,1,1,1));
+
+    temp.mVertices[0].push_back(Vertex(-1.0f, -1.0f, -1.0,1,1,1));
+    temp.mVertices[0].push_back(Vertex(-1.0f, -1.0f,  1.0,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f, -1.0f, -1.0,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f, -1.0f, -1.0,1,1,1));
+    temp.mVertices[0].push_back(Vertex(-1.0f, -1.0f,  1.0,1,1,1));
+    temp.mVertices[0].push_back(Vertex( 1.0f, -1.0f,  1.0,1,1,1));
 
     temp.mDrawType = GL_TRIANGLES;
-    //temp.mTransform->mMatrix.scale(30.f);
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
@@ -1270,6 +1312,7 @@ void MeshHandler::move(float x, float y, float z, GameObject *tempMesh)
 
 void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
 {
+
     gsl::Vector3D bary;
     //std::vector<gsml::Vertex> vertices = triangle_surface->get_vertices();
     gsl::Vector2D ballPosXY(ball->mTransform->mMatrix.getPosition().x, ball->mTransform->mMatrix.getPosition().y);
@@ -1298,7 +1341,7 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
             m_normal = p12^p13;
             m_normal.normalize();
 
-            float mHeight = ball->mTransform->mMatrix.getPosition().z - barycentricHeight(ball->mTransform->mMatrix.getPosition(), p1,p2,p3);
+            float mHeight = ball->mTransform->mMatrix.getPosition().y - barycentricHeight(ball->mTransform->mMatrix.getPosition(), p1,p2,p3);
             mHeight = sqrt(mHeight * mHeight);
             bool isFalling{false};
             if(mHeight > p->radius+0.2)
@@ -1310,7 +1353,7 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
             if(isFalling)
             {
                 p->freeFall();
-                //qDebug() << "Fritt Fall";
+                qDebug() << "Fritt Fall";
                 mN = m_normal;
                 mN.normalize();
                 m_indeks = -1;
@@ -1322,6 +1365,7 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
                 setHeight(barycentricHeight(ball->mTransform->mMatrix.getPosition(), p1,p2,p3), ball);
                 mN = m_normal + old_normal;
                 mN.normalize();
+                qDebug() << "On Ground";
                 qDebug() << "mVelocity: " << p->Velocity.x << p->Velocity.y << p->Velocity.z;
             }
             p->Velocity = p->VelocityOld + p->Acceleration * dt;
@@ -1349,6 +1393,7 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
 void MeshHandler::setSurface2(GameObject *surface, GameObject * ball)
 {
     _las = surface;
+    //lasData = _las->mMeshHandlerGameObject->getmVertices();
     int mT = static_cast<int>(lasData.size());
     if(lasData.size()>100){
         mT = rand()%mT;
@@ -1357,10 +1402,10 @@ void MeshHandler::setSurface2(GameObject *surface, GameObject * ball)
         gsl::Vector3D v2 =lasData.at(mT+1).get_xyz();
         gsl::Vector3D v3 =lasData.at(mT+2).get_xyz();
         gsl::Vector3D pos = (v1+v2+v3)*0.333;
-        pos.z += 50;
+        pos.x += 2;
         ball->mTransform->mMatrix.setPosition(pos.x, pos.y, pos.z);}
-    else
-        move(1,1,5, ball);
+//    else
+//        move(1,1,5, ball);
 }
 
 void MeshHandler::setHeight(float z, GameObject* ball)

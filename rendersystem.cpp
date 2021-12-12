@@ -271,27 +271,14 @@ void RenderSystem::render()
         //}
 
 
-        //test for linebox
-        if(i == 1)
-        {
 
-//            circle1 = CoreEngine::getInstance()->mResourceManager->
-//            makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glBindVertexArray( circle1.mVAO[0] );
-//            glDrawElements(circle1.mDrawType, circle1.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }
         if(i == mIndexToPickedObject)
         {
             linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
             glBindVertexArray( linebox2.mVAO[0] );
             glDrawElements(linebox2.mDrawType, linebox2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
         }
-//            circle2 = CoreEngine::getInstance()->mResourceManager->
-//            makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glBindVertexArray( circle2.mVAO[0] );
-//            glDrawElements(circle2.mDrawType, circle2.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
-    //    }
 
         srand( (float)time( NULL ) );
         if(CoreEngine::getInstance()->isPlaying == true)
@@ -302,6 +289,9 @@ void RenderSystem::render()
 
 
         }
+
+
+
 
 
 
@@ -405,7 +395,7 @@ void RenderSystem::render()
 
     if(toogleFrustumDrawing)
     {
-        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+        //glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
     }

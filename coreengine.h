@@ -75,6 +75,9 @@ public:
     void RollingBallSimulation();
     void updateCamera();
     void updateScene();
+    void UpdateSimulation();
+
+    std::vector<GameObject*> Rain;
 
     void spawnParticles(GameObject *temp);
     void spawnProjectile();

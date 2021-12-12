@@ -18,7 +18,7 @@ public:
      MaterialComponent* mMaterial{nullptr};
      SoundComponet* mSoundComponent{nullptr};
 
-     //MeshHandler* mMeshHandlerGameObject{nullptr};
+     MeshHandler* mMeshHandlerGameObject{nullptr};
 
      bool isAlive = true;
      bool ProjectileHit = false;

@@ -101,19 +101,22 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(mTerrain);
 
 
+    skybox = mResourceManager->addObject("skybox");
+    skybox->mMaterial->mShaderProgram = 2;
+    skybox->mMaterial->mTextureUnit = 3;
+    skybox->mTransform->mMatrix.scale(40.f);
+    mRenderSystem->mGameObjects.push_back(skybox);
 
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
     mGameCamera->mViewMatrix.rotateY(30.f);
     mGameCamera->mViewMatrix.rotateX(90.f);
-    mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.f, 20.f, 13.f);
 
     mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-
-    RollingBallSimulation();
 
 
     //Connect the gameloop timer to the render function:
@@ -167,18 +170,6 @@ void CoreEngine::testScene()
     enemySpawned = true;
 
 
-    skybox = mResourceManager->addObject("skybox");
-    skybox->mMaterial->mShaderProgram = 2;
-    skybox->mMaterial->mTextureUnit = 3;
-    skybox->mTransform->mMatrix.scale(40.f);
-    mRenderSystem->mGameObjects.push_back(skybox);
-
-    Las = mResourceManager->addObject("LAS");
-    //Las->mTransform->mMatrix.translate(0,0,0);
-    Las->mMaterial->mShaderProgram =0;
-    Las->mMaterial->mTextureUnit = 0;
-    //Las->mTransform->mMatrix.scale(50.f);
-    mRenderSystem->mGameObjects.push_back(Las);
 
 
 }
@@ -191,22 +182,28 @@ void CoreEngine::RollingBallSimulation()
     //Las->mTransform->mMatrix.translate(0,0,0);
     Las->mMaterial->mShaderProgram =0;
     Las->mMaterial->mTextureUnit = 0;
+    //Las->mTransform->mMatrix.rotateX(90);
     //Las->mTransform->mMatrix.scale(50.f);
     mRenderSystem->mGameObjects.push_back(Las);
 
+    for (auto i = 0; i < 1; i++)
+    {
+        ball = mResourceManager->addObject("ball");
+        ball->mMaterial->mShaderProgram =1;
+        ball->mMaterial->mTextureUnit = 0;
+       // ball->mTransform->mMatrix.setPosition(0,4,0);
+        //Las->mTransform->mMatrix.scale(50.f);
+        mRenderSystem->mGameObjects.push_back(ball);
+        Rain.push_back(ball);
+        //ball->setSurface(Las);
+        //mMeshHandler->setSurface2(Las, ball);
+        //mMeshHandlerGameObject->setSurface2(Las, ball);
 
-    ball = mResourceManager->addObject("ball");
-    ball->mMaterial->mShaderProgram =1;
-    ball->mMaterial->mTextureUnit = 0;
-    ball->mTransform->mMatrix.setPosition(0,4,0);
-    //Las->mTransform->mMatrix.scale(50.f);
-    mRenderSystem->mGameObjects.push_back(ball);
+        mResourceManager->setSurface(Las, ball);
 
-    //ball->setSurface(Las);
-    //mMeshHandler->setSurface2(Las, ball);
-    //mMeshHandlerGameObject->setSurface2(Las, ball);
 
-    //mResourceManager->setSurface(Las, ball);
+    }
+
 
 }
 
@@ -266,7 +263,7 @@ void CoreEngine::updateScene()
 
     updateCamera();
 
-    mResourceManager->moveAlongSurface(0.017, ball);
+
 
     if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);
@@ -338,6 +335,17 @@ void CoreEngine::updateScene()
     //mMainWindow->UpdateScore(score);
 
 
+
+}
+
+void CoreEngine::UpdateSimulation()
+{
+    if(!Rain.empty()){
+        for(auto i{0}; i<static_cast<int>(Rain.size()); i++)
+        {
+        getInstance()->mResourceManager->moveAlongSurface(0.0017, ball);
+        }
+    }
 
 }
 

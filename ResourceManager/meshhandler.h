@@ -18,7 +18,7 @@ struct Physics
     float friction = 0.9;
     float lilleG = 9.81;
 
-    gsl::Vector3D Acceleration{0.0, 0.0, -lilleG};
+    gsl::Vector3D Acceleration{0.0, -lilleG, 0};
     gsl::Vector3D Force{0.0,0.0,0.0};
     gsl::Vector3D Velocity{0,0,0};
     gsl::Vector3D VelocityOld{0,0,0};
@@ -29,7 +29,7 @@ struct Physics
     void freeFall()
     {
         frittfall = true;
-        Acceleration = gsl::Vector3D(0, 0, -lilleG);
+        Acceleration = gsl::Vector3D(0, -lilleG, 0);
         calculateAirF();
     }
     void onGround(gsl::Vector3D N)
@@ -37,7 +37,7 @@ struct Physics
         if(frittfall == true)
             VelocityOld.z = 0;
         frittfall = false;
-        Acceleration = gsl::Vector3D(N.x * N.z, N.y * N.z, (N.z*N.z)-1) * lilleG;
+        Acceleration = gsl::Vector3D(N.x * N.z, (N.z*N.z)-1, N.y * N.z) * lilleG;
         calculateAirF();
     }
     void calculateAirF()
