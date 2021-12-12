@@ -59,9 +59,12 @@ private:
 	class Shader* selectionShader{};
 	class Shader* outlineShader{};
 
+	class Shader* GeometryPassShader{};
+	class Shader* LightPassShader{};
+
 	uint32 editorCameraEntity{};
 	uint32 gameCameraEntity{};
-	uint32 RTSSelectionEntity{};
+	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
 

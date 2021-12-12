@@ -33,6 +33,7 @@
 #include "../imgui/docking/imgui_impl_glfw.h"
 
 #include "../Systems/ScriptSystem.h"
+#include "../Systems/LightSystem.h"
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
@@ -107,7 +108,7 @@ void Engine::start()
 void Engine::init()
 {
 	glfwInit();
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -143,6 +144,7 @@ void Engine::init()
 
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
@@ -157,6 +159,11 @@ void Engine::init()
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
 
+	GeometryPassShader = new Shader("G_Buffer.vert", "G_Buffer.frag");
+	LightPassShader = new Shader("DefS_LightsShadows.vert", "DefS_LightsShadows.frag");
+
+	
+
 
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);	
@@ -166,12 +173,13 @@ void Engine::init()
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 
-	RTSSelectionEntity = ECS->newEntity();
+	SystemEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
 	//mesh comp
 	// opacity shader
-	ECS->addComponents<TransformComponent, SelectionComponent>(RTSSelectionEntity);
-
+	ECS->addComponents<TransformComponent, SelectionComponent, GBufferComponent>(SystemEntity);
+	auto gBufferComp = ECS->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
+	LightSystem::InitGBuffer(gBufferComp);
 
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
@@ -196,6 +204,10 @@ void Engine::init()
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
+
+
+
+
 
 
 	reservedEntities = ECS->getNumberOfEntities();
@@ -253,7 +265,7 @@ void Engine::loop()
 				data[0] +
 				data[1] * 256 +
 				data[2] * 256 * 256;
-			auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(RTSSelectionEntity);
+			auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(SystemEntity);
 			selectionComp.hitEntities.clear();
 
 			if (pickedID == 0x00ffffff)
@@ -332,16 +344,16 @@ void Engine::loop()
 			CameraSystem::draw(cameraEntity, ourShader, ECS);
 
 			// Only checks collision for one frame, so we delete it after
-			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
+			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(SystemEntity))
 			{
-				SelectionSystem::setHitEntities(RTSSelectionEntity, 
-						CollisionBroadphaseDatastructure->getOverlappedEntities(RTSSelectionEntity), ECS);
-				ECS->removeComponent<AxisAlignedBoxComponent>(RTSSelectionEntity);
+				SelectionSystem::setHitEntities(SystemEntity,
+						CollisionBroadphaseDatastructure->getOverlappedEntities(SystemEntity), ECS);
+				ECS->removeComponent<AxisAlignedBoxComponent>(SystemEntity);
 			}
 
-			SelectionSystem::updateSelection(RTSSelectionEntity, cameraEntity, ECS, currentFrame);
+			SelectionSystem::updateSelection(SystemEntity, cameraEntity, ECS, currentFrame);
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
-			SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
+			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
 
 		//// Render dear imgui into screen

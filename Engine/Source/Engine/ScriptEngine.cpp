@@ -16,10 +16,6 @@ ScriptEngine::~ScriptEngine()
 {
 	mono_jit_cleanup(m_Domain);
 	mono_assembly_name_free(m_AsmName);
-	
-	if(m_ScriptEngineInst != nullptr)
-		delete m_ScriptEngineInst;
-	m_ScriptEngineInst = nullptr;
 }
 
 bool ScriptEngine::InitScriptEngine()
