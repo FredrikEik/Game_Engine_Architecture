@@ -51,14 +51,7 @@ public:
 
     Camera* getGameCamera();
 
-    //gsl::Vector3D getHeightMapPosition();
-
     gsl::Matrix4x4 getPlayerMatrix();
-
-//    void updateTerrainPos(float x, float y, float z);
-
-//    GameObject *mTerrainC{nullptr};
-
 
 private slots:
     void GameLoop();
@@ -86,8 +79,8 @@ private:
 
     std::string treeNames[14] = {
         "1tree.obj", "2tree.obj", "3tree.obj", "4tree.obj", "5tree.obj", "6tree.obj",
-        "1forestTree.obj", "2forestTree.obj", "3forestTree.obj", "4forestTree.obj", "5forestTree.obj", "6forestTree.obj",
-        "1deadTree.obj", "2deadTree.obj",
+        "1forestTree.obj", "2forestTree.obj", "3forestTree.obj", "4forestTree.obj", "5forestTree.obj",
+        "1deadTree.obj", "2deadTree.obj"
     };
 };
 

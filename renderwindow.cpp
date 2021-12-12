@@ -93,12 +93,15 @@ void RenderWindow::init()
     //and returns the Texture ID that OpenGL uses from Texture::id()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
+    mTextures[2] = new Texture("grass.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -161,6 +164,7 @@ void RenderWindow::render()
             checkForCollisions(mGameObjects[i]);
             mGameObjects[i]->move(moveX, moveY, moveZ);
             setPlayerMovement(0,0,0); //resets movement. (stops constant movement after buttonpress)
+
         }
         else if(mGameObjects[i]->mName == "bullet.obj")
         {
@@ -197,7 +201,7 @@ void RenderWindow::render()
             glUniformMatrix4fv( mMatrixUniform2, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
 
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
-            glUniform3f(mLightPositionUniform, -50.f, 50.f, 0.f);
+            glUniform3f(mLightPositionUniform, 100.f, 90.f, 250);
         }
 
 
@@ -384,12 +388,12 @@ void RenderWindow::mousePicking(QMouseEvent *event)
     if(mCoreEngine->isPlaying())
     {
         //Should have some code to calculate the cubes forwardVector.
-        //Im not quite sure how to do it, and i've spent too much time trying to find out.
+        //Im not sure how to do it, and i've spent too much time trying to find out.
         //Moving on for now, but this should be done before oblig 3 delivery.
 
-        mCoreEngine->shootBullet(/* bulletDirection vector */);
+        mCoreEngine->shootBullet(/* bulletDirection vector? */);
     }
-    else // isplaying == true
+    else // isplaying == false
     {
         int mousePixelX = event->pos().x();
         int mousePixelY = event->pos().y();
@@ -426,7 +430,7 @@ void RenderWindow::mousePicking(QMouseEvent *event)
             distance = abs(distance);
 
             //if distance to ray < objects bounding sphere == collision
-            if(distance < mGameObjects[i]->mesh->sphereRadius)
+            if(distance < mGameObjects[i]->mesh->sphereRadius && mGameObjects[i]->mesh->collisionsEnabled)
             {
                 qDebug() << "You clicked" << QString::fromStdString(mGameObjects[i]->mName) << "in gameObjects[" << i << "]";
 

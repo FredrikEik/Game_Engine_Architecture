@@ -41,7 +41,7 @@ void CoreEngine::SetUpScene()
     playerObject = temp;
     playerObject->transform->mMatrix.scale(0.2f);
     temp->mesh->collisionsEnabled = false;
-    mRenderWindow->addToGameObjects(playerObject); //57.f, -1.f, 6.f
+    mRenderWindow->addToGameObjects(playerObject); // pos = 57.f, 8.5f, 118
 
     gsl::Vector3D gameCameraPos{57, 10, 120};
     gsl::Vector3D editorCameraPos{25, 10, 90};
@@ -71,27 +71,26 @@ void CoreEngine::SetUpScene()
     mRenderWindow->addToGameObjects(temp);
 
 /** Høydekurver (contour-lines) */
-    temp = mResourceManager->CreateObject("ContourLines");
-    temp->transform->mMatrix.scale(0.1f);
-    temp->material->mShaderProgram = 0;
-    temp->mesh->mDrawType = GL_LINES;
-    mRenderWindow->addToGameObjects(temp);
+//    temp = mResourceManager->CreateObject("ContourLines");
+//    temp->transform->mMatrix.scale(0.1f);
+//    temp->material->mShaderProgram = 0;
+//    temp->mesh->mDrawType = GL_LINES;
+//    mRenderWindow->addToGameObjects(temp);
 
-/**
-  * Spawns balls (raindrops) on the terrain (mTerrain).
-  * Uses barycentric coordinates to calculate the height.
-  */
+/** Spawn grass */
     float y = 0;
-    for(int i = 1; i < 90; i++)
+    float b = 0;
+    for(int i = 1; i < 99; i+= 2)
     {
-        for(int j = 1; j < 40; j++)
+        for(int j = 1; j < 99; j+=2)
         {
-//           int b = floor(rand() % 4 + 9);
-//           temp = mResourceManager->CreateObject(treeNames[b]);
-           temp = mResourceManager->CreateObject("ball.obj");
+           b = floor(rand() % 360);
+           temp = mResourceManager->CreateObject("grass.obj");
            y = mResourceManager->getHeightMapHeight(gsl::Vector2D{float(i), float(j)});
-           temp->transform->mMatrix.translate(i, y, j*mResourceManager->scale);
-           temp->transform->mMatrix.scale(0.2f);
+           temp->transform->mMatrix.translate(i, y-0.2f, j*mResourceManager->scale);
+           temp->transform->mMatrix.rotateY(b);
+           temp->material->mShaderProgram = gsl::TEXTURESHADER;
+           temp->material->mTextureUnit = 2;
            mRenderWindow->addToGameObjects(temp);
         }
     }
@@ -153,9 +152,11 @@ void CoreEngine::PlayerInput()
     if(mRenderWindow->getInput().D){
         move.x += 0.5f;
     }
-    mRenderWindow->setPlayerMovement(move.x, move.y, move.z);
+// Player
+    mRenderWindow->setPlayerMovement(move.x, move.y, move.z); //Movement happens later, this just decides where we move.
+// GameCamera
     mGameCamera->setPosition(mGameCamera->position() + gsl::Vector3D(move.x/5, move.y/5, move.z/5));
-
+// GameCamera - Mesh
     move = (move/5) + mGameCameraMesh->transform->mMatrix.getPosition();
     mGameCameraMesh->transform->mMatrix.setPosition(move.x, move.y, move.z);
 }
@@ -195,14 +196,15 @@ void CoreEngine::MoveSelectionArrow(gsl::Vector3D pos)
     {
         if(i->mName == "arrow.obj")
         {
-            if(mRenderWindow->getIndexToPickedObject() == -1)
+            int index = mRenderWindow->getIndexToPickedObject();
+            if(index == -1)
             {
                 i->transform->mMatrix.setPosition(9999, 9999, 9999);
                 return;
             }
-            i->transform->mMatrix.setPosition(pos.x, pos.y + i->mesh->sphereRadius/3, pos.z);
-        }
+            i->transform->mMatrix.setPosition(pos.x, pos.y + mRenderWindow->getGameObjects()[index]->mesh->sphereRadius/3, pos.z);
 
+        }
     }
 }
 

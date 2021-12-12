@@ -11,7 +11,7 @@ GameObject* ResourceManager::CreateMainCharacter(std::string filename)
 {
     //makeMainCharacter
     object = CreateObject(filename);
-    object->transform->mMatrix.translate(57.f, 8.5f, 147.5f); //Input character start position.
+    object->transform->mMatrix.translate(57.f, 8.5f, 118); //Input character start position.
 
     return object;
 }
@@ -155,6 +155,8 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
 {
     mMeshComponents.emplace_back(Mesh());   // Push a new mesh into mMeshcomponents.
     *object->mesh = mMeshComponents.back(); // Assign the new mesh to current object. Current object is created in ResourceManager::CreateObject().
+
+    object->mesh->collisionsEnabled = false; // So the terrain does not get a collisionSphere.
 
     std::vector<gsl::Vector3D> tempPos;     // Used to hold all coordinates from the given .txt file.
     std::vector<gsl::Vector3D> sortedPos;   // Holds coordinates after they have been sorted and reduced to 10,000 points.

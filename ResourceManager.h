@@ -27,7 +27,7 @@ public:
 
     GameObject* mTerrain{nullptr};
 
-    double scale = 0;
+    float scale = 0;
 
 private:
     /** Functions */
