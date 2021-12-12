@@ -79,9 +79,7 @@ private slots:
 
     void on_StartPhysics_clicked();
 
-    void on_pushButton_11_clicked();
 
-    void on_RecordBSplines_clicked();
 
 private:
     void init();

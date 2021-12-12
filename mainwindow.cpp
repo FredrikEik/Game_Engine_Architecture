@@ -325,14 +325,3 @@ void MainWindow::on_StartPhysics_clicked()
     }
 
 }
-
-void MainWindow::on_pushButton_11_clicked()
-{
-
-}
-
-void MainWindow::on_RecordBSplines_clicked()
-{
-    mRenderWindow->RecordBSplines = true;
-    ui->RecordBSplines->setEnabled(false);
-}

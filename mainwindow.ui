@@ -30,7 +30,7 @@
       <item>
        <widget class="QPushButton" name="pushButton_2">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Play</string>
@@ -41,16 +41,6 @@
        <widget class="QPushButton" name="StartPhysics">
         <property name="text">
          <string>Enable Physics</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="RecordBSplines">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Record B Splines</string>
         </property>
        </widget>
       </item>

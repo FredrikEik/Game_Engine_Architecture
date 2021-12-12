@@ -8,8 +8,6 @@
 #include <QDebug>
 #include <iostream>
 
-#include "lasheightmap.h"
-
 #include "shader.h"
 #include "mainwindow.h"
 #include "camera.h"
@@ -17,7 +15,6 @@
 #include "texture.h"
 #include "components.h"
 #include "rendersystem.h"
-#include "marchingsquare.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -173,7 +170,6 @@ void RenderWindow::init()
 
     ////*************************************start**////////////
     JSS->JSONSystemInit(this);
-    bSSys = new bsplinesystem(this);
     ResSys->ResourceSystemInit(RenderSys);
 
     ///PURE ECS TEST

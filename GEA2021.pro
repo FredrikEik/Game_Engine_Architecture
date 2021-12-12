@@ -9,7 +9,9 @@ INCLUDEPATH += \
     ./gsl \
     ./Shaders \
     ./openal \
-    ./libs/nlohmann
+    ./libs/nlohmann \
+    ./systems \
+    ./helper
 
 
 win32 {
@@ -18,60 +20,58 @@ win32 {
 }
 
 SOURCES += main.cpp \
-    bsplinesystem.cpp \
     camera.cpp \
-    cameracomponent.cpp \
-    collisionsystem.cpp \
-    components.cpp \
-    entitysystem.cpp \
     gsl/matrix3x3.cpp \
     gsl/matrix4x4.cpp \
-    jsonsystem.cpp \
+    helper/cameracomponent.cpp \
+    helper/components.cpp \
+    helper/shader.cpp \
+    helper/texture.cpp \
+    helper/vertex.cpp \
     openal/soundmanager.cpp \
     openal/soundsource.cpp \
     openal/vector3.cpp \
     openal/wavfilehandler.cpp \
-    physicssystem.cpp \
-    rendersystem.cpp \
     renderwindow.cpp \
-    resourcesystem.cpp \
-    shader.cpp \
     mainwindow.cpp \
-    skybox.cpp \
-    texture.cpp \
+    systems/bsplinesystem.cpp \
+    systems/collisionsystem.cpp \
+    systems/entitysystem.cpp \
+    systems/jsonsystem.cpp \
+    systems/physicssystem.cpp \
+    systems/rendersystem.cpp \
+    systems/resourcesystem.cpp \
     gsl/vector2d.cpp \
-    gsl/vector3d.cpp \
-    vertex.cpp
+    gsl/vector3d.cpp
 
 HEADERS += \
-    bsplinesystem.h \
     camera.h \
-    cameracomponent.h \
-    collisionsystem.h \
-    components.h \
-    constants.h \
-    entitysystem.h \
-    gltypes.h \
-    input.h \
+    helper/cameracomponent.h \
+    helper/components.h \
+    helper/constants.h \
+    helper/gltypes.h \
+    helper/input.h \
+    helper/shader.h \
+    helper/texture.h \
+    helper/vertex.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
     gsl/matrix4x4.h \
-    jsonsystem.h \
     openal/soundmanager.h \
     openal/soundsource.h \
     openal/vector3.h \
     openal/wavfilehandler.h \
-    physicssystem.h \
-    rendersystem.h \
     renderwindow.h \
-    resourcesystem.h \
-    shader.h \
     mainwindow.h \
-    skybox.h \
-    texture.h \
+    systems/bsplinesystem.h \
+    systems/collisionsystem.h \
+    systems/entitysystem.h \
+    systems/jsonsystem.h \
+    systems/physicssystem.h \
+    systems/rendersystem.h \
+    systems/resourcesystem.h \
     gsl/vector2d.h \
-    gsl/vector3d.h \
-    vertex.h
+    gsl/vector3d.h
 
 FORMS += \
     mainwindow.ui
