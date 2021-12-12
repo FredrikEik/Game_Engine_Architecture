@@ -82,6 +82,10 @@ public:
 
     void mousePickingRay(QMouseEvent *event);
 
+    void HUD();
+    GLuint HUDtex { 0 };
+    void drawHUD();
+
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 

@@ -322,7 +322,11 @@ void RenderWindow::render()
                     //qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
                 }
             }*/
+
         }
+        // Hud 2d render
+        if (bPlayGame)
+            drawHUD();
     }
 
     calculateFramerate();
@@ -655,6 +659,41 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
         test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 100.f));
         qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
+}
+
+void RenderWindow::HUD()
+{
+    if (HUDtex == 0)
+        //HUDtex = loadTexture("../Assets/Textures/hund.bmp");
+    /*glBindTexture(GL_TEXTURE_2D, HUDtex);
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0);     glVertex2f(0.05, 0.05);
+    glTexCoord2f(1.0, 1.0);     glVertex2f(0.30, 0.05);
+    glTexCoord2f(1.0, 0.0);     glVertex2f(0.30, 0.15);
+    glTexCoord2f(0.0, 0.0);     glVertex2f(0.05, 0.15);
+    glEnd();*/
+}
+
+void RenderWindow::drawHUD()
+{
+    // swap to 2d
+    /*glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, width(), height(), 0.0, 0.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // draw hud
+    HUD();
+
+    // undo the first stuff
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();*/
 }
 
 bool RenderWindow::frustumCulling(int gameObjectIndex)
