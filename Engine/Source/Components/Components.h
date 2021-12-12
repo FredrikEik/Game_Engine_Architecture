@@ -230,17 +230,28 @@ struct ParticleComponent final : public Component
 
 	struct Particle 
 	{
-		glm::vec4 color{};
+		glm::vec4 startColor{}, endColor{};
 		glm::vec3 position{};
 		glm::vec3 velocity{};
 		glm::vec3 acceleration{};
-		float speed{}, life{}, cameraDistance{ -1.f }, size{1};
-		float textureRows{ 1 }, textureIndex{ 1 };
+		float totalLife{}, currentLife{}, cameraDistance{ -1.f }, size{ 1 };
+		float textureIndex{ 1 };
 		bool active{ false };
 		bool operator<(const Particle& other)
 		{
 			return (this->active && this->cameraDistance > other.cameraDistance) || (this->active && !other.active);
 		}
+	};
+
+	struct ParticleBlueprint
+	{
+		Particle particle;
+		glm::vec3 positionMinOffset{}, positionMaxOffset{};
+		glm::vec3 velocityMinOffset{}, velocityMaxOffset{};
+		glm::vec3 accelerationMinOffset{}, accelerationMaxOffset{};
+		glm::vec4 colorMinOffset{}, colorMaxOffset{};
+		float sizeMinOffset{ }, sizeMaxOffset{ };
+		float lifeMinOffset{ }, lifeMaxOffset{ };
 	};
 
 	MeshComponent mesh;
@@ -250,6 +261,7 @@ struct ParticleComponent final : public Component
 	std::vector<float> colorData;
 	std::vector<float> uvBlendingData;
 
+	int textureRows{ 0 };
 
 	uint32 maxParticles{};
 	uint32 activeParticles{};
@@ -258,10 +270,11 @@ struct ParticleComponent final : public Component
 	float timeSinceLastSpawn{};
 	float emitterLifeTime{};
 
-	Particle particleBlueprint;
+	ParticleBlueprint particleBlueprint;
 
 	GLuint positionBuffer{};
 	GLuint colorBuffer{};
 	GLuint uvBlendingBuffer{};
-
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };

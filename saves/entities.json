@@ -1,1 +1,135 @@
-null
+[
+    {
+        "5": [
+            {
+                "struct ParticleComponent": {
+                    "emitterLifeTime": 0.0,
+                    "maxParticles": 500000,
+                    "mesh": {
+                        "LODType": 0,
+                        "bDisregardedDuringFrustumCulling": false,
+                        "bIsTranslucent": false,
+                        "bShouldRender": true,
+                        "drawType": 4,
+                        "path": "",
+                        "reusable": true
+                    },
+                    "particleBlueprint": {
+                        "accelerationMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "accelerationMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "colorMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "colorMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "lifeMaxOffset": 0.0,
+                        "lifeMinOffset": 0.0,
+                        "particle": {
+                            "acceleration": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "currentLife": 0.5,
+                            "endColor": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "position": [
+                                1.0,
+                                5.0,
+                                1.0
+                            ],
+                            "size": 30.0,
+                            "startColor": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "velocity": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        "positionMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "positionMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "sizeMaxOffset": 0.0,
+                        "sizeMinOffset": 0.0,
+                        "velocityMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "velocityMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "spawnRate": 2000,
+                    "texture": {
+                        "path": "Assets/particleAtlas.png",
+                        "reusable": true,
+                        "wrapMode": 10497
+                    },
+                    "textureRows": 8
+                }
+            },
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            }
+        ]
+    }
+]

@@ -52,6 +52,11 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 		component = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entityID);
 	}
+	else if (componentName == std::type_index(typeid(ParticleComponent)).name())
+	{
+		ECS->addComponent<ParticleComponent>(entityID);
+		component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
+	}
 	else if (componentName == std::type_index(typeid(MeshComponent)).name())
 	{
 		if (jsonValue["reusable"])
@@ -74,7 +79,13 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		}
 		component = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entityID);
 	}
-
+	//else if (componentName == std::type_index(typeid(ParticleComponent)).name())
+	//{
+	//	ECS->addComponent<ParticleComponent>(entityID);
+	//	component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
+	//	ParticleComponent* comp = dynamic_cast<ParticleComponent*>(component);
+	//	TextureSystem::loadImageWithAlpha(comp->texture.path, &comp->texture);
+	//}
 
 	return component;
 }

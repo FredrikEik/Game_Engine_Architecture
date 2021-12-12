@@ -7,7 +7,11 @@ class ParticleSystem : public BaseSystem
 {
 public:
 	static void init(uint32 entityID, uint32 maxParticles, uint32 spawnRate, 
-		const ParticleComponent::Particle& particleBlueprint, class ECSManager* ECS);
+		const ParticleComponent::ParticleBlueprint& particleBlueprint, class ECSManager* ECS);
+
+	static void initMesh(class ParticleComponent* emitter, uint32 maxParticles);
+	static void initTexture(class ParticleComponent* emitter, const std::filesystem::path& path, int8 textureRows);
+
 	static void update(uint32 cameraEntity, class Shader* shader, class ECSManager* ECS, float deltaTime);
 
 private:

@@ -1,5 +1,7 @@
 #include "Components.h"
 #include <iostream>
+#include "../SaveLoad/Save.h"
+#include "../Systems/ParticleSystem.h"
 JSON TransformComponent::json()
 {
 	JSON matrix;
@@ -85,4 +87,88 @@ JSON TextureComponent::json()
 void TextureComponent::jsonParse(const JSON& json)
 {
 	wrapMode = json["wrapMode"];
+	path = json["path"];
+}
+
+JSON ParticleComponent::json()
+{
+	JSON json{
+	{"textureRows", textureRows},
+	{"maxParticles", maxParticles},
+	{"spawnRate", spawnRate},
+	{"emitterLifeTime", emitterLifeTime},
+	{"mesh", mesh.json()},
+	{"texture", texture.json()},
+	{"particleBlueprint", {
+		{"particle", {
+			{"startColor", Save::vec4JSON(particleBlueprint.particle.startColor)},
+			{"endColor", Save::vec4JSON(particleBlueprint.particle.endColor)},
+			{"position", Save::vec3JSON(particleBlueprint.particle.position)},
+			{"velocity", Save::vec3JSON(particleBlueprint.particle.velocity)},
+			{"acceleration", Save::vec3JSON(particleBlueprint.particle.acceleration)},
+			{"currentLife", particleBlueprint.particle.currentLife},
+			{"size", particleBlueprint.particle.size}
+			}
+		},
+		{"positionMinOffset", Save::vec3JSON(particleBlueprint.positionMinOffset)},
+		{"positionMaxOffset", Save::vec3JSON(particleBlueprint.positionMaxOffset)},
+		{"velocityMinOffset", Save::vec3JSON(particleBlueprint.velocityMinOffset)},
+		{"velocityMaxOffset", Save::vec3JSON(particleBlueprint.velocityMaxOffset)},
+		{"accelerationMinOffset", Save::vec3JSON(particleBlueprint.accelerationMinOffset)},
+		{"accelerationMaxOffset", Save::vec3JSON(particleBlueprint.accelerationMaxOffset)},
+		{"colorMinOffset", Save::vec4JSON(particleBlueprint.colorMinOffset)},
+		{"colorMaxOffset", Save::vec4JSON(particleBlueprint.colorMaxOffset)},
+		{"sizeMinOffset", particleBlueprint.sizeMinOffset},
+		{"sizeMaxOffset", particleBlueprint.sizeMaxOffset},
+		{"lifeMinOffset", particleBlueprint.lifeMinOffset},
+		{"lifeMaxOffset", particleBlueprint.lifeMaxOffset}
+	}
+	}
+
+	};
+	return json;
+}
+
+void ParticleComponent::jsonParse(const JSON& json)
+{
+	auto vec3 = [](const JSON& json)
+	{return glm::vec3(json[0], json[1], json[2]); };	
+	auto vec4 = [](const JSON& json)
+	{return glm::vec4(json[0], json[1], json[2], json[3]); };
+
+	//std::cout << std::setw(4) << json << std::endl;
+	//std::cout << "\n\n";
+	//return;
+	textureRows = json["textureRows"];
+	maxParticles = json["maxParticles"];
+	spawnRate = json["spawnRate"];
+	emitterLifeTime = json["emitterLifeTime"];
+	mesh.jsonParse(json["mesh"]);
+	texture.jsonParse(json["texture"]);
+
+	const JSON& bp = json["particleBlueprint"];
+	const JSON& bpParticle = bp["particle"];
+	particleBlueprint.particle.startColor = vec4(bpParticle["startColor"]);
+	particleBlueprint.particle.endColor = vec4(bpParticle["endColor"]);
+	particleBlueprint.particle.position = vec3(bpParticle["position"]);
+	particleBlueprint.particle.velocity = vec3(bpParticle["velocity"]);
+	particleBlueprint.particle.acceleration = vec3(bpParticle["acceleration"]);
+	particleBlueprint.particle.currentLife = bpParticle["currentLife"];
+	particleBlueprint.particle.size = bpParticle["size"];
+
+	particleBlueprint.positionMinOffset = vec3(bp["positionMinOffset"]);
+	particleBlueprint.positionMaxOffset = vec3(bp["positionMaxOffset"]);
+	particleBlueprint.velocityMinOffset = vec3(bp["velocityMinOffset"]);
+	particleBlueprint.velocityMaxOffset = vec3(bp["velocityMaxOffset"]);
+	particleBlueprint.accelerationMinOffset = vec3(bp["accelerationMinOffset"]);
+	particleBlueprint.accelerationMaxOffset = vec3(bp["accelerationMaxOffset"]);
+	particleBlueprint.colorMinOffset = vec4(bp["colorMinOffset"]);
+	particleBlueprint.colorMaxOffset = vec4(bp["colorMaxOffset"]);
+	particleBlueprint.sizeMinOffset = bp["sizeMinOffset"];
+	particleBlueprint.sizeMaxOffset = bp["sizeMaxOffset"];
+	particleBlueprint.lifeMinOffset = bp["lifeMinOffset"];
+	particleBlueprint.lifeMaxOffset = bp["lifeMaxOffset"];
+
+	ParticleSystem::initMesh(this, maxParticles);
+	ParticleSystem::initTexture(this, texture.path, textureRows);
 }

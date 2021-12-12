@@ -208,18 +208,19 @@ void Engine::init()
 	load(Save::getDefaultAbsolutePath());
 
 
-	ParticleComponent::Particle particle;
-	particle.life = 0.5f;
-	particle.acceleration = glm::vec3(0, 0, 0);
-	particle.velocity = glm::vec3(0, 0.f, 0);
-	particle.color = glm::vec4(0, 1, 0,1);
-	particle.position = glm::vec3(1, 5, 1);
-	particle.size = 30;
+	ParticleComponent::ParticleBlueprint particleBlueprint;
+	particleBlueprint.particle.currentLife = 0.5f;
+	particleBlueprint.particle.acceleration = glm::vec3(0, 0, 0);
+	particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
+	particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
+	particleBlueprint.particle.position = glm::vec3(1, 5, 1);
+	particleBlueprint.particle.size = 30;
 
-	//TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
-
-	ECS->addComponent<ParticleComponent>(unitEntity);
-	ParticleSystem::init(unitEntity, 500000, 2000, particle, ECS);
+	//////TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
+	//uint32 particleEntity = ECS->newEntity();
+	//ECS->addComponents<TransformComponent, ParticleComponent>(particleEntity);
+	////ECS->addComponent<ParticleComponent>(unitEntity);
+	//ParticleSystem::init(particleEntity, 500000, 2000, particleBlueprint, ECS);
 }
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented

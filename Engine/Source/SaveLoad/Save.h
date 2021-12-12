@@ -2,6 +2,7 @@
 #include "../CoreMinimal.h"
 #include <vector>
 #include <typeindex>
+#include "glm/glm.hpp"
 #include "../JSON/json.hpp"
 
 class Save
@@ -14,6 +15,9 @@ public:
 	static void saveEntityPrefab(uint32 entityID, class ECSManager* ECS);
 
 	static std::string getDefaultAbsolutePath();
+
+	static nlohmann::json vec3JSON(const glm::vec3& v);
+	static nlohmann::json vec4JSON(const glm::vec4& v);
 private:
 	static void addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson,
 			class ECSManager* ECS);

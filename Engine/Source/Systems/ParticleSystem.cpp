@@ -2,33 +2,156 @@
 #include "../ECSManager.h"
 #include "../Shader.h"
 #include "TextureSystem.h"
+
 void ParticleSystem::init(uint32 entityID, uint32 maxParticles, uint32 spawnRate,
-    const  ParticleComponent::Particle& particleBlueprint, ECSManager* ECS)
+    const  ParticleComponent::ParticleBlueprint& particleBlueprint, ECSManager* ECS)
 {
+    if (!ECS->getComponentManager<ParticleComponent>())
+        return;
+
 	ParticleComponent* emitter = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
 	assert(emitter);
 	//constructQuad(emitter->mesh);
     emitter->maxParticles = maxParticles;
     emitter->spawnRate = spawnRate;
     emitter->particleBlueprint = particleBlueprint;
-    emitter->particles.reserve(maxParticles);
+
+    //emitter->positionData = std::vector<float>(maxParticles * 4, 0.f);
+    //emitter->colorData = std::vector<float>(maxParticles * 4, 0.f);
+    //emitter->uvBlendingData = std::vector<float>(maxParticles * 2, 0.f);
+    //emitter->particles.resize(maxParticles);
+
+    //TextureSystem::loadImageWithAlpha("Assets/particleAtlas.png", &emitter->texture);
+    //emitter->textureRows = 8;
+    initTexture(emitter, "Assets/particleAtlas.png", 8);
+    initMesh(emitter, maxParticles);
+
+    //static const GLfloat g_vertex_buffer_data[] = {
+    //    -0.5f, -0.5f, 0.0f, 0.f, 0.f,
+    //     0.5f, -0.5f, 0.0f, 1.f, 0.f,
+    //    -0.5f,  0.5f, 0.0f, 0.f, 1.f,
+    //     0.5f,  0.5f, 0.0f, 0.f, 0.f
+    //    };
+
+    //emitter->mesh.m_indices.push_back(0);
+    //emitter->mesh.m_indices.push_back(1);
+    //emitter->mesh.m_indices.push_back(2);
+
+    //emitter->mesh.m_indices.push_back(2);
+    //emitter->mesh.m_indices.push_back(1);
+    //emitter->mesh.m_indices.push_back(3);
+
+    //glGenVertexArrays(1, &emitter->mesh.m_VAO);
+    //glBindVertexArray(emitter->mesh.m_VAO);
+
+    //glGenBuffers(1, &emitter->mesh.m_VBO);
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->mesh.m_VBO);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
+    //    g_vertex_buffer_data, GL_STATIC_DRAW);
+
+    //glGenBuffers(1, &emitter->positionBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float),
+    //    NULL, GL_STREAM_DRAW);
+
+    //glGenBuffers(1, &emitter->colorBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float),
+    //    NULL, GL_STREAM_DRAW);
+
+    //glGenBuffers(1, &emitter->uvBlendingBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->uvBlendingBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, maxParticles * 2 * sizeof(float),
+    //    NULL, GL_STREAM_DRAW);
+
+    //// 1rst attribute buffer : vertices
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->mesh.m_VBO);
+    //glVertexAttribPointer(
+    //    0, 
+    //    3, // size
+    //    GL_FLOAT, // type
+    //    GL_FALSE, // normalized?
+    //    5*sizeof(float), // stride
+    //    (void*)0 // array buffer offset
+    //);
+    //glEnableVertexAttribArray(0);
+
+    //// 2nd attribute buffer : vertices
+    //glVertexAttribPointer(
+    //    1,
+    //    2, // size
+    //    GL_FLOAT, // type
+    //    GL_FALSE, // normalized?
+    //    5 * sizeof(float), // stride
+    //    (void*)(3*sizeof(float)) // array buffer offset
+    //);
+
+    //glEnableVertexAttribArray(1);
+
+    //// 2nd attribute buffer : positions of particles' centers
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
+    //glVertexAttribPointer(
+    //    2,
+    //    4, // size : x + y + z + size => 4
+    //    GL_FLOAT, // type
+    //    GL_FALSE, // normalized?
+    //    0, // stride
+    //    (void*)0 // array buffer offset
+    //);
+    //glEnableVertexAttribArray(2);
+
+    //// 3rd attribute buffer : particles' colors
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
+    //glVertexAttribPointer(
+    //    3,
+    //    4, // size : r + g + b + a => 4
+    //    GL_FLOAT, // type
+    //    GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
+    //    0, // stride
+    //    (void*)0 // array buffer offset
+    //);
+    //glEnableVertexAttribArray(3);
+
+    //// 3rd attribute buffer : particles' colors
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->uvBlendingBuffer);
+    //glVertexAttribPointer(
+    //    4,
+    //    2, // size : rows, columns, currentIndex
+    //    GL_FLOAT, // type
+    //    GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
+    //    0, // stride
+    //    (void*)0 // array buffer offset
+    //);
+    //glEnableVertexAttribArray(4);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+
+    //glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+
+
+    //glGenBuffers(1, &emitter->mesh.m_EBO);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, emitter->mesh.m_EBO);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, emitter->mesh.m_indices.size() * sizeof(GLuint),
+    //    emitter->mesh.m_indices.data(), GL_STATIC_DRAW);
+
+    //glBindVertexArray(0);
+}
+
+void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
+{
     emitter->positionData = std::vector<float>(maxParticles * 4, 0.f);
     emitter->colorData = std::vector<float>(maxParticles * 4, 0.f);
     emitter->uvBlendingData = std::vector<float>(maxParticles * 2, 0.f);
-    TextureSystem::loadImageWithAlpha("Assets/particleAtlas.png", &emitter->texture);
     emitter->particles.resize(maxParticles);
 
-    //for (uint32 i{}; i < maxParticles; ++i)
-    //{
-    //    emitter->particles.push_back(ParticleComponent::Particle());
-    //}
-
     static const GLfloat g_vertex_buffer_data[] = {
-        -0.5f, -0.5f, 0.0f, 0.f, 0.f,
-         0.5f, -0.5f, 0.0f, 1.f, 0.f,
-        -0.5f,  0.5f, 0.0f, 0.f, 1.f,
-         0.5f,  0.5f, 0.0f, 0.f, 0.f
-        };
+    -0.5f, -0.5f, 0.0f, 0.f, 0.f,
+     0.5f, -0.5f, 0.0f, 1.f, 0.f,
+    -0.5f,  0.5f, 0.0f, 0.f, 1.f,
+     0.5f,  0.5f, 0.0f, 0.f, 0.f
+    };
 
     emitter->mesh.m_indices.push_back(0);
     emitter->mesh.m_indices.push_back(1);
@@ -64,11 +187,11 @@ void ParticleSystem::init(uint32 entityID, uint32 maxParticles, uint32 spawnRate
     // 1rst attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, emitter->mesh.m_VBO);
     glVertexAttribPointer(
-        0, 
+        0,
         3, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized?
-        5*sizeof(float), // stride
+        5 * sizeof(float), // stride
         (void*)0 // array buffer offset
     );
     glEnableVertexAttribArray(0);
@@ -80,7 +203,7 @@ void ParticleSystem::init(uint32 entityID, uint32 maxParticles, uint32 spawnRate
         GL_FLOAT, // type
         GL_FALSE, // normalized?
         5 * sizeof(float), // stride
-        (void*)(3*sizeof(float)) // array buffer offset
+        (void*)(3 * sizeof(float)) // array buffer offset
     );
 
     glEnableVertexAttribArray(1);
@@ -136,9 +259,18 @@ void ParticleSystem::init(uint32 entityID, uint32 maxParticles, uint32 spawnRate
     glBindVertexArray(0);
 }
 
+void ParticleSystem::initTexture(ParticleComponent* emitter, const std::filesystem::path& path, int8 textureRows)
+{
+    TextureSystem::loadImageWithAlpha(path, &emitter->texture);
+    emitter->textureRows = textureRows;
+    emitter->texture.path = path.string();
+}
+
 void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManager* ECS, float deltaTime)
 {
     auto transformManager = ECS->getComponentManager<TransformComponent>();
+    if (!ECS->getComponentManager<ParticleComponent>() || !transformManager)
+        return;
     TransformComponent* cameraTransform = transformManager->getComponentChecked(cameraEntity);
     glm::vec3 cameraPosition = glm::vec3(cameraTransform->transform[3]);
     auto& emitters = ECS->getComponentManager<ParticleComponent>()->getComponentArray();
@@ -177,8 +309,8 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
                 breakIndex = i;
                 break;
             }
-            p.life -= deltaTime;
-            if (p.life < 0.f)
+            p.currentLife -= deltaTime;
+            if (p.currentLife < 0.f)
             {
                 p.active = false;
                 p.cameraDistance = -1.f;
@@ -186,7 +318,7 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             p.velocity += p.acceleration * deltaTime;
             p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;
 
-            p.textureIndex = std::lround(((it.particleBlueprint.life - p.life) / it.particleBlueprint.life) * 64);
+            p.textureIndex = std::lround(((it.particleBlueprint.particle.currentLife - p.currentLife) / it.particleBlueprint.particle.currentLife) * 64);
 
             p.cameraDistance = glm::length(p.position - cameraPosition);
 
@@ -195,12 +327,12 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             it.positionData[4 * i + 2] = p.position.z + emitterTransform->transform[3].z;
             it.positionData[4 * i + 3] = p.size;
 
-            it.colorData[4 * i + 0] = p.color.x;
-            it.colorData[4 * i + 1] = p.color.y;
-            it.colorData[4 * i + 2] = p.color.z;
-            it.colorData[4 * i + 3] = p.color.w;
+            it.colorData[4 * i + 0] = p.startColor.x;
+            it.colorData[4 * i + 1] = p.startColor.y;
+            it.colorData[4 * i + 2] = p.startColor.z;
+            it.colorData[4 * i + 3] = p.startColor.w;
 
-            it.uvBlendingData[2 * i + 0] = p.textureRows;
+            it.uvBlendingData[2 * i + 0] = it.textureRows; // Could be uniform
             it.uvBlendingData[2 * i + 1] = p.textureIndex;
 
         }
@@ -259,39 +391,61 @@ void ParticleSystem::spawnParticles(ParticleComponent& emitter, float deltaTime,
     emitter.timeSinceLastSpawn = 0;
     if (spawnAmount > emitter.spawnRate)
         spawnAmount = emitter.spawnRate;
-    // TODO: Fix this shit
-    //if (emitter.lastUsedParticle > 10)
-    //    return;
-    float r, g, b;
-    r = std::rand() % 12398;
-    r /= 12398.f;
+ 
+    // Random float in range
+    auto randf = [](const float& min, const float& max) {
+        return min + static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+    };
 
-    g = std::rand() % 46578;
-    g /= 46578.f;
-
-    b = std::rand() % 13574;
-    b /= 13574.f;
-
-    float cameraDistance = glm::length((emitter.particleBlueprint.position + emitterLocation) - cameraLocation);
+    float cameraDistance = glm::length((emitter.particleBlueprint.particle.position + emitterLocation) - cameraLocation);
+    auto& bp = emitter.particleBlueprint;
 
     uint32 start = (emitter.lastUsedParticle) % emitter.maxParticles;
     for (uint32 i{ start }; i < (start + spawnAmount); ++i)
     {
-        // The particles vector acts as a ring buffer
+
         uint32 index = i % emitter.maxParticles; 
-        emitter.particles[index] = emitter.particleBlueprint;
-        emitter.particles[index].active = true;
-        emitter.particles[index].cameraDistance = cameraDistance;
-        emitter.particles[index].color = glm::vec4(1, 1, 1, 0.5f);
-        //emitter.particles[index].color = glm::vec4(r, g, b, 0.5f);
-        emitter.particles[index].textureRows = 8;
-        //emitter.particles[index].textureColumns = 8;
-        //emitter.particles[index].textureIndex = 1;
-        //emitter.particles[index] = glm::vec4(r, g, b, 0.5f);
-        //emitter.particles[index].size = 5;
+        auto& particle = emitter.particles[index];
+
+        particle = bp.particle;
+        particle.active = true;
+        particle.cameraDistance = cameraDistance;
+
+        particle.currentLife += randf(bp.lifeMinOffset, bp.lifeMaxOffset);
+        particle.totalLife = particle.currentLife;
+        particle.size += randf(bp.sizeMinOffset, bp.sizeMaxOffset);
+
+        particle.startColor += glm::vec4(
+            randf(bp.colorMinOffset.x, bp.colorMaxOffset.x), 
+            randf(bp.colorMinOffset.y, bp.colorMaxOffset.y), 
+            randf(bp.colorMinOffset.z, bp.colorMaxOffset.z), 
+            randf(bp.colorMinOffset.w, bp.colorMaxOffset.w));
+        
+        particle.endColor += glm::vec4(
+            randf(bp.colorMinOffset.x, bp.colorMaxOffset.x),
+            randf(bp.colorMinOffset.y, bp.colorMaxOffset.y),
+            randf(bp.colorMinOffset.z, bp.colorMaxOffset.z),
+            randf(bp.colorMinOffset.w, bp.colorMaxOffset.w));
+
+        particle.velocity += glm::vec3(
+            randf(bp.velocityMinOffset.x, bp.velocityMaxOffset.x),
+            randf(bp.velocityMinOffset.y, bp.velocityMaxOffset.y),
+            randf(bp.velocityMinOffset.z, bp.velocityMaxOffset.z)
+        );
+
+        particle.acceleration += glm::vec3(
+            randf(bp.accelerationMinOffset.x, bp.accelerationMaxOffset.x),
+            randf(bp.accelerationMinOffset.y, bp.accelerationMaxOffset.y),
+            randf(bp.accelerationMinOffset.z, bp.accelerationMaxOffset.z)
+        );
+
+        particle.position += glm::vec3(
+            randf(bp.positionMinOffset.x, bp.positionMaxOffset.x),
+            randf(bp.positionMinOffset.y, bp.positionMaxOffset.y),
+            randf(bp.positionMinOffset.z, bp.positionMaxOffset.z)
+        );
+
         emitter.lastUsedParticle = index+1;
         emitter.activeParticles = emitter.lastUsedParticle;
-        //emitter.particles[index].acceleration = glm::vec3((std::rand() % 16)-8, (4+std::rand() % 12) * -1, (std::rand() % 16) -8);
-        //emitter.particles[index].acceleration = glm::vec3((r*10)-5, (g * 10) - 5, ((b * 10) - 5));
     }
 }
