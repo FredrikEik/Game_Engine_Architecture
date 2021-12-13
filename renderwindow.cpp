@@ -137,21 +137,21 @@ void RenderWindow::init()
     m_light->setPosition(QVector3D(0.f, 150.f, 150.f));
 
     //Map
-//    m_world = new Plane(gsl::TextureFilePath + "hm2.bmp");
-//    m_world->setShader(m_shaderProgramMap["phong"]);
-//    m_world->setObjectName("World");
-
-    //LasMap
-    m_world = new LasPlane(gsl::AssetFilePath + "test_las.txt");
+    m_world = new Plane(gsl::TextureFilePath + "hm2.bmp");
     m_world->setShader(m_shaderProgramMap["phong"]);
-    m_world->setObjectName("Las World");
+    m_world->setObjectName("World");
+
+//    //LasMap
+//    m_world = new LasPlane(gsl::AssetFilePath + "test_las.txt");
+//    m_world->setShader(m_shaderProgramMap["phong"]);
+//    m_world->setObjectName("Las World");
 
     //rollingBall
-    m_ball = new RollingBall(sphere);
-    m_ball->setShader(m_shaderProgramMap["phong"]);
-    m_ball->setObjectName("Ball");
-    m_ball->setPosition(QVector3D(50.f, 50.f, 50.f));
-    dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
+//    m_ball = new RollingBall(sphere);
+//    m_ball->setShader(m_shaderProgramMap["phong"]);
+//    m_ball->setObjectName("Ball");
+//    m_ball->setPosition(QVector3D(50.f, 50.f, 50.f));
+//    dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
     //m_ball->setSurface(m_world);
 
     //Skybox
@@ -215,8 +215,8 @@ void RenderWindow::render()
     //Put these in a container?
     m_world->draw();
     m_light->draw();
-    m_ball->move(0.017f);
-    m_ball->draw(ECScord->getMeshData(sphere));
+    //m_ball->move(0.017f);
+    //m_ball->draw(ECScord->getMeshData(sphere));
 
 
     //Calculate framerate before
