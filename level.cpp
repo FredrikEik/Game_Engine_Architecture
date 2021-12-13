@@ -18,7 +18,7 @@ Level::~Level()
     {
         delete mVisualObjects[i];
     }
-    delete mLight; delete mSkyBox; delete mFrustumSystem;
+    delete mLight; /*delete mSkyBox;*/ delete mFrustumSystem;
 
     mVisualObjects.clear();
     mTransformComp.clear();
@@ -36,21 +36,21 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
    {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
-   {1,0,4,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
-   {1,0,0,1,0,0,0,3,0,0,0,0,4,0,0,1,0,0,1},// 5
+   {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
-   {1,0,0,0,0,0,0,1,0,4,0,1,0,0,0,0,0,0,1},
-   {1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1},// 12
+   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
    {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
-   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
    {1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
@@ -67,6 +67,7 @@ void Level::DrawBoard()
     VisualObject* temp{nullptr};
     Square* tempS{nullptr};
     Circle* tempC{nullptr};
+    Particles *tempP{nullptr};
     for(int i = 0; i<DIM_Z;i++)
     {
         for(int j = 0; j<DIM_X; j++)
@@ -113,25 +114,17 @@ void Level::DrawBoard()
                 mTransformComp.push_back(mEnemy->mTransform);
                 mNameComp.push_back(mEnemy->mNameComp);
             }
-            else if(GameBoard[i][j] == 3){
-                mParticle = new Particles(&mShapeFactory);
-                mParticle->init();
-                mParticle->mMaterial->mShaderProgram = 0;   //plain shader
-                mParticle->move(j, CENTER_Y,i);
-                mVisualObjects.push_back(mParticle);
-                mTransformComp.push_back(mParticle->mTransform);
-                mNameComp.push_back(mParticle->mNameComp);
-            }
+
         }
     }
     //------------------------Plain----------------------//
     temp = mShapeFactory.createShape("Plain");
     temp->init();
-    temp->mMaterial->mShaderProgram = 1;   //plain shader
+    temp->mMaterial->mShaderProgram = 0;   //plain shader
     temp->move(9.5f, -0.5f, 11.0f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
-    temp->mMaterial->mTextureUnit = 1;
+
     mNameComp.push_back(temp->mNameComp);
 
 
@@ -140,7 +133,6 @@ void Level::DrawBoard()
     mFrustumSystem->init();
 
     //------------------------Skybox----------------------//
-
 
     temp = mShapeFactory.createShape("Square");
     temp->init();
@@ -152,17 +144,13 @@ void Level::DrawBoard()
     temp->mMaterial->mTextureUnit = 2;
     mNameComp.push_back(temp->mNameComp);
 
-//    mSkyBox = new Skybox(/*&mTexture[2]*/);
-//    mSkyBox->move(12.f, 0.f, 10.f);
-//    mSkyBox->init();
-//    mVisualObjects.push_back(mSkyBox);
-//    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
-//    mSkyBox->mMaterial->mTextureUnit =2;
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 3;    //Phongshader
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
+
+
 
     //makes the soundmanager
     //it is a Singleton!!!
@@ -173,8 +161,6 @@ void Level::DrawBoard()
     xyz->init();
     mVisualObjects.push_back(xyz);
 
-
-    // spawnParticle();
 
 
 
@@ -317,24 +303,20 @@ void Level::resetGame()
         }}
 }
 
-//void Level::spawnParticle()
-//{
-//    VisualObject* temp{nullptr};
-//    ParticleMesh* tempP{nullptr};
+void Level::spawnParticle()
+{
+    VisualObject* temp{nullptr};
+    Particles *mParticle{nullptr};
 
-//    for(int i = 0; i<10; i++)
-//    {
-//        temp = mShapeFactory.createShape("Particle");
-//        tempP = static_cast<ParticleMesh*>(tempP);
-//        tempP->init();
-//        tempP->mMaterial->mShaderProgram = 0;   //plain shader
-//        tempP->move(mParticle->direction.x+i,mParticle->direction.y+i,mParticle->direction.z);
-//        mVisualObjects.push_back(tempP);
-//        mTransformComp.push_back(tempP->mTransform);
-//        //mNameComp.push_back(mParticle->mNameComp);
-//    }
+    mParticle = new Particles(&mShapeFactory,mPlayer);
+    mParticle->init();
+    mParticle->move(mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
+    mParticle->mMaterial->mShaderProgram = 0;   //plain shader
+    mParticles.push_back(mParticle);
+    mTransformComp.push_back(mParticle->mTransform);
+    mNameComp.push_back(mParticle->mNameComp);
 
-//}
+}
 
 
 void Level::SoundHandler()
@@ -396,6 +378,22 @@ void Level::movePlayer()
     }
     else
         mPlayer->movePlayer();
+}
+
+void Level::moveParticles(gsl::Vector3D mColor)
+{
+    mShapeFactory.mColor = mColor;
+    for(int i{0}; i<static_cast<int>(mParticles.size()); i++){
+
+        mParticles[i]->mVelocity = mColor;
+        mParticles[i]->getVec();
+        if(mParticles[i]->isAlive == true){
+        mParticles[i]->move(mParticles[i]->PathDirection.x,mParticles[i]->PathDirection.y,mParticles[i]->PathDirection.z);}
+        else{
+            mParticles[i]->reset(mPlayer);
+        }
+
+    }
 }
 
 void Level::moveEnemy(int randNum)

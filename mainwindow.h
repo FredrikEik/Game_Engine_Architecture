@@ -23,7 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void SelectWithMousePick(int index);
-    void update();
+    void run();
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -69,7 +69,6 @@ private slots:
     void on_RoatetXM_clicked();
 
 
-    void on_toolButton_triggered(QAction *arg1);
 
 private:
     void init();

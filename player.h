@@ -11,14 +11,13 @@ public:
     Player(ShapeFactory* f);
     ~Player();
     void movePlayer();
-    void setForward(float dx, float dz);
+    void setVector(float dx, float dz);
     void centerPlayer();
     void CheckPlayerWall(Square* w);
     InputComponent* mInputComp;
     gsl::Vector3D mForward{0,0,-1};
 
-//    gsl::Vector3D mBackward{0.f, 0.f, 1.f};
-//     void rotateBackwardV();
+    //gsl::Vector3D mBackward{0.f, 0.f, 1.f};
 private:
     float mx, my, mz; // posisjon
     CollisionSystem* mColSystem;

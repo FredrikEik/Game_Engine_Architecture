@@ -36,7 +36,6 @@ SOURCES += main.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
-    texturehandler.cpp \
     vector2d.cpp \
     vector3d.cpp \
     vector4d.cpp \
@@ -71,7 +70,6 @@ HEADERS += \
     soundsource.h \
     stb_image.h \
     texture.h \
-    texturehandler.h \
     vector2d.h \
     vector3d.h \
     vector4d.h \

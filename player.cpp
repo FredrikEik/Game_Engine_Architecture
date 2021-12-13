@@ -6,7 +6,7 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mTransform->mPosition = gsl::Vector3D(mx,my,mz);
-    mMesh = factoryPtr->getMesh(5);
+    mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(5);
     mTransform->mMatrix.scale(0.5);
     mColSystem = new CollisionSystem;
@@ -22,24 +22,6 @@ Player::~Player()
 {
 
 }
-
-
-//void Player::rotateBackwardV()
-//{
-//    gsl::Vector3D temp{0,0,0};
-//    if(mBackward.x == -1)
-//        temp = gsl::Vector3D(1,0,0);
-//    else if(mBackward.x == 1)
-//        temp = gsl::Vector3D(-1,0,0);
-//    else if(mBackward.z == -1)
-//        temp = gsl::Vector3D(0,0,1);
-//    else if(mBackward.z == 1)
-//        temp = gsl::Vector3D(0,0,-1);
-//    else
-//        qDebug() << "Error rotating Player Backward vector";
-
-//    mBackward = temp;
-//}
 
 
 void Player::centerPlayer()
@@ -64,9 +46,11 @@ void Player::movePlayer()
     move(mForward.x * mInputComp->mPlayerSpeed, mForward.y * mInputComp->mPlayerSpeed, mForward.z * mInputComp->mPlayerSpeed);
 }
 
-void Player::setForward(float dx, float dz)
+void Player::setVector(float dx, float dz)
 {
     mForward = {dx, 0, dz};
     mTransform->mMatrix.setRotationToVector(mForward);
     mTransform->mMatrix.scale(0.5);
+
+    //mBackward = {-dx,0,-dz};
 }

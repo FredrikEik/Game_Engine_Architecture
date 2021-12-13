@@ -88,6 +88,7 @@ void MainWindow::init()
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderWindow->toggleWireframe(checked);
+
 }
 
 
@@ -106,30 +107,32 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
     }
 }
 
-
+void MainWindow::run()
+{
+//    if(Widgetitem == nullptr)
+//        Widgetitem = new QTreeWidgetItem(ui->treeWidget);
+//    else
+//        Widgetitem->treeWidget()->clear();
+//    on_treeWidget_viewportEntered();
+}
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
-    std::string a = mRenderWindow->createShapes("Circle");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+    mRenderWindow->mLvl->createShapes("Circle");
+  //  run();
+
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
-   std::string a = mRenderWindow->createShapes("Square");
-   QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-   QString temp;
-   item->setText(0, temp.fromStdString(a));
+   mRenderWindow->mLvl->createShapes("Square");
+  // run();
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
-    std::string a = mRenderWindow->createShapes("Monkey.obj");
-    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    QString temp;
-    item->setText(0, temp.fromStdString(a));
+   mRenderWindow->mLvl->createShapes("Monkey.obj");
+   //run();
 }
 
 
@@ -166,10 +169,6 @@ void MainWindow::SelectWithMousePick(int index)
     ActiveObject = mRenderWindow->mLvl->mNameComp[index]->ObjectID;
 }
 
-void MainWindow::update()
-{
-    on_treeWidget_viewportEntered();
-}
 
 
 void MainWindow::on_treeWidget_viewportEntered()
@@ -259,16 +258,4 @@ void MainWindow::on_RoatetXM_clicked()
 
 
 
-
-void MainWindow::on_toolButton_triggered(QAction *arg1)
-{
-
-    int nrOfTrophies;
-
-//    mRenderWindow->mLvl->trophies = nrOfTrophies;
-//    string str= toStdString(nrOfTrophies);
-//    std::string itemToString = nrOfTrophies.toStdString();
-
-//    ui->toolButton->setText(str);
-}
 

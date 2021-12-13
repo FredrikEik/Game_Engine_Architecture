@@ -10,7 +10,10 @@
 #include "matrix4x4.h"
 #include "collisionsystem.h"
 #include <math.h>       /* sqrt */
-
+#include "level.h"
+#include "player.h"
+#include "enemy.h"
+#include "particles.h"
 
 class QOpenGLContext;
 class Shader;
@@ -36,14 +39,11 @@ public:
 
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
-    std::string createShapes(string shapeID);
     void playMode(bool p);
-
-
     bool mousePickCollide = false;
     int MousePickindex = 0;
-    Level* mLvl;
 
+    Level* mLvl;
 
 
 
@@ -58,9 +58,10 @@ private:
     CollisionSystem* mCollisionSystem;
     FrustumSystem* mFrustumSystem;
     ShapeFactory mShapeFactory;
-    Skybox *mSkyBox;
     Enemy *mEnemy;
     Light * mLight{nullptr};
+    Particles *mParticle;
+//    std::vector<Particles*> mParticle;
 
 
     static const int nrOfShapes = 5;
@@ -125,6 +126,7 @@ private:
     Camera mEditorCamera;
     Camera mPlayCamera;
     float mAspectratio{1.f};
+    int frameCount{0};
 
 
     std::vector<VisualObject*> mVisualObjects;

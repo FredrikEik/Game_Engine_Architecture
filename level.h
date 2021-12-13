@@ -47,7 +47,8 @@ public:
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
     std::vector<SoundSource*> mSound;
-//    std::vector<ParticleMesh*> mParticlePool;
+    std::vector<Particles*> mParticles;
+
     void playSound(int SoundID);
 
     ShapeFactory mShapeFactory;
@@ -57,18 +58,18 @@ public:
     SoundSource *mChompSound;
     Enemy *mEnemy;
     Player *mPlayer;
-    Skybox *mSkyBox;
     XYZ *xyz;
     Light *mLight{nullptr};
-    Particles *mParticle;
+   // Particles *mParticle;
 
 
     bool wallCheck(int z, int x);
     void moveEnemy(int randNum);
     void movePlayer();
+    void moveParticles(gsl::Vector3D mColor);
     void resetGame();
     void GameLoop();
-    //void spawnParticle();
+    void spawnParticle();
 
 private:
     static const int DIM_X = 19;

@@ -7,7 +7,8 @@ VisualObject::VisualObject()
 
 VisualObject::~VisualObject()
 {
-
+    glDeleteVertexArrays( 1, &mMesh->mVAO );
+    glDeleteBuffers( 1, &mMesh->mVBO );
 }
 
 void VisualObject::init()
