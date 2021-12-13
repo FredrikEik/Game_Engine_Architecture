@@ -18,6 +18,10 @@ public:
     struct MeshComponent* mMesh{nullptr};
     struct MaterialComponent* mMaterial{nullptr};
     struct NameComponent* mNameComp{nullptr};
+    struct MovementComponent* mMoveComp{nullptr};
+
+
+
 private:
 
     CollisionSystem* mColSystem;
