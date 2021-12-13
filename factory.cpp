@@ -116,7 +116,7 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "Skybox")
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
-        objectToCreate->getMeshComponent();
+        //objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
 

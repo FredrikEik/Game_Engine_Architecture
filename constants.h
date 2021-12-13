@@ -12,9 +12,10 @@ namespace gsl  //Game School Lib
 
     enum Shaders
     {
-        COLORSHADER = 0,
-        TEXTURESHADER,
-        PHONGSHADER
+        PLAINSHADER = 0,
+        TEXTURESHADER = 1,
+        PHONGSHADER = 2,
+        SKYBOXSHADER = 3
     };
 
     const int NumberOfShaders{4};

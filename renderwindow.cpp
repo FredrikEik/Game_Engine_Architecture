@@ -168,6 +168,12 @@ void RenderWindow::init()
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
         //Qt makes a build-folder besides the project folder. That is why we go down one directory
         // (out of the build-folder) and then up into the project folder.
+
+    mShaderHandler = new ShaderHandler();
+    mShaderHandler->init();
+    mShaderHandler->cameraRef = mCurrentCamera;
+
+    /*
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
                                     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
@@ -182,10 +188,12 @@ void RenderWindow::init()
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
 
 
+
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
+    */
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -249,7 +257,10 @@ void RenderWindow::initObjects()
     mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
     dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
     mMainWindow->updateOutliner(factory->mGameObjects);
-    lightRef = static_cast<Light*>(factory->createObject("Light"));
+    Light* light1 = static_cast<Light*>(factory->createObject("Light"));
+    Light* light2 = static_cast<Light*>(factory->createObject("Light"));
+    mShaderHandler->lightRefs.push_back(light1);
+    mShaderHandler->lightRefs.push_back(light2);
 
 
     hjelpeObjekt = factory->createObject("Cube");
@@ -279,45 +290,43 @@ void RenderWindow::render()
     //mCurrentCamera->draw();
     //mTestFrustumCamera->draw();
 
-    //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
 
         for(int i{0}; i < factory->mGameObjects.size(); i++)
-
-		{	
-
-            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
-            glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
+        {
+//            unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
+//            glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
             //qDebug() << shaderProgramIndex;
-            if(shaderProgramIndex == 1)
-            {
-                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            }
-            if(shaderProgramIndex == 2)
-            {
-                glUniform3f(mLightPositionUniform, lightRef->getTransformComponent()->mMatrix.getPosition().getX(), lightRef->getTransformComponent()->mMatrix.getPosition().getY(), lightRef->getTransformComponent()->mMatrix.getPosition().getZ());
-                glUniform3f(mCameraPositionUniform, mCurrentCamera->position().getX(), mCurrentCamera->position().getY(), mCurrentCamera->position().getZ());
-                glUniform3f(mLightColorUniform, lightRef->mLightColor.getX(), lightRef->mLightColor.getY(), lightRef->mLightColor.getZ());
-                glUniform1f(mSpecularStrengthUniform, lightRef->mSpecularStrength);
-                glUniform1i(mSpecularExponentUniform, lightRef->mSpecularExponent);
-                glUniform1f(mAmbientLightStrengthUniform, lightRef->mAmbientStrength);
-                glUniform3f(mAmbientColor, lightRef->mAmbientColor.getX(), lightRef->mAmbientColor.getY(), lightRef->mAmbientColor.getZ());
-                glUniform1f(mLightPowerUniform, lightRef->mLightStrength);
-                glUniform1f(mConstantUniform, lightRef->constant);
-                glUniform1f(mLinearUniform, lightRef->linear);
-                glUniform1f(mQuadraticUniform, lightRef->quadratic);
-                glUniform1i(mPhongTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            }
-            if(shaderProgramIndex == 3)
-            {
-               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            }
-            glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-            glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
+//            if(shaderProgramIndex == 1)
+//            {
+//                glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+//            }
+//            if(shaderProgramIndex == 2)
+//            {
+//                glUniform3f(mLightPositionUniform, lightRef->getTransformComponent()->mMatrix.getPosition().getX(), lightRef->getTransformComponent()->mMatrix.getPosition().getY(), lightRef->getTransformComponent()->mMatrix.getPosition().getZ());
+//                glUniform3f(mCameraPositionUniform, mCurrentCamera->position().getX(), mCurrentCamera->position().getY(), mCurrentCamera->position().getZ());
+//                glUniform3f(mLightColorUniform, lightRef->mLightColor.getX(), lightRef->mLightColor.getY(), lightRef->mLightColor.getZ());
+//                glUniform1f(mSpecularStrengthUniform, lightRef->mSpecularStrength);
+//                glUniform1i(mSpecularExponentUniform, lightRef->mSpecularExponent);
+//                glUniform1f(mAmbientLightStrengthUniform, lightRef->mAmbientStrength);
+//                glUniform3f(mAmbientColor, lightRef->mAmbientColor.getX(), lightRef->mAmbientColor.getY(), lightRef->mAmbientColor.getZ());
+//                glUniform1f(mLightPowerUniform, lightRef->mLightStrength);
+//                glUniform1f(mConstantUniform, lightRef->constant);
+//                glUniform1f(mLinearUniform, lightRef->linear);
+//                glUniform1f(mQuadraticUniform, lightRef->quadratic);
+//                glUniform1i(mPhongTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+//            }
+//            if(shaderProgramIndex == 3)
+//            {
+//               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+//            }
+//            glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+//            glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+//            glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
+            mShaderHandler->sendDataToShader(factory->mGameObjects[i]);
             if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
 			{
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
@@ -346,7 +355,7 @@ void RenderWindow::render()
                                 */
                                 {
                                    // qDebug() << "Object inside frustum";
-                    factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
+                                   factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                                 mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                                mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
 
@@ -354,17 +363,12 @@ void RenderWindow::render()
                                    objectsDrawn++;
                                 }
             }
-                        /*}
-                    }
-                }
-            }*/
 			}
             else
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                             mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                           mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
-
+                                                            mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
                 factory->mGameObjects[i]->draw();
             }
 

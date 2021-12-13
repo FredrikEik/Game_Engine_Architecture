@@ -49,6 +49,7 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    shaderhandler.cpp \
     skybox.cpp \
     sphere.cpp \
     texture.cpp \
@@ -87,6 +88,7 @@ HEADERS += \
     renderwindow.h \
     shader.h \
     mainwindow.h \
+    shaderhandler.h \
     skybox.h \
     sphere.h \
     texture.h \

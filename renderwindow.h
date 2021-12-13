@@ -15,6 +15,7 @@
 #include "quadtree.h"
 #include "light.h"
 #include "player.h"
+#include "shaderhandler.h"
 
 class QOpenGLContext;
 class Shader;
@@ -22,6 +23,7 @@ class MainWindow;
 class GameObject;
 class Camera;
 class Texture;
+class ShaderHandler;
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -51,12 +53,12 @@ public:
     bool bPause = true;
     bool editorMode = true;
     Factory *getFactory(){return factory;};
+    ShaderHandler* mShaderHandler;
 
     SoundSource* mClick{};
     SoundSource* mVideoGameLand{};
     GameObject* skybox;
     GameObject* surface;
-    Light* lightRef;
 
     //Javascript engine
     QJSEngine engine;
