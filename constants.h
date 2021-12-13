@@ -17,11 +17,7 @@ namespace gsl  //Game School Lib
 
     const std::string LODLevelPrefix{"_L0"};
 
-    const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
-
-//    const int NumberOfShaders{4};
-//    const int NumberOfTextures{16};
-//    const int NumberOfMaterials{10};
+    const int MAX_MESHCOMPONENTS = 1024;
 
     enum Shaders
     {
@@ -46,5 +42,11 @@ namespace gsl  //Game School Lib
         BMP = 3,
         WAV = 4
     };
+
+    enum LightTypes
+    {
+        POINT
+    };
+
 }
 #endif // CONSTANTS_H

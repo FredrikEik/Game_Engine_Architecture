@@ -1,5 +1,7 @@
 ﻿#ifndef COMPONENTS_H
 #define COMPONENTS_H
+
+#include "constants.h"
 #include "meshhandler.h"
 
 /**
@@ -33,6 +35,9 @@ struct MaterialComponent
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
     gsl::Vector3D mColor{0.4f};
+    float mSpecularStrength{0.0f};
+    short mSpecularExponent{0};
+    bool mUseColor{false};
 };
 
 struct SoundListenerComponent
@@ -65,12 +70,14 @@ struct PhysicsComponent
     gsl::Matrix4x4 mScale;
 };
 
-//struct LightComponent
-//{
-//    gsl::LightTypes mType{gsl::POINT};
-//    gsl::Vector3D mDirection{0.0f, -1.0f, 0.0f};
-
-//};
+struct PointLightComponent
+{
+    gsl::LightTypes mType{gsl::POINT};
+    gsl::Vector3D mColor{0.7f};
+    float mLightStrength{1.0f};
+    gsl::Vector3D mAmbientColor{0.3};
+    float mAmbientStrength{0.7};
+};
 
 
 #endif // COMPONENTS_H

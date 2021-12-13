@@ -18,6 +18,15 @@
             "shader": "skybox",
             "texture": "NightCubemap.jpg",
             "color": [0.5, 0.5, 0.5]
+        },
+        {
+            "name": "Phong",
+            "shader": "phongshader",
+            "texture": "hund.bmp",
+            "color": [0.5, 0.5, 0.5],
+            "useColor": false,
+            "specularStrenth": 0.4,
+            "specularExponent": 32
         }
   ]
 }

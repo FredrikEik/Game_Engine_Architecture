@@ -13,5 +13,6 @@ public:
     MaterialComponent* mMaterial{nullptr};
     SoundComponent* mSoundComponent{nullptr};
     PhysicsComponent* mPhysicsComponent{nullptr};
+    PointLightComponent* mLightComponent{nullptr};
 };
 #endif // GAMEOBJECT_H

@@ -169,45 +169,61 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Ground
-    temp = mGameObjectManager->addObject("FlatGround.obj"); //Something wrong with normals from Blender, not looking into it now.
+    temp = mGameObjectManager->addObject("Plane5x5.obj");
     temp->mName = "Ground";
+    temp->mMaterial = mGameObjectManager->getMaterial("Phong");
     mRenderSystem->mGameObjects.push_back(temp);
 
-    //dog triangle
+    //Point Light
+    temp = mGameObjectManager->addObject("triangle");
+    temp->mName = "PointLight";
+    temp->mLightComponent = new PointLightComponent;
+    temp->mTransform->mMatrix.translate(0.0f, 5.0f, 0.0f);
+    mRenderSystem->mGameObjects.push_back(temp);
+
+    for(auto gob : mRenderSystem->mGameObjects)
+    {
+        if(gob->mLightComponent)
+        {
+            mRenderSystem->mLight = gob->mLightComponent;
+            mRenderSystem->mLightPosition = gob->mTransform;
+        }
+    }
+
+    //Dog triangle
     temp = mGameObjectManager->addObject("triangle");
     temp->mName = "DogTriangle";
     temp->mMaterial = mGameObjectManager->getMaterial("Test");
     temp->mTransform->mMatrix.translate(0.0f, 2.0f, 0.0f);
-    //Adds sound to moving triangle:
+    //Adds sound to triangle:
     mGameObjectManager->addComponent("caravan_mono.wav", temp);
-
     //Hack to test sound system
     if(temp->mSoundComponent)
         temp->mSoundComponent->shouldPlay = true;
-
     mRenderSystem->mGameObjects.push_back(temp);
 
-    temp = mGameObjectManager->addObject("Cube.obj");
+    //Skybox
+    temp = mGameObjectManager->addObject("CubeInverted.obj");
     temp->mName = "Skybox";
     temp->mMaterial = mGameObjectManager->getMaterial("Skybox"); // Skybox-shader
-    temp->mTransform->mMatrix.scale(30);
+    temp->mTransform->mMatrix.scale(10);
     mRenderSystem->mGameObjects.push_back(temp);
 
 
     //Suzannes:
-//    for(int i = 0; i <= 5; i++)
-//    {
-//        for(int j = 0; j < 2; j++)
-//        {
-//            temp = mGameObjectManager->addObject("suzanne.obj");
-//            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
-//            temp->mTransform->mMatrix.scale(0.5f);
-//            temp->mMesh->mColliderRadius *= 0.3f;
-//            temp->mTransform->mScale.setAlltoSame(0.5f);
-//            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
-//            mRenderSystem->mGameObjects.push_back(temp);
-//        }
-//    }
+    for(int i = 0; i <= 5; i++)
+    {
+        for(int j = 0; j < 2; j++)
+        {
+            temp = mGameObjectManager->addObject("suzanne.obj");
+            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
+            temp->mTransform->mMatrix.scale(0.5f);
+            temp->mMesh->mColliderRadius *= 0.3f;
+            temp->mTransform->mScale.setAlltoSame(0.5f);
+            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
+            mRenderSystem->mGameObjects.push_back(temp);
+        }
+    }
 
 //    temp = mGameObjectManager->addObject("suzanne.obj");
 //    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
@@ -215,7 +231,7 @@ void CoreEngine::setUpScene()
 //    mRenderSystem->mGameObjects.push_back(temp);
 
     //mEditorCamera = new Camera();
-    mEditorCamera->mPosition = gsl::Vector3D(10.0f, 10.0f, 15.0f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
 //    mEditorCamera->mForward = gsl::Vector3D(90.0f, 0.0f, 0.0f);
 //    mEditorCamera->mYaw = 180.0f;
     mEditorCamera->mPitch = -25.0f;
@@ -223,7 +239,7 @@ void CoreEngine::setUpScene()
 
     //mGameObjectManager->setUpAllTextures();
 
-    mGameCamera->mPosition = gsl::Vector3D(0.0f, 1.0f, 10.0f);
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 0.0f);
 //    mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 
