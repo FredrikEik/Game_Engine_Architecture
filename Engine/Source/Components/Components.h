@@ -57,7 +57,18 @@ public:
 	uint32 entityID; // TODO: Should probably be uint16
 	uint32 ID;
 	
-	virtual JSON json() { return JSON(); } // TODO: Make these pure virtual
+	/// <summary>
+	/// Formats the component as JSON. Make sure jsonParse reflects this
+	/// If not implemented, the component will not be saved.
+	/// </summary>
+	/// <returns>JSON object of all the data a component has</returns>
+	virtual JSON json() { return JSON(); }
+
+	/// <summary>
+	/// Parses the JSON and sets data accordingly. Make sure it reflects json()
+	/// If not implemented, the component cannot be loaded
+	/// </summary>
+	/// <param name="json">The json.</param>
 	virtual void jsonParse(const JSON& json) {}
 };
 
@@ -223,12 +234,20 @@ struct TrailComponent final : public Component
 	bool bRecording{ false };
 };
 
+
+/// <summary>
+/// The Particle Component acts as a typical particle emitter when given to an entity
+/// </summary>
 struct ParticleComponent final : public Component
 {
 	ParticleComponent(uint32 entity, uint32 componentID) : Component(entity, componentID),
 		mesh(entity, componentID), texture(entity, componentID){}
 
-	struct Particle 
+
+	/// <summary>
+	/// This is the actual particle data. Should be one instance per particle
+	/// </summary>
+	struct Particle
 	{
 		glm::vec4 startColor{1,0,0,1}, endColor{1,0,0,1};
 		glm::vec3 position{};
@@ -244,6 +263,12 @@ struct ParticleComponent final : public Component
 		}
 	};
 
+
+	/// <summary>
+	/// This is the template new particles are spawned from. 
+	/// If only Particle is initialized, all particles spawned will be identical. 
+	/// If any of the offsets are set, every new particle will spawn with the Particle data + random value between min and max
+	/// </summary>
 	struct ParticleBlueprint
 	{
 		Particle particle;
@@ -284,6 +309,7 @@ struct ParticleComponent final : public Component
 	GLuint positionBuffer{};
 	GLuint colorBuffer{};
 	GLuint lifeAndSizeDataBuffer{};
+
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
 };
