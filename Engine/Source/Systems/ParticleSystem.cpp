@@ -250,10 +250,11 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             glBindTexture(GL_TEXTURE_2D, emitter.texture.textureID);
         }
         TransformComponent* emitterTransform = transformManager->getComponentChecked(emitter.entityID);
+        glm::vec3 emitterPosition = glm::vec3(emitterTransform->transform[3]);
         //spawnParticles(it, deltaTime, glm::vec3(emitterTransform->transform[3]), cameraPosition);
 
 
-        spawnParticles(emitter, deltaTime, glm::vec3(emitterTransform->transform[3]), cameraPosition);
+        spawnParticles(emitter, deltaTime, glm::vec3(emitterPosition), cameraPosition);
         lastSpawned = 0;
         
         if (emitter.activeParticles <= 0)
@@ -264,53 +265,56 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
         std::sort(&emitter.particles[0], &emitter.particles[emitter.lastUsedParticle]);
         //std::sort(it.particles.begin(), it.particles.end());
         int breakIndex{};
-        for (uint32 i{}; i < emitter.maxParticles; ++i)
+        for (uint32 i{}; 
+            i < emitter.maxParticles && 
+            updateParticle(i, emitter, emitter.particles[i], emitterPosition, cameraPosition, deltaTime); 
+            ++i)
         {
-            auto& p = emitter.particles[i];
+            //auto& p = emitter.particles[i];
 
-            if (!p.active)
-            {
-                emitter.lastUsedParticle = i;
-                emitter.activeParticles = i;
-                breakIndex = i;
-                break;
-            }
-            p.currentLife -= deltaTime;
-            if (p.currentLife <= 0.f)
-            {
-                p.active = false;
-                p.cameraDistance = -100000.f;
-            }
-            p.velocity += p.acceleration * deltaTime;
-            p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;
+            //if (!p.active)
+            //{
+            //    emitter.lastUsedParticle = i;
+            //    emitter.activeParticles = i;
+            //    breakIndex = i;
+            //    break;
+            //}
+            //p.currentLife -= deltaTime;
+            //if (p.currentLife <= 0.f)
+            //{
+            //    p.active = false;
+            //    p.cameraDistance = -100000.f;
+            //}
+            //p.velocity += p.acceleration * deltaTime;
+            //p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;
 
-            //p.textureIndex = std::lround(((emitter.particleBlueprint.particle.currentLife - p.currentLife) / emitter.particleBlueprint.particle.currentLife) * 64);
+            ////p.textureIndex = std::lround(((emitter.particleBlueprint.particle.currentLife - p.currentLife) / emitter.particleBlueprint.particle.currentLife) * 64);
 
-            p.cameraDistance = glm::length(p.position - cameraPosition);
+            //p.cameraDistance = glm::length((p.position+emitterPosition) - cameraPosition);
 
-            emitter.positionData[4 * i + 0] = p.position.x + emitterTransform->transform[3].x;
-            emitter.positionData[4 * i + 1] = p.position.y + emitterTransform->transform[3].y;
-            emitter.positionData[4 * i + 2] = p.position.z + emitterTransform->transform[3].z;
-            emitter.positionData[4 * i + 3] = p.startSize;
+            //emitter.positionData[4 * i + 0] = p.position.x + emitterTransform->transform[3].x;
+            //emitter.positionData[4 * i + 1] = p.position.y + emitterTransform->transform[3].y;
+            //emitter.positionData[4 * i + 2] = p.position.z + emitterTransform->transform[3].z;
+            //emitter.positionData[4 * i + 3] = p.startSize;
 
-            emitter.colorData[8 * i + 0] = p.startColor.x;
-            emitter.colorData[8 * i + 1] = p.startColor.y;
-            emitter.colorData[8 * i + 2] = p.startColor.z;
-            emitter.colorData[8 * i + 3] = p.startColor.w;
+            //emitter.colorData[8 * i + 0] = p.startColor.x;
+            //emitter.colorData[8 * i + 1] = p.startColor.y;
+            //emitter.colorData[8 * i + 2] = p.startColor.z;
+            //emitter.colorData[8 * i + 3] = p.startColor.w;
 
-            emitter.colorData[8 * i + 4] = p.endColor.x;
-            emitter.colorData[8 * i + 5] = p.endColor.y;
-            emitter.colorData[8 * i + 6] = p.endColor.z;
-            emitter.colorData[8 * i + 7] = p.endColor.w;
+            //emitter.colorData[8 * i + 4] = p.endColor.x;
+            //emitter.colorData[8 * i + 5] = p.endColor.y;
+            //emitter.colorData[8 * i + 6] = p.endColor.z;
+            //emitter.colorData[8 * i + 7] = p.endColor.w;
 
-            //emitter.uvBlendingData[2 * i + 0] = emitter.textureRows; // Could be uniform
-            //emitter.uvBlendingData[2 * i + 1] = p.textureIndex;
+            ////emitter.uvBlendingData[2 * i + 0] = emitter.textureRows; // Could be uniform
+            ////emitter.uvBlendingData[2 * i + 1] = p.textureIndex;
 
-            emitter.lifeAndSizeData[4 * i + 0] = p.currentLife;
-            emitter.lifeAndSizeData[4 * i + 1] = p.totalLife;
+            //emitter.lifeAndSizeData[4 * i + 0] = p.currentLife;
+            //emitter.lifeAndSizeData[4 * i + 1] = p.totalLife;
 
-            emitter.lifeAndSizeData[4 * i + 2] = p.startSize;
-            emitter.lifeAndSizeData[4 * i + 3] = p.endSize;
+            //emitter.lifeAndSizeData[4 * i + 2] = p.startSize;
+            //emitter.lifeAndSizeData[4 * i + 3] = p.endSize;
         }
         auto& p = emitter.particles[breakIndex-1];
         //std::cout << "Should break at "<< breakIndex<<". Active particles:"<<it.activeParticles << " \n";
@@ -343,10 +347,18 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
     glDisable(GL_BLEND);
 }
 
+void ParticleSystem::setParticleActive(uint32 entityID, bool bShouldBeActive, ECSManager* ECS)
+{
+    setParticleActive(ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID), bShouldBeActive);
+}
+
 void ParticleSystem::setParticleActive(ParticleComponent* emitter, bool bShouldBeActive)
 {
-    emitter->particles = std::vector<ParticleComponent::Particle>(emitter->maxParticles);
-    emitter->timeSinceLastSpawn = emitter->spawnFrequency;
+    if (bShouldBeActive)
+    {
+        emitter->timeSinceLastSpawn = emitter->spawnFrequency;
+        emitter->particles = std::vector<ParticleComponent::Particle>(emitter->maxParticles);
+    }
     emitter->emitterLifeTime = emitter->emitterTotalLifeTime * bShouldBeActive;
 }
 
@@ -460,4 +472,49 @@ void ParticleSystem::sortEmitters(ECSManager* ECS, const glm::vec3& cameraPositi
     };
 
     std::sort(OUTsortedEmitters.begin(), OUTsortedEmitters.end(), sortFunc);
+}
+
+bool ParticleSystem::updateParticle(const uint32& i, ParticleComponent& emitter, ParticleComponent::Particle& particle,
+    const glm::vec3& emitterPosition, const glm::vec3& cameraPosition, const float& deltaTime)
+{
+    auto& p = particle;
+
+    if (!p.active)
+    {
+        emitter.lastUsedParticle = i;
+        emitter.activeParticles = i;
+        return false;
+    }
+    p.currentLife -= deltaTime;
+    if (p.currentLife <= 0.f)
+    {
+        p.active = false;
+        p.cameraDistance = -100000.f;
+    }
+    p.velocity += p.acceleration * deltaTime;
+    p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;
+
+    p.cameraDistance = glm::length((p.position+ emitterPosition) - cameraPosition);
+
+    emitter.positionData[4 * i + 0] = p.position.x + emitterPosition.x;
+    emitter.positionData[4 * i + 1] = p.position.y + emitterPosition.y;
+    emitter.positionData[4 * i + 2] = p.position.z + emitterPosition.z;
+    emitter.positionData[4 * i + 3] = p.startSize;
+
+    emitter.colorData[8 * i + 0] = p.startColor.x;
+    emitter.colorData[8 * i + 1] = p.startColor.y;
+    emitter.colorData[8 * i + 2] = p.startColor.z;
+    emitter.colorData[8 * i + 3] = p.startColor.w;
+
+    emitter.colorData[8 * i + 4] = p.endColor.x;
+    emitter.colorData[8 * i + 5] = p.endColor.y;
+    emitter.colorData[8 * i + 6] = p.endColor.z;
+    emitter.colorData[8 * i + 7] = p.endColor.w;
+
+    emitter.lifeAndSizeData[4 * i + 0] = p.currentLife;
+    emitter.lifeAndSizeData[4 * i + 1] = p.totalLife;
+
+    emitter.lifeAndSizeData[4 * i + 2] = p.startSize;
+    emitter.lifeAndSizeData[4 * i + 3] = p.endSize;
+    return true;
 }
