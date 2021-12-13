@@ -183,6 +183,16 @@ void RenderSystem::render()
         if(tempShader->mName == "skyboxshader")
         {
             glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
+
+            glDepthMask(GL_FALSE); //Draw this behind all gameobjects
+
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, mGameObjects[i]->mMaterial->mShaderProgram);
+            glUniform1i(mGameObjects[i]->mMaterial->mTextureUnit, 1);
+
+            glDrawElements(GL_TRIANGLES, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));
+
+            glDepthMask(GL_TRUE); //Draw remaining gameobjects normally
         }
 
         //send data to shader

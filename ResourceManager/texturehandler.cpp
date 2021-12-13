@@ -201,7 +201,7 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
         }
 
     else    //alpha is present, so we set up an alpha channel
-        qDebug() << "Skybox with alpha probably make no sense!?";
+        qDebug() << "Skybox with alpha probably make no sense";
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
