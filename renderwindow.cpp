@@ -177,9 +177,9 @@ void RenderWindow::init()
     meshCompVec[0]->IsCollidable = false;
     entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
 
-    entitySys->construct("Suzanne.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
+    entitySys->construct("cannon.obj", QVector3D(-5.0f,0.0f,0.0f),2,1); //https://sketchfab.com/3d-models/hand-painted-cannon-63959575e8d0416a977a313ddf2e2d4f
     entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    //entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
     entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
     entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
@@ -192,11 +192,11 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
     entitySys->construct("FlatFloor.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    Physics->InitPhysicsSystem(meshCompVec[15],ResSys->getVertexDataByName("FlatFloor.obj"));
+    Physics->InitPhysicsSystem(meshCompVec[14],ResSys->getVertexDataByName("FlatFloor.obj"));
 
 
 
-
+    /*
     //Suzannes - using default material:
     for(int i{0}; i < 30; i++)
     {
@@ -209,7 +209,7 @@ void RenderWindow::init()
     }
     //JSS->SaveLevel("Test");
 
-
+*/
     SoundManager::getInstance()->init();
 
     mExplosionSound = SoundManager::getInstance()->createSource(
@@ -230,6 +230,8 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
+    mCurrentCamera->pitch(35);
+    mCurrentCamera->yaw(180);
 
     mPlayerCamera = new Camera(20.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
@@ -246,18 +248,27 @@ void RenderWindow::init()
 
     if(transformCompVec[2] != nullptr){
         CurrentPlayer = transformCompVec[2];
+        CurrentPlayer->mMatrix.translateY(5);
     }
 
 
     //LASDATA
 
 
-    for(int i{0}; i < 10; i++)
+
+
+    //crate bullets
+    for(int i{0}; i < 5; i++)
     {
-        for(int j{0}; j < 10; j++)
-        {
-            entitySys->construct("sphere.obj", QVector3D( 10 + 8*(i) ,20.f+i+j,- 10 + 8*(j)),2,1);
-        }
+
+        entitySys->construct("sphere.obj", QVector3D( 10+i,10+i,-10+i),2,1); //ammo starts with 800 id
+
+    }
+    for(unsigned long long i{0}; i <meshCompVec.size(); i++)
+    {
+        if(meshCompVec[i]->meshName == "sphere.obj")
+            bullets.push_back(i);
+
     }
     //for(int i = 0; i < transformCompVec.size(); i++){
     //    transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
@@ -299,6 +310,7 @@ void RenderWindow::render()
     SoundManager::getInstance()->updateListener(mCurrentCamera->position(), gsl::Vector3D(0,0,0), mCurrentCamera->forward(), mCurrentCamera->up());
 
     unsigned long long eSize = entities.size();
+
     for(unsigned long long i = 0; i < eSize; i++)
     {
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
@@ -306,7 +318,7 @@ void RenderWindow::render()
 
             //killZ :D
 
-            killZ(transformCompVec[i], gsl::Vector3D(200  ,100.0f,200 ));
+            killZ(transformCompVec[i], gsl::Vector3D(0  ,10.0f,0 ));
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
 
@@ -318,7 +330,7 @@ void RenderWindow::render()
             switchLOD(i);       //switches to correct lod
 
 
-            if(isPhysicsEnabled && transformCompVec[i]->isPhysicsEnabled)
+            if((isPhysicsEnabled && transformCompVec[i]->isPhysicsEnabled) )
             {
 
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
@@ -340,16 +352,30 @@ void RenderWindow::render()
 
     }
 
-
     if(bIsPlayerCamera)
     {
-        mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,50.0f,50.0f));
+        //move camera over player
+        mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,50.0f, -50.0f));
+
+        //bullet locations set behind player
+        gsl::Vector3D temp = CurrentPlayer->mMatrix.getPosition();
+        for (unsigned long long i = 0; i<bullets.size();i++)
+        {
+             Physics->move(DeltaTime,transformCompVec[bullets[i]], meshCompVec[bullets[i]]->collisionRadius);
+            if(transformCompVec[bullets[i]]->isBulletFired == false && transformCompVec[bullets[i]]->isBulletLoaded == false)
+            {
+                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + i*2 - bullets.size(),temp.getY() , temp.getZ()+5);
+                transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
+            }
+        }
+
     }
     else
     {
         drawFrostum();      //frustum culling lines! This is a visualisation of frostum
 
     }
+
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -369,32 +395,56 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
+void RenderWindow::LoadBullet()
+{
+    if(!bBulletLoaded)
+    {
+        for (unsigned long long i = 0; i<bullets.size();i++)
+        {
+            gsl::Vector3D temp = CurrentPlayer->mMatrix.getPosition();
+            if(transformCompVec[bullets[i]]->isBulletFired == false)
+            {
+                qDebug()<<"Bullet Loaded";
+                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX(),temp.getY()+10,temp.getZ() + 4);
+                transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
+                transformCompVec[bullets[i]]->isBulletLoaded = true;
+                break;
+            }
+        }
+    }
+}
+void RenderWindow::ShootBullet()
+{
+
+    for (unsigned long long i = 0; i<bullets.size();i++)
+    {
+        if( transformCompVec[bullets[i]]->isBulletLoaded == true)
+        {
+            transformCompVec[bullets[i]]->Velocity.setZ(50.0f);
+            transformCompVec[bullets[i]]->isBulletLoaded = false;
+            transformCompVec[bullets[i]]->isBulletFired = true;
+            break;
+        }
+    }
+
+}
+
 void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
 {
-    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getY() < -1000.0f))
+    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getZ() > 300.0f))
     {
         Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
-        Transform->mMatrix.setPosition(SpawnPoint.getX(), SpawnPoint.getY(), SpawnPoint.getZ());
+
+        if( Transform->isBulletFired = true)
+        {
+            Transform->isBulletLoaded = false;
+            Transform->isBulletFired = false;
+        }
+
     }
 }
 
-gsl::Vector3D RenderWindow::MakeGSLvec3D(QVector3D vec)
-{
-    gsl::Vector3D temp;
-    temp.setX(vec.x());
-    temp.setY(vec.y());
-    temp.setZ(vec.z());
-    return temp;
-}
 
-QVector3D RenderWindow::MakeQvec3D(gsl::Vector3D vec)
-{
-    QVector3D temp;
-    temp.setX(vec.getX());
-    temp.setY(vec.getY());
-    temp.setZ(vec.getZ());
-    return temp;
-}
 void RenderWindow::CalcDeltaTime()
 {
     auto newTime = std::chrono::high_resolution_clock::now();
@@ -459,14 +509,11 @@ void RenderWindow::togglePlayerCamera()
             mCurrentCamera = mPlayerCamera;
             bIsPlayerCamera = false;
 
-
         }
         else
         {
             mCurrentCamera = mEditorCamera;
             bIsPlayerCamera = true;
-
-
         }
 
     }
@@ -793,6 +840,24 @@ void RenderWindow::setCameraSpeed(float value)
     qDebug() << "Camera Speed: " << mCurrentCamera->getCameraSpeed();
 }
 
+gsl::Vector3D RenderWindow::MakeGSLvec3D(QVector3D vec)
+{
+    gsl::Vector3D temp;
+    temp.setX(vec.x());
+    temp.setY(vec.y());
+    temp.setZ(vec.z());
+    return temp;
+}
+
+QVector3D RenderWindow::MakeQvec3D(gsl::Vector3D vec)
+{
+    QVector3D temp;
+    temp.setX(vec.getX());
+    temp.setY(vec.getY());
+    temp.setZ(vec.getZ());
+    return temp;
+}
+
 void RenderWindow::handleInput()
 {
     //Camera
@@ -832,30 +897,30 @@ void RenderWindow::handleInput()
         {
             if(mInput.W)
             {
+                /*
                 mCurrentCamera->setSpeed(-mCameraSpeed);
                 PosZ = -1.0f;
                 CurrentPlayer->mMatrix.translateZ(PosZ);
+                */
             }
             if(mInput.S)
             {
+                /*
                 mCurrentCamera->setSpeed(mCameraSpeed);
                 PosZ = 1.0f;
                 CurrentPlayer->mMatrix.translateZ(PosZ);
+                */
 
             }
             if(mInput.D)
             {
                 posX = 1.0f;
                 CurrentPlayer->mMatrix.translateX(posX);
-                mCurrentCamera->moveRight(mCameraSpeed);
-
             }
             if(mInput.A)
             {
                 posX = -1.0f;
                 CurrentPlayer->mMatrix.translateX(posX);
-                mCurrentCamera->moveRight(-mCameraSpeed);
-
             }
         }
     }
@@ -1096,10 +1161,18 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
+    {
         mInput.RMB = true;
+        //load bulelt into muzzle
+        if(!bBulletLoaded)
+            LoadBullet();
+    }
     if (event->button() == Qt::LeftButton)
     {
-        RayCasting(event);
+        if(!bIsPlayerCamera && event)
+            RayCasting(event);
+        if(bIsPlayerCamera && event)
+            ShootBullet();
         mInput.LMB = true;
     }
     if (event->button() == Qt::MiddleButton)
@@ -1133,34 +1206,37 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
 
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mInput.RMB)
+    if(!bIsPlayerCamera)
     {
+        if (mInput.RMB)
+        {
 
-        setCursor(Qt::BlankCursor);
-        QPoint mousePos = mapFromGlobal(QCursor::pos());
-        auto origo = QPoint(width()/2, height()/2);
-        auto xOffset = mousePos.x()-origo.x();
-        auto yOffset = mousePos.y()-origo.y();
-        auto multiplier{0.1f};
-
-
-        //mCamera.yaw(-1*xOffset*multiplier);
-        //mCamera.pitch(-1*yOffset*multiplier);
-
-        QCursor::setPos(mapToGlobal(origo));
+            setCursor(Qt::BlankCursor);
+            QPoint mousePos = mapFromGlobal(QCursor::pos());
+            auto origo = QPoint(width()/2, height()/2);
+            auto xOffset = mousePos.x()-origo.x();
+            auto yOffset = mousePos.y()-origo.y();
+            auto multiplier{0.1f};
 
 
-        //Using mMouseXYlast as deltaXY so we don't need extra variables
-        //mMouseXlast = event->pos().x() - mMouseXlast;
-        //mMouseYlast = event->pos().y() - mMouseYlast;
+            //mCamera.yaw(-1*xOffset*multiplier);
+            //mCamera.pitch(-1*yOffset*multiplier);
 
-        if (mMouseXlast != 0)
-            mCurrentCamera->yaw(mCameraRotateSpeed * xOffset * multiplier/*mCameraRotateSpeed * mMouseXlast*/);
-        if (mMouseYlast != 0)
-            mCurrentCamera->pitch(mCameraRotateSpeed * yOffset * multiplier);
-    }else{
-        setCursor(Qt::ArrowCursor);
+            QCursor::setPos(mapToGlobal(origo));
+
+
+            //Using mMouseXYlast as deltaXY so we don't need extra variables
+            //mMouseXlast = event->pos().x() - mMouseXlast;
+            //mMouseYlast = event->pos().y() - mMouseYlast;
+
+            if (mMouseXlast != 0)
+                mCurrentCamera->yaw(mCameraRotateSpeed * xOffset * multiplier/*mCameraRotateSpeed * mMouseXlast*/);
+            if (mMouseYlast != 0)
+                mCurrentCamera->pitch(mCameraRotateSpeed * yOffset * multiplier);
+        }else{
+            setCursor(Qt::ArrowCursor);
+        }
+        mMouseXlast = event->pos().x();
+        mMouseYlast = event->pos().y();
     }
-    mMouseXlast = event->pos().x();
-    mMouseYlast = event->pos().y();
 }

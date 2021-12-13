@@ -37,6 +37,10 @@ struct TransformComponent
     bool bBSExists = false;
 
     gsl::Vector3D rotationTracker = gsl::Vector3D(0.0f,0.0f,0.0f);
+
+    //bullet logic
+    bool isBulletFired;
+    bool isBulletLoaded;
 };
 
 struct MeshComponent

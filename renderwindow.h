@@ -192,6 +192,13 @@ private:
     void RayCasting(QMouseEvent *event);
     void RayCastSphereCollision(QVector3D RayVec);
 
+    //!Gameplay
+    //!
+    std::vector<unsigned long long> bullets;
+    void LoadBullet();
+    bool bBulletLoaded = false;
+    void ShootBullet();
+
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
     void mousePressEvent(QMouseEvent *event) override;
