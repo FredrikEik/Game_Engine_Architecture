@@ -40,6 +40,7 @@ public:
     int cointAmount;
 
     Texture *mTexture;
+    MovementSystem *mMoveSys;
     std::vector<NameComponent*> mNameComp;
     std::vector<TransformComponent*> mTransformComp;
     std::vector<VisualObject*> mVisualObjects;

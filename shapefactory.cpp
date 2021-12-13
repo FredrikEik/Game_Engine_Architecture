@@ -33,14 +33,6 @@ ObjMesh::ObjMesh()
     mMaterial = new MaterialComponent();
 }
 
-ParticleMesh::ParticleMesh()
-{
-    mTransform = new TransformComponent();
-    mTransform->mMatrix.setToIdentity();
-    mNameComp = new NameComponent();
-    mMaterial = new MaterialComponent();
-}
-
 
 void Square::CheckPlayerCol(VisualObject* p)
 {
@@ -133,24 +125,6 @@ VisualObject* ShapeFactory::createShape(string shapeName)
          if(doOnce[2] == false){
              temp->mNameComp->ObjectName = shapeName;
              doOnce[2] = true;}
-         else
-             temp->mNameComp->ObjectName = shapeName + a;
-
-         temp->mNameComp->ObjectID = mCounter;
-         mCounter++;
-
-         return temp;
-     }
-     else if(shapeName == "Particle")
-     {
-         temp = new ParticleMesh;
-         temp->mMesh = getParticleMesh();
-         temp->mCollision = myCollis[3];
-         temp->mCollision->setBoundingSphere(myCollis[3]->radius, temp->mTransform->mPosition);
-
-         if(doOnce[3] == false){
-             temp->mNameComp->ObjectName = shapeName;
-             doOnce[3] = true;}
          else
              temp->mNameComp->ObjectName = shapeName + a;
 
@@ -416,7 +390,6 @@ MeshComponent *ShapeFactory::getParticleMesh()
 void ShapeFactory::readFile(std::string filename, MeshComponent* m)
 {
     //Open File
-    //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
     std::ifstream fileIn;
     fileIn.open (filename, std::ifstream::in);
     if(!fileIn)
@@ -448,18 +421,15 @@ void ShapeFactory::readFile(std::string filename, MeshComponent* m)
         if (oneWord == "#")
         {
             //Ignore this line
-            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
             continue;
         }
         if (oneWord == "")
         {
             //Ignore this line
-            //            qDebug() << "Line is blank ";
             continue;
         }
         if (oneWord == "v")
         {
-            //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
             gsl::Vector3D tempVertex;
             sStream >> oneWord;
             tempVertex.setX (std::stof(oneWord));
@@ -476,7 +446,6 @@ void ShapeFactory::readFile(std::string filename, MeshComponent* m)
         }
         if (oneWord == "vt")
         {
-            //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
             gsl::Vector2D tempUV;
             sStream >> oneWord;
             tempUV.setX  (std::stof(oneWord));
@@ -490,7 +459,6 @@ void ShapeFactory::readFile(std::string filename, MeshComponent* m)
         }
         if (oneWord == "vn")
         {
-            //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
             gsl::Vector3D tempNormal;
             sStream >> oneWord;
             tempNormal.setX (std::stof(oneWord));
@@ -505,7 +473,7 @@ void ShapeFactory::readFile(std::string filename, MeshComponent* m)
         }
         if (oneWord == "f")
         {
-            //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
+
             //int slash; //used to get the / from the v/t/n - format
             int index, normal, uv;
             for(int i = 0; i < 3; i++)

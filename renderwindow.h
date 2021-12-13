@@ -51,18 +51,16 @@ private slots:
     void render();
 
 private:
-    InputComponent *mInputComponent;
-    InputSystem *mInputSystem;
-    Player *mPlayer;
+    MovementComponent *mMoveComp{nullptr};
+    MovementSystem *mMoveSystem{nullptr};
+    Player *mPlayer{nullptr};
     Input mInput;
-    CollisionSystem* mCollisionSystem;
-    FrustumSystem* mFrustumSystem;
+    CollisionSystem* mCollisionSystem{nullptr};
+    FrustumSystem* mFrustumSystem{nullptr};
     ShapeFactory mShapeFactory;
-    Enemy *mEnemy;
+    Enemy *mEnemy{nullptr};
     Light * mLight{nullptr};
-    Particles *mParticle;
-//    std::vector<Particles*> mParticle;
-
+    Particles *mParticle{nullptr};
 
     static const int nrOfShapes = 5;
     bool playM = false;

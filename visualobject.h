@@ -18,8 +18,8 @@ public:
     struct MeshComponent* mMesh{nullptr};
     struct MaterialComponent* mMaterial{nullptr};
     struct NameComponent* mNameComp{nullptr};
-
 private:
+
     CollisionSystem* mColSystem;
 };
 #endif // VISUALOBJECT_H

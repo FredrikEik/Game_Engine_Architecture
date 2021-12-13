@@ -9,7 +9,7 @@ Camera::Camera()
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
-    mInputComp = new InputComponent;
+    mMoveComp = new MovementComponent;
 }
 
 Camera::~Camera()

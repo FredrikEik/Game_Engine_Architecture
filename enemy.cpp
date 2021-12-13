@@ -3,6 +3,7 @@
 Enemy::Enemy(ShapeFactory* f)
 {
     factoryPtr = f;
+    mMoveComp  = new MovementComponent();
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getMesh(5);

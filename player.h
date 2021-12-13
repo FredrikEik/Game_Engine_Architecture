@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "inputcomponent.h"
+#include "movementcomponent.h"
 #include "visualobject.h"
 #include "shapefactory.h"
 
@@ -14,14 +14,13 @@ public:
     void setVector(float dx, float dz);
     void centerPlayer();
     void CheckPlayerWall(Square* w);
-    InputComponent* mInputComp;
+    MovementComponent* mMoveComp{nullptr};
     gsl::Vector3D mForward{0,0,-1};
 
-    //gsl::Vector3D mBackward{0.f, 0.f, 1.f};
 private:
     float mx, my, mz; // posisjon
-    CollisionSystem* mColSystem;
-    ShapeFactory* factoryPtr;
+    CollisionSystem* mColSystem{nullptr};
+    ShapeFactory* factoryPtr{nullptr};
 
 };
 

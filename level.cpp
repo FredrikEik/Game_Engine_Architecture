@@ -6,10 +6,8 @@ Level::Level(Camera* cam)
     mShapeFactory.makeVertices();
     script = new Script();
     DrawBoard();
-    //checkCoints();
     SoundHandler();
-    //initObjects();
-    //readJS();
+
 }
 
 Level::~Level()
@@ -275,25 +273,25 @@ void Level::resetGame()
 
 
 
-        for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
-        {
-            mVisualObjects[i]->drawMe = true;
-        }
-        trophies = 0;
-        mLives = 3;
-        int eID = 0;
-        for(int i = 0; i<DIM_Z;i++)
-        {
-            for(int j = 0; j<DIM_X; j++){
+    for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
+    {
+        mVisualObjects[i]->drawMe = true;
+    }
+    trophies = 0;
+    mLives = 3;
+    int eID = 0;
+    for(int i = 0; i<DIM_Z;i++)
+    {
+        for(int j = 0; j<DIM_X; j++){
 
-                if(GameBoard[i][j] == 4){
+            if(GameBoard[i][j] == 4){
 
-                    gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
-                    gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
-                    mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
-                    eID++;}
-            }
+                gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
+                gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
+                mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
+                eID++;}
         }
+    }
 }
 
 void Level::spawnParticle()
@@ -346,24 +344,8 @@ bool Level::wallCheck(int x, int z)
 
 void Level::movePlayer()
 {
-    int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
-    int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
-
-    if(mPlayer->mForward.x > 0)
-        EposX = std::ceil(mPlayer->mTransform->mPosition.x);
-    else if(mPlayer->mForward.x <0)
-        EposX = std::floor(mPlayer->mTransform->mPosition.x);
-    else{
-        if(mPlayer->mForward.z >0)
-            EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
-        else if(mPlayer->mForward.z <0)
-            EposZ = std::floor(mPlayer->mTransform->mPosition.z);
-        else
-            qDebug() << "error in Level::moveEnemy";}
-
-
-
-    if(wallCheck(EposX, EposZ))
+    mMoveSys->movePlayer(mPlayer);
+    if(wallCheck(mPlayer->mMoveComp->EposX, mPlayer->mMoveComp->EposZ))
     {
         mPlayer->centerPlayer();
     }
@@ -374,52 +356,25 @@ void Level::movePlayer()
 void Level::moveParticles(gsl::Vector3D mColor)
 {
     mShapeFactory.mColor = mColor;
-    for(int i{0}; i<static_cast<int>(mParticles.size()); i++){
-
-        mParticles[i]->mVelocity = mColor;
-        mParticles[i]->getVec();
-        if(mParticles[i]->isAlive == true){
-        mParticles[i]->move(mParticles[i]->PathDirection.x,mParticles[i]->PathDirection.y,mParticles[i]->PathDirection.z);}
-        else{
-            mParticles[i]->reset(mPlayer);
-        }
-
-    }
+    mMoveSys->moveParticles(mColor,mParticles,mPlayer);
 }
+
 
 void Level::moveEnemy(int randNum)
 {
-
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
-        int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
-
-        if(mEnemies[i]->mForward.x > 0)
-            EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
-        else if(mEnemies[i]->mForward.x <0)
-            EposX = std::floor(mEnemies[i]->mTransform->mPosition.x);
+   for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+    mMoveSys->moveEnemy(randNum,mEnemies);
+    if(wallCheck(mEnemies[i]->mMoveComp->EposX, mEnemies[i]->mMoveComp->EposZ))
+    {
+        if(randNum<5){
+            mEnemies[i]->rotateForwardV();}
         else{
-            if(mEnemies[i]->mForward.z >0)
-                EposZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
-            else if(mEnemies[i]->mForward.z <0)
-                EposZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
-            else
-                qDebug() << "error in Level::moveEnemy";}
-
-        if(wallCheck(EposX, EposZ))
-        {
-            if(randNum<5){
-                mEnemies[i]->rotateForwardV();}
-            else{
-                mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
-        }
-        else
-            mEnemies[i]->moveEnemy();
+            mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
     }
-
+    else
+        mEnemies[i]->moveEnemy();
+   }
 }
-
-
 
 
 Script::Script(QObject *parent) : QObject(parent)

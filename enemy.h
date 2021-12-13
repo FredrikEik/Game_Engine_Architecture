@@ -4,6 +4,7 @@
 #include "visualobject.h"
 #include "collisionsystem.h"
 #include "player.h"
+#include "movementcomponent.h"
 
 class Enemy : public VisualObject
 {
@@ -22,11 +23,12 @@ public:
     void CheckRotation();
     int angle = 0;
     void goToPlayer(gsl::Vector3D pPos);
-
+    MovementComponent *mMoveComp{nullptr};
 private:
-        CollisionSystem *mColsystem;
-        Player *mPlayer;
-        ShapeFactory* factoryPtr;
+
+        CollisionSystem *mColsystem{nullptr};
+        Player *mPlayer{nullptr};
+        ShapeFactory* factoryPtr{nullptr};
         gsl::Vector3D dir;
 };
 

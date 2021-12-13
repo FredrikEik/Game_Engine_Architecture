@@ -35,10 +35,6 @@ void Particles::update(int frameCount)
     }
 }
 
-gsl::Vector3D Particles::getPosition()
-{
-    return mPosition;
-}
 
 void Particles::getVec()
 {

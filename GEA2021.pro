@@ -21,12 +21,11 @@ SOURCES += main.cpp \
     collisionsystem.cpp \
     component.cpp \
     enemy.cpp \
-    inputcomponent.cpp \
-    inputsystem.cpp \
     level.cpp \
     light.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
+    movementsystem.cpp \
     particles.cpp \
     player.cpp \
     renderwindow.cpp \
@@ -53,13 +52,12 @@ HEADERS += \
     enemy.h \
     gltypes.h \
     input.h \
-    inputcomponent.h \
-    inputsystem.h \
     level.h \
     light.h \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
+    movementsystem.h \
     particles.h \
     player.h \
     renderwindow.h \

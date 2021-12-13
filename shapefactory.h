@@ -9,7 +9,6 @@
 #include "vertex.h"
 #include "shader.h"
 #include "gltypes.h"
-//#include "particles.h"
 #include "visualobject.h"
 
 
@@ -21,7 +20,6 @@ public:
     VisualObject* createShape(string shapeName);
     void makeVertices();
     MeshComponent* getMesh(int i);
-   // Particles *mParticles;
     CollisionComponent* getColli(int i);
     int getCount(){return mCounter;};
     void addCount(){mCounter++;};
@@ -70,14 +68,6 @@ public:
     Plain();
     ~Plain(){};
 };
-
-class ParticleMesh : public VisualObject
-{
-public:
-    ParticleMesh();
-    ~ParticleMesh(){};
-};
-
 
 
 class ObjMesh : public VisualObject

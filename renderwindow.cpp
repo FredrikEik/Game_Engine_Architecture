@@ -148,8 +148,8 @@ void RenderWindow::init()
 
 
     //********************** create input **********************
-    mInputComponent = new InputComponent();
-    mInputSystem = new InputSystem();
+    mMoveComp = new MovementComponent();
+    mMoveSystem = new MovementSystem();
     mCollisionSystem = new CollisionSystem();
 
     mLvl = new Level(&mPlayCamera);
@@ -219,7 +219,18 @@ void RenderWindow::drawObjects()
 
     }
 
-    if(playM==true){
+
+    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLight->mTransform->mMatrix.constData());
+    glBindVertexArray(mLight->mMesh->mVAO );
+    glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
+    glBindVertexArray(0);
+
+    if(playM==false){
+        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
+        glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
+        glDrawArrays(mLvl->mFrustumSystem->mMesh->mDrawType, 0, mLvl->mFrustumSystem->mMesh->mVertices.size());
+        glBindVertexArray(0);
+    }else
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
 
@@ -231,24 +242,7 @@ void RenderWindow::drawObjects()
             glDrawArrays(mLvl->mParticles[i]->mMesh->mDrawType, 0, mLvl->mParticles[i]->mMesh->mVertices.size());
             glBindVertexArray(0);
         }
-    }
-
-
-
-    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLight->mTransform->mMatrix.constData());
-    glBindVertexArray(mLight->mMesh->mVAO );
-    glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
-    glBindVertexArray(0);
-
-    if(playM==false){
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
-        glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
-        glDrawArrays(mLvl->mFrustumSystem->mMesh->mDrawType, 0, mLvl->mFrustumSystem->mMesh->mVertices.size());
-        glBindVertexArray(0);}
-
-
 }
-
 
 
 // Called each frame - doing the rendering
@@ -261,7 +255,7 @@ void RenderWindow::render()
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
     // HandleInput();
-    mInputSystem->update(mPlayer,mCurrentCamera,mInput);
+    mMoveSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
 
@@ -280,7 +274,7 @@ void RenderWindow::render()
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
             mLvl->mParticles[i]->update(frameCount);}
-        /*if(frameCount == 2)*/{
+        {
             if(mLvl->mParticles.size()<20)
                 mLvl->spawnParticle();}
     }
@@ -289,8 +283,6 @@ void RenderWindow::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     drawObjects();
-
-
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -362,35 +354,17 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     qDebug() << ray_wor;
 
 
-    for(int i{0}; i < mVisualObjects.size(); i++)
-
-    {      //making the vector from camera to object we test against
-        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
-
-        //making the normal of the ray - in relation to the camToObject vector
-        //this is the normal of the surface the camToObject and ray_wor makes:
-        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
-
-        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
-        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
-        rayNormal.normalize();
-
-        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray using dot product:
-        float distance = camToObject * rayNormal;   //* gives the dot product
-
-        //we are interested in the absolute distance, so fixes any negative numbers
-        distance = abs(distance);
-
-        if(mCollisionSystem->CheckMousePickCollision(distance, mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
+    for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
         {
-            mousePickCollide = true;
-            mMainWindow->SelectWithMousePick(i);
-            MousePickindex = i;
-            qDebug() <<"Mouse Collision detected";
-        }
+            if(mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
+            {
+                mMainWindow->SelectWithMousePick(i);
+                mousePickCollide = true;
 
-    }
+                MousePickindex = i;
+                qDebug() <<"Mouse Collision detected";
+            }
+        }
 
 }
 
@@ -539,16 +513,16 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     if (mInput.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mInputComponent->mMouseXlast = event->pos().x() - mInputComponent->mMouseXlast;
-        mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
+        mMoveComp->mMouseXlast = event->pos().x() - mMoveComp->mMouseXlast;
+        mMoveComp-> mMouseYlast = event->pos().y() - mMoveComp->mMouseYlast;
 
-        if (mInputComponent->mMouseXlast != 0)
-            mEditorCamera.yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
-        if (mInputComponent->mMouseYlast != 0)
-            mEditorCamera.pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+        if (mMoveComp->mMouseXlast != 0)
+            mEditorCamera.yaw(mMoveComp->mCameraRotateSpeed * mMoveComp->mMouseXlast);
+        if (mMoveComp->mMouseYlast != 0)
+            mEditorCamera.pitch(mMoveComp->mCameraRotateSpeed * mMoveComp->mMouseYlast);
     }
-    mInputComponent->mMouseXlast = event->pos().x();
-    mInputComponent->mMouseYlast = event->pos().y();
+    mMoveComp->mMouseXlast = event->pos().x();
+    mMoveComp->mMouseYlast = event->pos().y();
 
 }
 
@@ -563,7 +537,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
         if (numDegrees.y() < 1)
             mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mInputSystem->setCameraSpeed(mCurrentCamera,-0.001f);
+            mMoveSystem->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
 }

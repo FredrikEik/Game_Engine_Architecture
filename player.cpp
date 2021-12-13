@@ -7,12 +7,12 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     mTransform->mMatrix.setToIdentity();
     mTransform->mPosition = gsl::Vector3D(mx,my,mz);
     mMesh = factoryPtr->getMesh(4);
-    mCollision = factoryPtr->getColli(5);
+    mCollision = factoryPtr->getColli(4);
     mTransform->mMatrix.scale(0.5);
     mColSystem = new CollisionSystem;
     mCollision->setBoundingSphere(0.5, mTransform->mPosition);
     mMaterial = new MaterialComponent();
-    mInputComp = new InputComponent;
+    mMoveComp = new MovementComponent;
     mNameComp = new NameComponent();
     mNameComp->ObjectName = "Player";
     mNameComp->ObjectID = 0;
@@ -33,7 +33,6 @@ void Player::centerPlayer()
     float zDiff = mRound.z - mPos.z;
     gsl::Vector3D temp(xDiff,0,zDiff);
 
-    //qDebug() << xDiff << zDiff;
 
     mTransform->mPosition += temp;
     mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
@@ -43,7 +42,7 @@ void Player::centerPlayer()
 
 void Player::movePlayer()
 {
-    move(mForward.x * mInputComp->mPlayerSpeed, mForward.y * mInputComp->mPlayerSpeed, mForward.z * mInputComp->mPlayerSpeed);
+    move(mForward.x * mMoveComp->mPlayerSpeed, mForward.y * mMoveComp->mPlayerSpeed, mForward.z * mMoveComp->mPlayerSpeed);
 }
 
 void Player::setVector(float dx, float dz)
@@ -52,5 +51,4 @@ void Player::setVector(float dx, float dz)
     mTransform->mMatrix.setRotationToVector(mForward);
     mTransform->mMatrix.scale(0.5);
 
-    //mBackward = {-dx,0,-dz};
 }
