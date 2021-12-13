@@ -7,11 +7,21 @@
 #include "gltypes.h"
 
 
+enum objectType {
+    helper = 0,
+    prop = 1,
+    player = 2,
+    enemy = 3,
+    skybox = 4
+};
+
+
 struct DetailsComponent{
     int entity = 0;
     std::string title;
-    std::string description;
 
+    std::string description;
+    objectType type = prop;
 };
 
 
@@ -19,28 +29,30 @@ struct TransformComponent
 {
     int entity = 0;
     gsl::Matrix4x4 mMatrix;
-    gsl::Vector3D Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
     bool isPhysicsEnabled = false;
-    int LastTriangeindex =-1;
+
+    gsl::Vector3D Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
     std::vector<gsl::Vector3D> PosOverTime;
+    int LastTriangeindex =-1;
     bool bBSExists = false;
+
+    gsl::Vector3D rotationTracker = gsl::Vector3D(0.0f,0.0f,0.0f);
 };
 
 struct MeshComponent
 {
-    std::vector<Vertex> mVertices; // Always Empty unless used in other systems we forgot to implement support for
-    std::vector<GLuint> mIndices; // Always Empty unless used in other systems we forgot to implement support for
-
     int entity{0};
-    //GLuint mVAO{0};
-    //GLuint mVBO{0};
-    //GLuint mEAB{0};
-    //size_t VertexSize{0};
+
+    std::vector<Vertex> mVertices; // Used for simple helper objects..
+
     bool IsRay = false;
     bool IsCollidable = true;
+
     GLuint mVAO[3] = {0,0,0};
     GLuint mVBO[3] = {0,0,0};
     GLuint mEAB[3] = {0,0,0};
+
+    std::string meshName;
     size_t VertexSize[3] = {0,0,0};
     float collisionRadius = 0;
     QVector3D centerOfMesh = QVector3D(0.f,0.f,0.f);

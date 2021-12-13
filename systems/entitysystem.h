@@ -17,7 +17,8 @@ public:
                    GLuint shader = 0,
                    GLint texture = 0,
                    int EntityId = -1,
-                   GLenum drawType = GL_TRIANGLES
+                   GLenum drawType = GL_TRIANGLES,
+                   objectType inType = prop
                    );
     void construcRay(QVector3D LineVec, QVector3D CameraPos, float Length = 25.0f);
     void constructCube();

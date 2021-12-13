@@ -161,7 +161,7 @@ void MainWindow::on_treeWidget_viewportEntered()
         for(unsigned long j = 0; j < mRenderWindow->DeetsVector.size(); j++){
             if(mRenderWindow->DeetsVector[j]->entity==mRenderWindow->entities[i]){
                 QString temp;
-                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[j]->title) +  + " - " + QString::fromStdString(std::to_string(mRenderWindow->DeetsVector[j]->entity)));
+                item->setText(0, temp.fromStdString(mRenderWindow->DeetsVector[j]->title))/* +  + " - " + QString::fromStdString(std::to_string(mRenderWindow->DeetsVector[j]->entity)))*/;
                 break;
             }
             else{

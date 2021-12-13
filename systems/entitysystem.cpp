@@ -16,7 +16,7 @@ EntitySystem::~EntitySystem()
 
 }
 
-void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint shader, GLint texture, int EntityId, GLenum drawType)
+void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint shader, GLint texture, int EntityId, GLenum drawType, objectType inType)
 {
 
     if(inRW){
@@ -80,9 +80,6 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
         MatComp->mShaderProgram = shader;
         MatComp->mTextureUnit = texture;
         inRW->MaterialCompVec.push_back(MatComp);
-
-
-        //inRW->RenderSys->init(MeshComp);
     }
 }
 
@@ -129,6 +126,7 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Len
 
         Deets->entity = EntityId;
         Deets->title = ObjReader+"-"+std::to_string(EntityId);
+        Deets->type = helper;
         inRW->DeetsVector.push_back(Deets);
 
         TransComp->mMatrix.setToIdentity();
@@ -250,40 +248,40 @@ void EntitySystem::constructSkybox(GLuint shader ,GLint texture )
             MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f, -1.0f });
             MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
 
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f });
 
-            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f});
+            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{1.0f,  1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{1.0f, -1.0f, -1.0f });
 
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f});
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0f });
 
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f, -1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f});
-            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f});
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f, -1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f,  1.0f });
+            MeshComp->mVertices.push_back(Vertex{-1.0f,  1.0f, -1.0f });
 
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0});
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0});
-            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0});
-            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0});
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f, -1.0 });
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0 });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0 });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f, -1.0 });
+            MeshComp->mVertices.push_back(Vertex{-1.0f, -1.0f,  1.0 });
+            MeshComp->mVertices.push_back(Vertex{ 1.0f, -1.0f,  1.0 });
 
 
             //stop construct

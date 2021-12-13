@@ -49,7 +49,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,0">
       <item>
-       <layout class="QVBoxLayout" name="OpenGLLayout"/>
+       <layout class="QGridLayout" name="OpenGLLayout"/>
       </item>
       <item>
        <widget class="QGroupBox" name="World">
@@ -110,10 +110,77 @@
                  </widget>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,1,1,1,1,1,0" columnstretch="0,0,0">
+                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0,0,0" columnstretch="0,0,0,0">
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>Scale XYZ</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Location XYZ</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>Rotation XYZ</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="3">
+                   <widget class="QDoubleSpinBox" name="RotZ">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QPushButton" name="ScaleUp">
+                    <property name="text">
+                     <string>Scale +1</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QDoubleSpinBox" name="PosZ">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QDoubleSpinBox" name="PosY">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="0">
                    <widget class="QDoubleSpinBox" name="PosX">
                     <property name="decimals">
@@ -127,106 +194,36 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_2">
-                    <property name="text">
-                     <string>Location</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QDoubleSpinBox" name="PosZ">
-                    <property name="decimals">
-                     <number>4</number>
-                    </property>
-                    <property name="minimum">
-                     <double>-9999999999999999455752309870428160.000000000000000</double>
-                    </property>
-                    <property name="maximum">
-                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
-                   <widget class="QPushButton" name="pushButton_8">
-                    <property name="text">
-                     <string>RotY +10</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QDoubleSpinBox" name="PosY">
-                    <property name="decimals">
-                     <number>4</number>
-                    </property>
-                    <property name="minimum">
-                     <double>-9999999999999999455752309870428160.000000000000000</double>
-                    </property>
-                    <property name="maximum">
-                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="text">
-                     <string>Rotation</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QPushButton" name="pushButton_7">
-                    <property name="text">
-                     <string>RotY -10</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="1">
-                   <widget class="QPushButton" name="pushButton_4">
+                  <item row="5" column="2">
+                   <widget class="QPushButton" name="ScaleDown">
                     <property name="text">
                      <string>Scale -1</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="7" column="0">
-                   <widget class="QPushButton" name="pushButton_3">
-                    <property name="text">
-                     <string>Scale +1</string>
+                  <item row="3" column="2">
+                   <widget class="QDoubleSpinBox" name="RotY">
+                    <property name="decimals">
+                     <number>4</number>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="0">
-                   <widget class="QLabel" name="label_4">
-                    <property name="text">
-                     <string>Scale</string>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0">
-                   <widget class="QPushButton" name="pushButton_9">
-                    <property name="text">
-                     <string>RotZ -10</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="QPushButton" name="pushButton_10">
-                    <property name="text">
-                     <string>RotZ +10</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QPushButton" name="pushButton_6">
-                    <property name="text">
-                     <string>RotX +10</string>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
                     </property>
                    </widget>
                   </item>
                   <item row="3" column="0">
-                   <widget class="QPushButton" name="pushButton_5">
-                    <property name="text">
-                     <string>RotX -10</string>
+                   <widget class="QDoubleSpinBox" name="RotX">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -306,6 +303,7 @@
     <addaction name="actionCube"/>
     <addaction name="actionSphere"/>
     <addaction name="actionPlane"/>
+    <addaction name="actionCustom_Mesh"/>
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
@@ -315,9 +313,17 @@
     <addaction name="actionLoad_World"/>
     <addaction name="actionReset_World"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionToggle_Wireframe"/>
+    <addaction name="actionClear_Rays"/>
+   </widget>
    <addaction name="menuHelp"/>
    <addaction name="menuAdd_Mesh"/>
    <addaction name="menuProject"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -366,6 +372,21 @@
   <action name="actionReset_World">
    <property name="text">
     <string>Reset World</string>
+   </property>
+  </action>
+  <action name="actionToggle_Wireframe">
+   <property name="text">
+    <string>Toggle Helpers</string>
+   </property>
+  </action>
+  <action name="actionClear_Rays">
+   <property name="text">
+    <string>Clear Rays</string>
+   </property>
+  </action>
+  <action name="actionCustom_Mesh">
+   <property name="text">
+    <string>Custom Mesh</string>
    </property>
   </action>
  </widget>
