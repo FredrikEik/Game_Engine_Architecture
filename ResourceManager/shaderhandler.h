@@ -14,7 +14,7 @@ public:
     // Constructor generates the shader on the fly
     ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
 
-    void setupShader(bool useTexture = false, bool useLight = false);
+    void setupShader(bool useTexture = false, bool useLight = false, bool useSkybox = false);
 
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};

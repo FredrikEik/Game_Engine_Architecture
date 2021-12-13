@@ -15,7 +15,6 @@
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
                 : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
-
 {
     //This is sent to QWindow:
     setSurfaceType(QWindow::OpenGLSurface);
@@ -161,15 +160,6 @@ void RenderSystem::render()
         {
             //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
-        }
-        else if(tempShader->mTextureUniform == 3)
-        {
-            viewMatrix = vMatrixUniform3;
-            projectionMatrix = pMatrixUniform3;
-            modelMatrix = mMatrixUniform3;
-
-            glUniform1i(mTextureUniform3, mLvl->mVisualObjects[i]->mMaterial->mTextureUnit);
-
         }
 
         //send data to shader

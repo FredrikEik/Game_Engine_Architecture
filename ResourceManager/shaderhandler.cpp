@@ -89,11 +89,12 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     glDeleteShader( fragment );
 }
 
-void ShaderHandler::setupShader(bool useTexture, bool useLight)
+void ShaderHandler::setupShader(bool useTexture, bool useLight, bool useSkybox)
 {
     mMatrixUniform = glGetUniformLocation( mProgram, "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mProgram, "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mProgram, "pMatrix" );
+
     if(useTexture)
         mTextureUniform = glGetUniformLocation(mProgram, "textureSampler");
     if(useLight)
@@ -104,10 +105,14 @@ void ShaderHandler::setupShader(bool useTexture, bool useLight)
         mLightColor = glGetUniformLocation( mProgram, "lightColor" );
         mObjectColor = glGetUniformLocation( mProgram, "objectColor" );
         mAmbientColor = glGetUniformLocation( mProgram, "ambientColor");
-        mAmbientStrength = glGetUniformLocation( mProgram, "ambientStrengt" );
-        mLightStrength = glGetUniformLocation( mProgram, "lightStrengt" );
+        mAmbientStrength = glGetUniformLocation( mProgram, "ambientStrength" );
+        mLightStrength = glGetUniformLocation( mProgram, "lightStrength" );
         mSpecularStrength = glGetUniformLocation( mProgram, "specularStrength" );
         mSpecularExponent = glGetUniformLocation( mProgram, "specularExponent" );
-
+    }
+    if(useSkybox)
+    {
+        mTextureUniform = glGetUniformLocation( mProgram, "skybox");
+        qDebug() << "set up shader is using skybox-bool";
     }
 }

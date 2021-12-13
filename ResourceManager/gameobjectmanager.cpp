@@ -336,7 +336,7 @@ void GameObjectManager::setUpAllShaders()
     tempString += "Plain shader program id: " + std::to_string(mShaders[0]->mProgram);
     mLogger->logText(tempString);
     mShaders.back()->setupShader(false);
-    mShaderMap.emplace("plain", 0);
+    mShaderMap.emplace("plainshader", 0);
 
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
@@ -347,7 +347,7 @@ void GameObjectManager::setUpAllShaders()
     tempString += "Texture shader program id: " + std::to_string(mShaders[1]->mProgram);
     mLogger->logText(tempString);
     mShaders[1]->setupShader(true);
-    mShaderMap.emplace("texture", 1);
+    mShaderMap.emplace("textureshader", 1);
 
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
@@ -357,8 +357,8 @@ void GameObjectManager::setUpAllShaders()
     tempString.clear();
     tempString += "Plain shader program id: " + std::to_string(mShaders[2]->mProgram);
     mLogger->logText(tempString);
-    mShaders[2]->setupShader(true);
-    mShaderMap.emplace("phong", 2);
+    mShaders[2]->setupShader(true, true);
+    mShaderMap.emplace("phongshader", 2);
 
 
     tempShader = new ShaderHandler((gsl::ShaderFilePath + "skybox.vert").c_str(),
@@ -368,8 +368,8 @@ void GameObjectManager::setUpAllShaders()
     tempString.clear();
     tempString += "Skybox shader program id: " + std::to_string(mShaders[3]->mProgram);
     mLogger->logText(tempString);
-    mShaders[3]->setupShader(true);
-    mShaderMap.emplace("skybox", 3);
+    mShaders[3]->setupShader(true, false, true);
+    mShaderMap.emplace("skyboxshader", 3);
 }
 
 MeshData GameObjectManager::makeLineBox(std::string meshName)
