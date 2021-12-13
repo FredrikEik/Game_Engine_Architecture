@@ -124,7 +124,7 @@ void Texture::readCubeMap()
     for(int i{0}; i< 6; i++)
     {
         //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         mCubemap[i] = mBitmap;
     }

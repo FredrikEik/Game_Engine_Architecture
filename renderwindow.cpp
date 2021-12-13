@@ -94,6 +94,7 @@ void RenderWindow::init()
     mTextures[0] = new Texture();
     mTextures[1] = new Texture("hund.bmp");
     mTextures[2] = new Texture("grass.bmp");
+    mTextures[3] = new Texture("skybox1.bmp", true); //cubeMap == true
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -102,6 +103,8 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger

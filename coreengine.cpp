@@ -36,15 +36,24 @@ void CoreEngine::GameLoop()
 
 void CoreEngine::SetUpScene()
 {
+    gsl::Vector3D gameCameraPos{57, 10, 120};
+    gsl::Vector3D editorCameraPos{25, 10, 90};
 
+// PLAYER
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
     playerObject = temp;
     playerObject->transform->mMatrix.scale(0.2f);
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(playerObject); // pos = 57.f, 8.5f, 118
 
-    gsl::Vector3D gameCameraPos{57, 10, 120};
-    gsl::Vector3D editorCameraPos{25, 10, 90};
+// SKYBOX
+    temp = mResourceManager->CreateObject("cube.obj");
+    temp->transform->mMatrix.scale(5);
+    temp->material->mShaderProgram = gsl::TEXTURESHADER;
+    temp->material->mTextureUnit = 3;
+    temp->mesh->collisionsEnabled = false;
+    mRenderWindow->addToGameObjects(temp);
+
 
     mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
     mGameCameraMesh->transform->mMatrix.translate(gameCameraPos);
@@ -57,13 +66,6 @@ void CoreEngine::SetUpScene()
     temp->transform->mMatrix.scale(0.3f);
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
-
-//    temp = mResourceManager->CreateObject("HamarHeightMap.bmp");
-//    temp->transform->mMatrix.rotateX(90);
-//    temp->transform->mMatrix.scale(2.5);
-//    temp->transform->mMatrix.translate(0,0,-4);
-//    hmMatrix = temp->transform->mMatrix;
-//    mRenderWindow->addToGameObjects(temp);
 
 /** Terrain from txt file */
     temp = mResourceManager->CreateObject("test_las.txt");
@@ -102,8 +104,8 @@ void CoreEngine::SetUpScene()
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
-    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                                                            "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
+//    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+//                                                            "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
 }
 
 void CoreEngine::resetScene()
