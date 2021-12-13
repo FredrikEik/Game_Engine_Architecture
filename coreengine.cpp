@@ -55,6 +55,7 @@ void CoreEngine::setUpScene()
     //********************** Making the object to be drawn **********************
 
     mResourceManager->setUpAllTextures();
+
     //Axis
     axis = mResourceManager->addObject("axis");
     axis->objName = "Axis";
@@ -117,7 +118,11 @@ void CoreEngine::setUpScene()
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
-
+    Las = mResourceManager->addObject("LAS");
+    Las->mMaterial->mShaderProgram =3;
+    Las->mMaterial->mTextureUnit = 0;
+    Las->mTransform->mMatrix.setPosition(3,-5,0);
+    mRenderSystem->mGameObjects.push_back(Las);
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop

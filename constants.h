@@ -43,5 +43,11 @@ namespace gsl  //Game School Lib
         BMP = 3,
         WAV = 4
     };
+    enum LightTypes
+    {
+        POINT,  //Only this is supported for now
+        SPOT,
+        DIRECTIONAL
+    };
 }
 #endif // CONSTANTS_H

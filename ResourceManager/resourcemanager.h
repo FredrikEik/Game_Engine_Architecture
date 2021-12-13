@@ -15,6 +15,7 @@
 class GameObject;
 class MeshHandler;
 class TextureHandler;
+class ShaderHandler;
 struct MeshData;
 
 class ResourceManager : public QOpenGLFunctions_4_1_Core
@@ -30,6 +31,7 @@ public:
 
 
     void setUpAllTextures();
+    void setUpAllShaders();
 
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
@@ -45,7 +47,8 @@ public:
 
     void update(const float dt);
 
-    
+    std::map<std::string, unsigned int> mShaderMap;
+    std::vector<ShaderHandler*> mShaders;
     //CollisionHandler *mCollisionHandler{nullptr};
     //bool checkCollision(MeshData &linebox1, MeshData &linebox2);
 

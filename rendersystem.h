@@ -96,6 +96,26 @@ private:
     GLint pMatrixUniformSS{-1};
     GLint mTextureUniformSS{-1};
 
+    void setupLightShader(int shaderIndex);
+    GLint mMatrixUniform2{-1};
+    GLint vMatrixUniform2{-1};
+    GLint pMatrixUniform2{-1};
+    //GLint mTextureUniform{-1};
+
+    GLint mCameraPosition{-1};
+
+    GLint mLightPosition{-1};
+
+    GLint mLightDirection{-1};
+
+    GLint mLightColor{-1};
+    GLint mObjectColor{-1};
+
+    GLint mAmbientColor{-1};
+    GLint mAmbientStrengt{-1};
+    GLint mLightStrengt{-1};
+    GLint mSpecularStrength{-1};
+    GLint mSpecularExponent{-1};
     void updateDt();
     float dt = 0;
     float curTime = 0;

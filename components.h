@@ -48,6 +48,16 @@ struct SoundListenerComponent
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};
 };
 
+struct LightComponet
+{
+    gsl::LightTypes mType{gsl::POINT};      //only POINT is supported for now
+    gsl::Vector3D mDirection{0.f, -1.f, 0.f};   //not used in POINT
+    gsl::Vector3D mColor{0.9f};
+    float mLightStrenght{1.0f};
+    gsl::Vector3D mAmbientColor{0.5f};
+    float mAmbientStrength{0.5f};
+};
+
 struct SoundComponet
 {
     ALuint mSource;             ///< The sound source ID.

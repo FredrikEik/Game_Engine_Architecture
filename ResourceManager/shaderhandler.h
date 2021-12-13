@@ -18,11 +18,35 @@ public:
 
     // Use the current shader
     void use( );
+    void setupShader(bool useTexture = false, bool useLight = false);
+
+
+    GLint mMatrixUniform{-1};
+    GLint vMatrixUniform{-1};
+    GLint pMatrixUniform{-1};
+
+    GLint mTextureUniform{-1};
+
+    GLint mCameraPosition{-1};
+
+    GLint mLightPosition{-1};
+
+    GLint mLightDirection{-1};
+
+    GLint mLightColor{-1};
+    GLint mObjectColor{-1};
+
+    GLint mAmbientColor{-1};
+    GLint mAmbientStrengt{-1};
+    GLint mLightStrengt{-1};
+    GLint mSpecularStrength{-1};
+    GLint mSpecularExponent{-1};
+
+    std::string mName{"none"};
 
     //Get program number for this shader
     GLuint getProgram() const;
 
-private:
     GLuint program;
 };
 

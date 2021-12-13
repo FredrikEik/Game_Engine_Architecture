@@ -118,9 +118,14 @@ void RenderSystem::init()
                                     (gsl::ShaderFilePath + "skyboxshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
 
+    mShaderPrograms[3] = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[3]->getProgram();
+
     setupPlainShader(0);
     setupTextureShader(1);
     setupSkyboxShader(2);
+    setupLightShader(3);
 
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
@@ -163,7 +168,6 @@ void RenderSystem::render()
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
         gsl::Vector3D distanceVector = gobPos -cameraPos;
 
-//        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
         float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
 
         //float angle = gsl::rad2degf(acos(distanceVector.normalized() * CoreEngine::getInstance()->mEditorCamera->mForward.normalized()));
@@ -222,6 +226,24 @@ void RenderSystem::render()
             modelMatrix = mMatrixUniformSS;
 
             glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
+        }
+        else if (mGameObjects[i]->mMaterial->mShaderProgram == 3)
+        {
+            viewMatrix = vMatrixUniform2;
+            projectionMatrix = pMatrixUniform2;
+            modelMatrix = mMatrixUniform2;
+            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+
+        mCameraPosition = glGetUniformLocation(  mGameObjects[i]->mMaterial->mShaderProgram, "cameraPosition" );
+        mLightPosition = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightPosition" );
+        mLightDirection = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightDirection" );
+        mLightColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightColor" );
+        mObjectColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "objectColor" );
+        mAmbientColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "ambientColor");
+        mAmbientStrengt = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "ambientStrengt" );
+        mLightStrengt = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightStrengt" );
+        mSpecularStrength = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "specularStrength" );
+        mSpecularExponent = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "specularExponent" );
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
@@ -487,6 +509,25 @@ void RenderSystem::setupSkyboxShader(int shaderIndex)
     vMatrixUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniformSS = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox");
+}
+
+void RenderSystem::setupLightShader(int shaderIndex)
+{
+    mMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+
+    mCameraPosition = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
+    mLightPosition = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPosition" );
+    mLightDirection = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightDirection" );
+    mLightColor = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightColor" );
+    mObjectColor = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "objectColor" );
+    mAmbientColor = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientColor");
+    mAmbientStrengt = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "ambientStrengt" );
+    mLightStrengt = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightStrengt" );
+    mSpecularStrength = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularStrength" );
+    mSpecularExponent = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularExponent" );
+
 }
 
 
