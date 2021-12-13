@@ -192,9 +192,9 @@ void RenderWindow::init()
     setupSkyboxShader(3);
     setupHdrShader(4);
     postFBO = new PostProcessing();
-    QWindow* test = new QWindow();
+    //QWindow* test = new QWindow();
 
-    test->FullScreen;
+    //test->FullScreen;
 
 
     //********************** Set up quadtree *******************
@@ -298,7 +298,8 @@ void RenderWindow::render()
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
-            postFBO->bindFramebuffer(0, 600,600);
+            postFBO->bindFramebuffer(0, 1920,1080);
+
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
 			//send data to shader
@@ -409,6 +410,7 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
+
             postFBO->unbindCurrentFramebuffer();
         }
 
