@@ -11,6 +11,10 @@ public:
 	static void setHitEntities(uint32 entity, const std::vector<uint32> hitEntities, class ECSManager* ECS);
 
 	static bool SelectionSystem::IsEntitySelected_internal(uint32 EntityID);
+	
+
+	static glm::vec3 getCursorWorldPosition(uint32 entity, uint32 cameraEntity, class ECSManager* ECS);
+	static glm::vec3 getCursorWorldPosition_Internal(uint32 entity);
 private:
 	static void init(uint32 entity, class ECSManager* ECS);
 };

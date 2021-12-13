@@ -107,7 +107,6 @@ inline bool ECSManager::removeComponent(uint32 entityID)
 		{
 
 			//auto variable = entt.first;
-			std::cout << "stuff";
 			if (entt[i].first == index)
 			{
 				std::iter_swap(entities[entityID].second.begin() + i, entities[entityID].second.end()-1);

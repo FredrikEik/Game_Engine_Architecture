@@ -46,8 +46,11 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 
 const std::vector<uint32>& SweepAndPrune::getOverlappedEntities(uint32 entityID)
 {
+	std::cout << "Overlapped called\n";
+
 	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
 	{
+		std::cout << "Overlapped entities\n";
 		return m_collisionPairs.at(entityID);
 	}
 	return std::vector<uint32>();

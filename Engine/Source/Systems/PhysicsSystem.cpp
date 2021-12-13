@@ -55,6 +55,12 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 	}
 }
 
+void PhysicsSystem::setVelocity(uint32 entity, const glm::vec3& newVelocity, ECSManager* ECS, bool isAdditive)
+{
+	PhysicsComponent* component = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entity);
+	component->velocity = isAdditive ? component->velocity + newVelocity : newVelocity;
+}
+
 glm::vec3 PhysicsSystem::getAcceleration(const glm::vec3& surfaceNormal, const float& mass)
 {
 	return (1.f / mass) * 

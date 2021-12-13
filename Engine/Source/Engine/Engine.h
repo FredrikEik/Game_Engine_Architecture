@@ -65,6 +65,7 @@ private:
 	uint32 RTSSelectionEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
+	uint32 cameraEntity{};
 
 	uint32 reservedEntities{};
 
@@ -82,6 +83,7 @@ public:
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
+	uint32 getCameraEntity() const { return cameraEntity; }
 
-
+	static float getDeltaTime_Internal();
 };

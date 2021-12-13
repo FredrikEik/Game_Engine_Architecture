@@ -34,6 +34,7 @@
 
 #include "../Systems/ScriptSystem.h"
 #include "../Systems/ParticleSystem.h"
+#include "../Systems/TerrainSystem.h"
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
@@ -75,7 +76,6 @@ void Engine::setIsPlaying(bool isPlaying)
 	{
 		save();
 	}
-	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
 void Engine::save()
@@ -177,12 +177,13 @@ void Engine::init()
 
 
 	terrainEntity = ECS->newEntity();
-	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
-	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	meshComp->bDisregardedDuringFrustumCulling = true;
-	ECS->addComponents<TransformComponent>(terrainEntity);
-	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
+	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	//meshComp->bDisregardedDuringFrustumCulling = true;
+	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
@@ -199,7 +200,9 @@ void Engine::init()
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
-	MeshSystem::setHiddenInGame(unitEntity, ECS, true);
+	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
+	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
+
 
 	reservedEntities = ECS->getNumberOfEntities();
 
@@ -227,7 +230,7 @@ void Engine::init()
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
-	uint32 cameraEntity{};
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
@@ -310,7 +313,7 @@ void Engine::loop()
 
 			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
-			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
+			CameraSystem::updateGameCamera(cameraEntity, ECS, deltaTime);
 
 			//temp placement -- calls update on scripts
 			ScriptSystem::Invoke("Update", ECS);
@@ -319,7 +322,7 @@ void Engine::loop()
 		{
 			//std::cout << "Editor camera'\n";
 			//TODO: Draw a game camera here
-			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, deltaTime);
 		}
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
@@ -438,4 +441,9 @@ bool Engine::GLLogCall(const char* function, const char* file, int line)
 		return false;
 	}
 	return true;
+}
+
+float Engine::getDeltaTime_Internal()
+{
+	return Get().deltaTime;
 }

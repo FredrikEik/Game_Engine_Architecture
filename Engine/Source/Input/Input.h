@@ -78,6 +78,12 @@ struct ScrollState
     float y{};
 };
 
+enum PRESSED_STATE
+{
+    KEYSTATE_PRESSED,
+    KEYSTATE_HELD,
+    KEYSTATE_RELEASED,
+};
 /// Singleton 
 /// Only getters are publically exposed, thus the input cannot be changed outside of the Engine class, reducing coupling.
 class Input
@@ -89,6 +95,7 @@ public:
     const KeyState& getKeyState(short key);
     const MousePosition& getMousePosition() const;
     const MouseKeyState& getMouseKeyState(uint8 key) const;
+    static bool getMouseKeyState_Internal(uint8 key, PRESSED_STATE state);
 
 private:
     ~Input();

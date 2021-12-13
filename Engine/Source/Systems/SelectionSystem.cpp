@@ -54,7 +54,7 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 	if (distanceFromRayOriginToPlane <= 0)
 		return;
 
-	if(Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
+	if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
 		selectionComponent->initialHitPos = originOfCam + ray_wor * distanceFromRayOriginToPlane;
 
 	if (Input::getInstance()->getMouseKeyState(KEY_LMB).bHeld)
@@ -119,7 +119,7 @@ void SelectionSystem::setHitEntities(uint32 entity, const std::vector<uint32> hi
 {
 	SelectionComponent* component = ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity);
 	assert(component);
-
+	//std::cout << "Setting hit entities: " << hitEntities.size() << "\n";
 	component->hitEntities = hitEntities;
 }
 
@@ -130,9 +130,57 @@ bool SelectionSystem::IsEntitySelected_internal(uint32 EntityID)
 	{
 		for (auto hitEnt : selectionComp.hitEntities)
 		{
+			
 			if (hitEnt == EntityID)
 				return true;
 		}
 	}
 	return false;
+}
+
+glm::vec3 SelectionSystem::getCursorWorldPosition(uint32 entity, uint32 cameraEntity, ECSManager* ECS)
+{
+	//SelectionComponent* selectionComponent{ ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity) };
+	CameraComponent* cameraComponent{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity) };
+	TransformComponent* cameraTransformComp{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+	//assert(selectionComponent);
+	assert(cameraComponent);
+	assert(cameraTransformComp);
+
+	MousePosition mPos = Input::getInstance()->getMousePosition();
+
+	float x = (2.0f * mPos.x) / Engine::Get().getWindowWidth() - 1.0f;
+	float y = 1.0f - (2.0f * mPos.y) / Engine::Get().getWindowHeight();
+	float z = 1.0f;
+	glm::vec3 ray_nds = glm::vec3(x, y, z);
+
+
+	glm::vec4 ray_clip = glm::vec4(ray_nds.x, ray_nds.y, -1.0, 1.0);
+
+	glm::vec4 ray_eye = glm::inverse(cameraComponent->m_projectionMatrix) * ray_clip;
+	ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+	glm::vec3 ray_wor = glm::vec3(glm::inverse(cameraComponent->m_viewMatrix) * ray_eye);
+	// don't forget to normalise the vector at some point
+	ray_wor = glm::normalize(ray_wor);
+
+
+	glm::vec3 originOfCam = cameraTransformComp->transform[3];
+	glm::vec3 normalOfPlane = glm::vec3(0.f, 1.f, 0.f);
+	float distanceOffset = -1.f;
+
+	float distanceFromRayOriginToPlane = -(glm::dot(originOfCam, normalOfPlane) + distanceOffset) / glm::dot(ray_wor, normalOfPlane);
+
+	//initial loc av når du trykker
+	if (distanceFromRayOriginToPlane <= 0)
+		return glm::vec3();
+
+
+		
+	return originOfCam + ray_wor * distanceFromRayOriginToPlane;
+}
+
+glm::vec3 SelectionSystem::getCursorWorldPosition_Internal(uint32 entity)
+{
+	Engine& engine = Engine::Get();
+	return getCursorWorldPosition(entity, engine.getCameraEntity(), engine.getECSManager());
 }
