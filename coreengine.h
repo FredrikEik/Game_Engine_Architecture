@@ -53,6 +53,8 @@ public:
 
     gsl::Matrix4x4 getPlayerMatrix();
 
+    GameObject *playerObject{nullptr};
+
 private slots:
     void GameLoop();
 
@@ -73,7 +75,6 @@ private:
     Camera *mGameCamera{nullptr};
 
     GameObject *mGameCameraMesh{nullptr};
-    GameObject *playerObject{nullptr};
 
     SoundSource* mStereoSound{nullptr};
 

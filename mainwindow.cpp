@@ -170,13 +170,6 @@ void MainWindow::on_xPos_valueChanged(double value)
 
         pos.x = value;
         mCoreEngine->MoveSelectionArrow(pos);
-
-        if(mRenderWindow->getGameObjects()[index]->mName == "cube.obj")
-        {
-            pos = mCoreEngine->getGameCamera()->position();
-            pos.x = value;
-            mCoreEngine->getGameCamera()->setPosition(pos);
-        }
     }
 }
 void MainWindow::on_yPos_valueChanged(double value)

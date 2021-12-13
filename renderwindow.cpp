@@ -104,7 +104,7 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[3]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -135,9 +135,14 @@ void RenderWindow::init()
                                     (gsl::ShaderFilePath + "phong.frag").c_str());
     qDebug() << "Phong shader program id: " << mShaderPrograms[2]->getProgram();
 
+    mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skybox.vert").c_str(),
+                                    (gsl::ShaderFilePath + "skybox.frag").c_str());
+    qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
+
     setupPlainShader(0);
     setupTextureShader(1);
     setupPhongShader(2);
+    setupSkyboxShader(3);
 
     CoreEngine::getInstance()->SetUpScene();
     CoreEngine::getInstance()->startGameLoopTimer();
@@ -162,7 +167,7 @@ void RenderWindow::render()
     for( int i = 0; i < mGameObjects.size(); i++)
     {
     /** Cube stuff */
-        if(mGameObjects[i]->mName == "cube.obj")
+        if(mGameObjects[i] == mCoreEngine->playerObject)
         {
             checkForCollisions(mGameObjects[i]);
             mGameObjects[i]->move(moveX, moveY, moveZ);
@@ -206,6 +211,13 @@ void RenderWindow::render()
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightPositionUniform, 100.f, 90.f, 250);
         }
+        else if(shaderProgram == 3) /** SkyboxShader */
+        {
+            glUniform1i(mSkyboxUniform, mGameObjects[i]->material->mTextureUnit);
+            glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->transform->mMatrix.constData());
+        }
 
 
     /** Calculate FRUSTUM */
@@ -216,7 +228,7 @@ void RenderWindow::render()
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
 
-        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" && mGameObjects[i]->mName != "ContourLines" &&//These name checks are temporary.
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" && mGameObjects[i]->mName != "ContourLines" && mGameObjects[i]->mName != "skyboxCube" &&//These name checks are temporary.
             (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))                  //Will find a better way later.
         {
             mGameObjects[i]->mesh->renderObject = false;
@@ -384,6 +396,13 @@ void RenderWindow::setupPhongShader(int shaderIndex)
     mSpecularExponentUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "specularExponent" );
     mLightPowerUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPower" );
     mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
+}
+void RenderWindow::setupSkyboxShader(int shaderIndex)
+{
+    mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    mSkyboxUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
 void RenderWindow::mousePicking(QMouseEvent *event)

@@ -43,17 +43,19 @@ void CoreEngine::SetUpScene()
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
     playerObject = temp;
     playerObject->transform->mMatrix.scale(0.2f);
+//    temp->material->mShaderProgram = gsl::SKYBOXSHADER;
+//    temp->material->mTextureUnit = 3;
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(playerObject); // pos = 57.f, 8.5f, 118
 
-// SKYBOX
-    temp = mResourceManager->CreateObject("cube.obj");
-    temp->transform->mMatrix.scale(5);
-    temp->material->mShaderProgram = gsl::TEXTURESHADER;
+// SKYBOX ??
+    temp = mResourceManager->CreateObject("skyboxCube.obj");
+    temp->mName = "skyboxCube";
+    temp->transform->mMatrix.scale(1000);
+    temp->material->mShaderProgram = gsl::SKYBOXSHADER;
     temp->material->mTextureUnit = 3;
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
-
 
     mGameCameraMesh = mResourceManager->CreateObject("camera.obj");
     mGameCameraMesh->transform->mMatrix.translate(gameCameraPos);
@@ -104,8 +106,8 @@ void CoreEngine::SetUpScene()
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
-//    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-//                                                            "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
+    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                                                            "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
 }
 
 void CoreEngine::resetScene()

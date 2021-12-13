@@ -65,6 +65,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+   Shaders/skybox.frag \
+   Shaders/skybox.vert \
    Shaders\phong.frag \
    Shaders\phong.vert \
    Shaders/textureshader.frag \

@@ -100,6 +100,12 @@ private:
     GLint mLightPowerUniform{-1};
     GLint mPhongTextureUniform{-1};
 
+    void setupSkyboxShader(int shaderIndex);
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+    GLint mSkyboxUniform{-1};
+
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
