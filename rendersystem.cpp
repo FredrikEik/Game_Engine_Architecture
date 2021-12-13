@@ -232,11 +232,25 @@ void RenderSystem::render()
             mObjectsDrawn++;
         }
 
-//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0) //Get the Vis&Sim groundplane to draw triangles.
+        //Get the Vis&Sim groundplane to draw triangles. Causes all lod to be drawn on top of each other
+//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0)
 //        {
 //            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
 //            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
 //        }
+
+
+//        //Testing if indexCount have value - if so use DrawElements
+//        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+
+//        if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)
+//            glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+//        else
+//            glDrawElements(mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+
+//        mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+//        mObjectsDrawn++;
+
 
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)
@@ -291,52 +305,6 @@ void RenderSystem::render()
 
     }
 
-    //Moves the dog triangle - should be made another way!!!!
-    if(mIsPlaying)
-    {
-//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
-        mGameCamera->yaw(0.07f);
-        mGameCamera->update();
-        mUseFrustumCulling = true;
-        mGameCamAsFrustumCulling = true;
-    }
-
-    //immediately this seems wrong. Both in the hardcoding of which VAO's to use for the cube.
-    //This seems based on code for using only a very limited amount of shaders, so i dont know how the rendersystem handles this.
-    //I know there are hard-coded integers for shaders somewhere, will look into.
-    //Seems like the rendersystem dont know about the skybox fragment and vertex shader
-    //Also how it interacts with the cubemap-functionality in texturehandler.
-//    //Draw cube
-//    shader->use();
-//    glm::mat4 model = glm::mat4(1.0f);
-//    glm::mat4 view = mEditorCamera->GetViewMatrix();
-//    glm::mat4 projection = glm::perspektive(glm::radians(mEditoreCamera.zoom), (float)SCR_HEIGHT, 0.1f, 100.0f);
-//    shader->setMatrix4x4("model", model); //Dont know if his matrix functionality is equal to the one in this project.
-//    shader->setMat4x4("view", view);
-//    shader->setMat4x4("projection", projection);
-//    //cubes
-//    glBindVertexArray(cubeVAO);
-//    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_2D, cubeTexture);
-//    glDrawArrays(GL_TRIANGLES, 0, 36);
-//    glBindVertexArray(0);
-
-//    //Draw skybox last
-//    glDepthFunc(GL_LEQUAL);
-//    skyboxShader.use();
-//    view = glm::mat4(glm::mat3(mEditorCamera->GetViewMatrix()));
-//    skyboxShader.setMat4x4("model", model);
-//    skyboxShader.setMat4x4("view", view);
-//    skyboxShader.setMat4x4("projection", projection);
-//    //Skybox Cube
-//    glBindVertexArray(skyboxVAO);
-//    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemaptexture);
-//    glDrawArrays(GL_TRIANGLES, 0, 36);
-//    glBindVertexArray(0);
-//    glDepthFunc(GL_LESS);
-
-
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
     // and before swapBuffers(), else it will show the vsync time
@@ -353,13 +321,7 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
-//void RenderSystem::addToGameObjects(GameObject *obj)
-//{
-//    mGameObjects.emplace_back(obj);
-//}
-
-//This function is called from Qt when window is exposed (shown)
-// and when it is resized
+//This function is called from Qt when window is exposed (shown) and when it is resized
 //exposeEvent is a overridden function from QWindow that we inherit from
 void RenderSystem::exposeEvent(QExposeEvent *)
 {
