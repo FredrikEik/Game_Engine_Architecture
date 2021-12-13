@@ -13,10 +13,14 @@ public:
 	static void initTexture(class ParticleComponent* emitter, const std::filesystem::path& path, int8 textureRows);
 
 	static void update(uint32 cameraEntity, class Shader* shader, class ECSManager* ECS, float deltaTime);
-
+	static void setParticleActive(class ParticleComponent* emitter, bool bShouldBeActive);
 private:
 	static void constructQuad(struct MeshComponent& mesh);
 	static void spawnParticles(struct ParticleComponent& emitter, float deltaTime,
 		const glm::vec3& emitterLocation, const glm::vec3& cameraLocation);
+
+	static void sortEmitters(ECSManager* ECS, const glm::vec3& cameraPosition, 
+		const std::vector<ParticleComponent>& emitters,
+		std::vector <int>& OUTsortedEmitters);
 };
 

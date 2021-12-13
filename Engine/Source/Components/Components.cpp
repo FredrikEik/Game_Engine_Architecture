@@ -96,7 +96,9 @@ JSON ParticleComponent::json()
 	{"textureRows", textureRows},
 	{"maxParticles", maxParticles},
 	{"spawnRate", spawnRate},
-	{"emitterLifeTime", emitterLifeTime},
+	{"spawnFrequency", spawnFrequency},
+	{"emitterTotalLifeTime", emitterTotalLifeTime},
+	{"bLoops", bLoops},
 	{"blendSFactor", blendSFactor},
 	{"blendDFactor", blendDFactor},
 	{"mesh", mesh.json()},
@@ -141,7 +143,9 @@ void ParticleComponent::jsonParse(const JSON& json)
 	textureRows = json["textureRows"];
 	maxParticles = json["maxParticles"];
 	spawnRate = json["spawnRate"];
-	emitterLifeTime = json["emitterLifeTime"];
+	spawnFrequency = json["spawnFrequency"];
+	emitterTotalLifeTime = json["emitterTotalLifeTime"];
+	bLoops = json["bLoops"];
 	blendSFactor = json["blendSFactor"];
 	blendDFactor = json["blendDFactor"];
 	mesh.jsonParse(json["mesh"]);

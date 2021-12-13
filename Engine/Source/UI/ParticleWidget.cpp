@@ -51,7 +51,7 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 
 			bool bIsAdditive = component->blendDFactor == GL_ONE;
 			bool bShouldBeAdditive = bIsAdditive;
-			ImGui::Checkbox("Additive Blending", &bShouldBeAdditive);
+			ImGui::Checkbox("Additive Blending##particle", &bShouldBeAdditive);
 
 			if (bIsAdditive != bShouldBeAdditive)
 			{
@@ -59,8 +59,13 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 			}
 
 
-
-			ImGui::SliderInt("Texture Rows##particle", &component->textureRows, 1, 20);
+			ImGui::Checkbox("Loops##particle", &component->bLoops);
+			if (!component->bLoops && ImGui::Button("Activate##particle"))
+			{
+				ParticleSystem::setParticleActive(component, true);
+			}
+			ImGui::InputFloat("Emitter Lifetime##particle", &component->emitterTotalLifeTime, 0.01f, 0.1f);
+			ImGui::InputFloat("Spawn Frequency##particle", &component->spawnFrequency, 0.01f, 0.1f);
 			ImGui::InputInt("Spawn Rate##particle", (int*)&component->spawnRate, 1, 10);
 			if (ImGui::InputInt("Max Particles##particle",
 				(int*)&component->maxParticles, 10, 100))
@@ -68,6 +73,17 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 				ParticleSystem::initMesh(component, component->maxParticles);
 			}
 		
+
+			ImGui::SliderInt("Texture Rows##particle", &component->textureRows, 1, 20);
+			if (ImGui::Button("Load Texture##particle"))
+			{
+				std::string path;
+				if (FileSystemHelpers::getPathFromFileExplorer(path))
+				{
+					ParticleSystem::initTexture(component, path, component->textureRows);
+					entitiesChanged = true;
+				}
+			}
 			ImGui::NewLine();
 
 			if (ImGui::CollapsingHeader("Particle Defaults"))
@@ -110,15 +126,7 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 				ImGui::InputFloat("Max Lifetime Offset##particle", &component->particleBlueprint.lifeMaxOffset, 0.01f, 0.1f);
 			}
 
-			if (ImGui::Button("Load Texture##particle"))
-			{
-				std::string path;
-				if (FileSystemHelpers::getPathFromFileExplorer(path))
-				{
-					ParticleSystem::initTexture(component, path, component->textureRows);
-					entitiesChanged = true;
-				}
-			}
+
 			ImGui::End();
 		}
 

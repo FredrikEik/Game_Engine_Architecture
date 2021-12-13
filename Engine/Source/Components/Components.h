@@ -257,12 +257,11 @@ struct ParticleComponent final : public Component
 
 	MeshComponent mesh;
 	TextureComponent texture;
+
 	std::vector<Particle> particles;
 	std::vector<float> positionData;
 	std::vector<float> colorData;
-	std::vector<float> uvBlendingData;
 	std::vector<float> lifeAndSizeData;
-
 
 	int textureRows{ 1 };
 
@@ -270,18 +269,20 @@ struct ParticleComponent final : public Component
 	uint32 activeParticles{};
 	uint32 lastUsedParticle{};
 	uint32 spawnRate{};
+
+	float spawnFrequency{};
 	float timeSinceLastSpawn{};
 	float emitterLifeTime{};
+	float emitterTotalLifeTime{};
+	bool bLoops{ false };
 
 	GLenum blendSFactor{ GL_SRC_ALPHA };
 	GLenum blendDFactor{ GL_ONE_MINUS_SRC_ALPHA };
-
 
 	ParticleBlueprint particleBlueprint;
 
 	GLuint positionBuffer{};
 	GLuint colorBuffer{};
-	GLuint uvBlendingBuffer{};
 	GLuint lifeAndSizeDataBuffer{};
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
