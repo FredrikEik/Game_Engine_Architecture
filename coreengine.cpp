@@ -95,16 +95,9 @@ void CoreEngine::setUpScene()
     boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
-
-    mTerrain = mResourceManager->addObject("terrain");
-
-    //mTerrain->mTransform->mMatrix.translateZ(-100.f);
-    //mRenderSystem->mGameObjects.push_back(mTerrain);
-
-
     skybox = mResourceManager->addObject("skybox");
     skybox->mMaterial->mShaderProgram = 2;
-    skybox->mMaterial->mTextureUnit = 3;
+    skybox->mMaterial->mTextureUnit = 1;
     skybox->mTransform->mMatrix.scale(40.f);
     mRenderSystem->mGameObjects.push_back(skybox);
 
@@ -179,38 +172,6 @@ void CoreEngine::testScene()
 
 }
 
-void CoreEngine::RollingBallSimulation()
-{
-
-    // setup Las landscape
-    Las = mResourceManager->addObject("LAS");
-    //Las->mTransform->mMatrix.translate(0,0,0);
-    Las->mMaterial->mShaderProgram =0;
-    Las->mMaterial->mTextureUnit = 0;
-    //Las->mTransform->mMatrix.rotateX(90);
-    //Las->mTransform->mMatrix.scale(50.f);
-    mRenderSystem->mGameObjects.push_back(Las);
-
-    for (auto i = 0; i < 1; i++)
-    {
-        ball = mResourceManager->addObject("ball");
-        ball->mMaterial->mShaderProgram =1;
-        ball->mMaterial->mTextureUnit = 0;
-       // ball->mTransform->mMatrix.setPosition(0,4,0);
-        //Las->mTransform->mMatrix.scale(50.f);
-        mRenderSystem->mGameObjects.push_back(ball);
-        Rain.push_back(ball);
-        //ball->setSurface(Las);
-        //mMeshHandler->setSurface2(Las, ball);
-        //mMeshHandlerGameObject->setSurface2(Las, ball);
-
-        mResourceManager->setSurface(Las, ball);
-
-
-    }
-
-
-}
 
 void CoreEngine::spawnParticles(GameObject * temp)
 {
@@ -228,7 +189,7 @@ void CoreEngine::spawnParticles(GameObject * temp)
         Particles->mTransform->mMatrix.scale(.02);
         Particles->mTransform->mMatrix.setPosition(tempPosX,tempPosY,tempPosZ);
         mRenderSystem->mParticles.push_back(Particles);
-         //mRenderSystem->mGameObjects.push_back(Particles);
+
     }
     particlesSpawned = true;
     //Particles->isAlive = true;

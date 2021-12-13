@@ -225,25 +225,18 @@ void RenderSystem::render()
             projectionMatrix = pMatrixUniformSS;
             modelMatrix = mMatrixUniformSS;
 
-            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
+            glUniform1i(mTextureUniformSS, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
         }
         else if (mGameObjects[i]->mMaterial->mShaderProgram == 3)
         {
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
             modelMatrix = mMatrixUniform2;
-            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
 
-        mCameraPosition = glGetUniformLocation(  mGameObjects[i]->mMaterial->mShaderProgram, "cameraPosition" );
-        mLightPosition = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightPosition" );
-        mLightDirection = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightDirection" );
-        mLightColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightColor" );
-        mObjectColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "objectColor" );
-        mAmbientColor = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "ambientColor");
-        mAmbientStrengt = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "ambientStrengt" );
-        mLightStrengt = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "lightStrengt" );
-        mSpecularStrength = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "specularStrength" );
-        mSpecularExponent = glGetUniformLocation( mGameObjects[i]->mMaterial->mShaderProgram, "specularExponent" );
+            glUniform1f(mAmbientStrengt, mAmbientStrengt);
+            glUniform1f(mLightStrengt, 2);
+
         }
         /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
@@ -313,13 +306,6 @@ void RenderSystem::render()
         }
 
 
-
-
-
-
-
-
-
        for(unsigned int j{0}; j < mParticles.size(); j++)
        {
 
@@ -332,20 +318,9 @@ void RenderSystem::render()
                projectionMatrix = pMatrixUniform;
                modelMatrix = mMatrixUniform;
            }
-           else if (mParticles[j]->mMaterial->mShaderProgram == 1)
-           {
-               viewMatrix = vMatrixUniform1;
-               projectionMatrix = pMatrixUniform1;
-               modelMatrix = mMatrixUniform1;
-
-               //Now mMaterial component holds texture slot directly - probably should be changed
-               glUniform1i(mTextureUniform, mParticles[j]->mMaterial->mTextureUnit);
-           }
 
            if(mParticles[j]->isAlive)
            {
-
-
 
 
             glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
@@ -412,12 +387,12 @@ void RenderSystem::render()
     temp.rotateY(-tempcam->mYaw);
     temp.rotateX(tempcam->mPitch);
 
-    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, temp.constData());
+    //glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, temp.constData());
     glBindVertexArray( frustum.mVAO[0] );
 
     if(toogleFrustumDrawing)
     {
-        //glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
+        glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
     }

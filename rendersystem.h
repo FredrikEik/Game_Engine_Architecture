@@ -100,6 +100,7 @@ private:
     GLint mMatrixUniform2{-1};
     GLint vMatrixUniform2{-1};
     GLint pMatrixUniform2{-1};
+    GLint mTextureUniform2{-1};
     //GLint mTextureUniform{-1};
 
     GLint mCameraPosition{-1};

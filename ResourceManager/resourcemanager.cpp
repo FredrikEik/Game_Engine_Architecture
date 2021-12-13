@@ -219,44 +219,7 @@ void ResourceManager::setUpAllTextures()
 //    }
 }
 
-//void ResourceManager::setUpAllShaders()
-//{
-//    //TODO: This function is very manual and hardcoded
-//    //should be automated to read all shaders in path
 
-//    //Compile shaders:
-//    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-//    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-//    // (out of the build-folder) and then up into the project folder.
-//    ShaderHandler *tempShader = new ShaderHandler((gsl::ShaderFilePath + "plainshader.vert").c_str(),
-//            (gsl::ShaderFilePath + "plainshader.frag").c_str());
-//    tempShader->mName = "PlainShader";
-//    mShaders.push_back(tempShader);
-//    std::string tempString;
-//    tempString += "Plain shader program id: " + std::to_string(mShaders.back()->program);
-//    mShaders.back()->setupShader(false);
-
-//    mShaderMap.emplace("plainshader", 0);
-
-//    tempShader = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-//                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-//    tempShader->mName = "TextureShader";
-//    mShaders.push_back(tempShader);
-//    tempString.clear();
-//    tempString += "Texture shader program id: " + std::to_string(mShaders.back()->program);
-//    mShaders.back()->setupShader(true);
-//    mShaderMap.emplace("textureshader", 1);
-
-//    tempShader = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
-//                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
-//    tempShader->mName = "PhongShader";
-//    mShaders.push_back(tempShader);
-//    tempString.clear();
-//    tempString += "Phong shader program id: " + std::to_string(mShaders.back()->program);
-//    mShaders.back()->setupShader(true, true);
-//    mShaderMap.emplace("phongshader", 2);
-
-//}
 MeshData ResourceManager::makeLineBox(std::string meshName)
 {
     return mMeshHandler->makeLineBox(meshName);
