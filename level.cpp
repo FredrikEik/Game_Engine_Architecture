@@ -2,11 +2,13 @@
 
 Level::Level(Camera* cam)
 {
+    mCollisionSystem = new CollisionSystem();
+    mMoveSys = new MovementSystem();
     mCam = cam;
     mShapeFactory.makeVertices();
     script = new Script();
     DrawBoard();
-    SoundHandler();
+
 
 }
 
@@ -64,7 +66,6 @@ void Level::DrawBoard()
     VisualObject* temp{nullptr};
     Square* tempS{nullptr};
     Circle* tempC{nullptr};
-    ParticleSystem *tempP{nullptr};
     for(int i = 0; i<DIM_Z;i++)
     {
         for(int j = 0; j<DIM_X; j++)
@@ -76,7 +77,7 @@ void Level::DrawBoard()
                 tempC->init();
                 tempC->mMaterial->mShaderProgram = 0;
                 mMoveSys->move(tempC, j, CENTER_Y,i);
-                mVisualObjects.push_back(tempC);
+                mVisualObjects.push_back(temp);
                 mTrophies.push_back(tempC);
                 mTransformComp.push_back(tempC->mTransform);
                 mNameComp.push_back(tempC->mNameComp);
@@ -160,6 +161,7 @@ void Level::DrawBoard()
     mMoveSys->move(mLight,0.f, 0.f, 6.f);
     mLight->init();
 
+    SoundHandler();
 
 
 }
@@ -227,17 +229,14 @@ void Level::readJS()
 
 void Level::checkCollision()
 {
-
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
+        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
         {
-
             if(trophies < static_cast<int>(mTrophies.size())){
                 if(mTrophies[i]->drawMe == true){
-                    playSound(1);
                     trophies++;
-
+                    playSound(1);
                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
                 else
                     continue;
@@ -247,23 +246,20 @@ void Level::checkCollision()
         }
     }
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
+        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
-
             mLives--;
             gsl::Vector3D playerP = {1,CENTER_Y,20};
             gsl::Vector3D currP = mPlayer->mTransform->mPosition;
             VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-            mMoveSys->move(vPlayer,playerP.x-currP.x, 0, playerP.z-currP.z);
+            mMoveSys->move(vPlayer, playerP.x-currP.x, 0, playerP.z-currP.z);
 
+            hearts[mLives]->drawMe = false;
             if(mLives == 0)
             {
-                playSound(0);
-                resetGame();
+                resetGame();playSound(0); //death sound
             }
             qDebug() << mLives;
-
-
         }
     }
 }
@@ -357,8 +353,9 @@ void Level::movePlayer()
 
 void Level::moveParticles(gsl::Vector3D mColor)
 {
-    mShapeFactory.mColor = mColor;
+    //mShapeFactory.mColor = mColor;
     mMoveSys->moveParticles(mColor,mParticles);
+    qDebug()<<mColor;
 }
 
 void Level::update(Camera* dc, Input di)

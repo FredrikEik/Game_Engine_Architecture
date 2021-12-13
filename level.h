@@ -45,7 +45,7 @@ public:
 
     Texture *mTexture{nullptr};
     MovementSystem *mMoveSys{nullptr};
-    CollisionSystem* mCollisionSystem{nullptr};
+    CollisionSystem *mCollisionSystem{nullptr};
     std::vector<NameComponent*> mNameComp;
     std::vector<TransformComponent*> mTransformComp;
     std::vector<VisualObject*> mVisualObjects;
@@ -55,7 +55,7 @@ public:
     std::vector<SoundSource*> mSound;
     std::vector<ParticleSystem*> mParticles;
     ShapeFactory mShapeFactory;
-    FrustumSystem *mFrustumSystem;
+    FrustumSystem *mFrustumSystem{nullptr};
     SoundSource *mDeathSound;
     SoundSource *mChompSound;
     Enemy *mEnemy{nullptr};

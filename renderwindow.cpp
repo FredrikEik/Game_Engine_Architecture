@@ -216,6 +216,7 @@ void RenderWindow::drawObjects()
     }else
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
+            glUseProgram(mShaderPrograms[0]->getProgram() );
 
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
@@ -237,7 +238,6 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    // HandleInput();
     mLvl->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
@@ -251,6 +251,7 @@ void RenderWindow::render()
     float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     if(playM)
     {
+        mLvl->mShapeFactory.mColor = gsl::Vector3D(r,g,b);
         mLvl->moveEnemy(randNr);
         mLvl->movePlayer();
         mLvl->moveParticles(gsl::Vector3D(r,g,b));
