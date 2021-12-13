@@ -21,7 +21,7 @@ struct TransformComponent
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
     bool isPhysicsEnabled = false;
-    int LastTriangeindex = 0;
+    int LastTriangeindex =-1;
     std::vector<gsl::Vector3D> PosOverTime;
     bool bBSExists = false;
 };

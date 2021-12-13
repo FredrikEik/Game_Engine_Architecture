@@ -185,14 +185,14 @@ void RenderWindow::init()
     entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
     entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
 
-    Physics->InitPhysicsSystem(meshCompVec[4],ResSys->getVertexDataByName("bowlSurface.obj"));
     entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
     entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
     entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
     entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
-
+    entitySys->construct("FlatFloor.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    Physics->InitPhysicsSystem(meshCompVec[15],ResSys->getVertexDataByName("FlatFloor.obj"));
 
 
 
@@ -252,11 +252,11 @@ void RenderWindow::init()
     //LASDATA
 
 
-    for(int i{0}; i < 5; i++)
+    for(int i{0}; i < 10; i++)
     {
-        for(int j{0}; j < 5; j++)
+        for(int j{0}; j < 10; j++)
         {
-            entitySys->construct("sphere.obj", QVector3D( 200 + 8*(i) ,100.0f,200 + 8*(j)),2,1);
+            entitySys->construct("sphere.obj", QVector3D( 10 + 8*(i) ,20.f+i+j,- 10 + 8*(j)),2,1);
         }
     }
     //for(int i = 0; i < transformCompVec.size(); i++){
@@ -343,7 +343,7 @@ void RenderWindow::render()
 
     if(bIsPlayerCamera)
     {
-        mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));
+        mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,50.0f,50.0f));
     }
     else
     {

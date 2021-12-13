@@ -7,13 +7,10 @@ PhysicsSystem::PhysicsSystem()
 
 void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Vertex> inVertexData)
 {
-    if(surfaceData)
-    {
+
         mSurfaceData = surfaceData;
         mSurfaceData->collisionRadius = 0.0f;
 
-    }
-    else{ mSurfaceData = nullptr;}
     vertexData = inVertexData;
 
 }
@@ -29,7 +26,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     if((pos.getX() >0.0f & pos.getX() < 600) && (pos.getZ() >0.0f & pos.getZ() < 700) && pos.getY() >0.0f)
         FindTriangle(Transf); // finds normal and height of plane
 
-//    //add velocity component V = v0 + at
+    //add velocity component V = v0 + at
     Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX(), Transf->Velocity.getY() +( g.y() * deltaTime ), Transf->Velocity.getZ());
     //Transf->mMatrix.translate(Transf->Velocity.getX()*deltaTime, Transf->Velocity.getY()*deltaTime + 0.5f*g.y()*deltaTime*deltaTime ,Transf->Velocity.getZ()*deltaTime);
 
@@ -42,6 +39,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
+            //qDebug() <<"PHYSICS BOUNCE";
             //gsl::Vector3D posInCol(pos.getX(),pos.getY(),pos.getZ());
             //Transf->PosOverTime.push_back(posInCol);
 
@@ -94,15 +92,15 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     bool isFound = false; //optimization
 
     //every third triangle is our triangle.
-    int index = Transf->LastTriangeindex +1;
+    int index = Transf->LastTriangeindex ;
     //the vertex positions are flipped because of us using blender for the surface.
-
+if(index =! -1){
     p1 = MakeQvec3D(vertexData[index + 0].getVertex());//1
-    p2 = MakeQvec3D(vertexData[index + 1].getVertex());//3
-    p3 = MakeQvec3D(vertexData[index + 2].getVertex());//2
+    p2 = MakeQvec3D(vertexData[index + 2].getVertex());//3
+    p3 = MakeQvec3D(vertexData[index + 1].getVertex());//2
     //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
-   // Baryc = Barysentric( p1 , p2 , p3 , posBall );
+    Baryc = Barysentric( p1 , p2 , p3 , posBall );
     //qDebug() << "BARYC: "<<Baryc;
     if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
     {
@@ -112,17 +110,17 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
         //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
         //qDebug() << "BARYC HEIGHT: "<<height;
         Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
-        //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
+
         isFound = true;
     }
-    qDebug() << "VERTEX SIZE DATa" << vertexData.size();
-    if(!isFound)
+}
+    if(!isFound )
         for(unsigned long long i = 0; i < vertexData.size() ; i = i + 3 ) // sum mad sketch movement in array
         {
             //the vertex positions are flipped because of us using blender for the surface.
             p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
-            p2= MakeQvec3D(vertexData[i + 1].getVertex());//3
-            p3 = MakeQvec3D(vertexData[i + 2].getVertex());//2
+            p2 = MakeQvec3D(vertexData[i + 2].getVertex());//3
+            p3 = MakeQvec3D(vertexData[i + 1].getVertex());//2
             //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
             Baryc = Barysentric( p1 , p2 , p3 , posBall );
@@ -145,11 +143,6 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
         }
 
 }
-
-
-
-
-
 
 
 QVector3D PhysicsSystem::CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3)
