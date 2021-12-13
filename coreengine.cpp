@@ -175,7 +175,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Point Light
-    temp = mGameObjectManager->addObject("triangle");
+    temp = mGameObjectManager->addObject("cube.obj");
     temp->mName = "PointLight";
     temp->mLightComponent = new PointLightComponent;
     temp->mTransform->mMatrix.translate(0.0f, 5.0f, 0.0f);
@@ -195,10 +195,9 @@ void CoreEngine::setUpScene()
     temp->mName = "DogTriangle";
     temp->mMaterial = mGameObjectManager->getMaterial("Test");
     temp->mTransform->mMatrix.translate(0.0f, 2.0f, 0.0f);
-    //Adds sound to triangle:
-    mGameObjectManager->addComponent("caravan_mono.wav", temp);
-    //Hack to test sound system
-    if(temp->mSoundComponent)
+
+    mGameObjectManager->addComponent("caravan_mono.wav", temp); //Adds sound to triangle:
+    if(temp->mSoundComponent) //Hack to test sound system
         temp->mSoundComponent->shouldPlay = true;
     mRenderSystem->mGameObjects.push_back(temp);
 
@@ -239,7 +238,7 @@ void CoreEngine::setUpScene()
 
     //mGameObjectManager->setUpAllTextures();
 
-    mGameCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 0.0f);
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
 //    mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 

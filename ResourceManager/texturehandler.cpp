@@ -35,7 +35,10 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
         if (filename.find(".bmp") != std::string::npos)
         {
             if(cubeMap)
+            {
+                qDebug() << "Cubemap found";
                 textureIndex = readCubeMap(filename);
+            }
             else
                 textureIndex = readBitmap(filename);
         }

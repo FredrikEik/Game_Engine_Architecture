@@ -392,6 +392,7 @@ MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
     int index{-1};
     auto result = mMaterialMap.find(materialName);
     if (result != mMaterialMap.end()) {        //found!!!
+        mLogger->logText("Material \"" + materialName + "\" found.", LColor::WARNING);
         index = result->second;
         return &mMaterials[index];
     }
@@ -401,11 +402,3 @@ MaterialComponent *GameObjectManager::getMaterial(std::string materialName)
         return &mMaterials[0];
     }
 }
-
-//void makePointObject(MeshData temp)
-//{
-//    //Use temp
-//    GameObject *pointGameObject;
-
-//    pointGameObject->mMesh = temp.mVertices;
-//}

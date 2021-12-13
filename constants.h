@@ -23,7 +23,8 @@ namespace gsl  //Game School Lib
     {
         COLORSHADER = 0,
         TEXTURESHADER,
-        PHONGSHADER
+        PHONGSHADER,
+        SKYBOX
     };
 
     enum Components

@@ -3,21 +3,15 @@
   [
         {
             "name": "Texture",
-            "shader": "texture",
+            "shader": "textureshader",
             "texture": "terrain.bmp", 
             "color": [0.4, 0.4, 0.9]
         },
         {
             "name": "Test",
-            "shader": "texture",
-            "texture": "Hund.bmp", 
+            "shader": "textureshader",
+            "texture": "hund.bmp",
             "color": [0.2, 0.4, 0.4]
-        },
-        {
-            "name": "Skybox",
-            "shader": "skybox",
-            "texture": "NightCubemap.jpg",
-            "color": [0.5, 0.5, 0.5]
         },
         {
             "name": "Phong",
@@ -27,6 +21,12 @@
             "useColor": false,
             "specularStrenth": 0.4,
             "specularExponent": 32
+        },
+        {
+            "name": "Skybox",
+            "shader": "skyboxshader",
+            "texture": "NightCubeMap1.bmp",
+            "color": [0.5, 0.5, 0.5]
         }
   ]
 }

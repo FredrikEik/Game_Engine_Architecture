@@ -224,23 +224,14 @@ void RenderSystem::render()
                 mObjectsDrawn++;
             }
         }
-        else if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)    //no LOD exists
+        if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)    //no LOD exists
         {
             glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
             mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
             mObjectsDrawn++;
         }
-
-        //Get the Vis&Sim groundplane to draw triangles. Causes all lod to be drawn on top of each other
-//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0)
-//        {
-//            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-//            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
-//        }
-
-
-//        //Testing if indexCount have value - if so use DrawElements
+        //Testing if indexCount have value - if so use DrawElements
 //        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
 
 //        if(mGameObjects[i]->mMesh->mIndexCount[0] <= 0)
@@ -252,13 +243,19 @@ void RenderSystem::render()
 //        mObjectsDrawn++;
 
 
+          //Get the Vis&Sim groundplane to draw triangles. Causes all lod to be drawn on top of each other
+//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0)
+//        {
+//            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+//            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
+//        }
+
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)
         {
             tempShader = mGameObjectManager->mShaders[0];
 //            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
-            MeshData circle = CoreEngine::getInstance()->mGameObjectManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
+            MeshData circle = CoreEngine::getInstance()->mGameObjectManager->makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius, false);
             //Hackety hack - have to get rid of scale in the objects model matrix
             gsl::Matrix4x4 temp(true);
             temp.translate(mGameObjects[i]->mTransform->mMatrix.getPosition());
@@ -535,7 +532,6 @@ void RenderSystem::mousePickingRay(QMouseEvent *event)
     //Writing here as a quick test - probably should be in a CollisionSystem class
 
     //This is ray vs bounding sphere collision
-
     for(int i{0}; i < mGameObjects.size(); i++)
     {
         //making the vector from camera to object we test against
