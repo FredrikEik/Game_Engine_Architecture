@@ -231,7 +231,7 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
-    mPlayerCamera = new Camera(20.f, 20.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mPlayerCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -276,16 +276,7 @@ void RenderWindow::init()
 // Called each frame - doing the job of the RenderSystem!!!!!
 void RenderWindow::render()
 {
-    //    if(isPhysicsEnabled && RecordBSplines){
-    //        frameCountForPointIntake++;
-    //        if(frameCountForPointIntake > 50){
-    //            frameCountForPointIntake = 0;
-    //            qDebug() << "INSERTED";
-    //            for(int i = 0; i < transformCompVec.size(); i++){
-    //                transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
-    //            }
-    //        }
-    //    }
+
 
     mMainWindow->updateDetails();
 
@@ -331,11 +322,7 @@ void RenderWindow::render()
 
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
 
-
-
             }
-
-
 
             RenderSys->draw(meshCompVec[i],
                             MaterialCompVec[i],
@@ -346,7 +333,6 @@ void RenderWindow::render()
                             mCurrentCamera);
 
             if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
-
 
         }
 
