@@ -36,7 +36,6 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
         {
             if(cubeMap)
             {
-                qDebug() << "Cubemap found";
                 textureIndex = readCubeMap(filename);
             }
             else
@@ -167,18 +166,18 @@ int TextureHandler::readCubeMap(const std::string &filename)
     std::getline(sStream, justName, '.');   //deleting .bmp
     justName.pop_back();    //removing 1
 
-    for(int i{0}; i< 6; i++)
+    for(int i = 0; i < 6; i++)
     {
-        std::string temp = justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = justName + std::to_string(i) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
-    }
 
-     qDebug() << "Cubemap:" << QString(filename.c_str()) <<"loaded";
+        qDebug() << "Cubemap:" << QString(filename.c_str()) << "loaded";
+    }
 
     setCubemapTexture(tempTexture);
 
-    return mTextures.size()-1;    //returns index to last object
+    return mTextures.size()-1;  //returns index to last object
 }
 
 void TextureHandler::setCubemapTexture(Texture &textureIn)

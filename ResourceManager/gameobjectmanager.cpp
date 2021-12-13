@@ -172,12 +172,13 @@ void GameObjectManager::setUpAllTextures()
                          gsl::TextureFilePath + " does not exist!", LColor::DAMNERROR);
     }
 
+    //Read cubemaps
     QDir cubeDir((gsl::CubeMapFilePath).c_str());
     if(cubeDir.exists())
     {
-        for(int i{0}; i< 6; i++)
-        {
-            std::string temp = "NightCubeMap" + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        for(int i = 0; i < 6; i++)
+        {//Hardcoding in name of cubemap, will only be the one for the sky.
+            std::string temp = "cubemap" + std::to_string(i) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
             mTextureHandler->makeTexture(temp, true);
         }
     }
