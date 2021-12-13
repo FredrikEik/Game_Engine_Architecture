@@ -236,6 +236,8 @@ void RenderWindow::initObjects()
             mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
             mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
             mMainWindow->updateOutliner(factory->mGameObjects);
+            mParticles = new particle(mCurrentCamera);
+            mParticles->init();
 
 
              hjelpeObjekt = factory->createObject("Cube");
@@ -346,6 +348,7 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->draw();
             }
+            mParticles->update(0.016, mCurrentCamera);
 
             if (i==mIndexToPickedObject) {
 

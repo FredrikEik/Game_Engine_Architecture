@@ -14,6 +14,7 @@
 #include "soundmanager.h"
 #include "quadtree.h"
 #include "light.h"
+#include "particle.h"
 #include "player.h"
 
 class QOpenGLContext;
@@ -68,6 +69,7 @@ public:
 
     void saveLevel();
     void loadLevel();
+
 
 
 
@@ -145,6 +147,7 @@ private:
 
 
     GameObject* mPlayer;
+    particle* mParticles;
     InputComponent mInput;
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;
