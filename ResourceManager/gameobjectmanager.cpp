@@ -171,6 +171,16 @@ void GameObjectManager::setUpAllTextures()
         mLogger->logText("*** ERROR reading textures *** : Asset-folder " +
                          gsl::TextureFilePath + " does not exist!", LColor::DAMNERROR);
     }
+
+    QDir cubeDir((gsl::CubeMapFilePath).c_str());
+    if(cubeDir.exists())
+    {
+        for(int i{0}; i< 6; i++)
+        {
+            std::string temp = "NightCubeMap" + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+            mTextureHandler->makeTexture(temp, true);
+        }
+    }
 }
 
 void GameObjectManager::setUpAllSounds()

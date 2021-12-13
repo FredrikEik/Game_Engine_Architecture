@@ -159,7 +159,6 @@ void TextureHandler::setTexture(Texture &textureIn)
 int TextureHandler::readCubeMap(const std::string &filename)
 {
     qDebug() << "readCubeMap is called";
-    //TODO: This is not finished yet - will probably mess up mTextures vector
     Texture &tempTexture = mTextures.back();
 
     std::string justName;
@@ -167,10 +166,10 @@ int TextureHandler::readCubeMap(const std::string &filename)
     sStream << filename;
     std::getline(sStream, justName, '.');   //deleting .bmp
     justName.pop_back();    //removing 1
+
     for(int i{0}; i< 6; i++)
     {
-        //TODO: clean this up! Decide where CubeMaps should be located
-        std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
     }
