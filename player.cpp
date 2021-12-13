@@ -12,7 +12,7 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     mColSystem = new CollisionSystem;
     mCollision->setBoundingSphere(0.5, mTransform->mPosition);
     mMaterial = new MaterialComponent();
-    mInputComp = new InputComponent;
+    mMoveComp = new MovementComponent;
     mNameComp = new NameComponent();
     mNameComp->mName = "Player";
     mNameComp->objectID = 0;
@@ -42,7 +42,7 @@ void Player::centerPlayer()
 
 void Player::movePlayer()
 {
-    move(mForward.x * mInputComp->mPlayerSpeed, mForward.y * mInputComp->mPlayerSpeed, mForward.z * mInputComp->mPlayerSpeed);
+    move(mForward.x * mMoveComp->mPlayerSpeed, mForward.y * mMoveComp->mPlayerSpeed, mForward.z * mMoveComp->mPlayerSpeed);
 }
 
 void Player::setForward(float dx, float dz)

@@ -74,7 +74,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
     string obj{"obj"};
     string fileStr{"../GEA2021/Assets/" + shapeName};
     VisualObject* temp = nullptr;
-    std::string a = to_string(mCounter-3); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
+    std::string a = "_" + to_string(mCounter-2); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
 
     if (shapeName == "Circle")
     {
@@ -132,6 +132,11 @@ VisualObject* ShapeFactory::createShape(string shapeName)
 
         return temp;
     }
+    else if(shapeName == "Heart")
+    {
+        temp = new Heart;
+        return temp;
+    }
     else if(shapeName.find(obj) != std::string::npos)
     {
         temp = nullptr;
@@ -148,33 +153,23 @@ VisualObject* ShapeFactory::createShape(string shapeName)
                     temp->mNameComp->mName = om->first + "_" + a;
                     temp->mNameComp->objectID = mCounter;
                     mCounter++;
+                    return temp;
                 }
             }
-            if(temp!=nullptr)
-                return temp;
-            else{
-                temp = new ObjMesh();
-                temp->mMesh = myMeshes[mCounter];
-                temp->mCollision = new CollisionComponent;
-                temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
-                shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-                myObjs[shapeName] = mCounter;
-                temp->mNameComp->mName = shapeName;
-                temp->mNameComp->objectID = mCounter;
-                mCounter++;
-                return temp;}
+            //            if(temp!=nullptr)
+            //                return temp;
         }
-        else{
-            temp = new ObjMesh();
-            temp->mMesh = myMeshes[mCounter];
-            temp->mCollision = new CollisionComponent;
-            temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
-            shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-            myObjs[shapeName] = mCounter;
-            temp->mNameComp->mName = shapeName;
-            temp->mNameComp->objectID = mCounter;
-            mCounter++;
-            return temp;}
+        temp = new ObjMesh();
+        temp->mMesh = myMeshes[objCounter];
+        temp->mCollision = new CollisionComponent;
+        temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
+        shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+        myObjs[shapeName] = mCounter;
+        temp->mNameComp->mName = shapeName;
+        temp->mNameComp->objectID = mCounter;
+        objCounter++;
+        mCounter++;
+        return temp;
     }
     else{
         qDebug() << "createShape: invalid string";
@@ -298,6 +293,7 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.2;
 
+    myObjs["Monkey"] = 3;
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
@@ -308,6 +304,7 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.5;
 
+    myObjs["Pacman"] = 4;
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
@@ -318,12 +315,9 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.4;
 
+    myObjs["Enemy"] = 5;
     myMeshes.push_back(m);
     myCollis.push_back(c);
-
-//    m = new MeshComponent;
-//    c = new CollisionComponent;
-
 
 }
 
@@ -517,5 +511,28 @@ XYZ::XYZ()
 
     mMesh->mDrawType = GL_LINES;
 
+    mMaterial = new MaterialComponent();
+}
+
+Heart::Heart()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+
+    mMesh = new MeshComponent;
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
+
+    mMesh->mDrawType = GL_LINE_STRIP;
+    for(double t = -1.0; t<=1.0; t+=0.2)
+    {
+        float x = sin(t) * cos(t);
+        double tempA = log(sqrt(t*t));
+        x = x * tempA;
+        float z = pow((sqrt(t*t)),0.3);
+        double tempB = cos(t);
+        z = z * pow(tempB,0.5);
+        mMesh->mVertices.push_back(Vertex{x, 0, z,  1, 0, 0});
+    }
     mMaterial = new MaterialComponent();
 }

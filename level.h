@@ -61,7 +61,8 @@ private:
     Script *script{nullptr};
     Camera* mCam;
     CollisionSystem* mColSystem;
-    int mLives{2};
+    std::vector<VisualObject*> hearts;
+    int mLives{3};
     int trophies{0};
     bool hit{false};
 };

@@ -49,6 +49,13 @@ public:
     ~Plain(){};
 };
 
+class Heart : public VisualObject
+{
+public:
+    Heart();
+    ~Heart(){};
+};
+
 class ObjMesh : public VisualObject
 {
 public:
@@ -72,6 +79,7 @@ private:
     std::vector<MeshComponent*> myMeshes;
     std::vector<CollisionComponent*> myCollis;
     int mCounter = 1;
+    int objCounter=6;
     bool doOnce[6]{false};
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";

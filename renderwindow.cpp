@@ -117,15 +117,15 @@ void RenderWindow::init()
 
     //********************** Set up camera **********************
 
-    mEditorCamera.setPosition(gsl::Vector3D(1.f, .5f, 8.f));
-    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 8.f));
+    mEditorCamera.setPosition(gsl::Vector3D(1.f, 10.f, 8.f));
+    mPlayCamera.setPosition(gsl::Vector3D(9.f, 13.f, 10.f));
     mPlayCamera.pitch(90);
 
     mCurrentCamera = &mEditorCamera;
 
     //********************** create input **********************
-    mInputComponent = new InputComponent();
-    mInputSystem = new InputSystem();
+    mMovementComponent = new MovementComponent();
+    mMovementSystem = new MovementSystem();
     mCollisionSystem = new CollisionSystem();
 
     mLvl = new Level(&mPlayCamera);
@@ -216,7 +216,7 @@ void RenderWindow::render()
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
     // HandleInput();
-    mInputSystem->update(mCurrentCamera, mPlayer, mInput);
+    mMovementSystem->update(mCurrentCamera, mPlayer, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
 
@@ -577,29 +577,11 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     //qDebug() << ray_wor;
 
     for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
-
-    {      //making the vector from camera to object we test against
-        gsl::Vector3D camToObject = mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
-
-        //making the normal of the ray - in relation to the camToObject vector
-        //this is the normal of the surface the camToObject and ray_wor makes:
-        gsl::Vector3D planeNormal = ray_wor ^ camToObject;    //^ gives the cross product
-
-        //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
-        gsl::Vector3D rayNormal = planeNormal ^ ray_wor;
-        rayNormal.normalize();
-
-        //now I just project the camToObject vector down on the rayNormal == distance from object to ray
-        //getting distance from GameObject to ray using dot product:
-        float distance = camToObject * rayNormal;   //* gives the dot product
-
-        //we are interested in the absolute distance, so fixes any negative numbers
-        distance = abs(distance);
-
-        if(mCollisionSystem->CheckMousePickCollision(distance, mLvl->mVisualObjects[i]->mCollision) /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/)
+    {
+        if(mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
         {
-            mousePickCollide = true;
             mMainWindow->selectWithMousePick(i);
+            mousePickCollide = true;
 
             MousePickindex = i;
             qDebug() <<"Mouse Collision detected";
@@ -636,16 +618,16 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     if (mInput.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mInputComponent->mMouseXlast = event->pos().x() - mInputComponent->mMouseXlast;
-        mInputComponent-> mMouseYlast = event->pos().y() - mInputComponent->mMouseYlast;
+        mMovementComponent->mMouseXlast = event->pos().x() - mMovementComponent->mMouseXlast;
+        mMovementComponent-> mMouseYlast = event->pos().y() - mMovementComponent->mMouseYlast;
 
-        if (mInputComponent->mMouseXlast != 0)
-            mCurrentCamera->yaw(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseXlast);
-        if (mInputComponent->mMouseYlast != 0)
-            mCurrentCamera->pitch(mInputComponent->mCameraRotateSpeed * mInputComponent->mMouseYlast);
+        if (mMovementComponent->mMouseXlast != 0)
+            mCurrentCamera->yaw(mMovementComponent->mCameraRotateSpeed * mMovementComponent->mMouseXlast);
+        if (mMovementComponent->mMouseYlast != 0)
+            mCurrentCamera->pitch(mMovementComponent->mCameraRotateSpeed * mMovementComponent->mMouseYlast);
     }
-    mInputComponent->mMouseXlast = event->pos().x();
-    mInputComponent->mMouseYlast = event->pos().y();
+    mMovementComponent->mMouseXlast = event->pos().x();
+    mMovementComponent->mMouseYlast = event->pos().y();
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
@@ -658,7 +640,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
         if (numDegrees.y() < 1)
             mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mInputSystem->setCameraSpeed(mCurrentCamera,-0.001f);
+            mMovementSystem->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
 }

@@ -90,10 +90,26 @@ bool CollisionSystem::CheckSphCol(CollisionComponent *aCollision, CollisionCompo
     return distance < (aCollision->radius + bCollision->radius);
 }
 
-bool CollisionSystem::CheckMousePickCollision(float distance, CollisionComponent *sCollision)
+bool CollisionSystem::CheckMousePickCollision(CollisionComponent *aCollision, gsl::Vector3D objPos, gsl::Vector3D camPos, gsl::Vector3D ray)
 {
-    //    float distance = sqrt((point.getX() - sCollision->center.getX()) * (point.x - sCollision->center.getX()) +
-    //                          (point.y - sCollision->center.getY()) * (point.y - sCollision->center.getY()) +
-    //                          (point.z - sCollision->center.getZ()) * (point.z - sCollision->center.getZ()));
-    return distance < sCollision->radius;
+    //making the vector from camera to object we test against
+    gsl::Vector3D camToObject = objPos - camPos;
+
+    //making the normal of the ray - in relation to the camToObject vector
+    //this is the normal of the surface the camToObject and ray_wor makes:
+    gsl::Vector3D planeNormal = ray ^ camToObject;    //^ gives the cross product
+
+    //this will now give us the normal vector of the ray - that lays in the plane of the ray_wor and camToObject
+    gsl::Vector3D rayNormal = planeNormal ^ ray;
+    rayNormal.normalize();
+
+    //now I just project the camToObject vector down on the rayNormal == distance from object to ray
+    //getting distance from GameObject to ray using dot product:
+    float distance = camToObject * rayNormal;   //* gives the dot product
+
+    //we are interested in the absolute distance, so fixes any negative numbers
+    distance = abs(distance);
+
+    return(distance < aCollision->radius); /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/
+
 }

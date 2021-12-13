@@ -133,16 +133,13 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
             if(mRenderWindow->mousePickCollide == true)
             {
                 selectWithMousePick(mRenderWindow->MousePickindex);
-                ui->doubleSpinBoxX->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().x);
-                ui->doubleSpinBoxY->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().y);
-                ui->doubleSpinBoxZ->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().z);
                 mRenderWindow->mousePickCollide = false;
-            }else{
-                Objects = mRenderWindow->mLvl->mNameComps[i]->objectID;
-                ui->doubleSpinBoxX->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().x);
-                ui->doubleSpinBoxY->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().y);
-                ui->doubleSpinBoxZ->setValue(mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition().z);
-            }
+            }else
+                objectID = mRenderWindow->mLvl->mNameComps[i]->objectID;
+
+            ui->doubleSpinBoxX->setValue(mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition().x);
+            ui->doubleSpinBoxY->setValue(mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition().y);
+            ui->doubleSpinBoxZ->setValue(mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition().z);
         }
     }
 }
@@ -153,6 +150,7 @@ void MainWindow::run()
         Widgetitem = new QTreeWidgetItem(ui->treeWidget);
     else
         Widgetitem->treeWidget()->clear();
+
     on_treeWidget_viewportEntered();
 }
 
@@ -171,48 +169,48 @@ void MainWindow::on_treeWidget_viewportEntered()
 
 void MainWindow::selectWithMousePick(int index)
 {
-    Objects = mRenderWindow->mLvl->mNameComps[index]->objectID;
+    objectID = mRenderWindow->mLvl->mNameComps[index]->objectID;
 }
 
 void MainWindow::on_doubleSpinBoxX_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition();
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.setPosition(arg1, temp.y, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.setPosition(arg1, temp.y, temp.z);
 }
 
 void MainWindow::on_doubleSpinBoxY_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition();
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.setPosition(temp.x, arg1, temp.z);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.setPosition(temp.x, arg1, temp.z);
 }
 
 void MainWindow::on_doubleSpinBoxZ_valueChanged(double arg1)
 {
-    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.getPosition();
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.setPosition(temp.x,temp.y, arg1);
+    gsl::Vector3D temp = mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.getPosition();
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.setPosition(temp.x,temp.y, arg1);
 }
 
 void MainWindow::on_RotateX_clicked()
 {
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.rotateX(5.f);
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.rotateX(5.f);
 }
 
 void MainWindow::on_RotateY_clicked()
 {
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.rotateY(5.f);
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.rotateY(5.f);
 }
 
 void MainWindow::on_RotateZ_clicked()
 {
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.rotateZ(5.f);
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.rotateZ(5.f);
 }
 
 void MainWindow::on_ScalePlus_clicked()
 {
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.scale(1.5f);
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.scale(1.5f);
 }
 
 void MainWindow::on_ScaleMinus_clicked()
 {
-    mRenderWindow->mLvl->mTransComps[Objects]->mMatrix.scale(0.5f);
+    mRenderWindow->mLvl->mTransComps[objectID]->mMatrix.scale(0.5f);
 }

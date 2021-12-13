@@ -1,16 +1,16 @@
-#ifndef INPUTSYSTEM_H
-#define INPUTSYSTEM_H
+#ifndef MOVEMENTSYSTEM_H
+#define MOVEMENTSYSTEM_H
 
 #include "camera.h"
 #include "player.h"
-#include "inputcomponent.h"
+#include "movementcomponent.h"
 #include "collisionsystem.h"
 #include "shapefactory.h"
 
-class InputSystem
+class MovementSystem
 {
 public:
-    InputSystem();
+    MovementSystem();
     Input mInput;
     void CheckActiveInput();
     void update(Camera *mCamera, Player* mPlayer, Input mInput);
@@ -20,4 +20,4 @@ private:
     ShapeFactory* mFactory;
 };
 
-#endif // INPUTSYSTEM_H
+#endif // MOVEMENTSYSTEM_H

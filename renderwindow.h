@@ -26,8 +26,8 @@ private slots:
     void render();
 
 private:
-    InputComponent *mInputComponent;
-    InputSystem *mInputSystem;
+    MovementComponent *mMovementComponent;
+    MovementSystem *mMovementSystem;
     CollisionSystem* mCollisionSystem;
     Input mInput;
     bool playM = false;

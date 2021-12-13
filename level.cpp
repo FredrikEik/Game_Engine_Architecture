@@ -35,7 +35,7 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
-   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
+   {1,0,0,0,0,1,0,0,4,4,4,0,0,1,0,0,0,0,1},
    {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
    {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
@@ -111,6 +111,19 @@ void Level::DrawBoard()
     mVisualObjects.push_back(temp);
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
+
+    for(auto i=0; i<3; i++)
+    {
+    temp = mShapeFactory.createShape("Heart");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 0;   //plain shader
+    temp->mTransform->mPosition = gsl::Vector3D(13.f, 9.f, 8.0f + 2*i);
+    temp->mTransform->mMatrix.setPosition(temp->mTransform->mPosition);
+    temp->mTransform->mMatrix.rotateY(180);
+    hearts.push_back(temp);
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    }
 
     mFrustumSystem = new FrustumSystem(mCam);
     mFrustumSystem->mMaterial->mShaderProgram = 0;    //plain shader
@@ -220,6 +233,7 @@ void Level::checkCollision()
             VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
             vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
 
+            hearts[mLives]->drawMe = false;
             if(mLives == 0)
             {
                 resetGame();mSounds[1]->play();; //death sound
@@ -272,7 +286,7 @@ void Level::resetGame()
             mVisualObjects[i]->drawMe = true;
         }
         trophies = 0;
-        mLives = 2;
+        mLives = 3;
         int eID = 0;
         for(int i = 0; i<DIM_Z;i++)
         {

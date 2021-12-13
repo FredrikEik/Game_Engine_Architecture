@@ -4,7 +4,7 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 #include "visualobject.h"
-#include "inputcomponent.h"
+#include "movementcomponent.h"
 /**
   This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
   the forward / backward is wrong, when steered with W and S.
@@ -69,7 +69,7 @@ public:
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
 
-    InputComponent* mInputComp;
+    MovementComponent* mMoveComp;
     gsl::Vector3D position() const;
     gsl::Vector3D up() const;
     gsl::Vector3D right() const;

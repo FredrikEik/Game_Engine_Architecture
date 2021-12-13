@@ -59,7 +59,7 @@ private:
     void init();
     Ui::MainWindow *ui;
     VisualObject *mVisualObject;
-    int Objects = 0;
+    int objectID = 0;
     QTreeWidgetItem *Widgetitem{nullptr};
     //QTreeWidgetItem *mQTWItem{nullptr};
 

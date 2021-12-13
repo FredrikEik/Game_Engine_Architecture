@@ -1,9 +1,9 @@
-#ifndef INPUTCOMPONENT_H
-#define INPUTCOMPONENT_H
+#ifndef MOVEMENTCOMPONENT_H
+#define MOVEMENTCOMPONENT_H
 
 #include "input.h"
 
-struct InputComponent
+struct MovementComponent
 {
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
@@ -12,4 +12,4 @@ struct InputComponent
     int mMouseYlast{0};
 };
 
-#endif // INPUTCOMPONENT_H
+#endif // MOVEMENTCOMPONENT_H

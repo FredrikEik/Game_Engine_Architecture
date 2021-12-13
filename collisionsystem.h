@@ -24,7 +24,7 @@ public:
     bool CheckBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphOnBoxCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
     bool CheckSphCol(CollisionComponent *aCollision, CollisionComponent* bCollision);
-    bool CheckMousePickCollision(float distance, CollisionComponent *sCollision);
+    bool CheckMousePickCollision(CollisionComponent *aCollision, gsl::Vector3D objPos, gsl::Vector3D camPos, gsl::Vector3D ray);
 };
 
 #endif // COLLISIONSYSTEM_H

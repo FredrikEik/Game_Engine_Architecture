@@ -1,17 +1,17 @@
-#include "inputsystem.h"
+#include "movementsystem.h"
 
-InputSystem::InputSystem()
+MovementSystem::MovementSystem()
 {
 
 }
 
-void InputSystem::update(Camera *mCamera, Player* mPlayer, Input mInput)
+void MovementSystem::update(Camera *mCamera, Player* mPlayer, Input mInput)
 {
-    InputComponent* i;
+    MovementComponent* i;
     mCamera->setSpeed(0.f);
     if(mInput.RMB == true)
     {
-        i = mCamera->mInputComp;
+        i = mCamera->mMoveComp;
         if(mInput.W == true)
             mCamera->setSpeed(-i->mCameraSpeed);
         if(mInput.S == true)
@@ -44,9 +44,9 @@ void InputSystem::update(Camera *mCamera, Player* mPlayer, Input mInput)
 
 }
 
-void InputSystem::setCameraSpeed(Camera *mCamera, float value)
+void MovementSystem::setCameraSpeed(Camera *mCamera, float value)
 {
-    InputComponent* i = mCamera->mInputComp;
+    MovementComponent* i = mCamera->mMoveComp;
     i->mCameraSpeed += value;
 
     //Keep within some min and max values

@@ -14,7 +14,7 @@ public:
 private:
     float speed = 0.025;
     ShapeFactory* factoryPtr;
-    gsl::Vector3D dir;
+    gsl::Vector3D dir{0,0,1};
 };
 
 #endif // ENEMY_H

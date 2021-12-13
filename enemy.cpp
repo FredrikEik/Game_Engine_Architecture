@@ -12,13 +12,15 @@ Enemy::Enemy(ShapeFactory* f)
     mCollision->setBoundingSphere(factoryPtr->getColli(5)->radius, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
-    mNameComp->mName = "Enemy";
+    mNameComp->mName = "Enemy_" + to_string(factoryPtr->getCount());
     mNameComp->objectID = factoryPtr->getCount();
     factoryPtr->addCount();
 }
 
 void Enemy::moveEnemy()
 {
+    mTransform->mMatrix.setRotationToVector(mForward);
+    mTransform->mMatrix.scale(0.2);
     move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 }
 

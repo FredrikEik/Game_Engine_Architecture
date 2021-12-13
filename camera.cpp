@@ -9,7 +9,7 @@ Camera::Camera()
     mYawMatrix.setToIdentity();
     mPitchMatrix.setToIdentity();
 
-    mInputComp = new InputComponent;
+    mMoveComp = new MovementComponent;
 }
 
 Camera::~Camera()
@@ -199,22 +199,22 @@ void FrustumSystem::makeFrustumLines()
 
 void FrustumSystem::updateFrustumPos()
 {
-    //        mFarPlane.x  = tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance;
-    //        mFarPlane.y  = (tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance)/mFrustum->mAspectRatio;
-    //        mFarPlane.z  = mFrustum->mFarPlaneDistance;
-    //        mNearPlane.x = tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance;
-    //        mNearPlane.y = (tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance)/mFrustum->mAspectRatio;
-    //        mNearPlane.z = mFrustum->mNearPlaneDistance;
+            mFarPlane.x  = tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance;
+            mFarPlane.y  = (tan(mFrustum->mFOV)*mFrustum->mFarPlaneDistance)/mFrustum->mAspectRatio;
+            mFarPlane.z  = mFrustum->mFarPlaneDistance;
+            mNearPlane.x = tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance;
+            mNearPlane.y = (tan(mFrustum->mFOV)*mFrustum->mNearPlaneDistance)/mFrustum->mAspectRatio;
+            mNearPlane.z = mFrustum->mNearPlaneDistance;
 
-    //        mRightTopFar     = gsl::Vector3D(mFarPlane.x, mFarPlane.y, -mFarPlane.z);
-    //        mRightBotFar  = gsl::Vector3D(mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
-    //        mLeftTopFar      = gsl::Vector3D(-mFarPlane.x, mFarPlane.y, -mFarPlane.z);
-    //        mLeftBotFar   = gsl::Vector3D(-mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
+            mRightTopFar     = gsl::Vector3D(mFarPlane.x, mFarPlane.y, -mFarPlane.z);
+            mRightBotFar  = gsl::Vector3D(mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
+            mLeftTopFar      = gsl::Vector3D(-mFarPlane.x, mFarPlane.y, -mFarPlane.z);
+            mLeftBotFar   = gsl::Vector3D(-mFarPlane.x, -mFarPlane.y, -mFarPlane.z);
 
-    //        mRightTopNear    = gsl::Vector3D(mNearPlane.x, mNearPlane.y, -mNearPlane.z);
-    //        mRightBotNear = gsl::Vector3D(mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
-    //        mLeftTopNear     = gsl::Vector3D(-mNearPlane.x, mNearPlane.y, -mNearPlane.z);
-    //        mLeftBotNear  = gsl::Vector3D(-mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
+            mRightTopNear    = gsl::Vector3D(mNearPlane.x, mNearPlane.y, -mNearPlane.z);
+            mRightBotNear = gsl::Vector3D(mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
+            mLeftTopNear     = gsl::Vector3D(-mNearPlane.x, mNearPlane.y, -mNearPlane.z);
+            mLeftBotNear  = gsl::Vector3D(-mNearPlane.x, -mNearPlane.y, -mNearPlane.z);
 }
 
 //bool FrustumSystem::insideFrustum(gsl::Vector3D pos)
