@@ -1,9 +1,7 @@
-//Based of LearnOpenGl's Brian Will https://www.youtube.com/watch?v=QYvi1akO_Po
 #version 410 core
+
 out vec4 FragColor;
-
-in vec4 Texturecoordinates;
-
+in vec3 Texturecoordinates;
 uniform samplerCube skybox;
 
 void main()

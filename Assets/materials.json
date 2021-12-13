@@ -13,5 +13,11 @@
             "texture": "Hund.bmp", 
             "color": [0.2, 0.4, 0.4]
         },
+        {
+            "name": "Skybox",
+            "shader": "skybox",
+            "texture": "NightCubemap.jpg",
+            "color": [0.5, 0.5, 0.5]
+        }
   ]
 }

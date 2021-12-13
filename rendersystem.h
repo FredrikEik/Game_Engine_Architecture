@@ -56,6 +56,8 @@ public:
     std::vector<GameObject*> getAllGameObjects();
     GameObject getGameObjectOfName(std::string name);
 
+    struct LightComponent* mLight{nullptr};
+    struct LightComponent* mLightPosition{nullptr};
 private:
     void init();
 

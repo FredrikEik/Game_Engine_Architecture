@@ -162,6 +162,25 @@ void RenderSystem::render()
             glUniform1i(tempShader->mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
 
+//        //Testing Phong shader
+//        if(tempShader->mName == "PhongShader")
+//        {
+//            //Send over camera position - should also send over a lot of other parameters about the light
+//            glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x,
+//                        mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
+//            glUniform3f(tempShader->mLightPosition, mLightPosition->mPosition.x, mLightPosition->mPosition.y, mLightPosition->mPosition.z);
+////                glUniform3f(tempShader->mLightDirection, mLight->mDirection.x, mLight->mDirection.y, mLight->mDirection.z);
+//            glUniform3f(tempShader->mLightColor, mLight->mColor.x, mLight->mColor.y, mLight->mColor.z);
+//            glUniform1f(tempShader->mAmbientStrength, mLight->mAmbientStrength);
+//            glUniform3f(tempShader->mAmbientColor, mLight->mAmbientColor.x, mLight->mAmbientColor.y, mLight->mAmbientColor.z);
+//            glUniform1f(tempShader->mLightStrength, mLight->mLightStrenght);
+//            glUniform1f(tempShader->mSpecularStrength, mGameObjects[i]->mMaterial->mSpecularStrength);
+//            glUniform1i(tempShader->mSpecularExponent, mGameObjects[i]->mMaterial->mSpecularExponent);
+//            if(mGameObjects[i]->mMaterial->mUseColor)
+//                glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x,
+//                            mGameObjects[i]->mMaterial->mColor.y, mGameObjects[i]->mMaterial->mColor.z);
+//        }
+
         //send data to shader
         if(mIsPlaying)
         {

@@ -176,8 +176,8 @@ void CoreEngine::setUpScene()
     //dog triangle
     temp = mGameObjectManager->addObject("triangle");
     temp->mName = "DogTriangle";
-    temp->mMaterial = mGameObjectManager->getMaterial("Texture");
-    temp->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
+    temp->mMaterial = mGameObjectManager->getMaterial("Test");
+    temp->mTransform->mMatrix.translate(0.0f, 2.0f, 0.0f);
     //Adds sound to moving triangle:
     mGameObjectManager->addComponent("caravan_mono.wav", temp);
 
@@ -189,7 +189,7 @@ void CoreEngine::setUpScene()
 
     temp = mGameObjectManager->addObject("Cube.obj");
     temp->mName = "Skybox";
-    temp->mMaterial->mShaderProgram = 3; // Skybox-shader
+    temp->mMaterial = mGameObjectManager->getMaterial("Skybox"); // Skybox-shader
     temp->mTransform->mMatrix.scale(30);
     mRenderSystem->mGameObjects.push_back(temp);
 

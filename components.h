@@ -65,4 +65,12 @@ struct PhysicsComponent
     gsl::Matrix4x4 mScale;
 };
 
+//struct LightComponent
+//{
+//    gsl::LightTypes mType{gsl::POINT};
+//    gsl::Vector3D mDirection{0.0f, -1.0f, 0.0f};
+
+//};
+
+
 #endif // COMPONENTS_H
