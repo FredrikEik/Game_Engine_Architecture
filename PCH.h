@@ -22,13 +22,10 @@
 
 #include "shader.h"
 #include "mainwindow.h"
-#include "visualobject.h"
 #include "camera.h"
 #include "constants.h"
 #include "texture.h"
-#include "skybox.h"
 #include "light.h"
-#include "level.h"
 
 
 class QOpenGLContext;

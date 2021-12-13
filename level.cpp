@@ -2,6 +2,8 @@
 
 Level::Level(Camera* cam)
 {
+    mCollisionSystem = new CollisionSystem();
+    mMovementSystem = new MovementSystem();
     mCam = cam;
     mShapeFactory.makeVertices();
     script = new Script();
@@ -15,7 +17,7 @@ Level::~Level()
     {
         delete mVisualObjects[i];
     }
-    delete mLight; delete mSkyBox; delete mFrustumSystem;
+    delete mLight; delete mFrustumSystem;
 
     mVisualObjects.clear();
     mTransComps.clear();
@@ -64,7 +66,7 @@ void Level::DrawBoard()
                 tempC = static_cast<Circle*>(temp);
                 tempC->init();
                 tempC->mMaterial->mShaderProgram = 0;
-                tempC->move(j, CENTER_Y,i);
+                mMovementSystem->move(tempC, j, CENTER_Y,i);
                 mVisualObjects.push_back(tempC);
                 mTrophies.push_back(tempC);
                 mTransComps.push_back(tempC->mTransform);
@@ -75,7 +77,7 @@ void Level::DrawBoard()
                 tempS = static_cast<Square*>(temp);
                 tempS->init();
                 tempS->mMaterial->mShaderProgram = 0;    //plain shader
-                tempS->move(j, CENTER_Y, i);
+                mMovementSystem->move(tempS, j, CENTER_Y, i);
                 mWall.push_back(tempS);
                 mVisualObjects.push_back(temp);
                 mTransComps.push_back(tempS->mTransform);
@@ -86,7 +88,7 @@ void Level::DrawBoard()
                 mPlayer->mMaterial->mShaderProgram = 0; //plain shader
                 //temp->mTransform->mMatrix.scale(0.15);
                 mPlayer->init();
-                mPlayer->move(j, CENTER_Y, i);
+                mMovementSystem->move(mPlayer, j, CENTER_Y, i);
                 mVisualObjects.push_back(mPlayer);
                 mTransComps.push_back(mPlayer->mTransform);
                 mNameComps.push_back(mPlayer->mNameComp);
@@ -95,7 +97,7 @@ void Level::DrawBoard()
                 mEnemy = new Enemy(&mShapeFactory);
                 mEnemy->init();
                 mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
-                mEnemy->move(j, CENTER_Y, i);
+                mMovementSystem->move(mEnemy, j, CENTER_Y, i);
                 mEnemies.push_back(mEnemy);
                 mVisualObjects.push_back(mEnemy);
                 mTransComps.push_back(mEnemy->mTransform);
@@ -107,22 +109,22 @@ void Level::DrawBoard()
     temp = mShapeFactory.createShape("Plain");
     temp->init();
     temp->mMaterial->mShaderProgram = 0;   //plain shader
-    temp->move(9.5f, -.5f, 8.0f);
+    mMovementSystem->move(temp, 9.5f, -.5f, 10.0f);
     mVisualObjects.push_back(temp);
     mTransComps.push_back(temp->mTransform);
     mNameComps.push_back(temp->mNameComp);
 
     for(auto i=0; i<3; i++)
     {
-    temp = mShapeFactory.createShape("Heart");
-    temp->init();
-    temp->mMaterial->mShaderProgram = 0;   //plain shader
-    temp->mTransform->mPosition = gsl::Vector3D(13.f, 9.f, 8.0f + 2*i);
-    temp->mTransform->mMatrix.setPosition(temp->mTransform->mPosition);
-    temp->mTransform->mMatrix.rotateY(180);
-    hearts.push_back(temp);
-    mVisualObjects.push_back(temp);
-    mTransComps.push_back(temp->mTransform);
+        temp = mShapeFactory.createShape("Heart");
+        temp->init();
+        temp->mMaterial->mShaderProgram = 0;   //plain shader
+        temp->mTransform->mPosition = gsl::Vector3D(13.f, 9.f, 8.0f + 2*i);
+        temp->mTransform->mMatrix.setPosition(temp->mTransform->mPosition);
+        temp->mTransform->mMatrix.rotateY(180);
+        hearts.push_back(temp);
+        mVisualObjects.push_back(temp);
+        mTransComps.push_back(temp->mTransform);
     }
 
     mFrustumSystem = new FrustumSystem(mCam);
@@ -130,17 +132,24 @@ void Level::DrawBoard()
     mFrustumSystem->init();
 
     //------------------------Skybox----------------------//
-    mSkyBox = new Skybox();
-    mSkyBox->init();
-    mVisualObjects.push_back(mSkyBox);
-    mSkyBox->mMaterial->mShaderProgram = 3;  //Skybox shader
-    mSkyBox->mMaterial->mTextureUnit =2;
+
+    temp = mShapeFactory.createShape("Square");
+    temp->init();
+    temp->mMaterial->mShaderProgram = 3;   //plain shader
+    mMovementSystem->move(temp, 9.f, 0.f, 9.f);
+    temp->mTransform->mMatrix.scale(30);
+    mVisualObjects.push_back(temp);
+    mTransComps.push_back(temp->mTransform);
+    temp->mMaterial->mTextureUnit = 2;
+    mNameComps.push_back(temp->mNameComp);
 
     //------------------------Light----------------------//
     mLight = new Light;
     mLight->mMaterial->mShaderProgram = 2;    //Phongshader
-    mLight->move(0.f, 0.f, 6.f);
+    mMovementSystem->move(mLight, 0.f, 0.f, 6.f);
     mLight->init();
+
+
 
     setupSound();
 }
@@ -148,7 +157,7 @@ void Level::DrawBoard()
 void Level::createShapes(string shapeID)
 {
     VisualObject* temp = mShapeFactory.createShape(shapeID);
-    temp->move(1,4,1);
+    mMovementSystem->move(temp, 1,4,1);
     temp->init();
     temp->mMaterial->mShaderProgram = 0;    //plain shader
     mTransComps.push_back(temp->mTransform);
@@ -210,7 +219,7 @@ void Level::checkCollision()
 {
     for(int i{0}; i<static_cast<int>(mTrophies.size()); i++){
         //kollisjon mot trofeer
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
+        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mTrophies[i]->mCollision))
         {
             if(trophies < static_cast<int>(mTrophies.size())){
                 if(mTrophies[i]->drawMe == true){
@@ -225,13 +234,13 @@ void Level::checkCollision()
         }
     }
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        if(mColSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
+        if(mCollisionSystem->CheckSphCol(mPlayer->mCollision, mEnemies[i]->mCollision))
         {
             mLives--;
             gsl::Vector3D playerP = {1,CENTER_Y,20};
             gsl::Vector3D currP = mPlayer->mTransform->mPosition;
             VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-            vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+            mMovementSystem->move(vPlayer, playerP.x-currP.x, 0, playerP.z-currP.z);
 
             hearts[mLives]->drawMe = false;
             if(mLives == 0)
@@ -263,6 +272,12 @@ void Level::setupSound()
     mSounds.push_back(tempSound);
 }
 
+void Level::update(Camera* dc, Input di)
+{
+    mMovementSystem->update(dc, mPlayer, di);
+
+}
+
 bool Level::wallCheck(int x, int z)
 {
     if(GameBoard[z][x] == 1)
@@ -278,7 +293,7 @@ void Level::resetGame()
 
 
     VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
-    vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
+    mMovementSystem->move(vPlayer, playerP.x-currP.x, 0, playerP.z-currP.z);
 
     if(mLives==0){
         for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
@@ -294,7 +309,7 @@ void Level::resetGame()
                 if(GameBoard[i][j] == 4){
                     gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
                     gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
-                    mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
+                    mMovementSystem->move(mEnemies[eID], enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
                     eID++;}
             }
         }}
@@ -302,59 +317,50 @@ void Level::resetGame()
 
 void Level::movePlayer()
 {
-    int EposX{static_cast<int>(mPlayer->mTransform->mPosition.x)};
-    int EposZ{static_cast<int>(mPlayer->mTransform->mPosition.z)};
-
-    if(mPlayer->mForward.x > 0)
-        EposX = std::ceil(mPlayer->mTransform->mPosition.x);
-    else if(mPlayer->mForward.x <0)
-        EposX = std::floor(mPlayer->mTransform->mPosition.x);
-    else{
-        if(mPlayer->mForward.z >0)
-            EposZ = std::ceil(mPlayer->mTransform->mPosition.z);
-        else if(mPlayer->mForward.z <0)
-            EposZ = std::floor(mPlayer->mTransform->mPosition.z);
-        else
-            qDebug() << "error in Level::movePlayer";}
-
-    if(wallCheck(EposX, EposZ))
+    mMovementSystem->movePlayer();
+    if(wallCheck(mPlayer->mMoveComp->posX, mPlayer->mMoveComp->posZ))
     {
         mPlayer->centerPlayer();
     }
     else
-        mPlayer->movePlayer();
+        mMovementSystem->moveForward(mPlayer, mPlayer->mMoveComp);
 }
 
-void Level::moveEnemy(double randNr)
+void Level::moveEnemy(int randNr)
 {
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
-        int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
-
-        if(mEnemies[i]->mForward.x > 0)
-            EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
-        else if(mEnemies[i]->mForward.x <0)
-            EposX = std::floor(mEnemies[i]->mTransform->mPosition.x);
+   for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+    mMovementSystem->moveEnemy(randNr,mEnemies);
+    if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
+    {
+        if(randNr<5){
+            mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
         else{
-            if(mEnemies[i]->mForward.z >0)
-                EposZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
-            else if(mEnemies[i]->mForward.z <0)
-                EposZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
-            else
-                qDebug() << "error in Level::moveEnemy";}
-
-        if(wallCheck(EposX, EposZ))
-        {
-            if(randNr<5){
-                mEnemies[i]->rotateForwardV();}
-            else{
-                mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
-        }
-        else
-            mEnemies[i]->moveEnemy();
+            mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
     }
+    else
+        mMovementSystem->moveForward(mEnemies[i], mEnemies[i]->mMoveComp);
+   }
 }
 
+void Level::spawnParticle()
+{
+    ParticleSystem *mParticle{nullptr};
+
+    mParticle = new ParticleSystem(&mShapeFactory, mPlayer);
+    mParticle->init();
+    mMovementSystem->move(mParticle, mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
+    mParticle->mMaterial->mShaderProgram = 0;   //plain shader
+    mParticles.push_back(mParticle);
+    mTransComps.push_back(mParticle->mTransform);
+    mNameComps.push_back(mParticle->mNameComp);
+
+}
+
+void Level::moveParticles(gsl::Vector3D mColor)
+{
+    mShapeFactory.mColor = mColor;
+    mMovementSystem->moveParticles(mColor,mParticles);
+}
 
 Script::Script(QObject *parent) : QObject(parent)
 {

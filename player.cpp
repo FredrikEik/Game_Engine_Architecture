@@ -5,14 +5,16 @@ Player::Player(ShapeFactory* f) : mx{0.0f}, my{0.0f}, mz{0.0f}
     factoryPtr = f;
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
+    mMoveComp = new MovementComponent;
+    mTransform->mScale = 0.5;
     mTransform->mPosition = gsl::Vector3D(mx,my,mz);
     mMesh = factoryPtr->getMesh(4);
     mCollision = factoryPtr->getColli(4);
-    mTransform->mMatrix.scale(0.5);
+    mTransform->mMatrix.scale(mTransform->mScale);
     mColSystem = new CollisionSystem;
     mCollision->setBoundingSphere(0.5, mTransform->mPosition);
     mMaterial = new MaterialComponent();
-    mMoveComp = new MovementComponent;
+
     mNameComp = new NameComponent();
     mNameComp->mName = "Player";
     mNameComp->objectID = 0;
@@ -38,16 +40,4 @@ void Player::centerPlayer()
     mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
     mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mCollision);
     mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mCollision);
-}
-
-void Player::movePlayer()
-{
-    move(mForward.x * mMoveComp->mPlayerSpeed, mForward.y * mMoveComp->mPlayerSpeed, mForward.z * mMoveComp->mPlayerSpeed);
-}
-
-void Player::setForward(float dx, float dz)
-{
-    mForward = {dx, 0, dz};
-    mTransform->mMatrix.setRotationToVector(mForward);
-    mTransform->mMatrix.scale(0.5);
 }

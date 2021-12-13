@@ -30,12 +30,12 @@ SOURCES += main.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     movementsystem.cpp \
+    particlesystem.cpp \
     player.cpp \
     renderwindow.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
-    skybox.cpp \
     soundmanager.cpp \
     soundsource.cpp \
     texture.cpp \
@@ -60,14 +60,13 @@ HEADERS += \
     math_constants.h \
     matrix3x3.h \
     matrix4x4.h \
-    movementcomponent.h \
     movementsystem.h \
+    particlesystem.h \
     player.h \
     renderwindow.h \
     shader.h \
     mainwindow.h \
     shapefactory.h \
-    skybox.h \
     soundmanager.h \
     soundsource.h \
     stb_image.h \

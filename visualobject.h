@@ -10,7 +10,7 @@ public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init();
-    virtual void move(float dx, float dy, float dz);
+    //virtual void move(float dx, float dy, float dz);
     bool drawMe{true};
 
     CollisionComponent* mCollision{nullptr};

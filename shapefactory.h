@@ -9,7 +9,6 @@
 #include "vertex.h"
 #include "shader.h"
 #include "gltypes.h"
-
 #include "visualobject.h"
 
 using namespace std;
@@ -72,6 +71,8 @@ public:
     CollisionComponent* getColli(int i);
     int getCount(){return mCounter;};
     void addCount(){mCounter++;};
+    MeshComponent* getParticleMesh();
+    gsl::Vector3D mColor{1,1,1};
 private:
     void readFile(std::string filename, MeshComponent* m);
     void subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, const gsl::Vector3D &c, int n);
@@ -81,6 +82,7 @@ private:
     int mCounter = 1;
     int objCounter=6;
     bool doOnce[6]{false};
+
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
     string enemyString = "../GEA2021/Assets/Enemy.obj";

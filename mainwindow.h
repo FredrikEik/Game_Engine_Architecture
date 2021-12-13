@@ -24,7 +24,8 @@ public:
     void selectWithMousePick(int index);
     void createStatusBar();
     void run();
-
+    void LiveCount(int lives);
+    void PointCount(int points);
 private slots:
     void on_pushButton_toggled(bool checked);
 

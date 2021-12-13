@@ -13,7 +13,7 @@ struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D mPosition;
-    //float scale = 1;
+    float mScale = 1;
 };
 
 struct MeshComponent
@@ -36,6 +36,17 @@ struct NameComponent
 {
     int objectID=0;
     std::string mName;
+};
+
+struct MovementComponent
+{
+    gsl::Vector3D mForward{0,0,1};
+    float mSpeed{0.05f};
+    float mRotateSpeed{0.1f};
+    int mMouseXlast{0};
+    int mMouseYlast{0};
+    int posX{0};
+    int posZ{0};
 };
 
 #endif // COMPONENT_H

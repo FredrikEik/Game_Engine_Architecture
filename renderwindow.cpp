@@ -125,11 +125,10 @@ void RenderWindow::init()
 
     //********************** create input **********************
     mMovementComponent = new MovementComponent();
-    mMovementSystem = new MovementSystem();
-    mCollisionSystem = new CollisionSystem();
+//    mMovementSystem = new MovementSystem();
+//    mCollisionSystem = new CollisionSystem();
 
     mLvl = new Level(&mPlayCamera);
-    mSkyBox = mLvl->mSkyBox;
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
     //initObject();
@@ -195,16 +194,24 @@ void RenderWindow::drawObject()
     glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
     glBindVertexArray(0);
 
-    glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mSkyBox->mTransform->mMatrix.constData());
-    glBindVertexArray(mSkyBox->mMesh->mVAO );
-    glDrawArrays(mSkyBox->mMesh->mDrawType, 0, mSkyBox->mMesh->mVertices.size());
-    glBindVertexArray(0);
 
     if(playM==false){
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
         glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
         glDrawArrays(mLvl->mFrustumSystem->mMesh->mDrawType, 0, mLvl->mFrustumSystem->mMesh->mVertices.size());
         glBindVertexArray(0);}
+    else{
+        for(int i{0}; i < mLvl->mParticles.size(); i++)
+        {
+            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mLvl->mParticles[i]->mTransform->mMatrix.constData());
+
+            glBindVertexArray(mLvl->mParticles[i]->mMesh->mVAO );
+            glDrawArrays(mLvl->mParticles[i]->mMesh->mDrawType, 0, mLvl->mParticles[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);
+        }
+    }
 }
 
 // Called each frame - doing the rendering
@@ -216,15 +223,29 @@ void RenderWindow::render()
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
     // HandleInput();
-    mMovementSystem->update(mCurrentCamera, mPlayer, mInput);
+    mLvl->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
 
-    double randNr = rand()%10;
+    mMainWindow->PointCount(mLvl->trophies*10);
+    mMainWindow->LiveCount(mLvl->mLives);
+
+    int randNr = rand() % 20;
+    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
     if(playM)
     {
         mLvl->moveEnemy(randNr);
         mLvl->movePlayer();
+        mLvl->moveParticles(gsl::Vector3D(r,g,b));
+        if(mLvl->mParticles.size()<20)
+            mLvl->spawnParticle();
+        for(int i{0}; i < mLvl->mParticles.size(); i++)
+        {
+            mLvl->mParticles[i]->update(frameCount);
+        }
     }
 
     //to clear the screen for each redraw
@@ -329,7 +350,6 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
-    static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
 
     if (mMainWindow)            //if no mainWindow, something is really wrong...
     {
@@ -578,7 +598,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 
     for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
     {
-        if(mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
+        if(mLvl->mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
         {
             mMainWindow->selectWithMousePick(i);
             mousePickCollide = true;
@@ -622,9 +642,9 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         mMovementComponent-> mMouseYlast = event->pos().y() - mMovementComponent->mMouseYlast;
 
         if (mMovementComponent->mMouseXlast != 0)
-            mCurrentCamera->yaw(mMovementComponent->mCameraRotateSpeed * mMovementComponent->mMouseXlast);
+            mCurrentCamera->yaw(mMovementComponent->mRotateSpeed * mMovementComponent->mMouseXlast);
         if (mMovementComponent->mMouseYlast != 0)
-            mCurrentCamera->pitch(mMovementComponent->mCameraRotateSpeed * mMovementComponent->mMouseYlast);
+            mCurrentCamera->pitch(mMovementComponent->mRotateSpeed * mMovementComponent->mMouseYlast);
     }
     mMovementComponent->mMouseXlast = event->pos().x();
     mMovementComponent->mMouseYlast = event->pos().y();
@@ -640,7 +660,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
         if (numDegrees.y() < 1)
             mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mMovementSystem->setCameraSpeed(mCurrentCamera,-0.001f);
+            mLvl->mMovementSystem->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
 }

@@ -91,13 +91,19 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
     if(checked){
-        ui->pushButton_2->setText("Stop");
+        ui->pushButton_2->setText("Restart");
         ui->dockWidget->hide();
-        ui->dockWidget_4->hide();
+        ui->RoationGroupBox->hide();
+        ui->TransformGroupBox->hide();
+        ui->ScaleGroupBox->hide();
+        ui->pushButton->hide();
     }else{
         ui->pushButton_2->setText("Play");
         ui->dockWidget->show();
-        ui->dockWidget_4->show();
+        ui->RoationGroupBox->show();
+        ui->TransformGroupBox->show();
+        ui->ScaleGroupBox->show();
+        ui->pushButton->show();
     }
 }
 
@@ -111,9 +117,6 @@ void MainWindow::on_actionAdd_Square_triggered()
 {
     mRenderWindow->mLvl->createShapes("Square");
     run();
-    //    QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);
-    //    QString temp;
-    //    item->setText(0, temp.fromStdString(a));
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
@@ -152,6 +155,16 @@ void MainWindow::run()
         Widgetitem->treeWidget()->clear();
 
     on_treeWidget_viewportEntered();
+}
+
+void MainWindow::LiveCount(int lives)
+{
+    ui->lifeCount->display(lives);
+}
+
+void MainWindow::PointCount(int points)
+{
+    ui->pointCount->display(points);
 }
 
 void MainWindow::on_treeWidget_viewportEntered()

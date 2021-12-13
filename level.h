@@ -6,6 +6,7 @@
 #include <vector>
 #include "camera.h"
 #include "enemy.h"
+#include "particlesystem.h"
 #include "shapefactory.h"
 
 class Script : public QObject
@@ -33,10 +34,11 @@ public:
     void createShapes(string shapeID);
     void readJS();
     void checkCollision();
-    void moveEnemy(double randNr);
+    void moveEnemy(int randNr);
     void movePlayer();
     void resetGame();
     void setupSound();
+    void update(Camera* dc, Input di);
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -49,8 +51,14 @@ public:
     FrustumSystem* mFrustumSystem;
     Enemy* mEnemy;
     Player* mPlayer;
-    Skybox *mSkyBox;
     Light * mLight{nullptr};
+    void spawnParticle();
+    void moveParticles(gsl::Vector3D color);
+    std::vector<ParticleSystem*> mParticles;
+    CollisionSystem* mCollisionSystem;
+    MovementSystem *mMovementSystem;
+    int trophies{0};
+    int mLives{3};
 private:
     static const int DIM_Z = 22;
     static const int DIM_X = 19;
@@ -60,10 +68,11 @@ private:
     bool wallCheck(int x, int z);
     Script *script{nullptr};
     Camera* mCam;
-    CollisionSystem* mColSystem;
+
+
     std::vector<VisualObject*> hearts;
-    int mLives{3};
-    int trophies{0};
+
+
     bool hit{false};
 };
 

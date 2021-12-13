@@ -331,6 +331,58 @@ CollisionComponent *ShapeFactory::getColli(int i)
     return myCollis[i];
 }
 
+MeshComponent *ShapeFactory::getParticleMesh()
+{
+    float i, j, k;
+    MeshComponent* m = new MeshComponent;
+    m->mDrawType = GL_TRIANGLES;
+
+    i = 0.1;
+    j = 0.1;
+    k = 0.1;
+    m->mVertices.push_back(Vertex{-i,-j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i,-j,-k,  mColor.x,mColor.y,mColor.z});       // bottom surface
+    m->mVertices.push_back(Vertex{-i, j,-k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{ i,-j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i, j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j,-k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{ i,-j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i, j,-k,  mColor.x,mColor.y,mColor.z});       // right surface
+    m->mVertices.push_back(Vertex{ i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{ i,-j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i, j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i,-j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{-i,-j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j, k,  mColor.x,mColor.y,mColor.z});       // top surface
+    m->mVertices.push_back(Vertex{ i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{-i,-j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i,-j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{-i,-j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i,-j,-k,  mColor.x,mColor.y,mColor.z});       //left surface
+    m->mVertices.push_back(Vertex{-i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{-i,-j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{-i, j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j, k,  mColor.x,mColor.y,mColor.z});   // back surface
+    m->mVertices.push_back(Vertex{ i, j,-k,  mColor.x,mColor.y,mColor.z});
+
+    m->mVertices.push_back(Vertex{ i, j,-k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{ i, j, k,  mColor.x,mColor.y,mColor.z});
+    m->mVertices.push_back(Vertex{-i, j, k,  mColor.x,mColor.y,mColor.z});
+
+    return m;
+}
+
 void ShapeFactory::readFile(std::string filename, MeshComponent* m)
 {
     //Open File

@@ -1,5 +1,7 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
+#include "visualobject.h"
+#include "level.h"
 
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
@@ -27,8 +29,8 @@ private slots:
 
 private:
     MovementComponent *mMovementComponent;
-    MovementSystem *mMovementSystem;
-    CollisionSystem* mCollisionSystem;
+//    MovementSystem *mMovementSystem;
+//    CollisionSystem* mCollisionSystem;
     Input mInput;
     bool playM = false;
     int levelOfDetail(int i);
@@ -43,7 +45,6 @@ private:
     void checkCollision();
 
 
-    Skybox *mSkyBox;
     Light * mLight{nullptr};
     Player* mPlayer;
     void setupSkyboxShader(int shaderIndex);
@@ -89,6 +90,7 @@ private:
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
+    int frameCount{0};
 
     QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
