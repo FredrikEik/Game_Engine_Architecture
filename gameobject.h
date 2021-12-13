@@ -17,6 +17,7 @@ public:
     CollisionComponent* mCollisionComp{nullptr};
     MeshComponent* mCollisionLines{nullptr};
     AIComponent* mAIComponent{nullptr};
+    SoundSourceComponent* mSoundSourceComp{nullptr};
     BallPhysicsComponent* mBallPhysicsComp{nullptr};
 };
 

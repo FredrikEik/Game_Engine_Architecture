@@ -81,6 +81,7 @@ public:
     std::vector<GameObject*> mPhysicsBalls{nullptr};
     void ResetBallVelocity();
 
+    SoundSource* gunShotSound{nullptr};
 private:
     //TODO InputHandler
 
@@ -99,7 +100,6 @@ private:
     Camera *mEditorCamera{nullptr};
 
     SoundSource* mStereoSound{nullptr};
-    SoundSource* m3DTestSound{nullptr};
 
     static GameEngine* mInstance;
     RenderWindow* mRenderwindow{nullptr};

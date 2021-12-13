@@ -112,14 +112,24 @@ void MainWindow::refreshList()
 void MainWindow::setID(int ID)
 {
     listWidget->setCurrentRow(ID);
+
+    // Small "on hit enemy" functunallity
     if(GameObjects[ID]->mAIComponent != nullptr)
     {
-                qDebug() << "dead";
-        GameObjects[ID]->mAIComponent->hp--;
         if(GameObjects[ID]->mAIComponent->hp <1)
+        {
+            GameObjects[ID]->mSoundSourceComp->mSoundSource[1]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
+            GameObjects[ID]->mSoundSourceComp->mSoundSource[1]->play();
             on_actionDelete_Selected_triggered();
-    }else
-        qDebug() << "this item is not ai";
+        }else
+        {
+            GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
+            GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->play();
+
+            GameObjects[ID]->mAIComponent->hp--;
+        }
+
+    }
 }
 
 void MainWindow::clean()

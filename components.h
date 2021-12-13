@@ -6,6 +6,7 @@
 #include "matrix4x4.h"
 #include "gltypes.h"
 #include "queue"
+#include "soundsource.h"
 
 #include <al.h>
 #include <alc.h>
@@ -81,7 +82,7 @@ class AIComponent
 {
 public:
     bool isAlive{true};
-    int hp{25};
+    int hp{5};
 };
 
 class BallPhysicsComponent
@@ -106,6 +107,17 @@ public:
     bool isInAir{true};
 };
 
+class SoundSourceComponent
+{
+public:
+    SoundSource* mSoundSource[3];
+    ALuint mSource;             ///< The sound source.
+    ALuint mBuffer;
+    gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
+    bool looping;
+    float gain;
+};
+
 class SoundListenerComponent
 {
 public:
@@ -115,15 +127,6 @@ public:
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};
 };
 
-class SoundSourceComponent
-{
-public:
-    ALuint mSource;             ///< The sound source.
-    ALuint mBuffer;
-    gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
-    bool looping;
-    float gain;
-};
 
 
 #endif // COMPONENTS_H

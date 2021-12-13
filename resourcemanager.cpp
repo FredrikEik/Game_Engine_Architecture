@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "texture.h"
 #include "transformsystem.h"
+#include "soundmanager.h"
 
 #include <QOpenGLFunctions>
 
@@ -81,6 +82,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         {
             tempGO->mAIComponent = new AIComponent();
         }
+        tempGO->mSoundSourceComp = foundAtIndex->second.mSoundSourceComp;
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath + std::to_string(objectIDcounter) ,*tempGO});
     }else{
         tempGO->mMeshComp = new MeshComponent();
@@ -96,11 +98,19 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             mMeshHandler->readFile(filepath, tempGO->mMeshComp, 2, tempGO->mCollisionComp,tempGO->mCollisionLines );
         }else{
             if (filepath.find(".obj") != std::string::npos)
-            {
+            {   //Hardcoded not ideal...
+                // Alle componenter som har lyd har sine egne sound sources som ikke er ideelt
+                // Skulle egentlig laget det som game objects og loade in alle lydene slik at jeg
+                // har en array med sound sources.
                 if (filepath.find("cacodemon") != std::string::npos)
                 {
                     qDebug() << "Added AI";
                     tempGO->mAIComponent = new AIComponent();
+                    tempGO->mSoundSourceComp = new SoundSourceComponent();
+                    tempGO->mSoundSourceComp->mSoundSource[0] = SoundManager::getInstance()->createSource("Damage sound", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                                                                                         gsl::SoundFilePath + "enemiesound.wav", false, 2.0f);
+                    tempGO->mSoundSourceComp->mSoundSource[1] = SoundManager::getInstance()->createSource("DeadSound", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                                                                                         gsl::SoundFilePath + "enemydead.wav", false, 2.0f);
                 }
                 mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
             }

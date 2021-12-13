@@ -27,8 +27,9 @@ GameEngine::GameEngine()
 
 void GameEngine::GameLoop()
 {
+    SoundManager::getInstance()->updateListener(mGameCamera->position(), gsl::Vector3D(0,0,0), mGameCamera->getFowrardVector(), mGameCamera->up());
     rotateLight();
-    //m3DTestSound->setPosition(mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.getPosition());
+    //m3DTestSound->setPosition(mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.getPosition());
     mStereoSound->setPosition(gsl::Vector3D(0,0,0));
     HandleInput();
 
@@ -40,8 +41,6 @@ void GameEngine::GameLoop()
 
 void GameEngine::SetUpScene()
 {
-
-
     mResourceManager = new class ResourceManager();
     mPhysicsBallSystem = new PhysicsBallSystem();
     mTransformSystem = new TransformSystem();
@@ -78,9 +77,9 @@ void GameEngine::SetUpScene()
                 "dog", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                 gsl::SoundFilePath + "rock_background.wav", false, 1.0f);
 
-    m3DTestSound = SoundManager::getInstance()->createSource(
+    gunShotSound = SoundManager::getInstance()->createSource(
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                gsl::SoundFilePath + "rock_background_mono.wav", false, 1.0f);
+                gsl::SoundFilePath + "gunshot.wav", false, 1.0f);
 
     //m3DTestSound->play();
 //    mStereoSound->play();

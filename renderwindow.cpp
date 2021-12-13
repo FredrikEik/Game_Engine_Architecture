@@ -814,6 +814,7 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
+    bool &isPlaying = GameEngine::getInstance()->bIsPlaying;
     Input &input = GameEngine::getInstance()->mInput;
     if (event->button() == Qt::RightButton)
         input.RMB = true;
@@ -830,6 +831,8 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         //Using mMouseXYlast as deltaXY so we don't need extra variables
         xMousePos = event->pos().x();
         yMousePos = event->pos().y();
+        if(isPlaying)
+            GameEngine::getInstance()->gunShotSound->play();
     }
     //qDebug() << "Mouse position" << xMousePos << "," << yMousePos;
 
@@ -841,6 +844,7 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
 
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+
     Input &input = GameEngine::getInstance()->mInput;
     if (event->button() == Qt::RightButton)
         input.RMB = false;
