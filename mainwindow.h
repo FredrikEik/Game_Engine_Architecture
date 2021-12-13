@@ -39,6 +39,8 @@ public:
 
     const std::string getCurrentLevelName() const;
     std::string levelName{""};
+    float randomNumber(int min, int max, bool negative = false);
+    
 public slots:
 
     void on_PlayStop_toggled(bool checked);

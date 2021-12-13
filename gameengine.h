@@ -17,6 +17,7 @@ class MainWindow;
 class PhysicsBallSystem;
 class CollisionSystem;
 class TransformSystem;
+class Particle;
 
 ///Core Engine class to handle
 class GameEngine : public QObject
@@ -63,6 +64,7 @@ public:
 
     GameObject *mXYZaxis{nullptr};
     GameObject* mPlayer{nullptr};
+    GameObject* mParticle{nullptr};
     gsl::Vector3D initPlayerPos{0,0,0};
 
     GameObject* mLight{nullptr};
@@ -82,6 +84,8 @@ public:
     void ResetBallVelocity();
 
     SoundSource* gunShotSound{nullptr};
+
+    Particle* particle1;
 private:
     //TODO InputHandler
 

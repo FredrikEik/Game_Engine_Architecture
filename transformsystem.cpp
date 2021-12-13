@@ -122,20 +122,6 @@ void TransformSystem::setRotation(GameObject *obj, gsl::Vector3D rotateToValue)
     updateMatrix(obj);
 }
 
-void TransformSystem::setCollisionRotation(GameObject *obj, float deg)
-{
-
-//    float y = deg - obj->mCollisionComp->mRotation.getY();
-
-
-//    obj->mCollisionComp->mRotation.setY(y+obj->mCollisionComp->mRotation.getY());
-
-
-//    obj->mCollisionComp->mScaleMatrix.rotateY(y);
-
-
-    updateMatrix(obj);
-}
 
 void TransformSystem::updateMatrix(GameObject* obj)
 {

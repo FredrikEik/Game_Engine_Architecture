@@ -20,6 +20,8 @@
 #include "soundmanager.h"
 #include "gameengine.h"
 #include "transformsystem.h"
+#include "particle.h"
+#include "particlesystem.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -193,6 +195,7 @@ void RenderWindow::render()
 
 
 
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // For GameObjects
     for(unsigned long long i{0}; i < mGameObjects.size(); i++)
@@ -323,6 +326,7 @@ void RenderWindow::render()
         {
         //send data to shader
 
+
             glUseProgram(mShaderPrograms[2]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
@@ -375,6 +379,9 @@ void RenderWindow::render()
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawElements(mGameObjects[i]->mMeshComp->mDrawType, mGameObjects[i]->mMeshComp->mIndices->size(), GL_UNSIGNED_INT, nullptr);
+//            glDrawArraysInstanced(mGameObjects[i]->mMeshComp->mDrawType, 0,mGameObjects[i]->mMeshComp->mIndices->size(), 50);
+            mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
+            mObjectsDrawn++;
         }else
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
@@ -407,7 +414,20 @@ void RenderWindow::render()
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
+    }
+    std::vector<Particle*> ptcl = ParticleSystem::particles;
+    for(int i = 0; i < ptcl.size(); i++)
+    {
+        if(ptcl.at(i) == nullptr)
+            continue;
 
+        glUseProgram( mShaderPrograms[0]->getProgram() );
+        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, ptcl.at(i)->mMatrix.constData());
+
+        glBindVertexArray( ptcl.at(i)->mVAO );
+        glDrawArrays(ptcl.at(i)->mDrawType, 0, ptcl.at(i)->mVertices.size());
     }
 
     //Calculate framerate before

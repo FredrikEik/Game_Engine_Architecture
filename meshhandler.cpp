@@ -30,6 +30,9 @@ void MeshHandler::init(MeshComponent &MeshComp, int LODlvl)
         //must call this to use OpenGL functions
         initializeOpenGLFunctions();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         //Vertex Array Object - VAO
         glGenVertexArrays( 1, &MeshComp.mVAO[LODlvl] );
         glBindVertexArray( MeshComp.mVAO[LODlvl] );

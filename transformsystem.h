@@ -11,12 +11,11 @@ public:
 
     static TransformSystem* getInstance();
 
-    void setPosition(GameObject* obj, gsl::Vector3D moveToPos);
-    void setScale(GameObject* obj, gsl::Vector3D scaleToValue);
-    void setRotation(GameObject* obj, gsl::Vector3D rotateToValue);
-    void setCollisionRotation(GameObject* obj, float deg);
+    static void setPosition(GameObject* obj, gsl::Vector3D moveToPos);
+    static void setScale(GameObject* obj, gsl::Vector3D scaleToValue);
+    static void setRotation(GameObject* obj, gsl::Vector3D rotateToValue);
 private:
-    void updateMatrix(GameObject* obj);
+    static void updateMatrix(GameObject* obj);
     static TransformSystem* mInstance;
 
     bool rotateOnce{true};

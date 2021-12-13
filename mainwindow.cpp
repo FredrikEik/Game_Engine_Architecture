@@ -9,10 +9,15 @@
 #include <QStyleFactory>
 #include <QMessageBox>
 
+#include<time.h>
+#include<cstdlib>
+#include <random>
+
 #include "renderwindow.h"
 #include "gameengine.h"
 #include "transformsystem.h"
 #include "collisionsystem.h"
+#include "particlesystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -109,13 +114,33 @@ void MainWindow::refreshList()
     }
 }
 
+float MainWindow::randomNumber(int min, int max, bool negative)
+{
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(min, max); // define the range
+    float posrnd = distr(rd);
+    float negrnd = -distr(rd);
+
+    srand(time(0));
+    int rand = 1-(std::rand() % 2);
+    qDebug() << "Rand: " << rand;
+    if(rand || !negative)
+    {
+        return posrnd;
+    }else
+        return negrnd;
+}
+
 void MainWindow::setID(int ID)
 {
     listWidget->setCurrentRow(ID);
 
+
     // Small "on hit enemy" functunallity
-    if(GameObjects[ID]->mAIComponent != nullptr)
+    if(GameObjects[ID]->mAIComponent != nullptr && GameEngine::getInstance()->bIsPlaying)
     {
+//        particlePlay(object, number, intervall, velocity, position, gravity, lifelenth );
         if(GameObjects[ID]->mAIComponent->hp <1)
         {
             GameObjects[ID]->mSoundSourceComp->mSoundSource[1]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
@@ -123,6 +148,12 @@ void MainWindow::setID(int ID)
             on_actionDelete_Selected_triggered();
         }else
         {
+            //Generate random number
+
+
+
+            ParticleSystem::addParticle(new Particle(gsl::Vector3D(randomNumber(0,3,true),randomNumber(1,4),randomNumber(0,3,true)), GameObjects[ID]->mTransformComp->mMatrix.getPosition()));
+
             GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
             GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->play();
 
@@ -357,7 +388,7 @@ void MainWindow::on_TranslateXspinBox_valueChanged(double arg1)
         return;
 
     gsl::Vector3D pos = GameObjects[ObjectListIndex]->mTransformComp->mMatrix.getPosition();
-    TransformSystem::getInstance()->setPosition(GameObjects[ObjectListIndex], gsl::Vector3D(arg1,pos.y,pos.z));
+    TransformSystem::setPosition(GameObjects[ObjectListIndex], gsl::Vector3D(arg1,pos.y,pos.z));
 }
 
 

@@ -43,6 +43,7 @@ public:
 
 
     std::vector<GameObject*> mGameObjects;
+    std::vector<GameObject*> mParticles;
 
 
 

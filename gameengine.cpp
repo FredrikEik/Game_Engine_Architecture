@@ -15,6 +15,9 @@
 #include "collisionsystem.h"
 #include "constants.h"
 #include "transformsystem.h"
+#include "particlesystem.h"
+
+#include "particle.h"
 
 
 // Make Singelton
@@ -29,6 +32,7 @@ void GameEngine::GameLoop()
 {
     SoundManager::getInstance()->updateListener(mGameCamera->position(), gsl::Vector3D(0,0,0), mGameCamera->getFowrardVector(), mGameCamera->up());
     rotateLight();
+    ParticleSystem::update();
     //m3DTestSound->setPosition(mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.getPosition());
     mStereoSound->setPosition(gsl::Vector3D(0,0,0));
     HandleInput();
@@ -97,6 +101,10 @@ void GameEngine::SetUpScene()
 
 void GameEngine::SetUpObjects()
 {
+//    mParticle = mResourceManager->CreateObject("plane.obj", false, "blood.bmp");
+//    mRenderwindow->mGameObjects.push_back(mParticle);
+
+
     mXYZaxis = mResourceManager->CreateObject("xyz",false,"plain");
     mRenderwindow->mGameObjects.push_back(mXYZaxis);
 

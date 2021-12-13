@@ -22,5 +22,6 @@ namespace gsl  //Game School Lib
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
+    const float Gravity{-9.81};
 }
 #endif // CONSTANTS_H
