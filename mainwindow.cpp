@@ -85,6 +85,7 @@ void MainWindow::init()
     ui->comboBox->addItem("Cube");
     ui->comboBox->addItem("Triangle");
     ui->comboBox->addItem("Goat");
+    ui->comboBox->addItem("HudSquare");
 }
 
 void MainWindow::addObjectToWorldList(std::string name)

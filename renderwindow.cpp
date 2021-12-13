@@ -27,6 +27,7 @@
 #include "objimport.h"
 #include "soundmanager.h"
 
+
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
 
@@ -287,8 +288,12 @@ void RenderWindow::render()
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.constData());
+            if (ObjFactory->mGameObject[i]->bHudElement)// this should ake it 2d. hopefully
+                glUniform1i( m2DUniform1, 1);
+            else
+                glUniform1i( m2DUniform1, 0);
             //draw the object
-            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox")
+            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox" && !ObjFactory->mGameObject[i]->bHudElement)
             {
                 if(frustumCulling(i))
                     continue;
@@ -325,8 +330,6 @@ void RenderWindow::render()
 
         }
         // Hud 2d render
-        if (bPlayGame)
-            drawHUD();
     }
 
     calculateFramerate();
@@ -341,6 +344,7 @@ void RenderWindow::setupPlainShader(int shaderIndex)
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+    m2DUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "HudElement");
 }
 
 void RenderWindow::setupTextureShader(int shaderIndex)
@@ -349,6 +353,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    m2DUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "HudElement");
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -659,41 +664,6 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
         test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 100.f));
         qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
-}
-
-void RenderWindow::HUD()
-{
-    if (HUDtex == 0)
-        //HUDtex = loadTexture("../Assets/Textures/hund.bmp");
-    /*glBindTexture(GL_TEXTURE_2D, HUDtex);
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0);     glVertex2f(0.05, 0.05);
-    glTexCoord2f(1.0, 1.0);     glVertex2f(0.30, 0.05);
-    glTexCoord2f(1.0, 0.0);     glVertex2f(0.30, 0.15);
-    glTexCoord2f(0.0, 0.0);     glVertex2f(0.05, 0.15);
-    glEnd();*/
-}
-
-void RenderWindow::drawHUD()
-{
-    // swap to 2d
-    /*glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.0, width(), height(), 0.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    // draw hud
-    HUD();
-
-    // undo the first stuff
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();*/
 }
 
 bool RenderWindow::frustumCulling(int gameObjectIndex)

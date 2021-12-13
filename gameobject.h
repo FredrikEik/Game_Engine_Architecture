@@ -15,6 +15,7 @@ public:
 
     std::string mName;
     int mTexture = 0;
+    bool bHudElement { false };
 
 //    MeshComponent* MeshComp = nullptr;
     MeshComponent* getMeshComp(){return MeshComp;}

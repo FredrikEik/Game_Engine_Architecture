@@ -48,6 +48,12 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.3f, 1.4f, 0.5f);
         willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.3f, .1f, -0.5f);
     }
+    else if (objectName == "HudSquare")
+    {
+        willCreateObject = new Cube;
+        willCreateObject->mTexture = 1;
+        willCreateObject->bHudElement = true;
+    }
     else
         return;
 

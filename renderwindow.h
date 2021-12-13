@@ -82,10 +82,6 @@ public:
 
     void mousePickingRay(QMouseEvent *event);
 
-    void HUD();
-    GLuint HUDtex { 0 };
-    void drawHUD();
-
     bool mUseFrustumCulling{true};
     bool mGameCamAsFrustumCulling{false};
 
@@ -117,12 +113,14 @@ private:
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
+    GLint m2DUniform{-1};
 
     void setupTextureShader(int shaderIndex);
     GLint mMatrixUniform1{-1};
     GLint vMatrixUniform1{-1};
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
+    GLint m2DUniform1{-1};
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
