@@ -47,10 +47,29 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 		{
 			ImGui::Begin("Particle Editor");
 			ParticleComponent* component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
-				assert(component);
+			assert(component);
+
+			bool bIsAdditive = component->blendDFactor == GL_ONE;
+			bool bShouldBeAdditive = bIsAdditive;
+			ImGui::Checkbox("Additive Blending", &bShouldBeAdditive);
+
+			if (bIsAdditive != bShouldBeAdditive)
+			{
+				component->blendDFactor = bShouldBeAdditive ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA;
+			}
+
+
+
 			ImGui::SliderInt("Texture Rows##particle", &component->textureRows, 1, 20);
 			ImGui::InputInt("Spawn Rate##particle", (int*)&component->spawnRate, 1, 10);
-			ImGui::InputInt("Max Particles##particle", (int*)&component->maxParticles, 10, 100);
+			if (ImGui::InputInt("Max Particles##particle",
+				(int*)&component->maxParticles, 10, 100))
+			{
+				ParticleSystem::initMesh(component, component->maxParticles);
+			}
+		
+			ImGui::NewLine();
+
 			if (ImGui::CollapsingHeader("Particle Defaults"))
 			{
 				//ImGui::InputFloat3("Position", &component->particleBlueprint.particle.position.x);
@@ -67,6 +86,8 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 					ImGui::ColorPicker4("End Color", &component->particleBlueprint.particle.endColor.x);
 				}
 			}
+
+			ImGui::NewLine();
 
 			if (ImGui::CollapsingHeader("Particle Offsets"))
 			{

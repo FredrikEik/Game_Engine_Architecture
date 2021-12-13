@@ -277,7 +277,8 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
     shader->use();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     static float lastSpawned = 0;
     lastSpawned += deltaTime;
     for (auto& it : emitters)
@@ -295,7 +296,11 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
         
         if (it.activeParticles <= 0)
             continue;
+
+        glBlendFunc(it.blendSFactor, it.blendDFactor);
+
         std::sort(&it.particles[0], &it.particles[it.lastUsedParticle]);
+        //std::sort(it.particles.begin(), it.particles.end());
         int breakIndex{};
         for (uint32 i{}; i < it.maxParticles; ++i)
         {
@@ -309,10 +314,10 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
                 break;
             }
             p.currentLife -= deltaTime;
-            if (p.currentLife < 0.f)
+            if (p.currentLife <= 0.f)
             {
                 p.active = false;
-                p.cameraDistance = -1.f;
+                p.cameraDistance = -100000.f;
             }
             p.velocity += p.acceleration * deltaTime;
             p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;

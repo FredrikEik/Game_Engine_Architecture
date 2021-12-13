@@ -4,6 +4,7 @@
 #include <iostream>
 #include <typeindex>
 #include "../ECSManager.h"
+
 void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 {
 	std::ifstream file(filePath);
@@ -34,8 +35,6 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 			}
 		}
 	}
-
-
 	file.close();
 }
 

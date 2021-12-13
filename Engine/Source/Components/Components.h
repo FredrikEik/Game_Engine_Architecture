@@ -230,16 +230,17 @@ struct ParticleComponent final : public Component
 
 	struct Particle 
 	{
-		glm::vec4 startColor{}, endColor{};
+		glm::vec4 startColor{1,0,0,1}, endColor{1,0,0,1};
 		glm::vec3 position{};
 		glm::vec3 velocity{};
 		glm::vec3 acceleration{};
-		float totalLife{}, currentLife{}, cameraDistance{ -1.f }, startSize{ 1 }, endSize{ 1 };
+		float totalLife{}, currentLife{}, cameraDistance{ -100000.f }, startSize{ 1 }, endSize{ 1 };
 		float textureIndex{ 1 };
 		bool active{ false };
 		bool operator<(const Particle& other)
 		{
 			return (this->active && this->cameraDistance > other.cameraDistance) || (this->active && !other.active);
+			//return (this->cameraDistance > other.cameraDistance);
 		}
 	};
 
@@ -261,14 +262,18 @@ struct ParticleComponent final : public Component
 	std::vector<float> colorData;
 	std::vector<float> uvBlendingData;
 
-	int textureRows{ 0 };
+	int textureRows{ 1 };
 
-	uint32 maxParticles{};
+	uint32 maxParticles{1};
 	uint32 activeParticles{};
 	uint32 lastUsedParticle{};
 	uint32 spawnRate{};
 	float timeSinceLastSpawn{};
 	float emitterLifeTime{};
+
+	GLenum blendSFactor{ GL_SRC_ALPHA };
+	GLenum blendDFactor{ GL_ONE_MINUS_SRC_ALPHA };
+
 
 	ParticleBlueprint particleBlueprint;
 

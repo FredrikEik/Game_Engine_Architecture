@@ -97,6 +97,8 @@ JSON ParticleComponent::json()
 	{"maxParticles", maxParticles},
 	{"spawnRate", spawnRate},
 	{"emitterLifeTime", emitterLifeTime},
+	{"blendSFactor", blendSFactor},
+	{"blendDFactor", blendDFactor},
 	{"mesh", mesh.json()},
 	{"texture", texture.json()},
 	{"particleBlueprint", {
@@ -125,7 +127,6 @@ JSON ParticleComponent::json()
 		{"lifeMaxOffset", particleBlueprint.lifeMaxOffset}
 	}
 	}
-
 	};
 	return json;
 }
@@ -137,13 +138,12 @@ void ParticleComponent::jsonParse(const JSON& json)
 	auto vec4 = [](const JSON& json)
 	{return glm::vec4(json[0], json[1], json[2], json[3]); };
 
-	//std::cout << std::setw(4) << json << std::endl;
-	//std::cout << "\n\n";
-	//return;
 	textureRows = json["textureRows"];
 	maxParticles = json["maxParticles"];
 	spawnRate = json["spawnRate"];
 	emitterLifeTime = json["emitterLifeTime"];
+	blendSFactor = json["blendSFactor"];
+	blendDFactor = json["blendDFactor"];
 	mesh.jsonParse(json["mesh"]);
 	texture.jsonParse(json["texture"]);
 

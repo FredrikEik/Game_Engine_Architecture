@@ -36,7 +36,9 @@ void TextureSystem::loadImageWithAlpha(const std::filesystem::path& filePath, Te
 	textureComponent->rgbImage = stbi_load(filePath.generic_string().c_str(),
 		&textureComponent->width, &textureComponent->height, &textureComponent->numberOfChannels, 0);
 
-	assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
+	if (!textureComponent->rgbImage)
+		return;
+	//assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
 
 	glGenTextures(1, &textureComponent->textureID);
 	glBindTexture(GL_TEXTURE_2D, textureComponent->textureID);
