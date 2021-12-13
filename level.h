@@ -60,7 +60,6 @@ public:
     Player *mPlayer;
     XYZ *xyz;
     Light *mLight{nullptr};
-   // Particles *mParticle;
 
 
     bool wallCheck(int z, int x);
@@ -71,6 +70,9 @@ public:
     void GameLoop();
     void spawnParticle();
 
+    int HowManytrophies = 0;
+    int trophies{0};
+    int mLives{3};
 private:
     static const int DIM_X = 19;
     static const int DIM_Z = 22;
@@ -82,10 +84,10 @@ private:
     Camera* mCam;
     CollisionSystem* mColSystem;
 
-    int mLives{3};
+
     bool isValidPos = false;
     int angle =0;
-    int trophies{0};
+
 };
 
 #endif // LEVEL_H

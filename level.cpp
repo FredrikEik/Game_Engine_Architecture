@@ -18,7 +18,7 @@ Level::~Level()
     {
         delete mVisualObjects[i];
     }
-    delete mLight; /*delete mSkyBox;*/ delete mFrustumSystem;
+    delete mLight; delete mFrustumSystem;
 
     mVisualObjects.clear();
     mTransformComp.clear();
@@ -28,15 +28,14 @@ Level::~Level()
 // 0 - coins
 // 1 - wall
 // 2 - Player
-// 3 - Particle
-// 4 - ghost initial positions
+// 3 - ghost initial positions
 
 int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
 {  //0                1         5       19
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
    {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
-   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,0,0,3,1,0,0,0,1,0,0,0,1,0,0,3,0,1},
    {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
    {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
@@ -44,13 +43,13 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
-   {1,0,0,0,0,0,0,1,4,4,4,1,0,0,0,0,0,0,1},
-   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
+   {1,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,3,1,1,0,1,0,1,1,1,1},// 12
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
    {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
-   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,3,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
    {1,2,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
@@ -83,6 +82,7 @@ void Level::DrawBoard()
                 mTrophies.push_back(tempC);
                 mTransformComp.push_back(tempC->mTransform);
                 mNameComp.push_back(tempC->mNameComp);
+                HowManytrophies++;
             }
             else if(GameBoard[i][j] == 1){
                 temp = mShapeFactory.createShape("Square");
@@ -104,7 +104,7 @@ void Level::DrawBoard()
                 mTransformComp.push_back(mPlayer->mTransform);
                 mNameComp.push_back(mPlayer->mNameComp);
             }
-            else if(GameBoard[i][j] == 4){
+            else if(GameBoard[i][j] == 3){
                 mEnemy = new Enemy(&mShapeFactory);
                 mEnemy->init();
                 mEnemy->mMaterial->mShaderProgram = 0;    //plain shader
@@ -124,7 +124,6 @@ void Level::DrawBoard()
     temp->move(9.5f, -0.5f, 11.0f);
     mVisualObjects.push_back(temp);
     mTransformComp.push_back(temp->mTransform);
-
     mNameComp.push_back(temp->mNameComp);
 
 
@@ -150,19 +149,9 @@ void Level::DrawBoard()
     mLight->move(0.f, 0.f, 6.f);
     mLight->init();
 
-
-
-    //makes the soundmanager
-    //it is a Singleton!!!
-//    SoundManager::getInstance()->init();
-
-
     xyz = new XYZ;
     xyz->init();
     mVisualObjects.push_back(xyz);
-
-
-
 
 }
 
@@ -244,6 +233,7 @@ void Level::checkCollision()
                 if(mTrophies[i]->drawMe == true){
                     playSound(1);
                     trophies++;
+
                     mTrophies[i]->drawMe = false;} //for å ikke tegne opplukket trofè
                 else
                     continue;
@@ -283,7 +273,8 @@ void Level::resetGame()
     VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
     vPlayer->move(playerP.x-currP.x, 0, playerP.z-currP.z);
 
-    if(mLives==0){
+
+
         for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
         {
             mVisualObjects[i]->drawMe = true;
@@ -294,13 +285,15 @@ void Level::resetGame()
         for(int i = 0; i<DIM_Z;i++)
         {
             for(int j = 0; j<DIM_X; j++){
+
                 if(GameBoard[i][j] == 4){
+
                     gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
                     gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
                     mEnemies[eID]->move(enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
                     eID++;}
             }
-        }}
+        }
 }
 
 void Level::spawnParticle()
@@ -335,14 +328,12 @@ void Level::SoundHandler()
                 "../GEA2021/Assets/Sound/pacman_chomp.wav", false, 1.0f);
     mSound.push_back(tempSound);
 
-
-
-
 }
 
 void Level::playSound(int SoundID)
 {
     mSound[SoundID]->play();
+
 }
 
 bool Level::wallCheck(int x, int z)
@@ -371,7 +362,7 @@ void Level::movePlayer()
             qDebug() << "error in Level::moveEnemy";}
 
 
-    // mEnemies[i]->moveEnemy();
+
     if(wallCheck(EposX, EposZ))
     {
         mPlayer->centerPlayer();
@@ -403,12 +394,6 @@ void Level::moveEnemy(int randNum)
         int EposX{static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
         int EposZ{static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
 
-        if(i == 0 || i ==1)
-        {
-            mEnemies[i]->goToPlayer(mPlayer->mTransform->mPosition);
-        }
-
-
         if(mEnemies[i]->mForward.x > 0)
             EposX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
         else if(mEnemies[i]->mForward.x <0)
@@ -421,20 +406,15 @@ void Level::moveEnemy(int randNum)
             else
                 qDebug() << "error in Level::moveEnemy";}
 
-
-
-        if(wallCheck(EposZ, EposX))
+        if(wallCheck(EposX, EposZ))
         {
             if(randNum<5){
-                mEnemies[i]->mTransform->mMatrix.rotateY(90);
                 mEnemies[i]->rotateForwardV();}
             else{
-                mEnemies[i]->mTransform->mMatrix.rotateY(-90);
                 mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV(); mEnemies[i]->rotateForwardV();}
         }
         else
             mEnemies[i]->moveEnemy();
-
     }
 
 }

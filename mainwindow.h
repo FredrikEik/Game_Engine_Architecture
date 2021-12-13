@@ -24,6 +24,8 @@ public:
     ~MainWindow();
     void SelectWithMousePick(int index);
     void run();
+    void LiveCount(int lives);
+    void PointCount(int points);
 
 private slots:
     void on_pushButton_toggled(bool checked);
@@ -67,6 +69,7 @@ private slots:
     void on_RotateZM_clicked();
 
     void on_RoatetXM_clicked();
+
 
 
 

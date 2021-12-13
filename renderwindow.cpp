@@ -217,21 +217,20 @@ void RenderWindow::drawObjects()
             glBindVertexArray(0);
         }
 
-
     }
 
     if(playM==true){
-    for(int i{0}; i < mLvl->mParticles.size(); i++)
-    {
+        for(int i{0}; i < mLvl->mParticles.size(); i++)
+        {
 
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mLvl->mParticles[i]->mTransform->mMatrix.constData());
 
-        glBindVertexArray(mLvl->mParticles[i]->mMesh->mVAO );
-        glDrawArraysInstanced(mLvl->mParticles[i]->mMesh->mDrawType, 0, mLvl->mParticles[i]->mMesh->mVertices.size(),20);
-        glBindVertexArray(1);
-    }
+            glBindVertexArray(mLvl->mParticles[i]->mMesh->mVAO );
+            glDrawArrays(mLvl->mParticles[i]->mMesh->mDrawType, 0, mLvl->mParticles[i]->mMesh->mVertices.size());
+            glBindVertexArray(0);
+        }
     }
 
 
@@ -256,7 +255,6 @@ void RenderWindow::drawObjects()
 void RenderWindow::render()
 {
 
-
     mTimeStart.restart(); //restart FPS clock
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -266,6 +264,9 @@ void RenderWindow::render()
     mInputSystem->update(mPlayer,mCurrentCamera,mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
+
+    mMainWindow->PointCount(mLvl->trophies*10);
+    mMainWindow->LiveCount(mLvl->mLives);
 
     int randNr = rand() % 20;
     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -278,20 +279,14 @@ void RenderWindow::render()
         mLvl->moveParticles(gsl::Vector3D(r,g,b));
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
-             mLvl->mParticles[i]->update(frameCount);}
-        if(frameCount == 2){
+            mLvl->mParticles[i]->update(frameCount);}
+        /*if(frameCount == 2)*/{
             if(mLvl->mParticles.size()<20)
-             mLvl->spawnParticle();}
+                mLvl->spawnParticle();}
     }
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-
-
-
 
     drawObjects();
 
@@ -653,7 +648,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
-   // static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
+    // static int frameCount{0};                       //counting actual frames for a quick "timer" for the statusbar
 
     if (mMainWindow)            //if no mainWindow, something is really wrong...
     {

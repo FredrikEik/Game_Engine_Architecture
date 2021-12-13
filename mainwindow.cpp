@@ -82,6 +82,7 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
+
 }
 
 //Example of a slot called from the button on the top of the program.
@@ -96,14 +97,20 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
     if(checked){
-        ui->pushButton_2->setText("Stop");
+        ui->pushButton_2->setText("Restart");
     ui->dockWidget_2->hide();
-    ui->dockWidget_4->hide();
+    ui->DetailGroupBox->hide();
+    ui->ScaleGroupBox->hide();
+    ui->ToggleWF->hide();
+
+
     }
     else{
         ui->pushButton_2->setText("Play");
         ui->dockWidget_2->show();
-        ui->dockWidget_4->show();
+        ui->DetailGroupBox->show();
+        ui->ScaleGroupBox->show();
+        ui->ToggleWF->show();
     }
 }
 
@@ -113,29 +120,35 @@ void MainWindow::run()
 //        Widgetitem = new QTreeWidgetItem(ui->treeWidget);
 //    else
 //        Widgetitem->treeWidget()->clear();
-//    on_treeWidget_viewportEntered();
+    //    on_treeWidget_viewportEntered();
+}
+
+
+
+void MainWindow::LiveCount(int lives)
+{
+    ui->LiveCount->display(lives);
+}
+
+void MainWindow::PointCount(int points)
+{
+    ui->PointCount->display(points);
 }
 
 void MainWindow::on_actionAdd_Circle_triggered()
 {
     mRenderWindow->mLvl->createShapes("Circle");
-  //  run();
-
 }
 
 void MainWindow::on_actionAdd_Square_triggered()
 {
    mRenderWindow->mLvl->createShapes("Square");
-  // run();
 }
 
 void MainWindow::on_actionAdd_Monkey_triggered()
 {
    mRenderWindow->mLvl->createShapes("Monkey.obj");
-   //run();
 }
-
-
 
 void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
 {

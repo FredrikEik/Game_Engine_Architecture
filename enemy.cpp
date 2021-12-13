@@ -8,8 +8,8 @@ Enemy::Enemy(ShapeFactory* f)
     mMesh = factoryPtr->getMesh(5);
     mCollision = new CollisionComponent;
     //mCollision = factoryPtr->getColli(5);
-    mTransform->mMatrix.scale(2);
-    mCollision->setBoundingSphere(0.4, mTransform->mPosition);
+    mTransform->mMatrix.scale(0.2);
+     mCollision->setBoundingSphere(factoryPtr->getColli(5)->radius, mTransform->mPosition);
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
     mNameComp->ObjectName = "Enemy";
@@ -26,6 +26,8 @@ Enemy::~Enemy()
 }
 void Enemy::moveEnemy()
 {
+    mTransform->mMatrix.setRotationToVector(mForward);
+    mTransform->mMatrix.scale(0.2);
     move(mForward.x*speed,mForward.y*speed,mForward.z*speed);
 
 }
