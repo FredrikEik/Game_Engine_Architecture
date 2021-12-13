@@ -171,9 +171,9 @@ int TextureHandler::readCubeMap(const std::string &filename)
         std::string temp = justName + std::to_string(i) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
-
-        qDebug() << "Cubemap:" << QString(filename.c_str()) << "loaded";
     }
+
+    qDebug() << "Cubemap:" << QString(filename.c_str()) << "loaded";
 
     setCubemapTexture(tempTexture);
 

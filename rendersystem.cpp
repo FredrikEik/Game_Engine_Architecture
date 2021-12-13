@@ -163,7 +163,7 @@ void RenderSystem::render()
         }
 
         //Testing Phong shader
-        if(tempShader->mName == "PhongShader")
+        if(tempShader->mName == "phongshader")
         {
             //Send over camera position - should also send over a lot of other parameters about the light
             glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x,
@@ -179,6 +179,10 @@ void RenderSystem::render()
             if(mGameObjects[i]->mMaterial->mUseColor)
                 glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x,
                             mGameObjects[i]->mMaterial->mColor.y, mGameObjects[i]->mMaterial->mColor.z);
+        }
+        if(tempShader->mName == "skyboxshader")
+        {
+            glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
         }
 
         //send data to shader
@@ -249,6 +253,7 @@ void RenderSystem::render()
 //            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
 //            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
 //        }
+
 
         //Quick hack test to check if linebox/circle works:
         if(i == mIndexToPickedObject)

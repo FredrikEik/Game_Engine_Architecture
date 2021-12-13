@@ -204,8 +204,8 @@ void CoreEngine::setUpScene()
     //Skybox
     temp = mGameObjectManager->addObject("CubeInverted.obj");
     temp->mName = "Skybox";
-    temp->mMaterial = mGameObjectManager->getMaterial("Skybox"); // Skybox-shader
-    temp->mTransform->mMatrix.scale(10);
+    temp->mMaterial = mGameObjectManager->getMaterial("skybox"); // Skybox-shader
+    temp->mTransform->mMatrix.scale(30);
     mRenderSystem->mGameObjects.push_back(temp);
 
 
