@@ -231,7 +231,7 @@ void RenderWindow::init()
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
-    mPlayerCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mPlayerCamera = new Camera(20.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
     mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -303,14 +303,15 @@ void RenderWindow::render()
     {
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
         {
-            //frustum culling
-            //frustumCulling(i);
 
             //killZ :D
 
             killZ(transformCompVec[i], gsl::Vector3D(200  ,100.0f,200 ));
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
+
+            //frustum culling
+            frustumCulling(i);
 
             glUseProgram(mShaderPrograms[MaterialCompVec[i]->mShaderProgram]->getProgram());
             switchProgram(i);   //assignes propper values for programs
@@ -340,13 +341,14 @@ void RenderWindow::render()
     }
 
 
-
-    //drawFrostum();      //frustum culling lines! This is a visualisation of frostum
-
-
     if(bIsPlayerCamera)
     {
         mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,10.0f,30.0f));
+    }
+    else
+    {
+        drawFrostum();      //frustum culling lines! This is a visualisation of frostum
+
     }
 
     //Calculate framerate before
@@ -456,16 +458,14 @@ void RenderWindow::togglePlayerCamera()
         {
             mCurrentCamera = mPlayerCamera;
             bIsPlayerCamera = false;
-            mAspectratio = static_cast<float>(width()) / height();
-            mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+
 
         }
         else
         {
             mCurrentCamera = mEditorCamera;
             bIsPlayerCamera = true;
-            mAspectratio = static_cast<float>(width()) / height();
-            mCurrentCamera->Cam.mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+
 
         }
 
@@ -707,6 +707,7 @@ void RenderWindow::startOpenGLDebugger()
 
 bool RenderWindow::frustumCulling(int Index)
 {
+
     //tatt fra ole.experiment frostum culling
     mCurrentCamera->calculateFrustumVectors();
 
