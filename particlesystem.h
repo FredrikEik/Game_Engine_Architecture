@@ -1,13 +1,13 @@
-#ifndef PARTICLES_H
-#define PARTICLES_H
+#ifndef PARTICLESYSTEM_H
+#define PARTICLESYSTEM_H
 #include "visualobject.h"
 #include "vector3d.h"
 
-class Particles : public VisualObject
+class ParticleSystem : public VisualObject
 {
 public:
-    Particles(ShapeFactory* f,Player *mPlayer);
-    ~Particles();
+    ParticleSystem(ShapeFactory* f,Player *mPlayer);
+    ~ParticleSystem();
     void update(int frameCount);
 
     gsl::Vector3D PathDirection{0,0,0};
@@ -28,4 +28,4 @@ private:
 
 
 
-#endif // PARTICLES_H
+#endif // PARTICLESYSTEM_H

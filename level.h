@@ -6,11 +6,8 @@
 #include <vector>
 #include "camera.h"
 #include "enemy.h"
+#include "particlesystem.h"
 #include "shapefactory.h"
-#include <chrono>   //for sleep_for
-#include <thread>   //for sleep_for
-#include "texture.h"
-#include "particles.h"
 
 class Script : public QObject
 {
@@ -36,11 +33,19 @@ public:
     void winner();
     void checkCollision();
     void SoundHandler();
-    void checkCoints();
     int cointAmount;
+    bool wallCheck(int z, int x);
+    void moveEnemy(int randNum);
+    void movePlayer();
+    void moveParticles(gsl::Vector3D mColor);
+    void resetGame();
+    void spawnParticle();
+    void update(Camera* dc, Input di);
+    void playSound(int SoundID);
 
-    Texture *mTexture;
-    MovementSystem *mMoveSys;
+    Texture *mTexture{nullptr};
+    MovementSystem *mMoveSys{nullptr};
+    CollisionSystem* mCollisionSystem{nullptr};
     std::vector<NameComponent*> mNameComp;
     std::vector<TransformComponent*> mTransformComp;
     std::vector<VisualObject*> mVisualObjects;
@@ -48,30 +53,18 @@ public:
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
     std::vector<SoundSource*> mSound;
-    std::vector<Particles*> mParticles;
-
-    void playSound(int SoundID);
-
+    std::vector<ParticleSystem*> mParticles;
     ShapeFactory mShapeFactory;
     FrustumSystem *mFrustumSystem;
-
     SoundSource *mDeathSound;
     SoundSource *mChompSound;
-    Enemy *mEnemy;
-    Player *mPlayer;
-    XYZ *xyz;
+    Enemy *mEnemy{nullptr};
+    Player *mPlayer{nullptr};
     Light *mLight{nullptr};
 
 
-    bool wallCheck(int z, int x);
-    void moveEnemy(int randNum);
-    void movePlayer();
-    void moveParticles(gsl::Vector3D mColor);
-    void resetGame();
-    void GameLoop();
-    void spawnParticle();
 
-    int HowManytrophies = 0;
+
     int trophies{0};
     int mLives{3};
 private:
@@ -79,15 +72,13 @@ private:
     static const int DIM_Z = 22;
     static const int CENTER_Y = 0;
     static int GameBoard[DIM_Z][DIM_X];
-    void DrawBoard();
 
+    void DrawBoard();
     Script *script{nullptr};
     Camera* mCam;
-    CollisionSystem* mColSystem;
+    CollisionSystem* mColSystem{nullptr};
+    std::vector<VisualObject*> hearts;
 
-
-    bool isValidPos = false;
-    int angle =0;
 
 };
 

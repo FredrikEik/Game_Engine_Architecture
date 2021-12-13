@@ -73,113 +73,106 @@ void Square::CheckPlayerCol(VisualObject* p)
 VisualObject* ShapeFactory::createShape(string shapeName)
 {
     string obj{"obj"};
-     string fileStr{"../GEA2021/Assets/" + shapeName};
-     VisualObject* temp = nullptr;
-     std::string a = to_string(mCounter-3); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
+    string fileStr{"../GEA2021/Assets/" + shapeName};
+    VisualObject* temp = nullptr;
+    std::string a = "_" + to_string(mCounter-2); //For å legge til 1,2,3 osv bak navn på dupliserte objekter
 
-     if (shapeName == "Circle")
-     {
-         temp = new Circle();
-         temp->mMesh = myMeshes[0];
-         temp->mTransform->mMatrix.scale(0.15);
-         temp->mCollision = new CollisionComponent;
-         temp->mCollision->setBoundingSphere(myCollis[0]->radius, temp->mTransform->mPosition);
+    if (shapeName == "Circle")
+    {
+        temp = new Circle();
+        temp->mMesh = myMeshes[0];
+        temp->mTransform->mMatrix.scale(0.15);
+        temp->mCollision = new CollisionComponent;
+        temp->mCollision->setBoundingSphere(myCollis[0]->radius, temp->mTransform->mPosition);
 
-         if(doOnce[0] == false){
-             temp->mNameComp->ObjectName = shapeName;
-             doOnce[0] = true;}
-         else
-             temp->mNameComp->ObjectName = shapeName + a;
+        if(doOnce[0] == false){
+            temp->mNameComp->ObjectName = shapeName;
+            doOnce[0] = true;}
+        else
+            temp->mNameComp->ObjectName = shapeName + a;
 
-         temp->mNameComp->ObjectID = mCounter;
-         mCounter++;
+        temp->mNameComp->ObjectID = mCounter;
+        mCounter++;
 
-         return temp;
-     }
-     else if(shapeName == "Square")
-     {
-         temp = new Square;
-         temp->mMesh = myMeshes[1];
-         temp->mCollision = new CollisionComponent;
-         temp->mCollision->setBoundingBox(myCollis[1]->BoundingBoxMin, myCollis[1]->BoundingBoxMax);
-         temp->mCollision->setBoundingSphere(myCollis[1]->radius, temp->mTransform->mPosition);
+        return temp;
+    }
+    else if(shapeName == "Square")
+    {
+        temp = new Square;
+        temp->mMesh = myMeshes[1];
+        temp->mCollision = new CollisionComponent;
+        temp->mCollision->setBoundingBox(myCollis[1]->BoundingBoxMin, myCollis[1]->BoundingBoxMax);
+        temp->mCollision->setBoundingSphere(myCollis[1]->radius, temp->mTransform->mPosition);
 
-         if(doOnce[1] == false){
-             temp->mNameComp->ObjectName = shapeName;
-             doOnce[1] = true;}
-         else
-             temp->mNameComp->ObjectName = shapeName + a;
+        if(doOnce[1] == false){
+            temp->mNameComp->ObjectName = shapeName;
+            doOnce[1] = true;}
+        else
+            temp->mNameComp->ObjectName = shapeName + a;
 
-         temp->mNameComp->ObjectID = mCounter;
-         mCounter++;
+        temp->mNameComp->ObjectID = mCounter;
+        mCounter++;
 
-         return temp;
-     }
-     else if(shapeName == "Plain")
-     {
-         temp = new Plain;
-         temp->mMesh = myMeshes[2];
-         temp->mCollision = myCollis[2];
-         temp->mCollision->setBoundingSphere(myCollis[2]->radius, temp->mTransform->mPosition);
+        return temp;
+    }
+    else if(shapeName == "Plain")
+    {
+        temp = new Plain;
+        temp->mMesh = myMeshes[2];
+        temp->mCollision = myCollis[2];
+        temp->mCollision->setBoundingSphere(myCollis[2]->radius, temp->mTransform->mPosition);
 
-         if(doOnce[2] == false){
-             temp->mNameComp->ObjectName = shapeName;
-             doOnce[2] = true;}
-         else
-             temp->mNameComp->ObjectName = shapeName + a;
+        if(doOnce[2] == false){
+            temp->mNameComp->ObjectName = shapeName;
+            doOnce[2] = true;}
+        else
+            temp->mNameComp->ObjectName = shapeName + a;
 
-         temp->mNameComp->ObjectID = mCounter;
-         mCounter++;
+        temp->mNameComp->ObjectID = mCounter;
+        mCounter++;
 
-         return temp;
-     }
-     else if(shapeName.find(obj) != std::string::npos)
-     {
-         temp = nullptr;
-         if(myObjs.size()>=1)
-         {
-             for(auto om = myObjs.begin(); om != myObjs.end(); om++)
-             {
-                 if (shapeName.find(om->first) != std::string::npos)
-                 {
-                     temp = new ObjMesh();
-                     temp->mMesh = myMeshes[om->second];
-                     temp->mCollision = new CollisionComponent;
-                     temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
-                     temp->mNameComp->ObjectName = om->first + "_" + a;
-                     temp->mNameComp->ObjectID = mCounter;
-                     mCounter++;
-                 }
-             }
-             if(temp!=nullptr)
-                 return temp;
-             else{
-                 temp = new ObjMesh();
-                 temp->mMesh = myMeshes[mCounter];
-                 temp->mCollision = new CollisionComponent;
-                 temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
-                 shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-                 myObjs[shapeName] = mCounter;
-                 temp->mNameComp->ObjectName = shapeName;
-                 temp->mNameComp->ObjectID = mCounter;
-                 mCounter++;
-                 return temp;}
-         }
-         else{
-             temp = new ObjMesh();
-             temp->mMesh = myMeshes[mCounter];
-             temp->mCollision = new CollisionComponent;
-             temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
-             shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-             myObjs[shapeName] = mCounter;
-             temp->mNameComp->ObjectName = shapeName;
-             temp->mNameComp->ObjectID = mCounter;
-             mCounter++;
-             return temp;}
-     }
-     else{
-         qDebug() << "createShape: invalid string";
-         return nullptr;}
+        return temp;
+    }
+    else if(shapeName == "Heart")
+    {
+        temp = new Heart;
+        return temp;
+    }
+    else if(shapeName.find(obj) != std::string::npos)
+    {
+        temp = nullptr;
+        if(myObjs.size()>=1)
+        {
+            for(auto om = myObjs.begin(); om != myObjs.end(); om++)
+            {
+                if (shapeName.find(om->first) != std::string::npos)
+                {
+                    temp = new ObjMesh();
+                    temp->mMesh = myMeshes[om->second];
+                    temp->mCollision = new CollisionComponent;
+                    temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
+                    temp->mNameComp->ObjectName = om->first + "_" + a;
+                    temp->mNameComp->ObjectID = mCounter;
+                    mCounter++;
+                    return temp;
+                }
+            }
+        }
+        temp = new ObjMesh();
+        temp->mMesh = myMeshes[objCounter];
+        temp->mCollision = new CollisionComponent;
+        temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
+        shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
+        myObjs[shapeName] = mCounter;
+        temp->mNameComp->ObjectName = shapeName;
+        temp->mNameComp->ObjectID = mCounter;
+        objCounter++;
+        mCounter++;
+        return temp;
+    }
+    else{
+        qDebug() << "createShape: invalid string";
+        return nullptr;}
 }
 
 void ShapeFactory::makeVertices()
@@ -292,14 +285,14 @@ void ShapeFactory::makeVertices()
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
-
     m = new MeshComponent;
     c = new CollisionComponent;
 
     readFile(monkeyString, m);
     m->mDrawType = GL_TRIANGLES;
-   // c->radius = 0.2;
+    c->radius = 0.2;
 
+    myObjs["Monkey"] = 3;
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
@@ -310,6 +303,7 @@ void ShapeFactory::makeVertices()
     m->mDrawType = GL_TRIANGLES;
     c->radius = 0.5;
 
+    myObjs["Pacman"] = 4;
     myMeshes.push_back(m);
     myCollis.push_back(c);
 
@@ -318,8 +312,9 @@ void ShapeFactory::makeVertices()
 
     readFile(enemyString, m);
     m->mDrawType = GL_TRIANGLES;
-    c->radius = 0.3;
+    c->radius = 0.4;
 
+    myObjs["Enemy"] = 5;
     myMeshes.push_back(m);
     myCollis.push_back(c);
 }
@@ -541,3 +536,46 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
     }
 }
 
+XYZ::XYZ()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+
+    mMesh = new MeshComponent();
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
+
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{100.f, 0.f, 0.f, 1.f, 0.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 100.f, 0.f, 0.f, 1.f, 0.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 0.f, 0.f, 0.f, 1.f});
+    mMesh->mVertices.push_back(Vertex{0.f, 0.f, 100.f, 0.f, 0.f, 1.f});
+
+    mMesh->mDrawType = GL_LINES;
+
+    mMaterial = new MaterialComponent();
+}
+
+Heart::Heart()
+{
+    mTransform = new TransformComponent();
+    mTransform->mMatrix.setToIdentity();
+
+    mMesh = new MeshComponent;
+    mCollision = new CollisionComponent;
+    mCollision->setBoundingSphere(0.001, mTransform->mPosition);
+
+    mMesh->mDrawType = GL_LINE_STRIP;
+    for(double t = -1.0; t<=1.0; t+=0.2)
+    {
+        float x = sin(t) * cos(t);
+        double tempA = log(sqrt(t*t));
+        x = x * tempA;
+        float z = pow((sqrt(t*t)),0.3);
+        double tempB = cos(t);
+        z = z * pow(tempB,0.5);
+        mMesh->mVertices.push_back(Vertex{x, 0, z,  1, 0, 0});
+    }
+    mMaterial = new MaterialComponent();
+}

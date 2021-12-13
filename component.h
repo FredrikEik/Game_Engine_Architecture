@@ -11,7 +11,7 @@ struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D mPosition;
-    float scale = 1;
+    float mScale = 1;
 };
 
 struct MeshComponent
@@ -40,18 +40,13 @@ struct NameComponent{
 
 struct MovementComponent
 {
-    float mCameraSpeed{0.05f};
-    float mCameraRotateSpeed{0.1f};
-    float mPlayerSpeed{0.05f};
-
+    gsl::Vector3D mForward{0,0,1};
+    float mSpeed{0.05f};
+    float mRotateSpeed{0.1f};
     int mMouseXlast{0};
     int mMouseYlast{0};
-
-    int EposX{0};
-    int EposZ{0};
-
-    int PposX{0};
-    int PposZ{0};
+    int posX{0};
+    int posZ{0};
 };
 
 

@@ -1,19 +1,10 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-#include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
-#include <QTimer>
-#include <QElapsedTimer>
-#include "obj.h"
-#include "vector4d.h"
-#include "matrix4x4.h"
-#include "collisionsystem.h"
-#include <math.h>       /* sqrt */
+#include "visualobject.h"
 #include "level.h"
-#include "player.h"
-#include "enemy.h"
-#include "particles.h"
+#include "vector4d.h"
+
 
 class QOpenGLContext;
 class Shader;
@@ -37,12 +28,13 @@ public:
 
     void exposeEvent(QExposeEvent *) override;
 
+
+
     void toggleWireframe(bool buttonState);
     void setCameraSpeed(float value);
     void playMode(bool p);
     bool mousePickCollide = false;
     int MousePickindex = 0;
-
     Level* mLvl;
 
 
@@ -52,32 +44,22 @@ private slots:
 
 private:
     MovementComponent *mMoveComp{nullptr};
-    MovementSystem *mMoveSystem{nullptr};
-    Player *mPlayer{nullptr};
     Input mInput;
-    CollisionSystem* mCollisionSystem{nullptr};
-    FrustumSystem* mFrustumSystem{nullptr};
-    ShapeFactory mShapeFactory;
-    Enemy *mEnemy{nullptr};
     Light * mLight{nullptr};
-    Particles *mParticle{nullptr};
+    Player* mPlayer{nullptr};
+
 
     static const int nrOfShapes = 5;
     bool playM = false;
-
+    gsl::Vector3D ray_wor;
 
     void mousePickingRay(QMouseEvent *event);
-     gsl::Vector3D ray_wor;
-
     int Lod(int i);
     void drawObjects();
-
     void init();
 
     void checkForGLerrors();
-
     void calculateFramerate();
-
     void startOpenGLDebugger();
 
 

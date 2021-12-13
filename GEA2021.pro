@@ -26,7 +26,7 @@ SOURCES += main.cpp \
     matrix3x3.cpp \
     matrix4x4.cpp \
     movementsystem.cpp \
-    particles.cpp \
+    particlesystem.cpp \
     player.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -40,8 +40,7 @@ SOURCES += main.cpp \
     vector4d.cpp \
     vertex.cpp \
     visualobject.cpp \
-    wavfilehandler.cpp \
-    xyz.cpp
+    wavfilehandler.cpp
 
 HEADERS += \
     PCH.h \
@@ -58,7 +57,7 @@ HEADERS += \
     matrix3x3.h \
     matrix4x4.h \
     movementsystem.h \
-    particles.h \
+    particlesystem.h \
     player.h \
     renderwindow.h \
     shader.h \
@@ -73,8 +72,7 @@ HEADERS += \
     vector4d.h \
     vertex.h \
     visualobject.h \
-    wavfilehandler.h \
-    xyz.h
+    wavfilehandler.h
 
 FORMS += \
     mainwindow.ui

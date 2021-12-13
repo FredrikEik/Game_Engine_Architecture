@@ -116,11 +116,12 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 
 void MainWindow::run()
 {
-//    if(Widgetitem == nullptr)
-//        Widgetitem = new QTreeWidgetItem(ui->treeWidget);
-//    else
-//        Widgetitem->treeWidget()->clear();
-    //    on_treeWidget_viewportEntered();
+    if(Widgetitem == nullptr)
+        Widgetitem = new QTreeWidgetItem(ui->treeWidget);
+    else
+        Widgetitem->treeWidget()->clear();
+
+    on_treeWidget_viewportEntered();
 }
 
 

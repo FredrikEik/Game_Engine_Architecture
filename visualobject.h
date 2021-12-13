@@ -10,7 +10,6 @@ public:
     VisualObject();
     virtual ~VisualObject();
     virtual void init();
-    virtual void move(float dx, float dy, float dz);
     bool drawMe{true};
 
     struct CollisionComponent* mCollision{nullptr};
@@ -19,7 +18,6 @@ public:
     struct MaterialComponent* mMaterial{nullptr};
     struct NameComponent* mNameComp{nullptr};
     struct MovementComponent* mMoveComp{nullptr};
-
 
 
 private:

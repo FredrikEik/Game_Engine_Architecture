@@ -33,6 +33,7 @@ private:
     std::vector<MeshComponent*> myMeshes;
     std::vector<CollisionComponent*> myCollis;
     int mCounter = 1;
+    int objCounter=6;
     bool doOnce[6]{false};
     string monkeyString = "../GEA2021/Assets/Monkey.obj";
     string pacmanString = "../GEA2021/Assets/Pacman.obj";
@@ -40,7 +41,19 @@ private:
 
 };
 
+class XYZ : public VisualObject
+{
+public:
+    XYZ();
+    ~XYZ() override{};
+};
 
+class Heart : public VisualObject
+{
+public:
+    Heart();
+    ~Heart(){};
+};
 
 class Circle : public VisualObject
 {

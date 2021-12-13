@@ -1,7 +1,7 @@
-#include "particles.h"
+#include "particlesystem.h"
 #include <QElapsedTimer>
 
-Particles::Particles(ShapeFactory* f,Player *mPlayer)
+ParticleSystem::ParticleSystem(ShapeFactory* f,Player *mPlayer)
 {
 
     factoryPtr = f;
@@ -14,17 +14,17 @@ Particles::Particles(ShapeFactory* f,Player *mPlayer)
     mNameComp->ObjectName = "Particles";
     mNameComp->ObjectID = factoryPtr->getCount();
     factoryPtr->addCount();
-    direction = {(-1)*mPlayer->mForward.x,0,(-1)*mPlayer->mForward.z};
+    direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
 
 }
 
-Particles::~Particles()
+ParticleSystem::~ParticleSystem()
 {
     glDeleteVertexArrays( 1, &mMesh->mVAO );
     glDeleteBuffers( 1, &mMesh->mVBO );
 }
 
-void Particles::update(int frameCount)
+void ParticleSystem::update(int frameCount)
 {
     if(frameCount == 10 ||frameCount == 20 || frameCount == 30){
         secCount++;}
@@ -36,17 +36,17 @@ void Particles::update(int frameCount)
 }
 
 
-void Particles::getVec()
+void ParticleSystem::getVec()
 {
     PathDirection = {direction.x * mVelocity.x,direction.y * mVelocity.y,direction.z * mVelocity.z};
     PathDirection = PathDirection*0.5;
 }
 
-void Particles::reset(Player *mPlayer)
+void ParticleSystem::reset(Player *mPlayer)
 {
     mTransform->mPosition = gsl::Vector3D(mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
     mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
-    direction = {(-1)*mPlayer->mForward.x,0,(-1)*mPlayer->mForward.z};
+    direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
     isAlive = true;
 }
 

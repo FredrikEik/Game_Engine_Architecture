@@ -1,21 +1,5 @@
 #include "renderwindow.h"
-#include <QTimer>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLDebugLogger>
-#include <QKeyEvent>
-#include <QStatusBar>
-#include <QDebug>
 
-#include <iostream>
-
-#include "shader.h"
-#include "mainwindow.h"
-#include "visualobject.h"
-#include "xyz.h"
-#include "camera.h"
-#include "constants.h"
-#include "texturehandler.h"
 
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -147,14 +131,13 @@ void RenderWindow::init()
     mCurrentCamera = &mEditorCamera;
 
 
-    //********************** create input **********************
     mMoveComp = new MovementComponent();
-    mMoveSystem = new MovementSystem();
-    mCollisionSystem = new CollisionSystem();
-
     mLvl = new Level(&mPlayCamera);
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
+
+
+    mMainWindow->run();
 
 
 
@@ -255,7 +238,7 @@ void RenderWindow::render()
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
     // HandleInput();
-    mMoveSystem->update(mPlayer,mCurrentCamera,mInput);
+    mLvl->update(mCurrentCamera, mInput);
     mCurrentCamera->update();
     mLvl->checkCollision();
 
@@ -271,12 +254,12 @@ void RenderWindow::render()
         mLvl->moveEnemy(randNr);
         mLvl->movePlayer();
         mLvl->moveParticles(gsl::Vector3D(r,g,b));
+        if(mLvl->mParticles.size()<20)
+            mLvl->spawnParticle();
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
-            mLvl->mParticles[i]->update(frameCount);}
-        {
-            if(mLvl->mParticles.size()<20)
-                mLvl->spawnParticle();}
+            mLvl->mParticles[i]->update(frameCount);
+        }
     }
 
     //to clear the screen for each redraw
@@ -326,45 +309,44 @@ int RenderWindow::Lod(int i)
 void RenderWindow::mousePickingRay(QMouseEvent *event)
 {
     int mouseXPixel = event->pos().x();
-    int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+     int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
 
-    gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
-    gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
+     gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
+     gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
 
-    //step 1
-    float x = (2.0f * mouseXPixel) / width() - 1.0f;
-    float y = 1.0f - (2.0f * mouseYPixel) / height();
-    float z = 1.0f;
-    gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
+     //step 1
+     float x = (2.0f * mouseXPixel) / width() - 1.0f;
+     float y = 1.0f - (2.0f * mouseYPixel) / height();
+     float z = 1.0f;
+     gsl::Vector3D ray_nds = gsl::Vector3D(x, y, z);
 
-    //step 2
-    gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
+     //step 2
+     gsl::Vector4D ray_clip = gsl::Vector4D(ray_nds.x, ray_nds.y, -1.0, 1.0);
 
-    //step 3
-    // projMatrix.inverse();
-    gsl::Vector4D ray_eye = projMatrix * ray_clip;
-    ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
+     //step 3
+     // projMatrix.inverse();
+     gsl::Vector4D ray_eye = projMatrix * ray_clip;
+     ray_eye = gsl::Vector4D(ray_eye.x, ray_eye.y, -1.0, 0.0);
 
-    //step 4
-    viewMatrix.inverse();
-    gsl::Vector4D temp = viewMatrix * ray_eye;
-    ray_wor = {temp.x, temp.y, temp.z};
-    ray_wor.normalize();
+     //step 4
+     viewMatrix.inverse();
+     gsl::Vector4D temp = viewMatrix * ray_eye;
+     ray_wor = {temp.x, temp.y, temp.z};
+     ray_wor.normalize();
 
-    qDebug() << ray_wor;
+     //qDebug() << ray_wor;
 
+     for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
+     {
+         if(mLvl->mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
+         {
+             mMainWindow->SelectWithMousePick(i);
+             mousePickCollide = true;
 
-    for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
-        {
-            if(mCollisionSystem->CheckMousePickCollision(mLvl->mVisualObjects[i]->mCollision, mLvl->mVisualObjects[i]->mTransform->mMatrix.getPosition(), mCurrentCamera->position(), ray_wor))
-            {
-                mMainWindow->SelectWithMousePick(i);
-                mousePickCollide = true;
-
-                MousePickindex = i;
-                qDebug() <<"Mouse Collision detected";
-            }
-        }
+             MousePickindex = i;
+             qDebug() <<"Mouse Collision detected";
+         }
+     }
 
 }
 
@@ -517,9 +499,9 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
         mMoveComp-> mMouseYlast = event->pos().y() - mMoveComp->mMouseYlast;
 
         if (mMoveComp->mMouseXlast != 0)
-            mEditorCamera.yaw(mMoveComp->mCameraRotateSpeed * mMoveComp->mMouseXlast);
+            mEditorCamera.yaw(mMoveComp->mRotateSpeed  * mMoveComp->mMouseXlast);
         if (mMoveComp->mMouseYlast != 0)
-            mEditorCamera.pitch(mMoveComp->mCameraRotateSpeed * mMoveComp->mMouseYlast);
+            mEditorCamera.pitch(mMoveComp->mRotateSpeed  * mMoveComp->mMouseYlast);
     }
     mMoveComp->mMouseXlast = event->pos().x();
     mMoveComp->mMouseYlast = event->pos().y();
@@ -537,7 +519,7 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
         if (numDegrees.y() < 1)
             mCurrentCamera->setSpeed(0.001f);
         if (numDegrees.y() > 1)
-            mMoveSystem->setCameraSpeed(mCurrentCamera,-0.001f);
+            mLvl->mMoveSys->setCameraSpeed(mCurrentCamera,-0.001f);
     }
     event->accept();
 }
@@ -619,6 +601,7 @@ void RenderWindow::exposeEvent(QExposeEvent *)
     mPlayCamera.calculateProjectionMatrix();
     mEditorCamera.calculateProjectionMatrix();
 }
+
 void RenderWindow::calculateFramerate()
 {
     long nsecElapsed = mTimeStart.nsecsElapsed();
