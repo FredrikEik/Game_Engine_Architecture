@@ -70,6 +70,8 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 			if (ImGui::InputInt("Max Particles##particle",
 				(int*)&component->maxParticles, 10, 100))
 			{
+				if (component->maxParticles < 1)
+					component->maxParticles = 1;
 				ParticleSystem::initMesh(component, component->maxParticles);
 			}
 		

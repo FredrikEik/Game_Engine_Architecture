@@ -3,31 +3,35 @@
 #include "../Shader.h"
 #include "TextureSystem.h"
 
-void ParticleSystem::init(uint32 entityID, uint32 maxParticles, uint32 spawnRate,
-    const  ParticleComponent::ParticleBlueprint& particleBlueprint, ECSManager* ECS)
+void ParticleSystem::init(uint32 entityID, class ECSManager* ECS, uint32 maxParticles, 
+    std::filesystem::path path, int textureRows)
 {
     if (!ECS->getComponentManager<ParticleComponent>())
         return;
 
 	ParticleComponent* emitter = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
-	assert(emitter);
-	//constructQuad(emitter->mesh);
+    if (!emitter)
+    {
+        ECS->addComponent<ParticleComponent>(entityID);
+        emitter = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
+    }
     emitter->maxParticles = maxParticles;
-    emitter->spawnRate = spawnRate;
-    emitter->particleBlueprint = particleBlueprint;
 
-    initTexture(emitter, "Assets/particleAtlas.png", 8);
+    initTexture(emitter, path, textureRows);
     initMesh(emitter, maxParticles);
 }
 
 void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 {
+    emitter->maxParticles = maxParticles;
     emitter->positionData = std::vector<float>(maxParticles * 4, 0.f);
     emitter->colorData = std::vector<float>(maxParticles * 8, 0.f);
     emitter->lifeAndSizeData = std::vector<float>(maxParticles * 4, 0.f);
     emitter->particles.resize(maxParticles);
 
-    static const GLfloat g_vertex_buffer_data[] = {
+#pragma region Generating Quad
+    // Not using the vertex class as it would waste space, and the quad is so simple anyway.
+    static const GLfloat vertexData[] = {
     -0.5f, -0.5f, 0.0f, 0.f, 0.f,
      0.5f, -0.5f, 0.0f, 1.f, 0.f,
     -0.5f,  0.5f, 0.0f, 0.f, 1.f,
@@ -42,6 +46,9 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
     emitter->mesh.m_indices.push_back(1);
     emitter->mesh.m_indices.push_back(3);
 
+    //Generating Quad
+#pragma endregion
+
 #pragma region Generating Buffers
 
     glGenVertexArrays(1, &emitter->mesh.m_VAO);
@@ -49,8 +56,8 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 
     glGenBuffers(1, &emitter->mesh.m_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, emitter->mesh.m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
-        g_vertex_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData),
+        vertexData, GL_STATIC_DRAW);
 
     glGenBuffers(1, &emitter->positionBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
@@ -59,13 +66,8 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 
     glGenBuffers(1, &emitter->colorBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
-    glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float),
+    glBufferData(GL_ARRAY_BUFFER, maxParticles * 8 * sizeof(float),
         NULL, GL_STREAM_DRAW);
-
-    //glGenBuffers(1, &emitter->uvBlendingBuffer);
-    //glBindBuffer(GL_ARRAY_BUFFER, emitter->uvBlendingBuffer);
-    //glBufferData(GL_ARRAY_BUFFER, maxParticles * 2 * sizeof(float),
-    //    NULL, GL_STREAM_DRAW);
 
     glGenBuffers(1, &emitter->lifeAndSizeDataBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeAndSizeDataBuffer);
@@ -76,34 +78,30 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 #pragma endregion 
 
 #pragma region Vertex Attrib Pointers
-
-
-
-    // 1rst attribute buffer : vertices
+    // 1st attribute buffer : vertices
     glBindBuffer(GL_ARRAY_BUFFER, emitter->mesh.m_VBO);
     glVertexAttribPointer(
         0,
         3, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized?
-        5 * sizeof(float), // stride
+        5 * sizeof(float), // stride. 3 positions + 2 UV's
         (void*)0 // array buffer offset
     );
     glEnableVertexAttribArray(0);
 
-    // 2nd attribute buffer : vertices
+    // 2nd attribute buffer : UV's
     glVertexAttribPointer(
         1,
         2, // size
         GL_FLOAT, // type
         GL_FALSE, // normalized?
-        5 * sizeof(float), // stride
+        5 * sizeof(float), // stride. 3 positions + 2 UV's
         (void*)(3 * sizeof(float)) // array buffer offset
     );
-
     glEnableVertexAttribArray(1);
 
-    // 2nd attribute buffer : positions of particles' centers
+    // 3rd attribute buffer : positions of particles' centers
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glVertexAttribPointer(
         2,
@@ -115,61 +113,50 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
     );
     glEnableVertexAttribArray(2);
 
-    // 3rd attribute buffer : particles' colors
+    // 4th attribute buffer : particles' start colors
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glVertexAttribPointer(
         3,
         4, // size : r + g + b + a => 4
         GL_FLOAT, // type
-        GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-        sizeof(float) * 8, // stride
+        GL_TRUE, // normalized? 
+        sizeof(float) * 8, // stride. 8 floats for color start and color end
         (void*)0 // array buffer offset
     );
     glEnableVertexAttribArray(3);
 
-    //// 3rd attribute buffer : particles' colors
-    //glBindBuffer(GL_ARRAY_BUFFER, emitter->uvBlendingBuffer);
-    //glVertexAttribPointer(
-    //    4,
-    //    2, // size : rows, columns, currentIndex
-    //    GL_FLOAT, // type
-    //    GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-    //    0, // stride
-    //    (void*)0 // array buffer offset
-    //);
-    //glEnableVertexAttribArray(4);
-
-    // 3rd attribute buffer : particles' colors
+    // 5th attribute buffer : particles' life
     glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeAndSizeDataBuffer);
     glVertexAttribPointer(
         4,
         2, // size : current life, total life
         GL_FLOAT, // type
-        GL_FALSE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-        4*sizeof(float), // stride
+        GL_FALSE, // normalized? 
+        4*sizeof(float), // stride 4 floats. Life start - end and size start - end
         (void*)0 // array buffer offset
     );
     glEnableVertexAttribArray(4);
 
-    // 3rd attribute buffer : particles' colors
+    // 6th attribute buffer : particles' size
     glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeAndSizeDataBuffer);
     glVertexAttribPointer(
         5,
         2, // size : start size, end size
         GL_FLOAT, // type
-        GL_FALSE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-        4 * sizeof(float), // stride
+        GL_FALSE, // normalized? 
+        4 * sizeof(float), // stride 4 floats. Life start - end and size start - end
         (void*)(2 * sizeof(float)) // array buffer offset
     );
     glEnableVertexAttribArray(5);
 
+    // 7th attribute buffer : particles' end colors
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glVertexAttribPointer(
         6,
         4, // size : r + g + b + a => 4
         GL_FLOAT, // type
-        GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
-        sizeof(float) * 8, // stride
+        GL_TRUE, // normalized? 
+        sizeof(float) * 8, // stride. 8 floats for color start and color end
         (void*)(4 * sizeof(float)) // array buffer offset
     );
     glEnableVertexAttribArray(6);
@@ -178,21 +165,18 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 
 #pragma region Buffer Data
 
-
-
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 8, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
-
-    //glBindBuffer(GL_ARRAY_BUFFER, emitter->uvBlendingBuffer);
-    //glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 2, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 8, NULL, GL_STREAM_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeAndSizeDataBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW);
     //Buffer Data
 #pragma endregion
+
+    // Binding indices
     glGenBuffers(1, &emitter->mesh.m_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, emitter->mesh.m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, emitter->mesh.m_indices.size() * sizeof(GLuint),
@@ -210,31 +194,36 @@ void ParticleSystem::initTexture(ParticleComponent* emitter, const std::filesyst
 
 void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManager* ECS, float deltaTime)
 {
+#pragma region Setting up emitters
+
     auto transformManager = ECS->getComponentManager<TransformComponent>();
     if (!ECS->getComponentManager<ParticleComponent>() || !transformManager)
         return;
+
     TransformComponent* cameraTransform = transformManager->getComponentChecked(cameraEntity);
     glm::vec3 cameraPosition = glm::vec3(cameraTransform->transform[3]);
     auto& emitters = ECS->getComponentManager<ParticleComponent>()->getComponentArray();
-    shader->use();
 
     std::vector<int> sortedEmitters;
     for (int i{}; i < emitters.size(); ++i)
     {
         sortedEmitters.push_back(i);
     }
+    // Sorting emitter indices furthest < nearest
     sortEmitters(ECS, cameraPosition, emitters, sortedEmitters);
 
+    //Setting up emitters
+#pragma endregion
 
-
+    shader->use();
     glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    static float lastSpawned = 0;
-    lastSpawned += deltaTime;
+
+    // Iterating through all emitters, starting with the one furthest from the camera
     for (auto index : sortedEmitters)
     {
         ParticleComponent& emitter = emitters[index];
+
+        // Checks if the emitter is active
         if (!emitter.bLoops)
         {
             emitter.emitterLifeTime -= deltaTime;
@@ -244,105 +233,25 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             }
         }
 
-
-        if (emitter.texture.rgbImage)
-        {
-            glBindTexture(GL_TEXTURE_2D, emitter.texture.textureID);
-        }
         TransformComponent* emitterTransform = transformManager->getComponentChecked(emitter.entityID);
-        glm::vec3 emitterPosition = glm::vec3(emitterTransform->transform[3]);
-        //spawnParticles(it, deltaTime, glm::vec3(emitterTransform->transform[3]), cameraPosition);
+        const glm::vec3& emitterPosition = glm::vec3(emitterTransform->transform[3]);
 
-
+        // Spawning and sorting particles based on distance from camera and particle.active
+        // This way the blending will be correct, and inactive particles won't be rendered
         spawnParticles(emitter, deltaTime, glm::vec3(emitterPosition), cameraPosition);
-        lastSpawned = 0;
-        
         if (emitter.activeParticles <= 0)
             continue;
-        glUniform1f(glGetUniformLocation(shader->getShaderID(), "u_textureRows"), emitter.textureRows);
-        glBlendFunc(emitter.blendSFactor, emitter.blendDFactor);
+        std::sort(&emitter.particles[0], &emitter.particles[emitter.activeParticles]);
+        // ---------------------
 
-        std::sort(&emitter.particles[0], &emitter.particles[emitter.lastUsedParticle]);
-        //std::sort(it.particles.begin(), it.particles.end());
-        int breakIndex{};
+        // Updating all particles, breaks on the first inactive particle
         for (uint32 i{}; 
             i < emitter.maxParticles && 
             updateParticle(i, emitter, emitter.particles[i], emitterPosition, cameraPosition, deltaTime); 
-            ++i)
-        {
-            //auto& p = emitter.particles[i];
+            ++i){}
+        // ----------------------
 
-            //if (!p.active)
-            //{
-            //    emitter.lastUsedParticle = i;
-            //    emitter.activeParticles = i;
-            //    breakIndex = i;
-            //    break;
-            //}
-            //p.currentLife -= deltaTime;
-            //if (p.currentLife <= 0.f)
-            //{
-            //    p.active = false;
-            //    p.cameraDistance = -100000.f;
-            //}
-            //p.velocity += p.acceleration * deltaTime;
-            //p.position += p.velocity * deltaTime + 0.5f * p.acceleration * deltaTime * deltaTime;
-
-            ////p.textureIndex = std::lround(((emitter.particleBlueprint.particle.currentLife - p.currentLife) / emitter.particleBlueprint.particle.currentLife) * 64);
-
-            //p.cameraDistance = glm::length((p.position+emitterPosition) - cameraPosition);
-
-            //emitter.positionData[4 * i + 0] = p.position.x + emitterTransform->transform[3].x;
-            //emitter.positionData[4 * i + 1] = p.position.y + emitterTransform->transform[3].y;
-            //emitter.positionData[4 * i + 2] = p.position.z + emitterTransform->transform[3].z;
-            //emitter.positionData[4 * i + 3] = p.startSize;
-
-            //emitter.colorData[8 * i + 0] = p.startColor.x;
-            //emitter.colorData[8 * i + 1] = p.startColor.y;
-            //emitter.colorData[8 * i + 2] = p.startColor.z;
-            //emitter.colorData[8 * i + 3] = p.startColor.w;
-
-            //emitter.colorData[8 * i + 4] = p.endColor.x;
-            //emitter.colorData[8 * i + 5] = p.endColor.y;
-            //emitter.colorData[8 * i + 6] = p.endColor.z;
-            //emitter.colorData[8 * i + 7] = p.endColor.w;
-
-            ////emitter.uvBlendingData[2 * i + 0] = emitter.textureRows; // Could be uniform
-            ////emitter.uvBlendingData[2 * i + 1] = p.textureIndex;
-
-            //emitter.lifeAndSizeData[4 * i + 0] = p.currentLife;
-            //emitter.lifeAndSizeData[4 * i + 1] = p.totalLife;
-
-            //emitter.lifeAndSizeData[4 * i + 2] = p.startSize;
-            //emitter.lifeAndSizeData[4 * i + 3] = p.endSize;
-        }
-        auto& p = emitter.particles[breakIndex-1];
-        //std::cout << "Should break at "<< breakIndex<<". Active particles:"<<it.activeParticles << " \n";
-        //std::cout << "x: "<< p.position.x<<" y: "<<p.position.y<<" z: "<<p.position.z << " particles\n";
-        //std::cout << "r: "<< p.endColor.x<<" g: "<<p.endColor.y<<" b: "<<p.endColor.z << " \n";
-
-        glBindVertexArray(emitter.mesh.m_VAO);
-        glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-        glVertexAttribDivisor(1, 0); // particles UV : always reuse the same 4 UV -> 0
-        glVertexAttribDivisor(2, 1); // positions : one per quad (its center) -> 1
-        glVertexAttribDivisor(3, 1); // color : one per quad -> 1
-        glVertexAttribDivisor(4, 1); // uv blending : one per quad -> 1
-        glVertexAttribDivisor(5, 1); // life blending : one per quad -> 1
-        glVertexAttribDivisor(6, 1); // size blending : one per quad -> 1
-        //glVertexAttribDivisor(7, 1); // color end blending : one per quad -> 1
-
-
-        glBindBuffer(GL_ARRAY_BUFFER, emitter.positionBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter.activeParticles * sizeof(float), emitter.positionData.data()); 
-
-        glBindBuffer(GL_ARRAY_BUFFER, emitter.colorBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 8*emitter.activeParticles * sizeof(float), emitter.colorData.data());
-
-        glBindBuffer(GL_ARRAY_BUFFER, emitter.lifeAndSizeDataBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * emitter.activeParticles * sizeof(float), emitter.lifeAndSizeData.data());
-
-        glDrawElementsInstanced(GL_TRIANGLES, emitter.mesh.m_indices.size(),
-            GL_UNSIGNED_INT, 0, emitter.activeParticles);
+        render(emitter, shader);
     }
     glDisable(GL_BLEND);
 }
@@ -362,21 +271,6 @@ void ParticleSystem::setParticleActive(ParticleComponent* emitter, bool bShouldB
     emitter->emitterLifeTime = emitter->emitterTotalLifeTime * bShouldBeActive;
 }
 
-void ParticleSystem::constructQuad(MeshComponent& mesh)
-{
-    mesh.m_vertices.push_back(Vertex(-0.5f, -0.5f, 0, 0, 0, 0, 0, 0));
-    mesh.m_vertices.push_back(Vertex(0.5f, -0.5f, 0, 0, 0, 0, 1, 0));
-    mesh.m_vertices.push_back(Vertex(-0.5f, 0.5f, 0, 0, 0, 0, 0, 1));
-    mesh.m_vertices.push_back(Vertex(0.5f, 0.5f, 0, 0, 0, 0, 1, 1));
-
-    mesh.m_indices.push_back(0);
-    mesh.m_indices.push_back(1);
-    mesh.m_indices.push_back(2);
-
-    mesh.m_indices.push_back(2);
-    mesh.m_indices.push_back(1);
-    mesh.m_indices.push_back(3);
-}
 
 void ParticleSystem::spawnParticles(ParticleComponent& emitter, float deltaTime,
     const glm::vec3& emitterLocation, const glm::vec3& cameraLocation)
@@ -517,4 +411,36 @@ bool ParticleSystem::updateParticle(const uint32& i, ParticleComponent& emitter,
     emitter.lifeAndSizeData[4 * i + 2] = p.startSize;
     emitter.lifeAndSizeData[4 * i + 3] = p.endSize;
     return true;
+}
+
+void ParticleSystem::render(const ParticleComponent& emitter, Shader* shader)
+{
+    if (emitter.texture.rgbImage)
+    {
+        glBindTexture(GL_TEXTURE_2D, emitter.texture.textureID);
+    }
+    glUniform1f(glGetUniformLocation(shader->getShaderID(), "u_textureRows"), emitter.textureRows);
+    glBlendFunc(emitter.blendSFactor, emitter.blendDFactor);
+
+    glBindVertexArray(emitter.mesh.m_VAO);
+    glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
+    glVertexAttribDivisor(1, 0); // particles UV : always reuse the same 4 UV -> 0
+    glVertexAttribDivisor(2, 1); // positions : one per quad (its center) -> 1
+    glVertexAttribDivisor(3, 1); // color : one per quad -> 1
+    glVertexAttribDivisor(4, 1); // uv blending : one per quad -> 1
+    glVertexAttribDivisor(5, 1); // life blending : one per quad -> 1
+    glVertexAttribDivisor(6, 1); // size blending : one per quad -> 1
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, emitter.positionBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * emitter.activeParticles * sizeof(float), emitter.positionData.data());
+
+    glBindBuffer(GL_ARRAY_BUFFER, emitter.colorBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 8 * emitter.activeParticles * sizeof(float), emitter.colorData.data());
+
+    glBindBuffer(GL_ARRAY_BUFFER, emitter.lifeAndSizeDataBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * emitter.activeParticles * sizeof(float), emitter.lifeAndSizeData.data());
+
+    glDrawElementsInstanced(GL_TRIANGLES, emitter.mesh.m_indices.size(),
+        GL_UNSIGNED_INT, 0, emitter.activeParticles);
 }
