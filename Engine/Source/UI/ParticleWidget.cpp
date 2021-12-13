@@ -115,8 +115,6 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 				std::string path;
 				if (FileSystemHelpers::getPathFromFileExplorer(path))
 				{
-					//ECS->removeComponent<TextureComponent>(entityID);
-					//ECS->loadAsset(entityID, path);
 					ParticleSystem::initTexture(component, path, component->textureRows);
 					entitiesChanged = true;
 				}

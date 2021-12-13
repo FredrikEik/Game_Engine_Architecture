@@ -261,6 +261,8 @@ struct ParticleComponent final : public Component
 	std::vector<float> positionData;
 	std::vector<float> colorData;
 	std::vector<float> uvBlendingData;
+	std::vector<float> lifeAndSizeData;
+
 
 	int textureRows{ 1 };
 
@@ -280,6 +282,7 @@ struct ParticleComponent final : public Component
 	GLuint positionBuffer{};
 	GLuint colorBuffer{};
 	GLuint uvBlendingBuffer{};
+	GLuint lifeAndSizeDataBuffer{};
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
 };
