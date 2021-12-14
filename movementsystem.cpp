@@ -154,6 +154,7 @@ void MovementSystem::centerPlayer()
 
     float xDiff = mRound.x - mPos.x;
     float zDiff = mRound.z - mPos.z;
+
     gsl::Vector3D temp(xDiff,0,zDiff);
 
 

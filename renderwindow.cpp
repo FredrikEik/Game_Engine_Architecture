@@ -273,7 +273,7 @@ void RenderWindow::render()
 int RenderWindow::Lod(int i)
 {
 
-    return mLvl->mVisualObjects[i]->mMesh->mVertices.size();
+
     //    if(i!=8 && i!=9 )
     //    {
     //        gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
@@ -287,7 +287,8 @@ int RenderWindow::Lod(int i)
     //        }else
     //            return mVisualObjects[i]->mMesh->mVertices.size();
     //    }else
-    //        return mVisualObjects[i]->mMesh->mVertices.size();
+    //        return mVisualObjects[i]->mMesh->mVertices.size()
+    return mLvl->mVisualObjects[i]->mMesh->mVertices.size();
 
 
 }
@@ -296,7 +297,7 @@ int RenderWindow::Lod(int i)
 void RenderWindow::mousePickingRay(QMouseEvent *event)
 {
     int mouseXPixel = event->pos().x();
-     int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+     int mouseYPixel = event->pos().y();
 
      gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
      gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
@@ -321,7 +322,6 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
      ray_wor = {temp.x, temp.y, temp.z};
      ray_wor.normalize();
 
-     //qDebug() << ray_wor;
 
      for(int i{0}; i < mLvl->mVisualObjects.size(); i++)
      {

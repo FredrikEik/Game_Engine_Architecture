@@ -87,6 +87,6 @@ bool CollisionSystem::CheckMousePickCollision(CollisionComponent *aCollision, gs
     //we are interested in the absolute distance, so fixes any negative numbers
     distance = abs(distance);
 
-    return(distance < aCollision->radius); /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/
+    return(distance < aCollision->radius);
 }
 

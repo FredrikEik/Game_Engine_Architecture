@@ -9,7 +9,6 @@ Level::Level(Camera* cam)
     script = new Script();
     DrawBoard();
 
-
 }
 
 Level::~Level()
