@@ -3,7 +3,6 @@
 
 #include <components.h>
 
-//TODO: Try to make events work so that virtual functions is not needed.
 class IComponentArray
 {
 public:
@@ -15,7 +14,6 @@ template<typename T>
 class ComponentArray : public IComponentArray
 {
 public:
-    //ComponentManager();
 
     void InsertComponent(Entity entity, T component)
     {

@@ -6,11 +6,6 @@
 #include "componentarray.h"
 #include "components.h"
 
-//class IComponentArray;
-
-//template<typename T>
-//class ComponentArray;
-
 class ComponentManager
 {
 public:

@@ -28,6 +28,7 @@ public:
     void setPosition(const QVector3D &position);
     void setTarget(class VisualObject *target);
     void setEditorCamera(bool editorCamera);
+    void setName(const std::string& name);
 
     QMatrix4x4 viewMatrix() const;
     QMatrix4x4 projectionMatrix() const;
@@ -38,6 +39,7 @@ public:
 
 private:
     QVector3D m_eye{};
+    std::string m_name{};
 
     //Direction, position and orientation
     QVector3D m_position{};

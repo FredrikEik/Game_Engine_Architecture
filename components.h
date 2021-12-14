@@ -8,7 +8,6 @@
 using ComponentType = GLubyte;
 const ComponentType MAX_COMPONENTS = 16;
 
-//TODO: move to factory? maybe constants?
 using Entity = GLuint;
 const Entity MAX_ENTITIES = 1000;
 
@@ -27,13 +26,15 @@ struct MeshComponent
 {
     std::vector<Vertex> m_vertices;
     std::vector<GLuint> m_indices;
-    GLuint m_VAO;  //VertexArrayObject
+    GLuint m_VAO[3];  //VertexArrayObject
     GLuint m_VBO;  //VertexBufferObject
     GLuint m_IBO;  //IndexBufferObject
+    GLenum m_drawType{GL_TRIANGLES};
 };
 
 struct MaterialComponent
 {
+    std::string m_shaderName;
     QVector3D m_objectColor;
     int m_specularExponent;
     float m_specularStrenght;

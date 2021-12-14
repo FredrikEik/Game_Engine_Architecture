@@ -14,6 +14,7 @@ SOURCES += main.cpp \
     Shaders/shader.cpp \
     Shaders/textureshader.cpp \
     camera.cpp \
+    coreengine.cpp \
     cubemap.cpp \
     gameobject.cpp \
     interactiveobject.cpp \
@@ -22,6 +23,7 @@ SOURCES += main.cpp \
     mathfunctions.cpp \
     octahedronball.cpp \
     plane.cpp \
+    rendersystem.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
     rollingball.cpp \
@@ -48,6 +50,7 @@ HEADERS += \
     camera.h \
     components.h \
     constants.h \
+    coreengine.h \
     cubemap.h \
     gameobject.h \
     gltypes.h \
@@ -59,6 +62,7 @@ HEADERS += \
     mathfunctions.h \
     octahedronball.h \
     plane.h \
+    rendersystem.h \
     renderwindow.h \
     mainwindow.h \
     rollingball.h \

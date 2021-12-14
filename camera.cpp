@@ -33,7 +33,6 @@ void Camera::update(GLint projectionMatrix, GLint viewMatrix)
 
     if(m_editorCamera)
     {
-        //Free camera - TODO: update for locked
         m_viewMatrix = QMatrix4x4
                 (
                  m_right.x(),   m_right.y(),   m_right.z(),   0.f,
@@ -45,7 +44,6 @@ void Camera::update(GLint projectionMatrix, GLint viewMatrix)
         gsm::MathFunctions::rotateX(m_pitch, m_pitchMatrix);
 
         m_viewMatrix.translate(-m_position);
-
     }
     else
     {
@@ -152,6 +150,11 @@ bool Camera::editorCamera() const
 void Camera::setEditorCamera(bool editorCamera)
 {
     m_editorCamera = editorCamera;
+}
+
+void Camera::setName(const std::string &name)
+{
+    m_name = name;
 }
 
 void Camera::setTarget(VisualObject *target)
