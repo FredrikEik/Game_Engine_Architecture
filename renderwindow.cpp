@@ -185,13 +185,13 @@ void RenderWindow::init()
     SoundManager::getInstance()->init();
 
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                                              gsl::SoundFilePath + "death.wav", false, 1.0f);
+                                              gsl::SoundFilePath + "death.wav", false, 0.05f);
 
     mPop = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                                                     gsl::SoundFilePath + "pop.wav", false, 1.0f);
+                                                     gsl::SoundFilePath + "pop.wav", false, 0.1f);
 
     mJump = SoundManager::getInstance()->createSource("Stereo", Vector3(0.0f, 0.0f, 0.0f),
-                                                      gsl::SoundFilePath + "jump.wav", false, 1.0f);
+                                                      gsl::SoundFilePath + "jump.wav", false, 0.1f);
 
 //    mStereoSound->play();
 
