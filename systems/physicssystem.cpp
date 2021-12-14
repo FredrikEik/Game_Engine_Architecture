@@ -8,6 +8,11 @@ PhysicsSystem::PhysicsSystem()
 void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Vertex> inVertexData)
 {
 
+    //!
+    //!
+    //! Saves the parameter for use later
+    //!
+    //!
         mSurfaceData = surfaceData;
         mSurfaceData->collisionRadius = 0.0f;
 
@@ -17,6 +22,18 @@ void PhysicsSystem::InitPhysicsSystem(MeshComponent *surfaceData, std::vector<Ve
 
 void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radius)
 {
+    //!
+    //! Main physics movement function
+    //! @param my - is our internal friction coefficient
+    //! We first use FindTriangel(Transf); to collect the necessary data for our floor data
+    //! Then we check if our object is in range of collision with the floor
+    //! if collion is detected - then we run physics functions
+    //! @param MirrorVector - then we change direction of velocity
+    //! @param Friction - just a rudamentary slow down calculation. NOT A REAL FRICTION
+    //! Finally we ofsett the clipping of the object to go above the floor
+    //! -Physics simulated
+    //!
+
     //friction
     float my = 0.03f; //friction coefficient
 
@@ -85,6 +102,7 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
 void PhysicsSystem::FindTriangle(TransformComponent *Transf)
 {
 
+    //! @details Finds correct triangle the object is on
     QVector3D p1,p2,p3,posBall, Baryc;
     posBall.setX( Transf->mMatrix.getPosition().getX());
     posBall.setY( Transf->mMatrix.getPosition().getY());
@@ -94,6 +112,8 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     //every third triangle is our triangle.
     int index = Transf->LastTriangeindex ;
     //the vertex positions are flipped because of us using blender for the surface.
+    //! We have optimisation code that saves the last position of the triangle, then checks if we are still on the same triangle. Removes nesessity to run code for all vertex positions
+    //! @param isFound is true when we are on the correct surface
 if(index =! -1){
     p1 = MakeQvec3D(vertexData[index + 0].getVertex());//1
     p2 = MakeQvec3D(vertexData[index + 2].getVertex());//3
@@ -148,6 +168,11 @@ if(index =! -1){
 QVector3D PhysicsSystem::CalcPlaneNormal(QVector3D p1,QVector3D p2,QVector3D p3)
 {
 
+    //! Calculates normal of the plane
+    //! @param p1 - first vertex
+    //! @param p2 - second vectex
+    //! @param p3 - third vertex
+    //! @return Normal - normalised
     QVector3D normal;
     normal = normal.crossProduct( (p3-p1) , (p2-p1) );
     normal.normalize();
