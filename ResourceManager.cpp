@@ -7,14 +7,26 @@ ResourceManager::ResourceManager()
     mCoreEngine = CoreEngine::getInstance();
 }
 
+/**
+ * ResourceManager::CreateMainCharacter is called in CoreEngine::SetUpScene().
+ * The function is strictly used to create a 'main' character, which is the character that you control
+ * when in 'game mode'.
+ */
 GameObject* ResourceManager::CreateMainCharacter(std::string filename)
 {
     //makeMainCharacter
     object = CreateObject(filename);
-    object->transform->mMatrix.translate(57.f, 8.5f, 118); //Input character start position.
+    object->transform->mMatrix.translate(57.f, 8.5f, 118); // Character start position.
 
     return object;
 }
+
+/**
+ * ResourceManager::CreateObject is mostly called in CoreEngine::SetupScene().
+ * CreateObject() Recieves a string 'filename' as parameter, and uses this to decide what type of file/object
+ * it is dealing with, and calls a function to read the file and create an object out of it. The function checks
+ * if the object has already been made, and if it has been made, it uses that mesh instead of creating a new one
+ */
 GameObject* ResourceManager::CreateObject(std::string filename)
 {
     object = new GameObject();
@@ -68,6 +80,10 @@ ResourceManager &ResourceManager::getInstance()
     return *mInstance;
 }
 
+/**
+ * ResourceManager::init
+ * Initializes the objects mesh.
+ */
 void ResourceManager::init(Mesh &meshComp, int lod)
 {
     initializeOpenGLFunctions();
@@ -102,6 +118,11 @@ void ResourceManager::init(Mesh &meshComp, int lod)
     glBindVertexArray(0);
 }
 
+/**
+ * ResourceManager::getHeightMapHeight is called when we need to find the height of the terrain at a specific
+ * xz-coordinate. The function uses the position sent in as a parameter and ResourceManager::barycentricCoordinates
+ * to calculate the height of the terrain at that xz coordinate.
+ */
 float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
 {
     float px = getHeightMapPosition().x;
@@ -146,6 +167,10 @@ float ResourceManager::getHeightMapHeight(const gsl::Vector2D &pos)
     return 0;
 }
 
+/**
+ * ResourceManager::getHeightMapPosition
+ * Returns a 3d vector that has the position of the terrain. (this is (0,0,0) unless the terrain is moved after creation)
+ */
 gsl::Vector3D ResourceManager::getHeightMapPosition()
 {
     return mTerrain->transform->mMatrix.getPosition();

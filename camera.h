@@ -4,10 +4,6 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 #include "Components.h"
-/**
-  This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
-  the forward / backward is wrong, when steered with W and S.
- */
 
 class Camera
 {

@@ -24,6 +24,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * MainWindow::makeObjList Gets the names of all '.obj' files in the scene, and
+ * inserts them into the list to the right of renderWindow in when running the program.
+ */
 void MainWindow::makeObjList(std::vector<GameObject *> mGameObjects)
 {
     std::string name;
@@ -35,6 +39,10 @@ void MainWindow::makeObjList(std::vector<GameObject *> mGameObjects)
     }
 }
 
+/**
+ * MainWindow::updateAmmo Is called when the player shoots a bullet.
+ * The function removes 1 bullet from the magazine, and updates the Bullet number in the HUD.
+ */
 void MainWindow::updateAmmo()
 {
     if(ammo > 0)
@@ -107,7 +115,11 @@ void MainWindow::init()
 
 }
 
-//Example of a slot called from the button on the top of the program.
+/**
+ * MainWindow::on_pushButton_toggled
+ * Is called when 'Show Wireframe'/'Hide Wireframe' button is pressed.
+ * Updates text on the button and calls a function to toggle the wireframe.
+ */
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     if(!mCoreEngine->isPlaying()){
@@ -121,13 +133,17 @@ void MainWindow::on_pushButton_toggled(bool checked)
         ui->pushButton->setText("Wireframe is only available in editor mode");
 }
 
+/**
+ * MainWindow::on_startGameButton_toggled Is called when the 'start game'/'stop game'
+ * button is pressed. The function updates button text and either resets calls a function
+ * to reset the scene, or plays a 'start game' sound.
+ */
 void MainWindow::on_startGameButton_toggled(bool checked)
 {
     mCoreEngine->swapCurrentCamera();
     if(checked){
         ui->startGameButton->setText("Stop Game / Open Editor");
         mCoreEngine->playStartGameSound();
-//        mRenderWindow->toggleWireframe(false);
         mRenderWindowContainer->setFocus();
     }
     else{
@@ -138,6 +154,10 @@ void MainWindow::on_startGameButton_toggled(bool checked)
     ui->pushButton->setText("Show Wireframe");
 }
 
+/**
+ * MainWindow::on_LODButton_toggled Is called when the 'Enable LOD'/'Disable LOD' button is pressed.
+ * The function updates button text and calls a function to toggle the LOD on/off.
+ */
 void MainWindow::on_LODButton_toggled(bool checked)
 {
     mRenderWindow->toggleLOD();
@@ -149,6 +169,10 @@ void MainWindow::on_LODButton_toggled(bool checked)
 
 }
 
+/**
+ * MainWindow::on_FrustumToggle_toggled Is called when the 'Enable Frustum'/'Disable Frustum' button is pressed.
+ * The function updates button text and calls a function to toggle the Frustum culling on/off.
+ */
 void MainWindow::on_FrustumToggle_toggled(bool checked)
 {
     mRenderWindow->toggleFrustum();
@@ -159,16 +183,32 @@ void MainWindow::on_FrustumToggle_toggled(bool checked)
     }
 }
 
+/**
+ * MainWindow::on_CreateObjectButton_clicked is called when the 'Create object' button is pressed.
+ * The function calls a function in coreEngine called 'CreateObjectButton' and sends in the name
+ * of the object selected in the dropdown menu as a parameter.
+ */
 void MainWindow::on_CreateObjectButton_clicked()
 {
     mCoreEngine->CreateObjectButton(spawnObject);
 }
 
+/**
+ * MainWindow::on_ObjectDropdown_currentTextChanged is called when a new object is clicked in the
+ * object dropdown menu. Function gets the name and adds '.obj' at the end of the string. If the
+ * user now clicks the 'create object' button. This is the object it will create.
+ */
 void MainWindow::on_ObjectDropdown_currentTextChanged(const QString &arg1)
 {
     spawnObject = arg1.toStdString() + ".obj";
 }
 
+/**
+ * MainWindow::on_xPos_valueChanged is called when an objects x-position is changed using the
+ * 'spinbox' for x position in the UI.
+ * The function updates the position of the object with the new value, and also updates the position
+ * of the selection arrow with the same values. (So it is placed above the object).
+ */
 void MainWindow::on_xPos_valueChanged(double value)
 {
     int index = mRenderWindow->getSelectedObject();
@@ -181,6 +221,13 @@ void MainWindow::on_xPos_valueChanged(double value)
         mCoreEngine->MoveSelectionArrow(pos);
     }
 }
+
+/**
+ * MainWindow::on_yPos_valueChanged is called when an objects y-position is changed using the
+ * 'spinbox' for y position in the UI.
+ * The function updates the position of the object with the new value, and also updates the position
+ * of the selection arrow with the same values. (So it is placed above the object).
+ */
 void MainWindow::on_yPos_valueChanged(double value)
 {
     int index = mRenderWindow->getSelectedObject();
@@ -193,6 +240,13 @@ void MainWindow::on_yPos_valueChanged(double value)
         mCoreEngine->MoveSelectionArrow(pos);
     }
 }
+
+/**
+ * MainWindow::on_zPos_valueChanged is called when an objects z-position is changed using the
+ * 'spinbox' for z position in the UI.
+ * The function updates the position of the object with the new value, and also updates the position
+ * of the selection arrow with the same values. (So it is placed above the object).
+ */
 void MainWindow::on_zPos_valueChanged(double value)
 {
     int index = mRenderWindow->getSelectedObject();

@@ -17,14 +17,21 @@ CoreEngine::CoreEngine(RenderWindow *renderWindow)
     mGameCameraMesh = new GameObject();
     frustum = new Frustum();
 
-    mGameCamera->pitch(20); //tilt the camera down
+    mGameCamera->pitch(20); //tilt the camera down 20 degrees
 }
-
+/**
+ * GetInstance returns a pointer to CoreEngine which can be used in other classes to
+ * call/use public functions and variables from CoreEngine.
+ */
 CoreEngine *CoreEngine::getInstance()
 {
     return mInstance;
 }
 
+/**
+ * CoreEngine::GameLoop Is the gameLoop itself.
+ * Everything that should be called/updated per frame should be called here.
+ */
 void CoreEngine::GameLoop()
 {
     HandleInput();
@@ -34,21 +41,24 @@ void CoreEngine::GameLoop()
     mRenderWindow->render();
 }
 
+/**
+ * CoreEngine::SetUpScene Is the function that sets up all objects in the scene.
+ * The objects themselves are made in ResourceManager, but here we can decide position,
+ * rotation, scale, what shaderProgram to use, what texture or sound to use etc..
+ */
 void CoreEngine::SetUpScene()
 {
     gsl::Vector3D gameCameraPos{57, 10, 120};
     gsl::Vector3D editorCameraPos{25, 10, 90};
 
-// PLAYER
+/* Player */
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
     playerObject = temp;
-    playerObject->transform->mMatrix.scale(0.2f);
-    temp->material->mShaderProgram = gsl::TEXTURESHADER;
-    temp->material->mTextureUnit = 1;
+    temp->transform->mMatrix.scale(0.2f);
     temp->mesh->collisionsEnabled = false;
-    mRenderWindow->addToGameObjects(playerObject); // pos = 57.f, 8.5f, 118
+    mRenderWindow->addToGameObjects(playerObject);
 
-// SKYBOX ??
+/* Skybox */
     temp = mResourceManager->CreateObject("skyboxCube.obj");
     temp->transform->mMatrix.scale(1000);
     temp->material->mShaderProgram = gsl::SKYBOXSHADER;
@@ -68,19 +78,19 @@ void CoreEngine::SetUpScene()
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(temp);
 
-/** Terrain from txt file */
+/* Terrain from txt file */
     temp = mResourceManager->CreateObject("test_las.txt");
     temp->transform->mMatrix.scale(0.1f);
     mRenderWindow->addToGameObjects(temp);
 
-/** Høydekurver (contour-lines) */
+/* Høydekurver (contour-lines) */
 //    temp = mResourceManager->CreateObject("ContourLines");
 //    temp->transform->mMatrix.scale(0.1f);
 //    temp->material->mShaderProgram = 0;
 //    temp->mesh->mDrawType = GL_LINES;
 //    mRenderWindow->addToGameObjects(temp);
 
-/** Spawn grass */
+/* Spawn grass */
     float y = 0;
     float b = 0;
     for(int i = 1; i < 99; i+= 2)
@@ -98,19 +108,22 @@ void CoreEngine::SetUpScene()
         }
     }
 
-//********************** Set up cameras **********************
+/* Set Camera Positions / set starting camera */
     mGameCamera->setPosition(gsl::Vector3D(gameCameraPos));
-
     mEditorCamera->setPosition(gsl::Vector3D(editorCameraPos));
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
-
+/* Initialize sounds */
     mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f), "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 0.2f);
     mGunShot = SoundManager::getInstance()->createSource("Gunshot", gsl::Vector3D(0.0f, 0.0f, 0.0f),     "..\\GEA2021\\Assets\\Sounds\\gunshot.wav", false, 0.2f);
     mReloadGun = SoundManager::getInstance()->createSource("ReloadGun", gsl::Vector3D(0.0f, 0.0f, 0.0f),     "..\\GEA2021\\Assets\\Sounds\\reload.wav", false, 0.2f);
 
 }
 
+/**
+ * CoreEngine::resetScene Deletes all objects from the gameObjects vector,
+ * and calls SetUpScene to reset the scene back to default.
+ */
 void CoreEngine::resetScene()
 {
     std::vector<GameObject*>* gameObjects = mRenderWindow->getGameObjectsPtr();
@@ -120,6 +133,10 @@ void CoreEngine::resetScene()
     SetUpScene(); //Scene setup: adds objects back in, with default parameters (e.g. Position reset)
 }
 
+/**
+ * CoreEngine::startGameLoopTimer Starts the gameloop timer, and here you can
+ * decide how often the loop should be updated. (How long between each frame).
+ */
 void CoreEngine::startGameLoopTimer()
 {
     //Connect the gameloop timer to the render function:
@@ -129,6 +146,10 @@ void CoreEngine::startGameLoopTimer()
     mGameLoopTimer->start(16);
 }
 
+/**
+ * CoreEngine::HandleInput Checks if the program is in editorMode or GameMode.
+ * And decides based on that, what input function should be called.
+ */
 void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngine
 {
     // currentCamera = mGameCamera
@@ -142,6 +163,11 @@ void CoreEngine::HandleInput() //TODO: fix input so that it works from CoreEngin
     }
 }
 
+/**
+ * CoreEngine::PlayerInput checks what buttons are currently being clicked/pressed.
+ * Based on that info it sets the next positions of the playerObject, and sets the
+ * next position of the gameCamera and it's mesh.
+ */
 void CoreEngine::PlayerInput()
 {
     gsl::Vector3D move{0,0,0};
@@ -166,6 +192,11 @@ void CoreEngine::PlayerInput()
     mGameCameraMesh->transform->mMatrix.setPosition(move.x, move.y, move.z);
 }
 
+/**
+ * CoreEngine::EditorCameraInput checks what buttons are currently being clicked/pressed.
+ * Based on that info it sets the speed of the EditorCamera. Which later updates the position
+ * of EditorCamera based on the value from mCameraSpeed.
+ */
 void CoreEngine::EditorCameraInput()
 {
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
@@ -187,14 +218,22 @@ void CoreEngine::EditorCameraInput()
     }   
 }
 
+/**
+ * CoreEngine::CreateObjectButton is the function that gets called when the 'Create Object' button is pressed.
+ * The function creates a new object and spawns it in front of the EditorCamera.
+ */
 void CoreEngine::CreateObjectButton(std::string objName)
 {
     GameObject *temp = mResourceManager->CreateObject(objName);
-    temp->transform->mMatrix.scale(2);
-    temp->transform->mMatrix.setPosition(mEditorCamera->position().x, mEditorCamera->position().y, mEditorCamera->position().z -30);
+    temp->transform->mMatrix.setPosition(mEditorCamera->position().x, mEditorCamera->position().y, mEditorCamera->position().z -5);
     mRenderWindow->addToGameObjects(temp);
 }
 
+/**
+ * CoreEngine::MoveSelectionArrow Moves the arrow that shows the currently selected object
+ * above the currently selected object. Position of curretly selected object is passd in
+ * to the function as a 'gsl::Vector3D' parameter 'pos'.
+ */
 void CoreEngine::MoveSelectionArrow(gsl::Vector3D pos)
 {
     for(auto i : mRenderWindow->getGameObjects())
@@ -213,6 +252,11 @@ void CoreEngine::MoveSelectionArrow(gsl::Vector3D pos)
     }
 }
 
+/**
+ * CoreEngine::swapCurrentCamera is a function that checks what camera is currently being used,
+ * and switches over to using the other camera. The program calls this function when the user clicks
+ * 'Start Game' button in the UI.
+ */
 void CoreEngine::swapCurrentCamera()
 {
     if(mRenderWindow->getCurrentCamera() == mEditorCamera)
@@ -226,17 +270,31 @@ void CoreEngine::swapCurrentCamera()
     }
 }
 
+/**
+ * CoreEngine::initCameraProjectionMatrixes
+ * Initializes both cameras projectionMatrixes. Sets FOV, aspectRatio, nearplane, and farplane.
+ * Gets some of these values from the Frustum struct in Components.h.
+ */
 void CoreEngine::initCameraProjectionMatrixes(float mAspectRatio)
 {
     mEditorCamera->mProjectionMatrix.perspective(frustum->FOV, mAspectRatio, frustum->nearPlane, frustum->farPlane);
     mGameCamera->mProjectionMatrix.perspective(frustum->FOV, mAspectRatio, frustum->nearPlane, frustum->farPlane);
 }
 
+/**
+ * CoreEngine::playStartGameSound
+ * Plays 'start game' sound.
+ */
 void CoreEngine::playStartGameSound()
 {
     mStereoSound->play();
 }
 
+/**
+ * CoreEngine::shootBullet is called when the program is in 'game mode', if the player clicks the
+ * left mouse button, and if there is ammo left in the clip. If no ammo is left, click 'R'.
+ * The function spawns a bullet at playerObject's position, and plays a sound called 'mGunShot'.
+ */
 void CoreEngine::shootBullet()
 {
     gsl::Vector3D playerPos = playerObject->transform->mMatrix.getPosition();
@@ -249,27 +307,29 @@ void CoreEngine::shootBullet()
      mGunShot->play();
 }
 
+/**
+ * CoreEngine::isPlaying
+ * Returns a bool that decides if we are in 'game mode' or 'editor mode'.
+ */
 bool CoreEngine::isPlaying()
 {
     return bUsingGameCamera;
 }
 
+/**
+ * CoreEngine::getGameCamera
+ * Returns a pointer to the game-camera.
+ */
 Camera *CoreEngine::getGameCamera()
 {
     return mGameCamera;
 }
 
-//gsl::Vector3D CoreEngine::getHeightMapPosition()
-//{
-//    return mResourceManager->mTerrain->transform->mMatrix.getPosition();
-//}
-
+/**
+ * CoreEngine::getPlayerMatrix
+ *  Returns the modelMatrix of 'playerObject' (Cube).
+ */
 gsl::Matrix4x4 CoreEngine::getPlayerMatrix()
 {
     return playerObject->transform->mMatrix;
 }
-
-//void CoreEngine::updateTerrainPos(float x, float y, float z)
-//{
-//    mTerrainC->transform->mMatrix.setPosition(GLfloat(x), GLfloat(y), GLfloat(z));
-//}

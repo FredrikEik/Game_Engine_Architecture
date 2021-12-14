@@ -11,7 +11,6 @@ Camera::Camera()
 
     frustum = new Frustum();
 
-    //.setX(tan(FOV)*farplane/AspectR
     farPlane.setX(tan(frustum->FOV)*frustum->farPlane);
     farPlane.setY(tan(frustum->FOV)* (frustum->farPlane /1.3333));
     farPlane.setZ(frustum->farPlane);

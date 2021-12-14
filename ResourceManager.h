@@ -12,6 +12,11 @@
 
 class CoreEngine;
 
+/**
+ * The ResourceManager class is the place where objects are created.
+ * ResourceManager is used sort of like an 'object factory' where the program creates all objects
+ * that CoreEngine::setUpScene tells it to create.
+ */
 class ResourceManager : public QOpenGLFunctions_4_1_Core
 {
 public:

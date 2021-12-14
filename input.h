@@ -2,7 +2,7 @@
 #define INPUT_H
 
 /**
-    This struce just defines the keys we want usually want to use
+    This struct just defines the keys we usually want to use.
     You have to set the state of this table manually!
  */
 struct Input

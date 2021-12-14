@@ -10,6 +10,12 @@
 
 class RenderWindow;
 
+/**
+ * The GameObject class holds the name of the objects + pointers to all components needed
+ * in a gameObject, it also has a move() function that is used when we need to change an objects position.
+ * All other important values for the objects are in the components 'mesh', 'material', 'transform' and 'frustum'
+ * structs in 'Components.h'.
+ */
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
 

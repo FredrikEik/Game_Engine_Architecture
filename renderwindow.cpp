@@ -361,12 +361,20 @@ void RenderWindow::render()
 
     glUseProgram(0);
 }
-
+/**
+ * RenderWindow::getIndexToPickedObject
+ * Returns (int) index to the object that has been selected in the editor. (Picked object is shown with an arrow
+ * above the object, pointing down towards the picked object).
+ */
 int RenderWindow::getIndexToPickedObject()
 {
     return indexToPickedObject;
 }
 
+/**
+ * RenderWindow::setupPlainShader is called after all shaders have been constructed and given an index in
+ * the mShaderPrograms array. The function assigns values from the shader-program to global values in RenderWindow.
+ */
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -374,6 +382,10 @@ void RenderWindow::setupPlainShader(int shaderIndex)
     pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
+/**
+ * RenderWindow::setupTextureShader is called after all shaders have been constructed and given an index in
+ * the mShaderPrograms array. The function assigns values from the shader-program to global values in RenderWindow.
+ */
 void RenderWindow::setupTextureShader(int shaderIndex)
 {
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -382,6 +394,10 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler" );
 }
 
+/**
+ * RenderWindow::setupPhongShader is called after all shaders have been constructed and given an index in
+ * the mShaderPrograms array. The function assigns values from the shader-program to global values in RenderWindow.
+ */
 void RenderWindow::setupPhongShader(int shaderIndex)
 {
     mMatrixUniform2 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -397,6 +413,11 @@ void RenderWindow::setupPhongShader(int shaderIndex)
     mLightPowerUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "lightPower" );
     mCameraPositionUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cameraPosition" );
 }
+
+/**
+ * RenderWindow::setupSkyboxShader is called after all shaders have been constructed and given an index in
+ * the mShaderPrograms array. The function assigns values from the shader-program to global values in RenderWindow.
+ */
 void RenderWindow::setupSkyboxShader(int shaderIndex)
 {
     mMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -405,6 +426,13 @@ void RenderWindow::setupSkyboxShader(int shaderIndex)
     mSkyboxUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
+/**
+ * RenderWindow::mousePicking Is the function called when the user clicks somewhere within the renderwindow with
+ * left mouse-button. If the program is in 'game mode' this only calls functions related to shooting a bullet in game.
+ * If the program is in 'editor mode' we take the position of where the user clicked on screen, and use that to
+ * calculate a vector in that direction. Using this vector, the program finds out which object was clicked (if any),
+ * and gets that objects position in the gameObjects array, and gives 'indexToPickedObject' this value.
+ */
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
     if(mCoreEngine->isPlaying())
@@ -546,6 +574,10 @@ void RenderWindow::toggleWireframe(bool buttonState)
     }
 }
 
+/**
+ * RenderWindow::toggleLOD is called after user has clicked the 'Enable/Disable LOD' button in UI.
+ * The function flips the value of a bool called 'bLODToggleEnabled'.
+ */
 void RenderWindow::toggleLOD()
 {
     if(bLODToggleEnabled)
@@ -554,6 +586,10 @@ void RenderWindow::toggleLOD()
         bLODToggleEnabled = true;
 }
 
+/**
+ * RenderWindow::toggleFrustum is called after user has clicked the 'Enable/Disable Frustum' button in UI.
+ * The function flips the value of a bool called 'bFrustumEnabled'.
+ */
 void RenderWindow::toggleFrustum()
 {
     if(bFrustumEnabled)
@@ -561,12 +597,19 @@ void RenderWindow::toggleFrustum()
     else
         bFrustumEnabled = true;
 }
-
+/**
+ * RenderWindow::getInput
+ * Returns mInput.
+ */
 Input RenderWindow::getInput()
 {
     return mInput;
 }
 
+/**
+ * RenderWindow::setPlayerMovement Fills moveX, moveY, moveZ with values that were sent in as a parameter.
+ * This does not actually update the movement of the player. It just sets values so that we can update later.
+ */
 void RenderWindow::setPlayerMovement(float x, float y, float z)
 {
     moveX = x;
@@ -594,6 +637,11 @@ void RenderWindow::checkForGLerrors()
     }
 }
 
+/**
+ * RenderWindow::checkForCollisions Is called in renderWindow::render() and is used to check if the playerObject is
+ * colliding with any other objects with collisions enabled. (a pointer to player object is sent in as a parameter).
+ * If the player is colliding, we set 'bPlayerIsColliding' to true.
+ */
 void RenderWindow::checkForCollisions(GameObject* player) //Checks all other objects..
 {
     bPlayerColliding = false;
@@ -643,20 +691,39 @@ void RenderWindow::setCameraSpeed(float value)
         mCameraSpeed = 0.3f;
 }
 
+/**
+ * RenderWindow::addToGameObjects Is called after having created an object.
+ * For the object to display, we need to add it to the gameObjects vector.
+ * I need this because mGameObjects is a private member of RenderWindow.
+ */
 void RenderWindow::addToGameObjects(GameObject *obj)
 {
     mGameObjects.push_back(obj);
 }
+
+/**
+ * RenderWindow::getGameObjects
+ * Returns the mGameObjects vector. I mostly use this in ResourceManager or CoreEngine.
+ */
 std::vector<GameObject*> RenderWindow::getGameObjects()
 {
     return mGameObjects;
 }
 
+/**
+ * RenderWindow::getGameObjectsPtr
+ * Returns the a pointer to mGameObjects vector. I mostly use this in ResourceManager or CoreEngine.
+ */
 std::vector<GameObject*>* RenderWindow::getGameObjectsPtr()
 {
     return &mGameObjects;
 }
 
+/**
+ * RenderWindow::getVertexCount Is called from RenderWindow::CalculateFramerate.
+ * The function checks all objects and their LOD levels, and based on this info
+ * it calculates the amount of vertices currently displayed wihin the Frustum culling.
+ */
 double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt riktig..
 {
     int vertexCount = 0;
@@ -677,31 +744,45 @@ double RenderWindow::getVertexCount() //Tror ikke den teller vertices helt rikti
     return vertexCount;
 }
 
+/**
+ * RenderWindow::getSelectedObject
+ * Returns (int) index to the currently selected object. (The last object clicked in 'editor mode').
+ */
 int RenderWindow::getSelectedObject()
 {
     return indexToPickedObject;
 }
 
+/**
+ * RenderWindow::setToCurrentCamera Is called when we want to swap from one camera to another.
+ * Uses the camera pointer you passed in as a parameter, and sets that as the current camera.
+ */
 void RenderWindow::setToCurrentCamera(Camera *cam)
 {
     mCurrentCamera = cam;
 }
 
+/**
+ * RenderWindow::getCurrentCamera
+ * Returns a pointer to the current camera being used.
+ */
 Camera *RenderWindow::getCurrentCamera()
 {
     return mCurrentCamera;
 }
 
+/**
+ * RenderWindow::keyPressEvent
+ * This function checks if keys have been pressed and set a bool to true for each key pressed.
+ * This could have been, and should probably have been moved to CoreEngine.
+ */
 void RenderWindow::keyPressEvent(QKeyEvent *event)
 {
-//    Input &input = CoreEngine::getInstance()->mInput;
 
     if (event->key() == Qt::Key_Escape) //Shuts down whole program
     {
         mMainWindow->close();
     }
-
-    //    You get the keyboard input like this
     if(event->key() == Qt::Key_W)
     {
         mInput.W = true;
@@ -762,10 +843,13 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
         mCoreEngine->mReloadGun->play();    }
 }
 
+/**
+ * RenderWindow::keyReleaseEvent
+ * This function checks which keys have been released and set a bool to false for each key released.
+ * This could have been, and should probably have been moved to CoreEngine.
+ */
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 {
-//    Input &input = CoreEngine::getInstance()->mInput;
-
     if(event->key() == Qt::Key_W)
     {
         mInput.W = false;
@@ -820,10 +904,12 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+/**
+ * RenderWindow::mousePressEvent is called when a mouse-button has been pressed.
+ * The function checks which mouse button has been pressed, and sets a bool to true for that button.
+ */
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
-//    Input &input = CoreEngine::getInstance()->mInput;
-
     if (event->button() == Qt::RightButton)
         mInput.RMB = true;
     if (event->button() == Qt::LeftButton){
@@ -834,10 +920,12 @@ void RenderWindow::mousePressEvent(QMouseEvent *event)
         mInput.MMB = true;
 }
 
+/**
+ * RenderWindow::mouseReleaseEvent is called when a mouse-button is released.
+ * The function checks which button has been released, and sets a bool to false for that button.
+ */
 void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-//    Input &input = CoreEngine::getInstance()->mInput;
-
     if (event->button() == Qt::RightButton)
         mInput.RMB = false;
     if (event->button() == Qt::LeftButton)
@@ -846,11 +934,13 @@ void RenderWindow::mouseReleaseEvent(QMouseEvent *event)
         mInput.MMB = false;
 }
 
+/**
+ * RenderWindow::wheelEvent is called when scroll wheel on the mouse is rolled.
+ * The function checks if which way the wheel was rolled, and sets camera speed based on that.
+ */
 void RenderWindow::wheelEvent(QWheelEvent *event)
 {   
     QPoint numDegrees = event->angleDelta() / 8;
-
-//    Input &input = CoreEngine::getInstance()->mInput;
 
     //if RMB, change the speed of the camera
     if (mInput.RMB)
@@ -863,6 +953,10 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
+/**
+ * RenderWindow::mouseMoveEvent is called when user moves the mouse.
+ * The function moves the camera based on the the movement of the mouse.
+ */
 void RenderWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (mInput.RMB && mCurrentCamera != mCoreEngine->getGameCamera())// if right mouse button is held && Editorcamera == current

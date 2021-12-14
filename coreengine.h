@@ -17,7 +17,10 @@ class ResourceManager;
 class RenderWindow;
 class Camera;
 
-
+/**
+ * CoreEngine is a class that should have all simple main functionalities, like
+ * for example the game-loop itself, Filling the scene with objects, Keyboard/mouse input handling.
+ */
 class CoreEngine : public QObject
 {
     Q_OBJECT
@@ -80,6 +83,11 @@ private:
 
     GameObject *mGameCameraMesh{nullptr};
 
+    /**
+     * String array that holds names of all tree objects. I was supposed to spawn random trees out on the
+     * terrain, but there were errors with the objects that created a huge collisionSphere, so it was not
+     * possible to use mousePicking on a tree.
+     */
     std::string treeNames[14] = {
         "1tree.obj", "2tree.obj", "3tree.obj", "4tree.obj", "5tree.obj", "6tree.obj",
         "1forestTree.obj", "2forestTree.obj", "3forestTree.obj", "4forestTree.obj", "5forestTree.obj",
