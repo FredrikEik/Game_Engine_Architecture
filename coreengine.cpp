@@ -175,7 +175,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Point Light
-    temp = mGameObjectManager->addObject("cube.obj");
+    temp = mGameObjectManager->addObject("EmptyGameObject");
     temp->mName = "PointLight";
     temp->mLightComponent = new PointLightComponent;
     temp->mTransform->mMatrix.translate(0.0f, 5.0f, 0.0f);

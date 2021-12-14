@@ -184,6 +184,7 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
 {
     qDebug() << "setCubeMapTexture is called";
 
+    glActiveTexture(GL_TEXTURE1); //Trying to hardcode which texture to use.
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureIn.mGLTextureID);
 
@@ -206,8 +207,6 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-    qDebug() << "Cubemap Texture" << "successfully read | id = "
-             << textureIn.mGLTextureID << "| bytes pr pixel:" << textureIn.mBytesPrPixel <<
-                "| using alpha:" << textureIn.mAlphaUsed
-             << "| w:" << textureIn.mColumns << "|h:" << textureIn.mRows;
+    qDebug() << "Cubemap Texture" << "successfully read | id = " << textureIn.mGLTextureID << "| bytes pr pixel:" << textureIn.mBytesPrPixel <<
+                "| using alpha:" << textureIn.mAlphaUsed << "| w:" << textureIn.mColumns << "|h:" << textureIn.mRows;
 }
