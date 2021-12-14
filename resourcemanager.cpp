@@ -111,6 +111,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
                                                                                          gsl::SoundFilePath + "enemiesound.wav", false, 2.0f);
                     tempGO->mSoundSourceComp->mSoundSource[1] = SoundManager::getInstance()->createSource("DeadSound", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                                                                                          gsl::SoundFilePath + "enemydead.wav", false, 2.0f);
+                    tempGO->mSoundSourceComp->mSoundSource[2] = SoundManager::getInstance()->createSource("Hehe sound", gsl::Vector3D(0.0f, 0.0f, 0.0f),
+                                                                                         gsl::SoundFilePath + "hehe.wav", false, 2.0f);
                 }
                 mMeshHandler->readFile(filepath, tempGO->mMeshComp, 0, tempGO->mCollisionComp,tempGO->mCollisionLines );
             }

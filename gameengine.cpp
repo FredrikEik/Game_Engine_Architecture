@@ -16,6 +16,7 @@
 #include "constants.h"
 #include "transformsystem.h"
 #include "particlesystem.h"
+#include "aisystem.h"
 
 #include "particle.h"
 
@@ -30,6 +31,9 @@ GameEngine::GameEngine()
 
 void GameEngine::GameLoop()
 {
+    if(bIsPlaying)
+        AISystem::updateMovement(mPlayer, mRenderwindow->mGameObjects);
+
     SoundManager::getInstance()->updateListener(mGameCamera->position(), gsl::Vector3D(0,0,0), mGameCamera->getFowrardVector(), mGameCamera->up());
     rotateLight();
     ParticleSystem::update();

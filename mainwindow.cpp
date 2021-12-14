@@ -18,6 +18,7 @@
 #include "transformsystem.h"
 #include "collisionsystem.h"
 #include "particlesystem.h"
+#include "aisystem.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -114,23 +115,7 @@ void MainWindow::refreshList()
     }
 }
 
-float MainWindow::randomNumber(int min, int max, bool negative)
-{
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(min, max); // define the range
-    float posrnd = distr(rd);
-    float negrnd = -distr(rd);
 
-    srand(time(0));
-    int rand = 1-(std::rand() % 2);
-    qDebug() << "Rand: " << rand;
-    if(rand || !negative)
-    {
-        return posrnd;
-    }else
-        return negrnd;
-}
 
 void MainWindow::setID(int ID)
 {
@@ -140,26 +125,11 @@ void MainWindow::setID(int ID)
     // Small "on hit enemy" functunallity
     if(GameObjects[ID]->mAIComponent != nullptr && GameEngine::getInstance()->bIsPlaying)
     {
-//        particlePlay(object, number, intervall, velocity, position, gravity, lifelenth );
-        if(GameObjects[ID]->mAIComponent->hp <1)
+        if(AISystem::onHit(GameObjects[ID]))
         {
-            GameObjects[ID]->mSoundSourceComp->mSoundSource[1]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
-            GameObjects[ID]->mSoundSourceComp->mSoundSource[1]->play();
+            ObjectListIndex = ID;
             on_actionDelete_Selected_triggered();
-        }else
-        {
-            //Generate random number
-
-
-
-            ParticleSystem::addParticle(new Particle(gsl::Vector3D(randomNumber(0,3,true),randomNumber(1,4),randomNumber(0,3,true)), GameObjects[ID]->mTransformComp->mMatrix.getPosition()));
-
-            GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->setPosition(GameObjects[ID]->mTransformComp->mMatrix.getPosition());
-            GameObjects[ID]->mSoundSourceComp->mSoundSource[0]->play();
-
-            GameObjects[ID]->mAIComponent->hp--;
         }
-
     }
 }
 

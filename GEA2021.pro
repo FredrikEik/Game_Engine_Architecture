@@ -11,6 +11,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    aisystem.cpp \
     camera.cpp \
     collisionsystem.cpp \
     components.cpp \
@@ -36,6 +37,7 @@ SOURCES += main.cpp \
     vertex.cpp
 
 HEADERS += \
+    aisystem.h \
     camera.h \
     collisionsystem.h \
     components.h \

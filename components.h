@@ -83,6 +83,9 @@ class AIComponent
 public:
     bool isAlive{true};
     int hp{15};
+    gsl::Vector3D mVelocity{0,0,0};
+    gsl::Vector3D mPosition{0,0,0};
+    bool heheSoundOnce{true};
 };
 
 class BallPhysicsComponent
