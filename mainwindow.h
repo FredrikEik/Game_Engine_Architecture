@@ -52,22 +52,6 @@ private slots:
     void on_PosZ_valueChanged(double arg1);
 
 
-
-    void on_pushButton_3_clicked();
-
-
-    void on_pushButton_5_clicked();
-
-    void on_pushButton_6_clicked();
-
-    void on_pushButton_7_clicked();
-
-    void on_pushButton_8_clicked();
-
-    void on_pushButton_9_clicked();
-
-    void on_pushButton_10_clicked();
-
     void on_checkBox_toggled(bool checked);
 
     void on_actionControls_triggered();
@@ -79,6 +63,13 @@ private slots:
 
     void on_StartPhysics_clicked();
 
+
+
+    void on_RotX_valueChanged(double arg1);
+
+    void on_RotY_valueChanged(double arg1);
+
+    void on_RotZ_valueChanged(double arg1);
 
 
 private:
