@@ -276,6 +276,7 @@ void RenderWindow::render()
     {
         glUseProgram(mShaderPrograms[1]->getProgram());
         glUniform1i(mTextureUniform, 0); // chooses texture slot 0
+        mTextureIndex = 0;
 
         for (unsigned int i = 0; i < ObjFactory->mGameObject.size(); i++){
             //send data to shader
