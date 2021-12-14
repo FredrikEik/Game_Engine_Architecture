@@ -2,6 +2,7 @@
 #include "../ECSManager.h"
 #include "TerrainSystem.h"
 #include "TransformSystem.h"
+#include "../Engine/Engine.h"
 void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTime)
 {
 	std::vector<PhysicsComponent>& physicsComponents = ECS->getComponentManager<PhysicsComponent>()->getComponentArray();
@@ -38,7 +39,15 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 				it.velocity = tempCollisionNormal * glm::length(it.velocity) * it.restitution;
 			else
 				it.velocity = tempCollisionNormal * glm::length(it.velocity);
+			glm::vec3 frictionDirection = glm::normalize(it.velocity) * -1.f;
+			it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
 		}
+
+		//if (!tempIsInAir)
+		//{
+		//	glm::vec3 frictionDirection = glm::normalize(it.velocity) * -1.f;
+		//	it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
+		//}
 
 		// s = V_0 * t + 1/2*a*t*t
 		TransformSystem::move(*entityTransform, 
@@ -59,6 +68,11 @@ void PhysicsSystem::setVelocity(uint32 entity, const glm::vec3& newVelocity, ECS
 {
 	PhysicsComponent* component = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entity);
 	component->velocity = isAdditive ? component->velocity + newVelocity : newVelocity;
+}
+
+void PhysicsSystem::setVelocity_Internal(uint32 entity, glm::vec3 newVelocity, bool isAdditive)
+{
+	setVelocity(entity, newVelocity, Engine::Get().getECSManager(), isAdditive);
 }
 
 glm::vec3 PhysicsSystem::getAcceleration(const glm::vec3& surfaceNormal, const float& mass)

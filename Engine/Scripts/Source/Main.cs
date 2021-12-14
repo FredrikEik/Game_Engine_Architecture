@@ -18,6 +18,11 @@ namespace ScriptInJin
             get { return getEntityID_internal(this, ToString());}
         }
 
+        public Vec3 getPosition()
+        {
+            return Transform.getTransform_internal(entityID); 
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private static uint getEntityID_internal(Entity ptr, string className);
 
@@ -39,6 +44,11 @@ namespace ScriptInJin
         extern public static Entity getObject_Internal(uint EntityID);
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static uint createDefaultEntity_Internal(string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static bool isOverlappingEntity_Internal(uint EntityA, uint EntityB);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void setVelocity_Internal(uint Entity, Vec3 newVelocity, bool isAdditive);
     }
 
     public class Transform

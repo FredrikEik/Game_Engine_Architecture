@@ -35,9 +35,12 @@
 #include "../Systems/ScriptSystem.h"
 #include "../Systems/ParticleSystem.h"
 #include "../Systems/TerrainSystem.h"
+#include "../Systems/PhysicsSystem.h"
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
+
+#include <thread>
 
 
 #define ASSERT(x) if (!(x)) __debugbreak();
@@ -64,19 +67,19 @@ Engine::~Engine()
 
 void Engine::setIsPlaying(bool isPlaying)
 {
-	bIsPlaying = isPlaying;
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
 	if (!isPlaying)
 	{
 		load(Save::getDefaultAbsolutePath());
 		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
 		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
-		ScriptSystem::Invoke("BeginPlay", ECS);
 	}
 	else
 	{
 		save();
+		ScriptSystem::Invoke("BeginPlay", ECS);
 	}
+	bIsPlaying = isPlaying;
 }
 
 void Engine::save()
@@ -109,6 +112,7 @@ void Engine::start()
 {
 	init();
 	loop();
+
 	terminate();
 }
 
@@ -175,7 +179,7 @@ void Engine::init()
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
-
+	TransformSystem::move(gameCameraEntity, glm::vec3(-10, 0, 0), ECS);
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
 	//mesh comp
@@ -202,12 +206,12 @@ void Engine::init()
 	//Init - binds all internal functions - Important first step
 	ScriptSystem::Init();
 
-	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
-	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
-	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
-	CollisionSystem::construct(unitEntity, ECS, false);
-	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
+	//unitEntity = ECS->newEntity();
+	//ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
+	//ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
+	//ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
+	//CollisionSystem::construct(unitEntity, ECS, false);
+	//CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
 	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
 
 	uint32 gameStateEntity = ECS->newEntity();
@@ -254,12 +258,32 @@ void Engine::loop()
 		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		//deltaTime = currentFrame - lastFrame;
+		//lastFrame = currentFrame;
 
+		if (!bIsPlaying)
+		{
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+		}
+		else
+		{
+			//0.016f - (currentFrame - lastFrame)
+			//_sleep((0.016f - (currentFrame - lastFrame)));
+			std::this_thread::sleep_for(std::chrono::duration<float>(0.016f - (currentFrame - lastFrame)));
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
+			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
+			//TrailSystem::recordPositions(ECS, currentFrame);
+			//TrailSystem::generateBSplines(trailEntity, ECS);
+		}
 
 		CollisionBroadphaseDatastructure->update();
 
+
+
+		if(bIsPlaying)
 
 		//// RENDER
 		// Selection Render
@@ -367,7 +391,7 @@ void Engine::loop()
 			CameraSystem::draw(cameraEntity, ourShader, ECS);
 
 			// Only checks collision for one frame, so we delete it after
-			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
+			if (ECS->getComponentManager<AxisAlignedBoxComponent>() && ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
 			{
 				SelectionSystem::setHitEntities(RTSSelectionEntity, 
 						CollisionBroadphaseDatastructure->getOverlappedEntities(RTSSelectionEntity), ECS);

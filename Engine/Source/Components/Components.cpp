@@ -197,3 +197,17 @@ void ScriptComponent::jsonParse(const JSON& json)
 	if(Engine::Get().getIsPlaying())
 		ScriptSystem::Invoke(entityID, "BeginPlay", Engine::Get().getECSManager());
 }
+
+JSON PhysicsComponent::json()
+{
+	return {
+		{"mass", mass},
+		{"restitution", restitution},
+	};
+}
+
+void PhysicsComponent::jsonParse(const JSON& json)
+{
+	mass = json["mass"];
+	restitution = json["restitution"];
+}

@@ -37,7 +37,8 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
 	{
 		auto& temp = m_collisionPairs.at(entityID);
-		std::copy(temp.begin(), temp.end(), OUTVector.begin());
+		OUTVector = temp;
+		//std::copy(temp.begin(), temp.end(), OUTVector.begin());
 		return true;
 	}
 
@@ -108,8 +109,8 @@ void SweepAndPrune::sortAndSweep()
 				(m_data.at(i).max[sortAxis]) )
 				// Does the actual collision test.
 			{
-				std::cout << "entity " << m_data.at(j).entity << " min: " << m_data.at(j).min[sortAxis]
-					<< " entity " << m_data.at(i).entity << " max " << (m_data.at(i).max[sortAxis]) << '\n';
+				//std::cout << "entity " << m_data.at(j).entity << " min: " << m_data.at(j).min[sortAxis]
+				//	<< " entity " << m_data.at(i).entity << " max " << (m_data.at(i).max[sortAxis]) << '\n';
 				break;
 			}
 			if (CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS))

@@ -113,6 +113,11 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 		component = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entityID);
 	}
+	else if (componentName == std::type_index(typeid(PhysicsComponent)).name())
+	{
+		ECS->addComponent<PhysicsComponent>(entityID);
+		component = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entityID);
+	}
 	else if (componentName == std::type_index(typeid(ParticleComponent)).name())
 	{
 		auto manager = ECS->getComponentManager<ParticleComponent>();

@@ -93,14 +93,16 @@ void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSMana
 	//if (mousePosition.x > (screenWidth-50))
 	//	deltaMovement += right * 5.f * deltaTime;
 
+	float speed{ 5 };
+
 	if (mousePosition.x < 50)
-		deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime;
+		deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime * speed;
 	if (mousePosition.y < 50)
-		deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime;
+		deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime * speed;
 	if (mousePosition.y > (screenHeight - 50))
-		deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime;
+		deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime * speed;
 	if (mousePosition.x > (screenWidth - 50))
-		deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime;
+		deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime * speed;
 
 	TransformSystem::move(currentCamera.entityID, deltaMovement, ECS);
 }

@@ -3,7 +3,8 @@
 #include "../Components/Components.h"
 #include "../Components/ComponentManager.h"
 #include "../Vertex.h"
-
+#include "../Engine/Engine.h"
+#include "../DataStructures/SweepAndPrune.h"
 void CollisionSystem::construct(uint32 entity,
 	class ECSManager* ECS, bool shouldGenerateOverlapEvents)
 {
@@ -107,10 +108,10 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	//	" z: " << otherCollisionComponent.center.z <<
 	//	"\n\n";
 
-	std::cout << "Entity " << firstCollisionComponent.entityID << " with pos x: " << firstPosition.x << " y: "
-		<< firstPosition.y << " z: " << firstPosition.z <<
-		" Entity " << otherCollisionComponent.entityID << " with pos x: " << otherPosition.x << " y: "
-		<< otherPosition.y << " z: " << otherPosition.z << "\n";
+	//std::cout << "Entity " << firstCollisionComponent.entityID << " with pos x: " << firstPosition.x << " y: "
+	//	<< firstPosition.y << " z: " << firstPosition.z <<
+	//	" Entity " << otherCollisionComponent.entityID << " with pos x: " << otherPosition.x << " y: "
+	//	<< otherPosition.y << " z: " << otherPosition.z << "\n";
 
 	//if ((firstPosition.z + firstCollisionComponent.maxScaled.z ) >=
 	//	(otherPosition.z + otherCollisionComponent.minScaled.z ) &&
@@ -161,20 +162,20 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	//	<< otherPosition.y << " z: " << otherPosition.z << "\n";
 
 	// Check if we collide along the z axis
-	std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
-		<< " collides on z\n";
+	//std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
+	//	<< " collides on z\n";
 
-	std::cout << "Entity " << firstCollisionComponent.entityID << " and " << otherCollisionComponent.entityID
-		<< " first.max and other.min: " << (firstPosition.x + firstCollisionComponent.maxScaled.x) << " "<<
-			(otherPosition.x + otherCollisionComponent.minScaled.x) << " other.max <= first.min: " <<
-		(otherPosition.x + otherCollisionComponent.maxScaled.x) << " "<<
-			(firstPosition.x + firstCollisionComponent.minScaled.x) << "\n";
+	//std::cout << "Entity " << firstCollisionComponent.entityID << " and " << otherCollisionComponent.entityID
+	//	<< " first.max and other.min: " << (firstPosition.x + firstCollisionComponent.maxScaled.x) << " "<<
+	//		(otherPosition.x + otherCollisionComponent.minScaled.x) << " other.max <= first.min: " <<
+	//	(otherPosition.x + otherCollisionComponent.maxScaled.x) << " "<<
+	//		(firstPosition.x + firstCollisionComponent.minScaled.x) << "\n";
 
-	std::cout <<"Entity "<<firstCollisionComponent.entityID<< " and "<<otherCollisionComponent.entityID
-	<< " first.max >= other.min: " << ((firstPosition.x + firstCollisionComponent.maxScaled.x) >=
-	(otherPosition.x + otherCollisionComponent.minScaled.x)) << " other.max <= first.min: " <<
-	((otherPosition.x + otherCollisionComponent.maxScaled.x) <=
-		(firstPosition.x + firstCollisionComponent.minScaled.x)) << "\n\n";
+	//std::cout <<"Entity "<<firstCollisionComponent.entityID<< " and "<<otherCollisionComponent.entityID
+	//<< " first.max >= other.min: " << ((firstPosition.x + firstCollisionComponent.maxScaled.x) >=
+	//(otherPosition.x + otherCollisionComponent.minScaled.x)) << " other.max <= first.min: " <<
+	//((otherPosition.x + otherCollisionComponent.maxScaled.x) <=
+	//	(firstPosition.x + firstCollisionComponent.minScaled.x)) << "\n\n";
 
 
 	// Check if we collide along the x axis
@@ -185,6 +186,15 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	//	;
 	//else
 	//	return false;
+
+	if ((firstPosition.y) <
+		(otherPosition.y + (otherCollisionComponent.maxScaled.y - otherCollisionComponent.minScaled.y)) &&
+		(firstPosition.y + (firstCollisionComponent.maxScaled.y - firstCollisionComponent.minScaled.y)) >
+		otherPosition.y)
+		;
+	else
+		return false;
+
 	if ((firstPosition.x) <
 		(otherPosition.x + (otherCollisionComponent.maxScaled.x - otherCollisionComponent.minScaled.x)) &&
 		(firstPosition.x + (firstCollisionComponent.maxScaled.x - firstCollisionComponent.minScaled.x)) >
@@ -194,8 +204,8 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 		return false;
 	// -----------------------------------------------------------------
 
-	std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
-		<< " collides on x\n";
+	/*std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
+		<< " collides on x\n";*/
 
 	return true;
 }
@@ -250,8 +260,44 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 	}
 }
 
+void CollisionSystem::updateCenter(uint32 entity, ECSManager* ECS)
+{
+	AxisAlignedBoxComponent* AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
+	assert(AABB);
+
+	glm::vec3& max = AABB->maxScaled;
+	glm::vec3& min= AABB->minScaled;
+	AABB->center = glm::vec3((max.x + min.x) / 2.f,
+		(max.y + min.y) / 2.f, (max.z + min.z) / 2.f);
+}
+
 void CollisionSystem::setShouldGenerateOverlapEvents(uint32 entity, ECSManager* ECS, bool shouldGenerate)
 {
 	AxisAlignedBoxComponent* AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
 	AABB->bShouldGenerateOverlapEvents = shouldGenerate;
+}
+
+bool CollisionSystem::isOverlappingEntity_Internal(uint32 entityA, uint32 entityB)
+{
+	SweepAndPrune* collisionDataStructure =  Engine::Get().getCollisionDatastructure();
+	std::vector<uint32> collisionEntities;
+	collisionDataStructure->getOverlappedEntities(entityA, collisionEntities);
+
+	
+	// Not perfect, but checking if A has a collision pair with B and vice versa.
+	for (const auto& it : collisionEntities)
+	{
+		if (it == entityB)
+			return true;
+	}
+	collisionEntities.clear();
+
+	collisionDataStructure->getOverlappedEntities(entityB, collisionEntities);
+	for (const auto& it : collisionEntities)
+	{
+		if (it == entityA)
+			return true;
+	}
+
+	return false;
 }

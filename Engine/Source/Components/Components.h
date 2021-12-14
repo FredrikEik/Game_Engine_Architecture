@@ -222,6 +222,10 @@ struct PhysicsComponent final : public Component
 	//float baryCentricErrorMargin{0.985f};
 	bool bIsInAir{ false };
 	float restitution{ 0.75 }; // How bouncy/elastic it is.
+	float friction{ 0.04f };
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct TrailComponent final : public Component

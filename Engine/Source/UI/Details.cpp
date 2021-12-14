@@ -128,6 +128,11 @@ void Details::update(int32 inEntityID)
 				break;
 			}
 		}
+		else if (index == TYPE(typeid(PhysicsComponent)))
+		{
+			ImGui::NewLine();
+			ImGui::Text("Has physics component");
+		}
 	}
 	//ImGui::BeginChild("AddComponent");
 	//static bool popup{true};
@@ -155,7 +160,8 @@ void Details::drawAddComponent()
 		meshComponent.c_str(),
 		textureComponent.c_str(),
 		particleComponent.c_str(),
-		scriptComponent.c_str()
+		scriptComponent.c_str(),
+		physicsComponent.c_str()
 	};
 	static const char* currentItem = "Select component";
 	ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
@@ -206,9 +212,11 @@ void Details::addComponent(std::string componentToAdd)
 	else if (componentToAdd == textureComponent)
 		addTextureComponent();
 	else if (componentToAdd == particleComponent)
-		addParticleComponent();	
+		addParticleComponent();
 	else if (componentToAdd == scriptComponent)
 		addScriptComponent();
+	else if (componentToAdd == physicsComponent)
+		addPhysicsComponent();
 }
 
 void Details::removeComponent(std::string componentToAdd)
@@ -303,4 +311,12 @@ void Details::addScriptComponent()
 		return;
 
 	ECS->addComponent<ScriptComponent>(entityID);
+}
+
+void Details::addPhysicsComponent()
+{
+	if (hasComponent(TYPE(typeid(PhysicsComponent))))
+		return;
+
+	ECS->addComponent<PhysicsComponent>(entityID);
 }

@@ -89,6 +89,7 @@ public:
 	void setWindowHeight(float val) { windowHeight = val; }
 	uint32 getCameraEntity() const { return cameraEntity; }
 	bool getIsPlaying() const { return bIsPlaying; }
+	SweepAndPrune* getCollisionDatastructure() { return CollisionBroadphaseDatastructure; }
 
 	static float getDeltaTime_Internal();
 };
