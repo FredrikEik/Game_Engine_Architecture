@@ -24,6 +24,7 @@ public:
      bool ProjectileHit = false;
      bool ProjectileSpawned = false;
      bool particleDead = false;
+     gsl::Vector3D startPos{0,0,0};
 
      GameObject* _las;
      void move(float x, float y, float z);

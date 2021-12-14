@@ -57,6 +57,8 @@ private slots:
 
     void on_progressBar_valueChanged(int value);
 
+    void on_pushButton_3_clicked();
+
 private:
     void init();
 

@@ -76,6 +76,8 @@ public:
     void updateCamera();
     void updateScene();
     void UpdateSimulation();
+    void reset();
+    bool spawnBoss = false;
 
     void loadBoss(std::string scene);
 

@@ -76,7 +76,7 @@ void CoreEngine::setUpScene()
     player->mTransform->mMatrix.translate(0.f, 0, -20);
     mResourceManager->addCollider("sphere", player);
     //Adds sound to player:
-    mResourceManager->addComponent("caravan_mono.wav", player);
+    mResourceManager->addComponent("neon_stereo.wav", player);
 
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
@@ -127,6 +127,15 @@ void CoreEngine::setUpScene()
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
+    for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
+    {
+        mRenderSystem->mGameObjects[i]->startPos =
+                mRenderSystem->mGameObjects[i]->mTransform->mMatrix.getPosition();
+    }
+
+
+
+
 
 
 }
@@ -171,7 +180,11 @@ void CoreEngine::testScene()
     playerSpawned = true;
     enemySpawned = true;
 
-
+    for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
+    {
+        mRenderSystem->mGameObjects[i]->startPos =
+                mRenderSystem->mGameObjects[i]->mTransform->mMatrix.getPosition();
+    }
 
 
 }
@@ -233,7 +246,11 @@ void CoreEngine::updateScene()
 
     updateCamera();
 
-
+    if(spawnBoss)
+    {
+        loadBoss("Boss.json");
+        spawnBoss = false;
+    }
 
     if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);
@@ -241,7 +258,7 @@ void CoreEngine::updateScene()
     for(unsigned int i = 0; i< enemies.size(); i++)
     {
         if(enemies[i]->isAlive)
-        enemies[i]->mTransform->mMatrix.translateZ(-.003);
+        enemies[i]->mTransform->mMatrix.translateZ(-.002);
 
         //test collision
         if(!enemies[i]->mCollider->objectsHasCollided)
@@ -319,6 +336,19 @@ void CoreEngine::UpdateSimulation()
 
 }
 
+void CoreEngine::reset()
+{
+    for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
+    {
+
+        mRenderSystem->mGameObjects[i]->mTransform->mMatrix.setPosition(
+        mRenderSystem->mGameObjects[i]->startPos.x,
+        mRenderSystem->mGameObjects[i]->startPos.y,
+        mRenderSystem->mGameObjects[i]->startPos.z);
+    }
+
+}
+
 void CoreEngine::loadBoss(std::string scene)
 {
     QFile loadFile(QString((gsl::AssetFilePath + scene).c_str()));
@@ -337,7 +367,7 @@ void CoreEngine::loadBoss(std::string scene)
         //go through each entity in file
         int entityIndex{0};   //used to print log afterwards
         for ( ; entityIndex < entityArray.size(); ++entityIndex) {
-            GameObject *tempGOB{nullptr};
+            GameObject *tempObj{nullptr};
             QString name;   //this is pushed as the key to the mEntityMap later ???? - maybe not
 
             QJsonObject entityObject = entityArray[entityIndex].toObject();   //first entity as object
@@ -348,16 +378,15 @@ void CoreEngine::loadBoss(std::string scene)
             if (entityObject.contains("mesh") && entityObject["mesh"].isString())
             {
                 QString mesh = entityObject["mesh"].toString();
-                tempGOB = mResourceManager->addObject(mesh.toStdString());
-//                tempGOB->mMaterial->mShaderProgram = 1;
-//                tempGOB->mMaterial->mTextureUnit = 2;
+                tempObj = mResourceManager->addObject(mesh.toStdString());
+
             }
 
             if (entityObject.contains("position") && entityObject["position"].isArray())
             {
                 QJsonArray positionArray = entityObject["position"].toArray();
                 if (positionArray[0].isDouble() && positionArray[0].isDouble() && positionArray[0].isDouble())
-                    tempGOB->mTransform->mMatrix.setPosition(positionArray[0].toDouble(),
+                    tempObj->mTransform->mMatrix.setPosition(positionArray[0].toDouble(),
                             positionArray[1].toDouble(), positionArray[2].toDouble());
 
 
@@ -367,11 +396,11 @@ void CoreEngine::loadBoss(std::string scene)
 
                 QJsonArray scaleArray = entityObject["scale"].toArray();
                 if (scaleArray[0].isDouble() && scaleArray[0].isDouble() && scaleArray[0].isDouble())
-                tempGOB->mTransform->mMatrix.scale(scaleArray[0].toDouble(), scaleArray[1].toDouble(),
+                tempObj->mTransform->mMatrix.scale(scaleArray[0].toDouble(), scaleArray[1].toDouble(),
                         scaleArray[2].toDouble());
 
             }
-            mRenderSystem->mGameObjects.push_back(tempGOB);
+            mRenderSystem->mGameObjects.push_back(tempObj);
 
         }
 

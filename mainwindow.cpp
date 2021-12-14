@@ -126,24 +126,8 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
 void MainWindow::on_pushButton_clicked()
 {
-    //mTransformWidget->objectsInList +=1;
-
-//    if(!itemFromSceneAdded)
-//    {
-//        mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
-//        mCoreEngine->boss->mSoundComponent->shouldPlay = true;
-
-//        ui->listWidget->addItem(mCoreEngine->boss->objName);
-//        itemFromSceneAdded = true;
-//    }
-//    else
-//    {
-//        GameObject *newboss = ResourceManager::getInstance().addObject("suzanne3.obj");
-//        mRenderSystem->mGameObjects.push_back(newboss);
-//    }
+    if(!mRenderSystem->isPlaying)
     mCoreEngine->loadBoss("boss.json");
-
-
 
 
 }
@@ -261,6 +245,14 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::on_progressBar_valueChanged(int value)
 {
  if(value == 100)
-     qDebug() << " You Won!";
- //ui->progressBar->
+ {
+
+     mCoreEngine->spawnBoss = true;
+     qDebug() << " Boss Spawned!";
+ }
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    mCoreEngine->reset();
 }
