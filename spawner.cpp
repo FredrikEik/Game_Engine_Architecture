@@ -239,15 +239,26 @@ void Spawner::resetSpawner()
         spawnedObjects[i + 2]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, -(i / 3 * 5));
     }
 
-    /*for(int i = 0; i < ObjSpawnFactory->mGameObject.size(); i++)
+    for(int i = 0; i < spawnedHindrances.size(); i++)
     {
-        if(ObjSpawnFactory->mGameObject[i]->mName == "hindrance")
+        int zOffset = rand()%15+10;
+        gsl::Vector3D temp = spawnedHindrances[i]->TransformComp->mMatrix.getPosition();
+        temp.x = rand()%5+1;
+        if(i == 0)
         {
-            ObjSpawnFactory->mGameObject.erase(ObjSpawnFactory->mGameObject.begin() + i);
-            mMainWindow->removeObjectFromWorldList(i);
-            //qDebug() << "comes here";
+            spawnedHindrances[i]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, -zOffset);
         }
+        else
+        {
+            spawnedHindrances[i]->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y,
+                                                                          spawnedHindrances[i - 1]->getTransformComp()->mMatrix.getPosition().z - zOffset);
+        }
+        spawnedHindrances[i]->getTransformComp()->Scal.setX(rand()%5+1);
+        spawnedHindrances[i]->getTransformComp()->Scal.setY(1.f);
+        spawnedHindrances[i]->getTransformComp()->Scal.setZ(1.f);
+        spawnedHindrances[i]->getTransformComp()->mMatrix = spawnedHindrances[i]->getTransformComp()->mTrueScaleMatrix;
+        spawnedHindrances[i]->getTransformComp()->mMatrix.scale(spawnedHindrances[i]->getTransformComp()->Scal.getX(),
+                                                         spawnedHindrances[i]->getTransformComp()->Scal.getY(),
+                                                         spawnedHindrances[i]->getTransformComp()->Scal.getZ());
     }
-    spawnedHindrances.clear();*/
-    //spawnHindrances(100);
 }
