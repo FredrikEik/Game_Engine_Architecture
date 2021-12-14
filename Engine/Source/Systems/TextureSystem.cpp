@@ -31,22 +31,26 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, textureComponent->width, textureComponent->height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureComponent->rgbImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, textureComponent->width, textureComponent->height, 0, format, GL_UNSIGNED_BYTE, textureComponent->rgbImage);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(textureComponent->rgbImage);
 }
 
-void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, std::map<std::string, std::string> nameFileMap)
+void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map<std::string, std::string> &nameFileMap)
 {
-	for (auto it : nameFileMap)
+	std::cout << '\n' << nameFileMap.size();
+	for (const auto& it : nameFileMap)
 	{
-		std::string name = std::get<0>(it);
-		auto filename = std::get<1>(it);
+		std::string name = it.first;
+		auto filename = it.second;
+
+		std::cout << name << '\n';
 
 		TextureComponent tex(MaterialComp->entityID, MaterialComp->ID);
-		loadImage(0,filename,&tex);
+		loadImage(0,filename, &tex);
+		std::cout << "test";
+		MaterialComp->textures.insert(std::make_pair(name,std::move(tex)));
 
-		MaterialComp->textures.insert(std::make_pair(name,tex));
 	}
 }

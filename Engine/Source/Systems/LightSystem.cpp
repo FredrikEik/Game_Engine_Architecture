@@ -85,6 +85,14 @@ void renderQuad()
 	glBindVertexArray(0);
 }
 
+void LightSystem::SetLightValues(uint32 entityID, class ECSManager* ECS, glm::vec3 lightColor, float linear, float quadratic)
+{
+	LightComponent* ligthComp = ECS->getComponentManager<LightComponent>()->getComponentChecked(entityID);
+	ligthComp->m_LightColor = lightColor;
+	ligthComp->m_Linear = linear;
+	ligthComp->m_Quadratic = quadratic;
+}
+
 void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPassShader, const std::string& uniformName, class ECSManager* manager, uint32 SystemEntity, uint32 cameraEntity)
 {
 	auto gBufferComp = manager->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
@@ -110,12 +118,47 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	glBindTexture(GL_TEXTURE_2D, gBufferComp->gAlbedoSpec);
 
 
+	ComponentManager<LightComponent>* lightManager = manager->getComponentManager<LightComponent>();
+	if (lightManager)
+	{
+		auto& lightArray = lightManager->getComponentArray();
+		LightPassShader->setInt("u_NumLights", lightArray.size());
+		int i = 0;
+		for (auto& light : lightArray)
+		{
+
+			TransformComponent* lightTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(light.entityID) };
+			glm::vec3 lightPos = lightTransform->transform[3];
+
+			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+			const glm::vec3 ligthColor = light.m_LightColor;
+			const float linear = light.m_Linear;
+			const float quadratic = light.m_Quadratic;
+
+			LightPassShader->setVec3("u_Lights[" + std::to_string(i) + "].Position", lightPos);
+			LightPassShader->setVec3("u_Lights[" + std::to_string(i) + "].Color", ligthColor);
+			// update attenuation parameters and calculate radius
+
+			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Linear", linear);
+			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Quadratic", quadratic);
+			// then calculate radius of light volume/sphere
+			const float maxBrightness = std::fmaxf(std::fmaxf(ligthColor.r, ligthColor.g), ligthColor.b);
+			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Radius", radius);
+			++i;
+		}
+	}
+	TransformComponent* cameraTransformComp{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+	glm::vec3 originOfCam = cameraTransformComp->transform[3];
+	LightPassShader->setVec3("u_CameraPos", originOfCam);
 	// send in light uniforms
 	// render a quad
 	renderQuad();
 
+
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferComp->gBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+
 	// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
 	// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
 	// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
@@ -123,6 +166,7 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	float SCR_HEIGHT = Engine::Get().getWindowWidth();
 	glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 
 
 	// render actual light objects;

@@ -235,20 +235,18 @@ struct LightComponent final : public Component
 {
 	LightComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 
-	glm::vec3 m_Position{};
 	glm::vec3 m_LightColor{};
 
 	float m_Linear{};
 	float m_Quadratic{};
-	float m_Radius{};
 };
 
 struct GBufferComponent final : public Component
 {
 	GBufferComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
 
-	uint gBuffer;
-	uint gPosition;
-	uint gNormal;
-	uint gAlbedoSpec;
+	uint gBuffer{};
+	uint gPosition{};
+	uint gNormal{};
+	uint gAlbedoSpec{};
 };

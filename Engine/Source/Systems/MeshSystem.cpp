@@ -50,8 +50,8 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     ComponentManager<TextureComponent>* textureManager = manager->getComponentManager<TextureComponent>();
-    ComponentManager<MaterialComponent>* materialManager = manager->getComponentManager<MaterialComponent>();
     TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+	ComponentManager<MaterialComponent>* materialManager = manager->getComponentManager<MaterialComponent>();
     if (!meshManager || !transformManager || !cameraTransform)
         assert(false);
     
@@ -68,36 +68,41 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         if (meshComp.bIsTranslucent == true || !meshComp.bShouldRender) 
             continue;
 
-        if (textureManager && materialManager)
+        if (textureManager)
         {
             TextureComponent* textureComp = textureManager->getComponentChecked(meshComp.entityID);
-            MaterialComponent* MatComp = materialManager->getComponentChecked(meshComp.entityID);
+            
             if (textureComp)
             {
+                glActiveTexture(GL_TEXTURE0);
                 shader->setInt("bUsingTexture", 1);
                 glBindTexture(GL_TEXTURE_2D, textureComp->textureID);
-            }
-            else if (MatComp)
-            {
-				// bind appropriate textures
-				int incrementor = 0;
-				for (auto it : MatComp->textures)
-				{
-                    std::string name = std::get<0>(it);
-                    TextureComponent texComp = std::get<1>(it);
-					glActiveTexture(GL_TEXTURE0 + incrementor); // active proper texture unit before binding
-					// retrieve texture number (the N in diffuse_textureN)
-
-					// now set the sampler to the correct texture unit
-					glUniform1i(glGetUniformLocation(shader->getShaderID(), name.c_str()), incrementor);
-					// and finally bind the texture
-					glBindTexture(GL_TEXTURE_2D, texComp.ID);
-				}
             }
             else
             {
                 shader->setInt("bUsingTexture", 0);
             }
+        }
+        if (materialManager)
+        {
+            MaterialComponent* MatComp = materialManager->getComponentChecked(meshComp.entityID);
+		    if (MatComp)
+		    {
+			    // bind appropriate textures
+			    int incrementor = 0;
+			    for (auto it : MatComp->textures)
+			    {
+				    std::string name = std::get<0>(it);
+				    TextureComponent texComp = std::get<1>(it);
+				    glActiveTexture(GL_TEXTURE0 + incrementor); // active proper texture unit before binding
+				    // retrieve texture number (the N in diffuse_textureN)
+
+				    // now set the sampler to the correct texture unit
+				    glUniform1i(glGetUniformLocation(shader->getShaderID(), name.c_str()), incrementor);
+				    // and finally bind the texture
+				    glBindTexture(GL_TEXTURE_2D, texComp.ID);
+			    }
+		    }
         }
 
         // calculate distance form mesh to camera determine lod to draw
@@ -146,7 +151,6 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 			}
 
         }
-        glActiveTexture(GL_TEXTURE0);
     }
 }
 

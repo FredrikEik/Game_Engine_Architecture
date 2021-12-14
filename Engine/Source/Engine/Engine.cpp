@@ -122,7 +122,7 @@ void Engine::init()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1); // VSYNC turn off for more fps 
-	
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
@@ -150,7 +150,7 @@ void Engine::init()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 
 
@@ -159,14 +159,14 @@ void Engine::init()
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
 
-	GeometryPassShader = new Shader("G_Buffer.vert", "G_Buffer.frag");
-	LightPassShader = new Shader("DefS_LightsShadows.vert", "DefS_LightsShadows.frag");
+	GeometryPassShader = new Shader("Shaders/G_Buffer.vert", "Shaders/G_Buffer.frag");
+	LightPassShader = new Shader("Shaders/DefS_LightsShadows.vert", "Shaders/DefS_LightsShadows.frag");
 
-	
+
 
 
 	editorCameraEntity = ECS->newEntity();
-	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);	
+	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
 	gameCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(gameCameraEntity);
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
@@ -200,11 +200,26 @@ void Engine::init()
 	ScriptSystem::Init();
 
 	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
+	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent, LightComponent>(unitEntity);
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
+	TransformSystem::move(unitEntity, glm::vec3(2, 2, 2), ECS);
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
+	LightSystem::SetLightValues(unitEntity, ECS, glm::vec3(1, 0, 0), 2.3, 3.5);
+	
+	gunEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent, AxisAlignedBoxComponent, MaterialComponent>(gunEntity);
+	ECS->loadAsset(gunEntity, "Assets/gun.obj");
+	TransformSystem::setScale(gunEntity, glm::vec3(10, 10, 10), ECS);
+	MeshSystem::setConsideredForFrustumCulling(gunEntity, ECS, false);
+	auto gunMaterial = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(gunEntity);
+	std::map<std::string, std::string> materialMap;
+	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/gun_BC.png"));
+	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/gun_R.png"));
+	TextureSystem::loadMaterial(gunMaterial, materialMap);
 
+	auto entT = ECS->getEntity(gunEntity);
+	
 
 
 
@@ -291,10 +306,6 @@ void Engine::loop()
 			}
 		}
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 		if (bIsPlaying)
 		{
 			//std::cout << "Game camera'\n";
@@ -314,22 +325,30 @@ void Engine::loop()
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
 		
-		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
-		glStencilMask(0xFF); // enable writing to the stencil buffer
+
 	
 			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
 		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
 		//lightPos += 0.01f;
+		
+
+		
+		// contains camera draw and mesh system draw.
+	
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		
+		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 		/*
+		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+		glStencilMask(0xFF); // enable writing to the stencil buffer
+
 		CameraSystem::draw(cameraEntity, phongShader, ECS);
 		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
 		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
-		*/
-
-		// contains camera draw and mesh system draw.
-		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -360,7 +379,7 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
-
+				*/
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

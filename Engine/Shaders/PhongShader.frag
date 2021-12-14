@@ -35,7 +35,7 @@ void main() {
 //    vec3 diffuse = angleFactor * objectColor * lightColor * lightStrength * (1-bUsingTexture) +
 //                    angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
     vec3 diffuse = angleFactor * objectColor * vec3(color) * lightColor * lightStrength * (1-bUsingTexture) +
-                    angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
+                    angleFactor * objectColor * vec3(texture(textureSampler, UV)) * lightColor * lightStrength * bUsingTexture;
 //
 //    vec3 diffuse = angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength;
 

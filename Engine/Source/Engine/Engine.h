@@ -67,6 +67,7 @@ private:
 	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
+	uint32 gunEntity{};
 
 	uint32 reservedEntities{};
 

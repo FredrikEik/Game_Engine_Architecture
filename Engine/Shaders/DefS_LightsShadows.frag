@@ -16,7 +16,7 @@ struct Light {
     float Radius;
 };
 
-const int MAX_NUM_LIGHTS = 256;
+const int MAX_NUM_LIGHTS = 100;
 uniform int u_NumLights;
 uniform Light u_Lights[MAX_NUM_LIGHTS];
 uniform vec3 u_CameraPos;
