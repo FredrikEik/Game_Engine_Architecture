@@ -98,7 +98,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Large Hindrance Cube");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             case 2:
                 SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(2.f);
@@ -111,7 +111,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Small Hindrance Cube Left");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             case 3:
                 SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(3.f);
@@ -124,7 +124,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Small Hindrance Cube Middle");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             case 4:
                 SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(4.f);
@@ -137,7 +137,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Small Hindrance Cube Right");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             case 5:
                 SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(1.5f);
@@ -150,7 +150,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Middle Hindrance Cube Left");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             case 6:
                 SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(4.f);
@@ -163,7 +163,7 @@ void Spawner::spawnHindrances(int hindranceLength)
                 SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getY(),
                                                                  SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Middle Hindrance Cube Right");
+                mMainWindow->addObjectToWorldList("Hindrance");
                 break;
             }
             SpawnedHindrance->mTexture = 5;
@@ -189,7 +189,15 @@ void Spawner::updateHindrances()
     if(SpawnedHindrance)
     {
         gsl::Vector3D temp = SpawnedHindrance->TransformComp->mMatrix.getPosition();
-        SpawnedHindrance->TransformComp->mMatrix.setPosition(temp.x, temp.y, biggestBack - i);
+        temp.x = rand()%5+1;
+        SpawnedHindrance->TransformComp->mTrueScaleMatrix.setPosition(temp.x, temp.y, biggestBack - i);
+        SpawnedHindrance->getTransformComp()->Scal.setX(rand()%5+1);
+        SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
+        SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
+        SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
+        SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
+                                                         SpawnedHindrance->getTransformComp()->Scal.getY(),
+                                                         SpawnedHindrance->getTransformComp()->Scal.getZ());
     }
 }
 
