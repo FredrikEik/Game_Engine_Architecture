@@ -10,8 +10,8 @@
 
 /**
 *MainWindow - Vi har nødvendige funksjoner for UI her.
-*on_pushButton_toggled - Toggler WireFrame knapp.
-*on_pushButton_2_toggled - Toggler start og restart, gjemmer også editorMode UI i play mode.
+*on_ToggleWF_toggled - Toggler WireFrame knapp.
+*on_PlayButton_toggled - Toggler start og restart, gjemmer også editorMode UI i play mode.
 *on_actionAdd_Square/circle/monkey_triggered - Knapp for å spawne objekter
 *doubleSpinBoxX/Y/Z - Flytter på objektet med en spinbox
 *on_treeWidget_itemActivated - Sjekker i bunn og grunn om objektet i treeWidgeten blir trykket på med mousepick eller på liste og setter ID utifra hvordan den blir trykket på.
@@ -44,7 +44,7 @@ public:
     void PointCount(int points);
 
 private slots:
-    void on_pushButton_toggled(bool checked);
+    void on_ToggleWF_toggled(bool checked);
 
 
     void on_PlayButton_toggled(bool checked);

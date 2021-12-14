@@ -77,6 +77,7 @@ public:
     bool playM = false;
     int trophies{0};
     int mLives{3};
+    bool winCondition = false;
 private:
     static const int DIM_X = 19;
     static const int DIM_Z = 22;

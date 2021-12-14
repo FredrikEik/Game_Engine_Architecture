@@ -208,6 +208,8 @@ void RenderWindow::drawObjects()
     glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
     glBindVertexArray(0);
 
+    glUseProgram(mShaderPrograms[0]->getProgram() );
+
     if(mLvl->playM==false){
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
         glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
@@ -216,7 +218,7 @@ void RenderWindow::drawObjects()
     }else
         for(int i{0}; i < mLvl->mParticles.size(); i++)
         {
-            glUseProgram(mShaderPrograms[0]->getProgram() );
+
 
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());

@@ -108,8 +108,6 @@ void MovementSystem::moveUnit(VisualObject* vo, MovementComponent *moveC)
             moveC->posZ = std::floor(vo->mTransform->mPosition.z);
         else
             qDebug() << "error in MovementSystem::moveEnemy";}
-
-
 }
 
 

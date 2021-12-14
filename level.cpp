@@ -241,6 +241,7 @@ void Level::checkCollision()
                     continue;
             }else{
                 qDebug() << "You Win";
+                winCondition = true;
                 resetGame();}
         }
     }
@@ -268,11 +269,10 @@ void Level::resetGame()
     gsl::Vector3D playerP = {1,CENTER_Y,20};
     gsl::Vector3D currP = mPlayer->mTransform->mPosition;
 
-
     VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
     mMoveSys->move(vPlayer, playerP.x-currP.x, 0, playerP.z-currP.z);
 
-    if(mLives==0){
+    if(mLives == 0 || winCondition ==true){
         for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
         {
             mVisualObjects[i]->drawMe = true;
@@ -280,6 +280,7 @@ void Level::resetGame()
         trophies = 0;
         mLives = 3;
         int eID = 0;
+        winCondition = false;
         for(int i = 0; i<DIM_Z;i++)
         {
             for(int j = 0; j<DIM_X; j++){
