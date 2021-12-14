@@ -110,7 +110,7 @@
                  </widget>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0,0,0" columnstretch="0,0,0,0">
+                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,2,1,2,1,2" columnstretch="0,0,0,0">
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>

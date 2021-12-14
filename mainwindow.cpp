@@ -191,7 +191,9 @@ void MainWindow::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
             ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
             ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().y);
             ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().z);
-
+            ui->RotX->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.x);
+            ui->RotY->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.y);
+            ui->RotZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.z);
             break;
         }
     }
@@ -218,16 +220,14 @@ void MainWindow::on_PosZ_valueChanged(double arg1)
 
 
 
-void MainWindow::on_pushButton_3_clicked()
-{
-
-}
-
 
 void MainWindow::updateDetails(){
     ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getX());
     ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getY());
     ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().getZ());
+    ui->RotX->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.x);
+    ui->RotY->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.y);
+    ui->RotZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.z);
     ui->checkBox->setChecked(mRenderWindow->meshCompVec[SelectedItem]->isDrawable);
 
 }
@@ -245,38 +245,11 @@ void MainWindow::setSelectedItem(int i)
     ui->PosX->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().x);
     ui->PosY->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().y);
     ui->PosZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->mMatrix.getPosition().z);
+    ui->RotX->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.x);
+    ui->RotY->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.y);
+    ui->RotZ->setValue(mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.z);
 
-}
 
-void MainWindow::on_pushButton_5_clicked()
-{
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(-10.f);
-}
-
-void MainWindow::on_pushButton_6_clicked()
-{
-
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(10.f);
-}
-
-void MainWindow::on_pushButton_7_clicked()
-{
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateY(-10.f);
-}
-
-void MainWindow::on_pushButton_8_clicked()
-{
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateY(10.f);
-}
-
-void MainWindow::on_pushButton_9_clicked()
-{
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateZ(-10.f);
-}
-
-void MainWindow::on_pushButton_10_clicked()
-{
-    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateZ(10.f);
 }
 
 void MainWindow::on_checkBox_toggled(bool checked)
@@ -325,3 +298,26 @@ void MainWindow::on_StartPhysics_clicked()
     }
 
 }
+
+void MainWindow::on_RotX_valueChanged(double arg1)
+{
+    double delta = arg1 - mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.x;
+    mRenderWindow->transformCompVec[SelectedItem]->rotationTracker += gsl::Vector3D(delta,0.f,0.f);
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateX(delta);
+}
+
+void MainWindow::on_RotY_valueChanged(double arg1)
+{
+    double delta = arg1 - mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.y;
+    mRenderWindow->transformCompVec[SelectedItem]->rotationTracker += gsl::Vector3D(0.f,delta,0.f);
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateY(delta);
+
+}
+
+void MainWindow::on_RotZ_valueChanged(double arg1)
+{
+    double delta = arg1 - mRenderWindow->transformCompVec[SelectedItem]->rotationTracker.z;
+    mRenderWindow->transformCompVec[SelectedItem]->rotationTracker += gsl::Vector3D(0.f,0.f,delta);
+    mRenderWindow->transformCompVec[SelectedItem]->mMatrix.rotateZ(delta);
+}
+
