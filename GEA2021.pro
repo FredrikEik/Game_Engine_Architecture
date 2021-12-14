@@ -43,7 +43,6 @@ SOURCES += main.cpp \
     triangle.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
-    uimanager.cpp \
     vector3.cpp \
     vertex.cpp \
     visualobject.cpp \
@@ -79,7 +78,6 @@ HEADERS += \
     triangle.h \
     gsl/vector2d.h \
     gsl/vector3d.h \
-    uimanager.h \
     vector3.h \
     vertex.h \
     visualobject.h \

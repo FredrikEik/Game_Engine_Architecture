@@ -31,14 +31,6 @@ bool SoundManager::init()
     else
         std::cout << "Intialization complete!\n";
 
-    //Start listing of found sound devices:
-    //Not jet implemented
-    //ALDeviceList *pDeviceList = NULL;
-    //ALCcontext *pContext = NULL;
-    //ALCdevice *pDevice = NULL;
-    //ALint i;	//will hold the number of the preferred device
-    //ALboolean bReturn = AL_FALSE;
-
     return true;
 }
 

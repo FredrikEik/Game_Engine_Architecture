@@ -256,22 +256,6 @@ void RenderWindow::render()
 
     mCurrentCamera->calculateFrustumVectors();
 
-    /*qDebug() << "Top Plane: "<< mCurrentCamera->mFrustum.mToptPlane << "  Bottom Plane: " << mCurrentCamera->mFrustum.mBottomPlane
-             << "  Left Plane: " << mCurrentCamera->mFrustum.mLeftPlane << "  Right Plane: " << mCurrentCamera->mFrustum.mRightPlane;*/
-
-    //This should be in a loop!
-//    {
-//        //First object - xyz
-//        //what shader to use
-//        glUseProgram(mShaderPrograms[0]->getProgram() );
-
-//        //send data to shader
-//        glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//        glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//        glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mVisualObjects[0]->mMatrix.constData());
-//        //draw the object
-//        mVisualObjects[0]->draw();
-
     skyBox->Update(mCurrentCamera->getPosition());
 
     MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
@@ -334,11 +318,6 @@ void RenderWindow::render()
                     continue;
             }
             ObjFactory->mGameObject[i]->draw();
-//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateY(0.5f);
-//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateX(0.5f);
-//            ObjFactory->mGameObject[i]->getTransformComp()->mMatrix.rotateZ(5.f);
-            //ObjFactory->mGameObject[i]->getCollisionComp()->max += gsl::Vector3D(0.001f, 0.001f, -0.001f);
-            //ObjFactory->mGameObject[i]->getCollisionComp()->min += gsl::Vector3D(0.001f, 0.001f, -0.001f);
 
             if (i > 1)
             {
@@ -350,28 +329,14 @@ void RenderWindow::render()
                 if (test && bPlayGame)
                     toggleGameMode();
             }
-
-            /*for(unsigned int y=0; y<ObjFactory->mGameObject.size(); y++)
-            {
-                if(ObjFactory->mGameObject[i] != ObjFactory->mGameObject[y])
-                {
-                    bool test;
-                    test = objectsColliding(*ObjFactory->mGameObject[i]->getCollisionComp(), *ObjFactory->mGameObject[y]->getCollisionComp(),
-                                            *ObjFactory->mGameObject[i]->getTransformComp(),
-                                            *ObjFactory->mGameObject[y]->getTransformComp());
-                    //qDebug() << "Box " << i << " colliding with box " << y << " = " << test;
-                }
-            }*/
-
         }
-        // Hud 2d render
+
+        calculateFramerate();
+
+        checkForGLerrors();
+
+        mContext->swapBuffers(this);
     }
-
-    calculateFramerate();
-
-    checkForGLerrors();
-
-    mContext->swapBuffers(this);
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -418,15 +383,9 @@ void RenderWindow::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
-        //qDebug() << mAspectratio;
     mGameCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     mEditorCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     gsl::Matrix4x4 projectionMatrix =  mCurrentCamera->mProjectionMatrix;
-    //qDebug() << "projectionMatrix: true";
-    //qDebug() << projectionMatrix.getFloat(0) << projectionMatrix.getFloat(1) << projectionMatrix.getFloat(2) << projectionMatrix.getFloat(3);
-    //qDebug() << projectionMatrix.getFloat(4) << projectionMatrix.getFloat(5) << projectionMatrix.getFloat(6) << projectionMatrix.getFloat(7);
-    //qDebug() << projectionMatrix.getFloat(8) << projectionMatrix.getFloat(9) << projectionMatrix.getFloat(10) << projectionMatrix.getFloat(11);
-    //qDebug() << projectionMatrix.getFloat(12) << projectionMatrix.getFloat(13) << projectionMatrix.getFloat(14) << projectionMatrix.getFloat(15);
 }
 
 //The way this is set up is that we start the clock before doing the draw call,
@@ -681,13 +640,6 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
                 break;
             }
         }
-        /*ObjFactory->createObject("Cube");
-        GameObject* test = ObjFactory->mGameObject.back();
-        test->getTransformComp()->mMatrix.setPosition(mCurrentCamera->getPosition().x, mCurrentCamera->getPosition().y, mCurrentCamera->getPosition().z);
-        qDebug() << "camera x: " << mCurrentCamera->getPosition().x << " y: " << mCurrentCamera->getPosition().z << " z: " << mCurrentCamera->getPosition().z;
-        test->getTransformComp()->mMatrix.setRotationToVector(mMousePicker->getCurrentRay());
-        test->getTransformComp()->mMatrix.scale(gsl::Vector3D(0.01f, 0.01f, 100.f));
-        qDebug() << "ray x: " << mMousePicker->getCurrentRay().x << " y: " << mMousePicker->getCurrentRay().y << " z: " << mMousePicker->getCurrentRay().z;*/
     }
 }
 
@@ -796,16 +748,6 @@ bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent 
     Box1max += Box1Pos;
     Box2min += Box2Pos;
     Box2max += Box2Pos;
-
-    /*qDebug() << Box1min.getX() << " <= " << Box2max.getX() << " && " << Box1max.getX() << " >= " << Box2min.getX();
-    if (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX())
-        qDebug() << "xCollision";
-    qDebug() << Box1min.getY() << " <= " << Box2max.getY() << " && " << Box1max.getY() << " >= " << Box2min.getY();
-    if (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY())
-        qDebug() << "yCollision";
-    qDebug() << Box1min.getZ() << " <= " << Box2max.getZ() << " && " << Box1max.getZ() << " >= " << Box2min.getZ();
-    if (Box1min.getZ() <= Box2max.getZ() && Box1max.getZ() >= Box2min.getZ())
-        qDebug() << "zCollision";*/
 
     return (Box1min.getX() <= Box2max.getX() && Box1max.getX() >= Box2min.getX()) &&
            (Box1min.getY() <= Box2max.getY() && Box1max.getY() >= Box2min.getY()) &&
