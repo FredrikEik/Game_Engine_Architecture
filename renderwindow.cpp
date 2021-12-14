@@ -37,6 +37,7 @@
 #include "quadtree.cpp"
 #include "vector4d.h"
 #include "level.h"
+#include "player.h"
 #include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -112,7 +113,15 @@ void RenderWindow::init()
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
+    mTextures[2] = new Texture("0hp.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    mTextures[3] = new Texture("1hp.bmp");
+    glActiveTexture(GL_TEXTURE4);
+    mTextures[4] = new Texture("2hp.bmp");
+    glActiveTexture(GL_TEXTURE5);
+    mTextures[5] = new Texture("fullhp.bmp");
+    glActiveTexture(GL_TEXTURE6);
+    mTextures[6] = new Texture("right.bmp",
                                "left.bmp",
                                "top.bmp",
                                "bottom.bmp",
@@ -120,11 +129,16 @@ void RenderWindow::init()
                                "back.bmp");
 
 
+
     //Set the textures loaded to a texture unit
 
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[6]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -247,7 +261,7 @@ void RenderWindow::initObjects()
              hjelpeObjektMesh = new MeshComponent;
 
 
-             factory->createObject("Billboard");
+             HUD =factory->createObject("Billboard");
 }
 
 
@@ -295,11 +309,11 @@ void RenderWindow::render()
                 glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
                 if (factory->mGameObjects[i]->isHUD)
                 {
-                    glUniform1i(mHUDUniform[shaderProgramIndex], 1);
+                    glUniform1i(mHUDUniform[shaderProgramIndex], true);
                 }
                 else
                 {
-                    glUniform1i(mHUDUniform[shaderProgramIndex], 0);
+                    glUniform1i(mHUDUniform[shaderProgramIndex], false);
                 }
             }
             if(shaderProgramIndex == 3)
@@ -419,6 +433,9 @@ void RenderWindow::render()
     //qDebug() << objectsDrawn;
     objectsDrawn = 0;
 
+    if(playerHP == 0){
+        reset(format());
+    }
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -584,7 +601,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
-
+    playerHP = 3;
     initObjects();
 //    factory->mGameObjects.clear();
 //    mRenderTimer->stop();
@@ -720,6 +737,7 @@ void RenderWindow::handleInput()
     else if(!editorMode) //karakter shit her
     {  
       static_cast<Player*>(mPlayer)->movement();
+      HUD->getMaterialComponent()->mTextureUnit = 2+playerHP;
     }
 	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
 }
@@ -878,6 +896,9 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+       if (!editorMode)
+           static_cast<Player*>(mPlayer)->input.X = true;
+        static_cast<Player*>(mPlayer)->takeDamage(playerHP);
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -946,6 +967,8 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+        if (!editorMode)
+            static_cast<Player*>(mPlayer)->input.X = false;
     }
     if(event->key() == Qt::Key_Up)
     {

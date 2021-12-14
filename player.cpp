@@ -5,6 +5,7 @@ Player::Player()
 {
 
     cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
+
 }
 
 Player::~Player()
@@ -78,6 +79,13 @@ void Player::movement()
     if(input.A)
         move(0,0,-movementSpeed);
 
+}
+
+int Player::takeDamage(int &playerHP)
+{
+   if (input.X)
+       playerHP--;
+   return playerHP;
 }
 void Player::draw()
 {

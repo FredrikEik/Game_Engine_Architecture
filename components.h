@@ -95,6 +95,7 @@ public:
     bool Q{false};
     bool E{false};
     bool C{false};
+    bool X{false};
     bool LSHIFT{false};
     bool LCTRL{false};
     bool SPACE{false};

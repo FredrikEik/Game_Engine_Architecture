@@ -118,7 +118,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 6;
 
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
@@ -155,7 +155,7 @@ GameObject* Factory::createObject(std::string objectName)
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Billboard"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
         objectToCreate->isHUD = true;
         objectToCreate->mObjectName = "HUD";
     }

@@ -140,11 +140,12 @@ private:
 
 
     int mIndexToPickedObject{-1};
+    int playerHP=3;
 
 
     //std::vector<VisualObject*> mVisualObjects;
 
-
+    GameObject* HUD;
     GameObject* mPlayer;
     InputComponent mInput;
     gsl::Vector3D thirdPersonPos;
