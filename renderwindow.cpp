@@ -198,7 +198,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/explosion.wav", false, 1.0f);
     mLaserSound = SoundManager::getInstance()->createSource(
                 "Laser", Vector3(20.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/Audio/laser.wav", true, 0.7f);
+                "../GEA2021/Assets/Audio/laser.wav", false, 0.7f);
 
     mStereoSound = SoundManager::getInstance()->createSource(
                 "Stereo", Vector3(0.0f, 0.0f, 0.0f),
@@ -376,6 +376,8 @@ void RenderWindow::render()
             {
                 if(collisionSys->isColliding(meshCompVec[bullets[i]],transformCompVec[bullets[i]],meshCompVec[Enemies[j]],transformCompVec[Enemies[j]]))
                 {
+                    mExplosionSound->setPosition(transformCompVec[Enemies[j]]->mMatrix.getPosition());
+                    mExplosionSound->play();
                     meshCompVec[Enemies[j]]->isDead = true;
                     meshCompVec[Enemies[j]]->isDrawable = false;
                     meshCompVec[Enemies[j]]->IsCollidable = false;
@@ -488,6 +490,7 @@ void RenderWindow::moveEnemies()
 }
 void RenderWindow::LoadBullet()
 {
+
     if(!bBulletLoaded)
     {
         for (unsigned long long i = 0; i<bullets.size();i++)
@@ -511,6 +514,8 @@ void RenderWindow::ShootBullet()
     {
         if( transformCompVec[bullets[i]]->isBulletLoaded == true)
         {
+            mLaserSound->setPosition(CurrentPlayer->mMatrix.getPosition());
+            mLaserSound->play();
             transformCompVec[bullets[i]]->Velocity.setY(0.0f);
             transformCompVec[bullets[i]]->Velocity.setZ(50.0f);
             transformCompVec[bullets[i]]->isBulletLoaded = false;
