@@ -2,7 +2,10 @@
 
 #include "resourcemanager.h"
 #include "soundsystem.h"
-
+#include <qfile.h>
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <qjsonarray.h>
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
@@ -54,6 +57,7 @@ void CoreEngine::setUpScene()
 {
     //********************** Making the object to be drawn **********************
 
+    //loadBoss("boss.json");
     mResourceManager->setUpAllTextures();
 
     //Axis
@@ -66,7 +70,7 @@ void CoreEngine::setUpScene()
     //PLAYER
     player = mResourceManager->addObject("suzanne.obj");
     player->mMaterial->mShaderProgram = 0;
-    player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
+    player->mMaterial->mTextureUnit = 0;
     player->mTransform->mMatrix.rotateY(180.f);
     player->mTransform->mMatrix.scale(0.5f);
     player->mTransform->mMatrix.translate(0.f, 0, -20);
@@ -80,19 +84,19 @@ void CoreEngine::setUpScene()
     //mRenderSystem->mGameObjects.push_back(player);
 
     //BOSS
-    boss = mResourceManager->addObject("suzanne3.obj");
-    boss->mTransform->mMatrix.translate(-2, 1.f,2.f);
-    boss->mMaterial->mShaderProgram = 1;
-    boss->mMaterial->mTextureUnit = 2;
-    boss->mTransform->mMatrix.rotateY(180.f);
-    boss->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 5.f/**j*/);
-    boss->mTransform->mMatrix.scale(1.5f);
-    mResourceManager->addCollider("sphere", boss);
-    mResourceManager->addComponent("run_stereo.wav", boss);
-    boss->mSoundComponent->shouldPlay = false;
-    //looping fungerer ikke
-    boss->mSoundComponent->looping = false;
-    boss->objName = "boss";
+//    boss = mResourceManager->addObject("suzanne3.obj");
+//    boss->mTransform->mMatrix.translate(-2, 1.f,2.f);
+//    boss->mMaterial->mShaderProgram = 1;
+//    boss->mMaterial->mTextureUnit = 2;
+//    boss->mTransform->mMatrix.rotateY(180.f);
+//    boss->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 5.f/**j*/);
+//    boss->mTransform->mMatrix.scale(1.5f);
+//    mResourceManager->addCollider("sphere", boss);
+//    mResourceManager->addComponent("run_stereo.wav", boss);
+//    boss->mSoundComponent->shouldPlay = false;
+//    //looping fungerer ikke
+//    boss->mSoundComponent->looping = false;
+//    boss->objName = "boss";
     //mRenderSystem->mGameObjects.push_back(boss);
 
     skybox = mResourceManager->addObject("skybox");
@@ -315,10 +319,72 @@ void CoreEngine::UpdateSimulation()
 
 }
 
+void CoreEngine::loadBoss(std::string scene)
+{
+    QFile loadFile(QString((gsl::AssetFilePath + scene).c_str()));
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        qDebug() << "error reading JSON file";
+        return;
+    }
+    qDebug() << "scene open";
+    QByteArray saveData = loadFile.readAll();   //read whole file
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //convert to json document
+    QJsonObject jsonObject = loadDoc.object();  //read first object == whole thing
+
+    if (jsonObject.contains("Boss") && jsonObject["Boss"].isArray())
+    {
+        QJsonArray entityArray = jsonObject["Boss"].toArray();
+        //go through each entity in file
+        int entityIndex{0};   //used to print log afterwards
+        for ( ; entityIndex < entityArray.size(); ++entityIndex) {
+            GameObject *tempGOB{nullptr};
+            QString name;   //this is pushed as the key to the mEntityMap later ???? - maybe not
+
+            QJsonObject entityObject = entityArray[entityIndex].toObject();   //first entity as object
+
+            if (entityObject.contains("name") && entityObject["name"].isString())
+                name = entityObject["name"].toString();
+
+            if (entityObject.contains("mesh") && entityObject["mesh"].isString())
+            {
+                QString mesh = entityObject["mesh"].toString();
+                tempGOB = mResourceManager->addObject(mesh.toStdString());
+//                tempGOB->mMaterial->mShaderProgram = 1;
+//                tempGOB->mMaterial->mTextureUnit = 2;
+            }
+
+            if (entityObject.contains("position") && entityObject["position"].isArray())
+            {
+                QJsonArray positionArray = entityObject["position"].toArray();
+                if (positionArray[0].isDouble() && positionArray[0].isDouble() && positionArray[0].isDouble())
+                    tempGOB->mTransform->mMatrix.setPosition(positionArray[0].toDouble(),
+                            positionArray[1].toDouble(), positionArray[2].toDouble());
+
+
+            }
+            if (entityObject.contains("scale") && entityObject["scale"].isArray())
+            {
+
+                QJsonArray scaleArray = entityObject["scale"].toArray();
+                if (scaleArray[0].isDouble() && scaleArray[0].isDouble() && scaleArray[0].isDouble())
+                tempGOB->mTransform->mMatrix.scale(scaleArray[0].toDouble(), scaleArray[1].toDouble(),
+                        scaleArray[2].toDouble());
+
+            }
+            mRenderSystem->mGameObjects.push_back(tempGOB);
+
+        }
+
+    }
+    else
+        qDebug() << "somwthing not right";
+
+}
+
 void CoreEngine::handleInput()
 {
     //Camera
-    float speed = 0.5f;
+    float speed = .5f;
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
     {

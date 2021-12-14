@@ -77,6 +77,8 @@ public:
     void updateScene();
     void UpdateSimulation();
 
+    void loadBoss(std::string scene);
+
     std::vector<GameObject*> Rain;
 
     void spawnParticles(GameObject *temp);

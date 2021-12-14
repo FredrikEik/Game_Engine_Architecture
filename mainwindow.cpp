@@ -128,19 +128,20 @@ void MainWindow::on_pushButton_clicked()
 {
     //mTransformWidget->objectsInList +=1;
 
-    if(!itemFromSceneAdded)
-    {
-        mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
-        mCoreEngine->boss->mSoundComponent->shouldPlay = true;
+//    if(!itemFromSceneAdded)
+//    {
+//        mRenderSystem->mGameObjects.push_back(mCoreEngine->boss);
+//        mCoreEngine->boss->mSoundComponent->shouldPlay = true;
 
-        ui->listWidget->addItem(mCoreEngine->boss->objName);
-        itemFromSceneAdded = true;
-    }
+//        ui->listWidget->addItem(mCoreEngine->boss->objName);
+//        itemFromSceneAdded = true;
+//    }
 //    else
 //    {
 //        GameObject *newboss = ResourceManager::getInstance().addObject("suzanne3.obj");
 //        mRenderSystem->mGameObjects.push_back(newboss);
 //    }
+    mCoreEngine->loadBoss("boss.json");
 
 
 
