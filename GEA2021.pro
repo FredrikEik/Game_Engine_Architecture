@@ -59,6 +59,7 @@ SOURCES += main.cpp \
     coreengine.cpp \
     gameplaymechanics.cpp \
     gsl/vector4d.cpp \
+    instancerendering.cpp \
     logger.cpp \
     pch.cpp \
     rendersystem.cpp \
@@ -85,6 +86,7 @@ HEADERS += \
     coreengine.h \
     gameplaymechanics.h \
     gsl/vector4d.h \
+    instancerendering.h \
     logger.h \
     pch.h \
     rendersystem.h \

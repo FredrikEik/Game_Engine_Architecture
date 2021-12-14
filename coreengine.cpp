@@ -302,32 +302,34 @@ void CoreEngine::gameLoop()
 //    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
     }
 
-//    time_t clock = time(0);
-//    int time = clock;
 
-//    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
+    if(isPlaying == true)
+    {
+        time_t clock = time(0);
+        int time = clock;
 
-//    //Initializing values for the gameplay
-//    GamePlayMechanics tm(mRenderSystem);
-//    int tetrominoNr;
-//    GameObject currentTetromino;
+        std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
 
-//    tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
-//    tm.TetrominoMaker(tetrominoNr);    //Creates the tetromino based on int to be used in the scene.
+        //Initializing values for the gameplay
+        GamePlayMechanics tm(mRenderSystem);
+        int tetrominoNr;
+        GameObject currentTetromino;
 
-//    while(currentTetromino.activeGameBlock == true)
-//    {
-//        //If there is a tetromino in scene, let player control tetromino, and apply the speed-change.
-//        tm.MoveTetromino(time);
-//    }
-//    if (currentTetromino.activeGameBlock == false)
-//    {
-//        //Check if one or multiple horizontals in the play-grid is full.
-//        tm.ManageGameplayLines();
-//        tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
-//        tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
-//    }
-//    //If there is not a tetromino in scene, draw another one.
+        tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+        tm.TetrominoMaker(tetrominoNr);    //Creates the tetromino based on int to be used in the scene.
 
+        while(currentTetromino.activeGameBlock == true)
+        {
+            //If there is a tetromino in scene, let player control tetromino, and apply the speed-change.
+            tm.MoveTetromino(time);
+        }
+        if (currentTetromino.activeGameBlock == false) //If there is not a tetromino in scene, draw another one.
+        {
+            //Check if one or multiple horizontals in the play-grid is full.
+            tm.ManageGameplayLines();
+            tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+            tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
+        }
+    }
     mRenderSystem->render();
 }

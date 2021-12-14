@@ -196,11 +196,10 @@ void GamePlayMechanics::MoveTetromino(int time)
 //        if(time/gameSpeed == 0) //Drop the tetromino towards bottom. Speed up gradually over time and or cleared lines
 //        {
 //            brick.mTransform->mMatrix.translateY(-1);
-//            gameField[i-1][j-1];
+//            gameField[i-1][j-1] = true;
 //        }
 
-    //Allow user input, "W" to rotate, "A & D" to move sideways, "S" to drop faster and "Spacebar" to instantly drop to bottom using current rotation.
-    //KeyPress-events.
+//    //Allow user input, "W" to rotate, "A & D" to move sideways, "S" to drop faster and "Spacebar" to instantly drop to bottom using current rotation.
 //    }
 //    gameSpeed++;
 }
