@@ -92,6 +92,8 @@ FORMS += \
 
 DISTFILES += \
     Script/tinyScript.js \
+    Shaders/TextVertexShader.frag \
+    Shaders/TextVertexShader.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders\plainfragment.frag \

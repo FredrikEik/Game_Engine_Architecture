@@ -16,6 +16,7 @@
 #include "player.h"
 #include "skybox.h"
 #include "script.h"
+#include "text2d.h"
 
 
 class QOpenGLContext;
@@ -158,6 +159,9 @@ private:
     //for statistics in status bar
     int mVerticesDrawn{0};
     int mObjectsDrawn{0};
+
+    Text2D* mCurrentScore { nullptr };
+    Text2D* mHighScore { nullptr };
 
 
 protected:

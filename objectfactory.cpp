@@ -4,6 +4,7 @@
 #include "xyz.h"
 #include "objimport.h"
 #include <QDebug>
+#include "text2d.h"
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
 
@@ -53,6 +54,10 @@ void ObjectFactory::createObject(std::string objectName)
         willCreateObject = new Cube;
         willCreateObject->mTexture = 1;
         willCreateObject->bHudElement = true;
+    }
+    else if (objectName == "HudText")
+    {
+        willCreateObject = new Text2D("SCORE:", 0, 190);
     }
     else
         return;

@@ -11,15 +11,15 @@ uniform mat4 pMatrix;
 uniform int HudElement;
 
 void main() {
-   color = colorIn;
    UV = vertexUV;
    if (HudElement == 1)
    {
-      gl_Position = mMatrix *positionIn;
-      //gl_Position = vec4(gl_Position.x, gl_Position.y, gl_Position.z, 0.999f);
+        gl_Position = mMatrix *positionIn;
+        //gl_Position = vec4(gl_Position.x, gl_Position.y, gl_Position.z, 0.999f);
    }
    else
    {
+       color = colorIn;
        gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
    }
 }

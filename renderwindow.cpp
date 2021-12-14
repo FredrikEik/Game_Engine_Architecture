@@ -22,6 +22,7 @@
 #include "texture.h"
 #include "MathStuff/MathStuff.h"
 #include "spawner.h"
+#include "text2d.h"
 
 #include "cube.h"
 #include "objimport.h"
@@ -117,7 +118,7 @@ void RenderWindow::init()
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
-    int textureUnits = 5;
+    int textureUnits = 7;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
     std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
@@ -132,6 +133,7 @@ void RenderWindow::init()
     mTextures[3] = new Texture("whitefur.bmp");
     mTextures[4] = new Texture("firesky.bmp");
     mTextures[5] = new Texture("lava.bmp");
+    mTextures[6] = new Texture("font.bmp");
 
     //Set the textures loaded to a texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -146,6 +148,8 @@ void RenderWindow::init()
     glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
+    glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, mTextures[6]->mGLTextureID);
 
 
     //Start the Qt OpenGL debugger
@@ -221,6 +225,17 @@ void RenderWindow::init()
     MapSpawner->spawnRow(100);
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);
+
+    mCurrentScore = new Text2D("SCORE:", 0, 190);
+    mCurrentScore->init();
+    ObjFactory->mGameObject.push_back(mCurrentScore);
+    mMainWindow->addObjectToWorldList("ScoreCounter");
+    mHighScore = new Text2D("HIGHSCORE:", 0, 180);
+    ObjFactory->mGameObject.push_back(mHighScore);
+    mMainWindow->addObjectToWorldList("HighScoreCounter");
+    mHighScore->init();
+
+    mCurrentScore->updateText("Score: 0.0");
 }
 
 // Called each frame - doing the rendering
@@ -624,6 +639,10 @@ void RenderWindow::toggleGameMode()
         }
         stopSound();
         mMainWindow->disableWorldObjects(false);
+        if (mHighScore)
+        {
+            mHighScore->updateText("HIGHSCORE: U SUCK");
+        }
     }
     else {
         bPlayGame = true;

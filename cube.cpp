@@ -61,35 +61,35 @@ void Cube::init()
 {
     initializeOpenGLFunctions();
 
-       glGenVertexArrays( 1, &getMeshComp()->mVAO );
-       glBindVertexArray( getMeshComp()->mVAO );
+    glGenVertexArrays( 1, &getMeshComp()->mVAO );
+    glBindVertexArray( getMeshComp()->mVAO );
 
 
-       glGenBuffers( 1, &getMeshComp()->mVBO );
-       glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
+    glGenBuffers( 1, &getMeshComp()->mVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, getMeshComp()->mVBO );
 
-       glBufferData( GL_ARRAY_BUFFER,                     //what buffer type
-                     getMeshComp()->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
-                     getMeshComp()->mVertices.data(),                    //the actual vertices
-                     GL_STATIC_DRAW                       //should the buffer be updated on the GPU
-                     );
+    glBufferData( GL_ARRAY_BUFFER,                     //what buffer type
+                  getMeshComp()->mVertices.size() * sizeof( Vertex ), //how big buffer do we need
+                  getMeshComp()->mVertices.data(),                    //the actual vertices
+                  GL_STATIC_DRAW                       //should the buffer be updated on the GPU
+                  );
 
-       glBindBuffer(GL_ARRAY_BUFFER, getMeshComp()->mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, getMeshComp()->mVBO);
 
-       // 1rst attribute buffer : coordinates
+    // 1rst attribute buffer : coordinates
 
-       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
-       glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0));
+    glEnableVertexAttribArray(0);
 
-       // 2nd attribute buffer : colors
-       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(1);
+    // 2nd attribute buffer : colors
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,  sizeof(Vertex),  reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(1);
 
-       // 3rd attribute buffer : uvs
-       glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
-       glEnableVertexAttribArray(2);
+    // 3rd attribute buffer : uvs
+    glVertexAttribPointer(2, 2,  GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)( 6 * sizeof(GLfloat)) );
+    glEnableVertexAttribArray(2);
 
-       glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 
