@@ -69,5 +69,5 @@ void Billboard::draw()
 void Billboard::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
-    getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
+
 }
