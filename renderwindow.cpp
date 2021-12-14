@@ -645,16 +645,6 @@ void RenderWindow::toggleGameMode()
         if (MapSpawner)
         {
             MapSpawner->resetSpawner();
-            for(int i = 0; i < ObjFactory->mGameObject.size(); i++)
-            {
-                if(ObjFactory->mGameObject[i]->mName == "hindrance")
-                {
-                    qDebug() << "Still things left named hindrance. size of gameobject: " << ObjFactory->mGameObject.size() << " world list: " << mMainWindow->WorldListSize();
-                    ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin() + i); //tried to double delete messed up hindrances but doesn't work.
-                    mMainWindow->removeObjectFromWorldList(i);
-                }
-            }
-            MapSpawner->spawnHindrances(100);
         }
         stopSound();
         mMainWindow->disableWorldObjects(false);
