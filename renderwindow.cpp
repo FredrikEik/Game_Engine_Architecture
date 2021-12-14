@@ -175,15 +175,16 @@ void RenderWindow::init()
     ///PURE ECS TEST
     entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
     meshCompVec[0]->IsCollidable = false;
-    entitySys->construct("XYZ", QVector3D(0.0f,0.0f,0.0f),0,0,-1,GL_LINES);
+    entitySys->construct("FlatFloor.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
+    Physics->InitPhysicsSystem(meshCompVec[1],ResSys->getVertexDataByName("FlatFloor.obj"));
 
     entitySys->construct("cannon.obj", QVector3D(-5.0f,0.0f,0.0f),2,1); //https://sketchfab.com/3d-models/hand-painted-cannon-63959575e8d0416a977a313ddf2e2d4f
-    entitySys->construct("plane.obj", QVector3D(-5.0f,0.0f,0.0f),2,0);
-    //entitySys->construct("bowlSurface.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(15.0f,15.0f,15.0f),2,1);
-    entitySys->construct("sphere.obj", QVector3D(5.0f,0.0f,0.0f),2,0);
-    entitySys->construct("Suzanne.obj", QVector3D(0.0f,0.0f,0.0f),1,1);
-    entitySys->construct("head.obj", QVector3D(0.0f,0.0f,0.0f),2,0);
+
+    if(transformCompVec[2] != nullptr){
+        CurrentPlayer = transformCompVec[2];
+        CurrentPlayer->mMatrix.translateY(5);
+    }
+
 
     entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
     entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
@@ -191,25 +192,11 @@ void RenderWindow::init()
     entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
     entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
     entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
-    entitySys->construct("FlatFloor.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    Physics->InitPhysicsSystem(meshCompVec[14],ResSys->getVertexDataByName("FlatFloor.obj"));
 
 
 
-    /*
-    //Suzannes - using default material:
-    for(int i{0}; i < 30; i++)
-    {
-        for(int j{0}; j < 30; j++)
-        {
-            entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20*i ,0.0f,-20.f*j), 2,2);
-            //temp->mTransform->mMatrix.translate(1.f*i, 0.f, -2.f*j);
-
-        }
-    }
     //JSS->SaveLevel("Test");
 
-*/
     SoundManager::getInstance()->init();
 
     mExplosionSound = SoundManager::getInstance()->createSource(
@@ -230,7 +217,7 @@ void RenderWindow::init()
     //********************** Set up camera **********************
     mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
     mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
-    mCurrentCamera->pitch(35);
+    mCurrentCamera->pitch(30);
     mCurrentCamera->yaw(180);
 
     mPlayerCamera = new Camera(20.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
@@ -244,23 +231,9 @@ void RenderWindow::init()
 
 
 
-    //player
-
-    if(transformCompVec[2] != nullptr){
-        CurrentPlayer = transformCompVec[2];
-        CurrentPlayer->mMatrix.translateY(5);
-    }
-
-
-    //LASDATA
-
-
-
-
     //crate bullets
     for(int i{0}; i < 5; i++)
     {
-
         entitySys->construct("sphere.obj", QVector3D( 10+i,10+i,-10+i),2,1); //ammo starts with 800 id
 
     }
@@ -270,6 +243,34 @@ void RenderWindow::init()
             bullets.push_back(i);
 
     }
+
+    //create enemies
+    for(int i{0}; i < 4; i++)
+    {
+
+        entitySys->construct("SpaceInvaderBoss2.obj",     QVector3D(0.0f + 60  ,0.0f+i*3,-20.f), 2,7);
+        entitySys->construct("SpaceInvaderBoss1.obj",     QVector3D(0.0f + 40  ,0.0f+i*3,-20.f), 2,6);
+        entitySys->construct("SpaceInvader4.obj",     QVector3D(0.0f + 80  ,0.0f+i*3,-20.f), 2,5);
+        entitySys->construct("SpaceInvader1.obj",     QVector3D(0.0f + 20  ,0.0f+i*3,-20.f), 2,2);
+        entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f+i*3,-20.f), 2,6);
+        entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f+i*3,-20.f), 2,7);
+
+    }
+    for(unsigned long long i{0}; i <meshCompVec.size(); i++)
+    {
+        if((meshCompVec[i]->meshName == "SpaceInvader1.obj"    ) ||
+                (meshCompVec[i]->meshName == "SpaceInvader2.obj"    ) ||
+                (meshCompVec[i]->meshName == "SpaceInvader3.obj"    ) ||
+                (meshCompVec[i]->meshName == "SpaceInvader4.obj"    ) ||
+                (meshCompVec[i]->meshName == "SpaceInvaderBoss1.obj") ||
+                (meshCompVec[i]->meshName == "SpaceInvaderBoss2.obj") )
+        {
+            Enemies.push_back(i);
+        }
+    }
+    initialEnemyPos();
+    enemyCount = static_cast<int>(Enemies.size());
+
     //for(int i = 0; i < transformCompVec.size(); i++){
     //    transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
     //}
@@ -354,6 +355,7 @@ void RenderWindow::render()
 
     if(bIsPlayerCamera)
     {
+        moveEnemies();
         //move camera over player
         mCurrentCamera->setPosition(CurrentPlayer->mMatrix.getPosition() + gsl::Vector3D(0.0f,50.0f, -50.0f));
 
@@ -361,14 +363,25 @@ void RenderWindow::render()
         gsl::Vector3D temp = CurrentPlayer->mMatrix.getPosition();
         for (unsigned long long i = 0; i<bullets.size();i++)
         {
-             Physics->move(DeltaTime,transformCompVec[bullets[i]], meshCompVec[bullets[i]]->collisionRadius);
+            Physics->move(DeltaTime,transformCompVec[bullets[i]], meshCompVec[bullets[i]]->collisionRadius);
             if(transformCompVec[bullets[i]]->isBulletFired == false && transformCompVec[bullets[i]]->isBulletLoaded == false)
             {
                 transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + i*2 - bullets.size(),temp.getY() , temp.getZ()-5);
                 transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
             }
         }
-
+        ///COLLISION BABY DONT HATE A PLAYA; HATE THE GAME
+        for (unsigned long long i = 0; i<bullets.size();i++)
+            for (unsigned long long j = 0; j<Enemies.size();j++)
+            {
+                if(collisionSys->isColliding(meshCompVec[bullets[i]],transformCompVec[bullets[i]],meshCompVec[Enemies[j]],transformCompVec[Enemies[j]]))
+                {
+                    meshCompVec[Enemies[j]]->isDead = true;
+                    meshCompVec[Enemies[j]]->isDrawable = false;
+                    meshCompVec[Enemies[j]]->IsCollidable = false;
+                    BallReset(transformCompVec[bullets[i]]);
+                }
+            }
     }
     else
     {
@@ -395,6 +408,67 @@ void RenderWindow::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
+void RenderWindow::initialEnemyPos()
+{
+    float stepdown = 0;
+    float startposX = 245.0f;
+    float startposZ = 250.0f;
+    int counter =0;
+    for (unsigned long long i = 0; i<Enemies.size();i++)
+    {
+        if((i % 6) == false)
+        {
+            stepdown += 25.0f;
+            counter =0;
+        }
+       transformCompVec[Enemies[i]]->mMatrix.setPosition(startposX - counter * 35, 5.0f,startposZ - stepdown);
+       transformCompVec[Enemies[i]]->mMatrix.rotateX(90.0f);
+       transformCompVec[Enemies[i]]->mMatrix.rotateY(180.0f);
+       meshCompVec[Enemies[i]]->IsCollidable = true;
+       meshCompVec[Enemies[i]]->isDrawable = true;
+       meshCompVec[Enemies[i]]->isDead = false;
+
+       counter++;
+
+    }
+}
+void RenderWindow::moveEnemies()
+{
+    float speed = 0.1f;
+    float travelDistance = 60.0f;
+    for (unsigned long long i = 0; i<Enemies.size();i++)
+    {
+        gsl::Vector3D position = transformCompVec[Enemies[i]]->mMatrix.getPosition();
+        if(meshCompVec[Enemies[i]]->isDead ==false)
+        {
+            if(EnemyTravelLenght<travelDistance)
+            {
+                transformCompVec[Enemies[i]]->mMatrix.setPosition(position + gsl::Vector3D(xDir*speed, 0.0f,0.0f));
+            }
+
+        }
+    }
+
+    EnemyTravelLenght += speed;
+
+    if(EnemyTravelLenght>travelDistance)
+    {
+        xDir = xDir*(-1);
+        EnemyTravelLenght = 0;
+        for (unsigned long long i = 0; i<Enemies.size();i++)
+        {
+            gsl::Vector3D position = transformCompVec[Enemies[i]]->mMatrix.getPosition();
+            if(meshCompVec[Enemies[i]]->isDead ==false)
+            {
+                if(EnemyTravelLenght<travelDistance)
+                {
+                    transformCompVec[Enemies[i]]->mMatrix.setPosition(position + gsl::Vector3D(0.0f, 0.0f,-10.0f));
+                }
+
+            }
+        }
+    }
+}
 void RenderWindow::LoadBullet()
 {
     if(!bBulletLoaded)
@@ -432,11 +506,11 @@ void RenderWindow::ShootBullet()
 
 void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
 {
-    if(Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getZ() > 300.0f))
+    if((Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getZ() > 300.0f)) || (Transform->mMatrix.getPosition().getY()  < -100.0f))
     {
         Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
 
-        if( Transform->isBulletFired = true)
+        if( Transform->isBulletFired == true)
         {
             Transform->isBulletLoaded = false;
             Transform->isBulletFired = false;
@@ -444,7 +518,17 @@ void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint
 
     }
 }
+void RenderWindow::BallReset(TransformComponent *Transform)
+{
+        Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
 
+        if( Transform->isBulletFired == true)
+        {
+            Transform->isBulletLoaded = false;
+            Transform->isBulletFired = false;
+        }
+
+}
 
 void RenderWindow::CalcDeltaTime()
 {

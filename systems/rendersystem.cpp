@@ -89,7 +89,7 @@ void RenderSystem::draw(MeshComponent* mMesh)
 
 void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,TransformComponent* mTrasform, GLint viewMatrix, GLint projectionMatrix, GLint modelMatrix,Camera* camera )
 {
-    if(mMesh->isDrawable)
+    if(mMesh->isDrawable && mMesh->isDead ==false)
     {
         initializeOpenGLFunctions();    //must call this every frame it seems...
 

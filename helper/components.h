@@ -67,6 +67,7 @@ struct MeshComponent
     bool isDrawable = true;
     bool isSceneObject = false;
 
+    bool isDead = false;
     unsigned int LODLevel = 0;
     bool LODEnabled = false;
 
