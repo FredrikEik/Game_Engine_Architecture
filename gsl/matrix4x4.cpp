@@ -205,6 +205,12 @@ void Matrix4x4::setPosition(GLfloat x, GLfloat y, GLfloat z)
     matrix[7] = y;
     matrix[11] = z;
 }
+void Matrix4x4::setPosition(gsl::Vector3D pos)
+{
+    matrix[3]  = pos.getX();
+    matrix[7]  = pos.getY();
+    matrix[11] = pos.getZ();
+}
 
 Vector3D Matrix4x4::getPosition()
 {

@@ -195,9 +195,16 @@ private:
     //!Gameplay
     //!
     std::vector<unsigned long long> bullets;
+    std::vector<unsigned long long> Enemies;
     void LoadBullet();
     bool bBulletLoaded = false;
     void ShootBullet();
+    void moveEnemies();
+    void BallReset(TransformComponent *Transform);
+    void initialEnemyPos();
+    float xDir = -1.0f;
+    float EnemyTravelLenght = 0.0f;
+    int enemyCount = 0;
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
