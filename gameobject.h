@@ -7,6 +7,7 @@
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
     std::string mName{"DefaultName"};
+    bool activeGameBlock = false;
 
     TransformComponent* mTransform{nullptr};
     MeshComponent* mMesh{nullptr};

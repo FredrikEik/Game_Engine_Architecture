@@ -16,10 +16,17 @@ class GamePlayMechanics
 public:
     //Functions
     GamePlayMechanics(RenderSystem *renderSystemIn);
-    int GetTetromino();
-    void ActiveTetromino(int tetromino);
-    void ManageGameplayLines(bool gameField);
+    int GetTetrominoNr();
+    void MoveTetromino(int time);
+    void ManageGameplayLines();
     /*GameObject*/ void TetrominoMaker(int tetromino);
+
+    //Set up 2D array of squares of tetris
+    const int horizontalIndex = 6;
+    const int verticalIndex = 9;
+    bool gameField[6][9] = {{0}};
+
+    int gameSpeed = 10; //The higher the number, the faster the falling of tetrominoes happen.
 
     GameObjectManager *mGameObjectManager{nullptr};
     RenderSystem *mRenderSystem{nullptr};

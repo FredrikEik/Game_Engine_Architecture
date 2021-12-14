@@ -8,12 +8,10 @@
 
 GamePlayMechanics::GamePlayMechanics(RenderSystem *renderSystemIn) : mRenderSystem {renderSystemIn}
 {
-    //Set up 2D array of squares of tetris
-    bool gameField[6][9] = {};
     mGameObjectManager = &GameObjectManager::getInstance();
 }
 
-/*GameObject */ void GamePlayMechanics::TetrominoMaker(int tetromino)
+/*GameObject*/ void GamePlayMechanics::TetrominoMaker(int tetromino)
 {
     bool tetrominoCraftGrid[4][3] = {{0}};
     std::string GameBlockName = {};
@@ -162,22 +160,19 @@ switch (tetromino)
         for (int j = 0; j < 3; j++)
         {
             if (tetrominoCraftGrid[i][j] == true) //If there is something in the grid coordinate, create a block with the position.
-            {                                     //Only four hits will be made.
-                GameBlock = mGameObjectManager->addObject("Cube.obj");
-                GameBlock->mTransform->mMatrix.translate(i, 0.0f, j);
+            {
+                GameBlock = mGameObjectManager->addObject("Cube.obj"); //Add a mesh-component four times
+                GameBlock->mTransform->mMatrix.translate(i, j, 0.0f);  //At this location
                 GameBlock->mTransform->mMatrix.scale(1.0f);
-                GameBlock->mName = GameBlockName + std::to_string(i);
-                qDebug() << "Tetrominoblock made";
             }
         }
     }
+    GameBlock->mName = GameBlockName;
     mRenderSystem->mGameObjects.emplace_back(GameBlock);
-//    qDebug() << "Testing variables, need a breakpoint";
-//    return GameBlock;
 }
 
 
-int GamePlayMechanics::GetTetromino()
+int GamePlayMechanics::GetTetrominoNr()
 {
     //Select a random block out of the seven tetrominos. Discard if equal to last one.
     int currentTetromino = 0;
@@ -186,23 +181,45 @@ int GamePlayMechanics::GetTetromino()
     while (currentTetromino == oldTetromino) //This needs reworking, but isnt important right now. Need to keep track of oldTetromino in a way that is "stored" between function calls
     {
         currentTetromino = QRandomGenerator::global()->bounded(1, 8); //Include lowest, exclude largest;
-        //qDebug() << "current" << currentTetromino;
     }
     return currentTetromino;
 }
 
 
-void GamePlayMechanics::ActiveTetromino(int tetromino)
+void GamePlayMechanics::MoveTetromino(int time)
 {
-    //Drop the tetromino towards bottom. Speed up gradually over time and or cleared lines
-    //Allow user input, "W" to rotate, "A & D" to move sideways, "S" to drop faster and "Spacebar" to drop to bottom.
+//    GameObject brick = mRenderSystem->getGameObjectOfName("Tetromino");
 
+//    //Check if there is a gameblock below
+//    if(gameField[i-1][j-1] == true)
+//    {
+//        if(time/gameSpeed == 0) //Drop the tetromino towards bottom. Speed up gradually over time and or cleared lines
+//        {
+//            brick.mTransform->mMatrix.translateY(-1);
+//            gameField[i-1][j-1];
+//        }
+
+    //Allow user input, "W" to rotate, "A & D" to move sideways, "S" to drop faster and "Spacebar" to instantly drop to bottom using current rotation.
+    //KeyPress-events.
+//    }
+//    gameSpeed++;
 }
 
 
-void GamePlayMechanics::ManageGameplayLines(bool gameField)
+void GamePlayMechanics::ManageGameplayLines()
 {
     //Check if one or more line is filled, and should be emptied
+
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (gameField[i][j] == true)
+            {
+                qDebug() << "Line" + QString::fromStdString(std::to_string(i)) + "is full";
+            }
+        }
+    }
 
     //Could be made to handle "continuity" of blocks fallen, to make "gravity" work as in tetris games
     //Could be more easier and more "fun" if that handling isnt "correct", leading to more cleared lines?

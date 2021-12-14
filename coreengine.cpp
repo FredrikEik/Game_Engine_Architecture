@@ -10,6 +10,7 @@
 #include "meshhandler.h"
 
 #include <thread>
+#include <time.h>
 
 //for JavaScript functionality
 #include <QtQml>
@@ -113,9 +114,9 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
 
-    //********************** Making the objects to be drawn *********************
+    //********************** Making the objects to be drawn *********************\\
 
-    //Vis & Sim code
+    ////Vis & Sim code
     {
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     //Create the gameobject LasGround
@@ -229,17 +230,12 @@ void CoreEngine::setUpScene()
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    mRenderSystem->mGameObjects.push_back(temp);
 
-    //mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
-//    mEditorCamera->mForward = gsl::Vector3D(90.0f, 0.0f, 0.0f);
-//    mEditorCamera->mYaw = 180.0f;
     mEditorCamera->mPitch = -25.0f;
     mRenderSystem->mEditorCamera = mEditorCamera;
 
-    //mGameObjectManager->setUpAllTextures();
 
     mGameCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
-//    mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:
@@ -255,8 +251,6 @@ void CoreEngine::setUpScene()
 
 void CoreEngine::handleInput()
 {
-    //Camera
-
     //TODO: Probably a cleaner way to do this!
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
 
@@ -298,9 +292,9 @@ void CoreEngine::gameLoop()
     handleInput();
 
     mEditorCamera->update();
-    //SoundSystem::getInstance()->update(mRenderSystem);
+    SoundSystem::getInstance()->update(mRenderSystem);
 
-    //Vis & Sim Code
+    ////Vis & Sim Code
     {
 //    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
 //    PhysicsHandler ph;
@@ -308,33 +302,32 @@ void CoreEngine::gameLoop()
 //    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
     }
 
-    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
+//    time_t clock = time(0);
+//    int time = clock;
 
-    //Initializing values for the gameplay
-    GamePlayMechanics tm(mRenderSystem);
-    int tetrominoNr;
+//    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
 
-//    while(mGameObjects.size() < 40)
+//    //Initializing values for the gameplay
+//    GamePlayMechanics tm(mRenderSystem);
+//    int tetrominoNr;
+//    GameObject currentTetromino;
+
+//    tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+//    tm.TetrominoMaker(tetrominoNr);    //Creates the tetromino based on int to be used in the scene.
+
+//    while(currentTetromino.activeGameBlock == true)
 //    {
-//        qDebug() << "There are" << mGameObjects.size() << "objects in the scene";
-//        tetrominoNr = tm.GetTetromino(); //Returning a random number between 1 & 7, used to pick which tetromino.
-
-//        tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
-
-//        //If there is a tetromino in scene, let player rotate and drop tetromino
-//        for (int x = 0; x > mGameObjects.size(); x++)
-//        {
-//            for (int i = 0; i > 4; i++) //Need to loop through the four gameBlock vectors containing one square each
-//            {
-//                if(mGameObjects[x]->mName == "Tetromino")
-//                {
-//                    qDebug() << "Gameobject and tetromino found";
-//                    qDebug() << QString::fromStdString(mGameObjects[i]->mName);
-//                }
-//            }
-//        }
+//        //If there is a tetromino in scene, let player control tetromino, and apply the speed-change.
+//        tm.MoveTetromino(time);
 //    }
-    //If there is not a tetromino in scene, draw another one.
+//    if (currentTetromino.activeGameBlock == false)
+//    {
+//        //Check if one or multiple horizontals in the play-grid is full.
+//        tm.ManageGameplayLines();
+//        tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+//        tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
+//    }
+//    //If there is not a tetromino in scene, draw another one.
 
     mRenderSystem->render();
 }
