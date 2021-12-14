@@ -214,7 +214,7 @@ void RenderWindow::init()
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
-      // factory->createObject("Billboard");
+
 
 }
 
@@ -246,6 +246,8 @@ void RenderWindow::initObjects()
              hjelpeObjekt->mObjectName = "HjelpeObjekt";
              hjelpeObjektMesh = new MeshComponent;
 
+
+             factory->createObject("Billboard");
 }
 
 
@@ -313,7 +315,7 @@ void RenderWindow::render()
 
             //factory->mGameObjects[i]->draw();
 
-            if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
+            if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox" && !factory->mGameObjects[i]->isHUD)
 			{
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);

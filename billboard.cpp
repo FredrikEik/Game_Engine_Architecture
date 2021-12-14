@@ -2,14 +2,14 @@
 
 Billboard::Billboard()
 {
-    getMeshComponent()->mVertices.push_back(Vertex(0, 0,0.f,0,0,0,0,0)); //bottom left
-    getMeshComponent()->mVertices.push_back(Vertex(1.f, 0,0.f,0,0,0,1,0)); //bottom right
-    getMeshComponent()->mVertices.push_back(Vertex(0.f, 0.2f,0.f,0,0,0,0,1)); // top left
+    getMeshComponent()->mVertices.push_back(Vertex(-1, -1,0.f,0,0,0,0,0)); //bottom left
+    getMeshComponent()->mVertices.push_back(Vertex(0.f, -1,0.f,0,0,0,1,0)); //bottom right
+    getMeshComponent()->mVertices.push_back(Vertex(-1.f, -0.8f,0.f,0,0,0,0,1)); // top left
 
 
-    getMeshComponent()->mVertices.push_back(Vertex(1.f, 0.2f,0.f,0,0,0,1,1));  //top right
-    getMeshComponent()->mVertices.push_back(Vertex(1.f, 0,0.f,0,0,0,1,0)); // bottom right
-    getMeshComponent()->mVertices.push_back(Vertex(0.f, 0.2f,0.f,0,0,0,0,1)); // top left
+    getMeshComponent()->mVertices.push_back(Vertex(0.f, -0.8f,0.f,0,0,0,1,1));  //top right
+    getMeshComponent()->mVertices.push_back(Vertex(0.f, -1,0.f,0,0,0,1,0)); // bottom right
+    getMeshComponent()->mVertices.push_back(Vertex(-1.f, -0.8f,0.f,0,0,0,0,1)); // top left
 
 }
 
