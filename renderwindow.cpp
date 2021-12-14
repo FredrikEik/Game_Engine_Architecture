@@ -615,9 +615,9 @@ void RenderWindow::toggleGameMode()
             {
                 if(ObjFactory->mGameObject[i]->mName == "hindrance")
                 {
-                    //qDebug() << "Still things left named hindrance. size of gameobject: " << ObjFactory->mGameObject.size();
+                    qDebug() << "Still things left named hindrance. size of gameobject: " << ObjFactory->mGameObject.size() << " world list: " << mMainWindow->WorldListSize();
                     ObjFactory->mGameObject.erase(ObjFactory->mGameObject.begin() + i); //tried to double delete messed up hindrances but doesn't work.
-
+                    mMainWindow->removeObjectFromWorldList(i);
                 }
             }
             MapSpawner->spawnHindrances(100);
@@ -823,7 +823,7 @@ void RenderWindow::handleInput()
     //Player
     if (bPlayGame && mPlayer)
     {
-        qDebug() << "Speed: " << mScript->getSpeed();
+        //qDebug() << "Speed: " << mScript->getSpeed();
         float deltaTime = mTimeStart.nsecsElapsed() / 1000000.f;
         if(mInput.A)
             mPlayer->Move(-1.7 / deltaTime);

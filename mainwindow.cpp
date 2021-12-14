@@ -107,6 +107,11 @@ int MainWindow::getCurrentRow()
     return ui->WorldObjects->currentRow();
 }
 
+int MainWindow::WorldListSize()
+{
+    return ui->WorldObjects->count();
+}
+
 void MainWindow::displayCurrentTransform(int index)
 {
     if (index == -1)

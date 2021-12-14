@@ -25,6 +25,8 @@ public:
     void removeObjectFromWorldList(int i);
     int getCurrentRow();
 
+    int WorldListSize();
+
     void displayCurrentTransform(int index);
 
     int getWidth();
