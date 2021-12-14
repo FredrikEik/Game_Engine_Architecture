@@ -166,8 +166,7 @@ void RenderSystem::render()
         if(tempShader->mName == "phongshader")
         {
             //Send over camera position - should also send over a lot of other parameters about the light
-            glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x,
-                        mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
+            glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y,  mEditorCamera->mPosition.z);
             glUniform3f(tempShader->mLightPosition, mLightPosition->mMatrix.getPosition().x, mLightPosition->mMatrix.getPosition().y, mLightPosition->mMatrix.getPosition().z);
 //                glUniform3f(tempShader->mLightDirection, mLight->mDirection.x, mLight->mDirection.y, mLight->mDirection.z);
             glUniform3f(tempShader->mLightColor, mLight->mColor.x, mLight->mColor.y, mLight->mColor.z);
@@ -177,8 +176,7 @@ void RenderSystem::render()
             glUniform1f(tempShader->mSpecularStrength, mGameObjects[i]->mMaterial->mSpecularStrength);
             glUniform1i(tempShader->mSpecularExponent, mGameObjects[i]->mMaterial->mSpecularExponent);
             if(mGameObjects[i]->mMaterial->mUseColor)
-                glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x,
-                            mGameObjects[i]->mMaterial->mColor.y, mGameObjects[i]->mMaterial->mColor.z);
+                glUniform3f(tempShader->mObjectColor, mGameObjects[i]->mMaterial->mColor.x, mGameObjects[i]->mMaterial->mColor.y, mGameObjects[i]->mMaterial->mColor.z);
         }
         if(tempShader->mName == "skyboxshader")
         {

@@ -176,11 +176,11 @@ void GameObjectManager::setUpAllTextures()
     QDir cubeDir((gsl::CubeMapFilePath).c_str());
     if(cubeDir.exists())
     {
-//        for(int i = 0; i < 6; i++)
-//        {
-            std::string temp = "cubemap0.bmp";// + std::to_string(i) + ".bmp";   //Hardcoding in name of cubemap, will only be the one for the sky.
+        for(int i = 0; i < 6; i++)
+        {
+            std::string temp = "cubemap" + std::to_string(i) + ".bmp";   //Hardcoding in name of cubemap, will only be the one for the sky.
             mTextureHandler->makeTexture(temp, true);
-//        }
+        }
     }
 }
 

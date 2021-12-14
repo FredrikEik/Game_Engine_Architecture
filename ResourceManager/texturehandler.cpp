@@ -168,7 +168,7 @@ int TextureHandler::readCubeMap(const std::string &filename)
 
     for(int i = 0; i < 6; i++)
     {
-        std::string temp = justName + std::to_string(i) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
+        std::string temp = "CubeMapTextures/" + justName + std::to_string(i) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
     }
@@ -188,21 +188,28 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureIn.mGLTextureID);
 
+    if(!textureIn.mAlphaUsed)  //no alpha in this bmp
+        for(int i{0}; i< 6; i++)
+        {
+            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                          0,                      //Mipmap level
+                          GL_RGB,                 //Internal Format
+                          textureIn.mColumns,
+                          textureIn.mRows,
+                          0,                      //Always 0
+                          GL_BGR,                 //Format of the data from texture file
+                          GL_UNSIGNED_BYTE,       //Size of each color shannel
+                          textureIn.mCubemap[i]); //Pointer to texture in memory
+        }
+
+    else    //alpha is present, so we set up an alpha channel
+        qDebug() << "Skybox with alpha probably make no sense";
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    if(!textureIn.mAlphaUsed)  //no alpha in this bmp
-        for(int i{0}; i< 6; i++)
-        {
-            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, textureIn.mColumns,
-                          textureIn.mRows, 0, GL_BGR, GL_UNSIGNED_BYTE,  textureIn.mCubemap[i]);
-        }
-
-    else    //alpha is present, so we set up an alpha channel
-        qDebug() << "Skybox with alpha probably make no sense";
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
