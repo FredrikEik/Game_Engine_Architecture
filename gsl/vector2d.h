@@ -6,7 +6,7 @@
 #include <iostream>
 
 /**
-Vector2D - Holder nødvendige utregninger for Vector2D
+@class Vector2D - Holder nødvendige utregninger for Vector2D
  */
 
 namespace gsl

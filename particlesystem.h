@@ -4,9 +4,9 @@
 #include "vector3d.h"
 
 /**
-*ParticleComponent - Holder nødvendige data for å regne ut particlenes fart, farge og retning.
-*Particle - Lager new componenter som partikler trenger slik som navn, matriale osv...
-*ParticleSystem - Regner ut nødvendige funksjoner for partikler, bruker paricleComponent sine data.
+@struct ParticleComponent - Holder nødvendige data for å regne ut particlenes fart, farge og retning.
+@class Particle - Lager new componenter som partikler trenger slik som navn, matriale osv...
+@class ParticleSystem - Regner ut nødvendige funksjoner for partikler, bruker paricleComponent sine data.
  */
 
 struct ParticleComponent

@@ -9,16 +9,16 @@
 #include <QTreeWidgetItemIterator>
 
 /**
-*MainWindow - Vi har nødvendige funksjoner for UI her.
-*on_ToggleWF_toggled - Toggler WireFrame knapp.
-*on_PlayButton_toggled - Toggler start og restart, gjemmer også editorMode UI i play mode.
-*on_actionAdd_Square/circle/monkey_triggered - Knapp for å spawne objekter
-*doubleSpinBoxX/Y/Z - Flytter på objektet med en spinbox
-*on_treeWidget_itemActivated - Sjekker i bunn og grunn om objektet i treeWidgeten blir trykket på med mousepick eller på liste og setter ID utifra hvordan den blir trykket på.
-*on_treeWidget_viewportEntered - Setter inn alle navn til objektene
-*RotateX/Y/ZP - Knapp som roterer objektene med +5 grader
-*RotateX/Y/ZM - Knapp som roterer objektene med -5 grader
-*on_ScaleP/M - Skalerer objektene med enten 1.5 eller 0.5;.
+@class MainWindow - Vi har nødvendige funksjoner for UI her.
+@fn on_ToggleWF_toggled - Toggler WireFrame knapp.
+@fn on_PlayButton_toggled - Toggler start og restart, gjemmer også editorMode UI i play mode.
+@fn on_actionAdd_Square/circle/monkey_triggered - Knapp for å spawne objekter
+@fn doubleSpinBoxX/Y/Z - Flytter på objektet med en spinbox
+@fn on_treeWidget_itemActivated - Sjekker i bunn og grunn om objektet i treeWidgeten blir trykket på med mousepick eller på liste og setter ID utifra hvordan den blir trykket på.
+@fn on_treeWidget_viewportEntered - Setter inn alle navn til objektene
+@fn RotateX/Y/ZP - Knapp som roterer objektene med +5 grader
+@fn RotateX/Y/ZM - Knapp som roterer objektene med -5 grader
+@fn on_ScaleP/M - Skalerer objektene med enten 1.5 eller 0.5;.
 
 
 

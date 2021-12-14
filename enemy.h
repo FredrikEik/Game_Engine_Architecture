@@ -3,7 +3,7 @@
 
 #include "visualobject.h"
 /**
-*Enemy - Ai som arver fra VisualObject.
+@class Enemy - Ai som arver fra VisualObject.
 *AI'en får nødvendige components som trengs i konstruktør..
 
  */

@@ -9,7 +9,7 @@
 #include <fstream>
 
 /**
-*Vertex - Holder nødvendige funksjoner og variabler for vertex.
+@class Vertex - Holder nødvendige funksjoner og variabler for vertex.
 *Inneholder funksjoner for å sette x,y,z og r,g,b, uv og normal.
  */
 

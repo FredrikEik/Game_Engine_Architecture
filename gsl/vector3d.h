@@ -8,7 +8,7 @@
 #include <QVector3D>
 
 /**
-Vector2D - Holder nødvendige utregninger for Vector3D
+@class Vector2D - Holder nødvendige utregninger for Vector3D
  */
 
 namespace gsl

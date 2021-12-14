@@ -28,7 +28,7 @@
 #include "light.h"
 
 /**
-PCH - PreCompiledHeader kompilerer filer som ikke skal endres. Dette gjør at kompilering går raskere..
+@class PCH - PreCompiledHeader kompilerer filer som ikke skal endres. Dette gjør at kompilering går raskere..
  */
 
 class QOpenGLContext;

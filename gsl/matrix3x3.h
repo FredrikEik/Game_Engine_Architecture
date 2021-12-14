@@ -7,7 +7,7 @@
 #include <iomanip>
 
 /**
-Matrix3x3 - Holder nødvnedige utregninger for matrix3x3
+@class Matrix3x3 - Holder nødvnedige utregninger for matrix3x3
  */
 
 namespace gsl

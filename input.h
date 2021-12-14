@@ -2,7 +2,7 @@
 #define INPUT_H
 
 /**
-    *Input - Definerer inputsa våres.
+@class Input - Definerer inputsa våres.
     *vi brukker boolsa i renderwindow og movementsystem
  */
 struct Input

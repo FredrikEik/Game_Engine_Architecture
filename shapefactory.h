@@ -12,9 +12,10 @@
 #include "visualobject.h"
 
 /**
-*ShapeFactory -  Har/Lager alle mesher til objekter.
+@class ShapeFactory -  Har/Lager alle mesher til objekter.
 *shapefactory har ressurshåndteringen vår.
 *createShape - Lager new objekter, setter objectname, id, mesh og kollisjon box/sphere.
+ @param shapeName - sender inn shapeName string.
 *getMesh/Colli - returnerer mesh og collision ID.
  */
 

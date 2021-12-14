@@ -6,7 +6,7 @@
 #include "vector4d.h"
 
 /**
-RenderWindow - setter opp shaders, draws, input og alt som skal kjøres/rendre.
+@class RenderWindow - setter opp shaders, draws, input og alt som skal kjøres/rendre.
 
  */
 

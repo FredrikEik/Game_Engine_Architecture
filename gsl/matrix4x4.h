@@ -8,7 +8,7 @@
 #include <QDebug>
 
 /**
-Matrix4x4 - Holder nødvnedige utregninger for matrix4x4
+@class Matrix4x4 - Holder nødvnedige utregninger for matrix4x4
  */
 
 namespace gsl

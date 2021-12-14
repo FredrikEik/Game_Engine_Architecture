@@ -54,7 +54,6 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, //21
 
-
 };
 
 
@@ -381,7 +380,7 @@ void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
 void Level::updateEnemy(int randNum)
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-     mMoveSys->moveUnit(mEnemies[i], mEnemies[i]->mMoveComp);
+        mMoveSys->moveUnit(mEnemies[i], mEnemies[i]->mMoveComp);
      if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
      {
          if(randNum<5){

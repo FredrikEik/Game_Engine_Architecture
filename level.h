@@ -10,7 +10,7 @@
 #include "shapefactory.h"
 
 /**
-   Script - Her lager vi scriptet vårt, dette blir ikke brukt, men i en tidligere versjon av filen så plasserte vi ut trophy med det.
+   @class Script - Her lager vi scriptet vårt, dette blir ikke brukt, men i en tidligere versjon av filen så plasserte vi ut trophy med det.
  */
 
 class Script : public QObject
@@ -28,21 +28,42 @@ public slots:
     void scriptFunction(float x, float y, float z);
 };
 
-/**
-Level - Denne klassen lager mappet og holder generelt styr på alt av gameloop, script og nødvendige kolisjonstester.
- */
+
 
 class Level : public QObject
 {
 public:
+    /**
+    @class Level - Denne klassen lager mappet og holder generelt styr på alt av gameloop, script og nødvendige kolisjonstester.
+    @fn createShapes - Lager objekter slik at vi kan bruke knapp for å spawne.
+    @param shapeID - sender inn ID til objektet.
+    @fn checkCollision - Bruker kollisjonsklassens funksjoner til å sjekke kollisjon.
+    @fn SoundHandler - tilrettelegger lyden vi skal inkludere.
+    @fn wallCheck - gå igjennom mappet og sjkker om det er vegg der.
+    @param x - sender inn x for å kunne sende inn x posisjon til objekt.
+    @param z - sender inn z for å kunne sende inn z posisjon til objekt.
+    @fn updateEnemy - Oppdaterer enemy ihenhold med movement.
+    @fn updatePlayer - Oppdaterer spiller ihenhold med movement.
+    @fn updateParticles - Oppdaterer particle ihenhold med movement.
+    @param mColor - sender inn color så vi kan få forskjellige farger på particle.
+    @fn resetGame - resetter spillerens, enemy, trophy's posisjon, resetter mLives, winCondition.
+    @fn spawnParticle - lager en particle.
+    @fn update - oppdaterer spiller, enemy og particle movement og spawner particler.
+    @param dc - sender inn camera peker.
+    @param di - Sender inn input.
+    @param randO - sender inn en int så vi kan sende inn et random nummer.
+    @param col - sender in col for å sende inn farge.
+    @param fc - sender inn framcount.
+    @fn playSound - spiller lyd
+    @param soundID - sender inn ID til lyd
+    */
+
     Level(Camera* cam);
     ~Level();
     void createShapes(string shapeID);
     void readJS();
-    void winner();
     void checkCollision();
     void SoundHandler();
-    int cointAmount;
     bool wallCheck(int z, int x);
     void updateEnemy(int randNum);
     void updatePlayer();

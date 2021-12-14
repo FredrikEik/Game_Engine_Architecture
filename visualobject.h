@@ -6,7 +6,7 @@
 #include "collisionsystem.h"
 
 /**
-*VisualObject - Dette er klassen de fleste objekter arver fra.
+@class VisualObject - Dette er klassen de fleste objekter arver fra.
 *Denne klassen inneholder alle component structene og init slik at alle objekter kan ha samme init.
  */
 

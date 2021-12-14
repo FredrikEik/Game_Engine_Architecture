@@ -4,7 +4,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 /**
-   Texture - Holder allle nødvendige funksjoner og variabler for texture.
+ @class  Texture - Holder allle nødvendige funksjoner og variabler for texture.
    Klassen kan bl.a sette texture og skybox til objektene våres.
  */
 class Texture : protected QOpenGLFunctions_4_1_Core

@@ -4,7 +4,7 @@
 #include <string>
 
 /**
-Constants - Holder nødvendige strings ig id'er for path og shaders.
+@class Constants - Holder nødvendige strings ig id'er for path og shaders.
  */
 
 namespace gsl  //Game School Lib

@@ -8,12 +8,12 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 /**
-*Component er en klasse som holder de fleste component struct.
-*TransformComponent - Holder nødvendige data for posisjon, matrix og scale til objekter.
-*MeshComponent - Holder nødvendige data for objektenes mesh.
-*MaterialComponent - Holder nødvendige data for objektenes materiale, slik som shader og textur.
-*NameComponent - Holder nødvendige data for objektenes  navn og id
-*MovementComponent - Holder nødvendige data for objektenes og kameras bevegelse..
+@struct Component er en klasse som holder de fleste component struct.
+@struct TransformComponent - Holder nødvendige data for posisjon, matrix og scale til objekter.
+@struct MeshComponent - Holder nødvendige data for objektenes mesh.
+@struct MaterialComponent - Holder nødvendige data for objektenes materiale, slik som shader og textur.
+@struct NameComponent - Holder nødvendige data for objektenes  navn og id
+@struct MovementComponent - Holder nødvendige data for objektenes og kameras bevegelse..
  */
 
 
@@ -45,7 +45,6 @@ struct NameComponent{
     int ObjectID = 0;
     std::string ObjectName;
      bool drawMe{true};
-
 };
 
 

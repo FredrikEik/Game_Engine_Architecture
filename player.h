@@ -5,7 +5,7 @@
 #include "shapefactory.h"
 
 /**
-*Player - Player som arver fra VisualObject.
+@class Player - Player som arver fra VisualObject.
 *Lager nødvendige new components som spiller trenger i kontruktør.
 
  */

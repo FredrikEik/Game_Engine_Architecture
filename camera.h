@@ -5,11 +5,11 @@
 #include "vector3d.h"
 #include "visualobject.h"
 /**
-FrustumComponent holder raw data som blir brukt for å kalkulere frustum.
-*mFOV - Field of view velger vinkel til hvorstort området vi vil se.
-*mAspectratio - Aspectratio velger sideforhold.
-*mFarPlaneDistance - FarPlaneDistance velger hvor langt unna Farplane skal være.
-*mNearPlaneDistance - NearPlaneDistance velger hvor nærme NearPlane skal være..
+@struct FrustumComponent holder raw data som blir brukt for å kalkulere frustum.
+@variable mFOV - Field of view velger vinkel til hvorstort området vi vil se.
+@variable mAspectratio - Aspectratio velger sideforhold.
+@variable mFarPlaneDistance - FarPlaneDistance velger hvor langt unna Farplane skal være.
+@variable mNearPlaneDistance - NearPlaneDistance velger hvor nærme NearPlane skal være..
  */
 
 struct FrustumComponent
@@ -20,14 +20,13 @@ struct FrustumComponent
     float mNearPlaneDistance{0.1};
 };
 class Camera;
+
 /**
-FrustumSystem - inneholder all nødvendige funksjoner for å regne ut frustum.
-*calculateFrustumVectors - Kalkulerer planene til frustumet.
-*makeFrustumLines - Konstruerer frustumets linker ved hjelp av gsl::Vector3D plan.
-*updateFrustumPos - Oppdaterer posisjonen til frustum når kamera beveger seg (uferdig kode, tar ikke kamera sin posisjon i betraktning).
+@class FrustumSystem - inneholder all nødvendige funksjoner for å regne ut frustum.
+@fn calculateFrustumVectors - Kalkulerer planene til frustumet.
+@fn makeFrustumLines - Konstruerer frustumets linker ved hjelp av gsl::Vector3D plan.
+@fn updateFrustumPos - Oppdaterer posisjonen til frustum når kamera beveger seg (uferdig kode, tar ikke kamera sin posisjon i betraktning).
  */
-
-
 
 class FrustumSystem : public VisualObject
 {
@@ -58,13 +57,13 @@ private:
 };
 
 /**
-Camera inneholder all nødvendige funksjoner og variabler.
-*Pitch - Regner ut rotasjon rundt mRight.
-*yaw - Regner ut rotasjon rundt mUp.
-*updateRightVector - Oppdaterer mRight.
-*updateForwardVector - Oppdaterer mForward.
-*update - Oppdaterer posisjon og matrix.
-*calculateProjectionMatrix - kalkulerer projeksjons matrise i henhold med FrustumComponents.
+@class Camera inneholder all nødvendige funksjoner og variabler.
+@fn Pitch - Regner ut rotasjon rundt mRight.
+@fn yaw - Regner ut rotasjon rundt mUp.
+@fn updateRightVector - Oppdaterer mRight.
+@fn updateForwardVector - Oppdaterer mForward.
+@fn update - Oppdaterer posisjon og matrix.
+@fn calculateProjectionMatrix - kalkulerer projeksjons matrise i henhold med FrustumComponents.
  */
 
 

@@ -92,6 +92,8 @@ void MovementSystem::moveParticles(gsl::Vector3D color, Particle* par)
         parSys->reset(mPlayer, par, par->mPC);
     }
 }
+
+
 void MovementSystem::moveUnit(VisualObject* vo, MovementComponent *moveC)
 {
     moveC->posX = {static_cast<int>(vo->mTransform->mPosition.x)};
