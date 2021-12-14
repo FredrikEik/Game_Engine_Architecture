@@ -10,8 +10,6 @@ particle::particle()
 particle::particle(Camera* camera)
 {
     getTransformComponent()->mMatrix.setPosition(1,1,1);
-
-
     cameraRef = camera;
 
 }
@@ -25,12 +23,13 @@ particle::~particle()
 
 void particle::init()
 {
-
+    //Setter opp shaderprogram
     getMaterialComponent()->mShaderProgram = 4;
     getMaterialComponent()->mTextureUnit = 0;
 
+    //Initializer emitteren
     emitter->maxParticles = 100000;
-    emitter->spawnRate = 100;
+    emitter->spawnRate = 3;
     emitter->particles.reserve(emitter->maxParticles);
     emitter->positionData = std::vector<float>(maxParticles * 4, 0.f);
     emitter->colorData = std::vector<float>(maxParticles * 4, 0.f);
@@ -42,6 +41,7 @@ void particle::init()
 
     initializeOpenGLFunctions();
 
+//Setter opp vertexer for partikler
     static const GLfloat g_vertex_buffer_data[] = {
         -0.5f, -0.5f, 0.0f, 0.f, 0.f,
          0.5f, -0.5f, 0.0f, 1.f, 0.f,
@@ -75,6 +75,8 @@ void particle::init()
     glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float),
         NULL, GL_STREAM_DRAW);
 
+
+    //Binder buffere til shaderen
 
     // 1rst attribute buffer : positions of particles' centers
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
@@ -132,13 +134,15 @@ void particle::update(float deltaTime, Camera* camera)
 
 
        gsl::Vector3D cameraPosition = gsl::Vector3D(cameraRef->mPosition);
-       //qDebug()<< cameraPosition;
 
        static float lastSpawned = 0;
        lastSpawned += deltaTime;
            spawnParticles(deltaTime, getTransformComponent()->mMatrix.getPosition(), cameraPosition);
            lastSpawned = 0;
 
+           qDebug() << emitter->activeParticles;
+
+           //Sorter rekkefølgen av objekter som skal rendres
            std::sort(&emitter->particles[0], &emitter->particles[emitter->maxParticles-1]);
            int breakIndex{};
 
@@ -149,38 +153,39 @@ void particle::update(float deltaTime, Camera* camera)
                if (!p.active)
                {
                    emitter->lastParticle = i;
-                   emitter->activeParticles = i;
+                   //emitter->activeParticles = i;
                    breakIndex = i;
                    break;
                }
+               else{
                p.lifeSpan-= deltaTime;
-               if (p.lifeSpan < 0.f)
+               if (p.lifeSpan <= 0.f)
                {
                    p.active = false;
-                   p.cameraDistance = -1.f;
+                   p.cameraDistance = (-100000.f);
                }
+               //Regner ut hvor partikler skal flytte seg
                p.velocity += p.acceleration * deltaTime;
                p.position += p.velocity * deltaTime + p.acceleration * deltaTime * deltaTime;
-               p.cameraDistance =  sqrt((p.position*p.position) + (cameraPosition*cameraPosition));
+               p.cameraDistance =  sqrt(((getTransformComponent()->mMatrix.getPosition()+p.position)
+                                        *(getTransformComponent()->mMatrix.getPosition()+p.position))
+                                        + (cameraPosition*cameraPosition));
 
 
 
-
-               //qDebug() << emitter->positionData[0];
-               //qDebug() << emitter->positionData[1];
-               //qDebug() << emitter->positionData[2];
-
-
-               emitter->positionData[4 * i + 0] = p.position.x;
-
-               emitter->positionData[4 * i + 1] = p.position.y;
-               emitter->positionData[4 * i + 2] = p.position.z;
+               //Sett inn posisjon til rendering
+               emitter->positionData[4 * i + 0] = getTransformComponent()->mMatrix.getPosition().x + p.position.x;
+               emitter->positionData[4 * i + 1] = getTransformComponent()->mMatrix.getPosition().y + p.position.y;
+               emitter->positionData[4 * i + 2] = getTransformComponent()->mMatrix.getPosition().z + p.position.z;
                emitter->positionData[4 * i + 3] = p.size;
 
+               //Sett inn farge til rendering
                emitter->colorData[4 * i + 0] = p.color.x;
                emitter->colorData[4 * i + 1] = p.color.y;
                emitter->colorData[4 * i + 2] = p.color.z;
                emitter->colorData[4 * i + 3] = p.color.w;
+
+               }
 
 
            }
@@ -195,7 +200,7 @@ void particle::update(float deltaTime, Camera* camera)
 void particle::spawnParticles(float deltaTime, gsl::Vector3D emitterPosition, gsl::Vector3D cameraPosition)
 {
     emitter->timeSinceLastSpawn += deltaTime;
-    int spawnAmount = emitter->timeSinceLastSpawn * emitter->spawnRate;
+    int spawnAmount = emitter->timeSinceLastSpawn * emitter->spawnRate; //Hvor mange som skal lages
     if (spawnAmount <= 0)
         return;
     emitter->timeSinceLastSpawn = 0;
@@ -207,8 +212,6 @@ void particle::spawnParticles(float deltaTime, gsl::Vector3D emitterPosition, gs
         return min + static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX / (max - min)));
     };
 
-    float cameraDistance = sqrt((emitter->particleBlueprint.particle.position)*(emitter->particleBlueprint.particle.position)
-                                - (cameraPosition*cameraPosition));
     auto& bp = emitter->particleBlueprint;
     int start = (emitter->lastParticle) % emitter->maxParticles;
     for (int i{ start }; i < (start + spawnAmount); ++i)
@@ -219,48 +222,39 @@ void particle::spawnParticles(float deltaTime, gsl::Vector3D emitterPosition, gs
 
         particle = bp.particle;
         particle.active = true;
-
-        particle.timeAlive += randf(bp.lifeMinOffset, bp.lifeMaxOffset);
-        particle.lifeSpan = particle.timeAlive;
+        particle.lifeSpan = 0;
+        particle.lifeSpan += randf(bp.lifeMinOffset, bp.lifeMaxOffset);
+        particle.size = 0;
         float sizeOffset{ randf(bp.sizeMinOffset, bp.sizeMaxOffset) };
         particle.size += sizeOffset;
-
+        particle.color = 0;
         particle.color += gsl::Vector4D(
             randf(bp.colorMinOffset.x, bp.colorMaxOffset.x),
             randf(bp.colorMinOffset.y, bp.colorMaxOffset.y),
             randf(bp.colorMinOffset.z, bp.colorMaxOffset.z),
             randf(bp.colorMinOffset.w, bp.colorMaxOffset.w));
-
-        particle.color += gsl::Vector4D(
-            randf(bp.colorMinOffset.x, bp.colorMaxOffset.x),
-            randf(bp.colorMinOffset.y, bp.colorMaxOffset.y),
-            randf(bp.colorMinOffset.z, bp.colorMaxOffset.z),
-            randf(bp.colorMinOffset.w, bp.colorMaxOffset.w));
-
+        particle.velocity = 0;
         particle.velocity += gsl::Vector3D(
             randf(bp.velocityMinOffset.x, bp.velocityMaxOffset.x),
             randf(bp.velocityMinOffset.y, bp.velocityMaxOffset.y),
             randf(bp.velocityMinOffset.z, bp.velocityMaxOffset.z)
         );
-
+        particle.acceleration = 0;
         particle.acceleration += gsl::Vector3D(
             randf(bp.accelerationMinOffset.x, bp.accelerationMaxOffset.x),
             randf(bp.accelerationMinOffset.y, bp.accelerationMaxOffset.y),
             randf(bp.accelerationMinOffset.z, bp.accelerationMaxOffset.z)
         );
-
+        particle.position = 0;
         particle.position += gsl::Vector3D(
             randf(bp.positionMinOffset.x, bp.positionMaxOffset.x),
             randf(bp.positionMinOffset.y, bp.positionMaxOffset.y),
             randf(bp.positionMinOffset.z, bp.positionMaxOffset.z)
         );
 
-        particle.cameraDistance = sqrt((particle.position)*(particle.position)
-                                       + (cameraPosition*cameraPosition));
-        //qDebug() << cameraPosition;
-        //qDebug() << particle.position;
-        //qDebug() << emitter->particleBlueprint.particle.position;
-        //qDebug() << particle.cameraDistance;
+        emitter->particles[index].cameraDistance = sqrt(((getTransformComponent()->mMatrix.getPosition()+emitter->particles[index].position)
+                                                       *(getTransformComponent()->mMatrix.getPosition()+emitter->particles[index].position))
+                                                       +(cameraPosition*cameraPosition));
         emitter->lastParticle = index+1;
         emitter->activeParticles = emitter->lastParticle;
     }
@@ -277,15 +271,15 @@ void particle::draw()
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*1 * sizeof(float), emitter->positionData.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter->activeParticles * sizeof(float), emitter->positionData.data());
 
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*1 * sizeof(float), emitter->colorData.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter->activeParticles * sizeof(float), emitter->colorData.data());
 
     glDrawElementsInstanced(GL_TRIANGLES, getMeshComponent()->mIndices.size(),
-    GL_UNSIGNED_INT, 0, 1);
+    GL_UNSIGNED_INT, 0, emitter->activeParticles);
 
 }
 

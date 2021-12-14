@@ -153,7 +153,7 @@ void RenderWindow::init()
     */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 5.f, 0.f));
 
     //Compile shaders:
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -242,7 +242,6 @@ void RenderWindow::initObjects()
             mMainWindow->updateOutliner(factory->mGameObjects);
             mParticles = new particle(mCurrentCamera);
             mParticles->init();
-            qDebug() << mParticles->getMaterialComponent()->mShaderProgram;
 
 
              hjelpeObjekt = factory->createObject("Cube");
