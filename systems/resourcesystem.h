@@ -11,7 +11,6 @@
 #include <sstream>
 #include <vector>
 #include <QDirIterator>
-//#include <QFile>
 #include <QFileInfo>
 #include <rendersystem.h>
 #include <QOpenGLFunctions_4_1_Core>
