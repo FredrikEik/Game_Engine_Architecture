@@ -4,6 +4,10 @@
 #include "components.h"
 #include <qstring.h>
 
+/**  @brief Entity
+  Simple entity which holds has pointers to all its components.
+  @warning This is a verry simplified ECS and is further discussed in the video and/or document.
+ */
 class GameObject
 {
 public:

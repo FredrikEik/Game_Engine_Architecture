@@ -18,6 +18,7 @@
     Contains one source and one buffer.
     Intended to play a single clip.
     Does not support streaming audio (yet).
+    @author Ole Flaten https://github.com/Hedmark-University-College-SPIM/GEA2021/tree/ole_experiments
 **/
 class SoundSource
 {

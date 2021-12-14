@@ -15,9 +15,10 @@
 #include "soundsource.h"
 #include "vector3d.h"
 
-/// Class handling OpenAL setup and management of sound sources.
+/// @brief Class handling OpenAL setup and management of sound sources.
 /**
     Singleton class that creates and destroys sound sources.
+    @author Ole Flaten https://github.com/Hedmark-University-College-SPIM/GEA2021/tree/ole_experiments
 **/
 class SoundManager
 {

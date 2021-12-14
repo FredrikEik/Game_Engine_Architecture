@@ -35,13 +35,11 @@ void GameEngine::GameLoop()
         AISystem::updateMovement(mPlayer, mRenderwindow->mGameObjects);
 
     SoundManager::getInstance()->updateListener(mGameCamera->position(), gsl::Vector3D(0,0,0), mGameCamera->getFowrardVector(), mGameCamera->up());
-    rotateLight();
     ParticleSystem::update();
-    //m3DTestSound->setPosition(mRenderwindow->mGameObjects[1]->mTransformComp->mMatrix.getPosition());
+
     mStereoSound->setPosition(gsl::Vector3D(0,0,0));
     HandleInput();
 
-    //mCurrentCameraUPDATE??
     mEditorCamera->update();
     mGameCamera->update();
     mRenderwindow->render();
@@ -71,14 +69,7 @@ void GameEngine::SetUpScene()
     mResourceManager->getAllMeshNames();
     mResourceManager->getAllLevelNames();
 
-
-    //mPhysicsBallSystem->readFile(gsl::ProjectFolderName + "test_las.txt");
-
-
     SetUpObjects();
-
-//    std::string levelName("DefaultLevel");
-//    loadScene(levelName);
 
     // Sound startup stuff
     mStereoSound = SoundManager::getInstance()->createSource(
@@ -89,11 +80,9 @@ void GameEngine::SetUpScene()
                 "Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
                 gsl::SoundFilePath + "gunshot.wav", false, 1.0f);
 
-    //m3DTestSound->play();
-//    mStereoSound->play();
-
     //Gameloop
     connect(mGameLoopRenderTimer, SIGNAL(timeout()), this, SLOT(GameLoop()));
+
     mGameLoopRenderTimer->start(7);// original value 16, 7 is for 144 hz
 
     mMainWindow->initList();
@@ -116,7 +105,7 @@ void GameEngine::SetUpObjects()
 
     mPlayer = mResourceManager->CreateObject(gsl::MeshFilePath + "player.obj",false,"plain");
     mPlayer->mTransformComp->mMatrix.setPosition(0,0,-8);
-    initPlayerPos = {0,0.f,-8};
+
 //    mPlayer->mMaterialComp->mTextureUnit = 1;
     //mPlayer->mMaterialComp->mShaderProgram = gsl::COLORSHADER;
     qDebug() << "PLAYER filepath: " << mPlayer->filepath.c_str();
@@ -299,15 +288,12 @@ void GameEngine::togglePlay(bool bInIsPlaying)
     bIsPlaying = bInIsPlaying;
     if(bInIsPlaying)
     {
-        initPlayerPos = mPlayer->mTransformComp->mMatrix.getPosition();
         mRenderwindow->mCurrentCamera = mGameCamera;
     }else{
 
         mRenderwindow->mCurrentCamera = mEditorCamera;
-        mPlayer->mTransformComp->mMatrix.setPosition(initPlayerPos.x,initPlayerPos.y,initPlayerPos.z);
-//        mRenderwindow->mGameObjects.clear();
+
         mMainWindow->on_loadScene_clicked();
-//        SetUpScene();
     }
 }
 
@@ -316,14 +302,6 @@ void GameEngine::UpdateGameCameraFollow()
     mGameCamera->setPosition(mPlayer->mTransformComp->mMatrix.getPosition() + gsl::Vector3D(0,2,0));
 }
 
-void GameEngine::rotateLight()
-{
-    static float rotate{0.f};
-//    mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)/6, 0, cos(rotate)/6);
-
-    //mRenderwindow->mGameObjects[2]->mTransformComp->mMatrix.translate(sin(rotate)*10, 0, cos(rotate)*10);
-    rotate+=0.01f;
-}
 
 void GameEngine::saveScene(std::string &levelName)
 {
@@ -358,11 +336,6 @@ void GameEngine::playMusic(bool bIsPlaying)
         mStereoSound->play();
     else
         mStereoSound->stop();
-}
-
-void GameEngine::resetWorld()
-{
-    //hmmm?
 }
 
 // For the four funcitons under: temporary set the shader to 2 for mouspicking testing

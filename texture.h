@@ -3,14 +3,14 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 
-/**
-    \brief Simple class for creating textures from a bitmap file.
-    \author Dag Nylund
-    \date 16/02/05
- */
 
 class MaterialComponent;
 
+/**
+    @brief Simple class for creating textures from a bitmap file.
+    @author Dag Nylund
+    @date 16/02/05
+ */
 class Texture : protected QOpenGLFunctions_4_1_Core
 {
 public:

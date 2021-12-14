@@ -389,27 +389,13 @@ void RenderWindow::render()
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
         }
-        // Hack to render the collison box only in correct collision direction either 90 or 0
-//        if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2 && mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
-//        {
-//            gsl::Vector3D tempRotation = mGameObjects[i]->mTransformComp->mRotation;
-//            if(mGameObjects[i]->mCollisionComp->bRotated){
-//                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,90,0));
-//            }else
-//            {
-//                TransformSystem::getInstance()->setRotation(mGameObjects[i], gsl::Vector3D(0,0,0));
-//            }
-//            glUniformMatrix4fv( mMatrixUniform3, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-//            TransformSystem::getInstance()->setRotation(mGameObjects[i], tempRotation);
-//        }
 
-        // TO TURN ON: uncomment makecollision box in the end of the createObject funktion in mehshandler.cpp;
         if( bShowAllCollisionBoxes )
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
-        if( mGameObjects[i]->mTransformComp->bShowCollisionBox && !isPlaying)
+        if( mGameObjects[i]->mCollisionComp->bShowCollisionBox && !isPlaying)
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);

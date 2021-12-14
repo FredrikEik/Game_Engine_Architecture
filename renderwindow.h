@@ -18,10 +18,14 @@ class Texture;
 class GameObject;
 class ResourceManager;
 
-// This inherits from QWindow to get access to the Qt functionality and
-// OpenGL surface.
-// We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
-// This is the same as using glad and glw from general OpenGL tutorials
+
+/** @brief The main render system
+
+    This inherits from QWindow to get access to the Qt functionality and
+    OpenGL surface.
+    We also inherit from QOpenGLFunctions, to get access to the OpenGL f
+    This is the same as using glad and glw from general OpenGL tutorials
+ */
 class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
@@ -45,13 +49,7 @@ public:
     std::vector<GameObject*> mGameObjects;
     std::vector<GameObject*> mParticles;
 
-
-
-//    GameObject* RenderWindow::addObject(std::string assetName);
-
     void render();
-
-    //bool bIsPlaying{false};
 
     Camera *mCurrentCamera{nullptr};
     float getCameraSpeed() const;
@@ -109,10 +107,8 @@ private:
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
 
-
     std::vector<VisualObject*> mVisualObjects;
 
-//    Input mInput;
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};
     int mMouseXlast{0};
@@ -123,7 +119,6 @@ private:
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
 
-    //QTimer *mRenderTimer{nullptr};           //timer that drives the gameloop
     QElapsedTimer mTimeStart;       //time variable that reads the calculated FPS
 
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar

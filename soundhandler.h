@@ -24,7 +24,8 @@ struct wave_t
     wave_t() : buffer(NULL) {}  ///< Structure Constructor. Initialises data buffer to NULL.
 };
 
-/// Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
+/// @brief Class to handle loading of Microsoft signed 16-bit PCM WAVE audio files.
+/// @author Ole Flaten https://github.com/Hedmark-University-College-SPIM/GEA2021/tree/ole_experiments
 class SoundHandler
 {
 public:

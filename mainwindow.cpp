@@ -344,9 +344,9 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
         bool &isPlaying = GameEngine::getInstance()->bIsPlaying;
     if(GameObjects.size()>2)
     {
-        GameObjects[lastIndex]->mTransformComp->bShowCollisionBox = false;
+        GameObjects[lastIndex]->mCollisionComp->bShowCollisionBox = false;
         if(!isPlaying)
-            GameObjects[ObjectListIndex]->mTransformComp->bShowCollisionBox = true;
+            GameObjects[ObjectListIndex]->mCollisionComp->bShowCollisionBox = true;
     }
     lastIndex = currentRow;
 }

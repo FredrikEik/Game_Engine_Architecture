@@ -11,7 +11,6 @@
 #include <al.h>
 #include <alc.h>
 
-
 class Copmonents
 {
 public:
@@ -21,23 +20,16 @@ public:
 class TransformComponent
 {
 public:
-//    TransformComponent();
     gsl::Matrix4x4 mMatrix;
     gsl::Matrix4x4 mScaleMatrix;
     gsl::Vector3D mRotation{0.f,0.f,0.f};
     gsl::Vector3D mScale{1.f,1.f,1.f};
 
-    // Shoud not be in tranformComponent, but needed to be here for the moment
-    // Normaly it is in collisioncomponent, but since meny enteties shares the same
-    // collisionComp it shows all collisionboxes with the same collisioncomp,
-    // every entity has its own transformComp, thats why its here for now....
-    bool bShowCollisionBox{false};
 };
 
 class MeshComponent
 {
 public:
-//    MeshComponent();
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];
 
@@ -53,7 +45,6 @@ public:
 class MaterialComponent
 {
 public:
-//    MaterialComponent();
     GLuint mShaderProgram{};
     GLint mTextureUnit{};
     std::string mTextureName;
@@ -62,6 +53,7 @@ public:
 class CollisionComponent
 {
 public:
+    bool bShowCollisionBox{false};
 
     QVector3D maxCorner{0,0,0};
     QVector3D minCorner{0,0,0};
@@ -70,11 +62,9 @@ public:
 
     float mRaidus{0};
 
-    // AABB is axis oriented so it only has two orientations.
+    /// AABB is axis oriented so it only has two orientations.
     bool bRotated{false};
-//    gsl::Vector3D mRotation{0.f,0.f,0.f};
     gsl::Matrix4x4 mMatrix;
-//        gsl::Matrix4x4 mScaleMatrix;
     bool bSetRotatedOnce{true};
 };
 
@@ -82,7 +72,7 @@ class AIComponent
 {
 public:
     bool isAlive{true};
-    int hp{15};
+    int hp{5};
     gsl::Vector3D mVelocity{0,0,0};
     gsl::Vector3D mPosition{0,0,0};
     bool heheSoundOnce{true};

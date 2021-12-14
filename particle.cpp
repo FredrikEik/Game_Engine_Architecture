@@ -17,7 +17,7 @@ Particle::Particle()
     ParticleSystem::addParticle(this);
 }
 
-Particle::Particle(gsl::Vector3D velocity, gsl::Vector3D position)
+Particle::Particle(gsl::Vector3D velocity, gsl::Vector3D position, float lifeLength)
 {
     mMatrix.setToIdentity();
     mPosition = position;

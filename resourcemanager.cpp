@@ -34,9 +34,6 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     // Loops through all the objects, if it finds it it will create a new component with the same mesh component.
     // if it does not find it in the map, it will create a new object with a unique meshComp.
 
-    // TO DO, fix the hardcoded matirial stuff.
-
-
     tempGO = new GameObject();
 
     tempGO->filepath = filepath;
@@ -45,9 +42,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->mTransformComp->mMatrix.setToIdentity();
 
     tempGO->mBallPhysicsComp = new BallPhysicsComponent();
-
     tempGO->mMaterialComp = new MaterialComponent();
-//    tempGO->mAIComponent = new AIComponent();
 
     tempGO->mCollisionComp = new CollisionComponent();
     tempGO->mCollisionComp->mMatrix.setToIdentity();
@@ -55,6 +50,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
 
     tempGO->mMaterialComp->mTextureName = textureName;
     tempGO->mMaterialComp->mTextureUnit = CreateMaterial(textureName);
+
     if(textureName == "plain" || textureName == " ")
     {
         tempGO->mMaterialComp->mShaderProgram = 0;
@@ -63,20 +59,12 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMaterialComp->mShaderProgram = 2;
     }
 
-
-    //shoud not hardcode
-    //tempGO->mMaterialComp->mTextureUnit=0;
-
-    //CreateMaterial(textureFilepath);
-
-
     auto foundAtIndex = mObjectsMeshesMap.find(filepath);
 
     if(foundAtIndex != mObjectsMeshesMap.end()){
         tempGO->mMeshComp = foundAtIndex->second.mMeshComp;
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
-//        tempGO->mCollisionComp = foundAtIndex->second.mCollisionComp;
-//        tempGO->mCollisionComp->mMatrix.setToIdentity();
+
         tempGO->mCollisionLines = foundAtIndex->second.mCollisionLines;
         if (filepath.find("cacodemon") != std::string::npos)
         {
@@ -88,8 +76,6 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
         tempGO->mMeshComp = new MeshComponent();
         tempGO->mMeshComp->bUsingLOD = UsingLOD;
         tempGO->mCollisionLines = new MeshComponent();
-//        tempGO->mCollisionComp = new CollisionComponent();
-//        tempGO->mCollisionComp->mMatrix.setToIdentity();
 
         if(UsingLOD)
         {
@@ -100,7 +86,7 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             if (filepath.find(".obj") != std::string::npos)
             {   //Hardcoded not ideal...
                 // Alle componenter som har lyd har sine egne sound sources som ikke er ideelt
-                // Skulle egentlig laget det som game objects og loade in alle lydene slik at jeg
+                // Skulle egentlig laget det som game objects er laget og loade in alle lydene slik at jeg
                 // har en array med sound sources.
                 if (filepath.find("cacodemon") != std::string::npos)
                 {
@@ -130,24 +116,10 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
             }
         }
         mObjectsMeshesMap.insert(std::pair<std::string, GameObject>{filepath ,*tempGO});
-        meshCompCounter++;
     }
 
-
-    //Not working atm
-//    if(filepath == "xyz" || filepath == "XYZ")
-//    {
-//        createXYZ(tempGO->mMeshComp);
-//    }
-
-    //Burde ikke hardkode dette
-//    tempGO->mMaterialComp->mShaderProgram = 0;
-//    tempGO->mMaterialComp->mTextureUnit = 0;
-
-
-
     std::string tempName = filepath;
-    // Hardcoded filesize just to make "XYZ" work
+
     if(filepath != "xyz" && filepath != gsl::ProjectFolderName + "test_las.txt" && filepath != "HeightCurve")
     {
         tempName.erase(0,25);
@@ -157,11 +129,8 @@ GameObject* ResourceManager::CreateObject(std::string filepath, bool UsingLOD, s
     tempGO->name = tempName + " ID: " + std::to_string(objectIDcounter);
 
     tempGO->id = objectIDcounter;
-
-    //
     tempGO->mTransformComp->mScaleMatrix = tempGO->mTransformComp->mMatrix;
-    //qDebug() << "Number of objects in map:" << mObjectsMap.size();
-    //qDebug() << "Number of unique meshcomps:" << meshCompCounter;
+
     objectIDcounter++;
     return tempGO;
 }
@@ -257,7 +226,6 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
                     gameObj->mMeshComp->bUsingLOD = singleObject["usingLOD"].toBool();
                     }
                 }
-                //might not need this
                 gameObj->filepath = singleObject["filepath"].toString().toStdString();
 
             }
@@ -275,7 +243,6 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
             {
                 rotx = float(singleObject["rotationx"].toDouble());
             }
-
 
             if (singleObject.contains("rotationy") && singleObject["rotationy"].isDouble())
             {
@@ -316,10 +283,8 @@ void ResourceManager::loadScene(std::vector<GameObject *> &objects, GameObject* 
 
             if (singleObject.contains("shader") && singleObject["shader"].isDouble())
             {
-                //gameObj->mMaterialComp->mShaderProgram = gsl::Shaders(singleObject["shader"].toString().toInt());
                 gameObj->mMaterialComp->mShaderProgram = singleObject["shader"].toInt();
             }
-
 
             if(objectindex == 1)
             {
@@ -343,30 +308,18 @@ int ResourceManager::CreateMaterial(std::string textureName)
 {
     initializeOpenGLFunctions();
 
-//    mTextures[textureIDcounter] = new Texture("hund.bmp");
-//    glActiveTexture(GL_TEXTURE0 + textureIDcounter);
-//    glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
-//    textureIDcounter++;
-//    mTextures[textureIDcounter] = new Texture("cocademon3.bmp");
-//    glActiveTexture(GL_TEXTURE0 + textureIDcounter);
-//    glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
-//    textureIDcounter++;
-
-
     int tempInt{-1};
 
     auto foundMatIndex = mTextureMap.find(textureName);
     if(foundMatIndex != mTextureMap.end()){
         tempInt = foundMatIndex->second;
-        //mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
     }else{
         if (textureName.find(".bmp") != std::string::npos)
         {
             tempInt = textureIDcounter;
-            //std::string tempName = textureFilepath.erase(0,25);
             mTextureNames.push_back(textureName);
             mVectorTextures.push_back(new Texture(textureName));
-//            new Texture(textureFilepath);
+
 
             glActiveTexture(GL_TEXTURE0 + textureIDcounter);
             glBindTexture(GL_TEXTURE_2D, mVectorTextures.at(textureIDcounter)->mGLTextureID);
@@ -374,48 +327,15 @@ int ResourceManager::CreateMaterial(std::string textureName)
             textureIDcounter++;
         }
     }
-    if(tempInt == 0 || textureName == " " /*|| textureName == "plain"*/)
+    if(tempInt == 0 || textureName == " ")
     {
         return 0;
     }
     return tempInt-1;
-//    tempGO->mMaterialComp = new MaterialComponent();
-    //    tempGO->mMaterialComp->mTextureUnit=0;
 }
-
-int ResourceManager::setMaterial(std::string textureName)
-{
-//    MaterialComponent *tempComp{nullptr};
-
-//    auto foundMatIndex = mTextureMap.find(textureName);
-//    if(foundMatIndex != mTextureMap.end()){
-//        tempComp = foundMatIndex->second;
-//        //mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
-//    }else{
-//        if (textureFilepath.find(".bmp") != std::string::npos)
-//        {
-//            tempComp = new MaterialComponent();
-//            //std::string tempName = textureFilepath.erase(0,25);
-//            mTextures[textureIDcounter] = new Texture(textureFilepath);
-//            glActiveTexture(GL_TEXTURE0 + textureIDcounter);
-//            glBindTexture(GL_TEXTURE_2D, mTextures[textureIDcounter]->mGLTextureID);
-//            tempComp->mShaderProgram = 2;
-//            tempComp->mTextureUnit = textureIDcounter;
-//            mTextureMap.insert(std::pair<std::string, MaterialComponent*>{textureFilepath,tempComp});
-
-//            textureIDcounter++;
-//        }
-//    }
-return 0;
-}
-
-
 
 void ResourceManager::setUpAllTextures()
 {
-    //Making default texture
-//    CreateMaterial();
-
     //Regular .bmp textures read from file
     QDir tempDir((gsl::TextureFilePath).c_str());
     if(tempDir.exists())
@@ -435,8 +355,7 @@ void ResourceManager::setUpAllTextures()
     else
     {
         qDebug() << "ERROR reading texure Failed";
-//        qDebug() << "*** ERROR reading textures *** : Asset-folder " <<
-//                         gsl::TextureFilePath << " does not exist!";
+
     }
 }
 
@@ -459,8 +378,6 @@ void ResourceManager::getAllMeshNames()
     else
     {
         qDebug() << "ERROR reading Mesh Failed";
-//        qDebug() << "*** ERROR reading textures *** : Asset-folder " <<
-//                         gsl::TextureFilePath << " does not exist!";
     }
 }
 
@@ -483,8 +400,6 @@ void ResourceManager::getAllLevelNames()
     else
     {
         qDebug() << "ERROR reading Levels Failed";
-//        qDebug() << "*** ERROR reading textures *** : Asset-folder " <<
-//                         gsl::TextureFilePath << " does not exist!";
     }
 }
 

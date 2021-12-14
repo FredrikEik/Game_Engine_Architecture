@@ -28,7 +28,6 @@ public:
     void refreshList();
     void setID(int ID);
     void clean();
-    void Scale();
 
     void initComboboxTexture(std::vector<std::string> &textureNames);
     void initComboboxMeshes(std::vector<std::string> &meshNames);
@@ -44,9 +43,9 @@ public:
 public slots:
 
     void on_PlayStop_toggled(bool checked);
-        void on_actionDelete_Selected_triggered();
+    void on_actionDelete_Selected_triggered();
 
-            void on_loadScene_clicked();
+    void on_loadScene_clicked();
 
 private slots:
 

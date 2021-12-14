@@ -23,7 +23,8 @@ bool AISystem::onHit(GameObject *obj)
     }else
     {
         //Generate random number
-        ParticleSystem::addParticle(new Particle(gsl::Vector3D(randomNumber(0,3,true),randomNumber(1,4),randomNumber(0,3,true)), obj->mTransformComp->mMatrix.getPosition()));
+        for(int i = 0; i < 10;i++)
+            ParticleSystem::addParticle(new Particle(gsl::Vector3D(randomNumber(0,3,true),randomNumber(1,4),randomNumber(0,3,true)), obj->mTransformComp->mMatrix.getPosition()));
 
         obj->mSoundSourceComp->mSoundSource[0]->setPosition(obj->mTransformComp->mMatrix.getPosition());
         obj->mSoundSourceComp->mSoundSource[0]->play();
@@ -54,14 +55,13 @@ void AISystem::updateMovement(GameObject *player, std::vector<GameObject *> obje
             if(objects.at(i)->mSoundSourceComp->mSoundSource[2] == nullptr)
                 continue;
 
-
-
             float dt = 0.003f;
 
             objects.at(i)->mAIComponent->mPosition = enemyPos + distanceVec*dt;
 
             objects.at(i)->mTransformComp->mMatrix.setPosition(objects.at(i)->mAIComponent->mPosition.x, objects.at(i)->mAIComponent->mPosition.y, objects.at(i)->mAIComponent->mPosition.z);
 
+            // to play sound once when its inside the radius
             if(objects.at(i)->mAIComponent->heheSoundOnce)
             {
                 objects.at(i)->mSoundSourceComp->mSoundSource[2]->setPosition(objects.at(i)->mTransformComp->mMatrix.getPosition());
