@@ -106,6 +106,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/particle.frag \
+    Shaders/particle.vert \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \

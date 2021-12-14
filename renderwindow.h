@@ -102,6 +102,7 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
+    void setupParticleShader(int shaderIndex);
 
     GLint mTextureUniform[4];
 

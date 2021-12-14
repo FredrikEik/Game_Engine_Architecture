@@ -171,12 +171,16 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
+    mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "particle.vert").c_str(),
+                                     (gsl::ShaderFilePath + "particle.frag").c_str());
+                                      qDebug() << "Particle shader program id: " << mShaderPrograms[4]->getProgram();
 
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
+    setupParticleShader(4);
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -238,6 +242,7 @@ void RenderWindow::initObjects()
             mMainWindow->updateOutliner(factory->mGameObjects);
             mParticles = new particle(mCurrentCamera);
             mParticles->init();
+            qDebug() << mParticles->getMaterialComponent()->mShaderProgram;
 
 
              hjelpeObjekt = factory->createObject("Cube");
@@ -348,7 +353,11 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->draw();
             }
-            mParticles->update(0.016, mCurrentCamera);
+            glUseProgram(mShaderPrograms[4]->getProgram());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderPrograms[4]->getProgram(), "vMatrix"), 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderPrograms[4]->getProgram(), "pMatrix"), 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+
+            mParticles->update(0.16, mCurrentCamera);
 
             if (i==mIndexToPickedObject) {
 
@@ -435,6 +444,13 @@ void RenderWindow::setupLightShader(int shaderIndex)
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+void RenderWindow::setupParticleShader(int shaderIndex)
+
+{
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
 //This function is called from Qt when window is exposed (shown)

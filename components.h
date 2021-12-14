@@ -119,7 +119,7 @@ struct ParticleComponent
         float lifeSpan{};
         float timeAlive{};
         float cameraDistance{-1.f };
-        float size{1};
+        float size{0.1};
         bool active{ false };
         bool operator<(const Particle& other)
         {
@@ -132,12 +132,12 @@ struct ParticleComponent
     struct ParticleBlueprint
     {
         Particle particle;
-        gsl::Vector3D positionMinOffset{0,0,0}, positionMaxOffset{1,1,1};
-        gsl::Vector3D velocityMinOffset{0,0,0}, velocityMaxOffset{1,1,1};
-        gsl::Vector3D accelerationMinOffset{0,0,0}, accelerationMaxOffset{1,1,1};
+        gsl::Vector3D positionMinOffset{0,0,0}, positionMaxOffset{0,0,0};
+        gsl::Vector3D velocityMinOffset{0,0,0}, velocityMaxOffset{0,0,0};
+        gsl::Vector3D accelerationMinOffset{-0.005,-0.005,-0.005}, accelerationMaxOffset{0.005,0.005,0.005};
         gsl::Vector4D colorMinOffset{0,0,0,0}, colorMaxOffset{1,1,1,1};
         float sizeMinOffset{0}, sizeMaxOffset{0.1};
-        float lifeMinOffset{5}, lifeMaxOffset{20};
+        float lifeMinOffset{20}, lifeMaxOffset{20};
     };
 
     MeshComponent mesh;
