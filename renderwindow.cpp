@@ -364,7 +364,7 @@ void RenderWindow::render()
              Physics->move(DeltaTime,transformCompVec[bullets[i]], meshCompVec[bullets[i]]->collisionRadius);
             if(transformCompVec[bullets[i]]->isBulletFired == false && transformCompVec[bullets[i]]->isBulletLoaded == false)
             {
-                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + i*2 - bullets.size(),temp.getY() , temp.getZ()+5);
+                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + i*2 - bullets.size(),temp.getY() , temp.getZ()-5);
                 transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
             }
         }
@@ -420,6 +420,7 @@ void RenderWindow::ShootBullet()
     {
         if( transformCompVec[bullets[i]]->isBulletLoaded == true)
         {
+            transformCompVec[bullets[i]]->Velocity.setY(0.0f);
             transformCompVec[bullets[i]]->Velocity.setZ(50.0f);
             transformCompVec[bullets[i]]->isBulletLoaded = false;
             transformCompVec[bullets[i]]->isBulletFired = true;
@@ -914,12 +915,12 @@ void RenderWindow::handleInput()
             }
             if(mInput.D)
             {
-                posX = 1.0f;
+                posX = -1.0f;
                 CurrentPlayer->mMatrix.translateX(posX);
             }
             if(mInput.A)
             {
-                posX = -1.0f;
+                posX = 1.0f;
                 CurrentPlayer->mMatrix.translateX(posX);
             }
         }
