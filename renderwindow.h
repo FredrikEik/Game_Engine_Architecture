@@ -103,7 +103,7 @@ private:
     void setupLightShader(int shaderIndex);
 
     GLint mTextureUniform[4];
-
+    GLint mHUDUniform[4];
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
     class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs

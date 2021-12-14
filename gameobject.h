@@ -16,6 +16,7 @@ public:
     uint32_t ID;
     std::string mObjectName{"NoName"};  //temp
     std::string mObjectType{"NoType"};
+    bool isHUD{false};
 
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}

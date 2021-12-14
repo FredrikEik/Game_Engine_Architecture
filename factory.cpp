@@ -156,6 +156,7 @@ GameObject* Factory::createObject(std::string objectName)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->isHUD = true;
         objectToCreate->mObjectName = "HUD";
     }
     else{return nullptr;}

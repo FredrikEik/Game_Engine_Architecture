@@ -214,7 +214,7 @@ void RenderWindow::init()
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
-       factory->createObject("Billboard");
+      // factory->createObject("Billboard");
 
 }
 
@@ -291,6 +291,14 @@ void RenderWindow::render()
             if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform[shaderProgramIndex], factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                if (factory->mGameObjects[i]->isHUD)
+                {
+                    glUniform1i(mHUDUniform[shaderProgramIndex], 1);
+                }
+                else
+                {
+                    glUniform1i(mHUDUniform[shaderProgramIndex], 0);
+                }
             }
             if(shaderProgramIndex == 3)
             {
@@ -425,6 +433,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
    // factory->mGameObjects[shaderIndex]->getMaterialComponent()->mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mHUDUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "HUD");
 }
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)

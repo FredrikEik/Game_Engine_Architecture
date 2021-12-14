@@ -8,16 +8,16 @@ out vec2 UV;
 uniform mat4 mMatrix;
 uniform mat4 vMatrix;
 uniform mat4 pMatrix;
-uniform vec4 BillboardPos_screenspace;
+uniform int HUD;
 
 void main() {
    color = colorIn;
    UV = vertexUV;
 
-    BillboardPos_screenspace = pMatrix * vMatrix * positionIn;
-    gl_Position = BillboardPos_screenspace;
+   if (HUD == 1){
+    gl_Position = mMatrix * positionIn;
+    }
 
-
-
-   //gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
+   else
+   gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
 }
