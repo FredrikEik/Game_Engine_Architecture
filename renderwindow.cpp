@@ -380,6 +380,7 @@ void RenderWindow::render()
                     meshCompVec[Enemies[j]]->isDrawable = false;
                     meshCompVec[Enemies[j]]->IsCollidable = false;
                     BallReset(transformCompVec[bullets[i]]);
+                    enemyCount -= 1;
                 }
             }
         ///Collision with player
@@ -391,6 +392,13 @@ void RenderWindow::render()
                 qDebug()<<"YOU LOSE!";
                 initialEnemyPos();
             }
+        }
+        ///win check
+        if(enemyCount<1)
+        {
+            qDebug()<<"YOU WIN!";
+            initialEnemyPos();
+            enemyCount = static_cast<int>(Enemies.size());
         }
     }
     else
@@ -443,7 +451,7 @@ void RenderWindow::initialEnemyPos()
 }
 void RenderWindow::moveEnemies()
 {
-    float speed = 0.5f;
+    float speed = 0.2f;
     float travelDistance = 60.0f;
     for (unsigned long long i = 0; i<Enemies.size();i++)
     {
