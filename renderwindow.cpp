@@ -262,6 +262,12 @@ void RenderWindow::init()
             Enemies.push_back(i);
         }
     }
+    for(unsigned long long i{0}; i <Enemies.size(); i++)
+    {
+        transformCompVec[Enemies[i]]->mMatrix.rotateX(90.0f);
+        transformCompVec[Enemies[i]]->mMatrix.rotateY(180.0f);
+
+    }
     initialEnemyPos();
     enemyCount = static_cast<int>(Enemies.size());
 
@@ -360,7 +366,7 @@ void RenderWindow::render()
             Physics->move(DeltaTime,transformCompVec[bullets[i]], meshCompVec[bullets[i]]->collisionRadius);
             if(transformCompVec[bullets[i]]->isBulletFired == false && transformCompVec[bullets[i]]->isBulletLoaded == false)
             {
-                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + i*2 - bullets.size(),temp.getY() , temp.getZ()-5);
+                transformCompVec[bullets[i]]->mMatrix.setPosition(temp.getX() + (i+1)*2 - bullets.size(),temp.getY() , temp.getZ()-10);
                 transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
             }
         }
@@ -376,6 +382,16 @@ void RenderWindow::render()
                     BallReset(transformCompVec[bullets[i]]);
                 }
             }
+        ///Collision with player
+        /// resets the game
+        for (unsigned long long j = 0; j<Enemies.size();j++)
+        {
+            if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[Enemies[j]],transformCompVec[Enemies[j]]) || transformCompVec[Enemies[j]]->mMatrix.getPosition().getZ()<5.0f)
+            {
+                qDebug()<<"YOU LOSE!";
+                initialEnemyPos();
+            }
+        }
     }
     else
     {
@@ -416,8 +432,7 @@ void RenderWindow::initialEnemyPos()
             counter =0;
         }
        transformCompVec[Enemies[i]]->mMatrix.setPosition(startposX - counter * 35, 10.0f,startposZ - stepdown);
-       transformCompVec[Enemies[i]]->mMatrix.rotateX(90.0f);
-       transformCompVec[Enemies[i]]->mMatrix.rotateY(180.0f);
+
        meshCompVec[Enemies[i]]->IsCollidable = true;
        meshCompVec[Enemies[i]]->isDrawable = true;
        meshCompVec[Enemies[i]]->isDead = false;
@@ -428,7 +443,7 @@ void RenderWindow::initialEnemyPos()
 }
 void RenderWindow::moveEnemies()
 {
-    float speed = 0.1f;
+    float speed = 0.5f;
     float travelDistance = 60.0f;
     for (unsigned long long i = 0; i<Enemies.size();i++)
     {
