@@ -124,15 +124,12 @@ void RenderWindow::init()
     mCurrentCamera = &mEditorCamera;
 
     //********************** create input **********************
-    mMovementComponent = new MovementComponent();
-//    mMovementSystem = new MovementSystem();
-//    mCollisionSystem = new CollisionSystem();
 
     mLvl = new Level(&mPlayCamera);
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
-    //initObject();
     mMainWindow->run();
+    mMovementComponent = new MovementComponent; //Til mouseMoveEvent
 }
 
 void RenderWindow::drawObject()
@@ -194,8 +191,9 @@ void RenderWindow::drawObject()
     glDrawArrays(mLight->mMesh->mDrawType, 0, mLight->mMesh->mVertices.size());
     glBindVertexArray(0);
 
+    glUseProgram(mShaderPrograms[0]->getProgram());
 
-    if(playM==false){
+    if(mLvl->playM==false){
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mLvl->mFrustumSystem->mTransform->mMatrix.constData());
         glBindVertexArray(mLvl->mFrustumSystem->mMesh->mVAO );
         glDrawArrays(mLvl->mFrustumSystem->mMesh->mDrawType, 0, mLvl->mFrustumSystem->mMesh->mVertices.size());
@@ -222,11 +220,6 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    // HandleInput();
-    mLvl->update(mCurrentCamera, mInput);
-    mCurrentCamera->update();
-    mLvl->checkCollision();
-
     mMainWindow->PointCount(mLvl->trophies*10);
     mMainWindow->LiveCount(mLvl->mLives);
 
@@ -235,18 +228,7 @@ void RenderWindow::render()
     float g = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float b = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
-    if(playM)
-    {
-        mLvl->moveEnemy(randNr);
-        mLvl->movePlayer();
-        mLvl->moveParticles(gsl::Vector3D(r,g,b));
-        if(mLvl->mParticles.size()<20)
-            mLvl->spawnParticle();
-        for(int i{0}; i < mLvl->mParticles.size(); i++)
-        {
-            mLvl->mParticles[i]->update(frameCount);
-        }
-    }
+    mLvl->update(mCurrentCamera, mInput, randNr, gsl::Vector3D(r,g,b), frameCount);
 
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -387,15 +369,13 @@ void RenderWindow::playMode(bool p)
     if(p)
     {
         mCurrentCamera = &mPlayCamera;
-        //mLvl->mLaserSound->play();
-        playM = true;
+        mLvl->playM = true;
     }
     else
     {
         mCurrentCamera = &mEditorCamera;
-        //mLvl->mLaserSound->stop();
+        mLvl->playM = false;
         mLvl->resetGame();
-        playM = false;
     }
 }
 
@@ -612,7 +592,7 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
 void RenderWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton)
-        if(playM == false)
+        if(mLvl->playM == false)
             mInput.RMB = true;
     if (event->button() == Qt::LeftButton)
     {

@@ -38,7 +38,8 @@ public:
     void movePlayer();
     void resetGame();
     void setupSound();
-    void update(Camera* dc, Input di);
+    void update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC);
+    void drawObjects();
 
     std::vector<NameComponent*> mNameComps;
     std::vector<TransformComponent*> mTransComps;
@@ -52,13 +53,16 @@ public:
     Enemy* mEnemy;
     Player* mPlayer;
     Light * mLight{nullptr};
+
     void spawnParticle();
     void moveParticles(gsl::Vector3D color);
-    std::vector<ParticleSystem*> mParticles;
+    std::vector<Particle*> mParticles;
     CollisionSystem* mCollisionSystem;
-    MovementSystem *mMovementSystem;
+    MovementSystem* mMovementSystem;
+    ParticleSystem* mParticleSystem;
     int trophies{0};
     int mLives{3};
+    bool playM = false;
 private:
     static const int DIM_Z = 22;
     static const int DIM_X = 19;

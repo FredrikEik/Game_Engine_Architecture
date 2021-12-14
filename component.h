@@ -1,7 +1,6 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-
 #include "constants.h"
 #include "matrix4x4.h"
 #include "vertex.h"

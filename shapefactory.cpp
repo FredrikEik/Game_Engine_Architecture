@@ -337,9 +337,9 @@ MeshComponent *ShapeFactory::getParticleMesh()
     MeshComponent* m = new MeshComponent;
     m->mDrawType = GL_TRIANGLES;
 
-    i = 0.1;
-    j = 0.1;
-    k = 0.1;
+    i = 0.1f;
+    j = 0.1f;
+    k = 0.1f;
     m->mVertices.push_back(Vertex{-i,-j,-k,  mColor.x,mColor.y,mColor.z});
     m->mVertices.push_back(Vertex{ i,-j,-k,  mColor.x,mColor.y,mColor.z});       // bottom surface
     m->mVertices.push_back(Vertex{-i, j,-k,  mColor.x,mColor.y,mColor.z});

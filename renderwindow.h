@@ -1,6 +1,5 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
-#include "visualobject.h"
 #include "level.h"
 
 // This inherits from QWindow to get access to the Qt functionality and
@@ -28,11 +27,8 @@ private slots:
     void render();
 
 private:
-    MovementComponent *mMovementComponent;
-//    MovementSystem *mMovementSystem;
-//    CollisionSystem* mCollisionSystem;
     Input mInput;
-    bool playM = false;
+    MovementComponent* mMovementComponent;
     int levelOfDetail(int i);
     void mousePickingRay(QMouseEvent *event);
     gsl::Vector3D ray_wor;

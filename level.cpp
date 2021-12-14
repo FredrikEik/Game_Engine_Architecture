@@ -4,6 +4,7 @@ Level::Level(Camera* cam)
 {
     mCollisionSystem = new CollisionSystem();
     mMovementSystem = new MovementSystem();
+    mParticleSystem = new ParticleSystem();
     mCam = cam;
     mShapeFactory.makeVertices();
     script = new Script();
@@ -272,9 +273,28 @@ void Level::setupSound()
     mSounds.push_back(tempSound);
 }
 
-void Level::update(Camera* dc, Input di)
+void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
 {
     mMovementSystem->update(dc, mPlayer, di);
+    dc->update();
+    checkCollision();
+
+    if(playM)
+    {
+        moveEnemy(randO);
+        movePlayer();
+        moveParticles(col);
+        if(mParticles.size()<20)
+            spawnParticle();
+        for(int i{0}; i < mParticles.size(); i++)
+        {
+            mParticleSystem->update(fC, mParticles[i]->mPC);
+        }
+    }
+}
+
+void Level::drawObjects()
+{
 
 }
 
@@ -328,25 +348,25 @@ void Level::movePlayer()
 
 void Level::moveEnemy(int randNr)
 {
-   for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-    mMovementSystem->moveEnemy(randNr,mEnemies);
-    if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
-    {
-        if(randNr<5){
-            mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
-        else{
-            mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
+    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
+        mMovementSystem->moveEnemy(randNr,mEnemies);
+        if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
+        {
+            if(randNr<5){
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
+            else{
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
+        }
+        else
+            mMovementSystem->moveForward(mEnemies[i], mEnemies[i]->mMoveComp);
     }
-    else
-        mMovementSystem->moveForward(mEnemies[i], mEnemies[i]->mMoveComp);
-   }
 }
 
 void Level::spawnParticle()
 {
-    ParticleSystem *mParticle{nullptr};
+    Particle* mParticle{nullptr};
 
-    mParticle = new ParticleSystem(&mShapeFactory, mPlayer);
+    mParticle = new Particle(&mShapeFactory, mPlayer);
     mParticle->init();
     mMovementSystem->move(mParticle, mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
     mParticle->mMaterial->mShaderProgram = 0;   //plain shader
@@ -359,7 +379,8 @@ void Level::spawnParticle()
 void Level::moveParticles(gsl::Vector3D mColor)
 {
     mShapeFactory.mColor = mColor;
-    mMovementSystem->moveParticles(mColor,mParticles);
+    for(auto i{0}; i<mParticles.size(); i++)
+        mMovementSystem->moveParticle(mColor, mParticles[i]);
 }
 
 Script::Script(QObject *parent) : QObject(parent)

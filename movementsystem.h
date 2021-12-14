@@ -19,13 +19,14 @@ public:
     void setCameraSpeed(Camera *mCamera, float value);
     void movePlayer();
     void moveEnemy(int randNum, std::vector<Enemy*> mEnemies);
-    void moveParticles(gsl::Vector3D mColor, std::vector<ParticleSystem*> mParticles);
+    void moveParticle(gsl::Vector3D color, Particle* par);
     void moveForward(VisualObject* vo, MovementComponent* m);
     void move(VisualObject* vo, float dx, float dy, float dz);
     void rotateForward(MovementComponent* m);
 private:
     void setPlayerForward(float dx, float dz);
 
+    ParticleSystem* parSys{nullptr};
     CollisionSystem* mColSystem{nullptr};
     ShapeFactory* mFactory;
     Player* mPlayer;

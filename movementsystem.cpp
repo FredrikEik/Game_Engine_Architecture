@@ -81,7 +81,7 @@ void MovementSystem::setCameraSpeed(Camera *mCamera, float value)
 
 void MovementSystem::movePlayer()
 {
-   mPlayer->mMoveComp->posX={static_cast<int>(mPlayer->mTransform->mPosition.x)};
+    mPlayer->mMoveComp->posX={static_cast<int>(mPlayer->mTransform->mPosition.x)};
     mPlayer->mMoveComp->posZ={static_cast<int>(mPlayer->mTransform->mPosition.z)};
 
     if(mPlayer->mMoveComp->mForward.x > 0)
@@ -92,7 +92,7 @@ void MovementSystem::movePlayer()
         if(mPlayer->mMoveComp->mForward.z >0)
             mPlayer->mMoveComp->posZ = std::ceil(mPlayer->mTransform->mPosition.z);
         else if(mPlayer->mMoveComp->mForward.z <0)
-           mPlayer->mMoveComp->posZ = std::floor(mPlayer->mTransform->mPosition.z);
+            mPlayer->mMoveComp->posZ = std::floor(mPlayer->mTransform->mPosition.z);
         else
             qDebug() << "error in MovementSystem::movePlayer";}
 }
@@ -117,17 +117,14 @@ void MovementSystem::moveEnemy(int randNum, std::vector<Enemy*> mEnemies)
     }
 }
 
-void MovementSystem::moveParticles(gsl::Vector3D mColor, std::vector<ParticleSystem*> mParticles)
+void MovementSystem::moveParticle(gsl::Vector3D color, Particle* par)
 {
-    for(int i{0}; i<static_cast<int>(mParticles.size()); i++){
-
-        mParticles[i]->mVelocity = mColor;
-        mParticles[i]->getVec();
-        if(mParticles[i]->isAlive == true){
-        move(mParticles[i], mParticles[i]->PathDirection.x,mParticles[i]->PathDirection.y,mParticles[i]->PathDirection.z);}
-        else{
-            mParticles[i]->reset(mPlayer);
-        }
+    par->mPC->velocity = color;
+    parSys->getVec(par->mPC);
+    if(par->mPC->isAlive == true){
+        move(par, par->mPC->pos.x, par->mPC->pos.y, par->mPC->pos.z);}
+    else{
+        parSys->reset(mPlayer, par, par->mPC);
     }
 }
 
