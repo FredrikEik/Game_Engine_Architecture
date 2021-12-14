@@ -214,7 +214,7 @@ void RenderWindow::init()
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
-
+       factory->createObject("Billboard");
 
 }
 
@@ -248,25 +248,7 @@ void RenderWindow::initObjects()
 
 }
 
-void RenderWindow::drawHUD()
-{
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(0.f,1.f,1.f,0.f,0.f,1.f);
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-   factory->createObject("Billboard");
-
-   glMatrixMode(GL_PROJECTION);
-   glPopMatrix();
-   glMatrixMode(GL_MODELVIEW);
-   glPopMatrix();
-
-}
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
@@ -414,7 +396,7 @@ void RenderWindow::render()
     checkForGLerrors();
 
 
-    drawHUD();
+
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.

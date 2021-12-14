@@ -77,7 +77,7 @@ private slots:
 private:
     void init();
     void initObjects();
-    void drawHUD();
+
 
     void checkForGLerrors();
 

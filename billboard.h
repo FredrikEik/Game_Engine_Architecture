@@ -14,7 +14,6 @@ public:
     void init() override;
     void move(float x, float y, float z) override;
 
-    gsl::Vector4D BillboardPos_worldspace;
 };
 
 #endif // BILLBOARD_H

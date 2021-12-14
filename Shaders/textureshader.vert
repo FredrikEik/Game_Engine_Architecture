@@ -8,9 +8,16 @@ out vec2 UV;
 uniform mat4 mMatrix;
 uniform mat4 vMatrix;
 uniform mat4 pMatrix;
+uniform vec4 BillboardPos_screenspace;
 
 void main() {
    color = colorIn;
    UV = vertexUV;
-   gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
+
+    BillboardPos_screenspace = pMatrix * vMatrix * positionIn;
+    gl_Position = BillboardPos_screenspace;
+
+
+
+   //gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
 }
