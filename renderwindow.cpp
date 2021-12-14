@@ -1059,8 +1059,8 @@ void RenderWindow::switchProgram(int shaderIndex)
         projectionMatrix = mPmatrixUniform2;
         modelMatrix = mMmatrixUniform2;
         glUniform1f(mUsingTextureUniform, true); // turns on texture
-        glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos camera
-        glUniform3f(mLightPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ()); // pos lightsource! booiiiii
+        glUniform3f(mCameraPositionUniform, mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY()+15.f, mCurrentCamera->Cam.mPosition.getZ()); // pos camera
+        glUniform3f(mLightPositionUniform, CurrentPlayer->mMatrix.getPosition().getX(), CurrentPlayer->mMatrix.getPosition().getY(), CurrentPlayer->mMatrix.getPosition().getZ()); // pos lightsource! booiiiii
         glUniform1i(mTextureUniform2,  MaterialCompVec[shaderIndex]->mTextureUnit);
     }
     else if (MaterialCompVec[shaderIndex]->mShaderProgram == 3)
