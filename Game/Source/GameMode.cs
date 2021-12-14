@@ -4,16 +4,15 @@ using ScriptInJin.Math;
 
 namespace Game
 {
-    public class Ball : Entity
+    public class GameMode : Entity
     {
 
         public override void BeginPlay()
         {
-
+            Console.WriteLine("Begin play in GameMode");
         }
         public override void Update()
         {
-            //Console.WriteLine("Updating ball unit with id: " + entityID);
 
         }
     }

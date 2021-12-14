@@ -37,6 +37,8 @@ namespace ScriptInJin
         extern public static float getDeltaTime_Internal();
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static Entity getObject_Internal(uint EntityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static uint createDefaultEntity_Internal(string path);
     }
 
     public class Transform

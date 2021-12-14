@@ -71,6 +71,7 @@ void Engine::setIsPlaying(bool isPlaying)
 		load(Save::getDefaultAbsolutePath());
 		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
 		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+		ScriptSystem::Invoke("BeginPlay", ECS);
 	}
 	else
 	{
@@ -90,6 +91,12 @@ void Engine::load(const std::string& path)
 		ECS->destroyEntity(i);
 	}
 	Load::loadEntities(path, ECS);
+}
+
+uint32 Engine::createDefaultEntity_Internal(MonoString* path)
+{
+	//return 0;
+	return Load::loadEntity(mono_string_to_utf8(path), Get().ECS);
 }
 
 Engine* Engine::instance = nullptr;
@@ -199,9 +206,14 @@ void Engine::init()
 	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
-	ScriptSystem::Invoke("BeginPlay", ECS);
+	CollisionSystem::construct(unitEntity, ECS, false);
 	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
 	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
+
+	uint32 gameStateEntity = ECS->newEntity();
+	ECS->addComponent<ScriptComponent>(gameStateEntity);
+	//ScriptSystem::setScriptClassName(gameStateEntity, "GameMode", ECS);
+	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
 
 
 	reservedEntities = ECS->getNumberOfEntities();
@@ -212,13 +224,13 @@ void Engine::init()
 	load(Save::getDefaultAbsolutePath());
 
 
-	ParticleComponent::ParticleBlueprint particleBlueprint;
-	particleBlueprint.particle.currentLife = 0.5f;
-	particleBlueprint.particle.acceleration = glm::vec3(0, 0, 0);
-	particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
-	particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
-	particleBlueprint.particle.position = glm::vec3(1, 5, 1);
-	particleBlueprint.particle.startSize = 30;
+	//ParticleComponent::ParticleBlueprint particleBlueprint;
+	//particleBlueprint.particle.currentLife = 0.5f;
+	//particleBlueprint.particle.acceleration = glm::vec3(0, 0, 0);
+	//particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
+	//particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
+	//particleBlueprint.particle.position = glm::vec3(1, 5, 1);
+	//particleBlueprint.particle.startSize = 30;
 
 	//////TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
 	//uint32 particleEntity = ECS->newEntity();
@@ -231,7 +243,7 @@ void Engine::init()
 void Engine::loop()
 {
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) || bIsPlaying)
 	{
 		//// input
 		processInput(window);
@@ -379,6 +391,7 @@ void Engine::loop()
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	std::cout << "\nMain loop ended\n";
 }
 
 void Engine::terminate()

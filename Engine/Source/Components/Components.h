@@ -187,12 +187,13 @@ struct ScriptComponent final : public Component
 	MonoClass* m_Class{};
 	MonoObject* m_Object{};
 	MonoClassField* entityID_handle{};
-	
+	bool bInitialized{ false };
 	//std::unordered_map<size_t, Ref<ScriptField>> m_Fields;
 	std::unordered_map<size_t, MonoMethod*> m_Methods;
 	//std::unordered_map<size_t, Ref<ScriptProperty>> m_Properties;
 
-
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct SoundComponent final : public Component

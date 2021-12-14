@@ -52,6 +52,7 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Input::getMouseKeyState_Internal", &Input::getMouseKeyState_Internal);
 	BindInternalFunction("ScriptInJin.Entity::getDeltaTime_Internal", &Engine::getDeltaTime_Internal);
 	BindInternalFunction("ScriptInJin.Entity::getObject_Internal", &ScriptSystem::getObject_Internal);
+	BindInternalFunction("ScriptInJin.Entity::createDefaultEntity_Internal", &Engine::createDefaultEntity_Internal);
 
 
 }
@@ -63,8 +64,25 @@ void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* m
 
 	for (auto ScriptComp : scriptArray)
 	{
+		if (!&ScriptComp)
+			continue;
 		//std::cout << "Invoking update on entity: " << ScriptComp.entityID<<"\n";
-		mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
+		if (!ScriptComp.bInitialized)
+		{
+			mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
+			ScriptComp.bInitialized = true;
+		}
+	}
+}
+
+void ScriptSystem::Invoke(uint32 entity, const std::string& functionToCall, ECSManager* manager)
+{
+	ScriptComponent* component = manager->getComponentManager<ScriptComponent>()->getComponentChecked(entity);
+	assert(component);
+	if (!component->bInitialized)
+	{
+		mono_runtime_invoke(component->m_Methods[std::hash<std::string>{}(functionToCall)], component->m_Object, nullptr, nullptr);
+		component->bInitialized = true;
 	}
 }
 
@@ -107,6 +125,13 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string cla
 	//todo 
 	// parameters
 	//fields
+}
+
+void ScriptSystem::setScriptClassName(uint32 entityID, const std::string& className, ECSManager* ECS)
+{
+	ScriptComponent* component = ECS->getComponentManager<ScriptComponent>()->getComponentChecked(entityID);
+	assert(component);
+	component->ScriptClassName = className;
 }
 
 MonoObject* ScriptSystem::getObject_Internal(uint32 entity)

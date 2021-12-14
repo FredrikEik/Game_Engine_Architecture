@@ -76,7 +76,8 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 		AABB->bShouldGenerateOverlapEvents = true;
 		AABB->minScaled = glm::vec3(minX, 0, minZ);
 		AABB->maxScaled = glm::vec3(maxX, 0, maxZ);
-
+		AABB->center = glm::vec3((maxX + minX) / 2.f,
+			0, (maxZ + minZ) / 2.f);
 		// create rectancle
 		// apply collision check
 	}

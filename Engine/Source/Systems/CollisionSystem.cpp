@@ -61,8 +61,8 @@ void CollisionSystem::construct(uint32 entity,
 
 	collisionComponent->minScaled = min;
 	collisionComponent->maxScaled = max;
-	collisionComponent->center = glm::vec3((max.x - min.x) / 2.f,
-		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
+	collisionComponent->center = glm::vec3((max.x + min.x) / 2.f,
+		(max.y + min.y) / 2.f, (max.z + min.z) / 2.f);
 	collisionComponent->bShouldGenerateOverlapEvents = shouldGenerateOverlapEvents;
 }
 
@@ -84,17 +84,65 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 
 	glm::vec3 otherPosition{ otherCollisionComponent.center +
 		glm::vec3(otherTransform.transform[3])};
+
 	// -----------------------------------------------------------------
 
-	// Check if we collide along the x axis
-	if ((firstPosition.x + firstCollisionComponent.maxScaled.x) >= 
-		(otherPosition.x + otherCollisionComponent.minScaled.x) &&
-		(otherPosition.x + otherCollisionComponent.maxScaled.x) >= 
-		(firstPosition.x + otherCollisionComponent.minScaled.x))
+	//std::cout << "Entity " << firstCollisionComponent.entityID << " with max x: " <<
+	//	firstCollisionComponent.maxScaled.x
+	//	<< " min x: " << firstCollisionComponent.minScaled.x
+	//	<< "  max z: " <<
+	//	firstCollisionComponent.maxScaled.z
+	//	<< " min z: " << firstCollisionComponent.minScaled.z<<
+	//	" and center x: "<<firstCollisionComponent.center.x<<
+	//	" z: "<<firstCollisionComponent.center.z<<
+	//	"\n";
+
+	//std::cout << "Entity " << otherCollisionComponent.entityID << " with max x: " <<
+	//	otherCollisionComponent.maxScaled.x
+	//	<< " min x: " << otherCollisionComponent.minScaled.x
+	//	<< "  max z: " <<
+	//	otherCollisionComponent.maxScaled.z
+	//	<< " min z: " << otherCollisionComponent.minScaled.z <<
+	//	" and center x: " << otherCollisionComponent.center.x <<
+	//	" z: " << otherCollisionComponent.center.z <<
+	//	"\n\n";
+
+	std::cout << "Entity " << firstCollisionComponent.entityID << " with pos x: " << firstPosition.x << " y: "
+		<< firstPosition.y << " z: " << firstPosition.z <<
+		" Entity " << otherCollisionComponent.entityID << " with pos x: " << otherPosition.x << " y: "
+		<< otherPosition.y << " z: " << otherPosition.z << "\n";
+
+	//if ((firstPosition.z + firstCollisionComponent.maxScaled.z ) >=
+	//	(otherPosition.z + otherCollisionComponent.minScaled.z ) &&
+	//	(otherPosition.z + otherCollisionComponent.maxScaled.z ) <=
+	//	(firstPosition.z + firstCollisionComponent.minScaled.z ))
+	//	;
+	//else
+	//	return false;
+	// -----------------------------------------------------------------
+
+	if ((firstPosition.z) <
+		(otherPosition.z + (otherCollisionComponent.maxScaled.z -otherCollisionComponent.minScaled.z)) &&
+		(firstPosition.z + (firstCollisionComponent.maxScaled.z - firstCollisionComponent.minScaled.z)) >
+		otherPosition.z)
 		;
 	else
 		return false;
-	// -----------------------------------------------------------------
+
+	//std::cout <<"Entity "<<firstCollisionComponent.entityID<< " and "<<otherCollisionComponent.entityID
+	//	<< " first.max >= other.min: " << ((firstPosition.z + firstCollisionComponent.maxScaled.z) >=
+	//	(otherPosition.z + otherCollisionComponent.minScaled.z)) << " other.max <= first.min: " <<
+	//	((otherPosition.z + otherCollisionComponent.maxScaled.z) <=
+	//		(firstPosition.z + firstCollisionComponent.minScaled.z)) << "\n";
+
+	//if ((firstPosition.z + firstCollisionComponent.maxScaled.z ) >=
+	//	(otherPosition.z + otherCollisionComponent.minScaled.z ) &&
+	//	(otherPosition.z + firstCollisionComponent.maxScaled.z ) <
+	//	(otherPosition.z + otherCollisionComponent.minScaled.z ))
+	//	;
+	//else
+	//	return false;
+
 
 	// If we need collision in the Y axis, make sure this does not break the collision overall. 
 	// Check if we collide along the y axis
@@ -107,15 +155,47 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 	//	return false;
 	// -----------------------------------------------------------------
 
+		//std::cout << "Entity " << firstCollisionComponent.entityID << " with pos x: " << firstPosition.x << " y: "
+	//	<< firstPosition.y << " z: " << firstPosition.z <<
+	//	" Entity " << otherCollisionComponent.entityID << " with pos x: " << otherPosition.x << " y: "
+	//	<< otherPosition.y << " z: " << otherPosition.z << "\n";
+
 	// Check if we collide along the z axis
-	if ((firstPosition.z + firstCollisionComponent.maxScaled.z) >=
-		(otherPosition.z + otherCollisionComponent.minScaled.z) &&
-		(otherPosition.z + otherCollisionComponent.maxScaled.z) >=
-		(firstPosition.z + otherCollisionComponent.minScaled.z))
+	std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
+		<< " collides on z\n";
+
+	std::cout << "Entity " << firstCollisionComponent.entityID << " and " << otherCollisionComponent.entityID
+		<< " first.max and other.min: " << (firstPosition.x + firstCollisionComponent.maxScaled.x) << " "<<
+			(otherPosition.x + otherCollisionComponent.minScaled.x) << " other.max <= first.min: " <<
+		(otherPosition.x + otherCollisionComponent.maxScaled.x) << " "<<
+			(firstPosition.x + firstCollisionComponent.minScaled.x) << "\n";
+
+	std::cout <<"Entity "<<firstCollisionComponent.entityID<< " and "<<otherCollisionComponent.entityID
+	<< " first.max >= other.min: " << ((firstPosition.x + firstCollisionComponent.maxScaled.x) >=
+	(otherPosition.x + otherCollisionComponent.minScaled.x)) << " other.max <= first.min: " <<
+	((otherPosition.x + otherCollisionComponent.maxScaled.x) <=
+		(firstPosition.x + firstCollisionComponent.minScaled.x)) << "\n\n";
+
+
+	// Check if we collide along the x axis
+	//if ((firstPosition.x + firstCollisionComponent.maxScaled.x) >= 
+	//	(otherPosition.x + otherCollisionComponent.minScaled.x) &&
+	//	(otherPosition.x + otherCollisionComponent.maxScaled.x) >= 
+	//	(firstPosition.x + firstCollisionComponent.minScaled.x))
+	//	;
+	//else
+	//	return false;
+	if ((firstPosition.x) <
+		(otherPosition.x + (otherCollisionComponent.maxScaled.x - otherCollisionComponent.minScaled.x)) &&
+		(firstPosition.x + (firstCollisionComponent.maxScaled.x - firstCollisionComponent.minScaled.x)) >
+		otherPosition.x)
 		;
 	else
 		return false;
 	// -----------------------------------------------------------------
+
+	std::cout << "Entity " << firstCollisionComponent.entityID << " and Entity " << otherCollisionComponent.entityID
+		<< " collides on x\n";
 
 	return true;
 }
@@ -132,8 +212,8 @@ bool CollisionSystem::testCollision(uint32 entityA, uint32 entityB, ECSManager* 
 //
 //#endif // DEBUG
 	// TODO: Remember to remove redundant call after debugging :))))))
-	if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
-		std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
+	//if (isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS))
+	//	std::cout << "Entity " << entityA << " and entity " << entityB << " are colliding\n";
 
 	return isColliding(AABBManager->getComponent(entityA), AABBManager->getComponent(entityB), ECS);
 
@@ -159,7 +239,7 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 	glm::vec3 tempPos{};
 	for (const auto& it : vertices)
 	{
-		tempPos = glm::vec3(it.m_xyz[0], it.m_xyz[0], it.m_xyz[0]);
+		tempPos = glm::vec3(it.m_xyz[0], it.m_xyz[1], it.m_xyz[2]);
 		if (tempPos.x < OUTscaledMin.x) OUTscaledMin.x = (tempPos.x);
 		if (tempPos.y < OUTscaledMin.y) OUTscaledMin.y = (tempPos.y);
 		if (tempPos.z < OUTscaledMin.z) OUTscaledMin.z =(tempPos.z);

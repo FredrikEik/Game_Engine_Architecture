@@ -133,7 +133,12 @@ void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::j
 		assert(comp);
 		json = comp->json();
 	}
-
+	else if (type == std::type_index(typeid(ScriptComponent)))
+	{
+		auto comp = ECS->getComponentManager<ScriptComponent>()->getComponentChecked(entityID);
+		assert(comp);
+		json = comp->json();
+	}
 	if (json == JSON())
 		return;
 	OUTjson.push_back({ { type.name(), json} });

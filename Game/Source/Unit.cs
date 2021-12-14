@@ -22,6 +22,7 @@ namespace Game
         public Vec3 offset = new Vec3(0.0f, 0.001f, 0.0f);
         public override void Update()
         {
+            //Console.WriteLine("Updating unit with id: " + entityID);
             //getObject_Internal(entityID);
             //Debug.PrintMethod_Internal("Update");
             //uint id = getObject_Internal(entityID).entityID;

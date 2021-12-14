@@ -4,6 +4,8 @@
 #include <iostream>
 //#define DEBUG
 //#define DEBUG_BROADPHASE
+#include "mono/jit/jit.h"
+//#include <mono/metadata/assembly.h>
 
 class Engine
 {
@@ -20,6 +22,8 @@ public:
 	void setIsPlaying(bool isPlaying);
 	void save();
 	void load(const std::string& path);
+
+	static uint32 createDefaultEntity_Internal(MonoString* path);
 private:
 	static Engine* instance;
 	Engine();
@@ -84,6 +88,7 @@ public:
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
 	uint32 getCameraEntity() const { return cameraEntity; }
+	bool getIsPlaying() const { return bIsPlaying; }
 
 	static float getDeltaTime_Internal();
 };

@@ -2,6 +2,9 @@
 #include <iostream>
 #include "../SaveLoad/Save.h"
 #include "../Systems/ParticleSystem.h"
+#include "../Systems/ScriptSystem.h"
+#include "../Engine/Engine.h"
+
 JSON TransformComponent::json()
 {
 	JSON matrix;
@@ -177,4 +180,20 @@ void ParticleComponent::jsonParse(const JSON& json)
 
 	ParticleSystem::initMesh(this, maxParticles);
 	ParticleSystem::initTexture(this, texture.path, textureRows);
+}
+
+JSON ScriptComponent::json()
+{
+	return JSON{
+	{"ScriptClassName", ScriptClassName}
+	};
+}
+
+void ScriptComponent::jsonParse(const JSON& json)
+{
+	ScriptClassName = json["ScriptClassName"];
+	ScriptSystem::InitScriptObject(this, ScriptClassName);
+
+	if(Engine::Get().getIsPlaying())
+		ScriptSystem::Invoke(entityID, "BeginPlay", Engine::Get().getECSManager());
 }
