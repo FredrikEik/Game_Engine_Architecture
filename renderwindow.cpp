@@ -186,12 +186,6 @@ void RenderWindow::init()
     }
 
 
-    entitySys->construct("SpaceInvader1.obj", QVector3D(0.0f + 20 ,0.0f,-20.f), 2,2);
-    entitySys->construct("SpaceInvader2.obj", QVector3D(0.0f + 40 ,0.0f,-20.f), 2,3);
-    entitySys->construct("SpaceInvader3.obj", QVector3D(0.0f + 60 ,0.0f,-20.f), 2,4);
-    entitySys->construct("SpaceInvader4.obj", QVector3D(0.0f + 80 ,0.0f,-20.f), 2,5);
-    entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f,-20.f), 2,6);
-    entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f,-20.f), 2,7);
 
 
 
@@ -232,7 +226,7 @@ void RenderWindow::init()
 
 
     //crate bullets
-    for(int i{0}; i < 5; i++)
+    for(int i{0}; i < 6; i++)
     {
         entitySys->construct("sphere.obj", QVector3D( 10+i,10+i,-10+i),2,1); //ammo starts with 800 id
 
@@ -245,7 +239,7 @@ void RenderWindow::init()
     }
 
     //create enemies
-    for(int i{0}; i < 4; i++)
+    for(int i{0}; i < 6; i++)
     {
 
         entitySys->construct("SpaceInvaderBoss2.obj",     QVector3D(0.0f + 60  ,0.0f+i*3,-20.f), 2,7);
