@@ -415,7 +415,7 @@ void RenderWindow::initialEnemyPos()
             stepdown += 25.0f;
             counter =0;
         }
-       transformCompVec[Enemies[i]]->mMatrix.setPosition(startposX - counter * 35, 5.0f,startposZ - stepdown);
+       transformCompVec[Enemies[i]]->mMatrix.setPosition(startposX - counter * 35, 10.0f,startposZ - stepdown);
        transformCompVec[Enemies[i]]->mMatrix.rotateX(90.0f);
        transformCompVec[Enemies[i]]->mMatrix.rotateY(180.0f);
        meshCompVec[Enemies[i]]->IsCollidable = true;
