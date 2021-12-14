@@ -15,8 +15,8 @@ uniform vec3 lightColor = vec3(0.93, 0.87, 0.5);  //yellow/white
 uniform float ambientStrength = 0.2;
 
 uniform float lightStrength = 0.9;
-uniform float specularStrength = 0.2;
-uniform int specularExponent = 16;
+uniform float specularStrength = 0.5;
+uniform int specularExponent = 99;
 
 
 void main()

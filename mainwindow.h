@@ -24,9 +24,11 @@ public:
     ~MainWindow();
 
     void makeObjList(std::vector<GameObject*> mGameObjects);
+    void updateAmmo();
 
     int prevSelectedIndex{0};
 
+    int ammo = 8;
 
 private slots:
     void on_pushButton_toggled(bool checked);

@@ -55,6 +55,10 @@ public:
 
     GameObject *playerObject{nullptr};
 
+    SoundSource* mReloadGun{nullptr};
+    SoundSource* mStereoSound{nullptr};
+    SoundSource* mGunShot{nullptr};
+
 private slots:
     void GameLoop();
 
@@ -75,8 +79,6 @@ private:
     Camera *mGameCamera{nullptr};
 
     GameObject *mGameCameraMesh{nullptr};
-
-    SoundSource* mStereoSound{nullptr};
 
     std::string treeNames[14] = {
         "1tree.obj", "2tree.obj", "3tree.obj", "4tree.obj", "5tree.obj", "6tree.obj",

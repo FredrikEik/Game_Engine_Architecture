@@ -43,14 +43,13 @@ void CoreEngine::SetUpScene()
     GameObject *temp = mResourceManager->CreateMainCharacter("cube.obj");
     playerObject = temp;
     playerObject->transform->mMatrix.scale(0.2f);
-//    temp->material->mShaderProgram = gsl::SKYBOXSHADER;
-//    temp->material->mTextureUnit = 3;
+    temp->material->mShaderProgram = gsl::TEXTURESHADER;
+    temp->material->mTextureUnit = 1;
     temp->mesh->collisionsEnabled = false;
     mRenderWindow->addToGameObjects(playerObject); // pos = 57.f, 8.5f, 118
 
 // SKYBOX ??
     temp = mResourceManager->CreateObject("skyboxCube.obj");
-    temp->mName = "skyboxCube";
     temp->transform->mMatrix.scale(1000);
     temp->material->mShaderProgram = gsl::SKYBOXSHADER;
     temp->material->mTextureUnit = 3;
@@ -106,8 +105,10 @@ void CoreEngine::SetUpScene()
     mRenderWindow->setToCurrentCamera(mEditorCamera);
 
 
-    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f),
-                                                            "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 1.0f);
+    mStereoSound = SoundManager::getInstance()->createSource("Stereo", gsl::Vector3D(0.0f, 0.0f, 0.0f), "..\\GEA2021\\Assets\\Sounds\\stereo.wav", false, 0.2f);
+    mGunShot = SoundManager::getInstance()->createSource("Gunshot", gsl::Vector3D(0.0f, 0.0f, 0.0f),     "..\\GEA2021\\Assets\\Sounds\\gunshot.wav", false, 0.2f);
+    mReloadGun = SoundManager::getInstance()->createSource("ReloadGun", gsl::Vector3D(0.0f, 0.0f, 0.0f),     "..\\GEA2021\\Assets\\Sounds\\reload.wav", false, 0.2f);
+
 }
 
 void CoreEngine::resetScene()
@@ -244,6 +245,8 @@ void CoreEngine::shootBullet()
      temp->transform->mMatrix.setPosition(playerPos.x, playerPos.y, playerPos.z);
      temp->transform->mMatrix.scale(0.1);
      mRenderWindow->addToGameObjects(temp);
+
+     mGunShot->play();
 }
 
 bool CoreEngine::isPlaying()

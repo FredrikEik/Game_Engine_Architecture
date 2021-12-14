@@ -180,7 +180,7 @@ void RenderWindow::render()
             //TODO: Use the players vector to move bullets forward in relation
             //      to the players forwardVector from when the bullet was shot.
             gsl::Vector3D pos = mGameObjects[i]->transform->mMatrix.getPosition();
-            mGameObjects[i]->transform->mMatrix.setPosition(pos.x, pos.y, pos.z - 0.2f);
+            mGameObjects[i]->transform->mMatrix.setPosition(pos.x, pos.y, pos.z - 0.5f);
         }
 
     /** Shader Program */
@@ -228,7 +228,7 @@ void RenderWindow::render()
         //Check if mForward.x & .y = 0. This fixes the problem where nothing renders at the start
         //This happened because all "objDistanceFromPlane" floats = 0, because vectors got multiplied by 0.
 
-        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" && mGameObjects[i]->mName != "ContourLines" && mGameObjects[i]->mName != "skyboxCube" &&//These name checks are temporary.
+        if(bFrustumEnabled && mGameObjects[i]->mName != "camera.obj" && mGameObjects[i]->mName != "HamarHeightMap.bmp" && mGameObjects[i]->mName != "test_las.txt" && mGameObjects[i]->mName != "ContourLines" && mGameObjects[i]->mName != "skyboxCube.obj" &&//These name checks are temporary.
             (mCurrentCamera->getmForward().x != 0.f || mCurrentCamera->getmForward().y != 0.f))                  //Will find a better way later.
         {
             mGameObjects[i]->mesh->renderObject = false;
@@ -413,7 +413,11 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         //Im not sure how to do it, and i've spent too much time trying to find out.
         //Moving on for now, but this should be done before oblig 3 delivery.
 
-        mCoreEngine->shootBullet(/* bulletDirection vector? */);
+        if(mMainWindow->ammo > 0)
+        {
+            mCoreEngine->shootBullet(/* bulletDirection vector? */);
+            mMainWindow->updateAmmo();
+        }
     }
     else // isplaying == false
     {
@@ -750,6 +754,12 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_O)
     {
     }
+
+    if(event->key() == Qt::Key_R)
+    {
+        mMainWindow-> ammo = 9; // Reload
+        mMainWindow->updateAmmo();
+        mCoreEngine->mReloadGun->play();    }
 }
 
 void RenderWindow::keyReleaseEvent(QKeyEvent *event)

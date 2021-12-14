@@ -35,6 +35,15 @@ void MainWindow::makeObjList(std::vector<GameObject *> mGameObjects)
     }
 }
 
+void MainWindow::updateAmmo()
+{
+    if(ammo > 0)
+    {
+        ammo--;
+    }
+    ui->bulletCount->display(ammo);
+}
+
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
@@ -196,3 +205,4 @@ void MainWindow::on_zPos_valueChanged(double value)
         mCoreEngine->MoveSelectionArrow(pos);
     }
 }
+
