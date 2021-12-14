@@ -81,7 +81,7 @@ void CoreEngine::setUpScene()
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
     player->objName = "Player";
-    //mRenderSystem->mGameObjects.push_back(player);
+
 
     //BOSS
 //    boss = mResourceManager->addObject("suzanne3.obj");
@@ -103,6 +103,7 @@ void CoreEngine::setUpScene()
     skybox->mMaterial->mShaderProgram = 2;
     skybox->mMaterial->mTextureUnit = 1;
     skybox->mTransform->mMatrix.scale(40.f);
+    skybox->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(skybox);
 
     mGameCamera = new Camera();
@@ -119,6 +120,7 @@ void CoreEngine::setUpScene()
     Las->mMaterial->mShaderProgram =3;
     Las->mMaterial->mTextureUnit = 0;
     Las->mTransform->mMatrix.setPosition(3,-5,0);
+    Las->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(Las);
 
     //Connect the gameloop timer to the render function:
@@ -245,6 +247,10 @@ void CoreEngine::updateScene()
 {
 
     updateCamera();
+    if(isPlaying)
+        axis->RenderInPlaymode = false;
+    else
+        axis->RenderInPlaymode = true;
 
     if(spawnBoss)
     {

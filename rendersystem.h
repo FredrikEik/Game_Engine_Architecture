@@ -117,6 +117,9 @@ private:
     GLint mLightStrengt{-1};
     GLint mSpecularStrength{-1};
     GLint mSpecularExponent{-1};
+
+    bool DrawInEditorOnly = false;
+
     void updateDt();
     float dt = 0;
     float curTime = 0;

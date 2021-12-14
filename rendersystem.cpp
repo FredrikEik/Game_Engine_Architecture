@@ -180,7 +180,7 @@ void RenderSystem::render()
 
         //Error når continue
 
-        if(!toogleFrustumDrawing)
+        if(!toogleFrustumDrawing && mGameObjects[i]->useFrustum)
         {
                     if( angle > mFOVangle)
                         continue;   //don't draw object
@@ -248,13 +248,16 @@ void RenderSystem::render()
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
 
+
         //draw the object
         //***Quick hack*** LOD test:
 
         //test for å kun rendre det som er i live
-       // if(mGameObjects[i]->isAlive)
-        //{
-            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+        if(mGameObjects[i]->RenderInPlaymode)
+        {
+
+
+            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //check LOD levels
             {
                 if (length < 8)
                 {
@@ -281,11 +284,13 @@ void RenderSystem::render()
             else    //no LOD exists
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
-        //}
+        }
 
 
 
