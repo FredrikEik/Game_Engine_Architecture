@@ -10,18 +10,7 @@ particle::particle()
 particle::particle(Camera* camera)
 {
     getTransformComponent()->mMatrix.setPosition(5,5,5);
-    getMeshComponent()->mVertices.push_back(Vertex(-0.5f, -0.5f, 0, 0, 0, 0, 0, 0));
-    getMeshComponent()->mVertices.push_back(Vertex(0.5f, -0.5f, 0, 0, 0, 0, 1, 0));
-    getMeshComponent()->mVertices.push_back(Vertex(-0.5f, 0.5f, 0, 0, 0, 0, 0, 1));
-    getMeshComponent()->mVertices.push_back(Vertex(0.5f, 0.5f, 0, 0, 0, 0, 1, 1));
 
-    getMeshComponent()->mIndices.push_back(0);
-    getMeshComponent()->mIndices.push_back(1);
-    getMeshComponent()->mIndices.push_back(2);
-
-    getMeshComponent()->mIndices.push_back(2);
-    getMeshComponent()->mIndices.push_back(1);
-    getMeshComponent()->mIndices.push_back(3);
 
     cameraRef = camera;
 
@@ -57,6 +46,14 @@ void particle::init()
          0.5f,  0.5f, 0.0f, 0.f, 0.f
         };
 
+    getMeshComponent()->mIndices.push_back(0);
+    getMeshComponent()->mIndices.push_back(1);
+    getMeshComponent()->mIndices.push_back(2);
+
+    getMeshComponent()->mIndices.push_back(2);
+    getMeshComponent()->mIndices.push_back(1);
+    getMeshComponent()->mIndices.push_back(3);
+
     glGenVertexArrays(1, &getMeshComponent()->mVAO);
     glBindVertexArray(getMeshComponent()->mVAO);
 
@@ -88,41 +85,29 @@ void particle::init()
     );
     glEnableVertexAttribArray(0);
 
-    // 2nd attribute buffer : vertices
-    glVertexAttribPointer(
-        1,
-        2, // size
-        GL_FLOAT, // type
-        GL_FALSE, // normalized?
-        5 * sizeof(float), // stride
-        (void*)(3*sizeof(float)) // array buffer offset
-    );
-
-    glEnableVertexAttribArray(1);
-
     // 2nd attribute buffer : positions of particles' centers
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glVertexAttribPointer(
-        2,
+        1,
         4, // size : x + y + z + size => 4
         GL_FLOAT, // type
         GL_FALSE, // normalized?
         0, // stride
         (void*)0 // array buffer offset
     );
-    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(1);
 
     // 3rd attribute buffer : particles' colors
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glVertexAttribPointer(
-        3,
+        2,
         4, // size : r + g + b + a => 4
         GL_FLOAT, // type
         GL_TRUE, // normalized? *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
         0, // stride
         (void*)0 // array buffer offset
     );
-    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
@@ -165,6 +150,7 @@ void particle::update(float deltaTime, Camera* camera)
                    break;
                }
                p.lifeSpan-= deltaTime;
+               qDebug() << p.lifeSpan;
                if (p.lifeSpan < 0.f)
                {
                    p.active = false;
@@ -172,8 +158,8 @@ void particle::update(float deltaTime, Camera* camera)
                }
                p.velocity += p.acceleration * deltaTime;
                p.position += p.velocity * deltaTime + p.acceleration * deltaTime * deltaTime;
-               //qDebug() << p.position;
                p.cameraDistance =  sqrt((p.position*p.position) + (cameraPosition*cameraPosition));
+
 
                emitter->positionData[4 * i + 0] = p.position.x + getTransformComponent()->mMatrix.getPosition().x;
                emitter->positionData[4 * i + 1] = p.position.y + getTransformComponent()->mMatrix.getPosition().y;
@@ -184,6 +170,7 @@ void particle::update(float deltaTime, Camera* camera)
                emitter->colorData[4 * i + 1] = p.color.y;
                emitter->colorData[4 * i + 2] = p.color.z;
                emitter->colorData[4 * i + 3] = p.color.w;
+
 
            }
            //auto& p = particleComp->particles[breakIndex-1];
@@ -261,8 +248,9 @@ void particle::spawnParticles(float deltaTime, gsl::Vector3D emitterPosition, gs
         particle.cameraDistance = sqrt((emitter->particleBlueprint.particle.position)*(emitter->particleBlueprint.particle.position)
                                        + (cameraPosition*cameraPosition));
         //qDebug() << cameraPosition;
+        //qDebug() << particle.position;
         //qDebug() << emitter->particleBlueprint.particle.position;
-        qDebug() << particle.cameraDistance;
+        //qDebug() << particle.cameraDistance;
         emitter->lastParticle = index+1;
         emitter->activeParticles = emitter->lastParticle;
     }
@@ -273,9 +261,8 @@ void particle::draw()
 
     glBindVertexArray(getMeshComponent()->mVAO);
     glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-    glVertexAttribDivisor(1, 0); // particles UV : always reuse the same 4 UV -> 0
-    glVertexAttribDivisor(2, 1); // positions : one per quad (its center) -> 1
-    glVertexAttribDivisor(3, 1); // color : one per quad -> 1
+    glVertexAttribDivisor(1, 1); // positions : one per quad (its center) -> 1
+    glVertexAttribDivisor(2, 1); // color : one per quad -> 1
 
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
@@ -284,9 +271,9 @@ void particle::draw()
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter->activeParticles * sizeof(float), emitter->colorData.data());
-
     glDrawElementsInstanced(GL_TRIANGLES, getMeshComponent()->mIndices.size(),
-        GL_UNSIGNED_INT, 0, emitter->activeParticles);
+    GL_UNSIGNED_INT, 0, emitter->activeParticles);
+
 }
 
 void particle::move(float x, float y, float z)
