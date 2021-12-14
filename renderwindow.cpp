@@ -12,6 +12,8 @@
 #include <math.h>
 #include <iostream>
 #include <algorithm>
+#include <gl/GL.h>
+
 
 #include "shader.h"
 #include "mainwindow.h"
@@ -212,6 +214,8 @@ void RenderWindow::init()
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
+
+
 }
 
 void RenderWindow::initObjects()
@@ -241,6 +245,26 @@ void RenderWindow::initObjects()
              hjelpeObjekt = factory->createObject("Cube");
              hjelpeObjekt->mObjectName = "HjelpeObjekt";
              hjelpeObjektMesh = new MeshComponent;
+
+}
+
+void RenderWindow::drawHUD()
+{
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.f,1.f,1.f,0.f,0.f,1.f);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+   factory->createObject("Billboard");
+
+   glMatrixMode(GL_PROJECTION);
+   glPopMatrix();
+   glMatrixMode(GL_MODELVIEW);
+   glPopMatrix();
 
 }
 
@@ -389,6 +413,8 @@ void RenderWindow::render()
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
+
+    drawHUD();
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.

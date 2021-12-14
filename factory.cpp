@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "skybox.h"
 #include "player.h"
+#include "billboard.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -145,6 +146,17 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
+    }
+    else if (objectName == "Billboard")
+    {
+        objectToCreate = new Billboard;
+        if(EXISTS("Billboard"))
+        {
+            objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Billboard"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 1;
+        objectToCreate->mObjectName = "HUD";
     }
     else{return nullptr;}
 
