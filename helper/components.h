@@ -9,10 +9,12 @@
 
 enum objectType {
     helper = 0,
-    prop = 1,
-    player = 2,
-    enemy = 3,
-    skybox = 4
+    skybox = 1,
+    xyz = 2,
+    lightSrc = 3,
+    prop = 4,
+    player = 5,
+    enemy = 6
 };
 
 

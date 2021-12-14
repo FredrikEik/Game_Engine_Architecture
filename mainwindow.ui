@@ -101,7 +101,7 @@
                  <height>382</height>
                 </rect>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,2">
                 <item>
                  <widget class="QLabel" name="label_5">
                   <property name="text">
@@ -110,17 +110,10 @@
                  </widget>
                 </item>
                 <item>
-                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,2,1,2,1,2" columnstretch="0,0,0,0">
+                 <layout class="QGridLayout" name="gridLayout" rowstretch="1,2,1,2" columnstretch="0,0,0,0" rowminimumheight="1,2,1,2">
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
-                   <widget class="QLabel" name="label_4">
-                    <property name="text">
-                     <string>Scale XYZ</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_2">
                     <property name="text">
@@ -148,10 +141,16 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="0">
-                   <widget class="QPushButton" name="ScaleUp">
-                    <property name="text">
-                     <string>Scale +1</string>
+                  <item row="3" column="0">
+                   <widget class="QDoubleSpinBox" name="RotX">
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999999999999455752309870428160.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -194,28 +193,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="2">
-                   <widget class="QPushButton" name="ScaleDown">
-                    <property name="text">
-                     <string>Scale -1</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="3" column="2">
                    <widget class="QDoubleSpinBox" name="RotY">
-                    <property name="decimals">
-                     <number>4</number>
-                    </property>
-                    <property name="minimum">
-                     <double>-9999999999999999455752309870428160.000000000000000</double>
-                    </property>
-                    <property name="maximum">
-                     <double>1000000000000000044885712678075916785549312.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QDoubleSpinBox" name="RotX">
                     <property name="decimals">
                      <number>4</number>
                     </property>
