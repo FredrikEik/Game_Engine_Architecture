@@ -9,26 +9,35 @@
 #include "collisionsystem.h"
 #include "shapefactory.h"
 
+/**
+*MovementSystem - Inneholder funksjoner for å regne ut movement.
+*update -  Sjekker om spiller eller kamera input blir brukt.
+*setCameraSpeed - Setter kameras hastighet
+*movePlayer -
+
+ */
+
 class MovementSystem
 {
 public:
     MovementSystem();
     Input mInput;
-    void CheckActiveInput();
     void update(Camera *mCamera, Player* dPlayer, Input mInput);
     void setCameraSpeed(Camera *mCamera, float value);
     void movePlayer();
     void moveEnemy(int randNum, std::vector<Enemy*> mEnemies);
-    void moveParticles(gsl::Vector3D mColor, std::vector<ParticleSystem*> mParticles);
+    void moveParticles(gsl::Vector3D mColor, Particle* par);
     void moveForward(VisualObject* vo, MovementComponent* m);
     void move(VisualObject* vo, float dx, float dy, float dz);
     void rotateForward(MovementComponent* m);
+    void centerPlayer();
 private:
     void setPlayerForward(float dx, float dz);
 
+    ParticleSystem  *parSys{nullptr};
     CollisionSystem* mColSystem{nullptr};
-    ShapeFactory* mFactory;
-    Player* mPlayer;
+    ShapeFactory* mFactory{nullptr};
+    Player* mPlayer{nullptr};
 };
 
 #endif // MOVEMENTSYSTEM_H

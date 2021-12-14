@@ -100,22 +100,16 @@ void MovementSystem::movePlayer()
 
 
 }
-
-void MovementSystem::moveParticles(gsl::Vector3D mColor, std::vector<ParticleSystem*> mParticles)
+void MovementSystem::moveParticles(gsl::Vector3D color, Particle* par)
 {
-    for(int i{0}; i<static_cast<int>(mParticles.size()); i++){
-
-        mParticles[i]->mVelocity = mColor;
-        mParticles[i]->getVec();
-        if(mParticles[i]->isAlive == true){
-            move(mParticles[i],mParticles[i]->PathDirection.x,mParticles[i]->PathDirection.y,mParticles[i]->PathDirection.z);}
-        else{
-            mParticles[i]->reset(mPlayer);
-        }
-
+    par->mPC->velocity = color;
+    parSys->getVec(par->mPC);
+    if(par->mPC->isAlive == true){
+        move(par, par->mPC->pos.x, par->mPC->pos.y, par->mPC->pos.z);}
+    else{
+        parSys->reset(mPlayer, par, par->mPC);
     }
 }
-
 void MovementSystem::moveEnemy(int randNum, std::vector<Enemy *> mEnemies)
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
@@ -151,4 +145,20 @@ void MovementSystem::moveForward(VisualObject* vo, MovementComponent* m)
     vo->mTransform->mMatrix.setRotationToVector(m->mForward);
     vo->mTransform->mMatrix.scale(vo->mTransform->mScale);
     move(vo, m->mForward.x * m->mSpeed, m->mForward.y * m->mSpeed, m->mForward.z * m->mSpeed);
+}
+
+void MovementSystem::centerPlayer()
+{
+    gsl::Vector3D mPos = mPlayer->mTransform->mPosition;
+    gsl::Vector3D mRound {std::round(mPlayer->mTransform->mPosition.x), 0, std::round(mPlayer->mTransform->mPosition.z)};
+
+    float xDiff = mRound.x - mPos.x;
+    float zDiff = mRound.z - mPos.z;
+    gsl::Vector3D temp(xDiff,0,zDiff);
+
+
+    mPlayer->mTransform->mPosition += temp;
+    mPlayer->mTransform->mMatrix.setPosition(mPlayer->mTransform->mPosition.x, mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
+    mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mPlayer->mCollision);
+    mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mPlayer->mCollision);
 }

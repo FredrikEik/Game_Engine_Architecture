@@ -11,6 +11,12 @@
 #include "gltypes.h"
 #include "visualobject.h"
 
+/**
+*ShapeFactory -  Har/Lager alle mesher til objekter.
+*shapefactory har ressurshåndteringen vår.
+*createShape - Lager new objekter, setter objectname, id, mesh og kollisjon box/sphere.
+*getMesh/Colli - returnerer mesh og collision ID.
+ */
 
 using namespace std;
 
@@ -66,13 +72,7 @@ class Square : public VisualObject
 {
 public:
     Square();
-    ~Square() {}
-    void CheckPlayerCol(VisualObject* p);
-    bool onRwallX{false};
-    bool onLwallX{false};
-    bool onFwallY{false};
-    bool onBwallY{false};
-    void noCol(){onRwallX = false;onLwallX = false;onFwallY = false;onBwallY = false;};
+    ~Square() {};
 };
 
 class Plain : public VisualObject

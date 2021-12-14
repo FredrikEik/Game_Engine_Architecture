@@ -4,17 +4,21 @@
 #include "visualobject.h"
 #include "shapefactory.h"
 
+/**
+*Player - Player som arver fra VisualObject.
+*Lager nødvendige new components som spiller trenger i kontruktør.
+
+ */
+
 class Player : public VisualObject
 {
 public:
     Player(ShapeFactory* f);
     ~Player();
-    void centerPlayer();
     MovementComponent* mMoveComp{nullptr};
 
 
 private:
-    float mx, my, mz; // posisjon
     CollisionSystem* mColSystem{nullptr};
     ShapeFactory* factoryPtr{nullptr};
 

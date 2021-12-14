@@ -4,6 +4,10 @@
 #include "visualobject.h"
 #include "matrix4x4.h"
 
+/**
+Light - Denne klassen holder nødenvige data for lys og konstruksjon av lys.
+ */
+
 class Light : public VisualObject
 {
 public:

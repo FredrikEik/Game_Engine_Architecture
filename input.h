@@ -2,8 +2,8 @@
 #define INPUT_H
 
 /**
-    This struce just defines the keys we want usually want to use
-    You have to set the state of this table manually!
+    *Input - Definerer inputsa våres
+    *vi brukker boolsa i renderwindow og movementsystem
  */
 struct Input
 {

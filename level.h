@@ -9,6 +9,10 @@
 #include "particlesystem.h"
 #include "shapefactory.h"
 
+/**
+   Script - Her lager vi scriptet vårt, dette blir ikke brukt, men i en tidligere versjon av filen så plasserte vi ut trophy med det.
+ */
+
 class Script : public QObject
 {
     //  for å kalle funksjoner fra javascript
@@ -23,6 +27,11 @@ public slots:
     //  en public slot kan kalles fra javascript, uten Q_INVOKABLE
     void scriptFunction(float x, float y, float z);
 };
+
+/**
+Level - Denne klassen lager mappet og holder generelt styr på alt av gameloop, script og nødvendige kolisjonstester.
+ */
+
 class Level : public QObject
 {
 public:
@@ -35,12 +44,12 @@ public:
     void SoundHandler();
     int cointAmount;
     bool wallCheck(int z, int x);
-    void moveEnemy(int randNum);
-    void movePlayer();
-    void moveParticles(gsl::Vector3D mColor);
+    void updateEnemy(int randNum);
+    void updatePlayer();
+    void updateParticles(gsl::Vector3D mColor);
     void resetGame();
     void spawnParticle();
-    void update(Camera* dc, Input di);
+    void update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC);
     void playSound(int SoundID);
 
     Texture *mTexture{nullptr};
@@ -53,7 +62,8 @@ public:
     std::vector<Enemy*> mEnemies;
     std::vector<Circle*> mTrophies;
     std::vector<SoundSource*> mSound;
-    std::vector<ParticleSystem*> mParticles;
+    std::vector<Particle*> mParticles;
+    ParticleSystem *mParticleSystem;
     ShapeFactory mShapeFactory;
     FrustumSystem *mFrustumSystem{nullptr};
     SoundSource *mDeathSound;
@@ -64,7 +74,7 @@ public:
 
 
 
-
+    bool playM = false;
     int trophies{0};
     int mLives{3};
 private:

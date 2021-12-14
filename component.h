@@ -7,6 +7,16 @@
 #include "gltypes.h"
 #include <QOpenGLFunctions_4_1_Core>
 
+/**
+*Component er en klasse som holder de fleste component struct.
+*TransformComponent - Holder nødvendige data for posisjon, matrix og scale til objekter.
+*MeshComponent - Holder nødvendige data for objektenes mesh.
+*MaterialComponent - Holder nødvendige data for objektenes materiale, slik som shader og textur.
+*NameComponent - Holder nødvendige data for objektenes  navn og id
+*MovementComponent - Holder nødvendige data for objektenes og kameras bevegelse.
+ */
+
+
 struct TransformComponent
 {
     gsl::Matrix4x4 mMatrix;
@@ -31,6 +41,7 @@ struct MaterialComponent
 };
 
 struct NameComponent{
+
     int ObjectID = 0;
     std::string ObjectName;
      bool drawMe{true};

@@ -7,6 +7,10 @@
 #include <iomanip>
 #include <QDebug>
 
+/**
+Matrix4x4 - Holder nødvnedige utregninger for matrix4x4
+ */
+
 namespace gsl
 {
 class Matrix2x2;

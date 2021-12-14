@@ -4,9 +4,8 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 /**
-    \brief Simple class for creating textures from a bitmap file.
-    \author Dag Nylund
-    \date 16/02/05
+   Texture - Holder allle nødvendige funksjoner og variabler for texture.
+   Klassen kan bl.a sette texture og skybox til objektene våres.
  */
 class Texture : protected QOpenGLFunctions_4_1_Core
 {

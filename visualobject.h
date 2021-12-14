@@ -5,6 +5,11 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include "collisionsystem.h"
 
+/**
+*VisualObject - Dette er klassen de fleste objekter arver fra.
+*Denne klassen inneholder alle component structene og init slik at alle objekter kan ha samme init.
+ */
+
 class VisualObject : public QOpenGLFunctions_4_1_Core {
 public:
     VisualObject();

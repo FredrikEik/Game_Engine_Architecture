@@ -2,7 +2,11 @@
 #define ENEMY_H
 
 #include "visualobject.h"
+/**
+*Enemy - Ai som arver fra VisualObject.
+*AI'en får nødvendige components som trengs i konstruktør.
 
+ */
 
 class Enemy : public VisualObject
 {

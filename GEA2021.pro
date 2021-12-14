@@ -4,8 +4,10 @@ QT          += core gui widgets qml
 TEMPLATE    = app
 CONFIG      += c++17
 
-INCLUDEPATH += .
-INCLUDEPATH += ./include
+INCLUDEPATH += \
+            ./include \
+            ./gsl \
+            ./OpenAL
 
 PRECOMPILED_HEADER = PCH.h
 
@@ -17,14 +19,20 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    OpenAL/soundmanager.cpp \
+    OpenAL/soundsource.cpp \
+    OpenAL/wavfilehandler.cpp \
     camera.cpp \
     collisionsystem.cpp \
     component.cpp \
     enemy.cpp \
+    gsl/matrix3x3.cpp \
+    gsl/matrix4x4.cpp \
+    gsl/vector2d.cpp \
+    gsl/vector3d.cpp \
+    gsl/vector4d.cpp \
     level.cpp \
     light.cpp \
-    matrix3x3.cpp \
-    matrix4x4.cpp \
     movementsystem.cpp \
     particlesystem.cpp \
     player.cpp \
@@ -32,30 +40,30 @@ SOURCES += main.cpp \
     shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
-    soundmanager.cpp \
-    soundsource.cpp \
     texture.cpp \
-    vector2d.cpp \
-    vector3d.cpp \
-    vector4d.cpp \
     vertex.cpp \
-    visualobject.cpp \
-    wavfilehandler.cpp
+    visualobject.cpp
 
 HEADERS += \
+    OpenAL/soundmanager.h \
+    OpenAL/soundsource.h \
+    OpenAL/wavfilehandler.h \
     PCH.h \
     camera.h \
     collisionsystem.h \
     component.h \
-    constants.h \
     enemy.h \
     gltypes.h \
+    gsl/constants.h \
+    gsl/math_constants.h \
+    gsl/matrix3x3.h \
+    gsl/matrix4x4.h \
+    gsl/vector2d.h \
+    gsl/vector3d.h \
+    gsl/vector4d.h \
     input.h \
     level.h \
     light.h \
-    math_constants.h \
-    matrix3x3.h \
-    matrix4x4.h \
     movementsystem.h \
     particlesystem.h \
     player.h \
@@ -63,16 +71,10 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     shapefactory.h \
-    soundmanager.h \
-    soundsource.h \
     stb_image.h \
     texture.h \
-    vector2d.h \
-    vector3d.h \
-    vector4d.h \
     vertex.h \
-    visualobject.h \
-    wavfilehandler.h
+    visualobject.h
 
 FORMS += \
     mainwindow.ui

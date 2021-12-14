@@ -3,6 +3,10 @@
 
 #include <string>
 
+/**
+Constants - Holder nødvendige strings ig id'er for path og shaders.
+ */
+
 namespace gsl  //Game School Lib
 {
     const std::string ProjectFolderName{"../GEA2021/"};

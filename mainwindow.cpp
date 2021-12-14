@@ -93,11 +93,11 @@ void MainWindow::on_pushButton_toggled(bool checked)
 }
 
 
-void MainWindow::on_pushButton_2_toggled(bool checked)
+void MainWindow::on_PlayButton_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
     if(checked){
-        ui->pushButton_2->setText("Restart");
+        ui->PlayButton->setText("Restart");
     ui->dockWidget_2->hide();
     ui->DetailGroupBox->hide();
     ui->ScaleGroupBox->hide();
@@ -106,7 +106,7 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 
     }
     else{
-        ui->pushButton_2->setText("Play");
+        ui->PlayButton->setText("Play");
         ui->dockWidget_2->show();
         ui->DetailGroupBox->show();
         ui->ScaleGroupBox->show();
@@ -269,6 +269,9 @@ void MainWindow::on_RoatetXM_clicked()
 {
     mRenderWindow->mLvl->mTransformComp[ActiveObject]->mMatrix.rotateX(-5.f);
 }
+
+
+
 
 
 

@@ -5,6 +5,10 @@
 #include "level.h"
 #include "vector4d.h"
 
+/**
+RenderWindow - setter opp shaders, draws, input og alt som skal kjøres/rendre.
+
+ */
 
 class QOpenGLContext;
 class Shader;
@@ -50,7 +54,6 @@ private:
 
 
     static const int nrOfShapes = 5;
-    bool playM = false;
     gsl::Vector3D ray_wor;
 
     void mousePickingRay(QMouseEvent *event);

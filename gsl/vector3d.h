@@ -7,6 +7,10 @@
 #include <QDebug>
 #include <QVector3D>
 
+/**
+Vector2D - Holder nødvendige utregninger for Vector3D
+ */
+
 namespace gsl
 {
 

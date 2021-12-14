@@ -3,29 +3,41 @@
 #include "visualobject.h"
 #include "vector3d.h"
 
-class ParticleSystem : public VisualObject
+/**
+*ParticleComponent - Holder nødvendige data for å regne ut particlenes fart, farge og retning.
+*Particle - Lager new componenter som partikler trenger slik som navn, matriale osv...
+*ParticleSystem - Regner ut nødvendige funksjoner for partikler, bruker paricleComponent sine data.
+ */
+
+struct ParticleComponent
 {
-public:
-    ParticleSystem(ShapeFactory* f,Player *mPlayer);
-    ~ParticleSystem();
-    void update(int frameCount);
-
-    gsl::Vector3D PathDirection{0,0,0};
+    gsl::Vector3D pos{0,0,0};
     gsl::Vector3D direction{0,0,0};
-    gsl::Vector3D mVelocity{0,0,0};
-    gsl::Vector3D mColor{0,0,0};
-
+    gsl::Vector3D velocity{0,0,0};
+    gsl::Vector3D color{1,1,1};
     bool isAlive = true;
-    void getVec();
     int secCount = 0;
-    void reset(Player *mPlayer);
-
-private:
-    CollisionSystem* mColSystem{nullptr};
-    ShapeFactory* factoryPtr{nullptr};
-
 };
 
+class Particle : public VisualObject
+{
+public:
+    Particle(ShapeFactory* f, Player *mPlayer);
+    ~Particle();
+    ParticleComponent* mPC;
+private:
+    CollisionSystem* mColSystem;
+    ShapeFactory* factoryPtr;
+};
 
+class ParticleSystem
+{
+public:
+    ParticleSystem(){};
+    ~ParticleSystem(){};
+    void update(int frameCount, ParticleComponent* p);
+    void getVec(ParticleComponent* p);
+    void reset(Player *mPlayer, Particle* mPart, ParticleComponent* p);
+};
 
 #endif // PARTICLESYSTEM_H

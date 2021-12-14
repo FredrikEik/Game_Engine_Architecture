@@ -1,54 +1,48 @@
 #include "particlesystem.h"
-#include <QElapsedTimer>
 
-ParticleSystem::ParticleSystem(ShapeFactory* f,Player *mPlayer)
+Particle::Particle(ShapeFactory* f,Player *mPlayer)
 {
-
     factoryPtr = f;
+    mPC = new ParticleComponent;
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
     mMesh = factoryPtr->getParticleMesh();
     mCollision = new CollisionComponent;
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
-    mNameComp->ObjectName = "Particles";
+    mNameComp->ObjectName = "Particles_" + to_string(factoryPtr->getCount());
     mNameComp->ObjectID = factoryPtr->getCount();
     factoryPtr->addCount();
-    direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
-
+    mPC->direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
 }
 
-ParticleSystem::~ParticleSystem()
+Particle::~Particle()
 {
     glDeleteVertexArrays( 1, &mMesh->mVAO );
     glDeleteBuffers( 1, &mMesh->mVBO );
 }
 
-void ParticleSystem::update(int frameCount)
+void ParticleSystem::update(int frameCount, ParticleComponent* p)
 {
     if(frameCount == 10 ||frameCount == 20 || frameCount == 30){
-        secCount++;}
+        p->secCount++;}
 
-    if(secCount > 1){
-        isAlive = false;
-        secCount= 0;
+    if(p->secCount > 1){
+        p->isAlive = false;
+        p->secCount= 0;
     }
 }
 
-
-void ParticleSystem::getVec()
+void ParticleSystem::getVec(ParticleComponent* p)
 {
-    PathDirection = {direction.x * mVelocity.x,direction.y * mVelocity.y,direction.z * mVelocity.z};
-    PathDirection = PathDirection*0.5;
+    p->pos = {p->direction.x * p->velocity.x, p->direction.y * p->velocity.y, p->direction.z * p->velocity.z};
+    p->pos = p->pos*0.5;
 }
 
-void ParticleSystem::reset(Player *mPlayer)
+void ParticleSystem::reset(Player *mPlayer, Particle* mPart, ParticleComponent* p)
 {
-    mTransform->mPosition = gsl::Vector3D(mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
-    mTransform->mMatrix.setPosition(mTransform->mPosition.x, mTransform->mPosition.y, mTransform->mPosition.z);
-    direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
-    isAlive = true;
+    mPart->mTransform->mPosition = gsl::Vector3D(mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
+    mPart->mTransform->mMatrix.setPosition(mPart->mTransform->mPosition.x, mPart->mTransform->mPosition.y, mPart->mTransform->mPosition.z);
+    p->direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
+    p->isAlive = true;
 }
-
-
-

@@ -7,6 +7,10 @@
 #include "vector3d.h"
 #include "matrix4x4.h"
 
+/**
+Vector2D - Holder nødvendige utregninger for Vector4D
+ */
+
 namespace gsl
 {
 

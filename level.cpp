@@ -295,9 +295,9 @@ void Level::resetGame()
 
 void Level::spawnParticle()
 {
-    ParticleSystem *mParticle{nullptr};
+    Particle *mParticle{nullptr};
 
-    mParticle = new ParticleSystem(&mShapeFactory, mPlayer);
+    mParticle = new Particle(&mShapeFactory, mPlayer);
     mParticle->init();
     mMoveSys->move(mParticle, mPlayer->mTransform->mPosition.x,mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
     mParticle->mMaterial->mShaderProgram = 0;   //plain shader
@@ -340,31 +340,45 @@ bool Level::wallCheck(int x, int z)
         return false;
 }
 
-void Level::movePlayer()
+void Level::updatePlayer()
 {
     mMoveSys->movePlayer();
     if(wallCheck(mPlayer->mMoveComp->posX, mPlayer->mMoveComp->posZ))
     {
-        mPlayer->centerPlayer();
+        mMoveSys->centerPlayer();
     }
     else
         mMoveSys->moveForward(mPlayer, mPlayer->mMoveComp);
 }
 
-void Level::moveParticles(gsl::Vector3D mColor)
+void Level::updateParticles(gsl::Vector3D mColor)
 {
-    //mShapeFactory.mColor = mColor;
-    mMoveSys->moveParticles(mColor,mParticles);
-    qDebug()<<mColor;
+    mShapeFactory.mColor = mColor;
+    for(auto i{0}; i<mParticles.size(); i++)
+        mMoveSys->moveParticles(mColor, mParticles[i]);
 }
 
-void Level::update(Camera* dc, Input di)
+void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
 {
     mMoveSys->update(dc, mPlayer, di);
+    dc->update();
+    checkCollision();
 
+    if(playM)
+    {
+        updateEnemy(randO);
+        updatePlayer();
+        updateParticles(col);
+        if(mParticles.size()<20)
+            spawnParticle();
+        for(int i{0}; i < mParticles.size(); i++)
+        {
+            mParticleSystem->update(fC, mParticles[i]->mPC);
+        }
+    }
 }
 
-void Level::moveEnemy(int randNum)
+void Level::updateEnemy(int randNum)
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
      mMoveSys->moveEnemy(randNum,mEnemies);

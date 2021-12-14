@@ -3,6 +3,12 @@
 #include "vector3d.h"
 #include <math.h>
 
+/**
+*CollisionComponent holder raw data og funksjoner som setter verdier for collision.
+*setBoundingBox - Setter min og max verdi av boundingbox.
+*setBoundingSphere - Setter radius og posisjon til bounding sphere.
+ */
+
 
 struct CollisionComponent
 {
@@ -15,6 +21,17 @@ struct CollisionComponent
     gsl::Vector3D BoundingBoxMax;
 
 };
+
+
+/**
+*CollisionSystem - holder alle funksjoner for å regne ut collision.
+*moveBoundingBox - Setter min og max verdi av boundingbox.
+*moveBoundingSphere - Setter radius og posisjon til bounding sphere.
+*CheckBoxCol - Sjekker kollisjon mellom box til box.
+*CheckSphOnBoxCol - Sjekker kollisjon mellom sphere til box.
+*CheckSphCol - Sjekker kollisjon mellom sphere til sphere.
+*CheckMousePickCollision - Sjekker kollisjon mellom ray/distance og sphere.
+ */
 
 class CollisionSystem
 {
