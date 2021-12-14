@@ -162,6 +162,7 @@ private:
 
     Text2D* mCurrentScore { nullptr };
     Text2D* mHighScore { nullptr };
+    float mHighScoreCount { 0.f };
 
 
 protected:

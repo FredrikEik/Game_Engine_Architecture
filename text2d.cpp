@@ -21,6 +21,8 @@ Text2D::Text2D(const char * text, int x, int y)
     TransformComp->mMatrix.translateY(-100.f);
     TransformComp->mTrueScaleMatrix.translateX(-100.f);
     TransformComp->mTrueScaleMatrix.translateY(-100.f);
+
+    init();
 }
 
 Text2D::~Text2D()
@@ -123,4 +125,5 @@ void Text2D::updateText(const char * text)
         getMeshComp()->mVertices.push_back(temp);
         getMeshComp()->mIndices.push_back(i);
     }
+    init();
 }

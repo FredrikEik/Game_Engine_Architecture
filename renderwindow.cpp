@@ -11,6 +11,7 @@
 #include <QJSEngine>
 
 #include <iostream>
+#include <stdio.h> // for snprintf
 
 #include "shader.h"
 #include "mainwindow.h"
@@ -226,16 +227,12 @@ void RenderWindow::init()
     //MapSpawner->spawnHindrances(100);
     //MapSpawner->addObjectToEditor(object);
 
-    mCurrentScore = new Text2D("SCORE:", 0, 190);
-    mCurrentScore->init();
+    mCurrentScore = new Text2D("SCORE:0.000", 0, 190);
     ObjFactory->mGameObject.push_back(mCurrentScore);
     mMainWindow->addObjectToWorldList("ScoreCounter");
-    mHighScore = new Text2D("HIGHSCORE:", 0, 180);
+    mHighScore = new Text2D("HIGHSCORE:0.000", 0, 180);
     ObjFactory->mGameObject.push_back(mHighScore);
     mMainWindow->addObjectToWorldList("HighScoreCounter");
-    mHighScore->init();
-
-    mCurrentScore->updateText("Score: 0.0");
 }
 
 // Called each frame - doing the rendering
@@ -278,6 +275,28 @@ void RenderWindow::render()
     skyBox->Update(mCurrentCamera->getPosition());
 
     MapSpawner->update(mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
+
+    char number[6];
+    const char* text = "SCORE:";
+    if (mPlayer->mMesh->TransformComp->mMatrix.getPosition().z == 0.f)
+        snprintf(number, sizeof (number), "%f", 0.f);
+    else
+        snprintf(number, sizeof (number), "%f", -mPlayer->mMesh->TransformComp->mMatrix.getPosition().z);
+    char* buffer = new char[strlen(text) + strlen(number) + 1 + 1];
+    strcpy(buffer, text);
+    strcat(buffer, number);
+    if (-mPlayer->mMesh->TransformComp->mMatrix.getPosition().z > mHighScoreCount)
+    {
+        mHighScoreCount = -mPlayer->mMesh->TransformComp->mMatrix.getPosition().z;
+        const char* text1 = "HIGHSCORE:";
+        char* buffer1 = new char[strlen(text1) + strlen(number) + 1 + 1];
+        strcpy(buffer1, text1);
+        strcat(buffer1, number);
+        mHighScore->updateText(buffer1);
+        delete[] buffer1;
+    }
+    mCurrentScore->updateText(buffer);
+    delete[] buffer;
 
     unsigned int cullSafe;
     if(bPlayGame)
@@ -639,10 +658,6 @@ void RenderWindow::toggleGameMode()
         }
         stopSound();
         mMainWindow->disableWorldObjects(false);
-        if (mHighScore)
-        {
-            mHighScore->updateText("HIGHSCORE: U SUCK");
-        }
     }
     else {
         bPlayGame = true;
