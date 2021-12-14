@@ -7,9 +7,10 @@ CONFIG      += c++17
 INCLUDEPATH += \
             ./include \
             ./gsl \
-            ./OpenAL
+            ./OpenAL \
+            ./helper
 
-PRECOMPILED_HEADER = PCH.h
+PRECOMPILED_HEADER = helper/PCH.h
 
 TARGET      = GEA2021
 
@@ -31,29 +32,27 @@ SOURCES += main.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
     gsl/vector4d.cpp \
+    helper/shader.cpp \
+    helper/texture.cpp \
+    helper/vertex.cpp \
     level.cpp \
     light.cpp \
     movementsystem.cpp \
     particlesystem.cpp \
     player.cpp \
     renderwindow.cpp \
-    shader.cpp \
     mainwindow.cpp \
     shapefactory.cpp \
-    texture.cpp \
-    vertex.cpp \
     visualobject.cpp
 
 HEADERS += \
     OpenAL/soundmanager.h \
     OpenAL/soundsource.h \
     OpenAL/wavfilehandler.h \
-    PCH.h \
     camera.h \
     collisionsystem.h \
     component.h \
     enemy.h \
-    gltypes.h \
     gsl/constants.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
@@ -61,6 +60,12 @@ HEADERS += \
     gsl/vector2d.h \
     gsl/vector3d.h \
     gsl/vector4d.h \
+    helper/gltypes.h \
+    helper/PCH.h \
+    helper/shader.h \
+    helper/stb_image.h \
+    helper/texture.h \
+    helper/vertex.h \
     input.h \
     level.h \
     light.h \
@@ -71,9 +76,6 @@ HEADERS += \
     shader.h \
     mainwindow.h \
     shapefactory.h \
-    stb_image.h \
-    texture.h \
-    vertex.h \
     visualobject.h
 
 FORMS += \
