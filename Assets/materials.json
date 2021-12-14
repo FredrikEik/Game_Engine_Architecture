@@ -51,6 +51,6 @@
             "name": "Skybox5",
             "shader": "skyboxshader",
             "texture": "cubemap5.bmp",
-        },
+        }
   ]
 }

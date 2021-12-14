@@ -267,8 +267,6 @@ void GameObjectManager::setUpAllMaterials()
     mMaterialMap.emplace("Default", 0);
 
     //****************** Read materials from json file **************************
-    //this code have a lot of checking code, so it is long.
-    //probably should be broken up into more functions
 
     QFile loadFile(QString((gsl::AssetFilePath + "materials.json").c_str()));
     if (!loadFile.open(QIODevice::ReadOnly)) {

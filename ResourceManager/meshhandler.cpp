@@ -850,8 +850,6 @@ int MeshHandler::readLasFile()
 }
 qDebug() << "End of normal calculations";
 
-gsl::Vector3D triangleNormal21 = (0.4433220326900482f, 5.360808372497559f, 0.020591527223587036f);
-triangleNormal21.normalize();
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.

@@ -157,7 +157,7 @@ void TextureHandler::setTexture(Texture &textureIn)
 
 int TextureHandler::readCubeMap(const std::string &filename)
 {
-    qDebug() << "readCubeMap is called";
+//    qDebug() << "readCubeMap is called";
     Texture &tempTexture = mTextures.back();
 
     std::string justName;
@@ -173,7 +173,7 @@ int TextureHandler::readCubeMap(const std::string &filename)
         tempTexture.mCubemap[i] = tempTexture.mBitmap;
     }
 
-    qDebug() << "Cubemap:" << QString(filename.c_str()) << "loaded";
+//    qDebug() << "Cubemap:" << QString(filename.c_str()) << "loaded";
 
     setCubemapTexture(tempTexture);
 
@@ -182,9 +182,9 @@ int TextureHandler::readCubeMap(const std::string &filename)
 
 void TextureHandler::setCubemapTexture(Texture &textureIn)
 {
-    qDebug() << "setCubeMapTexture is called";
+//    qDebug() << "setCubeMapTexture is called";
 
-    glActiveTexture(GL_TEXTURE1); //Trying to hardcode which texture to use.
+//    glActiveTexture(GL_TEXTURE1); //Trying to hardcode which texture to use.
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureIn.mGLTextureID);
 

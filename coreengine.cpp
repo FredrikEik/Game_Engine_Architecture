@@ -175,7 +175,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Point Light
-    temp = mGameObjectManager->addObject("EmptyGameObject");
+    temp = mGameObjectManager->addObject("");
     temp->mName = "PointLight";
     temp->mLightComponent = new PointLightComponent;
     temp->mTransform->mMatrix.translate(0.0f, 5.0f, 0.0f);
@@ -204,25 +204,25 @@ void CoreEngine::setUpScene()
     //Skybox
     temp = mGameObjectManager->addObject("CubeInverted.obj");
     temp->mName = "Skybox";
-    temp->mMaterial = mGameObjectManager->getMaterial("skybox"); // Skybox-shader
+    temp->mMaterial = mGameObjectManager->getMaterial("skybox0"); // Skybox-shader
     temp->mTransform->mMatrix.scale(30);
     mRenderSystem->mGameObjects.push_back(temp);
 
 
     //Suzannes:
-    for(int i = 0; i <= 5; i++)
-    {
-        for(int j = 0; j < 2; j++)
-        {
-            temp = mGameObjectManager->addObject("suzanne.obj");
-            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
-            temp->mTransform->mMatrix.scale(0.5f);
-            temp->mMesh->mColliderRadius *= 0.3f;
-            temp->mTransform->mScale.setAlltoSame(0.5f);
-            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
-            mRenderSystem->mGameObjects.push_back(temp);
-        }
-    }
+//    for(int i = 0; i <= 5; i++)
+//    {
+//        for(int j = 0; j < 2; j++)
+//        {
+//            temp = mGameObjectManager->addObject("suzanne.obj");
+//            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
+//            temp->mTransform->mMatrix.scale(0.5f);
+//            temp->mMesh->mColliderRadius *= 0.3f;
+//            temp->mTransform->mScale.setAlltoSame(0.5f);
+//            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
+//            mRenderSystem->mGameObjects.push_back(temp);
+//        }
+//    }
 
 //    temp = mGameObjectManager->addObject("suzanne.obj");
 //    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
