@@ -188,6 +188,12 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
     glGenTextures(1, &textureIn.mGLTextureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureIn.mGLTextureID);
 
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
     if(!textureIn.mAlphaUsed)  //no alpha in this bmp
         for(int i{0}; i< 6; i++)
         {
@@ -202,14 +208,8 @@ void TextureHandler::setCubemapTexture(Texture &textureIn)
                           textureIn.mCubemap[i]); //Pointer to texture in memory
         }
 
-    else    //alpha is present, so we set up an alpha channel
-        qDebug() << "Skybox with alpha probably make no sense";
-
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+//    else    //alpha is present, so we set up an alpha channel
+//        qDebug() << "Skybox with alpha probably make no sense";
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
