@@ -192,6 +192,8 @@ void RenderWindow::init()
     setupSkyboxShader(3);
     setupHdrShader(4);
     postFBO = new PostProcessing();
+    //postFBO->hdr();
+
     //QWindow* test = new QWindow();
 
     //test->FullScreen;
@@ -220,7 +222,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Sounds/videogameland.wav", false, 0.2f);
     mVideoGameLand2 = SoundManager::getInstance()->createSource(
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
+                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 0.2f);
 
     //mVideoGameLand->play();
     //mVideoGameLand2->play();
@@ -292,13 +294,15 @@ void RenderWindow::render()
     //mTestFrustumCamera->draw();
 
     //This should be in a loop! <- Ja vi må loope dette :/
+    postFBO->bindFramebuffer(0, 100,100);
+
     if(factory->mGameObjects.size() > 0)
     {
 
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
 		{	
-            postFBO->bindFramebuffer(0, 1920,1080);
+
 
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
@@ -409,11 +413,10 @@ void RenderWindow::render()
             }
 
                 factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
-            }
-
-            postFBO->unbindCurrentFramebuffer();
+            } 
         }
 
+        //postFBO->unbindCurrentFramebuffer();
 
     }
 

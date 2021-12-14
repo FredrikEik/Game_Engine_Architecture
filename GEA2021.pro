@@ -108,6 +108,10 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/framebuffers.frag \
+    Shaders/framebuffers.vert \
+    Shaders/framebuffers_screen.frag \
+    Shaders/framebuffers_screen.vert \
     Shaders/hdr.frag \
     Shaders/hdr.vert \
     Shaders/skyboxfragment.frag \

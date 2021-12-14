@@ -7,6 +7,7 @@ class PostProcessing : public GameObject
 {
 public:
     PostProcessing();
+    PostProcessing(Shader *shaderProgram[]);
     ~PostProcessing();
 
     void draw() override{0;}
@@ -19,9 +20,19 @@ public:
     void bindFramebuffer(int frameBuffer, int width, int height);
     void unbindCurrentFramebuffer();
     void hdr();
+    void genQuad();
+    unsigned int quadVAO, quadVBO;
+    unsigned int framebuffer;
+    unsigned int texture;
+    unsigned int RBO;
 
     int refractionFramebuffer;
     int refractionTexture;
+
+    //Shader *fboshader;
+    class Shader *fboshader{nullptr};
+    class Shader *screenShader{nullptr};
+    class Shader *framebufferShader{nullptr};
 
     int getRefractionFramebuffer(){return refractionFramebuffer;}
 
