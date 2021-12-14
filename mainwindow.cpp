@@ -7,7 +7,8 @@
 #include <QTreeWidgetItem>
 #include <QStyleFactory>
 
-#include "renderwindow.h"
+#include "rendersystem.h"
+#include "system.h"
 #include <detailswidget.h>
 #include "factory.h"
 
@@ -42,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete mRenderWindow;
+    delete mRenderSystem;
     delete ui;
 }
 
@@ -52,7 +53,7 @@ void MainWindow::init()
 
 
     //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this - sorry!)
-    //you can try other versions, but then have to update RenderWindow and Shader
+    //you can try other versions, but then have to update RenderSystem and Shader
     //to inherit from other than QOpenGLFunctions_4_1_Core
     format.setVersion(4, 1);
     //Using the main profile for OpenGL - no legacy code permitted
@@ -60,8 +61,8 @@ void MainWindow::init()
     //A QSurface can be other types than OpenGL
     format.setRenderableType(QSurfaceFormat::OpenGL);
 
-    //This should activate OpenGL debug Context used in RenderWindow::startOpenGLDebugger().
-    //This line (and the startOpenGLDebugger() and checkForGLerrors() in RenderWindow class)
+    //This should activate OpenGL debug Context used in RenderSystem::startOpenGLDebugger().
+    //This line (and the startOpenGLDebugger() and checkForGLerrors() in RenderSystem class)
     //can be deleted, but it is nice to have some OpenGL debug info!
     format.setOption(QSurfaceFormat::DebugContext);
 
@@ -78,32 +79,34 @@ void MainWindow::init()
     qDebug() << "Requesting surface format: " << format;
 
     //We have a format for the OpenGL window, so let's make it:
-    mRenderWindow = new RenderWindow(format, this);
+    mRenderSystem = new RenderSystem(format, this);
 
-    //Check if renderwindow did initialize, else prints error and quit
-    if (!mRenderWindow->context()) {
+    //Check if RenderSystem did initialize, else prints error and quit
+    if (!mRenderSystem->context()) {
         qDebug() << "Failed to create context. Can not continue. Quits application!";
-        delete mRenderWindow;
+        delete mRenderSystem;
         return;
     }
 
-    //The OpenGL RenderWindow got made, so continuing the setup:
-    //We put the RenderWindow inside a QWidget so we can put in into a
+    //The OpenGL RenderSystem got made, so continuing the setup:
+    //We put the RenderSystem inside a QWidget so we can put in into a
     //layout that is made in the .ui-file
-    mRenderWindowContainer = QWidget::createWindowContainer(mRenderWindow);
+    mRenderSystemContainer = QWidget::createWindowContainer(mRenderSystem);
     //OpenGLLayout is made in the .ui-file!
-    ui->OpenGLLayout->addWidget(mRenderWindowContainer);
+    ui->OpenGLLayout->addWidget(mRenderSystemContainer);
 
     //Set the size of the program in % of the actual screen size
     QSize tempSize = QGuiApplication::primaryScreen()->size();
 
     tempSize.rheight() *= 0.85;
-    tempSize.rwidth() *= 0.65;
+    tempSize.rwidth() *= 0.85;
     resize(tempSize);
 
-    //sets the keyboard input focus to the RenderWindow when program starts
-    // - can be deleted, but then you have to click inside the renderwindow to get the focus
-    mRenderWindowContainer->setFocus();
+    mSystem = new System(this, mRenderSystem);
+
+    //sets the keyboard input focus to the RenderSystem when program starts
+    // - can be deleted, but then you have to click inside the RenderSystem to get the focus
+    mRenderSystemContainer->setFocus();
     ui->createDropDownBox->addItem("Cube");
     ui->createDropDownBox->addItem("Plane");
     ui->createDropDownBox->addItem("Triangle");
@@ -119,7 +122,7 @@ void MainWindow::init()
 //Example of a slot called from the button on the top of the program.
 void MainWindow::on_pushButton_toggled(bool checked)
 {
-    mRenderWindow->toggleWireframe(checked);
+    mRenderSystem->toggleWireframe(checked);
 }
 
 
@@ -131,7 +134,7 @@ void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
 
 void MainWindow::on_CreateObject_clicked()
 {
-    mRenderWindow->createObjectbutton(itemToSpawn);
+    mRenderSystem->createObjectbutton(itemToSpawn);
 }
 
 void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
@@ -141,7 +144,7 @@ void MainWindow::updateOutliner(std::vector<GameObject *> &GameObjectData)
 
     // Create the new tree root - since I use TreeWidget not listWidget
     mSceneOutlinerRoot = new QTreeWidgetItem(ui->outliner);
-    mSceneOutlinerRoot->setText(0,  "Scene");//QString::fromStdString(mRenderWindow->mScene1->mSceneName));
+    mSceneOutlinerRoot->setText(0,  "Scene");//QString::fromStdString(mRenderSystem->mScene1->mSceneName));
     ui->outliner->addTopLevelItem(mSceneOutlinerRoot);
     ui->outliner->expandAll();
 
@@ -188,7 +191,7 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
     //Top node selected or no selection:
     if (!item || item->text(0) == "Scene") //mRenderSystem->mScene1->mSceneName.c_str())
     {
-        mRenderWindow->cancelPickedObject();
+        mRenderSystem->cancelPickedObject();
         ui->gobNameEdit->setText("no selection");
         mCurrentEditItem = nullptr;
         return;
@@ -207,12 +210,12 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
  //    qDebug() <<"Index" << mCurrentEditItemIndex;
 
     //tell RenderSystem to highlight selected object
-    mRenderWindow->setPickedObject(mCurrentEditItemIndex);
+    mRenderSystem->setPickedObject(mCurrentEditItemIndex);
 
     //Transform widget:
        mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
        mDetailsWidget->setObjectName("DetailsWidget"); //not sure if this is necessary
-       mDetailsWidget->init(mRenderWindow->getFactory(), mCurrentEditItemIndex);
+       mDetailsWidget->init(mSystem, mCurrentEditItemIndex);
        ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
 }
 
@@ -221,34 +224,30 @@ void MainWindow::on_PlayPause_clicked(bool checked)
     if(checked)
     {
         ui->PlayPause->setText("Editor Mode(TAB)");
-        mRenderWindow->editorMode = true;
-        mRenderWindow->bPause = false;
     }
     else if (!checked)
     {
         ui->PlayPause->setText("Playing (TAB)");
-        mRenderWindow->editorMode = false;
-        mRenderWindow->bPause = true;
     }
 
-    mRenderWindow->playPausebutton(format);
+    mRenderSystem->playPausebutton(format);
 
 }
 
 void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
 {
-    mRenderWindow->toggleFrustumCulling = checked;
+    mRenderSystem->toggleFrustumCulling = checked;
 }
 
 void MainWindow::on_SaveLevel_clicked()
 {
-    mRenderWindow->saveLevel();
+    mSystem->saveLevel();
     qDebug() << "Saving current level";
 }
 
 
 void MainWindow::on_LoadLevel_clicked()
 {
-    mRenderWindow->loadLevel();
+    mSystem->loadLevel();
 }
 

@@ -2,7 +2,7 @@
 
 #include "light.h"
 #include "components.h"
-#include "renderwindow.h"
+#include "rendersystem.h"
 
 Light::Light()
 {

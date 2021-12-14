@@ -106,7 +106,6 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "Camera")
     {
         objectToCreate = new Camera(45, 4/3);
-        objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         cameracounter++;
@@ -116,7 +115,6 @@ GameObject* Factory::createObject(std::string objectName)
     else if(objectName == "Skybox")
     {
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
-        //objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
 
@@ -163,7 +161,7 @@ GameObject* Factory::createObject(std::string objectName)
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
     mAvailableIDs.pop();                        //Pop ID from queue of available IDs
 
-    mGameObjects.push_back(objectToCreate);
+    //mGameObjects.push_back(objectToCreate);
     return objectToCreate;
 }
 

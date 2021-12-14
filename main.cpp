@@ -7,6 +7,7 @@
 #include <QDebug>       //Using qDebug
 #include <QFile>        //Reading from file
 #include <QJSEngine>
+#include "system.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +24,7 @@ int main(int argc, char *argv[])
     splash.raise();
     splash.showMessage("Loading...");
     QCoreApplication::processEvents();
+
 
     QJSEngine jsEngine;
 

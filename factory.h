@@ -13,8 +13,6 @@ class Factory
 {
 public:
     Factory();
-    std::vector<GameObject*> mGameObjects;
-
     int cubecounter=0;
     int mariocounter=0;
     int trianglecounter=0;
@@ -32,6 +30,7 @@ public:
     void openLevel(Level level);
     MeshComponent* getMeshFromMap(std::string name) {return storedMeshes[name];}
 private:
+
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
 
 

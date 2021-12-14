@@ -5,10 +5,10 @@
 #include "gameobject.h"
 
 class QWidget;
-class RenderWindow;
+class RenderSystem;
 class QTreeWidgetItem;
 class GameObject;
-class Factory;
+class System;
 
 
 namespace Ui {
@@ -59,8 +59,9 @@ private:
 
     void clearLayout(QLayout *layout);
 
-    QWidget *mRenderWindowContainer;
-    RenderWindow *mRenderWindow;
+    QWidget *mRenderSystemContainer;
+    RenderSystem *mRenderSystem;
+    System* mSystem;
     QTreeWidgetItem *mCurrentEditItem{nullptr};
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
 
