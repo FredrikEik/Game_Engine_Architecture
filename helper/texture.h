@@ -24,7 +24,7 @@ public:
     ///If this is a cubemap, this will be an array of 6 mBitmaps
     unsigned char *mCubemap[6]{nullptr};
 
-    GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called
+    GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called.
 
 private:
     int mBytesPrPixel{};

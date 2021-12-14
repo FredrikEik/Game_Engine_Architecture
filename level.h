@@ -15,7 +15,7 @@
 
 class Script : public QObject
 {
-    //  for å kalle funksjoner fra javascript
+    //  for å kalle funksjoner fra javascript.
     Q_OBJECT
 public:
     Script(QObject *parent = nullptr);

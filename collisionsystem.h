@@ -6,7 +6,7 @@
 /**
 *CollisionComponent holder raw data og funksjoner som setter verdier for collision.
 *setBoundingBox - Setter min og max verdi av boundingbox.
-*setBoundingSphere - Setter radius og posisjon til bounding sphere.
+*setBoundingSphere - Setter radius og posisjon til bounding sphere..
  */
 
 

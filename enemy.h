@@ -4,7 +4,7 @@
 #include "visualobject.h"
 /**
 *Enemy - Ai som arver fra VisualObject.
-*AI'en får nødvendige components som trengs i konstruktør.
+*AI'en får nødvendige components som trengs i konstruktør..
 
  */
 

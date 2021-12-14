@@ -36,7 +36,7 @@ void MovementSystem::update(Camera *mCamera, Player* dPlayer, Input mInput)
             setPlayerForward(1, 0);
         if(mInput.A == true)
             setPlayerForward(-1, 0);
-       }
+    }
 }
 
 void MovementSystem::move(VisualObject* vo, float dx, float dy, float dz)
@@ -81,25 +81,7 @@ void MovementSystem::setCameraSpeed(Camera *mCamera,float value)
 
 }
 
-void MovementSystem::movePlayer()
-{
-    mPlayer->mMoveComp->posX={static_cast<int>(mPlayer->mTransform->mPosition.x)};
-     mPlayer->mMoveComp->posZ={static_cast<int>(mPlayer->mTransform->mPosition.z)};
 
-     if(mPlayer->mMoveComp->mForward.x > 0)
-         mPlayer->mMoveComp->posX = std::ceil(mPlayer->mTransform->mPosition.x);
-     else if(mPlayer->mMoveComp->mForward.x <0)
-         mPlayer->mMoveComp->posX = std::floor(mPlayer->mTransform->mPosition.x);
-     else{
-         if(mPlayer->mMoveComp->mForward.z >0)
-             mPlayer->mMoveComp->posZ = std::ceil(mPlayer->mTransform->mPosition.z);
-         else if(mPlayer->mMoveComp->mForward.z <0)
-            mPlayer->mMoveComp->posZ = std::floor(mPlayer->mTransform->mPosition.z);
-         else
-             qDebug() << "error in MovementSystem::movePlayer";}
-
-
-}
 void MovementSystem::moveParticles(gsl::Vector3D color, Particle* par)
 {
     par->mPC->velocity = color;
@@ -110,26 +92,24 @@ void MovementSystem::moveParticles(gsl::Vector3D color, Particle* par)
         parSys->reset(mPlayer, par, par->mPC);
     }
 }
-void MovementSystem::moveEnemy(int randNum, std::vector<Enemy *> mEnemies)
+void MovementSystem::moveUnit(VisualObject* vo, MovementComponent *moveC)
 {
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        mEnemies[i]->mMoveComp->posX = {static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
-        mEnemies[i]->mMoveComp->posZ = {static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
+    moveC->posX = {static_cast<int>(vo->mTransform->mPosition.x)};
+    moveC->posZ = {static_cast<int>(vo->mTransform->mPosition.z)};
 
-        if(mEnemies[i]->mMoveComp->mForward.x > 0)
-            mEnemies[i]->mMoveComp->posX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
-        else if(mEnemies[i]->mMoveComp->mForward.x <0)
-            mEnemies[i]->mMoveComp->posX = std::floor(mEnemies[i]->mTransform->mPosition.x);
-        else{
-            if(mEnemies[i]->mMoveComp->mForward.z >0)
-                mEnemies[i]->mMoveComp->posZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
-            else if(mEnemies[i]->mMoveComp->mForward.z <0)
-                mEnemies[i]->mMoveComp->posZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
-            else
-                qDebug() << "error in MovementSystem::moveEnemy";}
+    if(moveC->mForward.x > 0)
+        moveC->posX = std::ceil( vo->mTransform->mPosition.x);
+    else if(moveC->mForward.x <0)
+        moveC->posX = std::floor(vo->mTransform->mPosition.x);
+    else{
+        if(moveC->mForward.z >0)
+            moveC->posZ = std::ceil(vo->mTransform->mPosition.z);
+        else if(moveC->mForward.z <0)
+            moveC->posZ = std::floor(vo->mTransform->mPosition.z);
+        else
+            qDebug() << "error in MovementSystem::moveEnemy";}
 
 
-    }
 }
 
 

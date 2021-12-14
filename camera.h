@@ -9,7 +9,7 @@ FrustumComponent holder raw data som blir brukt for å kalkulere frustum.
 *mFOV - Field of view velger vinkel til hvorstort området vi vil se.
 *mAspectratio - Aspectratio velger sideforhold.
 *mFarPlaneDistance - FarPlaneDistance velger hvor langt unna Farplane skal være.
-*mNearPlaneDistance - NearPlaneDistance velger hvor nærme NearPlane skal være.
+*mNearPlaneDistance - NearPlaneDistance velger hvor nærme NearPlane skal være..
  */
 
 struct FrustumComponent

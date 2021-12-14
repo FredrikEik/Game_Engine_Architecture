@@ -13,7 +13,13 @@
 *MovementSystem - Inneholder funksjoner for å regne ut movement.
 *update -  Sjekker om spiller eller kamera input blir brukt.
 *setCameraSpeed - Setter kameras hastighet
-*movePlayer -
+*movePlayer - Beveger
+*moveEnemy -
+*moveForward -
+*move -
+*centerPlayer -
+*moveParticles -
+*setPlayerForward -
 
  */
 
@@ -24,8 +30,7 @@ public:
     Input mInput;
     void update(Camera *mCamera, Player* dPlayer, Input mInput);
     void setCameraSpeed(Camera *mCamera, float value);
-    void movePlayer();
-    void moveEnemy(int randNum, std::vector<Enemy*> mEnemies);
+    void moveUnit(VisualObject* vo, MovementComponent *moveC);
     void moveParticles(gsl::Vector3D mColor, Particle* par);
     void moveForward(VisualObject* vo, MovementComponent* m);
     void move(VisualObject* vo, float dx, float dy, float dz);

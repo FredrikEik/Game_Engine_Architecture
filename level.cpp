@@ -341,7 +341,7 @@ bool Level::wallCheck(int x, int z)
 
 void Level::updatePlayer()
 {
-    mMoveSys->movePlayer();
+    mMoveSys->moveUnit(mPlayer, mPlayer->mMoveComp);
     if(wallCheck(mPlayer->mMoveComp->posX, mPlayer->mMoveComp->posZ))
     {
         mMoveSys->centerPlayer();
@@ -380,7 +380,7 @@ void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
 void Level::updateEnemy(int randNum)
 {
     for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-     mMoveSys->moveEnemy(randNum,mEnemies);
+     mMoveSys->moveUnit(mEnemies[i], mEnemies[i]->mMoveComp);
      if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
      {
          if(randNum<5){

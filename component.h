@@ -13,7 +13,7 @@
 *MeshComponent - Holder nødvendige data for objektenes mesh.
 *MaterialComponent - Holder nødvendige data for objektenes materiale, slik som shader og textur.
 *NameComponent - Holder nødvendige data for objektenes  navn og id
-*MovementComponent - Holder nødvendige data for objektenes og kameras bevegelse.
+*MovementComponent - Holder nødvendige data for objektenes og kameras bevegelse..
  */
 
 

@@ -21,7 +21,7 @@ public:
     ~Vertex();
 
     gsl::Vector3D getXYZ();
-    //! Overloaded ostream operator which writes all vertex data on an open textfile stream
+    //! Overloaded ostream operator which writes all vertex data on an open textfile stream.
     friend std::ostream& operator<< (std::ostream&, const Vertex&);
 
     //! Overloaded ostream operator which reads all vertex data from an open textfile stream

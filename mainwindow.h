@@ -18,7 +18,7 @@
 *on_treeWidget_viewportEntered - Setter inn alle navn til objektene
 *RotateX/Y/ZP - Knapp som roterer objektene med +5 grader
 *RotateX/Y/ZM - Knapp som roterer objektene med -5 grader
-*on_ScaleP/M - Skalerer objektene med enten 1.5 eller 0.5;
+*on_ScaleP/M - Skalerer objektene med enten 1.5 eller 0.5;.
 
 
 
