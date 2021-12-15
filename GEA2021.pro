@@ -41,6 +41,7 @@ SOURCES += main.cpp \
     light.cpp \
     mariocube.cpp \
     objreader.cpp \
+    particle.cpp \
     plane.cpp \
     player.cpp \
     quadtree.cpp \
@@ -81,6 +82,7 @@ HEADERS += \
     light.h \
     mariocube.h \
     objreader.h \
+    particle.h \
     plane.h \
     player.h \
     quadtree.h \
@@ -106,6 +108,8 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
+    Shaders/particle.frag \
+    Shaders/particle.vert \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \

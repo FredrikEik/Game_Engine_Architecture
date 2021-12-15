@@ -60,8 +60,6 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     nearPlaneNormal.normalize();
     farPlaneNormal.normalize();
 
-//    qDebug() << " Normal x: " << rightPlaneNormal.x << " Normal y: " << rightPlaneNormal.y << " Normal z: "<< rightPlaneNormal.z;
-
     //Nearplane right triangle
     getMeshComponent()->mVertices.push_back(Vertex{0.0f, 0.0f,  -0.5f,                       0.0f, 1.0f, 0.0f,    0.0f, 0.0f});
     getMeshComponent()->mVertices.push_back(Vertex{nearplaneX, -nearplaneY, -nearplaneZ,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f});
@@ -127,8 +125,6 @@ Camera::Camera(float fieldOfView, float aspectRatio)
     getMeshComponent()->mVertices.push_back(Vertex{-farplaneX, farplaneY, -farplaneZ,       1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
     getMeshComponent()->mVertices.push_back(Vertex{farplaneX, farplaneY, -farplaneZ,        1.0f, 0.0f, 0.0f,    0.0f, 1.0f});
 
-//    qDebug() << rightPlaneNormal;
-
     updateForwardVector();
     updateFrustumPos(FOV, aRatio);
 
@@ -154,7 +150,6 @@ void Camera::updateRightVector()
 {
     mRight = mForward^mUp;
     mRight.normalize();
-//    qDebug() << "Right " << mRight;
 }
 
 void Camera::updateForwardVector()
@@ -218,24 +213,9 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     //Update frustum
     frustumComp->mMatrix.setToIdentity();
 
-    //frustumComp->mMatrix.rotateY(mYaw);
-
     frustumComp->mMatrix.translate(mPosition);
 
     frustumComp->mMatrix.setRotation(mPitch, -mYaw, 0);
-    //qDebug() << mYaw;
-    //qDebug() << "FrustumRotation: ";
-    //qDebug() << frustumComp->mMatrix.getRotation();
-
-/*    farplaneX  = farplaneX  + frustumComp->mMatrix.getPosition().x;
-    farplaneY  = farplaneY  + frustumComp->mMatrix.getPosition().y;
-    farplaneZ  = farplaneZ  + frustumComp->mMatrix.getPosition().z;
-    nearplaneX = nearplaneX + frustumComp->mMatrix.getPosition().x;
-    nearplaneY = nearplaneY + frustumComp->mMatrix.getPosition().y;
-    nearplaneZ = nearplaneZ + frustumComp->mMatrix.getPosition().z;
-*/
-    //qDebug() << "Farplanes: " << farplaneX << ", " << farplaneY << ", " << farplaneZ;
-    //qDebug() << "Nearplanes: " << nearplaneX << ", " << nearplaneY << ", " << nearplaneZ;
 
     gsl::Matrix3x3 temp = frustumComp->mMatrix.toMatrix3();
 
@@ -271,56 +251,12 @@ void Camera::updateFrustumPos(float fieldOfView, float aspectRatio)
     nearPlaneNormal = temp*nearPlaneNormal;
     farPlaneNormal = temp*farPlaneNormal;
 
-/*
-    float halfVheight = frustumComp->farPlaneLength * tanf(gsl::deg2rad(fieldOfView)); //calculate the lenght of the opposite
-    float halfHwidth = halfVheight * (aspectRatio);
-
-    float horisontalHalfAngle = abs(gsl::rad2degf(atan2f(halfHwidth, frustumComp->farPlaneLength)));
-
-    gsl::Vector3D tempVector;
-    //rightplane vector = mRight rotated by FOV around camera up
-    tempVector = mRight;
-    tempVector.axisAngleRotation(-horisontalHalfAngle, mUp);
-    rightPlaneNormal = tempVector.normalized();
-
-    //leftPlane vector = mRight rotated by FOV+180 around camera up
-    tempVector = mRight;
-    tempVector.axisAngleRotation(horisontalHalfAngle - 180, mUp);
-    leftPlaneNormal = tempVector.normalized();
-
-*/
     rightPlaneNormal.normalize();
     leftPlaneNormal.normalize();
     topPlaneNormal.normalize();
     bottomPlaneNormal.normalize();
     nearPlaneNormal.normalize();
     farPlaneNormal.normalize();
-
-
-/*
-    qDebug() << "RightplaneNormal: ";
-    qDebug() << rightPlaneNormal;
-    qDebug() << "LeftplaneNormal: ";
-    qDebug() << leftPlaneNormal;
-
-
-    qDebug() << "rightPlaneNormal: " << rightPlaneNormal;
-    qDebug() << "leftPlaneNormal: " << leftPlaneNormal;
-
-    qDebug() << "topPlaneNormal: " << topPlaneNormal;
-    qDebug() << "bottomPlaneNormal: " << bottomPlaneNormal;
-
-    qDebug() << "nearPlaneNormal: " << nearPlaneNormal;
-    qDebug() << "farPlaneNormal: " << farPlaneNormal;
-
-    qDebug() << "Camera position: ";
-    qDebug() << mPosition;
-    qDebug() << "Frustum position: ";
-    qDebug() << frustumComp->mMatrix.getPosition();
-    qDebug() << "Rotation: ";
-    qDebug() << frustumComp->mMatrix.getRotation();
-
-*/
 
 }
 
@@ -353,11 +289,6 @@ gsl::Vector3D Camera::up() const
 void Camera::init(/*GLint matrixUniform[4]*/)
 {
     initializeOpenGLFunctions();
-
-       // Set what shader you want to use to render this object
-       //mMaterial->setActiveShader(ShaderType::TEXTURE_SHADER);
-       //mMaterial->setActiveTextureSlot(2);
-       //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
        glGenVertexArrays( 1, &getMeshComponent()->mVAO );
        glBindVertexArray( getMeshComponent()->mVAO );
@@ -399,7 +330,6 @@ void Camera::draw()
 
 void Camera::move(float x, float y, float z)
 {
-    //dsgetTransformComponent()->mMatrix.translate(x,y,z);
-    //getFrustumComponent()->mMatrix.translate(x,y,z);
+
 }
 

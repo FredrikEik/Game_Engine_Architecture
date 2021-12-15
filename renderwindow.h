@@ -14,6 +14,7 @@
 #include "soundmanager.h"
 #include "quadtree.h"
 #include "light.h"
+#include "particle.h"
 #include "player.h"
 
 class QOpenGLContext;
@@ -73,6 +74,7 @@ public:
 
 
 
+
 private slots:
     void render();
 
@@ -103,6 +105,7 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
+    void setupParticleShader(int shaderIndex);
 
     void generateShadowDepthMap();
 
@@ -151,6 +154,7 @@ private:
 
 
     GameObject* mPlayer;
+    particle* mParticles;
     InputComponent mInput;
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;

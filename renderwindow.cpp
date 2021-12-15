@@ -162,7 +162,7 @@ void RenderWindow::init()
     */
     mCurrentCamera = new Camera(90, 4/3);
     mCurrentCamera->init();
-    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+    mCurrentCamera->setPosition(gsl::Vector3D(0.f, 5.f, 0.f));
 
     //Compile shaders:
         //NB: hardcoded path to files! You have to change this if you change directories for the project.
@@ -180,12 +180,16 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
+    mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "particle.vert").c_str(),
+                                     (gsl::ShaderFilePath + "particle.frag").c_str());
+                                      qDebug() << "Particle shader program id: " << mShaderPrograms[4]->getProgram();
 
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
+    setupParticleShader(4);
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -244,13 +248,15 @@ void RenderWindow::initObjects()
     }
 
     */
-    mPlayer = factory->createObject("Player");
-    mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-    mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-    dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
-    mMainWindow->updateOutliner(factory->mGameObjects);
-    lightRef = static_cast<Light*>(factory->createObject("Light"));
 
+			mPlayer = factory->createObject("Player");
+			mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+			mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+			dynamic_cast<Player*>(mPlayer)->setSurfaceToWalkOn(surface);
+		    mMainWindow->updateOutliner(factory->mGameObjects);
+			lightRef = static_cast<Light*>(factory->createObject("Light"));
+            mParticles = new particle(mCurrentCamera);
+            mParticles->init();
 
     hjelpeObjekt = factory->createObject("Cube");
 
@@ -367,6 +373,11 @@ void RenderWindow::render()
 
                 factory->mGameObjects[i]->draw();
             }
+            glUseProgram(mShaderPrograms[4]->getProgram());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderPrograms[4]->getProgram(), "vMatrix"), 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderPrograms[4]->getProgram(), "pMatrix"), 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
+
+            mParticles->update(0.16, mCurrentCamera);
 
             if (i==mIndexToPickedObject) {
 
@@ -465,6 +476,13 @@ void RenderWindow::setupLightShader(int shaderIndex)
     mLinearUniform               = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "linear" );
     mQuadraticUniform            = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "quadratic" );
     mPhongTextureUniform         = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+}
+void RenderWindow::setupParticleShader(int shaderIndex)
+
+{
+    mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+    vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+    pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
 //This function is called from Qt when window is exposed (shown)
