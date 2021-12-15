@@ -9,7 +9,7 @@ particle::particle()
 
 particle::particle(Camera* camera)
 {
-    getTransformComponent()->mMatrix.setPosition(1,1,1);
+    getTransformComponent()->mMatrix.setPosition(0,0,0);
     cameraRef = camera;
 
 }
@@ -19,8 +19,6 @@ particle::~particle()
 
 }
 
-
-
 void particle::init()
 {
     //Setter opp shaderprogram
@@ -29,10 +27,11 @@ void particle::init()
 
     //Initializer emitteren
     emitter->maxParticles = 100000;
-    emitter->spawnRate = 3;
+    emitter->spawnRate = 30;
     emitter->particles.reserve(emitter->maxParticles);
     emitter->positionData = std::vector<float>(maxParticles * 4, 0.f);
-    emitter->colorData = std::vector<float>(maxParticles * 4, 0.f);
+    emitter->colorData = std::vector<float>(maxParticles * 8, 0.f);
+    emitter->lifeSizeData = std::vector<float>(maxParticles * 4, 0.f);
 
     for (int i{}; i < maxParticles; ++i)
     {
@@ -72,13 +71,19 @@ void particle::init()
 
     glGenBuffers(1, &emitter->colorBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, maxParticles * 8 * sizeof(float),
+        NULL, GL_STREAM_DRAW);
+
+    glGenBuffers(1, &emitter->lifeSizeBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeSizeBuffer);
     glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float),
         NULL, GL_STREAM_DRAW);
 
 
+
     //Binder buffere til shaderen
 
-    // 1rst attribute buffer : positions of particles' centers
+    // 1st attribute buffer : positions of particles' centers
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glVertexAttribPointer(
         0,
@@ -90,7 +95,7 @@ void particle::init()
     );
     glEnableVertexAttribArray(0);
 
-    // 2nd attribute buffer : particles' colors
+    // 2nd attribute buffer : particles' startColors
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
     glVertexAttribPointer(
         1,
@@ -114,12 +119,50 @@ void particle::init()
     );
     glEnableVertexAttribArray(2);
 
+    // 4th attribute buffer : lifeAttr
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeSizeBuffer);
+    glVertexAttribPointer(
+        3,
+        2, // size : r + g + b + a => 4
+        GL_FLOAT, // type
+        GL_TRUE, // normalized?
+        sizeof(float) * 4, // stride. 8 floats for color start and color end
+        (void*)0 // array buffer offset
+    );
+    glEnableVertexAttribArray(3);
+
+    // 5th attribute buffer : particles' size
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeSizeBuffer);
+    glVertexAttribPointer(
+        4,
+        2, // size : start size, end size
+        GL_FLOAT, // type
+        GL_FALSE, // normalized?
+        4 * sizeof(float), // stride 4 floats. Life start - end and size start - end
+        (void*)(2 * sizeof(float)) // array buffer offset
+    );
+    glEnableVertexAttribArray(4);
+
+    // 6th attribute buffer : particles' end colors
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
+    glVertexAttribPointer(
+        5,
+        4, // size : r + g + b + a => 4
+        GL_FLOAT, // type
+        GL_TRUE, // normalized?
+        sizeof(float) * 8, // stride. 8 floats for color start and color end
+        (void*)(4 * sizeof(float)) // array buffer offset
+    );
+    glEnableVertexAttribArray(5);
+
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
     glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 8, NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
 
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeSizeBuffer);
+    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * sizeof(float) * 4, NULL, GL_STREAM_DRAW);
 
     glGenBuffers(1, &getMeshComponent()->mEAB);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, getMeshComponent()->mEAB);
@@ -158,8 +201,8 @@ void particle::update(float deltaTime, Camera* camera)
                    break;
                }
                else{
-               p.lifeSpan-= deltaTime;
-               if (p.lifeSpan <= 0.f)
+               p.lifeLeft-= deltaTime;
+               if (p.lifeLeft <= 0.f)
                {
                    p.active = false;
                    p.cameraDistance = (-100000.f);
@@ -169,7 +212,7 @@ void particle::update(float deltaTime, Camera* camera)
                p.position += p.velocity * deltaTime + p.acceleration * deltaTime * deltaTime;
                p.cameraDistance =  sqrt(((getTransformComponent()->mMatrix.getPosition()+p.position)
                                         *(getTransformComponent()->mMatrix.getPosition()+p.position))
-                                        + (cameraPosition*cameraPosition));
+                                        +(cameraPosition*cameraPosition));
 
 
 
@@ -177,16 +220,26 @@ void particle::update(float deltaTime, Camera* camera)
                emitter->positionData[4 * i + 0] = getTransformComponent()->mMatrix.getPosition().x + p.position.x;
                emitter->positionData[4 * i + 1] = getTransformComponent()->mMatrix.getPosition().y + p.position.y;
                emitter->positionData[4 * i + 2] = getTransformComponent()->mMatrix.getPosition().z + p.position.z;
-               emitter->positionData[4 * i + 3] = p.size;
 
                //Sett inn farge til rendering
-               emitter->colorData[4 * i + 0] = p.color.x;
-               emitter->colorData[4 * i + 1] = p.color.y;
-               emitter->colorData[4 * i + 2] = p.color.z;
-               emitter->colorData[4 * i + 3] = p.color.w;
+               emitter->colorData[8 * i + 0] = p.startColor.x;
+               emitter->colorData[8 * i + 1] = p.startColor.y;
+               emitter->colorData[8 * i + 2] = p.startColor.z;
+               emitter->colorData[8 * i + 3] = p.startColor.w;
+
+               emitter->colorData[8 * i + 4] = p.startColor.x;
+               emitter->colorData[8 * i + 5] = p.startColor.y;
+               emitter->colorData[8 * i + 6] = p.startColor.z;
+               emitter->colorData[8 * i + 7] = p.startColor.w;
+
+
+               emitter->lifeSizeData[4 * i + 0] = p.lifeLeft;
+               emitter->lifeSizeData[4 * i + 1] = p.lifeSpan;
+
+               emitter->lifeSizeData[4 * i + 2] = p.startSize;
+               emitter->lifeSizeData[4 * i + 3] = p.endSize;
 
                }
-
 
            }
            //auto& p = particleComp->particles[breakIndex-1];
@@ -222,17 +275,28 @@ void particle::spawnParticles(float deltaTime, gsl::Vector3D emitterPosition, gs
 
         particle = bp.particle;
         particle.active = true;
-        particle.lifeSpan = 0;
         particle.lifeSpan += randf(bp.lifeMinOffset, bp.lifeMaxOffset);
-        particle.size = 0;
+        particle.lifeLeft = particle.lifeSpan;
+
         float sizeOffset{ randf(bp.sizeMinOffset, bp.sizeMaxOffset) };
-        particle.size += sizeOffset;
-        particle.color = 0;
-        particle.color += gsl::Vector4D(
+        particle.startSize += sizeOffset;
+        //sizeOffset = { randf(bp.sizeMinOffset, bp.sizeMaxOffset) };
+        particle.endSize += sizeOffset/2;
+
+        particle.startColor = 0;
+        particle.startColor += gsl::Vector4D(
             randf(bp.colorMinOffset.x, bp.colorMaxOffset.x),
             randf(bp.colorMinOffset.y, bp.colorMaxOffset.y),
             randf(bp.colorMinOffset.z, bp.colorMaxOffset.z),
             randf(bp.colorMinOffset.w, bp.colorMaxOffset.w));
+
+            particle.endColor = 0;
+            particle.endColor += gsl::Vector4D(
+            randf(bp.colorMinOffset.x, bp.colorMaxOffset.x),
+            randf(bp.colorMinOffset.y, bp.colorMaxOffset.y),
+            randf(bp.colorMinOffset.z, bp.colorMaxOffset.z),
+            0);
+
         particle.velocity = 0;
         particle.velocity += gsl::Vector3D(
             randf(bp.velocityMinOffset.x, bp.velocityMaxOffset.x),
@@ -265,18 +329,23 @@ void particle::draw()
 
     glBindVertexArray(getMeshComponent()->mVAO);
     glVertexAttribDivisor(0, 1); // particles vertices : always reuse the same 4 vertices -> 0
-    glVertexAttribDivisor(1, 1); // positions : one per quad (its center) -> 1
-    glVertexAttribDivisor(2, 0); // color : one per quad -> 1
+    glVertexAttribDivisor(1, 1); // color
+    glVertexAttribDivisor(2, 0); // Vertex
+    glVertexAttribDivisor(3, 1); // color : one per quad -> 1
+    glVertexAttribDivisor(4, 1); // size
+    glVertexAttribDivisor(5, 1); // color : one per quad -> 1
 
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->positionBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter->activeParticles * sizeof(float), emitter->positionData.data());
 
 
     glBindBuffer(GL_ARRAY_BUFFER, emitter->colorBuffer);
-    glBufferData(GL_ARRAY_BUFFER, emitter->maxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 4*emitter->activeParticles * sizeof(float), emitter->colorData.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 8*emitter->activeParticles * sizeof(float), emitter->colorData.data());
+
+    glBindBuffer(GL_ARRAY_BUFFER, emitter->lifeSizeBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * emitter->activeParticles * sizeof(float), emitter->lifeSizeData.data());
+
 
     glDrawElementsInstanced(GL_TRIANGLES, getMeshComponent()->mIndices.size(),
     GL_UNSIGNED_INT, 0, emitter->activeParticles);
