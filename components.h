@@ -91,7 +91,7 @@ struct Script
     //Speed
     double pSpeed;
 };
-//struct ParticleComponent
+//struct ParticleComponent //ikke min kode i hovedsak
 //{
 
 //    struct Particle

@@ -4,6 +4,12 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 
+/********************************************//**
+* ... i have worked on this for the engine. most of it is taken from the simulation class,
+* when i made physics for the rolling ball. thought it would be useful for the engine, but haven't
+* implemented it anywhere yet
+***********************************************/
+
 class physics
 {
 public:

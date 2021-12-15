@@ -36,7 +36,7 @@ public:
     GLint pMatrixUniform{-1};
     //! @param mCurrentCamera - contains pointer to camera
     class Camera *mCurrentCamera{nullptr};
-    //! @param mRenderWindow - contains point to renderwindow
+    //! @param mRenderWi    ndow - contains point to renderwindow
     class RenderWindow *mRenderWindow{nullptr};     //to be able to call checkForGLerrors()
 
     GLuint mProgram{999999};
