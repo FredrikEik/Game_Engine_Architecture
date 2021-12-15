@@ -16,7 +16,6 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 
 	// Even though multiple loops are used, most of them won't run many times.
 	// It is just an easy way to iterate through the json file in a general way. 
-	// TODO: Should be refactored
 	for (const auto& outer : json.items())
 	{
 		uint32 entityID = ECS->newEntity();

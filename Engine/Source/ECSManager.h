@@ -107,7 +107,7 @@ inline uint32 ECSManager::addComponent(uint32 entityID)
 	uint32 componentID{ factory.createComponent<T>(entityID) };
 	std::pair<std::type_index, uint32> componentLocation(std::type_index(typeid(T)), componentID);
 
-	entities.at(entityID).second.push_back(componentLocation); // THIS FUCKS UP
+	entities.at(entityID).second.push_back(componentLocation);
 
 	return componentID;
 }

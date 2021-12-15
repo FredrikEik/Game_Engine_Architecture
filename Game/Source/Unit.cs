@@ -13,11 +13,7 @@ namespace Game
         {
             Console.WriteLine(this.ToString());
             uint i = entityID;
-            //Debug.PrintMethod_Internal("BPlay");
             Console.WriteLine(i);
-            //Debug.PrintMethod_Internal("Fin");
-            //Debug.PrintMethod_Interal("BPlay");
-            //throw new NotImplementedException();
         }
         public Vec3 offset = new Vec3(0.0f, 0.001f, 0.0f);
         public override void Update()

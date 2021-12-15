@@ -54,7 +54,7 @@ struct Component
 public:
 	Component(uint32 entity, uint32 componentID) : entityID{ entity }, ID{ componentID } {}
 	~Component(){}
-	uint32 entityID; // TODO: Should probably be uint16
+	uint32 entityID;
 	uint32 ID;
 	
 	/// <summary>
@@ -76,7 +76,6 @@ struct testComponent : public Component
 {
 public:
 	testComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
-	//testComponent(const testComponent& other) : Component(other) {}
 	~testComponent(){}
 	float pos[3]{};
 };

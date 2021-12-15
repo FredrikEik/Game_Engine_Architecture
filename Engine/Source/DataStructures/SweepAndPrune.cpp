@@ -38,7 +38,6 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 	{
 		auto& temp = m_collisionPairs.at(entityID);
 		OUTVector = temp;
-		//std::copy(temp.begin(), temp.end(), OUTVector.begin());
 		return true;
 	}
 
@@ -47,11 +46,9 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 
 const std::vector<uint32>& SweepAndPrune::getOverlappedEntities(uint32 entityID)
 {
-	//std::cout << "Overlapped called\n";
 
 	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
 	{
-		//std::cout << "Overlapped entities\n";
 		return m_collisionPairs.at(entityID);
 	}
 	return std::vector<uint32>();
@@ -67,13 +64,8 @@ void SweepAndPrune::sortAndSweep()
 		float minA = (a).min[tempSortAxis];
 		float minB = (b).min[tempSortAxis];
 
-		// if a should generate overlap while b shouldn't, a is pushed in front
-		// Seems to work so far, needs more testing
-		// If collision issues arise, remove everything after the OR
-		//return (minA > minB) || (a.bShouldGenerateOverlapEvents > b.bShouldGenerateOverlapEvents);
 		return (minA < minB);
 	};
-	//std::sort(m_data.begin(), m_data.end(), compareAABB(*this));
 	std::sort(m_data.begin(), m_data.end(), compare);
 
 	m_collisionPairs.clear(); // clears the collision array every frame
@@ -96,21 +88,10 @@ void SweepAndPrune::sortAndSweep()
 		for (uint32 j{ i + 1 }; j < m_data.size(); ++j)
 		{
 
-			// If the tested collision can collide on one axis collide with the current collision, test collision.
-			// If not, break
-			//if ((m_data.at(j).max[sortAxis]) >=
-			//	(m_data.at(i).min[sortAxis]) &&
-			//	(m_data.at(i).max[sortAxis]) >=
-			//	(m_data.at(j).min[sortAxis]))
-
-
-
 			if ((m_data.at(j).min[sortAxis]) >
 				(m_data.at(i).max[sortAxis]) )
 				// Does the actual collision test.
 			{
-				//std::cout << "entity " << m_data.at(j).entity << " min: " << m_data.at(j).min[sortAxis]
-				//	<< " entity " << m_data.at(i).entity << " max " << (m_data.at(i).max[sortAxis]) << '\n';
 				break;
 			}
 			if (CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS))
@@ -119,7 +100,6 @@ void SweepAndPrune::sortAndSweep()
 			++CollisionsTested;
 
 		}
-		//std::cout << "tested " << CollisionsTested << " out of " << m_data.size() << " collisions before breaking\n";
 #ifdef DEBUG
 #ifdef DEBUG_BROADPHASE
 
@@ -130,7 +110,6 @@ void SweepAndPrune::sortAndSweep()
 
 		//_sleep(250);
 	}
-	//std::cout << "Finished testing collisions\n";
 
 	updateSortAxis(sum, sum2);
 }
@@ -158,7 +137,6 @@ void SweepAndPrune::clearAndFillData()
 	for (const auto& it : componentArray)
 	{
 		m_data.push_back(SweepElement(it.entityID, it.bShouldGenerateOverlapEvents));
-		//std::cout << "should generate: " << it.bShouldGenerateOverlapEvents << '\n';
 	}
 }
 
@@ -169,7 +147,7 @@ bool SweepAndPrune::updateData()
 	ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
 	if (!AABBManager || !transformManager)
 		return false;
-	// TODO: There is an edgecase where this doesn't work. If a AABB component is removed, 
+	// TODO: There is an edgecase where this doesn't work. If an AABB component is removed, 
 	// then a new one added in the same frame, this breaks. 
 	// For now it is unlikely, so for performance reasons we do not care about this edgecase
 	// due to the engine being made for units that are indirectly controlled and thus 
@@ -184,26 +162,13 @@ bool SweepAndPrune::updateData()
 		TransformComponent transform{ transformManager->getComponent(it.entity) };
 		AxisAlignedBoxComponent AABB{ AABBManager->getComponent(it.entity) };
 
-		//if(it.entity == 2)
-		//std::cout << "entity " << it.entity << " min x: " << AABB.minScaled.x
-		//	<< " max x" << AABB.maxScaled.x <<  " min z: " << AABB.minScaled.z << " max z: "
-		//	<< AABB.maxScaled.z << " pos x: " <<transform.transform[3].x << " z: "
-		//	<< transform.transform[3].z <<'\n';
-
 		it.min = glm::vec2(AABB.minScaled.x + transform.transform[3].x,
 			AABB.minScaled.z + transform.transform[3].z);
 
 		it.max = glm::vec2(AABB.maxScaled.x + transform.transform[3].x,
 			AABB.maxScaled.z + transform.transform[3].z);
-
-		//if(it.entity == 2)
-		//std::cout << "\n\nentity " << it.entity << " min x: " << it.min.x
-		//	<< " max x: " << it.max.x << " min z: " << it.min.y << " max z: "
-		//	<< it.max.y << "\n\n";
 	}
 	return true;
-	//AxisAlignedBoxComponent* AABBComponent = AABBManager->getComponentChecked(entity);
-	//TransformComponent* transformComponent = transformManager->getComponentChecked(entity);
 }
 
 void SweepAndPrune::insertCollisionPair(uint32 entityA, uint32 entityB)
@@ -211,9 +176,7 @@ void SweepAndPrune::insertCollisionPair(uint32 entityA, uint32 entityB)
 	if (m_collisionPairs.find(entityA) == m_collisionPairs.end())
 	{
 		m_collisionPairs.insert(std::pair<uint32, std::vector<uint32>>(entityA, std::vector<uint32>()));
-		//collisionPair = m_collisionPairs.find(entityA);
 	}
 	std::vector<uint32>& collisionPair = m_collisionPairs.at(entityA);
-	//assert(collisionPair != m_collisionPairs.end());
 	collisionPair.push_back(entityB);
 }

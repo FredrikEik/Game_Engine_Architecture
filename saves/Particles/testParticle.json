@@ -1,0 +1,110 @@
+[
+    {
+        "struct ParticleComponent": {
+            "bLoops": true,
+            "blendDFactor": 771,
+            "blendSFactor": 770,
+            "destroyOnLifetimeEnd": false,
+            "emitterTotalLifeTime": 0.7799995541572571,
+            "maxParticles": 732,
+            "mesh": {
+                "LODType": 0,
+                "bDisregardedDuringFrustumCulling": false,
+                "bDrawDeferred": false,
+                "bIsTranslucent": false,
+                "bShouldRender": true,
+                "drawType": 4,
+                "path": "",
+                "reusable": true
+            },
+            "particleBlueprint": {
+                "accelerationMaxOffset": [
+                    93.30000305175781,
+                    0.0,
+                    47.79999923706055
+                ],
+                "accelerationMinOffset": [
+                    -11.899999618530273,
+                    0.800000011920929,
+                    -13.399999618530273
+                ],
+                "colorMaxOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "colorMinOffset": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "lifeMaxOffset": 0.7199996113777161,
+                "lifeMinOffset": -0.3299999535083771,
+                "particle": {
+                    "acceleration": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "currentLife": 0.40999990701675415,
+                    "endColor": [
+                        0.2022472620010376,
+                        1.0,
+                        0.0,
+                        1.0
+                    ],
+                    "endSize": 0.6900002956390381,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "startColor": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "startSize": 1.729999303817749,
+                    "velocity": [
+                        0.0,
+                        18.5,
+                        0.0
+                    ]
+                },
+                "positionMaxOffset": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "positionMinOffset": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "sizeMaxOffset": 0.0,
+                "sizeMinOffset": 0.0,
+                "velocityMaxOffset": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "velocityMinOffset": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            },
+            "spawnFrequency": 0.009999984875321388,
+            "spawnRate": 147,
+            "texture": {
+                "path": "C:\\Github_Projects\\School\\GEA2021\\Engine\\Assets\\particleStar.png",
+                "reusable": true,
+                "wrapMode": 10497
+            },
+            "textureRows": 1
+        }
+    }
+]

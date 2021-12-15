@@ -4,6 +4,8 @@
 #include "glm/glm.hpp"
 #include "../CoreMinimal.h"
 #include <unordered_map>
+
+
 struct SweepElement
 {
 	SweepElement(uint32 entity, bool generatesOverlap)
@@ -16,6 +18,10 @@ struct SweepElement
 	bool bShouldGenerateOverlapEvents;
 };
 
+/// <summary>
+/// Broad phase collision test.
+/// Inspired by Real-Time Collision Detection by Christer Ericson chapter 7.5
+/// </summary>
 class SweepAndPrune
 {
 public:
