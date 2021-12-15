@@ -206,9 +206,9 @@ void RenderWindow::init()
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
-    setupParticleShader(54);
+    setupParticleShader(4);
     setupFrameBufferShader(5);
-    //postFBO = new PostProcessing(mShaderPrograms[4]);
+    postFBO = new PostProcessing(mShaderPrograms[5]);
 
 
     //QWindow* test = new QWindow();
@@ -459,50 +459,50 @@ void RenderWindow::render()
                 }
 
 
-            factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+                factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+            }
+
         }
+
 
     }
 
+    if (!editorMode){
+        thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
+        inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
+        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
+        mCurrentCamera->setPosition(thirdPersonPos);
+    }
+    if(postFBO)
+        postFBO->unbindCurrentFramebuffer();
 
-}
+    //Calculate framerate before
+    // checkForGLerrors() because that takes a long time
+    // and before swapBuffers(), else it will show the vsync time
+    calculateFramerate();
 
-if (!editorMode){
-    thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
-    inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
-    mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
-    mCurrentCamera->setPosition(thirdPersonPos);
-}
-if(postFBO)
-postFBO->unbindCurrentFramebuffer();
-
-//Calculate framerate before
-// checkForGLerrors() because that takes a long time
-// and before swapBuffers(), else it will show the vsync time
-calculateFramerate();
-
-//using our expanded OpenGL debugger to check if everything is OK.
-checkForGLerrors();
+    //using our expanded OpenGL debugger to check if everything is OK.
+    checkForGLerrors();
 
 
 
-//Qt require us to call this swapBuffers() -function.
-// swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-// and wait for vsync.
+    //Qt require us to call this swapBuffers() -function.
+    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
+    // and wait for vsync.
 
-mContext->swapBuffers(this);
+    mContext->swapBuffers(this);
 
-glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
-
-
-//qDebug() << "Rendered objects: ";
-//qDebug() << objectsDrawn;
-objectsDrawn = 0;
+    glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 
 
-if(playerHP == 0){
-    reset(format());
-}
+    //qDebug() << "Rendered objects: ";
+    //qDebug() << objectsDrawn;
+    objectsDrawn = 0;
+
+
+    if(playerHP == 0){
+        reset(format());
+    }
 
 }
 
