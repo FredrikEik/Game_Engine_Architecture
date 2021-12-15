@@ -322,7 +322,7 @@ void RenderWindow::render()
 
 
     if(postFBO)
-        postFBO->bindFramebuffer(0, 1920,1080);
+        postFBO->bindFramebuffer();
 
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
@@ -563,7 +563,7 @@ void RenderWindow::setupParticleShader(int shaderIndex)
 
 void RenderWindow::setupFrameBufferShader(int shaderIndex)
 {
-    //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
+    //mShaderPrograms[shaderIndex]->setInt("screenTexture", 0); gives error...
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -863,10 +863,11 @@ void RenderWindow::loadLevel()
 
 void RenderWindow::mousePicking(QMouseEvent *event)
 {
+        //get mouse position on screen
         int mouseXPixel = event->pos().x();
-        int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
+        int mouseYPixel = event->pos().y();
 
-        //Since we are going to invert these, I make a copy
+        //make a copy of the matrices
         gsl::Matrix4x4 projMatrix = mCurrentCamera->mProjectionMatrix;
         gsl::Matrix4x4 viewMatrix = mCurrentCamera->mViewMatrix;
 
@@ -890,11 +891,6 @@ void RenderWindow::mousePicking(QMouseEvent *event)
         gsl::Vector3D ray_wor = {temp.x, temp.y, temp.z};
         // don't forget to normalise the vector at some point
         ray_wor.normalize();
-
-
-        /************************************************************************/
-        //Collision detection - in world space coordinates:
-        //Writing here as a quick test - probably should be in a CollisionSystem class
 
         //This is ray vs bounding sphere collision
 
@@ -1156,23 +1152,4 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     c.setShape(Qt::ArrowCursor);
     setCursor(c);
     }
-//    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
-//    {
-//            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
-//                                mMainWindow->y() + mMainWindow->height() / 2);
-
-//            //Using mMouseXYlast as deltaXY so we don't need extra variables
-
-//            mMouseXlast = windowCenter.x() - c.pos().x();
-//            mMouseYlast = windowCenter.y() - c.pos().y();
-
-//             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
-//             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
-//             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
-//             c.setShape(Qt::BlankCursor);
-//             setCursor(c);
-
-//    }
-
-
 }
