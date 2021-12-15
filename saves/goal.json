@@ -44,7 +44,8 @@
                         "bShouldRender": true,
                         "drawType": 4,
                         "path": "",
-                        "reusable": true
+                        "reusable": true,
+                        "bDrawDeferred":false
                     },
                     "particleBlueprint": {
                         "accelerationMaxOffset": [

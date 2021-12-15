@@ -37,7 +37,8 @@
                     "bShouldRender": true,
                     "drawType": 4,
                     "path": "Assets\\cube.obj",
-                    "reusable": true
+                    "reusable": true,
+                    "bDrawDeferred": false
                 }
             },
             {

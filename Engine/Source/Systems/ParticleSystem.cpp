@@ -429,6 +429,7 @@ void ParticleSystem::render(const ParticleComponent& emitter, Shader* shader)
 {
     if (emitter.texture.rgbImage)
     {
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, emitter.texture.textureID);
     }
     glUniform1f(glGetUniformLocation(shader->getShaderID(), "u_textureRows"), emitter.textureRows);

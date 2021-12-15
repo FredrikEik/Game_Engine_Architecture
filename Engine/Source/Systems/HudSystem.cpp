@@ -89,6 +89,7 @@ void HudSystem::render(ECSManager* ECS, class Shader* shader)
     for (auto& it : components)
     {
         glBindVertexArray(it.mesh.m_VAO);
+        glActiveTexture(GL_TEXTURE0);
 
         glBindTexture(GL_TEXTURE_2D, it.texture.textureID);
 

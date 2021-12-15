@@ -223,7 +223,7 @@ void Engine::initEtities()
 	TransformSystem::move(editorCameraEntity, glm::vec3(40, 15, 145), ECS);
 	//TransformSystem::setHeight(editorCameraEntity, 5, ECS);
 	
-	RTSSelectionEntity = ECS->newEntity();
+	//RTSSelectionEntity = ECS->newEntity();
 
 	SystemEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -245,10 +245,7 @@ void Engine::initEtities()
 	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-	ECS->addComponent<HudComponent>(gameCameraEntity);
-	HudSystem::init(gameCameraEntity, ECS, "Assets/ballChase.png");
-	HudSystem::setPosition(gameCameraEntity, glm::vec2(-0.65, 0.65), ECS);
-	HudSystem::setScale(gameCameraEntity, glm::vec2(0.5, 0.5), ECS);
+
 	//viewport->begin(window, ECS->getNumberOfEntities());
 
 
@@ -274,7 +271,10 @@ void Engine::initEtities()
 	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/Dogling_D.png"));
 	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/Dogling_S.png"));
 	TextureSystem::loadMaterial(gunMaterial, materialMap);
-
+	ECS->addComponent<HudComponent>(gameCameraEntity);
+	HudSystem::init(gameCameraEntity, ECS, "Assets/ballChase.png");
+	HudSystem::setPosition(gameCameraEntity, glm::vec2(-0.65, 0.65), ECS);
+	HudSystem::setScale(gameCameraEntity, glm::vec2(0.5, 0.5), ECS);
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
 
@@ -418,6 +418,7 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
+		*/
 
 		if (bIsPlaying)
 		{
@@ -425,7 +426,7 @@ void Engine::loop()
 			CameraSystem::draw(cameraEntity, ourShader, ECS);
 
 			// Only checks collision for one frame, so we delete it after
-			if (ECS->getComponentManager<AxisAlignedBoxComponent>() && ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
+			//if (ECS->getComponentManager<AxisAlignedBoxComponent>() && ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
 			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(SystemEntity))
 			{
 				SelectionSystem::setHitEntities(SystemEntity,
@@ -437,7 +438,6 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
-		*/
 
 	
 
@@ -516,14 +516,14 @@ void Engine::terminate()
 	glfwTerminate();
 }
 
-void Engine::loadPendingEntities()
-{
-	for (auto& it : pendingEntities)
-	{
-		Load::loadEntity(it.first, it.second, ECS);
-	}
-	pendingEntities.clear();
-}
+//void Engine::loadPendingEntities()
+//{
+//	for (auto& it : pendingEntities)
+//	{
+//		Load::loadEntity(it.first, it.second, ECS);
+//	}
+//	pendingEntities.clear();
+//}
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {

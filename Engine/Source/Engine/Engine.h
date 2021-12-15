@@ -84,7 +84,7 @@ private:
 	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
-	uint32 cameraEntity{};
+	//uint32 cameraEntity{};
 	uint32 gameStateEntity{};
 
 	uint32 dogEntity{};
