@@ -40,10 +40,11 @@ glm::vec3 TransformSystem::getTransform_internal(uint32 entity)
 	return transformComp->transform[3];
 }
 
-glm::vec3 TransformSystem::setPosition_internal(uint32 entity, glm::vec3 newLocation)
+void TransformSystem::setPosition_internal(uint32 entity, glm::vec3 newLocation)
 {
+	std::cout << "Position on entity: " << entity;
 	TransformComponent* transformComp = Engine::Get().getECSManager()->getComponentManager<TransformComponent>()->getComponentChecked(entity);
-	return transformComp->transform[3] = glm::vec4(newLocation,1);
+	transformComp->transform[3] = glm::vec4(newLocation,1);
 }
 
 void TransformSystem::setPosition(uint32 entity, glm::vec3 newLocation, ECSManager* ECS)

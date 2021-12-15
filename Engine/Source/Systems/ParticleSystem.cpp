@@ -2,7 +2,8 @@
 #include "../ECSManager.h"
 #include "../Shader.h"
 #include "TextureSystem.h"
-
+#include <unordered_set>
+#include "../Engine/Engine.h"
 void ParticleSystem::init(uint32 entityID, class ECSManager* ECS, uint32 maxParticles, 
     std::filesystem::path path, int textureRows)
 {
@@ -217,7 +218,7 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
 
     shader->use();
     glEnable(GL_BLEND);
-
+    std::unordered_set<uint32> entitiesToDestroy;
     // Iterating through all emitters, starting with the one furthest from the camera
     for (auto index : sortedEmitters)
     {
@@ -229,6 +230,8 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
             emitter.emitterLifeTime -= deltaTime;
             if (emitter.emitterLifeTime <= 0.f)
             {
+                if (emitter.destroyOnLifetimeEnd && Engine::Get().getIsPlaying())
+                    entitiesToDestroy.insert(emitter.entityID);
                 continue;
             }
         }
@@ -254,6 +257,10 @@ void ParticleSystem::update(uint32 cameraEntity, class Shader* shader, ECSManage
         render(emitter, shader);
     }
     glDisable(GL_BLEND);
+    for (auto it : entitiesToDestroy)
+    {
+        ECS->destroyEntity(it);
+    }
 }
 
 void ParticleSystem::setParticleActive(uint32 entityID, bool bShouldBeActive, ECSManager* ECS)
@@ -269,6 +276,11 @@ void ParticleSystem::setParticleActive(ParticleComponent* emitter, bool bShouldB
         emitter->particles = std::vector<ParticleComponent::Particle>(emitter->maxParticles);
     }
     emitter->emitterLifeTime = emitter->emitterTotalLifeTime * bShouldBeActive;
+}
+
+void ParticleSystem::setParticleActive_Internal(uint32 entityID, bool bShouldBeActive)
+{
+    setParticleActive(entityID, bShouldBeActive, Engine::Get().getECSManager());
 }
 
 

@@ -93,16 +93,25 @@ void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSMana
 	//if (mousePosition.x > (screenWidth-50))
 	//	deltaMovement += right * 5.f * deltaTime;
 
-	float speed{ 5 };
+	float speed{ 8 };
+	Input* input = Input::getInstance();
+	if (mousePosition.x < 50 || input->getKeyState(KEY_A).bHeld)
+		deltaMovement -= right * deltaTime * speed;
+	if (mousePosition.y < 50 || input->getKeyState(KEY_W).bHeld)
+		deltaMovement += forward * deltaTime * speed;
+	if (mousePosition.y > (screenHeight - 50) || input->getKeyState(KEY_S).bHeld)
+		deltaMovement -= forward * deltaTime * speed;
+	if (mousePosition.x > (screenWidth - 50) || input->getKeyState(KEY_D).bHeld)
+		deltaMovement += right * deltaTime * speed;
 
-	if (mousePosition.x < 50)
-		deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime * speed;
-	if (mousePosition.y < 50)
-		deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime * speed;
-	if (mousePosition.y > (screenHeight - 50))
-		deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime * speed;
-	if (mousePosition.x > (screenWidth - 50))
-		deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime * speed;
+		//if (mousePosition.x < 50 || input->getKeyState(KEY_A).bHeld)
+	//	deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime * speed;
+	//if (mousePosition.y < 50 || input->getKeyState(KEY_W).bHeld)
+	//	deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime * speed;
+	//if (mousePosition.y > (screenHeight - 50) || input->getKeyState(KEY_S).bHeld)
+	//	deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime * speed;
+	//if (mousePosition.x > (screenWidth - 50) || input->getKeyState(KEY_D).bHeld)
+	//	deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime * speed;
 
 	TransformSystem::move(currentCamera.entityID, deltaMovement, ECS);
 }
@@ -120,20 +129,20 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 
 	// TODO: This does not really belong in camera system
 	glm::vec3 deltaMovement{};
-
+	float speed{ 50.f };
 	// TODO: Make sure this works
 	if (input->getKeyState(KEY_W).bHeld)
-		deltaMovement += forward * 10.f * deltaTime;
+		deltaMovement += forward * speed * deltaTime;
 	if (input->getKeyState(KEY_S).bHeld)
-		deltaMovement -= forward * 10.f * deltaTime;
+		deltaMovement -= forward * speed * deltaTime;
 	if (input->getKeyState(KEY_D).bHeld)
-		deltaMovement -= right * 10.f * deltaTime;
+		deltaMovement -= right * speed * deltaTime;
 	if (input->getKeyState(KEY_A).bHeld)
-		deltaMovement += right * 10.f * deltaTime;
+		deltaMovement += right * speed * deltaTime;
 	if (input->getKeyState(KEY_E).bHeld)
-		deltaMovement += glm::vec3(0,1,0) * 10.f * deltaTime;
+		deltaMovement += glm::vec3(0,1,0) * speed * deltaTime;
 	if (input->getKeyState(KEY_Q).bHeld)
-		deltaMovement -= glm::vec3(0, 1, 0) * 10.f * deltaTime;
+		deltaMovement -= glm::vec3(0, 1, 0) * speed * deltaTime;
 
 	TransformSystem::move(entity, deltaMovement, ECS);
 	//std::cout << currentTransform->transform[3].x << " " 
@@ -240,6 +249,7 @@ float CameraSystem::isPointInPlane(const glm::vec4& plane, const glm::vec3& poin
 
 void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
 {
+	
 	ECS->addComponent<MeshComponent>(entity);
 	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
 	CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity);
@@ -250,7 +260,6 @@ void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)
 	mesh->m_drawType = GL_LINES;
 
 	glm::mat4 inverseProjViewMatrix = glm::inverse((camera->m_projectionMatrix * camera->m_viewMatrix));
-
 	std::vector<glm::vec4> positions
 	{
 		glm::vec4(-1, -1, -1, 1),

@@ -15,6 +15,8 @@ public:
 	const std::string unit{ "Unit" };
 	const std::string gameMode{ "GameMode" };
 	const std::string ball{ "Ball" };
+	const std::string obstacle{ "Obstacle" };
+	const std::string goal{ "Goal" };
 
 };
 

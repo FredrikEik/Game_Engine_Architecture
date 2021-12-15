@@ -19,7 +19,7 @@ class Factory
 	friend class ECSManager;
 	friend class Save;
 	Factory() : componentManagers{ (new std::unordered_map<std::type_index, ComponentManager<Component>*>) },
-		reusableAssetComponents{ (*new std::unordered_map<std::size_t, ReusableAsset>) } {}
+		reusableAssetComponents{ (*new std::unordered_map<std::size_t, ReusableAsset>) } {componentManagers->reserve(50); }
 	~Factory();
 
 public:

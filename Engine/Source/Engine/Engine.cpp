@@ -71,12 +71,21 @@ void Engine::setIsPlaying(bool isPlaying)
 	if (!isPlaying)
 	{
 		load(Save::getDefaultAbsolutePath());
-		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
+		TransformSystem::setPosition(gameCameraEntity, glm::vec3(80, 0, 145), ECS);
 		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+		ScriptSystem::uninitializeAllComponents(ECS);
+		ECS->removeComponent<ScriptComponent>(gameStateEntity);
+		ECS->addComponent<ScriptComponent>(gameStateEntity);
+		ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
+
 	}
 	else
 	{
-		save();
+		//save();
+		// First invoking on the game state because it created new entities.
+		// This will cause the components to shift around in memory, so it cannot be done
+		// while looping through all components
+		ScriptSystem::Invoke(gameStateEntity, "BeginPlay", ECS);
 		ScriptSystem::Invoke("BeginPlay", ECS);
 	}
 	bIsPlaying = isPlaying;
@@ -98,8 +107,10 @@ void Engine::load(const std::string& path)
 
 uint32 Engine::createDefaultEntity_Internal(MonoString* path)
 {
-	//return 0;
-	return Load::loadEntity(mono_string_to_utf8(path), Get().ECS);
+	//uint32 entity = Get().ECS->newEntity();
+	//Get().pendingEntities.push_back(std::make_pair(entity, mono_string_to_utf8(path)));
+	//return entity;
+	return Load::loadEntity(Get().ECS->newEntity(), mono_string_to_utf8(path), Get().ECS);
 }
 
 Engine* Engine::instance = nullptr;
@@ -178,8 +189,8 @@ void Engine::init()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
+	TransformSystem::move(gameCameraEntity, glm::vec3(80, 0, 145), ECS);
 	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
-	TransformSystem::move(gameCameraEntity, glm::vec3(-10, 0, 0), ECS);
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
 	//mesh comp
@@ -214,7 +225,7 @@ void Engine::init()
 	//CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
 	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
 
-	uint32 gameStateEntity = ECS->newEntity();
+	gameStateEntity = ECS->newEntity();
 	ECS->addComponent<ScriptComponent>(gameStateEntity);
 	//ScriptSystem::setScriptClassName(gameStateEntity, "GameMode", ECS);
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
@@ -260,7 +271,7 @@ void Engine::loop()
 		float currentFrame = glfwGetTime();
 		//deltaTime = currentFrame - lastFrame;
 		//lastFrame = currentFrame;
-
+		//loadPendingEntities();
 		if (!bIsPlaying)
 		{
 			deltaTime = currentFrame - lastFrame;
@@ -426,6 +437,15 @@ void Engine::terminate()
 	viewport->end();
 	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
+}
+
+void Engine::loadPendingEntities()
+{
+	for (auto& it : pendingEntities)
+	{
+		Load::loadEntity(it.first, it.second, ECS);
+	}
+	pendingEntities.clear();
 }
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)

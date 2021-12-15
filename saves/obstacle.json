@@ -1,0 +1,166 @@
+[
+    {
+        "5": [
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct AxisAlignedBoxComponent": {
+                    "bShouldGenerateOverlapEvents": true,
+                    "center": [
+                        -0.35000014305114746,
+                        1.350000023841858,
+                        -0.25
+                    ],
+                    "max": [
+                        3.5999999046325684,
+                        3.200000047683716,
+                        3.5
+                    ],
+                    "min": [
+                        -4.300000190734863,
+                        -0.5,
+                        -4.0
+                    ]
+                }
+            },
+            {
+                "struct ParticleComponent": {
+                    "bLoops": true,
+                    "blendDFactor": 771,
+                    "blendSFactor": 770,
+                    "destroyOnLifetimeEnd": false,
+                    "emitterTotalLifeTime": 0.0,
+                    "maxParticles": 1000,
+                    "mesh": {
+                        "LODType": 0,
+                        "bDisregardedDuringFrustumCulling": false,
+                        "bIsTranslucent": false,
+                        "bShouldRender": true,
+                        "drawType": 4,
+                        "path": "",
+                        "reusable": true
+                    },
+                    "particleBlueprint": {
+                        "accelerationMaxOffset": [
+                            1.899999976158142,
+                            0.0,
+                            2.4000000953674316
+                        ],
+                        "accelerationMinOffset": [
+                            -1.7999999523162842,
+                            -3.9000000953674316,
+                            -2.299999952316284
+                        ],
+                        "colorMaxOffset": [
+                            0.0,
+                            0.20000000298023224,
+                            0.0,
+                            0.0
+                        ],
+                        "colorMinOffset": [
+                            0.0,
+                            -0.017999999225139618,
+                            0.0,
+                            0.0
+                        ],
+                        "lifeMaxOffset": 0.4499998390674591,
+                        "lifeMinOffset": -0.6099997162818909,
+                        "particle": {
+                            "acceleration": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "currentLife": 1.0499993562698364,
+                            "endColor": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "endSize": 0.49000048637390137,
+                            "position": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "startColor": [
+                                1.0,
+                                0.8539325594902039,
+                                0.0,
+                                0.9882352948188782
+                            ],
+                            "startSize": 2.0,
+                            "velocity": [
+                                0.0,
+                                4.0,
+                                0.0
+                            ]
+                        },
+                        "positionMaxOffset": [
+                            3.0,
+                            0.0,
+                            3.0
+                        ],
+                        "positionMinOffset": [
+                            -3.0,
+                            0.0,
+                            -3.0
+                        ],
+                        "sizeMaxOffset": 0.20000001788139343,
+                        "sizeMinOffset": -0.43999984860420227,
+                        "velocityMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "velocityMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "spawnFrequency": 0.0,
+                    "spawnRate": 250,
+                    "texture": {
+                        "path": "C:\\Github_Projects\\School\\GEA2021\\Engine\\Assets\\particleAlpha.png",
+                        "reusable": true,
+                        "wrapMode": 10497
+                    },
+                    "textureRows": 1
+                }
+            },
+            {
+                "struct ScriptComponent": {
+                    "ScriptClassName": "Obstacle"
+                }
+            }
+        ]
+    }
+]

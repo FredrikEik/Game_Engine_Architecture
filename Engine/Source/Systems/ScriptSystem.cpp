@@ -9,6 +9,7 @@
 #include "SelectionSystem.h"
 #include "CollisionSystem.h"
 #include "PhysicsSystem.h"
+#include "ParticleSystem.h"
 #include "../Input/Input.h"
 #include "../Engine/Engine.h"
 void PrintMethod_Internal(MonoString* string)
@@ -52,6 +53,7 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
 	BindInternalFunction("ScriptInJin.Entity::isOverlappingEntity_Internal", &CollisionSystem::isOverlappingEntity_Internal);
 	BindInternalFunction("ScriptInJin.Entity::setVelocity_Internal", &PhysicsSystem::setVelocity_Internal);
+	BindInternalFunction("ScriptInJin.Entity::setParticleActive_Internal", &ParticleSystem::setParticleActive_Internal);
 	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);
 	BindInternalFunction("ScriptInJin.Input::getMouseKeyState_Internal", &Input::getMouseKeyState_Internal);
 	BindInternalFunction("ScriptInJin.Entity::getDeltaTime_Internal", &Engine::getDeltaTime_Internal);
@@ -71,10 +73,13 @@ void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* m
 		if (!&ScriptComp)
 			continue;
 		//std::cout << "Invoking update on entity: " << ScriptComp.entityID<<"\n";
-		if (!ScriptComp.bInitialized)
+		if (!ScriptComp.bInitialized || functionToCall == "Update")
 		{
-			mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
 			ScriptComp.bInitialized = true;
+			auto func = ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)];
+			auto object = ScriptComp.m_Object;
+			mono_runtime_invoke(func, object, nullptr, nullptr);
+			//mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
 		}
 	}
 }
@@ -85,8 +90,8 @@ void ScriptSystem::Invoke(uint32 entity, const std::string& functionToCall, ECSM
 	assert(component);
 	if (!component->bInitialized)
 	{
-		mono_runtime_invoke(component->m_Methods[std::hash<std::string>{}(functionToCall)], component->m_Object, nullptr, nullptr);
 		component->bInitialized = true;
+		mono_runtime_invoke(component->m_Methods[std::hash<std::string>{}(functionToCall)], component->m_Object, nullptr, nullptr);
 	}
 }
 
@@ -121,14 +126,26 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string cla
 	}
 
 	scriptComp->m_Object = mono_object_new(SE->getDomain(), scriptComp->m_Class);
+	//mono_gchandle_new(scriptComp->m_Object, true);
 	mono_runtime_object_init(scriptComp->m_Object);
-
 	// entity id handle
 	scriptComp->entityID_handle = mono_class_get_field_from_name(scriptComp->m_Class, "native_handle");
 	mono_field_set_value(scriptComp->m_Object, scriptComp->entityID_handle, &scriptComp->entityID);
 	//todo 
 	// parameters
 	//fields
+}
+
+void ScriptSystem::uninitializeAllComponents(ECSManager* manager)
+{
+	auto scriptManager = manager->getComponentManager<ScriptComponent>();
+	if (!scriptManager)
+		return;
+	auto components = scriptManager->getComponentArray();
+	for (auto& it : components)
+	{
+		it.bInitialized = false;
+	}
 }
 
 void ScriptSystem::setScriptClassName(uint32 entityID, const std::string& className, ECSManager* ECS)

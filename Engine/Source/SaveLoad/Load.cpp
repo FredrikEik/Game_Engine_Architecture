@@ -38,10 +38,10 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 	file.close();
 }
 
-uint32 Load::loadEntity(const std::filesystem::path& filePath, ECSManager* ECS)
+uint32 Load::loadEntity(uint32 entityID, const std::filesystem::path& filePath, ECSManager* ECS)
 {
 	std::ifstream file(filePath);
-	uint32 entityID = core::MAX_ENTITIES + 1;
+	//uint32 entityID = core::MAX_ENTITIES + 1;
 	if (!file)
 		return entityID;
 
@@ -51,7 +51,7 @@ uint32 Load::loadEntity(const std::filesystem::path& filePath, ECSManager* ECS)
 
 	for (const auto& outer : json.items())
 	{
-		entityID = ECS->newEntity();
+		//entityID = ECS->newEntity();
 		//std::cout << entity << "\n\n\n\n";
 		for (const auto& entity : outer.value().items())
 		{

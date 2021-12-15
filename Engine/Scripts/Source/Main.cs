@@ -23,6 +23,11 @@ namespace ScriptInJin
             return Transform.getTransform_internal(entityID); 
         }
 
+        public void setPosition(Vec3 newPosition)
+        {
+            Transform.setPosition_internal(entityID, newPosition);
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private static uint getEntityID_internal(Entity ptr, string className);
 
@@ -49,16 +54,18 @@ namespace ScriptInJin
         extern public static bool isOverlappingEntity_Internal(uint EntityA, uint EntityB);
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void setVelocity_Internal(uint Entity, Vec3 newVelocity, bool isAdditive);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void setParticleActive_Internal(uint Entity, bool isActive);
     }
 
     public class Transform
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static void Move_Internal(uint entity, Vec3 newLocation);
+        extern public static void Move_Internal(uint EntityID, Vec3 newLocation);
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static Vec3 getTransform_internal(uint entity);
+        extern public static Vec3 getTransform_internal(uint EntityID);
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static void setPosition_internal(uint entity, Vec3 newLocation);
+        extern public static void setPosition_internal(uint EntityID, Vec3 newLocation);
     }
 
     public class Debug

@@ -278,6 +278,8 @@ void Details::addMeshComponent()
 
 void Details::addAABBComponent()
 {
+	if (!hasComponent(TYPE(typeid(TransformComponent))))
+		ECS->addComponent<TransformComponent>(entityID);
 	if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 }

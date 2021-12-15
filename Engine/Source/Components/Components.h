@@ -305,6 +305,7 @@ struct ParticleComponent final : public Component
 	float emitterLifeTime{};
 	float emitterTotalLifeTime{};
 	bool bLoops{ false };
+	bool destroyOnLifetimeEnd{ false };
 
 	GLenum blendSFactor{ GL_SRC_ALPHA };
 	GLenum blendDFactor{ GL_ONE_MINUS_SRC_ALPHA };

@@ -102,6 +102,7 @@ JSON ParticleComponent::json()
 	{"spawnFrequency", spawnFrequency},
 	{"emitterTotalLifeTime", emitterTotalLifeTime},
 	{"bLoops", bLoops},
+	{"destroyOnLifetimeEnd", destroyOnLifetimeEnd},
 	{"blendSFactor", blendSFactor},
 	{"blendDFactor", blendDFactor},
 	{"mesh", mesh.json()},
@@ -149,6 +150,7 @@ void ParticleComponent::jsonParse(const JSON& json)
 	spawnFrequency = json["spawnFrequency"];
 	emitterTotalLifeTime = json["emitterTotalLifeTime"];
 	bLoops = json["bLoops"];
+	destroyOnLifetimeEnd = json["destroyOnLifetimeEnd"];
 	blendSFactor = json["blendSFactor"];
 	blendDFactor = json["blendDFactor"];
 	mesh.jsonParse(json["mesh"]);

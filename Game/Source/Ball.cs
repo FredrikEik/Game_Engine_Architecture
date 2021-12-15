@@ -7,9 +7,10 @@ namespace Game
     public class Ball : Entity
     {
         uint player;
+        Vec3 startPosition;
         public override void BeginPlay()
         {
-
+            startPosition = getPosition();
         }
         public override void Update()
         {
@@ -30,6 +31,12 @@ namespace Game
         {
             player = unit;
             Console.WriteLine("Player set in ball");
+        }
+
+        public void Reset()
+        {
+            setPosition(startPosition);
+            setVelocity_Internal(entityID, new Vec3(0, 0, 0), false);
         }
     }
 }

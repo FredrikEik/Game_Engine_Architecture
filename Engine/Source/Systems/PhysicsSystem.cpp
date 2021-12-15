@@ -5,6 +5,8 @@
 #include "../Engine/Engine.h"
 void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTime)
 {
+	if (!ECS->getComponentManager<PhysicsComponent>())
+		return;
 	std::vector<PhysicsComponent>& physicsComponents = ECS->getComponentManager<PhysicsComponent>()->getComponentArray();
 	auto transformManager = ECS->getComponentManager<TransformComponent>();
 	MeshComponent* terrain = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
@@ -27,12 +29,21 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 
 		// If airborne there is no surface normal. 
 		tempSurfaceNormal = TerrainSystem::getNormal(*entityTransform, *terrain, tempTerrainIndex) * (float)!tempIsInAir;
+		if (tempTerrainIndex < 0)
+			tempSurfaceNormal = glm::normalize(it.velocity*-1.f);
+
 
 		it.acceleration = getAcceleration(tempSurfaceNormal, it.mass);
 		it.velocity += it.acceleration * deltaTime;
 
-
-		if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
+		if (tempTerrainIndex < 0)
+		{
+			tempSurfaceNormal = glm::normalize(it.velocity * -1.f);
+			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
+			float speed = glm::length(it.velocity) > 5.f ? glm::length(it.velocity) : 5;
+			it.velocity = tempCollisionNormal * speed;
+		}
+		else if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
 		{
 			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
 			if(it.bIsInAir) // if entity was in air last frame

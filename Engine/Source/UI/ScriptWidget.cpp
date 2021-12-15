@@ -26,7 +26,6 @@ void ScriptWidget::update(int32 entityID, bool& entitiesChanged)
 		{
 			component->bInitialized = false;
 			ScriptSystem::InitScriptObject(component, selectedClass);
-			std::cout << "INITING SCRIPT IN WIDGET\n";
 		}
 		
 	}
@@ -43,7 +42,9 @@ std::string ScriptWidget::drawScriptSelector(uint32 entity, std::string currentC
 	const char* items[] = {
 	unit.c_str(),
 	gameMode.c_str(),
-	ball.c_str()
+	ball.c_str(),
+	obstacle.c_str(),
+	goal.c_str()
 	};
 	static const char* currentScript = currentClass.c_str();
 	static std::string script = currentScript;

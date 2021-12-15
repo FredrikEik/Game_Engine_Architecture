@@ -17,5 +17,5 @@ public:
 
 	static void move_internal(uint32 entity, glm::vec3 newLocation);
 	static glm::vec3 getTransform_internal(uint32 entity);
-	static glm::vec3 setPosition_internal(uint32 entity, glm::vec3 newLocation);
+	static void setPosition_internal(uint32 entity, glm::vec3 newLocation);
 };

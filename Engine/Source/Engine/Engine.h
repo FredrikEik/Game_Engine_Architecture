@@ -6,7 +6,7 @@
 //#define DEBUG_BROADPHASE
 #include "mono/jit/jit.h"
 //#include <mono/metadata/assembly.h>
-
+#include <vector>
 class Engine
 {
 public:
@@ -31,6 +31,7 @@ private:
 	void init();
 	void loop();
 	void terminate();
+	void loadPendingEntities();
 
 	static void framebuffer_size_callback(struct GLFWwindow* window, int width, int height);
 	void processInput(struct GLFWwindow* window);
@@ -70,6 +71,7 @@ private:
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
 	uint32 cameraEntity{};
+	uint32 gameStateEntity{};
 
 	uint32 reservedEntities{};
 
@@ -81,6 +83,8 @@ private:
 	class Viewport* viewport;
 
 	bool bIsPlaying{ false };
+
+	std::vector<std::pair<uint32, std::string>> pendingEntities;
 public:
 	ECSManager* getECSManager() const { return ECS; }
 	float getWindowWidth() const { return windowWidth; }
