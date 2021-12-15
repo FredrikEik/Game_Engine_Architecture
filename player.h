@@ -21,8 +21,7 @@ public:
     gsl::Vector3D getCameraTarget () {return cameraTarget;}
 
     void setSurfaceToWalkOn(GameObject* surface){surfaceToWalkOn = surface;}
-    void setPlayerCamera(Camera* camera){playerCamera = camera;}
-    private:
+    void setPlayerCamera(Camera* camera);
     Camera* playerCamera = nullptr;
     GameObject* surfaceToWalkOn = nullptr;
     float movementSpeed = 0.3f;

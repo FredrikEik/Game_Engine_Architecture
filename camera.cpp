@@ -191,6 +191,7 @@ void Camera::update(float fieldOfView, float aspectRatio)
 void Camera::setPosition(const gsl::Vector3D &position)
 {
     mPosition = position;
+    update(FOV, aRatio);
 }
 
 void Camera::setSpeed(float speed)

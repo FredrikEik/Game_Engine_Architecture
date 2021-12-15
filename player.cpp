@@ -59,12 +59,12 @@ void Player::move(float x, float y, float z)
     getTransformComponent()->mMatrix.translate(x,y,z);
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y,z);
     cameraTarget = getTransformComponent()->mMatrix.getPosition() + cameraOffset;
-    if(playerCamera != nullptr)
-    {
-        gsl::Vector3D newCameraPos = getTransformComponent()->mMatrix.getPosition() + thirdPersonOffset;
-        playerCamera->setPosition(newCameraPos);
-        playerCamera->lookat(newCameraPos, cameraTarget, playerCamera->up());
-    }
+//    if(playerCamera != nullptr)
+//    {
+//        gsl::Vector3D newCameraPos = getTransformComponent()->mMatrix.getPosition() + thirdPersonOffset;
+//        playerCamera->setPosition(newCameraPos);
+//        playerCamera->lookat(newCameraPos, cameraTarget, playerCamera->up());
+//    }
 
 }
 
@@ -103,6 +103,14 @@ void Player::movement(InputComponent* input)
         }
     }
 
+}
+
+void Player::setPlayerCamera(Camera *camera)
+{
+    playerCamera = camera;
+    gsl::Vector3D newCameraPos = getTransformComponent()->mMatrix.getPosition() + thirdPersonOffset;
+    playerCamera->setPosition(newCameraPos);
+    playerCamera->lookat(newCameraPos, cameraTarget, playerCamera->up());
 }
 void Player::draw()
 {

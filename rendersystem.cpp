@@ -283,7 +283,10 @@ void RenderSystem::render()
             }
 
             mShaderHandler->sendDataToShader(gameObject);
-            if(toggleFrustumCulling && gameObject->mObjectName != "Skybox")
+            if(toggleFrustumCulling
+                    && gameObject->mObjectType != gsl::SKYBOX
+                    && gameObject->mObjectType != gsl::TRIANGLESURFACE
+                    && gameObject->mObjectType != gsl::PLAYER)
             {
                 if(systemRef->isCollidingWithFrustum(*gameObject->getSphereCollisionComponent()))
                 {
@@ -321,6 +324,10 @@ void RenderSystem::render()
             else if (helperObject == gameObject)
             {
                 mIndexToPickedObject = 0;
+            }
+            if(systemRef->getEditorMode())
+            {
+                playCamera->draw();
             }
         }
     }
