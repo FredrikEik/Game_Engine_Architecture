@@ -5,6 +5,9 @@ CONFIG      += c++17
 
 TARGET      = GEA2021
 
+# Use Precompiled Headers (PCH)
+PRECOMPILED_HEADER = pch.h
+
 SOURCES += main.cpp \
     ECS/ResourceManager/resourcemanager.cpp \
     ECS/entitymanager.cpp \
@@ -23,7 +26,6 @@ SOURCES += main.cpp \
     mathfunctions.cpp \
     octahedronball.cpp \
     plane.cpp \
-    rendersystem.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
     rollingball.cpp \
@@ -61,8 +63,8 @@ HEADERS += \
     math_constants.h \
     mathfunctions.h \
     octahedronball.h \
+    pch.h \
     plane.h \
-    rendersystem.h \
     renderwindow.h \
     mainwindow.h \
     rollingball.h \

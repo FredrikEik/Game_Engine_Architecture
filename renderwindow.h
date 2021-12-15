@@ -1,13 +1,6 @@
 #ifndef RENDERWINDOW_H
 #define RENDERWINDOW_H
 
-#include <QWindow>
-#include <QOpenGLFunctions_4_1_Core>
-#include <QTimer>
-#include <QElapsedTimer>
-#include <vector>
-#include "input.h"
-
 class ECScoordinator;
 class QOpenGLContext;
 class Shader;
@@ -24,6 +17,9 @@ class Camera;
 class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
+
+    friend class ECScoordinator;
+
 public:
     RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow);
     ~RenderWindow() override;

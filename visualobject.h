@@ -1,13 +1,12 @@
 #ifndef VISUALOBJECT_H
 #define VISUALOBJECT_H
 
-#include <QOpenGLFunctions_4_1_Core>
 #include <QMatrix4x4>
-#include "vertex.h"
 
 class RenderWindow;
 class Shader;
 class Texture;
+class Vertex;
 
 class VisualObject : public QOpenGLFunctions_4_1_Core
 {

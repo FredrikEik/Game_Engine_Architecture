@@ -1,7 +1,7 @@
 #include "visualobject.h"
 #include "Shaders/shader.h"
 #include "texture.h"
-#include <QDebug>
+
 VisualObject::VisualObject()
 {
     m_scale.setToIdentity();

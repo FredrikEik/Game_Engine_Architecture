@@ -1,8 +1,6 @@
 #ifndef COMPONENTMANAGER_H
 #define COMPONENTMANAGER_H
 
-#include <components.h>
-
 class IComponentArray
 {
 public:
@@ -49,7 +47,7 @@ public:
 
     T& GetData(Entity entity)
     {
-        assert(m_IndexToEntity.find(entity) != m_IndexToEntity.end() && "Trying to retrive an non-existing component!");
+        assert(m_IndexToEntity.find(entity) != m_IndexToEntity.end() && "Trying to retrive a non-existing component!");
 
         //returning a reference to the entity component.
         return m_componentArray[m_entityToIndex[entity]];
@@ -64,11 +62,9 @@ public:
     }
 
 private:
-    //TODO: Find a better solution than maps? events?
     std::array<T, MAX_ENTITIES> m_componentArray;
 
     std::unordered_map<Entity, size_t> m_entityToIndex;
-
     std::unordered_map<size_t, Entity> m_IndexToEntity;
 
     size_t m_size;

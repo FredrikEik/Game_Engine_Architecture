@@ -1,9 +1,6 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <iostream>
-#include <fstream>
-
 class Vertex
 {
 

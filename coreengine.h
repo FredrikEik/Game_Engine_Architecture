@@ -1,13 +1,8 @@
 #ifndef COREENGINE_H
 #define COREENGINE_H
 
-#include "qobject.h"
-#include "input.h"
-
 //Forward declarations
-class ResourceManager;
-class SoundSystem;
-class RenderSystem;
+class RenderWindow;
 class Camera;
 class QTimer;
 class MainWindow;
@@ -17,18 +12,14 @@ class CoreEngine : public QObject
 {
     Q_OBJECT
 public:
-    CoreEngine(RenderSystem *renderSystemIn, MainWindow *mainWindowIn);
+    CoreEngine(RenderWindow *renderSystemIn, MainWindow *mainWindowIn);
 
     //Not singleton now, but can use this function to get Engine instance.
     static CoreEngine* getInstance();
 
     void togglePlayMode(bool shouldPlay);
 
-//    void setUpScene();
-
-    void handleInput();
-
-    RenderSystem *mRenderSystem{nullptr};
+    RenderWindow *mRenderSystem{nullptr};
 
     MainWindow *mMainWindow{nullptr};
 

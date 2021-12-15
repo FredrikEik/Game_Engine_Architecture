@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <QOpenGLFunctions_4_1_Core>
 #include <QMatrix4x4>
 
 class Camera : public QOpenGLFunctions_4_1_Core

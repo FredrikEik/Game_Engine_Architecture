@@ -1,6 +1,5 @@
 #include "lasplane.h"
 #include "Shaders/shader.h"
-#include <map>
 
 LasPlane::LasPlane(std::string filename)
     :VisualObject()

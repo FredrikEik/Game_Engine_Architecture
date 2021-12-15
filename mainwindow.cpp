@@ -1,11 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QSurfaceFormat>
-#include <QDebug>
-#include <QScreen>  //for resizing the program at start
-
 #include "renderwindow.h"
+#include "coreengine.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -76,13 +73,10 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.65;
     resize(tempSize);
 
+    //Create the engine.
+    mCoreEngine = new CoreEngine(mRenderWindow, this);
+
     //sets the keyboard input focus to the RenderWindow when program starts
     // - can be deleted, but then you have to click inside the renderwindow to get the focus
     mRenderWindowContainer->setFocus();
 }
-
-//Example of a slot called from the button on the top of the program.
-//void MainWindow::on_pushButton_toggled(bool checked)
-//{
-//    mRenderWindow->toggleWireframe(checked);
-//}

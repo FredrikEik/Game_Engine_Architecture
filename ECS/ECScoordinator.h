@@ -1,9 +1,6 @@
 #ifndef ECSCOORDINATOR_H
 #define ECSCOORDINATOR_H
 
-#include <iostream>
-//#include "components.h"
-
 #include "ECS/entitymanager.h"
 #include "ECS/compmanager.h"
 #include "ECS/systemmanager.h"
@@ -23,6 +20,8 @@ public:
         RegisterComponent<TransformComponent>();
         RegisterComponent<MeshComponent>();
         RegisterComponent<MaterialComponent>();
+
+
     }
 
     //Entity functionality:

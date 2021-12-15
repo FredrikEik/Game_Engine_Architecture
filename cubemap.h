@@ -2,7 +2,6 @@
 #define CUBEMAP_H
 
 #include "texture.h"
-#include "array"
 
 class Cubemap : public Texture
 {

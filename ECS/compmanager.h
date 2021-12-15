@@ -1,10 +1,7 @@
 #ifndef COMPMANAGER_H
 #define COMPMANAGER_H
 
-
-#include <typeinfo>
 #include "componentarray.h"
-#include "components.h"
 
 class ComponentManager
 {

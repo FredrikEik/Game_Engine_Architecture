@@ -1,9 +1,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include <QOpenGLFunctions_4_1_Core>
 #include <qmatrix4x4.h>
-#include "vertex.h"
 
 using ComponentType = GLubyte;
 const ComponentType MAX_COMPONENTS = 16;
@@ -24,7 +22,7 @@ struct TransformComponent
 
 struct MeshComponent
 {
-    std::vector<Vertex> m_vertices;
+    std::vector<class Vertex> m_vertices;
     std::vector<GLuint> m_indices;
     GLuint m_VAO[3];  //VertexArrayObject
     GLuint m_VBO;  //VertexBufferObject

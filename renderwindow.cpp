@@ -1,14 +1,5 @@
 #include "renderwindow.h"
-#include <QTimer>
 #include <QMatrix4x4>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QOpenGLDebugLogger>
-#include <QKeyEvent>
-#include <QStatusBar>
-#include <QDebug>
-
-#include <iostream> //we use std::cout for GPU readout
 
 #include "Shaders/shader.h"
 #include "Shaders/plainshader.h"
@@ -18,15 +9,12 @@
 
 #include "ECS/ECScoordinator.h"
 
-#include "vertex.h"
 #include "visualobject.h"
 #include "texture.h"
-#include "input.h"
 #include "camera.h"
 #include "mainwindow.h"
 #include "lightsource.h"
 #include "plane.h"
-#include "constants.h"
 #include "skybox.h"
 #include "lasplane.h"
 #include "rollingball.h"
@@ -110,10 +98,7 @@ void RenderWindow::init()
     ECScord = std::make_unique<ECScoordinator>();
     ECScord->init();
 
-    //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
+    //Create shaders:
     m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"plain", new PlainShader((gsl::ShaderFilePath + "plainshader.vert").c_str(), (gsl::ShaderFilePath + "plainshader.frag").c_str())});
     m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"texture", new TextureShader((gsl::ShaderFilePath + "texture.vert").c_str(), (gsl::ShaderFilePath + "texture.frag").c_str())});
     m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"phong", new PhongShader((gsl::ShaderFilePath + "phong.vert").c_str(), (gsl::ShaderFilePath + "phong.frag").c_str())});
@@ -125,12 +110,12 @@ void RenderWindow::init()
     //textures
     m_textureMap.insert(std::pair<std::string, Texture*>{"dog", new Texture(gsl::TextureFilePath + "hund.bmp")});
 
-    //Meshes
-    sphere = ECScord->readObj(gsl::MeshFilePath + "sphere.obj");
-
     //Set textures to a texture unit
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_textureMap["dog"]->id());
+
+    //Meshes
+    sphere = ECScord->readObj(gsl::MeshFilePath + "sphere.obj");
 
     //Light
     m_light = new LightSource(m_shaderProgramMap["phong"]);
@@ -141,19 +126,6 @@ void RenderWindow::init()
     m_world->setShader(m_shaderProgramMap["phong"]);
     m_world->setObjectName("World");
 
-//    //LasMap
-//    m_world = new LasPlane(gsl::AssetFilePath + "test_las.txt");
-//    m_world->setShader(m_shaderProgramMap["phong"]);
-//    m_world->setObjectName("Las World");
-
-    //rollingBall
-//    m_ball = new RollingBall(sphere);
-//    m_ball->setShader(m_shaderProgramMap["phong"]);
-//    m_ball->setObjectName("Ball");
-//    m_ball->setPosition(QVector3D(50.f, 50.f, 50.f));
-//    dynamic_cast<RollingBall*>(m_ball)->setSurface(m_world);
-    //m_ball->setSurface(m_world);
-
     //Skybox
     m_skybox = new SkyBox();
     m_skybox->setShader(m_shaderProgramMap["cubemap"]);
@@ -161,6 +133,8 @@ void RenderWindow::init()
 
     //Camera
     m_camera = new Camera();
+    m_camera->setName("Editor Camera");
+    m_camera->setEditorCamera(true);
     m_camera->pitch(10.f);
     m_camera->perspective(60.f, 4.f/3.f, 0.1f, 1000.f);
 
@@ -171,7 +145,6 @@ void RenderWindow::init()
     m_world->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_light->init(m_shaderProgramMap["phong"]->getModelMatrixUniform());
     m_skybox->init(m_skybox->getShader()->getModelMatrixUniform());
-    //m_ball->init(m_ball->getShader()->getModelMatrixUniform(), ECScord->getMeshVertices(sphere), ECScord->getMeshIndices(sphere));
 
     glBindVertexArray(0);       //unbinds any VertexArray - good practice
 }
@@ -212,12 +185,8 @@ void RenderWindow::render()
     glUseProgram(m_shaderProgramMap["phong"]->getProgram());
     m_camera->update(m_shaderProgramMap["phong"]->getProjectionMatrixUniform(), m_shaderProgramMap["phong"]->getViewMatrixUniform());
 
-    //Put these in a container?
     m_world->draw();
     m_light->draw();
-    //m_ball->move(0.017f);
-    //m_ball->draw(ECScord->getMeshData(sphere));
-
 
     //Calculate framerate before
     // checkForGLerrors() because that call takes a long time
@@ -231,7 +200,6 @@ void RenderWindow::render()
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
     mContext->swapBuffers(this);
-
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -364,9 +332,7 @@ void RenderWindow::createAllObjects(/*bool bReset*/)
 
     m_world = createObject(new Plane("../3Dprog21/Assets/hm2.bmp"), "World", "phong", QVector3D(0.f, 0.f, 0.f));
     m_light = createObject(new LightSource(m_shaderProgramMap["phong"]), "Lightsource", "phong", QVector3D(150.f, 150.f, 150.f));
-    //m_skybox = createObject(new SkyBox(), "Skybox", "cubemap", QVector3D(0.f, 0.f, 0.f));
-    //m_player = dynamic_cast<Player*>(createObject(new Player(), "Player", "phong", QVector3D(50.f, 0.f, 50.f)));
-    //m_player->setPlane(dynamic_cast<Plane*>(m_world));
+
     if(!m_player)
         qDebug() << "Error: Dynamic cast failed for m_player";
 }

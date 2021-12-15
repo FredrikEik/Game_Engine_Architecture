@@ -1,11 +1,6 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include <unordered_map>
-#include "components.h"
-#include "constants.h"
-#include "qopenglfunctions_4_1_core.h"
-
 struct MeshData
 {
     //according to https://www.learncpp.com/cpp-tutorial/arrays-part-ii/
@@ -13,15 +8,14 @@ struct MeshData
     GLuint mVAO[3]{};
     GLuint mVBO[3]{};
     GLuint mEAB[3]{};
+
     //want all these to be at -1 so I do it explicitly
     GLint mVertexCount[3]{-1, -1, -1};
     GLint mIndexCount[3]{-1, -1, -1};
     GLenum mDrawType{GL_TRIANGLES};
     std::vector<Vertex> mVertices[3];
     std::vector<GLuint> mIndices[3];
-    //AABB Collider box:
-//    QVector3D mUpRightFrontCorner{};
-//    QVector3D mLowLeftBackCorner{};
+
     //BoundingSphere:
     float mColliderRadius{0};
 };

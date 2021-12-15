@@ -1,7 +1,6 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
-#include <QOpenGLFunctions_4_1_Core>
 
 struct TransformComponent;
 struct MeshComponent;

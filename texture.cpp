@@ -1,12 +1,3 @@
-#include <QDebug>
-#include <QImage>
-#include <QBuffer>
-#include <QByteArray>
-
-#include <iostream>
-#include <fstream>
-#include <string>
-
 #include "texture.h"
 
 Texture::Texture()

@@ -1,9 +1,4 @@
 #include "shader.h"
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <QDebug>
 
 //#include "GL/glew.h" - using QOpenGLFunctions instead
 

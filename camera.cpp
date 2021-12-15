@@ -1,7 +1,6 @@
 #include "camera.h"
 #include "mathfunctions.h"
 #include "visualobject.h"
-#include "math.h"
 
 Camera::Camera()
 {

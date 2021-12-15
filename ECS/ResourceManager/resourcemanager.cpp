@@ -1,6 +1,4 @@
 #include "ECS/ResourceManager/resourcemanager.h"
-#include <fstream>
-#include <sstream>
 
 ResourceManager::ResourceManager()
 {

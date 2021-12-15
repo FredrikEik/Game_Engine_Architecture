@@ -1,11 +1,8 @@
 #ifndef SYSTEMMANAGER_H
 #define SYSTEMMANAGER_H
 
-#include <typeinfo>
-#include "components.h"
 #include "entitymanager.h"
 #include "systembase.h"
-
 
 class SystemManager
 {

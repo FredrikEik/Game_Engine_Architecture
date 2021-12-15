@@ -1,8 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <QOpenGLFunctions_4_1_Core>
-
 /**
     \brief Simple class for creating textures from a bitmap file.
     \author Dag Nylund

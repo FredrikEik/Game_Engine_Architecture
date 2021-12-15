@@ -1,7 +1,6 @@
 #include "rollingball.h"
 #include "lasplane.h"
 #include "mathfunctions.h"
-#include "constants.h"
 #include "Shaders/shader.h"
 #include "ECS/ResourceManager/resourcemanager.h"
 

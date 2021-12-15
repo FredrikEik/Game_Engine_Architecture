@@ -1,10 +1,6 @@
 #ifndef ENTITYMANAGER_H
 #define ENTITYMANAGER_H
 
-#include <queue>
-#include <bitset>
-#include "components.h"
-
 using Signature = std::bitset<MAX_COMPONENTS>;
 
 class EntityManager

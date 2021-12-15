@@ -1,8 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include <string>
-
 namespace gsl  //Game School Lib
 {
     const std::string ProjectFolderName{"../GEA2021/"};

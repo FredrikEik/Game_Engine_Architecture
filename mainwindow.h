@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
 class QWidget;
 class RenderWindow;
 
@@ -27,6 +25,7 @@ private:
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;
+    class CoreEngine *mCoreEngine{nullptr};
 };
 
 #endif // MAINWINDOW_H
