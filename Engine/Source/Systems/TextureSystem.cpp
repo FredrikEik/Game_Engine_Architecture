@@ -38,17 +38,14 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 
 void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map<std::string, std::string>& nameFileMap)
 {
-	std::cout << '\n' << nameFileMap.size();
 	for (const auto& it : nameFileMap)
 	{
 		std::string name = it.first;
 		auto filename = it.second;
 
-		std::cout << name << '\n';
 
 		TextureComponent tex(MaterialComp->entityID, MaterialComp->ID);
 		loadImage(0, filename, &tex);
-		std::cout << "test";
 		MaterialComp->textures.insert(std::make_pair(name, std::move(tex)));
 
 	}

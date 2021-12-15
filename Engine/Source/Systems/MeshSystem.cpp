@@ -50,6 +50,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     ComponentManager<TextureComponent>* textureManager = manager->getComponentManager<TextureComponent>();
+    ComponentManager<testComponent>* testManager = manager->getComponentManager<testComponent>();
     TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
 	ComponentManager<MaterialComponent>* materialManager = manager->getComponentManager<MaterialComponent>();
     if (!meshManager || !transformManager || !cameraTransform)
@@ -63,6 +64,16 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     {
 
         MeshComponent& meshComp = meshArray[it];
+        auto testComp = testManager->getComponentChecked(meshComp.entityID);
+        if(testComp)
+        {
+            glStencilMask(0x00);
+        }
+        else
+        {
+            glStencilMask(0xFF);
+        }
+
         // skip transulenct objects
         if (meshComp.bIsTranslucent == true || !meshComp.bShouldRender || 
             (meshComp.bDrawDeferred == true && bIsDeferredDraw == false) || (meshComp.bDrawDeferred == false && bIsDeferredDraw == true))
@@ -304,6 +315,7 @@ void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECS
 	ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
 	ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     ComponentManager<SelectionComponent>* selectionManager = manager->getComponentManager<SelectionComponent>();
+    ComponentManager<testComponent>* testManager = manager->getComponentManager<testComponent>();
 	if (!meshManager || !transformManager || !selectionManager)
 		return;
 
@@ -318,6 +330,15 @@ void MeshSystem::drawOutline(Shader* shader, const std::string& uniformName, ECS
             MeshComponent* meshComp = meshManager->getComponentChecked(id);
             if (!meshComp)
                 continue;
+
+			auto testComp = testManager->getComponentChecked(meshComp->entityID);
+			if (testComp)
+			{
+				continue;
+			}
+
+
+
 			auto& transformComp = transformManager->getComponent(meshComp->entityID);
 
 			glm::mat4x4 temp = transformComp.transform;
