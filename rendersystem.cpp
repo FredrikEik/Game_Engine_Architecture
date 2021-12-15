@@ -135,7 +135,7 @@ void RenderSystem::init()
     setupSkyboxShader(2);
     setupLightShader(3);
     setupLightShader(4);
-    setupLightShader(5);
+
 
     this->dt = 0;
     this->curTime = 0;
@@ -227,24 +227,9 @@ void RenderSystem::render()
             projectionMatrix = pMatrixUniform2;
             modelMatrix = mMatrixUniform2;
             glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit);
-//            glUniform1f(mAmbientStrengt, mAmbientStrengt);
-//            glUniform1f(mLightStrengt, 2);
-
-        }
-
-        else if (mGameObjects[i]->mMaterial->mShaderProgram == 5)
-        {
-
-            ///setter opp lys
-            viewMatrix = vMatrixUniform2;
-            projectionMatrix = pMatrixUniform2;
-            modelMatrix = mMatrixUniform2;
-            glUniform1i(mTextureUniform4, mGameObjects[i]->mMaterial->mTextureUnit);
             glUniform1f(mAmbientStrengt, mAmbientStrengt);
-            glUniform1f(mLightStrengt, 2);
 
         }
-
 
 
         ///sender data til shader

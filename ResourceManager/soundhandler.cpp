@@ -101,6 +101,7 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
     if(!makeALBuffer(wavePtr))
         delete wavePtr;
 
+
     return wavePtr;
 }
 
@@ -170,6 +171,7 @@ int SoundHandler::makeALSource(ALuint bufferIn, float vol)
     if(!checkALError("alGenSources"))
         return -1;
     alSourcei(tempSource, AL_BUFFER, bufferIn);
+        //alSourcei(bufferIn, AL_LOOPING, AL_FALSE);
     if(!checkALError("alSourcei (makeALSource)"))
         return -1;
     setVolume(tempSource, vol);
@@ -180,6 +182,7 @@ int SoundHandler::makeALSource(ALuint bufferIn, float vol)
 void SoundHandler::setVolume(ALuint temp, float vol)
 {
     alSourcef(temp, AL_GAIN, vol);
+
 }
 
 bool SoundHandler::endOnFileReadError(std::string errmsg)

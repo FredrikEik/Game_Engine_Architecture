@@ -9,6 +9,7 @@ class QWidget;
 class QTreeWidgetItem;
 class RenderSystem;
 class CoreEngine;
+class ResourceManager;
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
+    bool sceneLoaded = false;
     void selectObjectByIndex(int indexIn);
     QListWidgetItem *mCurrentSelectedItem{nullptr};
     QTreeWidgetItem *mCurrentTreeItem{nullptr};
@@ -56,6 +57,7 @@ private:
     bool itemFromSceneAdded = false;
     QWidget *mRenderWindowContainer{nullptr};
     RenderSystem *mRenderSystem{nullptr};
+    ResourceManager *mResourceManager{nullptr};
     CoreEngine *mCoreEngine{nullptr};
 };
 

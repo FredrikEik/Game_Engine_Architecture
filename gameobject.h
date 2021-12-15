@@ -27,6 +27,7 @@ public:
      bool useFrustum = true;
      gsl::Vector3D startPos{0,0,0};
 
+
      GameObject* _las;
      /*!
       * \brief movement funksjon for å bevege spilleren/objekter

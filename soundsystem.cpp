@@ -31,13 +31,7 @@ bool SoundSystem::init()
     else
         qDebug() << "OpenAL intialization complete!";
 
-    /*Start listing of found sound devices:
-    //Not jet implemented
-    //ALDeviceList *pDeviceList = NULL;
-    //ALCcontext *pContext = NULL;
-    //ALCdevice *pDevice = NULL;
-    //ALint i;	//will hold the number of the preferred device
-    //ALboolean bReturn = AL_FALSE;*/
+
 
     return true;
 }
@@ -93,7 +87,7 @@ bool SoundSystem::checkError()
     case AL_NO_ERROR:
         break;
     case AL_INVALID_NAME:
-        qDebug() << "Invalid name!";
+        //qDebug() << "Invalid name!";
         return false;
     case AL_INVALID_ENUM:
         qDebug() << "Invalid enum!";

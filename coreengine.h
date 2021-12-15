@@ -73,6 +73,7 @@ public:
     void spawnProjectile();
     void handleInput();
     void playSound(std::string assetName);
+    void addEntity(std::string assetName);
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

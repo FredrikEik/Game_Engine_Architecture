@@ -77,7 +77,7 @@ void CoreEngine::setUpScene()
     mEditorCamera = new Camera();
     mGameCamera->mViewMatrix.rotateY(30.f);
     mGameCamera->mViewMatrix.rotateX(90.f);
-    mEditorCamera->mPosition = gsl::Vector3D(0.f, 20.f, 13.f);
+    mEditorCamera->mPosition = gsl::Vector3D(0.f, 10.f, 13.f);
 
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
@@ -90,6 +90,7 @@ void CoreEngine::setUpScene()
     Las->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(Las);
 
+
     //game/render loopen som skal oppdateres 60 ganger i sekundet
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
     mGameLoopTimer->start(16);
@@ -98,20 +99,6 @@ void CoreEngine::setUpScene()
 
 void CoreEngine::testScene()
 {
-    //legger til en spiller
-    player = mResourceManager->addObject("suzanne.obj");
-    player->mMaterial->mShaderProgram = 0;
-    player->mMaterial->mTextureUnit = 0;
-    player->mTransform->mMatrix.rotateY(180.f);
-    player->mTransform->mMatrix.scale(0.5f);
-    player->mTransform->mMatrix.translate(0.f, 0, -20);
-    //legger til sphere kollisjon
-    mResourceManager->addCollider("sphere", player);
-    //legger til musikk til spilleren:
-    mResourceManager->addComponent("neon_stereo.wav", player);
-    player->mSoundComponent->shouldPlay = true;
-    player->objName = "Player";
-    mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
     //spawner 10 fiender på rekke
     for(int i = 0; i < 10; i++)
@@ -141,6 +128,23 @@ void CoreEngine::testScene()
     mResourceManager->addComponent("splat_stereo.wav", projectile);
     projectile->mSoundComponent->shouldPlay = false;
     mResourceManager->addCollider("sphere", projectile);
+
+
+
+    //legger til en spiller
+    player = mResourceManager->addObject("suzanne.obj");
+    player->mMaterial->mShaderProgram = 0;
+    player->mMaterial->mTextureUnit = 0;
+    player->mTransform->mMatrix.rotateY(180.f);
+    player->mTransform->mMatrix.scale(0.5f);
+    player->mTransform->mMatrix.translate(0.f, 0, -20);
+    //legger til sphere kollisjon
+    mResourceManager->addCollider("sphere", player);
+    //legger til musikk til spilleren:
+    mResourceManager->addComponent("neon_stereo.wav", player);
+    player->mSoundComponent->shouldPlay = true;
+    player->objName = "Player";
+    mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
 
     mRenderSystem->mGameObjects.push_back(player);
@@ -446,6 +450,12 @@ void CoreEngine::handleInput()
 void CoreEngine::playSound(std::string assetName)
 {
     mResourceManager->addComponent(assetName, player);
+}
+
+void CoreEngine::addEntity(std::string assetName)
+{
+    GameObject* temp = mResourceManager->addObject(assetName);
+    mRenderSystem->mGameObjects.push_back(temp);
 }
 
 void CoreEngine::gameLoop()

@@ -11,6 +11,7 @@
 #include "coreengine.h"
 #include "transformwidget.h"
 #include "resourcemanager.h"
+#include "resourcemanager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -167,9 +168,23 @@ void MainWindow::on_actionAdd_Player_triggered()
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
-    CoreEngine::getInstance()->playerSpawned = true;
-    mRenderSystem->mGameObjects.push_back(mCoreEngine->player);
-    ui->listWidget->addItem(mCoreEngine->player->objName);
+
+//        mCoreEngine->player = mResourceManager->addObject("suzanne.obj");
+//        mCoreEngine->player->mMaterial->mShaderProgram = 0;
+//        mCoreEngine->player->mMaterial->mTextureUnit = 0;
+//        mCoreEngine->player->mTransform->mMatrix.rotateY(180.f);
+//        mCoreEngine->player->mTransform->mMatrix.scale(0.5f);
+//        mCoreEngine->player->mTransform->mMatrix.translate(0.f, 0, -20);
+//        //legger til sphere kollisjon
+//        mResourceManager->addCollider("sphere", mCoreEngine->player);
+//        //legger til musikk til spilleren:
+//        mResourceManager->addComponent("neon_stereo.wav", mCoreEngine->player);
+//        mCoreEngine->player->mSoundComponent->shouldPlay = true;
+//        mCoreEngine->player->objName = "Player";
+        mRenderSystem->mGameObjects.push_back(CoreEngine::getInstance()->player);
+       //mCoreEngine->addEntity("suzanne.obj");
+        ui->listWidget->addItem(CoreEngine::getInstance()->player->objName);
+        CoreEngine::getInstance()->playerSpawned = true;
     }
 }
 
@@ -201,14 +216,21 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 void MainWindow::on_pushButton_2_clicked()
 {
     //legger til en scene
-    mCoreEngine->testScene();
-
-
-    for(unsigned int i = 0; i < mCoreEngine->enemies.size(); i ++)
+    if(!sceneLoaded)
     {
+        mCoreEngine->testScene();
+        sceneLoaded = true;
+        for(unsigned int i = 0; i < mCoreEngine->enemies.size(); i ++)
+        {
 
-        ui->listWidget->addItem(mCoreEngine->enemies[i]->objName);
+            ui->listWidget->addItem(mCoreEngine->enemies[i]->objName);
+        }
     }
+    else
+        qDebug() << "scene already loaded";
+
+
+
 }
 
 
