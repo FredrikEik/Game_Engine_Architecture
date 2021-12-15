@@ -39,7 +39,8 @@ uint64 getEntityID_Internal(MonoObject* this_ptr, MonoString* str)
 
 	return entityID;
 }
-
+// #include "../Sound/SoundSource.h"
+//&Play_Internal()
 void ScriptSystem::Init()
 {
 	//Namespace.Class::Method + a Function pointer with the actual definition

@@ -47,6 +47,7 @@
 #include <thread>
 
 
+
 #define ASSERT(x) if (!(x)) __debugbreak();
 #ifdef _DEBUG
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(__FUNCTION__, __FILE__, __LINE__))
@@ -304,6 +305,7 @@ void Engine::init()
 
 
 
+
 	reservedEntities = ECS->getNumberOfEntities();
 
 	viewport->begin(window, reservedEntities);
@@ -378,7 +380,7 @@ void Engine::loop()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glStencilMask(0x00);
-		LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity);
+		LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity, deltaTime);
 
 		//LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 

@@ -78,26 +78,31 @@ void LightSystem::InitSBuffer(ShadowBufferComponent* SComp)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, const std::string& uniformName, class ECSManager* ECS, uint32 SystemEntity, uint32 cameraEntity)
+void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, const std::string& uniformName, class ECSManager* ECS, uint32 SystemEntity, uint32 cameraEntity, float deltaTime)
 {
 	auto sBufferComp = ECS->getComponentManager<ShadowBufferComponent>()->getComponentChecked(SystemEntity);
 	auto cameraComp = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
 
 	// lighting info
 	// -------------
-	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+	
+	
+	sBufferComp->m_theta += glm::radians(45.f) * deltaTime;
+	const float radius{ 300.f };
+	sBufferComp->lightPos += glm::vec3(radius * std::sin(sBufferComp->m_theta), 0, radius * std::cos(sBufferComp->m_theta)) * deltaTime * 0.2f;
+
 
 	
 	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f),
 		(float)sBufferComp->SHADOW_WIDTH / (float)sBufferComp->SHADOW_HEIGHT,
 		cameraComp->near, cameraComp->far);
 	std::vector<glm::mat4> shadowTransforms;
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
 	// 1. render scene to depth cubemap
 	// --------------------------------
@@ -108,7 +113,7 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	for (unsigned int i = 0; i < 6; ++i)
 		ShadowDepthShader->setMat4("u_shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
 	ShadowDepthShader->setFloat("u_far_plane", cameraComp->far);
-	ShadowDepthShader->setVec3("u_lightPos", lightPos);
+	ShadowDepthShader->setVec3("u_lightPos", sBufferComp->lightPos);
 	CameraSystem::draw(cameraEntity, ShadowDepthShader, ECS);
 	MeshSystem::draw(ShadowDepthShader, uniformName, ECS, cameraEntity);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -122,7 +127,7 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	ShadowShader->use();
 	
 	// set lighting uniforms
-	ShadowShader->setVec3("u_lightPos", lightPos);
+	ShadowShader->setVec3("u_lightPos", sBufferComp->lightPos);
 	TransformComponent* cameraTransformComp{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
 	glm::vec3 originOfCam = cameraTransformComp->transform[3];
 
