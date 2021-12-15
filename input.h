@@ -2,7 +2,7 @@
 #define INPUT_H
 
 /**
-  Denne structen inneholder informasjon om tastene vi bruker.
+  Denne structen inneholder informasjon om taste-bruk i runtime.
   Statusen på tastene individuelt håndteres i renderwindow, om de er trykket ned, holdes nede eller er sluppet.
  */
 struct Input

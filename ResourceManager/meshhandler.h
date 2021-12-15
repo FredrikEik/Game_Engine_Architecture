@@ -7,12 +7,8 @@
 #include "components.h"
 
 /**
-  MeshHandler handles the potential meshes for gameobjects.
-  The struct MeshData stores all relevant details for the 3D-models creation and managment. For example each mesh's lod information, and a Vector of all vertices in mVertices.
-  There are three "types" of functions here;
-  1. Creating meshes and reading files for mesh creation.
-  2. Various debug, simple line, collision and visualization tools.
-  3. Functions that return information about the meshes of gameobjects
+  The MeshData struct stores all relevant details for the 3D-models creation and managment.
+  For example each mesh's lod information, and a Vector of all vertices in mVertices.
  */
 
 struct MeshData
@@ -36,6 +32,13 @@ struct MeshData
     std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0]; } //Only need the first, beacuse there is no LOD.
 };
 
+/**
+  MeshHandler handles the potential meshes for gameobjects.
+  There are three "types" of functions here;
+  1. Creating meshes and reading files for mesh creation.
+  2. Various debug, simple line, collision and visualization tools.
+  3. Functions that return information about the meshes of gameobjects
+ */
 
 class MeshHandler : public QOpenGLFunctions_4_1_Core
 {

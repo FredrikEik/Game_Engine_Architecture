@@ -1,0 +1,25 @@
+        {
+            "name": "Skybox1",
+            "shader": "skyboxshader",
+            "texture": "cubemap1.bmp",
+        },
+        {
+            "name": "Skybox2",
+            "shader": "skyboxshader",
+            "texture": "cubemap2.bmp",
+        },
+        {
+            "name": "Skybox3",
+            "shader": "skyboxshader",
+            "texture": "cubemap3.bmp",
+        },
+        {
+            "name": "Skybox4",
+            "shader": "skyboxshader",
+            "texture": "cubemap4.bmp",
+        },
+        {
+            "name": "Skybox5",
+            "shader": "skyboxshader",
+            "texture": "cubemap5.bmp",
+        }

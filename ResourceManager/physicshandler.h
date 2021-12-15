@@ -6,7 +6,7 @@ class GameObject;
 class GameObjectManager;
 
 /**
-  The PhsysicsHandler is from the Visualization & simulation course.
+  The PhsysicsHandler is from the Visualization & simulation course, to simulate balls rolling over meshes.
   Mostly not used now, but contains function for simulating balls rolling down meshes.
   Integrated with the GameObjectManager to get references to the gameobjects needed for the simualtion.
  */

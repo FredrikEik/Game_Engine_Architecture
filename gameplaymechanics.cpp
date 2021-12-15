@@ -11,7 +11,7 @@ GamePlayMechanics::GamePlayMechanics(RenderSystem *renderSystemIn) : mRenderSyst
     mGameObjectManager = &GameObjectManager::getInstance();
 }
 
-/*GameObject*/ void GamePlayMechanics::TetrominoMaker(int tetromino)
+void GamePlayMechanics::tetrominoMaker(int tetromino)
 {
     bool tetrominoCraftGrid[4][3] = {{0}};
     std::string GameBlockName = {};
@@ -164,6 +164,7 @@ switch (tetromino)
                 GameBlock = mGameObjectManager->addObject("Cube.obj"); //Add a mesh-component four times
                 GameBlock->mTransform->mMatrix.translate(i, j, 0.0f);  //At this location
                 GameBlock->mTransform->mMatrix.scale(1.0f);
+                GameBlock->mMaterial = mGameObjectManager->getMaterial("Phong");
             }
         }
     }
@@ -172,7 +173,7 @@ switch (tetromino)
 }
 
 
-int GamePlayMechanics::GetTetrominoNr()
+int GamePlayMechanics::getTetrominoNr()
 {
     //Select a random block out of the seven tetrominos. Discard if equal to last one.
     int currentTetromino = 0;
@@ -186,7 +187,7 @@ int GamePlayMechanics::GetTetrominoNr()
 }
 
 
-void GamePlayMechanics::MoveTetromino(int time)
+void GamePlayMechanics::moveTetromino(int time)
 {
 //    GameObject brick = mRenderSystem->getGameObjectOfName("Tetromino");
 
@@ -205,21 +206,19 @@ void GamePlayMechanics::MoveTetromino(int time)
 }
 
 
-void GamePlayMechanics::ManageGameplayLines()
+void GamePlayMechanics::manageGameplayLines()
 {
     //Check if one or more line is filled, and should be emptied
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < horizontalIndex; i++)
     {
-        for (int j = 0; j < 9; j++)
+        if (gameField[i][0] == true && gameField[i][1] == true && gameField[i][2] == true &&
+            gameField[i][3] == true && gameField[i][4] == true && gameField[i][5] == true &&
+            gameField[i][6] == true && gameField[i][7] == true && gameField[i][8] == true)
         {
-            if (gameField[i][j] == true)
-            {
-                qDebug() << "Line" + QString::fromStdString(std::to_string(i)) + "is full";
-            }
+            qDebug() << "HorizontalLine" + QString::fromStdString(std::to_string(i)) + "is full";
         }
     }
-
     //Could be made to handle "continuity" of blocks fallen, to make "gravity" work as in tetris games
     //Could be more easier and more "fun" if that handling isnt "correct", leading to more cleared lines?
 }

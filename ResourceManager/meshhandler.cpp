@@ -690,20 +690,6 @@ int MeshHandler::readLasFile()
                 planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point is found, make an average value.
             }
 
-//            if(nrPoints[x][z] == 0)
-//            {
-//                qDebug() << "No heights found square" << x << z;
-//            }
-
-//            else if (x > 0) //if no points are found, create a height based on neighbours.
-//            {
-//                planeGrid[x][z].y = planeGrid[x-1][z].y;
-//            }
-//            else
-//            {
-//                planeGrid[x][z].y = planeGrid[x+1][z].y;
-//            }
-
             planeGrid[x][z].x -= xMin; // Gives new positions to points, to give a resonable origin of the mesh in scene
             planeGrid[x][z].z -= zMin;
             planeGrid[x][z].y -= yMin;
@@ -723,11 +709,6 @@ int MeshHandler::readLasFile()
 
     distanceBetweenSquaresX /= widthScale; //To make normal calculation work. Makes the distances scale according to cordinates in grid
     distanceBetweenSquaresZ /= depthScale;
-
-    //    meshDataPoints.mDrawType = GL_POINTS; //If i want to draw the points
-    //    glPointSize(5.0f);
-    //    initMesh(meshDataPoints, 0);
-    //    return mMeshes.size()-1;
 
     ////Create triangle based on the points
     qDebug() << "Start of triangle calculations (should be much less expensive)";
@@ -757,6 +738,7 @@ int MeshHandler::readLasFile()
 
     qDebug() << "Start of normal calculation";
 {
+////Leaving some variations that i implemented, that could have worked, but did not.
 //    gsl::Vector3D triangleNormal{0};
 //    int count = 0;
 
@@ -816,15 +798,6 @@ int MeshHandler::readLasFile()
     gsl::Vector3D v4 = p4 - pCenter;
     gsl::Vector3D v5 = p5 - pCenter;
 
-
-    //Get the absolute value, if not, it's dark (Has negative values)
-//    v0 = gsl::Vector3D{std::abs(v0.x), std::abs(v0.y), std::abs(v0.z)};
-//    v1 = gsl::Vector3D{std::abs(v1.x), std::abs(v1.y), std::abs(v1.z)};
-//    v2 = gsl::Vector3D{std::abs(v2.x), std::abs(v2.y), std::abs(v2.z)};
-//    v3 = gsl::Vector3D{std::abs(v3.x), std::abs(v3.y), std::abs(v3.z)};
-//    v4 = gsl::Vector3D{std::abs(v4.x), std::abs(v4.y), std::abs(v4.z)};
-//    v5 = gsl::Vector3D{std::abs(v5.x), std::abs(v5.y), std::abs(v5.z)};
-
     //Calulate the normals for each triangle around the point
     n0 = v0.cross(v0, v1);
     n0.normalize();
@@ -849,7 +822,6 @@ int MeshHandler::readLasFile()
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
 qDebug() << "End of normal calculations";
-
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.

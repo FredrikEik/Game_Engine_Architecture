@@ -16,10 +16,10 @@ class GamePlayMechanics
 public:
     //Functions
     GamePlayMechanics(RenderSystem *renderSystemIn);
-    int GetTetrominoNr();
-    void MoveTetromino(int time);
-    void ManageGameplayLines();
-    /*GameObject*/ void TetrominoMaker(int tetromino);
+    int getTetrominoNr();
+    void moveTetromino(int time);
+    void manageGameplayLines();
+    /*GameObject*/ void tetrominoMaker(int tetromino);
 
     //Set up 2D array of squares of tetris
     const int horizontalIndex = 6;

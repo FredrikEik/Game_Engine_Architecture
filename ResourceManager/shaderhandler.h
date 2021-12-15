@@ -2,7 +2,9 @@
 #define SHADERHANDLER_H
 
 #include <QOpenGLFunctions_4_1_Core>
-
+/**
+   Handles input and variables with shaders.
+  */
 //This class is pretty much a copy of the shader class at
 //https://github.com/SonarSystems/Modern-OpenGL-Tutorials/blob/master/%5BLIGHTING%5D/%5B8%5D%20Basic%20Lighting/Shader.h
 //which is based on stuff from http://learnopengl.com/ and http://open.gl/.

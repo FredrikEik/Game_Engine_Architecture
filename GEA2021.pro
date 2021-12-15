@@ -50,6 +50,7 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    DoxygenFrontPage.cpp \
     ResourceManager/meshhandler.cpp \
     ResourceManager/shaderhandler.cpp \
     ResourceManager/soundhandler.cpp \

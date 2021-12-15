@@ -112,6 +112,6 @@ void ShaderHandler::setupShader(bool useTexture, bool useLight, bool useSkybox)
     }
     if(useSkybox)
     {
-        mTextureUniform = glGetUniformLocation( mProgram, "skybox");
+        mTextureUniform = glGetUniformLocation( mProgram, "textureSampler");
     }
 }

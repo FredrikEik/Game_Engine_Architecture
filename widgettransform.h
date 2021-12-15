@@ -1,13 +1,16 @@
 #ifndef WIDGETTRANSFORM_H
 #define WIDGETTRANSFORM_H
-/**
-  In the game-engine-editor, there are re-positionable sub-windows, WidgetTransform controls positions on gameobjects.
- */
+
+//Forward declaration
 class RenderSystem;
 
 namespace Ui {
     class WidgetTransform;
 }
+
+/**
+  In the game-engine-editor, there are re-positionable sub-windows, WidgetTransform controls positions on gameobjects.
+ */
 
 class WidgetTransform : public QWidget
 {

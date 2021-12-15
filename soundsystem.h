@@ -7,7 +7,7 @@
 class RenderSystem;
 //class SoundSource;
 
-/// Class handling OpenAL setup and plays sound sources.
+// Class handling OpenAL setup and plays sound sources.
 /**
     Singleton class that plays soundsources, and updates listener.
 **/

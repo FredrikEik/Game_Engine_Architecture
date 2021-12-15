@@ -92,11 +92,9 @@ void CoreEngine::readJSScene()
     //Load the script into script engine, filename is used to report bugs in the file
     engine.evaluate(contents, fileName);
 
-
     //Read a variable value from the script file
     QJSValue mString = engine.evaluate("myVariable");
     qDebug() << mString.toString();
-
 }
 
 void CoreEngine::setUpScene()
@@ -125,16 +123,12 @@ void CoreEngine::setUpScene()
 //    lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
 //    mRenderSystem->mGameObjects.push_back(lasGround);
 
-
-    //615197.0, 6758309.0
 //    temp = mGameObjectManager->addObject("Ball.obj");
-//    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation
+//    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation for exam vis&sim.
 //    temp->mTransform->mMatrix.scale(0.5f);
 //    temp->mName = "RulleBall";
 //    mGameObjectManager->addComponent("PhysicsComponent", temp);
 //    mRenderSystem->mGameObjects.push_back(temp);
-
-    //Rollingball, vis & sim collision code integrated into GEA
 
 //    //Create many balls to "simulate" rain.
 //    for(int i = 0; i <= numberOfSimulatedBalls; i++)
@@ -176,7 +170,7 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Point Light
-    temp = mGameObjectManager->addObject("");
+    temp = mGameObjectManager->addObject("triangle");
     temp->mName = "PointLight";
     temp->mLightComponent = new PointLightComponent;
     temp->mTransform->mMatrix.translate(0.0f, 5.0f, 0.0f);
@@ -196,7 +190,7 @@ void CoreEngine::setUpScene()
     temp->mName = "DogTriangle";
     temp->mMaterial = mGameObjectManager->getMaterial("Test");
     temp->mTransform->mMatrix.translate(0.0f, 2.0f, 0.0f);
-
+    //Testing sound by adding to triangle
     mGameObjectManager->addComponent("caravan_mono.wav", temp); //Adds sound to triangle:
     if(temp->mSoundComponent) //Hack to test sound system
         temp->mSoundComponent->shouldPlay = true;
@@ -205,37 +199,31 @@ void CoreEngine::setUpScene()
     //Skybox
     temp = mGameObjectManager->addObject("CubeInverted.obj");
     temp->mName = "Skybox";
-    temp->mMaterial = mGameObjectManager->getMaterial("skybox0"); // Skybox-shader
+    temp->mMaterial = mGameObjectManager->getMaterial("skybox"); // Skybox-shader
     temp->mTransform->mMatrix.scale(30);
     mRenderSystem->mGameObjects.push_back(temp);
 
+    //Blender monkey-head Suzanne:
+    for(int i = 0; i <= 10; i++)
+    {
+        for(int j = 0; j < 10; j++)
+        {
+            temp = mGameObjectManager->addObject("suzanne.obj");
+            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
+            temp->mTransform->mMatrix.scale(0.5f);
+            temp->mMesh->mColliderRadius *= 0.3f;
+            temp->mTransform->mScale.setAlltoSame(0.5f);
+            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
+            mRenderSystem->mGameObjects.push_back(temp);
+        }
+    }
 
-    //Suzannes:
-//    for(int i = 0; i <= 5; i++)
-//    {
-//        for(int j = 0; j < 2; j++)
-//        {
-//            temp = mGameObjectManager->addObject("suzanne.obj");
-//            temp->mTransform->mMatrix.translate((1.0f * (i * 2)), 0.0f, (-1.0f * (j* 2)));
-//            temp->mTransform->mMatrix.scale(0.5f);
-//            temp->mMesh->mColliderRadius *= 0.3f;
-//            temp->mTransform->mScale.setAlltoSame(0.5f);
-//            temp->mName = "Monkey " + std::to_string(i) + std::to_string(j);
-//            mRenderSystem->mGameObjects.push_back(temp);
-//        }
-//    }
-
-//    temp = mGameObjectManager->addObject("suzanne.obj");
-//    temp->mTransform->mMatrix.translate(0.f, 0.f, 0.f);
-//    temp->mTransform->mMatrix.scale(0.5f);
-//    mRenderSystem->mGameObjects.push_back(temp);
-
+    //Camera settings
     mEditorCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
     mEditorCamera->mPitch = -25.0f;
     mRenderSystem->mEditorCamera = mEditorCamera;
 
-
-    mGameCamera->mPosition = gsl::Vector3D(0.0f, 10.0f, 20.0f);
+    mGameCamera->mPosition = gsl::Vector3D(0.0f, 5.0f, 10.0f);
     mRenderSystem->mGameCamera = mGameCamera;
 
     //Updates the hierarchy to show objects in it:
@@ -294,7 +282,7 @@ void CoreEngine::gameLoop()
     mEditorCamera->update();
     SoundSystem::getInstance()->update(mRenderSystem);
 
-    ////Vis & Sim Code
+    ////Vis & Sim Code for updating physics in runtime.
     {
 //    std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
 //    PhysicsHandler ph;
@@ -302,7 +290,7 @@ void CoreEngine::gameLoop()
 //    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
     }
 
-
+    //To play tetris during runtime.
     if(isPlaying == true)
     {
         time_t clock = time(0);
@@ -315,20 +303,20 @@ void CoreEngine::gameLoop()
         int tetrominoNr;
         GameObject currentTetromino;
 
-        tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
-        tm.TetrominoMaker(tetrominoNr);    //Creates the tetromino based on int to be used in the scene.
+        tetrominoNr = tm.getTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+        tm.tetrominoMaker(tetrominoNr);    //Creates the tetromino based on int to be used in the scene.
 
         while(currentTetromino.activeGameBlock == true)
         {
             //If there is a tetromino in scene, let player control tetromino, and apply the speed-change.
-            tm.MoveTetromino(time);
+            tm.moveTetromino(time);
         }
         if (currentTetromino.activeGameBlock == false) //If there is not a tetromino in scene, draw another one.
         {
             //Check if one or multiple horizontals in the play-grid is full.
-            tm.ManageGameplayLines();
-            tetrominoNr = tm.GetTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
-            tm.TetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
+            tm.manageGameplayLines();
+            tetrominoNr = tm.getTetrominoNr(); //Returning a random number between 1 & 7, used to pick which tetromino.
+            tm.tetrominoMaker(tetrominoNr); //Returns the tetromino to be used in the scene.
         }
     }
     mRenderSystem->render();

@@ -1,6 +1,10 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+/**
+  Frustum blir den "avkortede" pyramiden som spillkameraet bruker for å avgjøre hva som skal rendres.
+ */
+
 struct Frustum
 {
     //Used to make the projection matrix
@@ -19,6 +23,10 @@ struct Frustum
     //NearPlane and FarPlane normal is the same as Camera::mForward - just moved (and flipped 180 for NearPlane)
 };
 
+/**
+  Kameraet for bruk i både editor og under spill.
+  Holder variabler og funksjoner for å endre relevante kamerainstillinger, fra posisjon og retning av kameraet, til frustumet som brukes til å bestemme hvilke objekter som tegnes på skjermen og ikke.
+ */
 
 class Camera
 {

@@ -5,12 +5,12 @@
 #include "vector3d.h"
 #include "altypes.h"
 
-/// One sound source.
 /**
     Contains one source and one buffer.
     Intended to play a single clip.
     Does not support streaming audio (yet).
 **/
+
 class SoundSource
 {
 public:

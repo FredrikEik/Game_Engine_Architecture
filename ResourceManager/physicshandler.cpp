@@ -126,7 +126,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     }//End of simulatePhysics-bool loop
 }
 
-//Only needed when simulating a single ball
+////Only needed when simulating a single ball
 //newBallPosition[ball].y = (baryCoordinates[ball].x * triangleVertices[i].mXYZ.y +
 //                           baryCoordinates[ball].y * triangleVertices[i+1].mXYZ.y + 0.25f +
 //                           baryCoordinates[ball].z * triangleVertices[i+2].mXYZ.y);

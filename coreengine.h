@@ -11,7 +11,7 @@ class MainWindow;
 
 /**
    CoreEngine er en samling av mange systemer.
-   Her finner en objekter av ressurshåndteringsklassene og game-loopen.
+   Her finner en objekter av ressurshåndteringsklassene og game-loopen for logikk og rendering-kallet.
  */
 
 //Made from QObject to use a Qt slots...

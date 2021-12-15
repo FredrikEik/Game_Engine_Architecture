@@ -137,9 +137,7 @@ void RenderSystem::render()
 
         /*************************************/
 
-        //First object - xyz
-        //what shader to use
-        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
+        //What shader to use
         ShaderHandler *tempShader{nullptr};
 
         int shaderIndex = mGameObjects[i]->mMaterial->mShaderProgram;
@@ -165,7 +163,6 @@ void RenderSystem::render()
         //Testing Phong shader
         if(tempShader->mName == "PhongShader")
         {
-            qDebug() << "phongshader applying";
             //Send over camera position - should also send over a lot of other parameters about the light
             glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y,  mEditorCamera->mPosition.z);
             glUniform3f(tempShader->mLightPosition, mLightPosition->mMatrix.getPosition().x, mLightPosition->mMatrix.getPosition().y, mLightPosition->mMatrix.getPosition().z);
@@ -181,16 +178,11 @@ void RenderSystem::render()
         }
         if(tempShader->mName == "SkyboxShader")
         {
-            qDebug() << "skyboxshader applying";
             glUniform3f(tempShader->mCameraPosition, mEditorCamera->mPosition.x, mEditorCamera->mPosition.y, mEditorCamera->mPosition.z);
 
             glDepthMask(GL_FALSE); //Draw this behind all gameobjects
 
-            Texture skyboxTexture = mGameObjectManager->mTextureHandler->mTextures[1];
-
-//            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, 12);//mGameObjects[i]->mMaterial->mTextureUnit); //Here i need to find the id/int for the texture. This is 12 for now.
-            //glBindTexture(GL_TEXTURE_CUBE_MAP, mGameObjects[i]->mMaterial->mShaderProgram);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, mGameObjects[i]->mMaterial->mShaderProgram);
             glUniform1i(mGameObjects[i]->mMaterial->mTextureUnit, 1);
 
             glDrawElements(GL_TRIANGLES, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, reinterpret_cast<const void*>(0));

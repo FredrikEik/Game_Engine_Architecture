@@ -1,12 +1,13 @@
 #ifndef WIDGETMATERIAL_H
 #define WIDGETMATERIAL_H
+
+namespace Ui {
+
+class WidgetMaterial;
+}
 /**
   In the game-engine-editor, there are re-positionable sub-windows, Widgetmaterial controls materials on gameobjects.
  */
-namespace Ui {
-class WidgetMaterial;
-}
-
 class WidgetMaterial : public QWidget
 {
     Q_OBJECT

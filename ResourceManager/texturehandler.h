@@ -17,6 +17,11 @@ struct Texture
     bool mAlphaUsed{false};
 };
 
+/**
+  Texturehandler creates textures and materials for use with the MaterialComponent.
+  It stores all the textures once, and keeps track of textures and cubemaps.
+ */
+
 class TextureHandler : protected QOpenGLFunctions_4_1_Core
 {
 public:

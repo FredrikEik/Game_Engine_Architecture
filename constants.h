@@ -3,8 +3,8 @@
 
 #include<string>
 /**
-  Diverse konstanter for prosjektet.
-  Blandt annet lokasjonen på hvor å finne relevante mapper i filstruktur og int-er for shaders, componenter og forhåndslagde ressurser.
+  Diverse konstanter for prosjektet, lagret som et namespace.
+  Blant annet lokasjonen på hvor å finne relevante mapper i filstruktur og int-er for shaders, componenter og andre forhåndslagde ressurser.
  */
 namespace gsl  //Game School Lib
 {

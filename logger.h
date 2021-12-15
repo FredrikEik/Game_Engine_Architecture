@@ -3,10 +3,6 @@
 
 #include <string>
 
-/**
-  Denne loggeren integreres med spillmotor-editoren, så en kan se logge og debugge i editoren.
- */
-
 enum class LColor
 {
     LOG = 0,
@@ -14,6 +10,10 @@ enum class LColor
     WARNING,
     DAMNERROR       //For some reason "ERROR" is taken, even within this class...
 };
+
+/**
+  Denne loggeren integreres med spillmotor-editoren, så en kan se logge og debugge i editoren.
+ */
 
 class Logger
 {
