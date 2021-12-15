@@ -12,7 +12,6 @@ void RenderSystem::init(MeshComponent *mMesh)
     //must call this to use OpenGL functions?
     initializeOpenGLFunctions();
 
-
     //Vertex Array Object - VAO
     glGenVertexArrays( 1, &mMesh->mVAO[0] );
     glBindVertexArray( mMesh->mVAO[0] );
@@ -47,12 +46,10 @@ void RenderSystem::init(std::vector<Vertex> * vertexData, GLuint * VAO, GLuint *
         //must call this to use OpenGL functions?
         initializeOpenGLFunctions();
 
-
-        //qDebug() << "Initialized: VAO Index" <<  VAO;
         //Vertex Array Object - VAO
         glGenVertexArrays( 1, VAO);
         glBindVertexArray( *VAO );
-        //qDebug() << "Initialized: VAO Index" <<  VAO;
+
         //Vertex Buffer Object to hold vertices - VBO
         glGenBuffers( 1, VBO );
         glBindBuffer( GL_ARRAY_BUFFER, *VBO );
@@ -87,7 +84,7 @@ void RenderSystem::draw(MeshComponent* mMesh)
 }
 
 
-void RenderSystem::draw(MeshComponent *mMesh, MaterialComponent *mMaterial,TransformComponent* mTrasform, GLint viewMatrix, GLint projectionMatrix, GLint modelMatrix,Camera* camera )
+void RenderSystem::draw(MeshComponent *mMesh,TransformComponent* mTrasform, GLint viewMatrix, GLint projectionMatrix, GLint modelMatrix,Camera* camera )
 {
     if(mMesh->isDrawable && mMesh->isDead ==false)
     {

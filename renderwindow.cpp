@@ -44,15 +44,12 @@ RenderWindow::~RenderWindow()
 
 // Sets up the general OpenGL stuff and the buffers needed to render a triangle
 
-
 /*!
  * \brief RenderWindow::init
  *
  */
 void RenderWindow::init()
 {
-
-
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop
@@ -297,7 +294,7 @@ void RenderWindow::render()
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
         {
 
-            killZ(transformCompVec[i], gsl::Vector3D(0  ,10.0f,0 ));
+            killZ(transformCompVec[i]);
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
 
@@ -315,7 +312,6 @@ void RenderWindow::render()
             }
 
             RenderSys->draw(meshCompVec[i],
-                            MaterialCompVec[i],
                             transformCompVec[i],
                             viewMatrix,
                             projectionMatrix,
@@ -490,11 +486,10 @@ void RenderWindow::ShootBullet()
 
 }
 
-void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
+void RenderWindow::killZ(TransformComponent *Transform)
 {
     //! @fn KillZ - Reference to UnrealEngine 4 KillZ. Respawns objects that fall out of bounds.
     //! @param Transform - Transformcomponent of object we want to check
-    //! @param SpawnPoint - Where we want to spawn the object if it is out of bounds
     if((Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getZ() > 300.0f)) || (Transform->mMatrix.getPosition().getY()  < -100.0f))
     {
         Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
@@ -528,14 +523,14 @@ void RenderWindow::CalcDeltaTime()
     DeltaTime = elapsed_time_ms/1000.f;
 }
 
-void RenderWindow::setupPlainShader(int shaderIndex)
+void RenderWindow::setupPlainShader(unsigned long long shaderIndex)
 {
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
 }
 
-void RenderWindow::setupTextureShader(int shaderIndex)
+void RenderWindow::setupTextureShader(unsigned long long shaderIndex)
 {
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
@@ -543,7 +538,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
-void RenderWindow::setupPhongShader(int index)
+void RenderWindow::setupPhongShader(unsigned long long index)
 {
     mTextureUniform2 = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "uTexture" );
     mUsingTextureUniform = glGetUniformLocation( mShaderPrograms[index]->getProgram(), "usingTextures" );
@@ -563,7 +558,7 @@ void RenderWindow::setupPhongShader(int index)
 
 }
 
-void RenderWindow::setupSkyboxshader(int shaderIndex)
+void RenderWindow::setupSkyboxshader(unsigned long long shaderIndex)
 {
     vMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "view" );
     pMatrixUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "projection" );
@@ -635,10 +630,10 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
 
     float radiusOfcollider = 0;
     bool collided = false;
-    int eSize = entities.size();
+    unsigned long long eSize = entities.size();
     float lenght = 0;
     // work out components of quadratic
-    for(int i = 0; i < eSize; i++)
+    for(unsigned long long i = 0; i < eSize; i++)
     {
         if(meshCompVec[i]->IsCollidable)
         {
@@ -648,7 +643,7 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
             position.setY( transformCompVec[i]->mMatrix.getPosition().getY());
             position.setZ( transformCompVec[i]->mMatrix.getPosition().getZ());
             //find collision radius for object
-            for(int j = 0; j < eSize; j++)
+            for(unsigned long long j = 0; j < eSize; j++)
             {
                 if(transformCompVec[i]->entity == meshCompVec[j]->entity)
                 {
@@ -658,10 +653,10 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
 
             QVector3D v = QVector3D(position.x(), position.y(),position.z()) - CamPos;
             lenght = v.length();
-            long double a = QVector3D::dotProduct(RayVec,RayVec);
-            long double b = 2.0 * QVector3D::dotProduct(v, RayVec);
-            long double c = QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider;
-            long double b_squared_minus_4ac = b * b + (-4.0) * a * c;
+            long double a =static_cast<long double>(QVector3D::dotProduct(RayVec,RayVec));
+            long double b =static_cast<long double>( 2.0f * QVector3D::dotProduct(v, RayVec));
+            long double c =static_cast<long double> (QVector3D::dotProduct(v, v) - radiusOfcollider * radiusOfcollider);
+            long double b_squared_minus_4ac = static_cast<long double>(b * b + static_cast<long double>(-4.0f) * a * c);
 
             if (b_squared_minus_4ac == 0)
             {
@@ -817,7 +812,7 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
-bool RenderWindow::frustumCulling(int Index)
+bool RenderWindow::frustumCulling(unsigned long long Index)
 {
 
     //tatt fra ole.experiment frostum culling
@@ -970,7 +965,7 @@ void RenderWindow::handleInput()
 
 }
 
-void RenderWindow::switchProgram(int shaderIndex)
+void RenderWindow::switchProgram(unsigned long long shaderIndex)
 {
 
     if(entities[shaderIndex] == 0)
@@ -1015,7 +1010,7 @@ void RenderWindow::switchProgram(int shaderIndex)
     }
 }
 
-void RenderWindow::switchLOD(int Index)
+void RenderWindow::switchLOD(unsigned long long Index)
 {
     if(meshCompVec[Index]->LODEnabled){
         //LOD SWITCHER

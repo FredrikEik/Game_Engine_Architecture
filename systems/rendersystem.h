@@ -12,7 +12,6 @@ public:
     void init(std::vector<Vertex> * vertexData, GLuint * VAO, GLuint * VBO = 0);
     void draw(MeshComponent* mMesh);
     void draw(MeshComponent* mMesh,
-              MaterialComponent* mMaterial,
               TransformComponent* mTrasform,
               GLint viewMatrix,
               GLint projectionMatrix,

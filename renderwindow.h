@@ -119,7 +119,7 @@ private:
     //! @fn KillZ - Reference to UnrealEngine 4 KillZ. Respawns objects that fall out of bounds.
     //! @param Transform - Transformcomponent of object we want to check
     //! @param SpawnPoint - Where we want to spawn the object if it is out of bounds
-    void killZ(TransformComponent* Transform, gsl::Vector3D  SpawnPoint);
+    void killZ(TransformComponent* Transform);
     //! @fn CalcDeltaTime Calculates accuratley the delta time of renderwindow
     //! @var DeltaTime Delta time is the results of CalcDeltaTime. Using Clock to calculate Delta time.
     //! @var oldTime - Reference to time of clock last render
@@ -140,7 +140,7 @@ private:
     //! @fn frustumCulling - Main function for frustum culling
     //! @param Index - Takes in entity index for objects
     //! @return bool isDrawable. returns false if object is outside of frustum
-    bool frustumCulling(int Index);
+    bool frustumCulling(unsigned long long Index);
     //!@fn setCameraSpeed - Sets camera speed
     //! @param value - new value for speed
     void setCameraSpeed(float value);
@@ -148,10 +148,10 @@ private:
     void handleInput();
     //! @fn switchPrograms - switcher for shader programs
     //! @param ShaderIndex - Index for shader you want to use
-    void switchProgram(int shaderIndex);
+    void switchProgram(unsigned long long shaderIndex);
     //! @fn switchLOD - Checks distance from camera and switches to appropreate LOD
     //! @param Index - Entity Index for object we want to swith LOD on
-    void switchLOD(int Index);
+    void switchLOD(unsigned long long Index);
     //! @fn drawFrostum - creates a test frustum for visualisation
     void drawFrostum();
 
@@ -166,7 +166,7 @@ private:
     //! @var mMatrixUniform index for model matrix uniform
     //! @var vMatrixUniform index for view matrix uniform
     //! @var pMatrixUniform index for projection matrix uniform
-    void setupPlainShader(int shaderIndex);
+    void setupPlainShader(unsigned long long shaderIndex);
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
@@ -175,7 +175,7 @@ private:
     //! @var vMatrixUniform1 index for view matrix uniform
     //! @var pMatrixUniform1 index for projection matrix uniform
     //! @var mTextureUniform index for Texture uniform
-    void setupTextureShader(int shaderIndex);
+    void setupTextureShader(unsigned long long shaderIndex);
     GLint mMatrixUniform1{-1};
     GLint vMatrixUniform1{-1};
     GLint pMatrixUniform1{-1};
@@ -198,7 +198,7 @@ private:
     //! @var mUsingTextureUniform index for Using exture uniform
     //!
     //Phong Shader Variables
-    void setupPhongShader(int index);
+    void setupPhongShader(unsigned long long index);
 
     GLint mMmatrixUniform2{-1};
     GLint mVmatrixUniform2{-1};
@@ -227,7 +227,7 @@ private:
     //!
     //!
     ///skybox
-    void setupSkyboxshader(int shaderIndex);
+    void setupSkyboxshader(unsigned long long shaderIndex);
     GLint mMatrixUniform3{-1};
     GLint vMatrixUniform3{-1};
     GLint pMatrixUniform3{-1};
