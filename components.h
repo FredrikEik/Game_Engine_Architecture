@@ -14,14 +14,16 @@
 ***********************************************/
 
 namespace ecs {
-
+//! @struct TransformComponent - component for transformation data
+//! @details contains data for translation and position
 struct TransformComponent
 {
     TransformComponent() {mMatrix.identity();};
     gsl::Matrix4x4 mMatrix;
     gsl::Vector3D position{0, 0, 0};
 };
-
+//! @struct MeshComponent - contains data on mesh
+//! @details contains data on vertex and collision
 struct MeshComponent
 {
     GLuint mVAO[3]{0};
@@ -30,18 +32,22 @@ struct MeshComponent
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f};
 };
-
+//! @struct MaterialComponent - contains data on material
+//! @details contains data on texture and shaderhandler/program
 struct MaterialComponent
 {
     GLuint mShaderProgram{0};
     GLuint mShaderhandler{gsl::NOSHADER};
     GLint mTextureUnit{0};
 };
+//! @struct MaterialID - contains data on material with entityid
 struct MaterialID
 {
     MAX_ENTITIES_TYPE mEntityID{MAX_ENTITIES};
     unsigned short mMaterialIndex{0};        //Material 0 = default material - should always exist!
 };
+//! @struct Material - contains data on material
+//! @details contains, materialid, shader, texture, color and name
 struct Material
 {
     unsigned short mMaterialID{65535};
@@ -52,7 +58,6 @@ struct Material
     gsl::Vector3D mColor{};
     std::string mMatName;
 };
-
 struct SoundListenerComponent
 {
     gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
@@ -71,6 +76,8 @@ struct SoundComponet
     bool looping{false};
 
 };
+//! @struct Script - contains data on script
+//! @details contains data for name, health, strength and speed
 struct Script
 {
     std::string mName;

@@ -20,20 +20,23 @@
 class ShaderHandler : protected QOpenGLFunctions_4_1_Core
 {
 public:
-    // Constructor generates the shader on the fly
-//    ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
+    //! @fn constructing shader
+    //! @param shaderName - name of the shader that is beeing used
     ShaderHandler(const std::string &shaderName);
 
     // Use the current shader
+    //! @fn use - using the shaderprogram called for
     virtual void use(gsl::Matrix4x4 &modelMatrixIn, struct ecs::Material *);
     virtual void setupShader(){}
+    //! @var mName - name for shader
     const std::string mName;
 
     GLint mMatrixUniform{-1};       //when using the shader in drawcalls to different objects
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
-
+    //! @param mCurrentCamera - contains pointer to camera
     class Camera *mCurrentCamera{nullptr};
+    //! @param mRenderWindow - contains point to renderwindow
     class RenderWindow *mRenderWindow{nullptr};     //to be able to call checkForGLerrors()
 
     GLuint mProgram{999999};

@@ -28,28 +28,36 @@ public:
 
     //Handle input
 
-    ///Not singleton now, but can use this function to get Engine instance
+    //! getInstance to be able to use getInstance function
     static CoreEngine* getInstance();
+    //! player - pointer to player
     GameObject * player;
+    //! @fn togglePlayMode - toggles on and off play mode
     void togglePlayMode(bool shouldPlay);
-
+    //! @fn setUpScene - making the scene that the objects will be drawn in
     void setUpScene();
-
+    //! mScriptsystem - pointer to script system
     class ScriptSystem *mScriptSystem{nullptr};
+    //! @fn handleInput - takes in and handles the players input
     void handleInput();
+    //! mResourceManager - pointer to resource manager
     ResourceManager *mResourceManager{nullptr};
+    //! mSoundSystem - pointer to sound system
     SoundSystem *mSoundSystem{nullptr};
+    //! mRendersystem - pointer to render system
     RenderSystem *mRenderSystem{nullptr};
+    //! mGameObject - pointer to game object
     GameObject *mGameObject{nullptr};
-
-
-//    void renderMousepicker(GLint matrixUniform, GLint colorUniform);
+    //! @var mPlayerID - varible for the players id
     MAX_ENTITIES_TYPE mPlayerID;
+    //! @var mEnemyID - variable for the pointer array for the enemys id
     std::vector<MAX_ENTITIES_TYPE> mEnemyID;
+    //! @var mEntity - pointer array for the entities
     std::vector<Entity> mEntity;
 
-
+    //! mGameCamer - pointer for the camera
     Camera *mGameCamera{nullptr};
+    //! mEditorCamer - pointer for the editor camera
     Camera *mEditorCamera{nullptr};
 
     QTimer *mGameLoopTimer{nullptr};    //timer that drives the gameloop
