@@ -35,7 +35,7 @@
                     "blendDFactor": 771,
                     "blendSFactor": 770,
                     "destroyOnLifetimeEnd": true,
-                    "emitterTotalLifeTime": 0.5,
+                    "emitterTotalLifeTime": 0.44999998807907104,
                     "maxParticles": 5,
                     "mesh": {
                         "LODType": 0,

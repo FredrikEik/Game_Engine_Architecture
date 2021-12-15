@@ -10,6 +10,7 @@
 #include "CollisionSystem.h"
 #include "PhysicsSystem.h"
 #include "ParticleSystem.h"
+#include "HudSystem.h"
 #include "../Input/Input.h"
 #include "../Engine/Engine.h"
 void PrintMethod_Internal(MonoString* string)
@@ -54,11 +55,15 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Entity::isOverlappingEntity_Internal", &CollisionSystem::isOverlappingEntity_Internal);
 	BindInternalFunction("ScriptInJin.Entity::setVelocity_Internal", &PhysicsSystem::setVelocity_Internal);
 	BindInternalFunction("ScriptInJin.Entity::setParticleActive_Internal", &ParticleSystem::setParticleActive_Internal);
-	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);
-	BindInternalFunction("ScriptInJin.Input::getMouseKeyState_Internal", &Input::getMouseKeyState_Internal);
 	BindInternalFunction("ScriptInJin.Entity::getDeltaTime_Internal", &Engine::getDeltaTime_Internal);
 	BindInternalFunction("ScriptInJin.Entity::getObject_Internal", &ScriptSystem::getObject_Internal);
 	BindInternalFunction("ScriptInJin.Entity::createDefaultEntity_Internal", &Engine::createDefaultEntity_Internal);
+	BindInternalFunction("ScriptInJin.Entity::showHud_Internal", &HudSystem::showHud_Internal);
+	BindInternalFunction("ScriptInJin.Entity::removeHud_Internal", &HudSystem::removeHud_Internal);
+
+
+	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);
+	BindInternalFunction("ScriptInJin.Input::getMouseKeyState_Internal", &Input::getMouseKeyState_Internal);
 
 
 }

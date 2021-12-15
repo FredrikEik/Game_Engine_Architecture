@@ -117,6 +117,11 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 	{
 		ECS->addComponent<PhysicsComponent>(entityID);
 		component = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entityID);
+	}	
+	else if (componentName == std::type_index(typeid(HudComponent)).name())
+	{
+		ECS->addComponent<HudComponent>(entityID);
+		component = ECS->getComponentManager<HudComponent>()->getComponentChecked(entityID);
 	}
 	else if (componentName == std::type_index(typeid(ParticleComponent)).name())
 	{
@@ -154,13 +159,6 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		}
 		component = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entityID);
 	}
-	//else if (componentName == std::type_index(typeid(ParticleComponent)).name())
-	//{
-	//	ECS->addComponent<ParticleComponent>(entityID);
-	//	component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
-	//	ParticleComponent* comp = dynamic_cast<ParticleComponent*>(component);
-	//	TextureSystem::loadImageWithAlpha(comp->texture.path, &comp->texture);
-	//}
 
 	return component;
 }

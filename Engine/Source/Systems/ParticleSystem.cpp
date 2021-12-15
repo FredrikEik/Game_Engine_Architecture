@@ -33,10 +33,10 @@ void ParticleSystem::initMesh(ParticleComponent* emitter, uint32 maxParticles)
 #pragma region Generating Quad
     // Not using the vertex class as it would waste space, and the quad is so simple anyway.
     static const GLfloat vertexData[] = {
-    -0.5f, -0.5f, 0.0f, 0.f, 0.f,
-     0.5f, -0.5f, 0.0f, 1.f, 0.f,
-    -0.5f,  0.5f, 0.0f, 0.f, 1.f,
-     0.5f,  0.5f, 0.0f, 0.f, 0.f
+    -0.5f, -0.5f, 0.0f, 0.f, 1.f, // V in UV flipped due to openGL reading texture bot-top
+     0.5f, -0.5f, 0.0f, 1.f, 1.f,
+    -0.5f,  0.5f, 0.0f, 0.f, 0.f,
+     0.5f,  0.5f, 0.0f, 1.f, 0.f
     };
 
     emitter->mesh.m_indices.push_back(0);

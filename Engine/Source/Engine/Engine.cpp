@@ -36,6 +36,7 @@
 #include "../Systems/ParticleSystem.h"
 #include "../Systems/TerrainSystem.h"
 #include "../Systems/PhysicsSystem.h"
+#include "../Systems/HudSystem.h"
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
@@ -63,6 +64,12 @@ Engine::~Engine()
 	delete ECS;
 	delete ourShader;
 	delete viewport;
+
+	delete phongShader;
+	delete selectionShader;
+	delete outlineShader;
+	delete particleShader;
+	delete hudShader;
 }
 
 void Engine::setIsPlaying(bool isPlaying)
@@ -180,6 +187,7 @@ void Engine::init()
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
 	particleShader = new Shader("Shaders/ParticleShader.vert", "Shaders/ParticleShader.frag");
+	hudShader = new Shader("Shaders/HudShader.vert", "Shaders/HudShader.frag");
 
 
 	editorCameraEntity = ECS->newEntity();
@@ -210,8 +218,10 @@ void Engine::init()
 	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-
-
+	ECS->addComponent<HudComponent>(gameCameraEntity);
+	HudSystem::init(gameCameraEntity, ECS, "Assets/ballChase.png");
+	HudSystem::setPosition(gameCameraEntity, glm::vec2(-0.65, 0.65), ECS);
+	HudSystem::setScale(gameCameraEntity, glm::vec2(0.5, 0.5), ECS);
 	//viewport->begin(window, ECS->getNumberOfEntities());
 
 
@@ -418,7 +428,7 @@ void Engine::loop()
 		CameraSystem::draw(cameraEntity, particleShader, ECS);
 
 		ParticleSystem::update(cameraEntity, particleShader, ECS, deltaTime);
-
+		HudSystem::render(ECS, hudShader);
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

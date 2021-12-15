@@ -64,6 +64,7 @@ private:
 	class Shader* selectionShader{};
 	class Shader* outlineShader{};
 	class Shader* particleShader{};
+	class Shader* hudShader{};
 
 	uint32 editorCameraEntity{};
 	uint32 gameCameraEntity{};

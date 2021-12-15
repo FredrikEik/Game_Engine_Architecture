@@ -319,3 +319,16 @@ struct ParticleComponent final : public Component
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
 };
+
+struct HudComponent final : public Component
+{
+	HudComponent(uint32 entity, uint32 componentID) : Component(entity, componentID),
+		mesh(entity, componentID), texture(entity, componentID) {}
+	MeshComponent mesh;
+	TextureComponent texture;
+
+	GLuint positionBuffer{};
+	glm::vec4 center{0.f, 0.f, 1, 1};
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
+};

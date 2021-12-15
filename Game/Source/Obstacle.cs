@@ -7,6 +7,8 @@ namespace Game
     public class Obstacle : Entity
     {
         uint ball;
+        bool hudShowing = false;
+        float hudTime = 0;
         public override void BeginPlay()
         {
             Console.WriteLine("Obstacle begin play");
@@ -14,7 +16,16 @@ namespace Game
         }
         public override void Update()
         {
-            //Console.WriteLine("Updating ball unit with id: " + entityID);
+            if(hudShowing)
+            {
+                hudTime -= getDeltaTime_Internal();
+                if(hudTime<=0)
+                {
+                    hudShowing = false;
+                    removeHud_Internal(entityID);
+                }
+            }
+
             if(isOverlappingEntity_Internal(entityID, ball))
             {
                 Console.WriteLine("Ball overlapping obstacle in c#");
@@ -24,6 +35,10 @@ namespace Game
                 setParticleActive_Internal(explosion, true);
                 Ball ballRef = (Ball)getObject_Internal(ball);
                 ballRef.Reset();
+
+                showHud_Internal(entityID, "Assets/loseHud.png");
+                hudShowing = true;
+                hudTime = 3.0f;
             }
         }
 

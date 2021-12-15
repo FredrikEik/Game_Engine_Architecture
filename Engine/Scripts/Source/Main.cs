@@ -56,6 +56,10 @@ namespace ScriptInJin
         extern public static void setVelocity_Internal(uint Entity, Vec3 newVelocity, bool isAdditive);
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void setParticleActive_Internal(uint Entity, bool isActive);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void showHud_Internal(uint Entity, string path);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void removeHud_Internal(uint Entity);
     }
 
     public class Transform

@@ -4,6 +4,7 @@
 #include "../Systems/ParticleSystem.h"
 #include "../Systems/ScriptSystem.h"
 #include "../Engine/Engine.h"
+#include "../Systems/HudSystem.h"
 
 JSON TransformComponent::json()
 {
@@ -212,4 +213,25 @@ void PhysicsComponent::jsonParse(const JSON& json)
 {
 	mass = json["mass"];
 	restitution = json["restitution"];
+}
+
+JSON HudComponent::json()
+{
+	return JSON{ 
+		{"center", Save::vec4JSON(center)},
+		{"texture", texture.json()},
+		{"mesh", mesh.json()}
+	};
+}
+
+void HudComponent::jsonParse(const JSON& json)
+{
+	auto vec4 = [](const JSON& json)
+	{return glm::vec4(json[0], json[1], json[2], json[3]); };
+
+	center = vec4(json["center"]);
+	mesh.jsonParse(json["mesh"]);
+	texture.jsonParse(json["texture"]);
+
+	HudSystem::init(entityID, Engine::Get().getECSManager(), texture.path);
 }

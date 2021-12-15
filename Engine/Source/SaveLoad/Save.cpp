@@ -144,6 +144,12 @@ void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::j
 		auto comp = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entityID);
 		assert(comp);
 		json = comp->json();
+	}	
+	else if (type == std::type_index(typeid(HudComponent)))
+	{
+		auto comp = ECS->getComponentManager<HudComponent>()->getComponentChecked(entityID);
+		assert(comp);
+		json = comp->json();
 	}
 	if (json == JSON())
 		return;
