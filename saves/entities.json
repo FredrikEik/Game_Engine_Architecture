@@ -1,51 +1,23 @@
 [
     {
-        "6": [
-            {
-                "struct TransformComponent": [
-                    [
-                        5.800000190734863,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        1.100000023841858,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        0.0,
-                        7.800000190734863,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        0.8999999761581421,
-                        4.0,
-                        1.0
-                    ]
-                ]
-            },
+        "29": [
             {
                 "struct AxisAlignedBoxComponent": {
-                    "bShouldGenerateOverlapEvents": false,
+                    "bShouldGenerateOverlapEvents": true,
                     "center": [
-                        0.5,
-                        0.5,
-                        0.5
+                        0.0,
+                        0.0,
+                        0.0
                     ],
                     "max": [
-                        0.5,
-                        0.5,
-                        0.5
+                        0.0,
+                        0.0,
+                        0.0
                     ],
                     "min": [
-                        -0.5,
-                        -0.5,
-                        -0.5
+                        0.0,
+                        0.0,
+                        0.0
                     ]
                 }
             },
@@ -53,47 +25,37 @@
                 "struct MeshComponent": {
                     "LODType": 0,
                     "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
                     "bIsTranslucent": false,
                     "bShouldRender": true,
                     "drawType": 4,
-                    "path": "Assets\\cube.obj",
+                    "path": "Assets/gun.obj",
                     "reusable": true
                 }
             },
             {
-                "struct TextureComponent": {
-                    "path": "Assets\\Briller.jpg",
-                    "reusable": true,
-                    "wrapMode": 10497
-                }
-            }
-        ]
-    },
-    {
-        "7": [
-            {
                 "struct TransformComponent": [
                     [
-                        1.0,
+                        10.0,
                         0.0,
                         0.0,
                         0.0
                     ],
                     [
                         0.0,
-                        1.0,
+                        10.0,
                         0.0,
                         0.0
                     ],
                     [
                         0.0,
                         0.0,
-                        1.0,
+                        10.0,
                         0.0
                     ],
                     [
-                        10.800000190734863,
-                        12.100000381469727,
+                        0.0,
+                        0.0,
                         0.0,
                         1.0
                     ]
@@ -102,39 +64,125 @@
             {
                 "struct MeshComponent": {
                     "LODType": 0,
-                    "bDisregardedDuringFrustumCulling": false,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
                     "bIsTranslucent": false,
                     "bShouldRender": true,
                     "drawType": 4,
-                    "path": "Assets\\suzanne.obj",
+                    "path": "Assets/gun.obj",
+                    "reusable": true
+                }
+            }
+        ]
+    },
+    {
+        "30": [
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/gun.obj",
                     "reusable": true
                 }
             },
             {
-                "struct AxisAlignedBoxComponent": {
-                    "bShouldGenerateOverlapEvents": false,
-                    "center": [
-                        1.34375,
-                        1.34375,
-                        1.34375
+                "struct TransformComponent": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
                     ],
-                    "max": [
-                        1.34375,
-                        1.34375,
-                        1.34375
+                    [
+                        0.0,
+                        10.0,
+                        0.0,
+                        0.0
                     ],
-                    "min": [
-                        -1.34375,
-                        -1.34375,
-                        -1.34375
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
                     ]
+                ]
+            },
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/gun.obj",
+                    "reusable": true
+                }
+            }
+        ]
+    },
+    {
+        "31": [
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/gun.obj",
+                    "reusable": true
                 }
             },
             {
-                "struct TextureComponent": {
-                    "path": "Assets\\Briller.jpg",
-                    "reusable": true,
-                    "wrapMode": 10497
+                "struct TransformComponent": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        10.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": true,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/gun.obj",
+                    "reusable": true
                 }
             }
         ]

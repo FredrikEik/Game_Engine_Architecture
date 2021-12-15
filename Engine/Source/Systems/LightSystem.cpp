@@ -12,8 +12,8 @@
 void LightSystem::InitGBuffer(GBufferComponent* GBufferComp)
 {
 
-	float SCR_WIDTH = Engine::Get().getWindowHeight();
-	float SCR_HEIGHT = Engine::Get().getWindowWidth();
+	float SCR_WIDTH = Engine::Get().getWindowWidth(); 
+	float SCR_HEIGHT = Engine::Get().getWindowHeight();
 
 	glGenFramebuffers(1, &GBufferComp->gBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, GBufferComp->gBuffer);
@@ -40,18 +40,106 @@ void LightSystem::InitGBuffer(GBufferComponent* GBufferComp)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, GBufferComp->gAlbedoSpec, 0);
 	// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, attachments);
+	GBufferComp->attachments[0] = GL_COLOR_ATTACHMENT0;
+	GBufferComp->attachments[1] = GL_COLOR_ATTACHMENT1;
+	GBufferComp->attachments[2] = GL_COLOR_ATTACHMENT2;
+	glDrawBuffers(3, GBufferComp->attachments);
 	// create and attach depth buffer (renderbuffer)
-	unsigned int rboDepth;
-	glGenRenderbuffers(1, &rboDepth);
-	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glGenRenderbuffers(1, &GBufferComp->rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, GBufferComp->rboDepth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, GBufferComp->rboDepth);
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+
+void LightSystem::InitSBuffer(ShadowBufferComponent* SComp)
+{
+	
+	glGenFramebuffers(1, &SComp->depthMapFBO);
+	glGenTextures(1, &SComp->depthCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, SComp->depthCubemap);
+	for (uint i = 0; i < 6; ++i)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SComp->SHADOW_WIDTH, SComp->SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	// attach depth texture as FBO's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, SComp->depthMapFBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, SComp->depthCubemap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, const std::string& uniformName, class ECSManager* ECS, uint32 SystemEntity, uint32 cameraEntity)
+{
+	auto sBufferComp = ECS->getComponentManager<ShadowBufferComponent>()->getComponentChecked(SystemEntity);
+	auto cameraComp = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
+
+	// lighting info
+	// -------------
+	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+
+	
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f),
+		(float)sBufferComp->SHADOW_WIDTH / (float)sBufferComp->SHADOW_HEIGHT,
+		cameraComp->near, cameraComp->far);
+	std::vector<glm::mat4> shadowTransforms;
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+	shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+
+	// 1. render scene to depth cubemap
+	// --------------------------------
+	glViewport(0, 0, sBufferComp->SHADOW_WIDTH, sBufferComp->SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, sBufferComp->depthMapFBO);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	ShadowDepthShader->use();
+	for (unsigned int i = 0; i < 6; ++i)
+		ShadowDepthShader->setMat4("u_shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+	ShadowDepthShader->setFloat("u_far_plane", cameraComp->far);
+	ShadowDepthShader->setVec3("u_lightPos", lightPos);
+	CameraSystem::draw(cameraEntity, ShadowDepthShader, ECS);
+	MeshSystem::draw(ShadowDepthShader, uniformName, ECS, cameraEntity);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// 2. render scene as normal 
+	// -------------------------
+	float SCR_WIDTH = Engine::Get().getWindowWidth();
+	float SCR_HEIGHT = Engine::Get().getWindowHeight();
+	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ShadowShader->use();
+	
+	// set lighting uniforms
+	ShadowShader->setVec3("u_lightPos", lightPos);
+	TransformComponent* cameraTransformComp{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+	glm::vec3 originOfCam = cameraTransformComp->transform[3];
+
+	ShadowShader->setVec3("u_camPos", originOfCam);
+	ShadowShader->setInt("u_shadows", 1); // enable/disable shadows by pressing 'SPACE'
+	ShadowShader->setFloat("u_far_plane", cameraComp->far);
+
+	ShadowShader->setInt("u_tex_diffuse1", 0);
+	ShadowShader->setInt("u_depthMap", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, sBufferComp->depthCubemap);
+	
+
+
+
+	// setup optional using texutres in deffered shading and optional using material
+	// in deferred shading
 }
 
 // renderQuad() renders a 1x1 XY quad in NDC
@@ -97,19 +185,19 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 {
 	auto gBufferComp = manager->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
 
+
 	glBindFramebuffer(GL_FRAMEBUFFER, gBufferComp->gBuffer);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	CameraSystem::draw(cameraEntity, GeometryPassShader, manager);
-	MeshSystem::draw(GeometryPassShader, uniformName, manager, cameraEntity);
+	MeshSystem::draw(GeometryPassShader, uniformName, manager, cameraEntity, true);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	LightPassShader->use();
-	glUniform1i(glGetUniformLocation(LightPassShader->getShaderID(), "gPosition"), 0);
-	glUniform1i(glGetUniformLocation(LightPassShader->getShaderID(), "gNormal"), 1);
-	glUniform1i(glGetUniformLocation(LightPassShader->getShaderID(), "gAlbedoSpec"), 2);
-
+	LightPassShader->setInt("gPosition", 0);
+	LightPassShader->setInt("gNormal", 1);
+	LightPassShader->setInt("gAlbedoSpec", 2);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, gBufferComp->gPosition);
 	glActiveTexture(GL_TEXTURE1);
@@ -117,7 +205,8 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, gBufferComp->gAlbedoSpec);
 
-
+	
+	
 	ComponentManager<LightComponent>* lightManager = manager->getComponentManager<LightComponent>();
 	if (lightManager)
 	{
@@ -130,7 +219,7 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 			TransformComponent* lightTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(light.entityID) };
 			glm::vec3 lightPos = lightTransform->transform[3];
 
-			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+			//const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
 			const glm::vec3 ligthColor = light.m_LightColor;
 			const float linear = light.m_Linear;
 			const float quadratic = light.m_Quadratic;
@@ -141,12 +230,14 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 
 			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Linear", linear);
 			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Quadratic", quadratic);
-			// then calculate radius of light volume/sphere
+			/* then calculate radius of light volume/sphere
 			const float maxBrightness = std::fmaxf(std::fmaxf(ligthColor.r, ligthColor.g), ligthColor.b);
 			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
 			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Radius", radius);
+			*/
 			++i;
 		}
+
 	}
 	TransformComponent* cameraTransformComp{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
 	glm::vec3 originOfCam = cameraTransformComp->transform[3];
@@ -154,6 +245,7 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	// send in light uniforms
 	// render a quad
 	renderQuad();
+	
 
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferComp->gBuffer);
@@ -162,12 +254,8 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
 	// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
 	// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
-	float SCR_WIDTH = Engine::Get().getWindowHeight();
-	float SCR_HEIGHT = Engine::Get().getWindowWidth();
+	float SCR_WIDTH = Engine::Get().getWindowWidth();
+	float SCR_HEIGHT = Engine::Get().getWindowHeight();
 	glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-
-	// render actual light objects;
 } 

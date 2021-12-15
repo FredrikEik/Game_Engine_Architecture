@@ -13,7 +13,6 @@ struct Light {
     
     float Linear;
     float Quadratic;
-    float Radius;
 };
 
 const int MAX_NUM_LIGHTS = 100;
@@ -35,23 +34,19 @@ void main() {
     for(int i = 0; i < u_NumLights; ++i)
     {
         // calculate distance between light source and current fragment
-        
+         // diffuse
+        vec3 lightDir = normalize(u_Lights[i].Position - FragPos);
+        vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * u_Lights[i].Color;
+        // specular
+        vec3 halfwayDir = normalize(lightDir + viewDir);  
+        float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+        vec3 specular = u_Lights[i].Color * spec * Specular;
+        // attenuation
         float dist = length(u_Lights[i].Position - FragPos);
-        if(dist < u_Lights[i].Radius)
-        {
-            // diffuse
-            vec3 lightDir = normalize(u_Lights[i].Position - FragPos);
-            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * u_Lights[i].Color;
-            // specular
-            vec3 halfwayDir = normalize(lightDir + viewDir);  
-            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-            vec3 specular = u_Lights[i].Color * spec * Specular;
-            // attenuation
-            float attenuation = 1.0 / (1.0 + u_Lights[i].Linear * dist + u_Lights[i].Quadratic * dist * dist);
-            diffuse *= attenuation;
-            specular *= attenuation;
-            lighting += diffuse + specular;
-        }
-    }    
+        float attenuation = 1.0 / (1.0 + u_Lights[i].Linear * dist + u_Lights[i].Quadratic * dist * dist);
+        diffuse *= attenuation;
+        specular *= attenuation;
+        lighting += diffuse + specular;        
+    }
     FragColor = vec4(lighting, 1.0);
 }

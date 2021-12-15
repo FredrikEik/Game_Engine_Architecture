@@ -36,7 +36,8 @@ JSON MeshComponent::json()
 		{"LODType", LODType},
 		{"bIsTranslucent", bIsTranslucent},
 		{"bDisregardedDuringFrustumCulling", bDisregardedDuringFrustumCulling},
-		{"bShouldRender", bShouldRender}
+		{"bShouldRender", bShouldRender},
+		{"bDrawDeferred", bDrawDeferred}
 	});
 
 	return json;
@@ -50,6 +51,7 @@ void MeshComponent::jsonParse(const JSON& json)
 	bIsTranslucent = json["bIsTranslucent"];
 	bDisregardedDuringFrustumCulling = json["bDisregardedDuringFrustumCulling"];
 	bShouldRender = json["bShouldRender"];
+	bDrawDeferred = json["bDrawDeferred"];
 }
 
 JSON AxisAlignedBoxComponent::json()

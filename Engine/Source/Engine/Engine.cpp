@@ -105,7 +105,7 @@ void Engine::start()
 	terminate();
 }
 
-void Engine::init()
+void Engine::initGLFW()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -141,19 +141,27 @@ void Engine::init()
 	glfwSetWindowSizeCallback(window, Engine::windowSize_callback);
 
 	glfwSetCursorPos(window, getWindowWidth() * 0.5, getWindowHeight() * 0.5);
+}
 
-
+void Engine::initOpenGL()
+{	
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);	
+
+
+	/*
 	glDepthFunc(GL_LESS);
-	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	*/
 
+}
 
-
+void Engine::compileShaders()
+{
 	ourShader = new Shader("Shaders/BasicShader.vert", "Shaders/BasicShader.frag");
 	phongShader = new Shader("Shaders/PhongShader.vert", "Shaders/PhongShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
@@ -162,9 +170,12 @@ void Engine::init()
 	GeometryPassShader = new Shader("Shaders/G_Buffer.vert", "Shaders/G_Buffer.frag");
 	LightPassShader = new Shader("Shaders/DefS_LightsShadows.vert", "Shaders/DefS_LightsShadows.frag");
 
+	ShadowShader = new Shader("Shaders/P_Shadows.vert", "Shaders/P_Shadows.frag");
+	ShadowDepthShader = new Shader("Shaders/P_ShadowsDepth.vert", "Shaders/P_ShadowsDepth.frag", "Shaders/P_ShadowsDepth.geo");
+}
 
-
-
+void Engine::initEtities()
+{
 	editorCameraEntity = ECS->newEntity();
 	ECS->addComponents<CameraComponent, TransformComponent>(editorCameraEntity);
 	gameCameraEntity = ECS->newEntity();
@@ -177,9 +188,11 @@ void Engine::init()
 	/// transform can be used to creat rts selection
 	//mesh comp
 	// opacity shader
-	ECS->addComponents<TransformComponent, SelectionComponent, GBufferComponent>(SystemEntity);
+	ECS->addComponents<TransformComponent, SelectionComponent, GBufferComponent, ShadowBufferComponent>(SystemEntity);
 	auto gBufferComp = ECS->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
 	LightSystem::InitGBuffer(gBufferComp);
+	auto sBufferComp = ECS->getComponentManager<ShadowBufferComponent>()->getComponentChecked(SystemEntity);
+	LightSystem::InitSBuffer(sBufferComp);
 
 	terrainEntity = ECS->newEntity();
 	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
@@ -191,35 +204,41 @@ void Engine::init()
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
-
+	/*
+	ScriptSystem::Init();
 	//viewport->begin(window, ECS->getNumberOfEntities());
-
+	unitEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
+	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
+	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
+	ScriptSystem::Invoke("BeginPlay", ECS);
+	*/
 
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
-	ScriptSystem::Init();
 
-	unitEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent, LightComponent>(unitEntity);
-	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
-	TransformSystem::move(unitEntity, glm::vec3(2, 2, 2), ECS);
-	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
-	ScriptSystem::Invoke("BeginPlay", ECS);
-	LightSystem::SetLightValues(unitEntity, ECS, glm::vec3(1, 0, 0), 2.3, 3.5);
-	
-	gunEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, MeshComponent, AxisAlignedBoxComponent, MaterialComponent>(gunEntity);
-	ECS->loadAsset(gunEntity, "Assets/gun.obj");
-	TransformSystem::setScale(gunEntity, glm::vec3(10, 10, 10), ECS);
-	MeshSystem::setConsideredForFrustumCulling(gunEntity, ECS, false);
-	auto gunMaterial = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(gunEntity);
-	std::map<std::string, std::string> materialMap;
-	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/gun_BC.png"));
-	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/gun_R.png"));
-	TextureSystem::loadMaterial(gunMaterial, materialMap);
 
-	auto entT = ECS->getEntity(gunEntity);
-	
+	int i = 1;
+	for (auto& light : lightEnitites)
+	{
+		light = ECS->newEntity();
+		ECS->addComponents<TransformComponent, MeshComponent, LightComponent>(light);
+		ECS->loadAsset(light, DefaultAsset::CUBE);
+		MeshSystem::setConsideredForFrustumCulling(light, ECS, false);
+		
+		TransformSystem::move(light, glm::vec3(i, 1, i), ECS);
+		LightSystem::SetLightValues(light, ECS, glm::vec3(1 / i, 0.8 / i, 0.6 / i), i, i % 5);
+		i++;
+	}
+
+}
+
+void Engine::init()
+{	
+	initGLFW();
+	initOpenGL();
+	compileShaders();
+	initEtities();
 
 
 
@@ -232,12 +251,24 @@ void Engine::init()
 	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
 
+
+	gunEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent, MaterialComponent>(gunEntity);
+	ECS->loadAsset(gunEntity, "Assets/gun.obj");
+	TransformSystem::setScale(gunEntity, glm::vec3(10, 10, 10), ECS);
+	MeshSystem::setConsideredForFrustumCulling(gunEntity, ECS, false);
+	MeshSystem::setIsDeferredDraw(gunEntity, ECS, true);
+	auto gunMaterial = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(gunEntity);
+	std::map<std::string, std::string> materialMap;
+	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/gun_BC.png"));
+	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/gun_R.png"));
+	TextureSystem::loadMaterial(gunMaterial, materialMap);
 }
+
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
-	uint32 cameraEntity{};
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
@@ -255,62 +286,10 @@ void Engine::loop()
 
 		//// RENDER
 		// Selection Render
-		if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
-		{
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			CameraSystem::draw(cameraEntity, selectionShader, ECS);
-			MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
-
-
-			glFlush();
-			glFinish();
-
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-			MousePosition mPos = Input::getInstance()->getMousePosition();
-			unsigned char data[4];
-
-			glReadPixels(mPos.x, getWindowHeight() - mPos.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-
-			// Convert the color back to an integer ID
-			int pickedID =
-				data[0] +
-				data[1] * 256 +
-				data[2] * 256 * 256;
-			auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(SystemEntity);
-			selectionComp.hitEntities.clear();
-
-			if (pickedID == 0x00ffffff)
-			{ // Full white, must be the background !
-
-			}
-			else
-			{
-				if (core::MAX_ENTITIES < pickedID)
-					return;
-
-				selectionComp.hitEntities.push_back(pickedID);
-
-				std::ostringstream oss;
-				oss << "mesh " << pickedID;
-				std::cout << oss.str() << '\n';
-
-				// use single color shader
-
-
-				// do logic for highlighting object here.
-				// flip a bool maybe in meshcomp for being selected, or make a new selectable component
-			}
-		}
+		editorSelection();
 
 		if (bIsPlaying)
 		{
-			//std::cout << "Game camera'\n";
-			// TODO: Implement proper deltatime
-
 			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
 			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
@@ -324,31 +303,24 @@ void Engine::loop()
 			//TODO: Draw a game camera here
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
 		}
-		
-
-	
-			//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//CameraSystem::draw(editorCameraEntity, ourShader, ECS);
-		//phongShader->setVec3("lightPosition", glm::vec3(2, lightPos, 2));
-		//lightPos += 0.01f;
-		
-
-		
 		// contains camera draw and mesh system draw.
-	
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		
-		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
-		/*
-		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
-		glStencilMask(0xFF); // enable writing to the stencil buffer
+		glStencilMask(0x00);
+		//LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity);
 
-		CameraSystem::draw(cameraEntity, phongShader, ECS);
-		CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
+		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
+
+		/*
+
+		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+		glStencilMask(0xFF);
+		CameraSystem::draw(cameraEntity, ShadowShader, ECS);
+		MeshSystem::draw(ShadowShader, "u_model", ECS, cameraEntity);
+		// enable writing to the stencil buffer
+		//CameraSystem::draw(cameraEntity, phongShader, ECS);
+		//CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
 		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
-		MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
+		//MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -361,6 +333,7 @@ void Engine::loop()
 		glStencilMask(0xFF);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
+
 
 		if (bIsPlaying)
 		{
@@ -379,15 +352,64 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
-				*/
+	
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+		*/
 		viewport->render();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+	}
+}
+
+
+void Engine::editorSelection()
+{
+	if (Input::getInstance()->getMouseKeyState(KEY_LMB).bPressed)
+	{
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		CameraSystem::draw(cameraEntity, selectionShader, ECS);
+		MeshSystem::drawSelectableEditor(selectionShader, "u_model", ECS);
+
+
+		glFlush();
+		glFinish();
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		MousePosition mPos = Input::getInstance()->getMousePosition();
+		unsigned char data[4];
+
+		glReadPixels(mPos.x, getWindowHeight() - mPos.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+
+		// Convert the color back to an integer ID
+		int pickedID =
+			data[0] +
+			data[1] * 256 +
+			data[2] * 256 * 256;
+		auto& selectionComp = ECS->getComponentManager<SelectionComponent>()->getComponent(SystemEntity);
+		selectionComp.hitEntities.clear();
+
+		if (pickedID == 0x00ffffff)
+		{ // Full white, must be the background !
+
+		}
+		else
+		{
+			if (core::MAX_ENTITIES < pickedID)
+				return;
+
+			selectionComp.hitEntities.push_back(pickedID);
+
+			std::ostringstream oss;
+			oss << "mesh " << pickedID;
+			std::cout << oss.str() << '\n';
+		}
 	}
 }
 

@@ -88,6 +88,7 @@ public:
 	bool bIsTranslucent{ false };
 	bool bDisregardedDuringFrustumCulling{ false }; // True if it should not be considered for frustum culling. Renders
 	bool bShouldRender{ true };
+	bool bDrawDeferred{ false };
 
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
@@ -249,4 +250,20 @@ struct GBufferComponent final : public Component
 	uint gPosition{};
 	uint gNormal{};
 	uint gAlbedoSpec{};
+	uint attachments[3]{};
+	uint rboDepth{};
+};
+
+struct ShadowBufferComponent final :public Component
+{
+	ShadowBufferComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	uint SHADOW_WIDTH = 1024;
+	uint SHADOW_HEIGHT = 1024;
+
+	uint depthMapFBO{};
+	uint depthCubemap{};
+
+
+
+
 };

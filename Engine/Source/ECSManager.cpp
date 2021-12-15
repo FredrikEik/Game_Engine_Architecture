@@ -164,6 +164,8 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<GBufferComponent>(entityID);
 	else if (componentType == std::type_index(typeid(MaterialComponent)))
 		removeComponent<MaterialComponent>(entityID);
+	else if (componentType == std::type_index(typeid(ShadowBufferComponent)))
+		removeComponent<ShadowBufferComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };
