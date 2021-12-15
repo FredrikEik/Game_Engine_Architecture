@@ -7,6 +7,13 @@
 #include "gameobject.h"
 #include "components.h"
 
+
+/**
+    \brief Only credit for the frustum culling part.
+    \author Frustum: Lars Joar Bjørkeland
+    \date 15/12/2021
+ */
+
 class Camera : public GameObject
 {
 public:
@@ -16,9 +23,11 @@ public:
     void yaw(float degrees);
     void updateRightVector();
     void updateForwardVector();
+    ///Updates the camera and runs updateFrustum, needs FOV and Aspect ratio
     void update(float fieldOfView, float aspectRatio);
     void init() override;
     void draw() override;
+    ///Translates the position of the camera and its frustum, needs xyz coords
     void move(float x, float y, float z) override;
 
     gsl::Matrix4x4 mViewMatrix;
@@ -32,6 +41,7 @@ public:
     void setSpeed(float speed);
     void updateHeigth(float deltaHeigth);
     void moveRight(float delta);
+    ///Updates the frustums position, rotation and new normals
     void updateFrustumPos(float fieldOfView, float aspectRatio);
     void updateUniforms(GLint pMatrixUniform, GLint vMatrixUniform);
     void lookat(gsl::Vector3D &position, gsl::Vector3D &at, const gsl::Vector3D &up);
@@ -69,8 +79,6 @@ public:
     gsl::Vector3D nearPlaneNormal;
     gsl::Vector3D farPlaneNormal;
 
-    gsl::Vector4D rightPlaneNormal4D;
-    gsl::Vector4D leftPlaneNormal4D;
 
 private:
     gsl::Vector3D mForward{0.f, 0.f, -1.f};

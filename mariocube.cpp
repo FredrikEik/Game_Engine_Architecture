@@ -4,11 +4,7 @@
 
 MarioCube::MarioCube()
 {
-    //ObjReader objReader;
 
-   // objReader.readFile("../GEA2021/Assets/Meshes/mariocube.obj", &getMeshComponent()->mVertices, &getMeshComponent()->mIndices);
-
-    //boxCollisionComp = new BoxCollisionComponent();
 
     //LOD Cube Mesh
     badLodMesh = new Cube;
@@ -17,14 +13,10 @@ MarioCube::MarioCube()
 
 MarioCube::~MarioCube() {}
 
-void MarioCube::init(/*GLint matrixUniform[4]*/)
+void MarioCube::init()
 {
     initializeOpenGLFunctions();
 
-       // Set what shader you want to use to render this object
-       //mMaterial->setActiveShader(ShaderType::TEXTURE_SHADER);
-       //mMaterial->setActiveTextureSlot(2);
-       //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
        glGenVertexArrays( 1, &getMeshComponent()->mVAO );
        glBindVertexArray( getMeshComponent()->mVAO );
@@ -66,8 +58,7 @@ void MarioCube::move(float x, float y, float z)
 {
     getTransformComponent()->mMatrix.translate(x,y,z);
     getSphereCollisionComponent()->center += gsl::Vector3D(x,y, z);
-    //getBoxCollisionComponent()->min += gsl::Vector3D(0.001f,0.001f, -0.001f);
-    //getBoxCollisionComponent()->max += gsl::Vector3D(0.001f,0.001f, -0.001f);
+
 }
 
 
@@ -81,7 +72,6 @@ void MarioCube::draw()
     else
     {
         glBindVertexArray( getMeshComponent()->mVAO );
-        //glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
         glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
         glBindVertexArray(0);
     }

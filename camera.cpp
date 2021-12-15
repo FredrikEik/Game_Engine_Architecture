@@ -201,9 +201,6 @@ void Camera::updateHeigth(float deltaHeigth)
 
 void Camera::moveRight(float delta)
 {
-    //This fixes a bug in the up and right calculations
-    //so camera always holds its height when straifing
-    //should be fixed thru correct right calculations!
     gsl::Vector3D right = mRight;
     right.y = 0.f;
     mPosition += right * delta;
@@ -287,7 +284,7 @@ gsl::Vector3D Camera::up() const
     return mUp;
 }
 
-void Camera::init(/*GLint matrixUniform[4]*/)
+void Camera::init()
 {
     initializeOpenGLFunctions();
 

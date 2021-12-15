@@ -17,6 +17,7 @@ public:
     void move(float x, float y, float z) override;
 
     BoxCollisionComponent* getBoxCollisionComponent() {return boxCollisionComp;}
+    ///Lower res mesh for LOD
     Cube* badLodMesh;
 
 private:

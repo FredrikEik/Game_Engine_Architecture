@@ -262,20 +262,20 @@ bool System::isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &S
 
 bool System::isCollidingWithFrustum(SphereCollisionComponent &Sphere)
 {
-    gsl::Vector3D rightPlaneToObjectVector = renderSystem->playCamera->nearPlaneBottomRight - Sphere.center;
-    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, renderSystem->playCamera->rightPlaneNormal);
+    gsl::Vector3D rightPlaneToObjectVector = renderSystem->editorCamera->nearPlaneBottomRight - Sphere.center;
+    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, renderSystem->editorCamera->rightPlaneNormal);
     if(rightPlaneHeightToObject + Sphere.radius >= 0)
     {
-        gsl::Vector3D leftPlaneToObjectVector = renderSystem->playCamera->nearPlaneTopLeft - Sphere.center;
-        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, renderSystem->playCamera->leftPlaneNormal);
+        gsl::Vector3D leftPlaneToObjectVector = renderSystem->editorCamera->nearPlaneTopLeft - Sphere.center;
+        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, renderSystem->editorCamera->leftPlaneNormal);
         if(leftPlaneHeightToObject + Sphere.radius >= 0)
         {
-            gsl::Vector3D nearPlaneToObjectVector = renderSystem->playCamera->nearPlaneBottomRight - Sphere.center;
-            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, renderSystem->playCamera->nearPlaneNormal);
+            gsl::Vector3D nearPlaneToObjectVector = renderSystem->editorCamera->nearPlaneBottomRight - Sphere.center;
+            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, renderSystem->editorCamera->nearPlaneNormal);
             if(nearPlaneHeightToObject + Sphere.radius >= 0)
             {
-                gsl::Vector3D farPlaneToObjectVector = renderSystem->playCamera->farPlaneBottomLeft - Sphere.center;
-                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, renderSystem->playCamera->farPlaneNormal);
+                gsl::Vector3D farPlaneToObjectVector = renderSystem->editorCamera->farPlaneBottomLeft - Sphere.center;
+                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, renderSystem->editorCamera->farPlaneNormal);
                 if(farPlaneHeightToObject + Sphere.radius >= 0)
                 {
 //                    gsl::Vector3D topPlaneToObjectVector = playCamera->nearPlaneTopRight - Sphere.center;

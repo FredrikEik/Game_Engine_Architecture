@@ -26,8 +26,9 @@ public:
 
     SphereCollisionComponent* getSphereCollisionComponent() {return sphereCollisionComp;}
 
-
+    ///Checks if an object is far enough away to activate lower res mesh
     void checkLodDistance(gsl::Vector3D distance, float cameraDistance);
+    ///Bool for whether a low res mesh should be loaded
     bool BadLod{true};
 
 private:
