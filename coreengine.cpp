@@ -323,6 +323,7 @@ void CoreEngine::reset()
         enemies[i]->isAlive = true;
     }
     player->isAlive = true;
+    score = 0;
 
 }
 

@@ -34,13 +34,17 @@ public:
 
     void exposeEvent(QExposeEvent *) override;
 
+    /**
+     * @brief toggleWireframe toggler wireframe av og på
+     */
     void toggleWireframe(bool buttonState);
 
-    std::vector<GameObject*> mGameObjects;
 
-    std::vector<GameObject*> mParticles;
+    std::vector<GameObject*> mGameObjects;/// liste over alle spillerobjektene
 
-    std::vector<GameObject*> mProjectiles;
+    std::vector<GameObject*> mParticles;///liste med partikler
+
+    std::vector<GameObject*> mProjectiles;///liste med prosjektiler
 
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
@@ -73,6 +77,7 @@ private:
 
     void startOpenGLDebugger();
 
+    ///shader setups
     void setupPlainShader(int shaderIndex);
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};

@@ -12,6 +12,7 @@ public:
      std::string mName{"NoName"};
      QString objName{"NoName"};
 
+     ///setter opp komponenter som gameobjekts kan bruke
      ColliderComponent *mCollider{nullptr};
      TransformComponent* mTransform{nullptr};
      MeshComponent* mMesh{nullptr};

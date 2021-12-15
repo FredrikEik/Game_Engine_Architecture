@@ -8,6 +8,9 @@
 #include <iostream>
 #include <fstream>
 
+/**
+ * @brief vertex klassen
+ */
 class Vertex {
 public:
     Vertex();

@@ -86,6 +86,9 @@ struct MeshData
 
 class GameObject;
 typedef gsl::Vector3D Vec3;
+/**
+ * @brief The MeshHandler class står for å konstruere de fleste objekter
+ */
 class MeshHandler : public QOpenGLFunctions_4_1_Core
 {
 public:
@@ -139,6 +142,10 @@ public:
     float vertexXStart{0.f};
     float vertexZStart{0.f};
 private:
+    /**
+     * @brief readObj leser fildata fra filename
+     * @return returnerer meshdatan
+     */
     int readObj(std::string filename);
     int readObj2(std::string filename);
     int makeAxis();
@@ -152,9 +159,9 @@ private:
 
     void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
 
-    ///LAS SETUP
-    int makeLAS(std::string fileName);
-    void ReadDatafromFile(std::string fileName, MeshData &mesh);
+
+    int makeLAS(std::string fileName);    ///LAS SETUP
+    void ReadDatafromFile(std::string fileName, MeshData &mesh);///leser las data
 
 
 

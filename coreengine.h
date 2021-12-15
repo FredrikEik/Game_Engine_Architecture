@@ -61,19 +61,35 @@ public:
 
     ///coreengine sine funksjoner
     void togglePlayMode(bool shouldPlay);
+    ///initialize scene
     void setUpScene();
+    ///setup test scene
     void testScene();
     void RollingBallSimulation();
+    ///update camera
     void updateCamera();
     void updateScene();
     void UpdateSimulation();
     void reset();
-    void loadBoss(std::string scene);
+    /**
+     * @brief loadBoss laster i json fila som inneholder data
+     */
+    void loadBoss(std::string name);
+    /**
+     * @brief spawnParticles lager partikler
+     * @param temp er objekte partiklene skal spawne fra
+     */
     void spawnParticles(GameObject *temp);
+    /**
+     * @brief spawnProjectile lager en prosjektil som spilleren kan skyte
+     */
     void spawnProjectile();
+    /**
+     * @brief handleInput håndterer inputs
+     */
     void handleInput();
-    void playSound(std::string assetName);
-    void addEntity(std::string assetName);
+    void playSound(std::string assetName);///spiller av lyd
+    void addEntity(std::string assetName);///gjør det samme som addobject
 
     Camera *mGameCamera{nullptr};
     Camera *mEditorCamera{nullptr};

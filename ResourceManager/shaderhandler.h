@@ -18,7 +18,7 @@ public:
 
     // Use the current shader
     void use( );
-    void setupShader(bool useTexture = false, bool useLight = false);
+    void setupShader(bool useTexture = false, bool useLight = false); ///sets up shader
 
 
     GLint mMatrixUniform{-1};
