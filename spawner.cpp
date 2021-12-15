@@ -4,12 +4,21 @@
 #include "mainwindow.h"
 #include <ctime>
 
+/**
+ * @brief Spawner::Spawner
+ * @param ObjFactory
+ * @param TheMainWindow
+ */
 Spawner::Spawner(ObjectFactory* ObjFactory, MainWindow* TheMainWindow)
 {
     ObjSpawnFactory = ObjFactory;
     mMainWindow = TheMainWindow;
 }
 
+/**
+ * @brief Spawner::spawnRow
+ * @param rowLength
+ */
 void Spawner::spawnRow(int rowLength)
 {
     std::srand(time(0));
@@ -74,6 +83,10 @@ void Spawner::spawnRow(int rowLength)
     spawnHindrances(rowLength);
 }
 
+/**
+ * @brief Spawner::spawnHindrances
+ * @param hindranceLength
+ */
 void Spawner::spawnHindrances(int hindranceLength)
 {
     for(int i = 15; i < hindranceLength; i+=rand()%15+10 /*i+=5*/)
@@ -173,6 +186,9 @@ void Spawner::spawnHindrances(int hindranceLength)
     }
 }
 
+/**
+ * @brief Spawner::updateHindrances
+ */
 void Spawner::updateHindrances()
 {
 
@@ -201,6 +217,10 @@ void Spawner::updateHindrances()
     }
 }
 
+/**
+ * @brief Spawner::update
+ * @param z
+ */
 void Spawner::update(float z)
 {
     for (int i = 0; i < spawnedObjects.size(); i++)
@@ -223,6 +243,9 @@ void Spawner::update(float z)
     }
 }
 
+/**
+ * @brief Spawner::resetSpawner
+ */
 void Spawner::resetSpawner()
 {
     for (int i = 0; i < spawnedObjects.size(); i += 3)

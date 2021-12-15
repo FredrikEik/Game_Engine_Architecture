@@ -1,5 +1,9 @@
 #include "player.h"
 
+/**
+ * @brief player::player
+ * @param mesh
+ */
 player::player(GameObject* mesh)
 {
     mMesh = mesh;
@@ -10,6 +14,10 @@ player::~player()
 
 }
 
+/**
+ * @brief player::update
+ * @param deltaTime
+ */
 void player::update(float deltaTime)
 {
     if (!bCanJump)
@@ -46,11 +54,19 @@ void player::update(float deltaTime)
     }
 }
 
+/**
+ * @brief player::Move
+ * @param dt
+ */
 void player::Move(float dt)
 {
     mDt = dt;
 }
 
+/**
+ * @brief player::Jump
+ * @param sound
+ */
 void player::Jump(SoundSource* sound)
 {
     if (bCanJump)

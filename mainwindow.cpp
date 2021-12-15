@@ -89,30 +89,50 @@ void MainWindow::init()
     ui->comboBox->addItem("HudText");
 }
 
+/**
+ * @brief MainWindow::addObjectToWorldList
+ * @param name
+ */
 void MainWindow::addObjectToWorldList(std::string name)
 {
     ui->WorldObjects->addItem(name.c_str());
 }
 
+/**
+ * @brief MainWindow::removeObjectFromWorldList
+ */
 void MainWindow::removeObjectFromWorldList()
 {
     delete ui->WorldObjects->takeItem(ui->WorldObjects->currentRow());
 }
+/**
+ * @brief MainWindow::removeObjectFromWorldList
+ * @param i
+ */
 void MainWindow::removeObjectFromWorldList(int i)
 {
     delete ui->WorldObjects->takeItem(i);
 }
-
+/**
+ * @brief MainWindow::getCurrentRow
+ * @return
+ */
 int MainWindow::getCurrentRow()
 {
     return ui->WorldObjects->currentRow();
 }
-
+/**
+ * @brief MainWindow::WorldListSize
+ * @return
+ */
 int MainWindow::WorldListSize()
 {
     return ui->WorldObjects->count();
 }
-
+/**
+ * @brief MainWindow::displayCurrentTransform
+ * @param index
+ */
 void MainWindow::displayCurrentTransform(int index)
 {
     if (index == -1)
@@ -135,27 +155,39 @@ void MainWindow::displayCurrentTransform(int index)
     ui->scaleY->setValue(scale.getY());
     ui->scaleZ->setValue(scale.getZ());
 }
-
+/**
+ * @brief MainWindow::getWidth
+ * @return
+ */
 int MainWindow::getWidth()
 {
     QRect geometry = ui->OpenGLLayout->geometry();
     int width = geometry.width();
     return width;
 }
-
+/**
+ * @brief MainWindow::getHeight
+ * @return
+ */
 int MainWindow::getHeight()
 {
     QRect geometry = ui->OpenGLLayout->geometry();
     int height = geometry.height();
     return height;
 }
-
+/**
+ * @brief MainWindow::disableWorldObjects
+ * @param disable
+ */
 void MainWindow::disableWorldObjects(bool disable)
 {
     ui->WorldObjects->setCurrentRow(-1);
     ui->WorldObjects->setDisabled(disable);
 }
-
+/**
+ * @brief MainWindow::setSelection
+ * @param index
+ */
 void MainWindow::setSelection(int index)
 {
     ui->WorldObjects->setCurrentRow(index);

@@ -1,6 +1,11 @@
 #include "MathStuff/MathStuff.h"
 
-
+/**
+ * @brief tog::Transform
+ * @param matrix
+ * @param vector
+ * @return
+ */
 tog::vec4 tog::Transform(gsl::Matrix4x4 matrix, vec4 vector)
 {
     vec4 returnVector = vec4(0.f, 0.f, 0.f, 0.f);
@@ -11,6 +16,12 @@ tog::vec4 tog::Transform(gsl::Matrix4x4 matrix, vec4 vector)
     return returnVector;
 }
 
+/**
+ * @brief tog::dotProduct
+ * @param a
+ * @param b
+ * @return
+ */
 float tog::dotProduct(gsl::Vector3D a, gsl::Vector3D b)
 {
     float ans = (a.getX() * b.getX()) + (a.getY() * b.getY()) + (a.getZ() * b.getZ());

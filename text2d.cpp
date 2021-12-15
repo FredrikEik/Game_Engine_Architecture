@@ -1,5 +1,11 @@
 #include "text2d.h"
 
+/**
+ * @brief Text2D::Text2D
+ * @param text
+ * @param x
+ * @param y
+ */
 Text2D::Text2D(const char * text, int x, int y)
 {
     bHudElement = true;
@@ -73,6 +79,13 @@ void Text2D::draw()
     glBindVertexArray(0);
 }
 
+/**
+ * @brief Text2D::printText2D
+ * @param text
+ * @param x
+ * @param y
+ * @param size
+ */
 void Text2D::printText2D(const char * text, int x, int y, int size)
 {
     unsigned int length = strlen(text);
@@ -112,6 +125,10 @@ void Text2D::printText2D(const char * text, int x, int y, int size)
     }
 }
 
+/**
+ * @brief Text2D::updateText
+ * @param text
+ */
 void Text2D::updateText(const char * text)
 {
     getMeshComp()->mIndices.clear();

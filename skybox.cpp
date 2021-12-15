@@ -1,5 +1,8 @@
 #include "skybox.h"
 
+/**
+ * @brief SkyBox::SkyBox
+ */
 SkyBox::SkyBox()
 {
     getTransformComp()->mTrueScaleMatrix = getTransformComp()->mMatrix;
@@ -10,6 +13,10 @@ SkyBox::~SkyBox()
 
 }
 
+/**
+ * @brief SkyBox::Update
+ * @param cameraPos
+ */
 void SkyBox::Update(gsl::Vector3D cameraPos)
 {
     getTransformComp()->mMatrix.setPosition(cameraPos.x, cameraPos.y, cameraPos.z);

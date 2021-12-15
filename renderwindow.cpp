@@ -339,6 +339,10 @@ void RenderWindow::render()
     }
 }
 
+/**
+ * @brief RenderWindow::setupPlainShader
+ * @param shaderIndex
+ */
 void RenderWindow::setupPlainShader(int shaderIndex)
 {
     mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -347,6 +351,10 @@ void RenderWindow::setupPlainShader(int shaderIndex)
     m2DUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "HudElement");
 }
 
+/**
+ * @brief RenderWindow::setupTextureShader
+ * @param shaderIndex
+ */
 void RenderWindow::setupTextureShader(int shaderIndex)
 {
     mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -444,12 +452,19 @@ void RenderWindow::stopSound()
     mStereoSound->stop();
 }
 
+/**
+ * @brief RenderWindow::setSelectionIndex
+ * @param index
+ */
 void RenderWindow::setSelectionIndex(int index)
 {
     ObjFactory->setOBJindex(index);
     //qDebug() << index;
 }
 
+/**
+ * @brief RenderWindow::deleteSelection
+ */
 void RenderWindow::deleteSelection()
 {
     int index = ObjFactory->getOBJindex();
@@ -464,25 +479,43 @@ void RenderWindow::deleteSelection()
     }
 }
 
+/**
+ * @brief RenderWindow::getTransform
+ * @param index
+ * @return
+ */
 gsl::Matrix4x4 RenderWindow::getTransform(int index)
 {
      gsl::Matrix4x4 Matrix = ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix;
 
      return Matrix;
 }
+/**
+ * @brief RenderWindow::getRotation
+ * @param index
+ * @return
+ */
 gsl::Vector3D RenderWindow::getRotation(int index)
 {
     gsl::Vector3D Rotation = ObjFactory->mGameObject[index]->getTransformComp()->Rot;
 
     return Rotation;
 }
+/**
+ * @brief RenderWindow::getScale
+ * @param index
+ * @return
+ */
 gsl::Vector3D RenderWindow::getScale(int index)
 {
     gsl::Vector3D Scale = ObjFactory->mGameObject[index]->getTransformComp()->Scal;
 
     return Scale;
 }
-
+/**
+ * @brief RenderWindow::setPositionX
+ * @param value
+ */
 void RenderWindow::setPositionX(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -492,6 +525,10 @@ void RenderWindow::setPositionX(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(value,position.getY(),position.getZ());
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setPositionY
+ * @param value
+ */
 void RenderWindow::setPositionY(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -501,6 +538,10 @@ void RenderWindow::setPositionY(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(position.getX(),value,position.getZ());
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setPositionZ
+ * @param value
+ */
 void RenderWindow::setPositionZ(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -510,7 +551,10 @@ void RenderWindow::setPositionZ(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.setPosition(position.getX(),position.getY(),value);
     updateMatrix();
 }
-
+/**
+ * @brief RenderWindow::setRotationX
+ * @param value
+ */
 void RenderWindow::setRotationX(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -521,6 +565,10 @@ void RenderWindow::setRotationX(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateX(x);
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setRotationY
+ * @param value
+ */
 void RenderWindow::setRotationY(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -531,6 +579,10 @@ void RenderWindow::setRotationY(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateY(y);
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setRotationZ
+ * @param value
+ */
 void RenderWindow::setRotationZ(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -541,7 +593,10 @@ void RenderWindow::setRotationZ(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->mTrueScaleMatrix.rotateZ(z);
     updateMatrix();
 }
-
+/**
+ * @brief RenderWindow::setScaleX
+ * @param value
+ */
 void RenderWindow::setScaleX(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -550,6 +605,10 @@ void RenderWindow::setScaleX(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->Scal.setX(value);
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setScaleY
+ * @param value
+ */
 void RenderWindow::setScaleY(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -558,6 +617,10 @@ void RenderWindow::setScaleY(double value)
     ObjFactory->mGameObject[index]->getTransformComp()->Scal.setY(value);
     updateMatrix();
 }
+/**
+ * @brief RenderWindow::setScaleZ
+ * @param value
+ */
 void RenderWindow::setScaleZ(double value)
 {
     int index = ObjFactory->getOBJindex();
@@ -567,6 +630,13 @@ void RenderWindow::setScaleZ(double value)
     updateMatrix();
 }
 
+/**
+ * @brief RenderWindow::setScale
+ * @param x
+ * @param y
+ * @param z
+ * @param index
+ */
 void RenderWindow::setScale(double x, double y, double z, int index)
 {
     if (x == 0)
@@ -579,6 +649,9 @@ void RenderWindow::setScale(double x, double y, double z, int index)
     ObjFactory->mGameObject[index]->getTransformComp()->mMatrix.scale(gsl::Vector3D(x, y, z));
 }
 
+/**
+ * @brief RenderWindow::updateMatrix
+ */
 void RenderWindow::updateMatrix()
 {
     int index = ObjFactory->getOBJindex();
@@ -591,6 +664,9 @@ void RenderWindow::updateMatrix()
              index);
 }
 
+/**
+ * @brief RenderWindow::toggleGameMode
+ */
 void RenderWindow::toggleGameMode()
 {
     if (bPlayGame) {
@@ -620,6 +696,11 @@ void RenderWindow::toggleGameMode()
     }
 }
 
+
+/**
+ * @brief RenderWindow::mousePickingRay
+ * @param event
+ */
 void RenderWindow::mousePickingRay(QMouseEvent *event)
 {
     int mouseX = event->pos().x();
@@ -643,6 +724,11 @@ void RenderWindow::mousePickingRay(QMouseEvent *event)
     }
 }
 
+/**
+ * @brief RenderWindow::frustumCulling
+ * @param gameObjectIndex
+ * @return
+ */
 bool RenderWindow::frustumCulling(int gameObjectIndex)
 {
     Camera *cullCamera{nullptr};
@@ -688,6 +774,10 @@ bool RenderWindow::frustumCulling(int gameObjectIndex)
     return false;
 }
 
+/**
+ * @brief RenderWindow::ObjectButton
+ * @param object
+ */
 void RenderWindow::ObjectButton(std::string object)
 {
     ObjFactory->createObject(object);
@@ -736,6 +826,14 @@ void RenderWindow::startOpenGLDebugger()
     }
 }
 
+/**
+ * @brief RenderWindow::objectsColliding
+ * @param Box1
+ * @param Box2
+ * @param Box1trans
+ * @param Box2trans
+ * @return
+ */
 bool RenderWindow::objectsColliding(CollisionComponent Box1, CollisionComponent Box2, TransformComponent Box1trans, TransformComponent Box2trans)
 {
     gsl::Vector3D Box1Pos = Box1trans.mTrueScaleMatrix.getPosition();

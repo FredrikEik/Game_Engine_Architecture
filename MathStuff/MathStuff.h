@@ -8,6 +8,9 @@
 namespace tog
 {
 
+/**
+ * @brief The vec4 struct
+ */
 struct vec4
 {
     float x, y, z, w;
