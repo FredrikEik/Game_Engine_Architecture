@@ -5,6 +5,7 @@
 #include "../Shader.h"
 #include "../Engine/Engine.h"
 #include "../Systems/CameraSystem.h"
+
 void HudSystem::init(uint32 entity, ECSManager* ECS, const std::filesystem::path& texturePath)
 {
     HudComponent* hud = ECS->getComponentManager<HudComponent>()->getComponentChecked(entity);
@@ -78,7 +79,7 @@ void HudSystem::render(ECSManager* ECS, class Shader* shader)
     auto& components = manager->getComponentArray();
     shader->use();
     uint32 cameraEntity = Engine::Get().getCameraEntity();
-    //CameraSystem::draw(cameraEntity, shader, ECS);
+    
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     float height = Engine::Get().getWindowHeight();

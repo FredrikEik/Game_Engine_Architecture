@@ -49,7 +49,6 @@ void TerrainSystem::generateRegularGrid(uint32 entity, ECSManager* ECS)
 	calculateNormals(positions, columns, terrainResolution, terrainResolution, normals);
 
 	rowsLooped = 1;
-	//int32 columnsLooped = 0;
 	for (int32 i{}; i<positions.size(); ++i)
 	{
 		if (((i + 1) % (columns * rowsLooped)) == 0)

@@ -8,11 +8,9 @@ void SphereSystem::construct(uint32 entityID, ECSManager* ECS)
 	auto meshManager = ECS->getComponentManager<MeshComponent>();
 	auto collisionComponent = ECS->getComponentManager<SphereComponent>()->getComponentChecked(entityID);
 
-	//uint32 entityID = collisionComponent->entityID;
 	const TransformComponent& transform = transformManager->getComponent(entityID);
 	const MeshComponent* mesh = meshManager->getComponentChecked(entityID);
 
-	// TODO: test if this works for the default case of a tiny cube collision
 	glm::vec3 min{ -0.5f, -0.5f, -0.5f };
 	glm::vec3 max{ 0.5f, 0.5f, 0.5f };
 

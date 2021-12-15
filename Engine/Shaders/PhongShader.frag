@@ -22,7 +22,7 @@ uniform int bUsingTexture = 0;
 uniform sampler2D textureSampler;
 
 void main() {
-//    vec2 UV = vec2(color[0], color[1]);
+
     // Ambient light
     vec3 ambient = ambientStrength * lightColor;
 
@@ -32,12 +32,9 @@ void main() {
     float angleFactor = max(dot(normalCorrected, lightDirection), 0.f);
 
     // Branchless way of swapping between texture and color.
-//    vec3 diffuse = angleFactor * objectColor * lightColor * lightStrength * (1-bUsingTexture) +
-//                    angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength * bUsingTexture;
     vec3 diffuse = angleFactor * objectColor * vec3(color) * lightColor * lightStrength * (1-bUsingTexture) +
                     angleFactor * objectColor * vec3(texture(textureSampler, UV)) * lightColor * lightStrength * bUsingTexture;
-//
-//    vec3 diffuse = angleFactor * objectColor * texture(textureSampler, UV).rgb * lightColor * lightStrength;
+
 
     // specular light
     float specFactor = 0.0;

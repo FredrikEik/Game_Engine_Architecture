@@ -10,10 +10,7 @@
 
 #define _USE_MATH_DEFINES // Must be defined to use the M_PI constant
 #include <math.h>
-//void CameraSystem::setPerspective(uint32 entity, class ECSManager* ECS, const glm::mat4& projectionMatrix)
-//{
-//
-//}
+
 
 void CameraSystem::setPerspective(uint32 entity, ECSManager* ECS, float fovY, float aspect, float near, float far)
 {
@@ -77,21 +74,11 @@ void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSMana
 	float screenHeight = Engine::Get().getWindowHeight();
 	MousePosition mousePosition = Input::getInstance()->getMousePosition();
 
-	//glm::vec3 forward(getForwardVector(currentCamera));
-	//glm::vec3 right(getRightVector(forward));
 	glm::vec3 forward(1, 0, 0);
 	glm::vec3 right(0, 0, 1);
-	//std::cout << "x " << right.x << " y " << right.y << " z " << right.z << std::endl;
+
 
 	glm::vec3 deltaMovement{};
-	//if (mousePosition.x < 50)
-	//	deltaMovement -= right * 5.f * deltaTime;
-	//if (mousePosition.y < 50)
-	//	deltaMovement += forward * 5.f * deltaTime;
-	//if (mousePosition.y > (screenHeight-50))
-	//	deltaMovement -= forward * 5.f * deltaTime;
-	//if (mousePosition.x > (screenWidth-50))
-	//	deltaMovement += right * 5.f * deltaTime;
 
 	float speed{ 8 };
 	Input* input = Input::getInstance();
@@ -103,15 +90,6 @@ void CameraSystem::processGameMouseInput(CameraComponent& currentCamera, ECSMana
 		deltaMovement -= forward * deltaTime * speed;
 	if (mousePosition.x > (screenWidth - 50) || input->getKeyState(KEY_D).bHeld)
 		deltaMovement += right * deltaTime * speed;
-
-		//if (mousePosition.x < 50 || input->getKeyState(KEY_A).bHeld)
-	//	deltaMovement -= right * (float)(50-mousePosition.x) * 0.1f * deltaTime * speed;
-	//if (mousePosition.y < 50 || input->getKeyState(KEY_W).bHeld)
-	//	deltaMovement += forward * (float)(50-mousePosition.y) * 0.1f * deltaTime * speed;
-	//if (mousePosition.y > (screenHeight - 50) || input->getKeyState(KEY_S).bHeld)
-	//	deltaMovement -= forward * ((screenHeight -mousePosition.y +50)) * 0.1f * deltaTime * speed;
-	//if (mousePosition.x > (screenWidth - 50) || input->getKeyState(KEY_D).bHeld)
-	//	deltaMovement -= right * ((screenWidth - mousePosition.x - 50)) * 0.1f * deltaTime * speed;
 
 	TransformSystem::move(currentCamera.entityID, deltaMovement, ECS);
 }
@@ -127,10 +105,10 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 	glm::vec3 right(getRightVector(forward));
 	glm::vec3 up(getUpVector(forward, right));
 
-	// TODO: This does not really belong in camera system
+	
 	glm::vec3 deltaMovement{};
 	float speed{ 50.f };
-	// TODO: Make sure this works
+	
 	if (input->getKeyState(KEY_W).bHeld)
 		deltaMovement += forward * speed * deltaTime;
 	if (input->getKeyState(KEY_S).bHeld)
@@ -145,9 +123,6 @@ void CameraSystem::processEditorKeyboardInput(uint32 entity, class ECSManager* E
 		deltaMovement -= glm::vec3(0, 1, 0) * speed * deltaTime;
 
 	TransformSystem::move(entity, deltaMovement, ECS);
-	//std::cout << currentTransform->transform[3].x << " " 
-	//	<< currentTransform->transform[3].y<< " " 
-	//	<< currentTransform->transform[3].z << "\n";
 
 }
 
@@ -189,13 +164,6 @@ void CameraSystem::updateEditorViewMatrix(CameraComponent& currentCamera)
 
 	currentCamera.m_viewMatrix = glm::lookAt(glm::vec3(), forward, up);
 
-	//currentCamera.m_viewMatrix = glm::mat4
-	//(
-	//	right.x,	right.y,	right.z,	0,
-	//	up.x,		up.y,		up.z,		0,
-	//	forward.x,	forward.y,	forward.z,	0,
-	//	0,			0,			0,			1.f
-	//);
 }
 
 glm::vec3 CameraSystem::getForwardVector(const CameraComponent& currentCamera)
@@ -223,7 +191,7 @@ glm::vec3 CameraSystem::getUpVector(const glm::vec3& forwardVector, const glm::v
 
 void CameraSystem::updateEditorCameraPosition(uint32 entity, class ECSManager* ECS)
 {
-	// TODO: Figure out if this should translate negative ;)
+
 	TransformComponent* currentTransform{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(entity) };
 	CameraComponent* currentCamera{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(entity) };
 	currentCamera->m_viewMatrix = glm::translate(currentCamera->m_viewMatrix, -glm::vec3(currentTransform->transform[3]));
@@ -240,11 +208,8 @@ void CameraSystem::normalizePlane(glm::vec4& plane)
 
 float CameraSystem::isPointInPlane(const glm::vec4& plane, const glm::vec3& point, float radius)
 {
-	//(frustum_planes.x * pos.x + frustum_planes.y * pos.y + frustum_planes.z * pos.z + frustum_planes.w <= -radius)
-	//return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) >= -radius;
-	//return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) <=0.f;
 	return (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w);
-	//return std::sqrt(plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) >= -radius;
+	
 }
 
 void CameraSystem::createFrustumMesh(uint32 entity, ECSManager* ECS)

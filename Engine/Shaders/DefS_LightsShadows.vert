@@ -1,6 +1,6 @@
 #version 460 core
-layout(location = 0) in vec3 aPos;   // 1st attribute buffer = vertex positions
-layout(location = 1) in vec2 aTexCoord;   // 2nd attribute buffer = normals
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec2 aTexCoord;
 
 out vec2 TexCoords;
 

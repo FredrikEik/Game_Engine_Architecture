@@ -4,6 +4,10 @@
 #include "mono/jit/jit.h"
 #include <mono/metadata/assembly.h>
 
+/// <summary>
+/// ScriptEngine opens the assembly ands creates domains and images
+/// to initialize the c# sharp scripting
+/// </summary>
 class ScriptEngine
 {
 public:

@@ -17,7 +17,7 @@
 
 void PrintMethod_Internal(MonoString* string)
 {
-	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
+	char* cppString = mono_string_to_utf8(string);
 
 	std::cout << cppString;
 
@@ -41,13 +41,11 @@ uint64 getEntityID_Internal(MonoObject* this_ptr, MonoString* str)
 
 	return entityID;
 }
-//&Play_Internal()
+
 void ScriptSystem::Init()
 {
 	//Namespace.Class::Method + a Function pointer with the actual definition
 	BindInternalFunction("ScriptInJin.Debug::PrintMethod_Internal", &PrintMethod_Internal);
-
-	//mono_add_internal_cl("ScriptInJin.Entity::get_EntityID", &);
 	BindInternalFunction("ScriptInJin.Entity::getEntityID_internal", &getEntityID_Internal);
 	BindInternalFunction("ScriptInJin.Transform::Move_Internal", &TransformSystem::move_internal);
 	BindInternalFunction("ScriptInJin.Transform::getTransform_internal", &TransformSystem::getTransform_internal);
@@ -80,14 +78,13 @@ void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* m
 	{
 		if (!&ScriptComp)
 			continue;
-		//std::cout << "Invoking update on entity: " << ScriptComp.entityID<<"\n";
+
 		if (!ScriptComp.bInitialized || functionToCall == "Update")
 		{
 			ScriptComp.bInitialized = true;
 			auto func = ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)];
 			auto object = ScriptComp.m_Object;
 			mono_runtime_invoke(func, object, nullptr, nullptr);
-			//mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
 		}
 	}
 }
@@ -118,7 +115,6 @@ std::string ScriptSystem::GetName(MonoMethod* method)
 		
 }
 
-
 void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string className)
 {
 	ScriptEngine* SE = ScriptEngine::GetInstance();
@@ -134,14 +130,9 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string cla
 	}
 
 	scriptComp->m_Object = mono_object_new(SE->getDomain(), scriptComp->m_Class);
-	//mono_gchandle_new(scriptComp->m_Object, true);
 	mono_runtime_object_init(scriptComp->m_Object);
-	// entity id handle
 	scriptComp->entityID_handle = mono_class_get_field_from_name(scriptComp->m_Class, "native_handle");
 	mono_field_set_value(scriptComp->m_Object, scriptComp->entityID_handle, &scriptComp->entityID);
-	//todo 
-	// parameters
-	//fields
 }
 
 void ScriptSystem::uninitializeAllComponents(ECSManager* manager)

@@ -12,9 +12,9 @@
 #include "../Shader.h"
 #include "CameraSystem.h"
 #include "../Input/Input.h"
+
 bool MeshSystem::loadMesh(const std::filesystem::path& filePath, MeshComponent& meshComponent)
 {
-    //assert(readObj(filePath, meshComponent)); 
     if (!readObj(filePath, meshComponent))
         return false;
     initialize(meshComponent);
@@ -56,11 +56,9 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         assert(false);
     
 
-    //auto meshesToRender = getMeshesToDraw(manager, meshManager->getComponentArray(), cameraEntity); // Frustum culling, a bit buggy, thus not used atm
     auto& meshArray = meshManager->getComponentArray();
     auto meshesToRender = GetMeshesToDrawAABB(manager, meshArray, cameraEntity);
     shader->use();
-    //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
     for (auto& it : meshesToRender)
     {
 
@@ -117,7 +115,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
         glm::vec3 meshPos= glm::vec3(transformManager->getComponent(meshComp.entityID).transform[3]);
         
         float dist = glm::distance(cameraPos, meshPos);
-        // Size doesnt matter
+        //decide LOD type
         int LODArraySize = meshComp.LODMeshes.size();
         LODMeshType LODToDraw = LODMeshType::Default;
         if (dist < 8 || LODArraySize == 0)
@@ -173,10 +171,6 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     glm::vec3 up(CameraSystem::getUpVector(forward, right));
     
     glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
-    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix;
-    //glm::mat4x4 viewProjectionMatrix = transformManager->getComponent(cameraEntity).transform *  
-    //    camera->m_viewMatrix *  camera->m_projectionMatrix;
-    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix;
 
     glm::vec4 leftPlane{};
     leftPlane.x = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
@@ -214,80 +208,12 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
     farPlane.z = viewProjectionMatrix[3].z - viewProjectionMatrix[2].z;
     farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;
 
-    //glm::vec4 leftPlane{};
-    //leftPlane = viewProjectionMatrix[3] + viewProjectionMatrix[0];
-
-    //glm::vec4 rightPlane{};
-    //rightPlane = viewProjectionMatrix[3] - viewProjectionMatrix[0];
-
-    //glm::vec4 topPlane{};
-    //topPlane = viewProjectionMatrix[3] + viewProjectionMatrix[1];
-
-    //glm::vec4 bottomPlane{};
-    //bottomPlane = viewProjectionMatrix[3] - viewProjectionMatrix[1];
-
-    //glm::vec4 nearPlane{};
-    //nearPlane = viewProjectionMatrix[3] + viewProjectionMatrix[2];
-
-    //glm::vec4 farPlane{};
-    //farPlane = viewProjectionMatrix[3] - viewProjectionMatrix[2];
-
-
-
-
-    ///// EXPERIMENTS
- /*   glm::vec4 leftPlane{};
-    leftPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[0].x;
-    leftPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[0].y;
-    leftPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[0].z;
-    leftPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[0].w;
-
-    glm::vec4 rightPlane{};
-    rightPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[0].x;
-    rightPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[0].y;
-    rightPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[0].z;
-    rightPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[0].w;
-
-    glm::vec4 topPlane{};
-    topPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[1].x;
-    topPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[1].y;
-    topPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[1].z;
-    topPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[1].w;
-
-    glm::vec4 bottomPlane{};
-    bottomPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[1].x;
-    bottomPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[1].y;
-    bottomPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[1].z;
-    bottomPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[1].w;
-
-    glm::vec4 nearPlane{};
-    nearPlane.z = viewProjectionMatrix[3].x + viewProjectionMatrix[2].x;
-    nearPlane.y = viewProjectionMatrix[3].y + viewProjectionMatrix[2].y;
-    nearPlane.x = viewProjectionMatrix[3].z + viewProjectionMatrix[2].z;
-    nearPlane.w = viewProjectionMatrix[3].w + viewProjectionMatrix[2].w;
-
-    glm::vec4 farPlane{};
-    farPlane.z = viewProjectionMatrix[3].x - viewProjectionMatrix[2].x;
-    farPlane.y = viewProjectionMatrix[3].y - viewProjectionMatrix[2].y;
-    farPlane.x = viewProjectionMatrix[3].z - viewProjectionMatrix[2].z;
-    farPlane.w = viewProjectionMatrix[3].w - viewProjectionMatrix[2].w;*/
-
     CameraSystem::normalizePlane(leftPlane);
     CameraSystem::normalizePlane(rightPlane);
     CameraSystem::normalizePlane(topPlane);
     CameraSystem::normalizePlane(bottomPlane);
     CameraSystem::normalizePlane(nearPlane);
     CameraSystem::normalizePlane(farPlane);
-
-    //std::cout << "  LeftPlane x: " << leftPlane.x << " y: " << leftPlane.y << " z: " << leftPlane.z << " w: " << leftPlane.w << "\n";
-    //std::cout << " rightPlane x: " << rightPlane.x << " y: " << rightPlane.y << " z: " << rightPlane.z << " w: " << rightPlane.w << "\n";
-    //std::cout << "   topPlane x: " << topPlane.x << " y: " << topPlane.y << " z: " << topPlane.z << " w: " << topPlane.w << "\n";
-    //std::cout << "bottomPlane x: " << bottomPlane.x << " y: " << bottomPlane.y << " z: " << bottomPlane.z << " w: " << bottomPlane.w << "\n";
-    //std::cout << "  nearPlane x: " << nearPlane.x << " y: " << nearPlane.y << " z: " << nearPlane.z << " w: " << nearPlane.w << "\n";
-    //std::cout << "   farPlane x: " << farPlane.x << " y: " << farPlane.y << " z: " << farPlane.z << " w: " << farPlane.w << "\n";
-    //
-    //if (!Input::getInstance()->getMouseKeyState(KEY_RMB).bHeld)
-    //    _sleep(500);
 
     std::vector<uint32> meshesToRender;
     uint32 count{};
@@ -297,31 +223,12 @@ std::vector< uint32> MeshSystem::getMeshesToDraw(ECSManager* ECS, const std::vec
         const auto& sphereComp = sphereManager->getComponent(it.entityID);
         glm::vec3 center = sphereComp.center + glm::vec3(transformComp.transform[3]);
         const float& radius = sphereComp.radius;
-        //if (CameraSystem::isPointInPlane(leftPlane, center, radius) &&
-        //    CameraSystem::isPointInPlane(rightPlane, center, radius) &&
-        //    CameraSystem::isPointInPlane(topPlane, center, radius) &&
-        //    CameraSystem::isPointInPlane(bottomPlane, center, radius))
-        //    meshesToRender.push_back(count);
-
-        //if (CameraSystem::isPointInPlane(leftPlane, center, radius) > -radius &&
-        //    CameraSystem::isPointInPlane(rightPlane, center, radius) <= radius &&
-        //    CameraSystem::isPointInPlane(topPlane, center, radius) > -radius &&
-        //    CameraSystem::isPointInPlane(bottomPlane, center, radius) <= radius)
-        //    meshesToRender.push_back(count);
 
         if (CameraSystem::isPointInPlane(leftPlane, center, radius) > -radius &&
             CameraSystem::isPointInPlane(rightPlane, center, radius) > -radius &&
             CameraSystem::isPointInPlane(topPlane, center, radius) > -radius &&
             CameraSystem::isPointInPlane(bottomPlane, center, radius) > -radius)
             meshesToRender.push_back(count);
-
-
-        //std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)
-        //    << " top " << CameraSystem::isPointInPlane(topPlane, center, radius) << " bottom " << CameraSystem::isPointInPlane(bottomPlane, center, radius) <<
-        //    " near "<<CameraSystem::isPointInPlane(nearPlane, center, radius) <<" far " << CameraSystem::isPointInPlane(farPlane, center, radius) << '\n';
-
-            //   std::cout <<"Radius: "<<radius << " Left: " << CameraSystem::isPointInPlane(leftPlane, center, radius) << " right " << CameraSystem::isPointInPlane(rightPlane, center, radius)
-            //<< " top " << CameraSystem::isPointInPlane(topPlane, center, radius) << " bottom " << CameraSystem::isPointInPlane(bottomPlane, center, radius) << '\n';
 
         ++count;
     }
@@ -334,7 +241,6 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
     ComponentManager<TransformComponent>* transformManager = ECS->getComponentManager<TransformComponent>();
     ComponentManager<AxisAlignedBoxComponent>* AABBManager = ECS->getComponentManager<AxisAlignedBoxComponent>();
     CameraComponent* camera = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
-    //glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transformManager->getComponent(cameraEntity).transform;
 
     std::vector<uint32> meshesToRender;
     meshesToRender.reserve(allMeshes.size()*0.7);
@@ -360,8 +266,8 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
 
 
         bool isInside = false;
-        glm::vec3 min = AABB->minScaled; //+glm::vec3(transform->transform[3]);
-        glm::vec3 max = AABB->maxScaled; //+glm::vec3(transform->transform[3]);
+        glm::vec3 min = AABB->minScaled;
+        glm::vec3 max = AABB->maxScaled;
         glm::vec4 corners[8] =
         {
                 glm::vec4(min.x, min.y, min.z, 1.f),
@@ -429,7 +335,6 @@ void MeshSystem::drawRTSSelection(Shader* shader, const glm::vec3& startPoint, c
     const std::string& uniformName, MeshComponent& meshComp, TransformComponent& transformComp)
 {
     // when using this function meshcomp and transformcomp should already be checked to be valid, see Selection system.
-
     meshComp.m_vertices.clear();
     meshComp.m_indices.clear();
     meshComp.m_drawType = GL_TRIANGLES;
@@ -449,8 +354,6 @@ void MeshSystem::drawRTSSelection(Shader* shader, const glm::vec3& startPoint, c
     meshComp.m_vertices.push_back(Vertex(MaxXMinZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
     meshComp.m_vertices.push_back(Vertex(MaxXZ, glm::vec3(0.f, 1.f, 0.f), glm::vec2{}));
 
-
-    //std::vector<int> vec{ 0, 1, 2, 2, 3, 1 };
     meshComp.m_indices.push_back(0);
     meshComp.m_indices.push_back(1);
     meshComp.m_indices.push_back(3);
@@ -499,7 +402,6 @@ void MeshSystem::drawSelectableEditor(Shader* shader, const std::string& uniform
 	}
 }
 
-// TODO: Could just have been an operator = override at this point
 void MeshSystem::copyMesh(const MeshComponent& meshToCopy, MeshComponent& newMesh)
 {
     newMesh.hash = meshToCopy.hash;
@@ -585,7 +487,6 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
     std::vector<glm::vec3> tempVertexNormals{};
     std::vector<glm::vec2> tempVertexUVs{};
 
-    // TODO: Figure out if this is worth it.
     std::unordered_map<ObjTriangleIndex, unsigned int, HashObjTriangleIndex> indexMap;
     unsigned int elementIndex{};
 
@@ -638,7 +539,6 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
 
         if (word == "f")
         {
-            // TODO: Figure out if quad or tri
 
             ObjTriangleIndex objTriangleIndex{};
             for (int i{}; i < 3; ++i)

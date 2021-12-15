@@ -1,9 +1,9 @@
 #pragma once
 #include "../CoreMinimal.h"
-//#include "../Components/ComponentManager.h"
+
 class BaseSystem
 {
-	//BaseSystem();
+	
 };
 
 class testComponent;
