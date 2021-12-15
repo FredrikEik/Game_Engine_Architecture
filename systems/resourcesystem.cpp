@@ -6,45 +6,47 @@ resourceSystem::resourceSystem()
 }
 
 void resourceSystem::CreateMeshComponent(std::string input, MeshComponent * mesh){
-//        //qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
-//        //qDebug() << "INPUT: " << QString::fromStdString(input);
-//        //qDebug() << "meshDataContainer Size: " << meshDataContainer.size();
-        for(unsigned long long i = 0; i < (int)meshDataContainer.size(); i++){
-            //qDebug() << "Comparing: " << QString::fromStdString(input) << " to: " << QString::fromStdString(meshDataContainer[i].first);
-            if(input == meshDataContainer[i].first){
-                //qDebug() << "Mesh Allocated| Name: " << QString::fromStdString(meshDataContainer[i].first) << " VAO: " << meshDataContainer[i].second.VAO << " Vertex Size: " << meshDataContainer[i].second.meshVert.size();
-                mesh->collisionRadius = meshDataContainer[i].second.collisionRadius;
-                mesh->mVAO[0] = meshDataContainer[i].second.VAO;
-                mesh->mVBO[0] = meshDataContainer[i].second.VBO;
-                mesh->VertexSize[0] = meshDataContainer[i].second.meshVert.size();
-                mesh->LODEnabled = CheckLOD12Presence(meshDataContainer[i].first);
-                mesh->meshName = input;
-                if(mesh->LODEnabled){
-                    //qDebug() << "LOD Enabled";
-                    std::string sLOD1 = getPureName(meshDataContainer[i].first) + "_L01.obj", sLOD2 = getPureName(meshDataContainer[i].first) + "_L02.obj";
-                    //qDebug() << "LOD1 Name: " << QString::fromStdString(sLOD1) << " LOD2 Name: "  << QString::fromStdString(sLOD2);
-                    for(unsigned long long k = 0; k < (int)meshDataContainer.size(); k++){
-                        if(sLOD1 == meshDataContainer[k].first){
-                            //qDebug() << "FOUND LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
-                            mesh->mVAO[1] = meshDataContainer[k].second.VAO;
-                            mesh->mVBO[1] = meshDataContainer[k].second.VBO;
-                            mesh->VertexSize[1] = meshDataContainer[k].second.meshVert.size();
-                            //qDebug() << "SET LOD 1: " << QString::fromStdString(meshDataContainer[k].first);
-                        }
-                        if(sLOD2 == meshDataContainer[k].first){
-                            //qDebug() << "FOUND LOD 2: " << QString::fromStdString(meshDataContainer[i].first);
-                            mesh->mVAO[2] = meshDataContainer[k].second.VAO;
-                            mesh->mVBO[2] = meshDataContainer[k].second.VBO;
-                            mesh->VertexSize[2] = meshDataContainer[k].second.meshVert.size();
-                            //qDebug() << "SET LOD 2: " << QString::fromStdString(meshDataContainer[k].first);
-                        }
+    //qDebug() << "-------------------------------------------Allocating And Setting Component Mesh--------------------------------";
+
+    for(unsigned long long i = 0; i < meshDataContainer.size(); i++){
+
+        if(input == meshDataContainer[i].first)
+        {
+
+            mesh->collisionRadius = meshDataContainer[i].second.collisionRadius;
+            mesh->mVAO[0] = meshDataContainer[i].second.VAO;
+            mesh->mVBO[0] = meshDataContainer[i].second.VBO;
+            mesh->VertexSize[0] = meshDataContainer[i].second.meshVert.size();
+            mesh->LODEnabled = CheckLOD12Presence(meshDataContainer[i].first);
+            mesh->meshName = input;
+            if(mesh->LODEnabled)
+            {
+
+                std::string sLOD1 = getPureName(meshDataContainer[i].first) + "_L01.obj", sLOD2 = getPureName(meshDataContainer[i].first) + "_L02.obj";
+
+                for(unsigned long long k = 0; k < meshDataContainer.size(); k++){
+                    if(sLOD1 == meshDataContainer[k].first)
+                    {
+
+                        mesh->mVAO[1] = meshDataContainer[k].second.VAO;
+                        mesh->mVBO[1] = meshDataContainer[k].second.VBO;
+                        mesh->VertexSize[1] = meshDataContainer[k].second.meshVert.size();
+
+                    }
+                    if(sLOD2 == meshDataContainer[k].first)
+                    {
+
+                        mesh->mVAO[2] = meshDataContainer[k].second.VAO;
+                        mesh->mVBO[2] = meshDataContainer[k].second.VBO;
+                        mesh->VertexSize[2] = meshDataContainer[k].second.meshVert.size();
                     }
                 }
-                //qDebug() << "Query for " << QString::fromStdString(input) << " is completed...";
-                break;
             }
+
+            break;
         }
-        //qDebug() << "--------------------------------------------------------Complete------------------------------------------------";
+    }
+
 }
 
 
@@ -53,23 +55,26 @@ std::vector<std::string> resourceSystem::GetAllMeshesInAssetsDirectory()
 {
     std::vector<std::string> assetNames;
     std::string dir = gsl::ModelFilePath;
-    //qDebug() << "-------------------------------------------Checking Model Assets--------------------------------";
+    // "-------------------------------------------Checking Model Assets--------------------------------";
     QDirIterator iterator("../GEA2021/Assets/Models/", QDirIterator::Subdirectories);
-    while (iterator.hasNext()) {
+    while (iterator.hasNext())
+    {
         QFile file(iterator.next());
-        if ( file.open( QIODevice::ReadOnly ) ){
+        if ( file.open( QIODevice::ReadOnly ) )
+        {
             QFileInfo fileInf(file.fileName());
             QString qFN = fileInf.fileName();
             std::string fn = qFN.toStdString();
-            if(fn.find("_L0") != std::string::npos){
-                //qDebug() << "Detected LOD Model :" << fileInf.fileName();
+            if(fn.find("_L0") != std::string::npos)
+            {
+                qDebug() << "Detected LOD Model :" << fileInf.fileName();
             }else{
-                //qDebug() << "Detected Model :" << fileInf.fileName();
+                qDebug() << "Detected Model :" << fileInf.fileName();
             }
             assetNames.push_back(fn);
         }
     }
-    //qDebug() << "-----------------------------------------------Completed----------------------------------------";
+    //"-----------------------------------------------Completed----------------------------------------";
 
     return assetNames;
 }
@@ -78,13 +83,12 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
 {
     rendSys = inRendSys;
     SetMeshDataContainer();
-    //qDebug() << "-------------------------------------------Loading Model Assets---------------------------------";
-    for(int i = 0; i < (int)meshDataContainer.size(); i++){
-        //qDebug() << "Loaded Mesh: " << QString::fromStdString(meshDataContainer[i].first);
+    // "-------------------------------------------Loading Model Assets---------------------------------";
+    for(unsigned long long i = 0; i < meshDataContainer.size(); i++)
+    {
         rendSys->init(&meshDataContainer[i].second.meshVert, &meshDataContainer[i].second.VAO, &meshDataContainer[i].second.VBO);
-        //qDebug() << "Initialized: " << QString::fromStdString(meshDataContainer[i].first) << "VAO Index" <<  QString::fromStdString(std::to_string(meshDataContainer[i].second.VAO));
     }
-    //qDebug() << "-----------------------------------------------Completed----------------------------------------";
+    // "-----------------------------------------------Completed----------------------------------------";
 }
 
 void resourceSystem::SetMeshDataContainer()
@@ -109,18 +113,18 @@ void resourceSystem::SetMeshDataContainer()
 
     std::vector<std::string> assetNames = GetAllMeshesInAssetsDirectory();
 
-    for(int i = 0; i < (int)assetNames.size(); i++){
+    for(unsigned long long i = 0; i < assetNames.size(); i++){
         meshData obj;
         std::string filename = gsl::ModelFilePath + assetNames[i];
         std::vector<Vertex> tempMVertices;
         std::vector<GLuint> tempMIndices;
         float tempRadius = 0;
+
         //Open File
-        //    std::string filename = Orf::assetFilePath.toStdString() + fileName + ".obj";
         std::ifstream fileIn;
         fileIn.open (filename, std::ifstream::in);
         if(!fileIn)
-           qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
+            qDebug() << "Could not open file for reading: " << QString::fromStdString(filename);
 
         //One line at a time-variable
         std::string oneLine;
@@ -132,8 +136,6 @@ void resourceSystem::SetMeshDataContainer()
         std::vector<QVector2D> tempUVs;
         std::vector<QVector3D> tempColors;
 
-        //    std::vector<Vertex> mVertices;    //made in VisualObject
-        //    std::vector<GLushort> mIndices;   //made in VisualObject
 
         // Varible for constructing the indices vector
         unsigned int temp_index = 0;
@@ -210,13 +212,11 @@ void resourceSystem::SetMeshDataContainer()
 
                 //Vertex made - pushing it into vertex-vector
                 tempNormals.push_back(tempNormal);
-                //tempColors.push_back(QVector3D{0,0,0}/*tempNormal*/);
 
                 continue;
             }
             if (oneWord == "f")
             {
-                //            //qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
                 //int slash; //used to get the / from the v/t/n - format
                 int index, normal, uv;
                 for(int i = 0; i < 3; i++)
@@ -234,7 +234,6 @@ void resourceSystem::SetMeshDataContainer()
                         uv = std::stoi(segmentArray[1]);
                     else
                     {
-                        ////qDebug() << "No uvs in mesh";       //uv not present
                         uv = 0;                             //this will become -1 in a couple of lines
                     }
                     normal = std::stoi(segmentArray[2]);    //third is normal
@@ -266,11 +265,10 @@ void resourceSystem::SetMeshDataContainer()
         obj.meshVert = tempMVertices;
         obj.meshIndic = tempMIndices;
         obj.collisionRadius = tempRadius;
-        obj.internalIndex = meshDataContainer.size()-1;
+        obj.internalIndex = static_cast<int>(meshDataContainer.size()-1);
         obj.VAO = 0;//(GLuint)meshDataContainer.size()+1;
         obj.VBO = 0;//(GLuint)meshDataContainer.size()+1;
         meshDataContainer.push_back(std::make_pair(assetNames[i], obj));
-
 
     }
 }
@@ -279,27 +277,25 @@ void resourceSystem::SetIntoMeshDataContainerRUNTIME(std::vector<Vertex> mVertic
 {
     meshData obj;
     //obj.meshVert = mVertices;
-    for(int i = 0; i< mVertices.size() - 3; i++)
+    for(unsigned long long i = 0; i< mVertices.size() - 3; i++)
     {
-      obj.meshVert.push_back( mVertices[i]);
-      //obj.meshVert.push_back( mVertices[i + 1]);
-      //obj.meshVert.push_back( mVertices[i +2]);
-      //i++;
-      //i++;
+        obj.meshVert.push_back( mVertices[i]);
     }
-    obj.internalIndex = meshDataContainer.size()-1;
-    obj.VAO = 0;//(GLuint)meshDataContainer.size()+1;
-    obj.VBO = 0;//(GLuint)meshDataContainer.size()+1;
+    obj.internalIndex = static_cast<int>(meshDataContainer.size()-1);
+    obj.VAO = 0;
+    obj.VBO = 0;
     obj.DrawType = GL_POINTS;
     meshDataContainer.push_back(std::make_pair(fname, obj));
     rendSys->init(&meshDataContainer[meshDataContainer.size()-1].second.meshVert, &meshDataContainer[meshDataContainer.size()-1].second.VAO, &meshDataContainer[meshDataContainer.size()-1].second.VBO);
 }
 
-/// Returns vertex data for a specific mesh.
+// Returns vertex data for a specific mesh.
 std::vector<Vertex> resourceSystem::getVertexDataByName(std::string meshName)
 {
-    for(int i = 0; i < (int)meshDataContainer.size(); i++){
-        if(meshName == meshDataContainer[i].first){
+    for(unsigned long long i = 0; i < meshDataContainer.size(); i++)
+    {
+        if(meshName == meshDataContainer[i].first)
+        {
             return meshDataContainer[i].second.meshVert;
         }
     }
@@ -310,20 +306,27 @@ bool resourceSystem::CheckLOD12Presence(std::string meshName)
     std::string modifiedMeshName = getPureName(meshName);
     bool bLOD1 = false, bLOD2 = false;
     std::string sLOD1 = modifiedMeshName+"_L01.obj", sLOD2 = modifiedMeshName+"_L02.obj";
-    for(int i = 0; i < (int)meshDataContainer.size(); i++){
-        if(sLOD1 == meshDataContainer[i].first){
+    for(unsigned long long i = 0; i < meshDataContainer.size(); i++)
+    {
+        if(sLOD1 == meshDataContainer[i].first)
+        {
             bLOD1 = true;
             //qDebug()<<"LOD1 DETECTED:" << QString::fromStdString(sLOD1);
         }
-        if(sLOD2 == meshDataContainer[i].first){
+        if(sLOD2 == meshDataContainer[i].first)
+        {
             //qDebug()<<"LOD2 DETECTED:" << QString::fromStdString(sLOD2);
             bLOD2 = true;
         }
     }
-    if(bLOD1 == true && bLOD2 == true){
+
+    if(bLOD1 == true && bLOD2 == true)
+    {
         //qDebug()<<"LOD REQUIREMENTS MET FOR " << QString::fromStdString(meshName);
         return true;
-    }else{
+    }
+    else
+    {
         //qDebug()<<"LOD REQUIREMENTS NOT MET FOR" << QString::fromStdString(meshName) << " @ " << QString::fromStdString(sLOD1) << " AND " << QString::fromStdString(sLOD2);
     }
     return false;
@@ -332,10 +335,14 @@ bool resourceSystem::CheckLOD12Presence(std::string meshName)
 std::string resourceSystem::getPureName(std::string objMeshName)
 {
     std::string modifiedMeshName;
-    for(int i = 0; i < (int)objMeshName.size(); i++){
-        if(objMeshName[i] != '.'){
+    for(unsigned long long i = 0; i < objMeshName.size(); i++)
+    {
+        if(objMeshName[i] != '.')
+        {
             modifiedMeshName += objMeshName[i];
-        }else{
+        }
+        else
+        {
             break;
         }
     }
@@ -399,7 +406,7 @@ meshData* resourceSystem::makeFrustum(const Frustum &frustumIn, RenderSystem * i
       0, 4, 3, 7,                   //leftside lines
       1, 5, 2, 6                    //rightside lines
     };
-    for (int i = 0; i < sizeof (arr); i++)
+    for (unsigned long long i = 0; i < sizeof (arr); i++)
     {
         tempMesh->meshIndic.push_back(arr[i]);
     }

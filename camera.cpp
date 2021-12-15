@@ -5,14 +5,10 @@ Camera::Camera()
 {
 
     Cam.mViewMatrix.setToIdentity();
-    //mViewMatrix.setToIdentity();
     Cam.mProjectionMatrix.setToIdentity();
-
-    //mProjectionMatrix.setToIdentity();
     Cam.mYawMatrix.setToIdentity();
-    //mYawMatrix.setToIdentity();
     Cam.mPitchMatrix.setToIdentity();
-    //mPitchMatrix.setToIdentity();
+
 }
 
 Camera::Camera(float fovIn, float nearPlaneDistanceIn, float farPlaneDistanceIn)
@@ -38,7 +34,6 @@ void Camera::pitch(float degrees)
 {
     //  rotate around mRight
     Cam.mPitch -=degrees;
-    //mPitch -= degrees;
     updateForwardVector();
 }
 
@@ -46,7 +41,6 @@ void Camera::yaw(float degrees)
 {
     // rotate around mUp
     Cam.mYaw -= degrees;
-    //mYaw -= degrees;
     updateForwardVector();
 }
 
@@ -54,9 +48,7 @@ void Camera::updateRightVector()
 {
     Cam.mRight = Cam.mForward ^Cam.mUp;
     Cam.mRight.normalize();
-    //mRight = mForward^mUp;
-    //mRight.normalize();
-//    qDebug() << "Right " << mRight;
+
 }
 
 void Camera::updateForwardVector()
@@ -105,9 +97,6 @@ void Camera::updateHeigth(float deltaHeigth)
 
 void Camera::moveRight(float delta)
 {
-    //This fixes a bug in the up and right calculations
-    //so camera always holds its height when straifing
-    //should be fixed thru correct right calculations!
     gsl::Vector3D right = Cam.mRight;
     right.y = 0.f;
     Cam.mPosition += right * delta;
