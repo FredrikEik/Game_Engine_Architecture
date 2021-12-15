@@ -250,7 +250,7 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before rendering
 
     if(postFBO)
-       postFBO->bindFramebuffer(0, 1920,1080);
+       postFBO->bindFramebuffer();
 
     //Draws the objects
     if(gameObjects.size() > 0)
