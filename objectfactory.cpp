@@ -7,12 +7,18 @@
 #include "text2d.h"
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
-
+/**
+ * @brief ObjectFactory::ObjectFactory
+ */
 ObjectFactory::ObjectFactory()
 {
     setOBJindex(-1);
 }
 
+/**
+ * @brief ObjectFactory::createObject
+ * @param objectName
+ */
 void ObjectFactory::createObject(std::string objectName)
 {
     GameObject* willCreateObject;
@@ -72,6 +78,11 @@ void ObjectFactory::createObject(std::string objectName)
     return;
 }
 
+/**
+ * @brief ObjectFactory::saveMesh
+ * @param fileName
+ * @param nickName
+ */
 void ObjectFactory::saveMesh(std::string fileName, std::string nickName)
 {
     if(EXISTS(nickName)){
