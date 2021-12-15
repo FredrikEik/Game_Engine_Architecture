@@ -346,7 +346,7 @@ void RenderWindow::render()
                 glUniform1f(mLinearUniform, lightRef->linear);
                 glUniform1f(mQuadraticUniform, lightRef->quadratic);
                 glUniform1i(mPhongTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-
+            }
             if(shaderProgramIndex == 3)
             {
                glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
@@ -789,7 +789,7 @@ void RenderWindow::handleInput()
     else if(!editorMode) //karakter shit her
     {  
       static_cast<Player*>(mPlayer)->movement();
-      HUD->getMaterialComponent()->mTextureUnit = 2+playerHP;
+      HUD->getMaterialComponent()->mTextureUnit = 5+playerHP;
     }
 	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
 }

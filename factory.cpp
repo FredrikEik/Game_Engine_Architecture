@@ -153,6 +153,10 @@ GameObject* Factory::createObject(std::string objectName)
     {
         objectToCreate = new TriangleSurface("../GEA2021/Assets/test_las.txt");
         //objectToCreate = new TriangleSurface("../GEA2021/Assets/LAS/kongehuset.txt");
+        if(EXISTS("TriangleSurface"))
+        {
+        objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["TriangleSurface"]));
+        }
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 5;
         objectToCreate->mObjectType = "TriangleSurface";
@@ -167,7 +171,7 @@ GameObject* Factory::createObject(std::string objectName)
             objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Billboard"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 8;
         objectToCreate->isHUD = true;
         objectToCreate->mObjectName = "HUD";
     }

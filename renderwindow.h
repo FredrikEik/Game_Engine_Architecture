@@ -110,7 +110,7 @@ private:
 
     void generateShadowDepthMap();
 
-    GLint mTextureUniform[4];
+   // GLint mTextureUniform[4];
     GLint mHUDUniform[4];
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
