@@ -271,7 +271,7 @@ private:
     GLint mLightPowerUniform{-1};
     GLint mUsingTextureUniform{-1};
 
-
+    /**
      * @brief setupSkyboxshader Switches to TextureShader program.
      * @param shaderIndex EntityID.
      */
