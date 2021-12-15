@@ -8,50 +8,45 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
-//#include <QJSEngine>
+#include <QJSEngine>
+#include <string>
+#include <vector>
+#include "vector3d.h"
+#include "altypes.h"
 
-#include <QObject>
 
 
-class scriptsystem : public QObject
+class ScriptSystem
 {
-    Q_OBJECT
-
-    Q_PROPERTY(float speed READ getSpeed WRITE setSpeed)
 public:
-    scriptsystem(QObject *parent = nullptr);
+    //! \brief creating static pointer for instance
+    static ScriptSystem* getInstance()          ///< Get pointer to singleton instance.
+    {
+        if (!mInstance)
+        {
+            mInstance = new ScriptSystem();
+            mInstance->init();
+        }
+        return mInstance;
+    }
+    //! \brief empty construct
+    ScriptSystem();
+    //! \brief init script
+    bool init();
+    //! \brief reading data from javascript
+    //! \param scriptN  - script name of file used
+    void readData(std::string scriptN);
+    //! \brief setting data from script
+    //! \param entityID - used to link to which entity the script is for
+    //! \param scriptN - script name of file used
+    void setData(MAX_ENTITIES_TYPE entityID, std::string scriptN);
 
-    void sendSignal();
-
-    Q_INVOKABLE int commonFunc();
-
-    //Setter og getter for speed-variabelen
-    //navnene er de samme som i Q_PROPERTY over
-    float getSpeed() const;
-    void setSpeed(float value);
-
-signals:
-    void signalOne();
-
-public slots:
-//  en public slot kan kalles fra javascript, uten Q_INVOKABLE
-    void scriptFunction(float in);
-
+    //! copy for struct member
+    QJSEngine mScriptEngine;
 private:
-//  denne kan ikke kalles, fordi den er private
-//    Q_INVOKABLE void privateFunc();
-
-//  denne har setters og getters som gjennom Q_PROPERTY kan brukes fra
-//  javascript - der den heter bare "speed" som angitt i Q_PROPERTY
-    float mSpeed{4.234f};
-
-//    void readData(std::string scriptName);
-
-//    void setData(MAX_ENTITIES_TYPE entityID, std::string scriptName);
-
-//    QJSEngine mScriptEngine;
-
-
+    static ScriptSystem* mInstance;         ///< Singleton instance pointer.
+    ALCdevice* mDevice;                 ///< Pointer to the ALC Device.
+    ALCcontext* mContext;               ///< Pointer to the ALC Context.
 };
 
 #endif // SCRIPTSYSTEM_H

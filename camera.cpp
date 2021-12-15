@@ -3,6 +3,11 @@
 
 #include "soundsystem.h"
 
+/********************************************//**
+* ... basic camera functions. not optimalized.
+*
+***********************************************/
+
 Camera::Camera()
 {
     mViewMatrix.setToIdentity();

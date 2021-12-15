@@ -24,7 +24,16 @@
 #include "coreengine.h"
 #include "math_constants.h"
 #include "meshhandler.h"    //to check linebox
+#include "shaderhandler.h"
+#include "mousepickershader.h"
+#include "texture.h"
+#include "textureshader.h"
 
+/********************************************//**
+* ... A messy render system. Tried to clean up alot of the code, and move as much
+* to other parts of the engine instead. Built most of the mousepicker and shader functions
+* focused on making the functions for the engine instead of testing to much.
+***********************************************/
 
 RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
     : mContext(nullptr), mInitialized(false), mMainWindow(mainWindow)
@@ -98,26 +107,8 @@ void RenderSystem::init()
     //    glEnable(GL_CULL_FACE);       //draws only front side of models - usually what you want - test it out!
     glClearColor(0.4f, 0.4f, 0.4f,1.0f);    //gray color used in glClear GL_COLOR_BUFFER_BIT
 
-    //Compile shaders:
-    //NB: hardcoded path to files! You have to change this if you change directories for the project.
-    //Qt makes a build-folder besides the project folder. That is why we go down one directory
-    // (out of the build-folder) and then up into the project folder.
-    mShaderPrograms[0] = new ShaderHandler((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
-                                    (gsl::ShaderFilePath + "plainfragment.frag").c_str());
-    qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
-
-    mShaderPrograms[1] = new ShaderHandler((gsl::ShaderFilePath + "textureshader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "textureshader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[1]->getProgram();
-
-    mShaderPrograms[2] = new ShaderHandler((gsl::ShaderFilePath + "mousepickershader.vert").c_str(),
-                                    (gsl::ShaderFilePath + "mousepickershader.frag").c_str());
-    qDebug() << "Texture shader program id: " << mShaderPrograms[2]->getProgram();
-
-    setupPlainShader(0);
-    setupTextureShader(1);
-//    setupMousepickerShader(2);
-
+    //compile shaders and set up materials
+    shaderAndMaterialSetup();
     //********************** Making the object to be drawn **********************
     //Safe to do here because we know OpenGL is started
     //Probably should be placed elsewhere
@@ -125,6 +116,12 @@ void RenderSystem::init()
 
     //********************** Set up camera **********************
     //Done in CoreEngine->setUpScene
+
+    //MousePicker needs camera
+    static_cast<mousepickershader*>(ResourceManager::getInstance().mShaderProgram[gsl::MOUSEPICKSHADER])->mCurrentCamera = mCurrentCamera;
+    //TextureShader needs camera
+    static_cast<textureshader*>(ResourceManager::getInstance().mShaderProgram[gsl::TEXTURESHADER])->mCurrentCamera = mCurrentCamera;
+
 }
 
 // Called each frame - doing the job of the RenderSystem!!!!!
@@ -160,27 +157,16 @@ void RenderSystem::render()
             //LOD calculation
             float length = distanceVector.length();
 
-            glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
+            glUseProgram(ResourceManager::getInstance().mShaderProgram[gsl::COLORSHADER]->mProgram);
 
             int viewMatrix{-1};
             int projectionMatrix{-1};
             int modelMatrix{-1};
 
-            if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
-            {
-                viewMatrix = vMatrixUniform;
-                projectionMatrix = pMatrixUniform;
-                modelMatrix = mMatrixUniform;
-            }
-            else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
-            {
-                viewMatrix = vMatrixUniform2;
-                projectionMatrix = pMatrixUniform2;
-                modelMatrix = mMatrixUniform2;
+            glUniformMatrix4fv( ResourceManager::getInstance().mShaderProgram[gsl::COLORSHADER]->vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( ResourceManager::getInstance().mShaderProgram[gsl::COLORSHADER]->pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
 
-                //Now mMaterial component holds texture slot directly - probably should be changed
-                glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
-            }
+
             /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
             //send data to shader
@@ -226,7 +212,6 @@ void RenderSystem::render()
                 MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
                 MeshData circle = CoreEngine::getInstance()->mResourceManager->
                         makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-    //            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
                 glBindVertexArray( lineBox.mVAO[0] );
                 glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
                 glBindVertexArray( circle.mVAO[0] );
@@ -234,142 +219,16 @@ void RenderSystem::render()
             }
             glBindVertexArray(0);
 
-
                 if(CoreEngine::getInstance()->mResourceManager->checkCollision(
-                mGameObjects[1], mGameObjects[2]))
+                mGameObjects[1], mGameObjects[2+i]))
                 {
-                    mGameObjects[2]->mTransform->mMatrix.rotateX(1);
-                    //CoreEngine::getInstance()->mResourceManager->Collided = true;
-                    //mGameObjects[2]->mMesh->collided = true;
+                    mGameObjects[2+i]->mTransform->mMatrix.rotateX(1);
+                    CoreEngine::getInstance()->mResourceManager->Collided = true;
                 }
         }
     }
 
 
-
-    //Draws the objects
-    for(int i{0}; i < mGameObjects.size(); i++)
-    {
-        /************** LOD and Frustum culling stuff ***********************/
-        gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
-        gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
-        gsl::Vector3D distanceVector = gobPos -cameraPos;
-
-//        //Frustum cull calculation - that almost works. Have to be tweaked more to work properly
-        float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
-//        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
-
-//        //if angle between camera Forward, and camera->GameObject > FOV of camera
-        if(angle > mFOVangle)
-            continue;   //don't draw object
-
-        //LOD calculation
-        float length = distanceVector.length();
-//        qDebug() << "distance is" << length;
-        /*************************************/
-
-
-        //First object - xyz
-        //what shader to use
-        //Now mMaterial component holds index into mShaderPrograms!! - probably should be changed
-        glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
-
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
-
-        //This block sets up the uniforms for the shader used in the material
-        //Also sets up texture if needed.
-        int viewMatrix{-1};
-        int projectionMatrix{-1};
-        int modelMatrix{-1};
-
-        if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
-        {
-            viewMatrix = vMatrixUniform;
-            projectionMatrix = pMatrixUniform;
-            modelMatrix = mMatrixUniform;
-        }
-        else if (mGameObjects[i]->mMaterial->mShaderProgram == 1)
-        {
-            viewMatrix = vMatrixUniform1;
-            projectionMatrix = pMatrixUniform1;
-            modelMatrix = mMatrixUniform1;
-
-            //Now mMaterial component holds texture slot directly - probably should be changed
-            glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
-        }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
-
-        //send data to shader
-        glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-        glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-        glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
-
-
-        //draw the object
-        //***Quick hack*** LOD test:
-        if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
-        {
-            if (length < 4)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
-                mObjectsDrawn++;
-            }
-            else if(length < 6)
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
-                mObjectsDrawn++;
-            }
-            else
-            {
-                glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
-                glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
-                mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
-                mObjectsDrawn++;
-            }
-        }
-        else    //no LOD exists
-        {
-            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-            glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-            mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
-            mObjectsDrawn++;
-        }
-
-        //Quick hack test to check if linebox/circle works:
-        if(i == 1)
-        {
-            MeshData lineBox = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne.obj");
-            MeshData circle = CoreEngine::getInstance()->mResourceManager->
-                    makeCircleSphere(mGameObjects[i]->mMesh->mColliderRadius * 0.75, false);
-//            glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, gsl::Matrix4x4().identity().constData());
-            glBindVertexArray( lineBox.mVAO[0] );
-            glDrawElements(lineBox.mDrawType, lineBox.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-            glBindVertexArray( circle.mVAO[0] );
-            glDrawElements(circle.mDrawType, circle.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
-        }
-        glBindVertexArray(0);
-
-
-            if(CoreEngine::getInstance()->mResourceManager->checkCollision(
-            mGameObjects[1], mGameObjects[2]))
-            {
-                mGameObjects[2]->mTransform->mMatrix.rotateX(1);
-                //CoreEngine::getInstance()->mResourceManager->Collided = true;
-                //mGameObjects[2]->mMesh->collided = true;
-            }
-
-
-
-    }
-
-
-    //Moves the dog triangle - should be made another way!!!!
-//    if(isPlaying)
-//        mGameObjects[1]->mTransform->mMatrix.translate(.001f, .001f, -.001f); //just to move the triangle each frame
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -387,26 +246,18 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
-void RenderSystem::setupPlainShader(int shaderIndex)
+void RenderSystem::shaderAndMaterialSetup()
 {
-    mMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-}
+    ResourceManager &tempR = ResourceManager::getInstance();
 
-void RenderSystem::setupTextureShader(int shaderIndex)
-{
-    mMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform1 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-    mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
-}
+    tempR.readShaders();
+    tempR.setUpAllTextures();
 
+}
 void RenderSystem::setPickedObject(int pickedID)
 {
     cancelPickedObject();
     mPickedObject = &mCoreEngine->mGameObject[pickedID];
-    qDebug() << "objekt ble plukket: " << mPickedObject;
 
 }
 
@@ -465,16 +316,70 @@ void RenderSystem::mousePicking()
 
     if (pickedID < 100000)
     {
-        qDebug() << "Mesh ID" << pickedID;
         mMainWindow->selectObjectByName(mGameObjects.at(pickedID)->mName.c_str());
         setPickedObject(pickedID);
 
     }
     else
     {
-//        qDebug() << "nothing happened";
         mMainWindow->selectObjectByName("");
         cancelPickedObject();
+    }
+}
+
+void RenderSystem::rendermousepicker(GLint matrixUniform, GLint colorUniform)
+{
+    for(unsigned int i{0}; i<mGameObjects.size(); i++)
+    {
+        int r = (i & 0x000000FF) >> 0;
+        int g = (i & 0x0000FF00) >> 8;
+        int b = (i & 0x00FF0000) >> 16;
+
+        gsl::Matrix4x4 tempTransform;
+        tempTransform.setToIdentity();
+        tempTransform.setPosition(ResourceManager::getInstance().mCoreEngine->mGameObject->mTransform->position.getX()
+                                  , ResourceManager::getInstance().mCoreEngine->mGameObject->mTransform->position.getY()
+                                  , ResourceManager::getInstance().mCoreEngine->mGameObject->mTransform->position.getZ());
+        glUniformMatrix4fv(matrixUniform, 1, GL_TRUE, tempTransform.constData());
+        glUniform3f(colorUniform, r/255.f, g/255.f, b/255.f);
+
+        gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
+        gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
+        gsl::Vector3D distanceVector = gobPos -cameraPos;
+          float length = distanceVector.length();
+                //draw the object
+                //***Quick hack*** LOD test:
+                if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //mesh has LODs
+                {
+                    if (length < 4)
+                    {
+                        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                        mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                        mObjectsDrawn++;
+                    }
+                    else if(length < 6)
+                    {
+                        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[1] );
+                        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[1]);
+                        mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[1];
+                        mObjectsDrawn++;
+                    }
+                    else
+                    {
+                        glBindVertexArray( mGameObjects[i]->mMesh->mVAO[2] );
+                        glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[2]);
+                        mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[2];
+                        mObjectsDrawn++;
+                    }
+                }
+                else    //no LOD exists
+                {
+                    glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+                    glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
+                    mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
+                    mObjectsDrawn++;
+                }
     }
 }
 

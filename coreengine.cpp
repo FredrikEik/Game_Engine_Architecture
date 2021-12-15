@@ -6,9 +6,16 @@
 #include "gameobject.h"
 #include "rendersystem.h"
 #include "camera.h"
-#include  "meshhandler.h"
+#include "meshhandler.h"
 #include "entity.h"
 #include "matrix4x4.h"
+#include "scriptsystem.h"
+
+/********************************************//**
+* ... CoreEngine for the game, contains main functions: create scene, toggleplay, game loop,
+* handle input and contains all the instances for the sound and script systems.
+* have worked some on this part of the engine
+***********************************************/
 
 
 CoreEngine* CoreEngine::mInstance = nullptr;    //static pointer to instance
@@ -17,6 +24,7 @@ CoreEngine::CoreEngine(RenderSystem *renderSystemIn) : mRenderSystem{renderSyste
 {
     mResourceManager = &ResourceManager::getInstance();
     mSoundSystem = SoundSystem::getInstance();
+    mScriptSystem = ScriptSystem::getInstance();
     mInstance = this;
 
     //Make the gameloop timer:
@@ -33,6 +41,7 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
     isPlaying = shouldPlay;
     SoundSystem::getInstance()->togglePlaySounds(isPlaying);
     mRenderSystem->isPlaying = isPlaying;
+
 }
 
 void CoreEngine::setUpScene()
@@ -46,12 +55,12 @@ void CoreEngine::setUpScene()
     //dog triangle
     player = mResourceManager->addObject("suzanne.obj");
     player->mMaterial->mShaderProgram = 0;
-    player->mMaterial->mTextureUnit = 0; //mResourceManager->getTextureID()->;
+    player->mMaterial->mTextureUnit = 0;
     player->mTransform->mMatrix.rotateY(180.f);
-
+    mPlayerID = 0;
+    player->mEntityID = mPlayerID;
     player->mTransform->mMatrix.translate(-2.f, -2.f, .5f);
     //Adds sound to player:
-    //mResourceManager->addComponent("fin_sang_stereo.wav", temp);
     mResourceManager->addComponent("techno_stereo.wav", player);
     //Hack to test sound system
     player->mSoundComponent->shouldPlay = true;
@@ -63,10 +72,12 @@ void CoreEngine::setUpScene()
     {
         for(int j{0}; j < 3; j++)
         {
+//            if()
+              mEnemyID.push_back(j+i);
               temp = mResourceManager->addObject("suzanne3.obj");
               temp->mTransform->mMatrix.translate(-2, 1.f,2.f);
               temp->mMaterial->mShaderProgram = 1;
-              temp->mMaterial->mTextureUnit = 2; //mResourceManager->getTextureID()->;
+              temp->mMaterial->mTextureUnit = 2;
               temp->mTransform->mMatrix.rotateY(180.f);
               temp->mTransform->mMatrix.translate(-2.f*i, 1.f, 2.f*j);
               temp->mTransform->mMatrix.scale(0.5f);
@@ -74,11 +85,6 @@ void CoreEngine::setUpScene()
         }
     }
 
-//    temp = mResourceManager->addObject("suzanne.obj");
-//    temp->mTransform->mMatrix.translate(0.f, 1.f, 0.f);
-//    temp->mTransform->mMatrix.scale(.5f);
-
-//    mRenderSystem->mGameObjects.push_back(temp);
 
     mEditorCamera = new Camera();
     mEditorCamera->mPosition = gsl::Vector3D(1.f, .5f, 4.f);

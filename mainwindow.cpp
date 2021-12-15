@@ -15,7 +15,7 @@
 #include <QCoreApplication>
 #include <QDebug>       //Using qDebug
 #include <QFile>        //Reading from file
-//#include <QJSEngine>    //i get error message on QJSEngine
+#include <QJSEngine>
 
 #include "rendersystem.h"
 #include "soundsystem.h"
@@ -27,6 +27,11 @@
 #include "gameobject.h"
 #include "scriptsystem.h"
 
+/********************************************//**
+* ... The ui functions for the game, contains also some initializations for the engine
+* Have worked on most of this for the engine. did some simple ui just for basic
+* functionality
+***********************************************/
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow)
@@ -47,35 +52,28 @@ void MainWindow::init()
     //This will contain the setup of the OpenGL surface we will render into
     QSurfaceFormat format;
 
-    QCoreApplication app();
+//    QCoreApplication app();
 
 //    QJSEngine engine; //can't run QJSEngine, because error on declaration
 
-    QString fileName = "../GEA2021/player.js";
-    QString fileName1 = "../GEA2021/enemy.js";
+//    QString fileName = "../GEA2021/player.js";
+//    QString fileName1 = "../GEA2021/enemy.js";
 
-    QFile scriptFile(fileName);
+//    QFile scriptFile(fileName);
 
-    if (!scriptFile.open(QIODevice::ReadOnly))
-        qDebug() << "Error - NO FILE HERE: " << fileName;
+//    if (!scriptFile.open(QIODevice::ReadOnly))
+//        qDebug() << "Error - NO FILE HERE: " << fileName;
 
-    //reads the file
-    QTextStream stream(&scriptFile);
-    QString contents = stream.readAll();
-    //now "contents" holds the whole JavaScript
+//    //reads the file
+//    QTextStream stream(&scriptFile);
+//    QString contents = stream.readAll();
+//    //now "contents" holds the whole JavaScript
 
-    //close the file, because we don't need it anymore
-    scriptFile.close();
+//    //close the file, because we don't need it anymore
+//    scriptFile.close();
 
     //Loads the whole script into script engine:
     //The important part! fileName is used to report bugs in the file
-//    engine.evaluate(contents, fileName); //again can't use, declaration error...
-
-//    scriptsystem *scriptsys = new scriptsystem;
-
-//    QJSValue objectTest = engine.newQObject(scriptsys);
-////    //Make a name for the object in the script engine
-//    engine.globalObject().setProperty("cObject", objectTest);
 
     //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this - sorry!)
     //you can try other versions, but then have to update RenderWindow and Shader
@@ -136,6 +134,7 @@ void MainWindow::init()
 void MainWindow::updateUI(const std::vector<class CoreEngine> &GameObjectData)
 {
     ui->treeWidgetSceneOutliner->clear();
+    //create tree root
     QTreeWidgetItem* root = new QTreeWidgetItem(ui->treeWidgetSceneOutliner);
     root->setText(0, mCoreEngine->mGameObject->mName.c_str());
     ui->treeWidgetSceneOutliner->addTopLevelItem(root);
@@ -150,9 +149,9 @@ void MainWindow::updateUI(const std::vector<class CoreEngine> &GameObjectData)
 
 void MainWindow::on_treeWidgetSceneOutliner_itemClicked(QTreeWidgetItem *item, int)
 {
-    clearLayout(ui->verticalLayoutDetails);
+    clearLayout(ui->verticalLayoutDetails); //delete all widgets in the panel
 
-    if(!item || item->text(0) == mCoreEngine->mGameObject->mName.c_str())
+    if(!item || item->text(0) == mCoreEngine->mGameObject->mName.c_str()) //selecting top node
     {
         mRenderSystem->cancelPickedObject();
         ui->lineEditGOName->setText("no selection");

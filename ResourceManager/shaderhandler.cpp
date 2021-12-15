@@ -5,9 +5,14 @@
 #include <iostream>
 #include <QDebug>
 
+/********************************************//**
+* ... i have worked on this for the engine. got inspiration from sources when working on this
+*
+***********************************************/
+
 //#include "GL/glew.h" - using QOpenGLFunctions instead
 
-ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath)
+ShaderHandler::ShaderHandler(const std::string &shaderName) : mName{shaderName}
 {
     initializeOpenGLFunctions();    //must do this to get access to OpenGL functions in QOpenGLFunctions
 
@@ -16,6 +21,10 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     std::string fragmentCode;
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
+
+    std::string vertexPath = (gsl::ShaderFilePath + shaderName.c_str() + ".vert");
+//    qDebug() << vertexPath << " \n";
+    std::string fragmentPath = (gsl::ShaderFilePath + shaderName.c_str() + ".frag");
 
     // Open files and check for errors
     vShaderFile.open( vertexPath );
@@ -79,19 +88,16 @@ ShaderHandler::ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPat
     }
     else
     {
-        qDebug() << vertexPath << "shader was successfully compiled!";
+        qDebug() << shaderName.c_str() << "shader was successfully compiled!";
     }
     // Delete the shaders as they're linked into our program now and no longer needed
     glDeleteShader( vertex );
     glDeleteShader( fragment );
 }
 
-void ShaderHandler::use()
+void ShaderHandler::use(gsl::Matrix4x4 &modelMatrixIn, ecs::Material *)
 {
     glUseProgram( this->program );
+    glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, modelMatrixIn.constData());
 }
 
-GLuint ShaderHandler::getProgram() const
-{
-    return program;
-}

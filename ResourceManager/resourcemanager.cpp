@@ -1,4 +1,4 @@
-    #include "resourcemanager.h"
+#include "resourcemanager.h"
 
 #include <sstream>
 #include <fstream>
@@ -15,14 +15,26 @@
 #include "soundsystem.h"
 #include "soundhandler.h"
 #include "meshhandler.h"
-#include "texturehandler.h"
+#include "texture.h"
 #include "coreengine.h"
+#include "mousepickershader.h"
+#include "textureshader.h"
+#include "colorshader.h"
+#include "particleshader.h"
+
+/********************************************//**
+* ... Resource manager for texture, mesh, collision and all the assets used in the engine
+* very easy collision checking, needs to be made better.
+* Rest is made so it is easy to further develop the engine
+* I have worked on the script, shader and some of the texture parts of this for
+* the engine
+***********************************************/
 
 ResourceManager::ResourceManager()
 {
     SoundSystem::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
     mMeshHandler = new MeshHandler();
-    mTextureHandler = new TextureHandler();
+    mTextureHandler = new Textures();
 }
 
 ResourceManager &ResourceManager::getInstance()
@@ -160,18 +172,17 @@ ecs::SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
     }
     return tempSource;
 }
-//void ResourceManager::setScript(MAX_ENTITIES_TYPE entityID, std::string fileName)
-//{
-//    ecs::Script tempScript;
-//    tempScript.mName = fileName;
-//    mGameObject->mEn[entityID].mScript = tempScript;
+void ResourceManager::setScript(MAX_ENTITIES_TYPE entityID, std::string fileName)
+{
+    ecs::Script tempScript;
+    tempScript.mName = fileName;
+    mCoreEngine->mEntity[entityID].mScript = tempScript;
 
-//}
+}
 
 void ResourceManager::setUpAllTextures()
 {
     //should probably run thru all textures found in TextureFilePath
-    mTextureHandler->makeTexture();
     mTextureHandler->makeTexture("hund.bmp");
     mTextureHandler->makeTexture("goat.bmp");
 }
@@ -184,4 +195,15 @@ MeshData ResourceManager::makeLineBox(std::string meshName)
 MeshData ResourceManager::makeCircleSphere(float radius, bool rgbColor)
 {
     return mMeshHandler->makeCircleSphere(radius, rgbColor);
+}
+void ResourceManager::readShaders()
+{
+    mShaderProgram[gsl::MOUSEPICKSHADER] = new mousepickershader("mousepickershader");
+    mShaderProgram[gsl::MOUSEPICKSHADER]->setupShader();
+    mShaderProgram[gsl::COLORSHADER] = new colorshader("colorshader");
+    mShaderProgram[gsl::COLORSHADER]->setupShader();
+    mShaderProgram[gsl::TEXTURESHADER] = new textureshader("textureshader");
+    mShaderProgram[gsl::TEXTURESHADER]->setupShader();
+    mShaderProgram[gsl::PARTICLESHADER] = new particleshader("particleshader");
+    mShaderProgram[gsl::PARTICLESHADER]->setupShader();
 }

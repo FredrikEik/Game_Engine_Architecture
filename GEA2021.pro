@@ -1,4 +1,5 @@
 QT          += core gui widgets opengl
+QT          += core gui widgets qml
 
 TEMPLATE    = app
 CONFIG      += c++17
@@ -29,6 +30,9 @@ win32 {
 }
 
 SOURCES += main.cpp \
+    ResourceManager/colorshader.cpp \
+    ResourceManager/mousepickershader.cpp \
+    ResourceManager/particleshader.cpp \
     camera.cpp \
     coreengine.cpp \
     gsl/matrix3x3.cpp \
@@ -40,26 +44,35 @@ SOURCES += main.cpp \
     ResourceManager/soundhandler.cpp \
     ResourceManager/texturehandler.cpp \
     ResourceManager/meshhandler.cpp \
+    gsl/vector4d.cpp \
     light.cpp \
+    particle.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
     scene.cpp \
     scriptsystem.cpp \
+    skybox.cpp \
     soundsystem.cpp \
     soundsource.cpp \
+    texture.cpp \
+    textureshader.cpp \
     triangle.cpp \
     vertex.cpp \
     gameobject.cpp \
     xyz.cpp
 
 HEADERS += \
+    ResourceManager/colorshader.h \
     ResourceManager/entity.h \
+    ResourceManager/mousepickershader.h \
+    ResourceManager/particleshader.h \
     altypes.h \
     camera.h \
     components.h \
     constants.h \
     coreengine.h \
     gltypes.h \
+    gsl/vector4d.h \
     input.h \
     gsl/math_constants.h \
     gsl/matrix3x3.h \
@@ -72,12 +85,16 @@ HEADERS += \
     ResourceManager/texturehandler.h \
     ResourceManager/meshhandler.h \
     light.h \
+    particle.h \
     rendersystem.h \
     mainwindow.h \
     scene.h \
     scriptsystem.h \
+    skybox.h \
     soundsystem.h \
     soundsource.h \
+    texture.h \
+    textureshader.h \
     triangle.h \
     vertex.h \
     gameobject.h \
@@ -88,8 +105,14 @@ FORMS += \
 
 DISTFILES += \
 #    Enemy.js \
+    Shaders/colorshader.frag \
+    Shaders/colorshader.vert \
     Shaders/mousepickershader.frag \
     Shaders/mousepickershader.vert \
+    Shaders/particle.frag \
+    Shaders/particle.vert \
+    Shaders/skybox.frag \
+    Shaders/skybox.vert \
     Shaders/textureshader.frag \
     Shaders/textureshader.vert \
     Shaders/plainfragment.frag \

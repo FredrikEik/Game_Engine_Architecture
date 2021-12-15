@@ -6,6 +6,10 @@
 #include "altypes.h"
 #include "constants.h"
 
+/********************************************//**
+* ... I have not worked on the sound handler for the engine
+***********************************************/
+
 WaveRawData *SoundHandler::loadWave(std::string fileName)
 {
     WaveRawData* wavePtr{nullptr};

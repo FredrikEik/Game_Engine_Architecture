@@ -2,8 +2,10 @@
 #define COREENGINE_H
 
 #include <QObject>
+#include <vector>
 #include "input.h"
 #include "gameobject.h"
+#include "entity.h"
 //Forward declarations
 class ResourceManager;
 class SoundSystem;
@@ -33,12 +35,18 @@ public:
 
     void setUpScene();
 
+    class ScriptSystem *mScriptSystem{nullptr};
     void handleInput();
     ResourceManager *mResourceManager{nullptr};
     SoundSystem *mSoundSystem{nullptr};
     RenderSystem *mRenderSystem{nullptr};
     GameObject *mGameObject{nullptr};
 
+
+//    void renderMousepicker(GLint matrixUniform, GLint colorUniform);
+    MAX_ENTITIES_TYPE mPlayerID;
+    std::vector<MAX_ENTITIES_TYPE> mEnemyID;
+    std::vector<Entity> mEntity;
 
 
     Camera *mGameCamera{nullptr};

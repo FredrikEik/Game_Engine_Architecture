@@ -2,6 +2,13 @@
 #define SHADERHANDLER_H
 
 #include <QOpenGLFunctions_4_1_Core>
+#include "math_constants.h"
+#include "constants.h"
+#include "vector2d.h"
+#include "vector3d.h"
+#include "matrix3x3.h"
+#include "matrix4x4.h"
+#include "components.h"
 
 //#include "GL/glew.h" //We use QOpenGLFunctions instead, so no need for Glew (or GLAD)!
 
@@ -14,13 +21,22 @@ class ShaderHandler : protected QOpenGLFunctions_4_1_Core
 {
 public:
     // Constructor generates the shader on the fly
-    ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
+//    ShaderHandler(const GLchar *vertexPath, const GLchar *fragmentPath);
+    ShaderHandler(const std::string &shaderName);
 
     // Use the current shader
-    void use( );
+    virtual void use(gsl::Matrix4x4 &modelMatrixIn, struct ecs::Material *);
+    virtual void setupShader(){}
+    const std::string mName;
 
-    //Get program number for this shader
-    GLuint getProgram() const;
+    GLint mMatrixUniform{-1};       //when using the shader in drawcalls to different objects
+    GLint vMatrixUniform{-1};
+    GLint pMatrixUniform{-1};
+
+    class Camera *mCurrentCamera{nullptr};
+    class RenderWindow *mRenderWindow{nullptr};     //to be able to call checkForGLerrors()
+
+    GLuint mProgram{999999};
 
 private:
     GLuint program;

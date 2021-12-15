@@ -21,7 +21,6 @@ int MeshHandler::makeMesh(std::string meshName)
     auto result = mMeshMap.find(meshName);
     //if already made
     if (result != mMeshMap.end()) {        //found!!!
-//        qDebug() << meshName.c_str() << "made already";
         meshIndex = result->second;
     }
     //not made, make new
@@ -57,11 +56,7 @@ int MeshHandler::readObj(std::string filename)
     std::string tempName{0};
     filename.erase(filename.find(".obj"));  //deleting .obj ending to make LOD-level filenames
 
-    // testing stuff ///////
 
-
-    //tempName = gsl::MeshFilePath + tempName + ".obj";
-    //  ^^^^^¨¨^^^^^     /////////
     for (unsigned short lod{0}; lod < 3; lod++ )  //we test for 3 LOD levels
     {
         if (lod == 0)     //original mesh - not reduced size
@@ -116,7 +111,6 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "v")
             {
-                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
                 gsl::Vector3D tempVertex;
                 sStream >> oneWord;
                 tempVertex.x = std::stof(oneWord);
@@ -136,7 +130,6 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "vt")
             {
-                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
                 gsl::Vector2D tempUV;
                 sStream >> oneWord;
                 tempUV.x = std::stof(oneWord);
@@ -150,7 +143,6 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "vn")
             {
-                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
                 gsl::Vector3D tempNormal;
                 sStream >> oneWord;
                 tempNormal.x = std::stof(oneWord);
@@ -165,7 +157,6 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "f")
             {
-                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
                 //int slash; //used to get the / from the v/t/n - format
                 int index, normal, uv;
                 for(int i = 0; i < 3; i++)

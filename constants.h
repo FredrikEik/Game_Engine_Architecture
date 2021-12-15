@@ -20,7 +20,7 @@ namespace gsl  //Game School Lib
 
     const int MAX_MESHCOMPONENTS = 1024;    //used in ResourceFactory - this is a hack - change this!
 
-    const int NumberOfShaders{5};
+    const int NumberOfShaders{6};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
 
@@ -29,7 +29,9 @@ namespace gsl  //Game School Lib
         COLORSHADER = 0,
         TEXTURESHADER,
         PHONGSHADER,
-        MOUSEPICKSHADER
+        MOUSEPICKSHADER,
+        PARTICLESHADER,
+        NOSHADER = 65535
     };
 
     enum Components

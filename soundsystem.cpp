@@ -7,6 +7,11 @@
 #include "gameobject.h"
 #include "components.h"
 
+/********************************************//**
+* ... I have not worked on the sound system. Was a part of the cooperation for the
+* mandatory tasks in the subject i did with Fredrik Eik Søgnen.
+***********************************************/
+
 SoundSystem* SoundSystem::mInstance = nullptr;    //static pointer to instance
 
 SoundSystem::SoundSystem() : mDevice{nullptr}, mContext{nullptr} {}
@@ -31,13 +36,6 @@ bool SoundSystem::init()
     else
         qDebug() << "OpenAL intialization complete!";
 
-    /*Start listing of found sound devices:
-    //Not jet implemented
-    //ALDeviceList *pDeviceList = NULL;
-    //ALCcontext *pContext = NULL;
-    //ALCdevice *pDevice = NULL;
-    //ALint i;	//will hold the number of the preferred device
-    //ALboolean bReturn = AL_FALSE;*/
 
     return true;
 }
@@ -130,15 +128,6 @@ void SoundSystem::togglePlaySounds(bool shouldPlay)
     }
 }
 
-//SoundSource* SoundSystem::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
-//{
-//    SoundSource* tempPtr = new SoundSource(name, loop, gain);
-//    tempPtr->setPosition(pos);
-//    if (fileName != "")
-//        tempPtr->loadWave(fileName);
-//    return tempPtr;
-//}
-
 void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up)
 {
     ALfloat posVec[3]{pos.x, pos.y, pos.z};
@@ -147,11 +136,5 @@ void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Ve
     ALfloat headVec[6]{dir.x, dir.y, dir.z, up.x, up.y, up.z};
     alListenerfv(AL_ORIENTATION, headVec);
 
-    //    gsl::Vector3D vel
-    //    ALfloat velVec[3];,
-    //    velVec[0] = vel.x;
-    //    velVec[1] = vel.y;
-    //    velVec[2] = vel.z;
-    //    alListenerfv(AL_VELOCITY, velVec);
 
 }
