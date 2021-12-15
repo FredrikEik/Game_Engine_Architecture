@@ -523,6 +523,9 @@ void RenderWindow::ShootBullet()
 
 void RenderWindow::killZ(TransformComponent *Transform, gsl::Vector3D SpawnPoint)
 {
+    //! @fn KillZ - Reference to UnrealEngine 4 KillZ. Respawns objects that fall out of bounds.
+    //! @param Transform - Transformcomponent of object we want to check
+    //! @param SpawnPoint - Where we want to spawn the object if it is out of bounds
     if((Transform->isPhysicsEnabled && (Transform->mMatrix.getPosition().getZ() > 300.0f)) || (Transform->mMatrix.getPosition().getY()  < -100.0f))
     {
         Transform->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f); //reset velocity
@@ -1075,36 +1078,36 @@ void RenderWindow::switchProgram(int shaderIndex)
     }
 }
 
-void RenderWindow::switchLOD(int shaderIndex)
+void RenderWindow::switchLOD(int Index)
 {
-    if(meshCompVec[shaderIndex]->LODEnabled){
+    if(meshCompVec[Index]->LODEnabled){
         //LOD SWITCHER
         //calc length between obj and camera.
         //use length to switch LOD level
         //use length and LOD level to switch only one time
-        gsl::Vector3D LODlength = transformCompVec[shaderIndex]->mMatrix.getPosition() - mCurrentCamera->position();
+        gsl::Vector3D LODlength = transformCompVec[Index]->mMatrix.getPosition() - mCurrentCamera->position();
 
         if(LODlength.length() < 10.0f)
         {
             //qDebug() << "LOD level 0";
             //LOD LEVEL 0
-            meshCompVec[shaderIndex]->LODLevel = 0;
+            meshCompVec[Index]->LODLevel = 0;
         }
         else if(LODlength.length() < 20.0f)
         {
             //qDebug() << "LOD level 1";
             //LOD LEVEL 1
-            meshCompVec[shaderIndex]->LODLevel = 1;
+            meshCompVec[Index]->LODLevel = 1;
         }
         else if(LODlength.length() > 20.0f)
         {
             //qDebug() << "LOD level 2";
             //LOD LEVEL 2
-            meshCompVec[shaderIndex]->LODLevel = 2;
+            meshCompVec[Index]->LODLevel = 2;
         }
     }
     else{
-        meshCompVec[shaderIndex]->LODLevel = 0;
+        meshCompVec[Index]->LODLevel = 0;
     }
 }
 
