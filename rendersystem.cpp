@@ -121,12 +121,21 @@ void RenderSystem::init()
     mShaderPrograms[3] = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
                                     (gsl::ShaderFilePath + "phongshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[3]->getProgram();
+    mShaderPrograms[4] = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[4]->getProgram();
+
+    mShaderPrograms[5] = new ShaderHandler((gsl::ShaderFilePath + "phongshader.vert").c_str(),
+                                    (gsl::ShaderFilePath + "phongshader.frag").c_str());
+    qDebug() << "Texture shader program id: " << mShaderPrograms[5]->getProgram();
 
     //setup alle shaders
     setupPlainShader(0);
     setupTextureShader(1);
     setupSkyboxShader(2);
     setupLightShader(3);
+    setupLightShader(4);
+    setupLightShader(5);
 
     this->dt = 0;
     this->curTime = 0;
@@ -205,11 +214,37 @@ void RenderSystem::render()
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
             modelMatrix = mMatrixUniform2;
-            glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1i(mTextureUniform3, mGameObjects[i]->mMaterial->mTextureUnit);
             glUniform1f(mAmbientStrengt, mAmbientStrengt);
             glUniform1f(mLightStrengt, 2);
 
         }
+        else if (mGameObjects[i]->mMaterial->mShaderProgram == 4)
+        {
+
+            ///setter opp lys
+            viewMatrix = vMatrixUniform2;
+            projectionMatrix = pMatrixUniform2;
+            modelMatrix = mMatrixUniform2;
+            glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit);
+//            glUniform1f(mAmbientStrengt, mAmbientStrengt);
+//            glUniform1f(mLightStrengt, 2);
+
+        }
+
+        else if (mGameObjects[i]->mMaterial->mShaderProgram == 5)
+        {
+
+            ///setter opp lys
+            viewMatrix = vMatrixUniform2;
+            projectionMatrix = pMatrixUniform2;
+            modelMatrix = mMatrixUniform2;
+            glUniform1i(mTextureUniform4, mGameObjects[i]->mMaterial->mTextureUnit);
+            glUniform1f(mAmbientStrengt, mAmbientStrengt);
+            glUniform1f(mLightStrengt, 2);
+
+        }
+
 
 
         ///sender data til shader

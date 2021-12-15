@@ -15,7 +15,7 @@ namespace gsl  //Game School Lib
 
     const int MAX_MESHCOMPONENTS = 1024;
 
-    const int NumberOfShaders{4};
+    const int NumberOfShaders{6};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};
 

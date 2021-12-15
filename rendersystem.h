@@ -95,7 +95,15 @@ private:
     GLint mMatrixUniform2{-1};
     GLint vMatrixUniform2{-1};
     GLint pMatrixUniform2{-1};
+    GLint mMatrixUniform3{-1};
+    GLint vMatrixUniform3{-1};
+    GLint pMatrixUniform3{-1};
+    GLint mMatrixUniform4{-1};
+    GLint vMatrixUniform4{-1};
+    GLint pMatrixUniform4{-1};
     GLint mTextureUniform2{-1};
+    GLint mTextureUniform3{-1};
+    GLint mTextureUniform4{-1};
 
     GLint mCameraPosition{-1};
 

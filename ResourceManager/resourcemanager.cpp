@@ -196,16 +196,13 @@ void ResourceManager::setUpAllTextures()
         filters << "*.bmp";
         tempDir.setNameFilters(filters);
 
-        //                  " - .bmp textures will be read from " + gsl::TextureFilePath;
-
-
         //read all regular textures
         for(QFileInfo &var : tempDir.entryInfoList())
         {
-
              mTextureHandler->makeTexture(var.fileName().toStdString());
         }
     }
+
 
 }
 

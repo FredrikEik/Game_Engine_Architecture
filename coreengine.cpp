@@ -65,9 +65,10 @@ void CoreEngine::setUpScene()
 
     //Setter opp skybox
     skybox = mResourceManager->addObject("skybox");
-    skybox->mMaterial->mShaderProgram = 2;
-    skybox->mMaterial->mTextureUnit = 1;
+    skybox->mMaterial->mShaderProgram = 4;
+    skybox->mMaterial->mTextureUnit = 6;
     skybox->mTransform->mMatrix.scale(40.f);
+    skybox->mTransform->mMatrix.rotateZ(180);
     skybox->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(skybox);
 
@@ -83,8 +84,8 @@ void CoreEngine::setUpScene()
 
     //Setter opp terrenget hentet fra las data
     Las = mResourceManager->addObject("LAS");
-    Las->mMaterial->mShaderProgram =3;
-    Las->mMaterial->mTextureUnit = 0;
+    Las->mMaterial->mShaderProgram = 1;
+    Las->mMaterial->mTextureUnit = 1;
     Las->mTransform->mMatrix.setPosition(3,-5,0);
     Las->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(Las);
@@ -118,7 +119,7 @@ void CoreEngine::testScene()
 
         enemy = mResourceManager->addObject("suzanne3.obj");
         enemy->mTransform->mMatrix.translate(1*i, 0,0.f);
-        enemy->mMaterial->mShaderProgram = 1;
+        enemy->mMaterial->mShaderProgram = 3;
         enemy->mMaterial->mTextureUnit = 2;
         enemy->mTransform->mMatrix.rotateY(180.f);
         enemy->mTransform->mMatrix.scale(0.5f);
