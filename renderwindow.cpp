@@ -208,7 +208,7 @@ void RenderWindow::init()
     setupSkyboxShader(3);
     setupParticleShader(4);
     setupFrameBufferShader(5);
-    postFBO = new PostProcessing(mShaderPrograms[5]);
+    //postFBO = new PostProcessing(mShaderPrograms[5]);
 
 
     //QWindow* test = new QWindow();
