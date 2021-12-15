@@ -13,6 +13,8 @@
 #include "HudSystem.h"
 #include "../Input/Input.h"
 #include "../Engine/Engine.h"
+#include "../Sound/SoundSource.h"
+
 void PrintMethod_Internal(MonoString* string)
 {
 	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
@@ -39,7 +41,6 @@ uint64 getEntityID_Internal(MonoObject* this_ptr, MonoString* str)
 
 	return entityID;
 }
-// #include "../Sound/SoundSource.h"
 //&Play_Internal()
 void ScriptSystem::Init()
 {
@@ -61,6 +62,7 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Entity::showHud_Internal", &HudSystem::showHud_Internal);
 	BindInternalFunction("ScriptInJin.Entity::removeHud_Internal", &HudSystem::removeHud_Internal);
 	BindInternalFunction("ScriptInJin.Entity::addMaterialTexture_Internal", &TextureSystem::addMaterialTexture_Internal);
+	BindInternalFunction("ScriptInJin.Entity::playSound_Internal", &SoundSource::Play_Internal);
 
 
 	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);

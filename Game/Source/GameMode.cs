@@ -35,6 +35,7 @@ namespace Game
 
             Console.WriteLine("Obstacle id: " + obstacle);
             Transform.setPosition_internal(obstacle, new Vec3(100, 0, 140));
+            //playSound_Internal();
         }
         public override void Update()
         {

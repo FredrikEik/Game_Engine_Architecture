@@ -62,6 +62,8 @@ namespace ScriptInJin
         extern public static void removeHud_Internal(uint Entity);
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static void addMaterialTexture_Internal(uint Entity, string uniform, string path);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void playSound_Internal();
     }
 
     public class Transform

@@ -2,7 +2,8 @@
 #include <iostream>
 #include "SoundDevice.h"
 #include "SoundBuffer.h"
-
+#include "../Engine/Engine.h"
+#include "../Systems/TransformSystem.h"
 SoundSource::SoundSource()
 {
 	alGenSources(1, &p_Source);
@@ -23,6 +24,7 @@ void SoundSource::Play_Internal()
 {
 	auto sDevive = SoundDevice::get();
 	auto sBuffer = SoundBuffer::get();
+
 	ALuint sound1 = sBuffer->addSoundEffect("Assets/DogBark.wav");
 
 	SoundSource speaker;
@@ -31,6 +33,8 @@ void SoundSource::Play_Internal()
 
 void SoundSource::Play(const ALuint buffer_to_play)
 {
+	auto transform = TransformSystem::getTransform_internal(Engine::Get().getCameraEntity());
+	alSource3f(p_Source, AL_POSITION, transform.x, transform.y, transform.z);
 	if (buffer_to_play != p_Buffer)
 	{
 			p_Buffer = buffer_to_play;
@@ -38,14 +42,14 @@ void SoundSource::Play(const ALuint buffer_to_play)
 	}
 
 	alSourcePlay(p_Source);
-
+	
 
 	ALint state = AL_PLAYING;
-	std::cout << "playing sound\n";
-	while (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
-	{
-		std::cout << "currently playing sound\n";
-		alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
-	}
-	std::cout << "done playing sound\n";
+	//std::cout << "playing sound\n";
+	//while (state == AL_PLAYING && alGetError() == AL_NO_ERROR)
+	//{
+	//	//std::cout << "currently playing sound\n";
+	//	alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
+	//}
+	//std::cout << "done playing sound\n";
 }

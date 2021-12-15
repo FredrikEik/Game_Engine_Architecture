@@ -23,9 +23,9 @@ namespace Game
                 Vec3 collisionDirection =  getPosition() - playerPosition;
                 //Vec3 collisionDirection = playerPosition - getPosition();
                 collisionDirection.Normalize();
-                
+                playSound_Internal();
 
-                setVelocity_Internal(entityID, collisionDirection * -10, false);
+                setVelocity_Internal(entityID, collisionDirection * 10, false);
             }
         }
         public void setPlayer(uint unit)
