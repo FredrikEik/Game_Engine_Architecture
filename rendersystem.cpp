@@ -17,7 +17,6 @@
 #include "shader.h"
 #include "mainwindow.h"
 #include "gameobject.h"
-#include "xyz.h"
 #include "cube.h"
 #include "plane.h"
 #include "skybox.h"
