@@ -1,6 +1,8 @@
 #ifndef COREENGINE_H
 #define COREENGINE_H
 
+#include "ECS/ECScoordinator.h"
+
 //Forward declarations
 class RenderWindow;
 class Camera;
@@ -42,6 +44,9 @@ private slots:
 
 private:
     static CoreEngine* mInstance;   //Not singleton, but can use static getInstance()
+
+    //BOSS MAN - This is supposed to oversee most things!
+    std::unique_ptr<ECScoordinator> ECScord{nullptr};
 
 };
 

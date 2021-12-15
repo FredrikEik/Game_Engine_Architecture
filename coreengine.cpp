@@ -16,6 +16,12 @@ CoreEngine::CoreEngine(RenderWindow *renderSystemIn, MainWindow *mainWindowIn)
 
     mInstance = this;
 
+    //ECS Coordinator:
+    //Make sure only one instance is created!
+    ECScord = std::make_unique<ECScoordinator>();
+    ECScord->Init();
+
+
     //Make the gameloop timer:
     mGameLoopTimer = new QTimer(this);
 }
