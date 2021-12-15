@@ -6,7 +6,8 @@
 #include "vertex.h"
 #include "gltypes.h"
 
-
+//! @enum objectType
+//! helps us to difirentiate usecases of objects
 enum objectType {
     helper = 0,
     skybox = 1,
@@ -17,18 +18,19 @@ enum objectType {
     enemy = 6
 };
 
-
+//! @struct DetailsComponent - holds information on components that we can display in editor
 struct DetailsComponent{
     int entity = 0;
     std::string title;
-
     std::string description;
     objectType type = prop;
 };
 
-
+//! @struct Transformcomponent - Component holds transformation related data
+//! @details Component contains data for translation, rotation Also contains physics data.
 struct TransformComponent
 {
+    //! enityid
     int entity = 0;
     gsl::Matrix4x4 mMatrix;
     bool isPhysicsEnabled = false;
@@ -45,6 +47,8 @@ struct TransformComponent
     bool isBulletLoaded;
 };
 
+//!@struct MeshComponent contains data on mesh and render
+//! @details meshComponent contains data on vertex, collision scale and helper boolians
 struct MeshComponent
 {
     int entity{0};
@@ -73,20 +77,12 @@ struct MeshComponent
 
     GLenum mDrawType{GL_TRIANGLES};
 };
-
+//! @struct MaterialComponent contains data on material
 struct MaterialComponent
 {
     int entity = 0;
     GLuint mShaderProgram{0};
     GLint mTextureUnit{0};
-};
-
-struct PhysicsComponent
-{
-    int entity = 0;
-    float g = 9.81f;
-    QVector3D GravityVec = QVector3D(0.f,-g,0.f);
-    QVector3D VelocityVec = QVector3D(0.0f,0.0f,0.0f);
 };
 
 #endif // COMPONENTS_H

@@ -40,13 +40,11 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
 
     QVector3D g = QVector3D(0.0f, -9.8067f*3.f, 0.0f);
     gsl::Vector3D pos = Transf->mMatrix.getPosition();
-    if((pos.getX() >0.0f & pos.getX() < 600) && (pos.getZ() >0.0f & pos.getZ() < 700) && pos.getY() >0.0f)
-        FindTriangle(Transf); // finds normal and height of plane
+
+    if((pos.getX() >0.0f & pos.getX() < 600) && (pos.getZ() >0.0f & pos.getZ() < 700) && pos.getY() >0.0f) FindTriangle(Transf); // finds normal and height of plane
 
     //add velocity component V = v0 + at
     Transf->Velocity = gsl::Vector3D(Transf->Velocity.getX(), Transf->Velocity.getY() +( g.y() * deltaTime ), Transf->Velocity.getZ());
-    //Transf->mMatrix.translate(Transf->Velocity.getX()*deltaTime, Transf->Velocity.getY()*deltaTime + 0.5f*g.y()*deltaTime*deltaTime ,Transf->Velocity.getZ()*deltaTime);
-
 
     float length = QVector3D().dotProduct(MakeQvec3D(Data.heightOfFloor) - pos.getQVector(),MakeQvec3D( Data.floorNormal));
     length =  std::abs(length);
@@ -56,17 +54,12 @@ void PhysicsSystem::move(float deltaTime, TransformComponent *Transf, float radi
     {
         if(once)
         {
-            //qDebug() <<"PHYSICS BOUNCE";
-            //gsl::Vector3D posInCol(pos.getX(),pos.getY(),pos.getZ());
-            //Transf->PosOverTime.push_back(posInCol);
 
             //Mirror vec
             QVector3D NewVector =  MirrorVector(MakeQvec3D( Transf->Velocity), MakeQvec3D( Data.floorNormal));
             NewVector.setY(NewVector.y()*(1.0f-my));
             //get speed
             float speed = Transf->Velocity.length();// * elasticity;
-
-
 
             //apply speed to new vector direction
             Transf->Velocity =  MakeGSLvec3D( NewVector)*speed ;
@@ -112,6 +105,7 @@ void PhysicsSystem::FindTriangle(TransformComponent *Transf)
     //every third triangle is our triangle.
     int index = Transf->LastTriangeindex ;
     //the vertex positions are flipped because of us using blender for the surface.
+
     //! We have optimisation code that saves the last position of the triangle, then checks if we are still on the same triangle. Removes nesessity to run code for all vertex positions
     //! @param isFound is true when we are on the correct surface
 if(index =! -1){
@@ -121,14 +115,11 @@ if(index =! -1){
     //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
     Baryc = Barysentric( p1 , p2 , p3 , posBall );
-    //qDebug() << "BARYC: "<<Baryc;
     if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
     {
         //use normals from plane here to displace ball in normal direction
         Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
         float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
-        //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
-        //qDebug() << "BARYC HEIGHT: "<<height;
         Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
 
         isFound = true;
@@ -141,19 +132,17 @@ if(index =! -1){
             p1 = MakeQvec3D(vertexData[i + 0].getVertex());//1
             p2 = MakeQvec3D(vertexData[i + 2].getVertex());//3
             p3 = MakeQvec3D(vertexData[i + 1].getVertex());//2
-            //had to make a translator between the different vec types, pls dont hate me, its a lill workaround as i dont want to change all vectors.
 
             Baryc = Barysentric( p1 , p2 , p3 , posBall );
-            //qDebug() << "BARYC: "<<Baryc;
+
             if(Baryc.x() >=0 && Baryc.y() >= 0 && Baryc.z() >= 0)
             {
                 //use normals from plane here to displace ball in normal direction
                 Data.floorNormal = MakeGSLvec3D( CalcPlaneNormal(p1,p2,p3));
                 float height = p1.y()*Baryc.x() + p2.y()*Baryc.y() + p3.y()*Baryc.z();
-                //  qDebug() << "/////////////// FLOOR NORMAL: "<<Data.floorNormal;
-                //qDebug() << "BARYC HEIGHT: "<<height;
+
                 Data.heightOfFloor = gsl::Vector3D(posBall.x(), height, posBall.z());
-                //Transf->mMatrix.setPosition(Transf->mMatrix.getPosition().getX(), height + collisionRadius, Transf->mMatrix.getPosition().getZ());
+
                 onTriangle = true;
                 Transf->LastTriangeindex = static_cast<int>(i);
                 break;
@@ -217,7 +206,6 @@ QVector3D PhysicsSystem::Barysentric(QVector3D p1,QVector3D p2,QVector3D p3, QVe
     //qDebug() <<"HEIGHT OF VERTEX " <<*heightmap->GetSurfacePos((int)px,(int)pz - 1);
     //qDebug() <<"BARISENTRIC COORDINATES: " <<baryc;
 
-    //i have no fucking clue why it needs to be negative. but hey it works ;)
     return (-baryc);
 }
 
@@ -243,7 +231,6 @@ QVector3D PhysicsSystem::MirrorVector(QVector3D Vector, QVector3D normal)
 {
     QVector3D MVector;
     QVector3D dotprod;
-    //qDebug()<<"-__--_-___MIroror VECTOR, NORMAL "<<Vector<<normal;
     float dot = dotprod.dotProduct(Vector,normal);
     MVector = Vector -2.0f*(dot)*normal;
     MVector.normalize();

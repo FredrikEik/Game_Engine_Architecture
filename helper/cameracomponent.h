@@ -3,7 +3,7 @@
 #include "components.h"
 #include "matrix4x4.h"
 #include "vector3d.h"
-
+//! @struct camerComponent contains data on camera
 struct cameraComponent{
     gsl::Matrix4x4 mViewMatrix;
     gsl::Matrix4x4 mProjectionMatrix;

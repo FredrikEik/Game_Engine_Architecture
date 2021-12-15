@@ -141,6 +141,7 @@ void RenderWindow::init()
     //NB: hardcoded path to files! You have to change this if you change directories for the project.
     //Qt makes a build-folder besides the project folder. That is why we go down one directory
     // (out of the build-folder) and then up into the project folder.
+
     mShaderPrograms[0] = new Shader((gsl::ShaderFilePath + "plainvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "plainfragment.frag").c_str());
     qDebug() << "Plain shader program id: " << mShaderPrograms[0]->getProgram();
@@ -163,30 +164,20 @@ void RenderWindow::init()
     setupSkyboxshader(3);
 
 
-    //********************** Making the object to be drawn **********************
-
-    /****************** THIS SHOULD USE A RESOURCE MANAGER / OBJECT FACTORY!!!!! ******************************************/
-    /***** should not use separate classes init() - function ****************/
 
     ////*************************************start**////////////
     JSS->JSONSystemInit(this);
     ResSys->ResourceSystemInit(RenderSys);
 
-    ///PURE ECS TEST
     entitySys->construct("cube.obj", QVector3D(0.0f,-3.0f,0.0f),3,8,-1);
     meshCompVec[0]->IsCollidable = false;
     entitySys->construct("FlatFloor.obj", QVector3D(0.0f,0.0f,0.0f),2,1);
-    Physics->InitPhysicsSystem(meshCompVec[1],ResSys->getVertexDataByName("FlatFloor.obj"));
-
     entitySys->construct("cannon.obj", QVector3D(-5.0f,0.0f,0.0f),2,1); //https://sketchfab.com/3d-models/hand-painted-cannon-63959575e8d0416a977a313ddf2e2d4f
 
     if(transformCompVec[2] != nullptr){
         CurrentPlayer = transformCompVec[2];
         CurrentPlayer->mMatrix.translateY(5);
     }
-
-
-
 
 
     //JSS->SaveLevel("Test");
@@ -209,23 +200,19 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(50.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mCurrentCamera = new Camera(50.f, 0.1f,300.f);
     mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
     mCurrentCamera->pitch(30);
     mCurrentCamera->yaw(180);
 
-    mPlayerCamera = new Camera(20.f, 0.1f,300.f);//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mPlayerCamera = new Camera(20.f, 0.1f,300.f);
     mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
-    mEditorCamera = mCurrentCamera;//(50.f, 0.1f,300.f); //test case (20.f, 20.1f,300.f)
+    mEditorCamera = mCurrentCamera;
     mEditorCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
 
 
-
-
-
-
-    //crate bullets
+    //create bullets
     for(int i{0}; i < 6; i++)
     {
         entitySys->construct("sphere.obj", QVector3D( 10+i,10+i,-10+i),2,1); //ammo starts with 800 id
@@ -235,7 +222,6 @@ void RenderWindow::init()
     {
         if(meshCompVec[i]->meshName == "sphere.obj")
             bullets.push_back(i);
-
     }
 
     //create enemies
@@ -244,20 +230,20 @@ void RenderWindow::init()
 
         entitySys->construct("SpaceInvaderBoss2.obj",     QVector3D(0.0f + 60  ,0.0f+i*3,-20.f), 2,7);
         entitySys->construct("SpaceInvaderBoss1.obj",     QVector3D(0.0f + 40  ,0.0f+i*3,-20.f), 2,6);
-        entitySys->construct("SpaceInvader4.obj",     QVector3D(0.0f + 80  ,0.0f+i*3,-20.f), 2,5);
-        entitySys->construct("SpaceInvader1.obj",     QVector3D(0.0f + 20  ,0.0f+i*3,-20.f), 2,2);
-        entitySys->construct("SpaceInvaderBoss1.obj", QVector3D(0.0f + 110 ,0.0f+i*3,-20.f), 2,6);
-        entitySys->construct("SpaceInvaderBoss2.obj", QVector3D(0.0f + 140 ,0.0f+i*3,-20.f), 2,7);
+        entitySys->construct("SpaceInvader4.obj",         QVector3D(0.0f + 80  ,0.0f+i*3,-20.f), 2,5);
+        entitySys->construct("SpaceInvader1.obj",         QVector3D(0.0f + 20  ,0.0f+i*3,-20.f), 2,2);
+        entitySys->construct("SpaceInvaderBoss1.obj",     QVector3D(0.0f + 110 ,0.0f+i*3,-20.f), 2,6);
+        entitySys->construct("SpaceInvaderBoss2.obj",     QVector3D(0.0f + 140 ,0.0f+i*3,-20.f), 2,7);
 
     }
     for(unsigned long long i{0}; i <meshCompVec.size(); i++)
     {
         if((meshCompVec[i]->meshName == "SpaceInvader1.obj"    ) ||
-                (meshCompVec[i]->meshName == "SpaceInvader2.obj"    ) ||
-                (meshCompVec[i]->meshName == "SpaceInvader3.obj"    ) ||
-                (meshCompVec[i]->meshName == "SpaceInvader4.obj"    ) ||
-                (meshCompVec[i]->meshName == "SpaceInvaderBoss1.obj") ||
-                (meshCompVec[i]->meshName == "SpaceInvaderBoss2.obj") )
+           (meshCompVec[i]->meshName == "SpaceInvader2.obj"    ) ||
+           (meshCompVec[i]->meshName == "SpaceInvader3.obj"    ) ||
+           (meshCompVec[i]->meshName == "SpaceInvader4.obj"    ) ||
+           (meshCompVec[i]->meshName == "SpaceInvaderBoss1.obj") ||
+           (meshCompVec[i]->meshName == "SpaceInvaderBoss2.obj")   )
         {
             Enemies.push_back(i);
         }
@@ -271,15 +257,9 @@ void RenderWindow::init()
     initialEnemyPos();
     enemyCount = static_cast<int>(Enemies.size());
 
-    //for(int i = 0; i < transformCompVec.size(); i++){
-    //    transformCompVec[i]->PosOverTime.push_back(transformCompVec[i]->mMatrix.getPosition());
-    //}
-
-
-
     //physics code
     oldTime = std::chrono::high_resolution_clock::now();
-
+    Physics->InitPhysicsSystem(meshCompVec[1],ResSys->getVertexDataByName("FlatFloor.obj"));
 
     mSong->pause();
     mMainWindow->updateViewPort();
@@ -317,8 +297,6 @@ void RenderWindow::render()
         if(entities[i] == meshCompVec[i]->entity && entities[i] == transformCompVec[i]->entity && entities[i] == MaterialCompVec[i]->entity)
         {
 
-            //killZ :D
-
             killZ(transformCompVec[i], gsl::Vector3D(0  ,10.0f,0 ));
 
             if(entities[i] == 0) glDepthMask(GL_FALSE); //depthmask for skybox off
@@ -333,9 +311,7 @@ void RenderWindow::render()
 
             if((isPhysicsEnabled && transformCompVec[i]->isPhysicsEnabled) )
             {
-
                 Physics->move(DeltaTime,transformCompVec[i], meshCompVec[i]->collisionRadius);
-
             }
 
             RenderSys->draw(meshCompVec[i],
@@ -347,12 +323,9 @@ void RenderWindow::render()
                             mCurrentCamera);
 
             if(entities[i] == 0)  glDepthMask(GL_TRUE); //debtmask for skybox on
-
         }
-
-
     }
-
+    //Gameplay code
     if(bIsPlayerCamera)
     {
         moveEnemies();
@@ -370,7 +343,7 @@ void RenderWindow::render()
                 transformCompVec[bullets[i]]->Velocity = gsl::Vector3D(0.0f,0.0f,0.0f);
             }
         }
-        ///COLLISION BABY DONT HATE A PLAYA; HATE THE GAME
+        //COLLISION BABY
         for (unsigned long long i = 0; i<bullets.size();i++)
             for (unsigned long long j = 0; j<Enemies.size();j++)
             {
@@ -385,8 +358,9 @@ void RenderWindow::render()
                     enemyCount -= 1;
                 }
             }
-        ///Collision with player
-        /// resets the game
+
+        //Collision with player
+        // resets the game
         for (unsigned long long j = 0; j<Enemies.size();j++)
         {
             if(collisionSys->isColliding(meshCompVec[2],transformCompVec[2],meshCompVec[Enemies[j]],transformCompVec[Enemies[j]]) || transformCompVec[Enemies[j]]->mMatrix.getPosition().getZ()<5.0f)
@@ -395,7 +369,7 @@ void RenderWindow::render()
                 initialEnemyPos();
             }
         }
-        ///win check
+        //win check
         if(enemyCount<1)
         {
             qDebug()<<"YOU WIN!";
@@ -405,24 +379,17 @@ void RenderWindow::render()
     }
     else
     {
-        drawFrostum();      //frustum culling lines! This is a visualisation of frostum
-
+        drawFrostum();      //frustum culling lines! This is a visualisation of frostum and is NOT ECS - MEMORY LEAK
     }
 
 
     //Calculate framerate before
-    // checkForGLerrors() because that takes a long time
-    // and before swapBuffers(), else it will show the vsync time
     calculateFramerate();
 
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
-
-    //Qt require us to call this swapBuffers() -function.
-    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-    // and wait for vsync.
     mContext->swapBuffers(this);
-
+    //delta time
     CalcDeltaTime();
 
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
@@ -464,7 +431,6 @@ void RenderWindow::moveEnemies()
             {
                 transformCompVec[Enemies[i]]->mMatrix.setPosition(position + gsl::Vector3D(xDir*speed, 0.0f,0.0f));
             }
-
         }
     }
 
@@ -490,7 +456,6 @@ void RenderWindow::moveEnemies()
 }
 void RenderWindow::LoadBullet()
 {
-
     if(!bBulletLoaded)
     {
         for (unsigned long long i = 0; i<bullets.size();i++)
@@ -509,7 +474,6 @@ void RenderWindow::LoadBullet()
 }
 void RenderWindow::ShootBullet()
 {
-
     for (unsigned long long i = 0; i<bullets.size();i++)
     {
         if( transformCompVec[bullets[i]]->isBulletLoaded == true)
@@ -552,7 +516,6 @@ void RenderWindow::BallReset(TransformComponent *Transform)
             Transform->isBulletLoaded = false;
             Transform->isBulletFired = false;
         }
-
 }
 
 void RenderWindow::CalcDeltaTime()
@@ -609,7 +572,6 @@ void RenderWindow::setupSkyboxshader(int shaderIndex)
     skyboxUniform3 = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "skybox" );
 }
 
-
 void RenderWindow::togglePlayerCamera()
 {
     if(mPlayerCamera && mEditorCamera)
@@ -652,7 +614,6 @@ void RenderWindow::RayCasting(QMouseEvent *event)
     QVector4D ray_eye = projMatrix.multiplyWithQVector4D(ray_clip);
     ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0);
 
-
     //step 4
     viewMatrix.inverse();
     QVector4D temp = viewMatrix.multiplyWithQVector4D(ray_eye);
@@ -681,7 +642,6 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
     {
         if(meshCompVec[i]->IsCollidable)
         {
-
             //get position vector into qvec3d
             QVector3D position;
             position.setX( transformCompVec[i]->mMatrix.getPosition().getX());
@@ -710,7 +670,6 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
                 mMainWindow->setSelectedItem(transformCompVec[i]->entity);
                 collided = true;
                 entitySys->construcRay(RayVec,CamPos,lenght);
-                qDebug() <<"COL1"<<CamPos;
                 break;
             }
             else if (b_squared_minus_4ac > 0)
@@ -724,7 +683,6 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
                     mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
                     collided = true;
                     entitySys->construcRay(RayVec,CamPos,lenght);
-                    qDebug() <<"COL2"<<CamPos;
                     break;
                 }
                 if (x1 < 0.0 || x2 >= 0.0)
@@ -732,15 +690,12 @@ void RenderWindow::RayCastSphereCollision(QVector3D RayVec)
                     mMainWindow->setSelectedItem(transformCompVec[i]->entity);//return true;
                     collided = true;
                     entitySys->construcRay(RayVec,CamPos,lenght);
-                    qDebug() <<"COL3"<<CamPos;
                     break;
                 }
             }
         }
     }
 
-    if(!collided)
-    {qDebug() <<"NO COLLISION";}
     entitySys->construcRay(RayVec,CamPos,lenght);
     // No real roots //NOT colliding
     //return false;
@@ -875,9 +830,6 @@ bool RenderWindow::frustumCulling(int Index)
     //radius of object sphere
     float gobRadius = meshCompVec[Index]->collisionRadius;
     //Mesh data is not scaled so have to calculate for that
-    //TODO: The system will break if scaling is not uniform...
-    //gobRadius *= mGameObjects[gobIndex]->mTransform->mScale.x;
-    //CURRENTLY NO SCALE
 
     //if radius is not set == very small
     if(gobRadius <= 0.000001f)
@@ -892,9 +844,7 @@ bool RenderWindow::frustumCulling(int Index)
     //shortcut to frustum
     Frustum &frustum = mCurrentCamera->mFrustum;
 
-    //the collider sphere seems to be a little to small, so adding this
-    //padding to not cull them to early
-    float padding{0.2f}; //
+    float padding{0.2f};
 
     //Project vector down to frustum normals:
 
@@ -921,7 +871,6 @@ bool RenderWindow::frustumCulling(int Index)
         return true;
 
     }
-
 
     //Left plane:
     tempDistance = frustum.mLeftPlane * vectorToObject;    // * here is dot product
@@ -1005,23 +954,7 @@ void RenderWindow::handleInput()
     {
         if(bIsPlayerCamera)
         {
-            if(mInput.W)
-            {
-                /*
-                mCurrentCamera->setSpeed(-mCameraSpeed);
-                PosZ = -1.0f;
-                CurrentPlayer->mMatrix.translateZ(PosZ);
-                */
-            }
-            if(mInput.S)
-            {
-                /*
-                mCurrentCamera->setSpeed(mCameraSpeed);
-                PosZ = 1.0f;
-                CurrentPlayer->mMatrix.translateZ(PosZ);
-                */
 
-            }
             if(mInput.D)
             {
                 posX = -1.0f;
@@ -1057,7 +990,6 @@ void RenderWindow::switchProgram(int shaderIndex)
         viewMatrix = vMatrixUniform1;
         projectionMatrix = pMatrixUniform1;
         modelMatrix = mMatrixUniform1;
-        //Now mMaterial component holds texture slot directly - probably should be changed
         glUniform1i(mTextureUniform, MaterialCompVec[shaderIndex]->mTextureUnit);
     }
     else if (MaterialCompVec[shaderIndex]->mShaderProgram == 2)
@@ -1077,7 +1009,7 @@ void RenderWindow::switchProgram(int shaderIndex)
         viewMatrix = vMatrixUniform3;
         projectionMatrix = pMatrixUniform3;
         modelMatrix = mMatrixUniform3;
-        glUniform3f(POSUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER NOT MODEL
+        glUniform3f(POSUniform3,mCurrentCamera->Cam.mPosition.getX(), mCurrentCamera->Cam.mPosition.getY(), mCurrentCamera->Cam.mPosition.getZ());//THIS BABOON IS POS IN SHADER
         glUniform1i(skyboxUniform3, MaterialCompVec[shaderIndex]->mTextureUnit);
 
     }
@@ -1328,16 +1260,7 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
             auto yOffset = mousePos.y()-origo.y();
             auto multiplier{0.1f};
 
-
-            //mCamera.yaw(-1*xOffset*multiplier);
-            //mCamera.pitch(-1*yOffset*multiplier);
-
             QCursor::setPos(mapToGlobal(origo));
-
-
-            //Using mMouseXYlast as deltaXY so we don't need extra variables
-            //mMouseXlast = event->pos().x() - mMouseXlast;
-            //mMouseYlast = event->pos().y() - mMouseYlast;
 
             if (mMouseXlast != 0)
                 mCurrentCamera->yaw(mCameraRotateSpeed * xOffset * multiplier/*mCameraRotateSpeed * mMouseXlast*/);

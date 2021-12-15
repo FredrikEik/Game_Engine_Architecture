@@ -9,7 +9,7 @@
 #include <fstream>
 #include<QVector3D>
 #include<QVector2D>
-
+///@class Vertex made by Ole og Dag
 class Vertex {
 public:
     Vertex();
