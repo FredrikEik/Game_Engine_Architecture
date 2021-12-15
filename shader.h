@@ -10,6 +10,11 @@
 //which is based on stuff from http://learnopengl.com/ and http://open.gl/.
 
 //must inherit from QOpenGLFunctions_4_1_Core, since we use that instead of glfw/glew/glad
+
+///
+/// \brief  The Shader class.
+/// \author https://github.com/SonarSystems/Modern-OpenGL-Tutorials/blob/master/%5BLIGHTING%5D/%5B8%5D%20Basic%20Lighting/Shader.h
+///
 class Shader : protected QOpenGLFunctions_4_1_Core
 {
 public:

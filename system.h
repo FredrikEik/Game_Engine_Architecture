@@ -18,12 +18,17 @@ class Skybox;
 class TriangleSurface;
 class MainWindow;
 
+///
+/// \brief The System class. Is responsible for the main game loop and events.
+///
 class System : public QObject
 {
     Q_OBJECT
 public:
     System(MainWindow *mw, RenderSystem *rs);
     void init();
+
+    ///Starts the game loop timer.
     void startGameLoop();
 
     /**Level**/
@@ -36,11 +41,11 @@ public:
     void toggleEditorMode();
 
     /**Collision**/
-    /*AABB vs AABB Collision*/
+    ///Overloaded function for checking AABB vs AABB collision
     bool isColliding(BoxCollisionComponent &Box1, BoxCollisionComponent &Box2);
-    /*AABB vs Sphere Collision*/
+    ///Overloaded function for checking AABB vs Sphere collision
     bool isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &Sphere);
-    /*Sphere vs Frustum Collision*/
+    ///Overloaded function for checking Sphere vs Frustum collision
     bool isCollidingWithFrustum(SphereCollisionComponent &Sphere);
 
     /**Input**/
@@ -58,7 +63,6 @@ public:
     float getCameraRotateSpeed() {return cameraRotateSpeed;}
     bool getEditorMode() {return editorMode;}
 
-    /**Public for RenderSystems sake**/
     QElapsedTimer timeStart;
 
     /**Sound**/
@@ -84,6 +88,8 @@ private:
     MainWindow* mainWindow = nullptr;
     QTimer *gameLoopTimer = nullptr;
     Level level;
+
+    ///Javascript Engine (Not used)
     QJSEngine scriptEngine;
 
     /**Input**/

@@ -3,15 +3,9 @@
 
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
-#include <QTimer>
-#include <QElapsedTimer>
-#include <QJSEngine>
 #include "gameobject.h"
-#include "skybox.h"
-#include "trianglesurface.h"
 #include "factory.h"
 #include "level.h"
-#include "input.h"
 #include "constants.h"
 #include "soundmanager.h"
 #include "quadtree.h"
@@ -63,6 +57,8 @@ public:
     void createObjectbutton(int objectType);
     void playPausebutton(const QSurfaceFormat &format);
 
+    //**Player**//
+    GameObject* player = nullptr;
     int playerHP = 3;
 
     /**Textures**/
@@ -74,12 +70,17 @@ public:
     /**GameObjects**/
     std::vector<GameObject*> gameObjects;
     Factory* factory = nullptr;
-    GameObject* player = nullptr;
     GameObject* skybox = nullptr;
     GameObject* triangleSurface = nullptr;
-    GameObject* helperObject = nullptr;
+
+    //**HUD and UI**//
     GameObject* HUD;
+
+    //**Particle system**//
     particle* mParticles;
+
+    //**Helper Object**//
+    GameObject* helperObject = nullptr;
     MeshComponent *helperObjectMesh= nullptr;
 
     /**Post Processing**/
@@ -89,7 +90,9 @@ public:
     unsigned int RBO;
     unsigned int quadVAO, quadVBO;
 
-    System* systemRef{nullptr}; //points back to system
+    //**Reference to system**//
+    System* systemRef{nullptr};
+    //**Reference to MainWindow*//
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     void moveHelpObjectToSelected();

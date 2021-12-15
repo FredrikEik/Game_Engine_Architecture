@@ -53,8 +53,8 @@ public:
 struct SphereCollisionComponent
 {
 public:
-    gsl::Vector3D center;
-    float radius;
+    gsl::Vector3D center{0,0,0};
+    float radius{0.5f};
 };
 
 struct FrustumCollisionComponent

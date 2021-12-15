@@ -10,6 +10,9 @@ namespace gsml
 {
 typedef std::pair<double,double> Point2D; //Our own Vector2D
 
+///
+/// \brief A recursive class for creating a QuadTree and inserting objects.
+///
 template<class ID, class T>
 class Quadtree
 {

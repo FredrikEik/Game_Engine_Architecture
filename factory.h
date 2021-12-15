@@ -24,10 +24,6 @@ public:
 
     GameObject* createObject(gsl::ObjectType objectType);
 
-    template<typename T>
-    T* createObject(gsl::ObjectType objectType);
-    //std::vector<GameObject*> gameObjects;
-
     void saveMesh(std::string fileName, std::string nickName);
 
     std::queue<std::uint32_t> mAvailableIDs;
