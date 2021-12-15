@@ -43,10 +43,16 @@ public:
     static Vector3D cross(const Vector3D &v1, const Vector3D &v2);
     static GLfloat dot(const Vector3D &v1, const Vector3D &v2);
 
-    void rotateX(GLfloat angle);
-    void rotateY(GLfloat angle);
-    void rotateZ(GLfloat angle);
+//    GLfloat angleX;
+//    GLfloat angleY;
+//    GLfloat angleZ;
+    void rotateX(GLfloat angleX);
+    void rotateY(GLfloat angleY);
+    void rotateZ(GLfloat angleZ);
 
+//    GLfloat getRotX() const;
+//    GLfloat getRotY() const;
+//    GLfloat getRotZ() const;
 //    Vector3D RandomNumber(Vector3D *v1, Vector3D *v2);
     //Getters and setters
     GLfloat getX() const;

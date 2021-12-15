@@ -314,7 +314,15 @@ void CoreEngine::reset()
         mRenderSystem->mGameObjects[i]->startPos.x,
         mRenderSystem->mGameObjects[i]->startPos.y,
         mRenderSystem->mGameObjects[i]->startPos.z);
+
+
     }
+    for(unsigned int i = 0; i< enemies.size(); i++)
+    {
+        enemies[i]->mTransform->mMatrix.rotateZ(-90);
+        enemies[i]->isAlive = true;
+    }
+    player->isAlive = true;
 
 }
 
