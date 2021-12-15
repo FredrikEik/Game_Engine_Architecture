@@ -52,8 +52,8 @@ void ObjectFactory::createObject(std::string objectName)
             qDebug() << "goat mesh saved";
         }
         willCreateObject->mTexture = 3;
-        willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.3f, 1.4f, 0.5f);
-        willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.3f, .1f, -0.5f);
+        willCreateObject->getCollisionComp()->max = gsl::Vector3D(0.3f, 1.4f, 0.5f); //sets collision box max values
+        willCreateObject->getCollisionComp()->min = gsl::Vector3D(-0.3f, .1f, -0.5f); //sets collision box min values
     }
     else if (objectName == "HudSquare")
     {
@@ -68,9 +68,6 @@ void ObjectFactory::createObject(std::string objectName)
     else
         return;
 
-    /*Trying to create each new object at an added position so
-     *  all objects is not in the same place. Needs some work..*/
-    //willCreateObject->getTransformComp()->mMatrix.translateX(+0.5f);
     willCreateObject->getTransformComp()->mTrueScaleMatrix = willCreateObject->getTransformComp()->mMatrix; // important do not delete
     willCreateObject->init();
     mGameObject.push_back(willCreateObject);
@@ -91,7 +88,7 @@ void ObjectFactory::saveMesh(std::string fileName, std::string nickName)
     else {
         ObjImport *objImport {nullptr};
         MeshComponent* newMesh = new MeshComponent();
-        objImport->readFile(fileName/*, &newMesh->mVertices, &newMesh->mIndices*/);
+        objImport->readFile(fileName);
         storedMeshes.emplace(std::pair<std::string, MeshComponent*>{nickName, newMesh});
     }
 }

@@ -91,98 +91,27 @@ void Spawner::spawnHindrances(int hindranceLength)
 {
     for(int i = 15; i < hindranceLength; i+=rand()%15+10 /*i+=5*/)
     {
-        HindranceType = rand()%6+1;
-        //int x = 1 + std::rand()/((RAND_MAX + 1u)/2);
         ObjSpawnFactory->createObject("Cube");
         spawnedHindrances.push_back(ObjSpawnFactory->mGameObject.back());
         SpawnedHindrance = ObjSpawnFactory->mGameObject.back();
         if(SpawnedHindrance)
         {
-            switch(HindranceType)
-            {
-            case 1:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(3.f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(5.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            case 2:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(2.f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            case 3:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(3.f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            case 4:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(4.f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            case 5:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(1.5f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(3.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            case 6:
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(4.f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
-                SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
-                SpawnedHindrance->getTransformComp()->Scal.setX(3.f);
-                SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
-                SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
-                SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
-                SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getY(),
-                                                                 SpawnedHindrance->getTransformComp()->Scal.getZ());
-                mMainWindow->addObjectToWorldList("Hindrance");
-                break;
-            }
-            SpawnedHindrance->mTexture = 5;
-            SpawnedHindrance->mName = "hindrance";
-            //qDebug() << "Current i: " << i << "  Hindrance type: " << HindranceType;
+            SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateX(rand()%5+1);
+            SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateY(1.0f);
+            SpawnedHindrance->getTransformComp()->mTrueScaleMatrix.translateZ(-i);
+            SpawnedHindrance->getTransformComp()->Scal.setX(rand()%5+1);
+            SpawnedHindrance->getTransformComp()->Scal.setY(1.f);
+            SpawnedHindrance->getTransformComp()->Scal.setZ(1.f);
+            SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
+            SpawnedHindrance->getTransformComp()->mMatrix = SpawnedHindrance->getTransformComp()->mTrueScaleMatrix;
+            SpawnedHindrance->getTransformComp()->mMatrix.scale(SpawnedHindrance->getTransformComp()->Scal.getX(),
+                                                             SpawnedHindrance->getTransformComp()->Scal.getY(),
+                                                             SpawnedHindrance->getTransformComp()->Scal.getZ());
+            mMainWindow->addObjectToWorldList("Hindrance");
         }
+
+        SpawnedHindrance->mTexture = 5;
+        SpawnedHindrance->mName = "hindrance";
     }
 }
 
