@@ -16,7 +16,7 @@ public:
     static void generateMesh(struct MeshComponent& meshComponent, const std::vector<Vertex>& vertices);
     static bool MeshSystem::loadMeshLOD(const std::filesystem::path& filePath, MeshComponent& meshComponent, LODMeshType type);
     //static bool defaultMesh(enum DefaultAsset, class MeshComponent& meshComponent);
-    static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity);
+    static void draw(class Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity, bool bIsDeferredDraw = false);
 
     static void drawOutline(Shader* shader, const std::string& uniformName, ECSManager* ECS);
 
@@ -29,6 +29,7 @@ public:
 
     static void setHiddenInGame(uint32 entity, ECSManager* ECS, bool bNewHiddenInGame);
     static void setConsideredForFrustumCulling(uint32 entity, ECSManager* ECS, bool bConsideredForFrustumCulling);
+    static void setIsDeferredDraw(uint32 entity, ECSManager* ECS, bool bIsDeferredDraw);
 
 	static void initialize(class MeshComponent& meshComponent);
 private:

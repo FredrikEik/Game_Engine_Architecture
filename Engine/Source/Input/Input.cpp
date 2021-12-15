@@ -50,6 +50,7 @@ bool Input::getMouseKeyState_Internal(uint8 key, PRESSED_STATE state)
     default:
         break;
     }
+    return false;
 }
 
 void Input::setMousePosition(GLFWwindow* window, double xpos, double ypos)

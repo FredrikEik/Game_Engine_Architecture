@@ -30,6 +30,7 @@ file(GLOB_RECURSE SHADERFILES CONFIGURE_DEPENDS
 	Shaders/*.frag
 	Shaders/*.vert
 	Shaders/*.glsl
+	Shaders/*.geo
 )
 file(GLOB_RECURSE Assets CONFIGURE_DEPENDS 
 	Assets/*.obj

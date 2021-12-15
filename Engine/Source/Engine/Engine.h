@@ -29,9 +29,13 @@ private:
 	Engine();
 
 	void init();
+	void initGLFW();
+	void initOpenGL();
+	void compileShaders();
+	void initEtities();
 	void loop();
 	void terminate();
-	void loadPendingEntities();
+	void editorSelection();
 
 	static void framebuffer_size_callback(struct GLFWwindow* window, int width, int height);
 	void processInput(struct GLFWwindow* window);
@@ -66,13 +70,26 @@ private:
 	class Shader* particleShader{};
 	class Shader* hudShader{};
 
+	class Shader* GeometryPassShader{};
+	class Shader* LightPassShader{};
+
+	class Shader* ShadowShader{};
+	class Shader* ShadowDepthShader{};
+
+	class Shader* matShader{};
+
 	uint32 editorCameraEntity{};
 	uint32 gameCameraEntity{};
-	uint32 RTSSelectionEntity{};
+	uint32 cameraEntity{};
+	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
 	uint32 cameraEntity{};
 	uint32 gameStateEntity{};
+
+	uint32 dogEntity{};
+	uint32 lightEnitites[25]{};
+
 
 	uint32 reservedEntities{};
 

@@ -3,11 +3,16 @@
 #include "../CoreMinimal.h"
 #include "BaseSystem.h"
 #include <filesystem>
+#include <map>
 
 class TextureSystem final : public BaseSystem
 {
 public:
 	static void loadImage(int32 entity, const std::filesystem::path& filePath, struct TextureComponent* textureComponent);
+
+	static void loadMaterial(struct MaterialComponent* MaterialComp, const std::map<std::string, std::string>& nameFileMap);
+
 	static void loadImageWithAlpha(const std::filesystem::path& filePath, struct TextureComponent* textureComponent);
+
 };
 

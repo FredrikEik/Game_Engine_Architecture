@@ -158,6 +158,14 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<PhysicsComponent>(entityID);
 	else if (componentType == std::type_index(typeid(TrailComponent)))
 		removeComponent<TrailComponent>(entityID);
+	else if (componentType == std::type_index(typeid(LightComponent)))
+		removeComponent<LightComponent>(entityID);
+	else if (componentType == std::type_index(typeid(GBufferComponent)))
+		removeComponent<GBufferComponent>(entityID);
+	else if (componentType == std::type_index(typeid(MaterialComponent)))
+		removeComponent<MaterialComponent>(entityID);
+	else if (componentType == std::type_index(typeid(ShadowBufferComponent)))
+		removeComponent<ShadowBufferComponent>(entityID);
 	else if (componentType == std::type_index(typeid(ParticleComponent)))
 		removeComponent<ParticleComponent>(entityID);	
 	else if (componentType == std::type_index(typeid(HudComponent)))

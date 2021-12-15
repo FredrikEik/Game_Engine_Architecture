@@ -99,6 +99,7 @@ public:
 	bool bIsTranslucent{ false };
 	bool bDisregardedDuringFrustumCulling{ false }; // True if it should not be considered for frustum culling. Renders
 	bool bShouldRender{ true };
+	bool bDrawDeferred{ false };
 
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
@@ -178,6 +179,14 @@ struct TextureComponent final : public Component
 	void jsonParse(const JSON& json) override;
 };
 
+struct MaterialComponent : public Component
+{
+	MaterialComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	//id naming convention is "texture_?????" where ????? can e.g. be diffuse   
+	std::map<std::string, TextureComponent> textures;
+};
+
 
 struct ScriptComponent final : public Component
 {
@@ -239,6 +248,38 @@ struct TrailComponent final : public Component
 	bool bRecording{ false };
 };
 
+struct LightComponent final : public Component
+{
+	LightComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	glm::vec3 m_LightColor{};
+
+	float m_Linear{};
+	float m_Quadratic{};
+};
+
+struct GBufferComponent final : public Component
+{
+	GBufferComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+
+	uint gBuffer{};
+	uint gPosition{};
+	uint gNormal{};
+	uint gAlbedoSpec{};
+	uint attachments[3]{};
+	uint rboDepth{};
+};
+
+struct ShadowBufferComponent final :public Component
+{
+	ShadowBufferComponent(uint32 entity, uint32 componentID) : Component(entity, componentID) {}
+	uint SHADOW_WIDTH = 1024;
+	uint SHADOW_HEIGHT = 1024;
+
+	uint depthMapFBO{};
+	uint depthCubemap{};
+
+};
 
 /// <summary>
 /// The Particle Component acts as a typical particle emitter when given to an entity

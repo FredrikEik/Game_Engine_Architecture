@@ -44,13 +44,14 @@ bool MeshSystem::loadMeshLOD(const std::filesystem::path& filePath, MeshComponen
     return true;
 }
 
-void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity)
+void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSManager* manager, uint32 cameraEntity, bool bIsDeferredDraw)
 {
 
     ComponentManager<MeshComponent>* meshManager = manager->getComponentManager<MeshComponent>();
     ComponentManager<TransformComponent>* transformManager = manager->getComponentManager<TransformComponent>();
     ComponentManager<TextureComponent>* textureManager = manager->getComponentManager<TextureComponent>();
     TransformComponent* cameraTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
+	ComponentManager<MaterialComponent>* materialManager = manager->getComponentManager<MaterialComponent>();
     if (!meshManager || !transformManager || !cameraTransform)
         assert(false);
     
@@ -62,22 +63,52 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
     //std::cout << "Meshes to render size: " << meshesToRender.size() << '\n';
     for (auto& it : meshesToRender)
     {
+
         MeshComponent& meshComp = meshArray[it];
         // skip transulenct objects
-        if (meshComp.bIsTranslucent == true || !meshComp.bShouldRender) 
+        if (meshComp.bIsTranslucent == true || !meshComp.bShouldRender || 
+            (meshComp.bDrawDeferred == true && bIsDeferredDraw == false) || (meshComp.bDrawDeferred == false && bIsDeferredDraw == true))
             continue;
+
 
         if (textureManager)
         {
             TextureComponent* textureComp = textureManager->getComponentChecked(meshComp.entityID);
+            
             if (textureComp)
             {
+                glActiveTexture(GL_TEXTURE0);
                 shader->setInt("bUsingTexture", 1);
                 glBindTexture(GL_TEXTURE_2D, textureComp->textureID);
+                
             }
             else
             {
                 shader->setInt("bUsingTexture", 0);
+            }
+        }
+        if (materialManager)
+        {
+            MaterialComponent* MatComp = materialManager->getComponentChecked(meshComp.entityID);
+		    if (MatComp)
+		    {
+			    // bind appropriate textures
+                shader->setInt("bUsingMat", 1); 
+			    int incrementor = 0;
+			    for (auto& it : MatComp->textures)
+			    {
+
+				    std::string name = it.first;
+				    TextureComponent texComp = it.second;
+                    glUniform1i(glGetUniformLocation(shader->getShaderID(), name.c_str()), incrementor);
+				    glActiveTexture(GL_TEXTURE0 + incrementor); // active proper texture unit before binding
+				    glBindTexture(GL_TEXTURE_2D, texComp.textureID);
+                    ++incrementor;
+			    }
+		    }
+            else
+            {
+                shader->setInt("bUsingMat", 0);
             }
         }
 
@@ -315,15 +346,15 @@ std::vector<uint32> MeshSystem::GetMeshesToDrawAABB(ECSManager* ECS, const std::
             ++count;
             continue;
         }
-
-        if (it.bDisregardedDuringFrustumCulling)
+        AxisAlignedBoxComponent* AABB = AABBManager->getComponentChecked(it.entityID);
+        if (it.bDisregardedDuringFrustumCulling || !AABB)
         {
             meshesToRender.push_back(count);
             ++count;
             continue;
         }
 
-        AxisAlignedBoxComponent* AABB = AABBManager->getComponentChecked(it.entityID);
+
         TransformComponent* transform = transformManager->getComponentChecked(it.entityID);
         glm::mat4x4 viewProjectionMatrix = camera->m_projectionMatrix * camera->m_viewMatrix * transform->transform;
 
@@ -497,6 +528,15 @@ void MeshSystem::setConsideredForFrustumCulling(uint32 entity, ECSManager* ECS, 
     mesh->bDisregardedDuringFrustumCulling = !bConsideredForFrustumCulling;
 }
 
+void MeshSystem::setIsDeferredDraw(uint32 entity, ECSManager* ECS, bool bIsDeferredDraw)
+{
+	MeshComponent* mesh = ECS->getComponentManager<MeshComponent>()->getComponentChecked(entity);
+	assert(mesh);
+
+	mesh->bDrawDeferred = bIsDeferredDraw;
+}
+
+
 void MeshSystem::initialize(MeshComponent& meshComponent)
 {
 	glGenVertexArrays(1, &meshComponent.m_VAO);
@@ -591,7 +631,7 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
             stringStream >> word;
             tempUV.x = (std::stof(word));
             stringStream >> word;
-            tempUV.y = (std::stof(word));
+            tempUV.y = (1.0f - std::stof(word));
 
             tempVertexUVs.push_back(tempUV);
         }
