@@ -33,6 +33,7 @@ SOURCES += main.cpp \
     ResourceManager/colorshader.cpp \
     ResourceManager/mousepickershader.cpp \
     ResourceManager/particleshader.cpp \
+    ResourceManager/physics.cpp \
     camera.cpp \
     coreengine.cpp \
     gsl/matrix3x3.cpp \
@@ -66,6 +67,7 @@ HEADERS += \
     ResourceManager/entity.h \
     ResourceManager/mousepickershader.h \
     ResourceManager/particleshader.h \
+    ResourceManager/physics.h \
     altypes.h \
     camera.h \
     components.h \
