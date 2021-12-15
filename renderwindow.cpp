@@ -222,10 +222,7 @@ void RenderWindow::init()
     ObjFactory->setOBJindex(-1);
 
     MapSpawner = new Spawner(ObjFactory, mMainWindow);
-    //MapSpawner->spawnRow();
     MapSpawner->spawnRow(100);
-    //MapSpawner->spawnHindrances(100);
-    //MapSpawner->addObjectToEditor(object);
 
     mCurrentScore = new Text2D("SCORE:0.000", 0, 190);
     ObjFactory->mGameObject.push_back(mCurrentScore);
