@@ -34,12 +34,12 @@ class Texture;
 //! OpenGL surface.
 //! We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
 //! This is the same as using glad and glw from general OpenGL tutorials
-//! @class RenderWindow - Our giant render class that has mix of OOP and ECS
+//! @class RenderWindow - Our giant render class that has mix of OOP and ECS.
 class RenderWindow : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
     Q_OBJECT
 public:
-    //! init function Open GL spesific
+    //! init function Open GL spesific.
     RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow);
     ~RenderWindow() override;
 
@@ -48,46 +48,46 @@ public:
     void exposeEvent(QExposeEvent *) override;
 
     /**
-     * @brief toggleWireframe - Toggles wireframe on or off
+     * @brief toggleWireframe - Toggles wireframe on or off.
      * @param buttonState - button state gotten from UI.
      */
     void toggleWireframe(bool buttonState);
 
     /**
-     * @brief RenderSys - Pointer to current RenderSystem
+     * @brief RenderSys - Pointer to current RenderSystem.
      */
     RenderSystem *RenderSys = new RenderSystem();
 
     /**
-     * @brief ResSys - Pointer to current Resource System
+     * @brief ResSys - Pointer to current Resource System.
      */
     resourceSystem * ResSys = new resourceSystem();
     /**
-     * @brief entitySys - Pointer to current Entitysystem, takes in a pointer to RenderWindow
+     * @brief entitySys - Pointer to current Entitysystem, takes in a pointer to RenderWindow.
      */
     EntitySystem * entitySys = new EntitySystem(this);
     /**
-     * @brief collisionSys - Pointer to Collision System
+     * @brief collisionSys - Pointer to Collision System.
      */
     collisionSystem* collisionSys = new collisionSystem();
     /**
-     * @brief JSS - Pointer to JSON System
+     * @brief JSS - Pointer to JSON System.
      */
     JSONSystem * JSS = new JSONSystem();
     /**
-     * @brief entities - entities vector array holding all the entitie Indexes
+     * @brief entities - entities vector array holding all the entitie Indexes.
      */
     std::vector<int> entities;
     /**
-     * @brief meshCompVec - Pointer array of type MeshComponent*. Holds pointers to every meshComponent, sorted by Entity Index
+     * @brief meshCompVec - Pointer array of type MeshComponent*. Holds pointers to every meshComponent, sorted by Entity Index.
      */
     std::vector<MeshComponent*> meshCompVec;
     /**
-     * @brief transformCompVec - Pointer array of type TransformComponent*. Holds pointers to every TransformComponent, sorted by Entity Index
+     * @brief transformCompVec - Pointer array of type TransformComponent*. Holds pointers to every TransformComponent, sorted by Entity Index.
      */
     std::vector<TransformComponent*> transformCompVec;
     /**
-     * @brief MaterialCompVec - Pointer array of type MaterialComponent*. Holds pointers to every MaterialComponent, sorted by Entity Index.
+     * @brief MaterialCompVec - Pointer array of type MaterialComponent*. Holds pointers to every MaterialComponent, sorted by Entity Index..
      */
     std::vector<MaterialComponent*> MaterialCompVec;
     /**
@@ -96,15 +96,15 @@ public:
     std::vector<DetailsComponent*> DeetsVector;
 
     /**
-     * @brief mExplosionSound - Pointer to explosion sound file
+     * @brief mExplosionSound - Pointer to explosion sound file.
      */
     SoundSource* mExplosionSound{};
     /**
-     * @brief mLaserSound - Pointer to Laser sound file
+     * @brief mLaserSound - Pointer to Laser sound file.
      */
     SoundSource* mLaserSound{};
     /**
-     * @brief mStereoSound - Pointer to Stereo sound component
+     * @brief mStereoSound - Pointer to Stereo sound component.
      */
     SoundSource* mStereoSound{};
     /**
@@ -113,37 +113,37 @@ public:
     SoundSource* mSong{};
 
     /**
-     * @brief isPaused - for pausing of game
+     * @brief isPaused - for pausing of game.
      */
     bool isPaused = false;
     /**
-     * @brief isPhysicsEnabled - Turn on or off physics
+     * @brief isPhysicsEnabled - Turn on or off physics.
      */
     bool isPhysicsEnabled = false;
     /**
-     * @brief RecordBSplines - True == starts recording B-Spline positions
+     * @brief RecordBSplines - True == starts recording B-Spline positions.
      */
     bool RecordBSplines = false;
 
     /**
-     * @brief Physics - pointer to PhysicsSystem
+     * @brief Physics - pointer to PhysicsSystem.
      */
     PhysicsSystem* Physics = new PhysicsSystem();
     /**
-     * @brief MakeGSLvec3D - Converts vector from QVector3D to gsl::Vector3D
+     * @brief MakeGSLvec3D - Converts vector from QVector3D to gsl::Vector3D.
      * @param vec
      * @return
      */
     gsl::Vector3D MakeGSLvec3D(QVector3D vec);
     /**
-     * @brief MakeQvec3D - Converts vector from gsl::Vector3D to QVector3D
+     * @brief MakeQvec3D - Converts vector from gsl::Vector3D to QVector3D.
      * @param vec
      * @return
      */
     QVector3D MakeQvec3D(gsl::Vector3D vec);
 
     /**
-     * @brief togglePlayerCamera - toggels between player camera and editor camera
+     * @brief togglePlayerCamera - toggels between player camera and editor camera.
      */
     void togglePlayerCamera();
 
@@ -157,88 +157,102 @@ private:
     //! framecount
     int frameCountForPointIntake = 0;
 
-    //! @fn KillZ - Reference to UnrealEngine 4 KillZ. Respawns objects that fall out of bounds.
-    //! @param Transform - Transformcomponent of object we want to check
-    //! @param SpawnPoint - Where we want to spawn the object if it is out of bounds
+
+    /**
+     * @brief killZ Reference to UnrealEngine 4 KillZ. Respawns objects that fall out of bounds.
+     * @param Transform Transformcomponent of object we want to check.
+     */
     void killZ(TransformComponent* Transform);
-    //! @fn CalcDeltaTime Calculates accuratley the delta time of renderwindow
-    //! @var DeltaTime Delta time is the results of CalcDeltaTime. Using Clock to calculate Delta time.
-    //! @var oldTime - Reference to time of clock last render
+
+    /**
+     * @brief CalcDeltaTime Calculates accuratley the delta time of renderwindow.
+     * @var DeltaTime Delta time is the results of CalcDeltaTime. Using Clock to calculate Delta time.
+     * @var oldTime - Reference to time of clock last rende.
+     */
     void CalcDeltaTime();
     float DeltaTime =0.0;
     std::chrono::steady_clock::time_point oldTime;
 
-    //! @fn init Used to intitialise boiler plate code for OpenGL and objects we want to use in our scene.
+    /**
+     * @brief init Used to intitialise boiler plate code for OpenGL and objects we want to use in our scene.
+     */
     void init();
-    //! @fn checkForGLerrors error handler
+
     void checkForGLerrors();
-    //! @fn calculateFramerate Old code to calculate framerate
     void calculateFramerate();
-    //! @fn startOpenGLDebugger debugger
     void startOpenGLDebugger();
 
-    //!frustum culling - taken from ole.experiment - Modified by deniz
-    //! @fn frustumCulling - Main function for frustum culling
-    //! @param Index - Takes in entity index for objects
-    //! @return bool isDrawable. returns false if object is outside of frustum
+
+    /** frustum culling - taken from ole.experiment - Modified by deniz.
+     * @brief frustumCulling -  Main function for frustum culling.
+     * @param Index - Takes in entity index for objects.
+     * @return bool isDrawable. returns false if object is outside of frustum.
+     */
     bool frustumCulling(unsigned long long Index);
-    //!@fn setCameraSpeed - Sets camera speed
-    //! @param value - new value for speed
+
+    /**
+     * @brief setCameraSpeed Sets camera speed.
+     * @param value new value for speed.
+     */
     void setCameraSpeed(float value);
-    //! @fn handleInput - Update function for inputs and movement
+
+    /**
+     * @brief handleInput Update function for inputs and movement.
+     */
     void handleInput();
-    //! @fn switchPrograms - switcher for shader programs
-    //! @param ShaderIndex - Index for shader you want to use
+
+    /**
+     * @brief switchProgram - switcher for shader programs.
+     * @param shaderIndex - Index for shader you want to use.
+     */
     void switchProgram(unsigned long long shaderIndex);
-    //! @fn switchLOD - Checks distance from camera and switches to appropreate LOD
-    //! @param Index - Entity Index for object we want to swith LOD on
+
+    /**
+     * @brief switchLOD - Checks distance from camera and switches to appropreate LOD.
+     * @param Index - Entity Index for object we want to swith LOD on.
+     */
     void switchLOD(unsigned long long Index);
-    //! @fn drawFrostum - creates a test frustum for visualisation
+
+    /**
+     * @brief drawFrostum - creates a test frustum for visualisation.
+     */
     void drawFrostum();
 
-    //! @var viewMatrix index
-    //! @var projectionMatrix index
-    //! @var modelMatrix index
+
+
     int viewMatrix{-1};
     int projectionMatrix{-1};
     int modelMatrix{-1};
 
     //! @fn setupPlainShader Switches to plainshader program
-    //! @var mMatrixUniform index for model matrix uniform
-    //! @var vMatrixUniform index for view matrix uniform
-    //! @var pMatrixUniform index for projection matrix uniform
+
+    /**
+     * @brief setupPlainShader Switches to plainshader program.
+     * @param shaderIndex  entity id
+     */
     void setupPlainShader(unsigned long long shaderIndex);
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
     //! @fn setupTextureShader Switches to TextureShader program
-    //! @var mMatrixUniform1 index for model matrix uniform
-    //! @var vMatrixUniform1 index for view matrix uniform
-    //! @var pMatrixUniform1 index for projection matrix uniform
-    //! @var mTextureUniform index for Texture uniform
+
+    /**
+     * @brief setupTextureShader switches to TextureShader program
+     * @param shaderIndex entity id
+     */
     void setupTextureShader(unsigned long long shaderIndex);
     GLint mMatrixUniform1{-1};
     GLint vMatrixUniform1{-1};
     GLint pMatrixUniform1{-1};
     GLint mTextureUniform{-1};
-    //!
-    //! \fn setupPhongShader Switches to TextureShader program
-    //! @var mMmatrixUniform2 index for model matrix uniform
-    //! @var mVmatrixUniform2 index for view matrix uniform
-    //! @var mPmatrixUniform2 index for projection matrix uniform
-    //! @var mTextureUniform2 index for Texture uniform
-    //!
-    //! @var mLightColorUniform index for Light Color uniform
-    //! @var mObjectColorUniform index for Object Color uniform
-    //! @var mAmbientLightStrengthUniform index for Ambient Light strenght uniform
-    //! @var mLightPositionUniform index for Light Position uniform
-    //! @var mCameraPositionUniform index for Camera position uniform
-    //! @var mSpecularStrengthUniform index for Specular Strength uniform
-    //! @var mSpecularExponentUniform index for Specular Exponent uniform
-    //! @var mLightPowerUniform index for Light Power uniform
-    //! @var mUsingTextureUniform index for Using exture uniform
-    //!
+
+
+
     //Phong Shader Variables
+    /**
+     * @brief setupPhongShader Switches to TextureShader program.
+     * @param index EntityID
+     */
     void setupPhongShader(unsigned long long index);
 
     GLint mMmatrixUniform2{-1};
@@ -258,49 +272,34 @@ private:
     GLint mUsingTextureUniform{-1};
 
 
-    //!
-    //! @fn setupSkyboxshader Switches to TextureShader program
-    //! @var mMmatrixUniform3 index for model matrix uniform
-    //! @var mVmatrixUniform3 index for view matrix uniform
-    //! @var mPmatrixUniform3 index for projection matrix uniform
-    //! @var POSUniform3 index for position uniform
-    //! @var skyboxUniform3 index for Texture uniform
-    //!
-    //!
-    ///skybox
+     * @brief setupSkyboxshader Switches to TextureShader program.
+     * @param shaderIndex EntityID.
+     */
     void setupSkyboxshader(unsigned long long shaderIndex);
     GLint mMatrixUniform3{-1};
     GLint vMatrixUniform3{-1};
     GLint pMatrixUniform3{-1};
     GLint POSUniform3{-1};
     GLint skyboxUniform3{-1};
-    //! @param textures_faces contains pointers to the skybox textures
-    class Texture *textures_faces[gsl::NumberOfTextures]{nullptr};//We can hold some textures ;
 
+    class Texture *textures_faces[gsl::NumberOfTextures]{nullptr};//! @param textures_faces contains pointers to the skybox textures.
 
-    //! @param mTextures - contains pointers to all of our textures
-    class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
-    //! @param mShaderPrograms - pointers for all shader systems
-    class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //holds pointer the GLSL shader programs
-    //! @param mCurrentCamera - pointer to the current camera that outputs to screen
-    Camera *mCurrentCamera{nullptr};
-    //! @var mAspectratio - holds aspect ratio of screen
-    float mAspectratio{1.f};
+    class Texture *mTextures[gsl::NumberOfTextures]{nullptr};//! @param mTextures - contains pointers to all of our textures.
 
-    //playerCamera switcher
-    //! camera pointers
-    //! @param mPlayerCamera contains pointer to player cam and its settings
-    //! @param mEditorCamera contains pointer to Editor cam and its settings
-    //! @param bIsPlayerCamera tells if you are in game cam or in editor cam
-    //! @param CurrentPlayer holds transformcomponent for player object
-    Camera *mPlayerCamera{nullptr};
-    Camera *mEditorCamera{nullptr};
-    bool bIsPlayerCamera = false;
-    TransformComponent* CurrentPlayer = new TransformComponent();
+    class Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};    //! @param mShaderPrograms - pointers for all shader systems.
+
+    Camera *mCurrentCamera{nullptr};//! @param mCurrentCamera - pointer to the current camera that outputs to screen.
+
+    float mAspectratio{1.f}; //! @var mAspectratio - holds aspect ratio of screen.
+
+    Camera *mPlayerCamera{nullptr};                                   //! @param mPlayerCamera contains pointer to player cam and its settings.
+    Camera *mEditorCamera{nullptr};                                   //! @param mEditorCamera contains pointer to Editor cam and its settings.
+    bool bIsPlayerCamera = false;                                     //! @param bIsPlayerCamera tells if you are in game cam or in editor cam.
+    TransformComponent* CurrentPlayer = new TransformComponent();     //! @param CurrentPlayer holds transformcomponent for player object.
     float posX = 0.0f;
     float PosZ = 0.0f;
-    //!@param mInput is our input handler
-    Input mInput;
+
+    Input mInput; //!@param mInput is our input handler
     float mCameraSpeed{0.15f};
     float mCameraRotateSpeed{0.25f};
     int mMouseXlast{0};
@@ -316,24 +315,41 @@ private:
 
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
-    /** raycasting
-    * @fn RayCasting(QMouseEvent *event) creates a ray when in editor mode, this shows travel of mouse click
-    *
-    * @fn RayCastSphereCollision(QVector3D RayVec) checks for collision after casting a ray
-    *
-    **/
+
+    /**
+     * @brief RayCasting creates a ray when in editor mode, this shows travel of mouse click.
+     * @param event event pointer.
+     */
     void RayCasting(QMouseEvent *event);
+    /**
+     * @brief RayCastSphereCollision  checks for collision after casting a ray.
+     * @param RayVec Direction Vector from screen to worldspace.
+     */
     void RayCastSphereCollision(QVector3D RayVec);
 
-    //!Gameplay
-    //!
     std::vector<unsigned long long> bullets;
     std::vector<unsigned long long> Enemies;
+    /**
+     * @brief LoadBullet  Loads bulelt infront of muzzle of turret.
+     */
     void LoadBullet();
     bool bBulletLoaded = false;
+    /**
+     * @brief ShootBullet Shoots bullet and sets corresponding values.
+     */
     void ShootBullet();
+    /**
+     * @brief moveEnemies Moves enemies in a zigzag pattern - like in space invaders.
+     */
     void moveEnemies();
+    /**
+     * @brief BallReset Moves balls back into magazine.
+     * @param Transform Transformcomponent of the ball we want to reset.
+     */
     void BallReset(TransformComponent *Transform);
+    /**
+     * @brief initialEnemyPos - Sets and moves enemies into their initial positions. To restart the game.
+     */
     void initialEnemyPos();
     float xDir = -1.0f;
     float EnemyTravelLenght = 0.0f;
