@@ -146,10 +146,6 @@ void RenderWindow::init()
     GameEngine::getInstance()->SetUpScene();
 
 
-    // Should move to GameEngie
-    //********************** Set up camera **********************
-//    mCurrentCamera = new Camera();
-//    mCurrentCamera->setPosition(gsl::Vector3D(1.f, .5f, 4.f));
 }
 
 // Called each frame - doing the rendering
@@ -168,6 +164,7 @@ void RenderWindow::render()
         setCursor(QCursor(Qt::ArrowCursor));
     }
 
+    // For mousepicking to only pick once pr click
     if(input.LMB)
     {
         if(onceLeftClicked)
@@ -193,14 +190,11 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-
-
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // For GameObjects
+
+
     for(unsigned long long i{0}; i < mGameObjects.size(); i++)
     {
-        // ----- Should be fixed in camera class ----
         mCurrentCamera->mProjectionMatrix.perspective(FOV, mAspectratio, mNearPlane , mFarPlane);
 
         gsl::Vector3D objPos = mGameObjects[i]->mTransformComp->mMatrix.getPosition();
@@ -221,7 +215,8 @@ void RenderWindow::render()
         float distanceToFrontObject = ((vectorToObj * forwardPlaneNormal) / forwardPlaneNormal.length());
 
         float  distanceCamToObj = (objPos - mCurrentCamera->position()).length();
-        // ----- end -----
+
+
         if(bUsingFrustumCulling && mGameObjects[i]->mMeshComp->bUsingFrustumCulling)
         {
             if(distanceToRightObject - mGameObjects[i]->mCollisionComp->mRaidus > 0)
@@ -237,15 +232,8 @@ void RenderWindow::render()
                 continue;
             }
         }
-        // Maybe not needed
-//        if(distanceToFrontObject < mNearPlane)
-//        {
-//            continue;
-//        }
 
-
-
-        // MousePicking_
+        // MousePicking  /// source MousePicking: http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
         GLuint pickingColorID = glGetUniformLocation(mShaderPrograms[3]->getProgram(), "PickingColor");
 
         if(isMousePicking)
@@ -280,14 +268,10 @@ void RenderWindow::render()
             unsigned char data[4];
             glReadPixels(xMousePos, height() - yMousePos,1,1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-            //qDebug () << "MousePos x:" << xMousePos << ", y: " << 838-yMousePos;
             int pickedID =
                     data[0] +
                     data[1] * 256 +
                     data[2] * 256*256;
-
-            //qDebug() << "meshID: " << pickedID;
-            //qDebug() << height();
 
             if(pickedID < 10000)
             {
@@ -295,38 +279,28 @@ void RenderWindow::render()
             }
             mObjectsDrawn++;
             glBindVertexArray(0);
-
-//            glUseProgram(mShaderPrograms[0]->getProgram() );
-//            glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
-//            glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
-//            glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-
-//            glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
             continue;
-
         }
 
+        //Plainshader
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 0 && !isMousePicking)
         {
             glUseProgram(mShaderPrograms[0]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
-        }
+        }//Textureshader
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 1)
         {
-        //send data to shader
             glUseProgram(mShaderPrograms[1]->getProgram() );
             glUniform1i(mTextureUniform, mGameObjects[i]->mMaterialComp->mTextureUnit);
             glUniformMatrix4fv( vMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform1, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform1, 1, GL_TRUE, mGameObjects[i]->mTransformComp->mMatrix.constData());
         }
+        //phongShader
         else if(mGameObjects[i]->mMaterialComp->mShaderProgram == 2)
         {
-        //send data to shader
-
-
             glUseProgram(mShaderPrograms[2]->getProgram() );
             glUniformMatrix4fv( vMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform3, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
@@ -339,22 +313,19 @@ void RenderWindow::render()
             glUniform3f(mLightPositionUniform, lightPos.x, lightPos.y, lightPos.z);
             glUniform3f(mCameraPositionUniform, mCurrentCamera->position().x, mCurrentCamera->position().y, mCurrentCamera->position().z);
             glUniform3f(mLightColorUniform, lightColor.x, lightColor.y, lightColor.z);
-
-
         }
-        // need to fix [] for LOD
-        //qDebug() << "Distacne: " << distanceToFrontObject;
 
         // to not draw player while playig
         if(i==1 && isPlaying)
         {
             continue;
-        }
+        }//to not draw xyz
         if(i == 0 && isPlaying)
         {
             continue;
         }
 
+        //draw for LOD
         if(mGameObjects[i]->mMeshComp->bUsingLOD && bRenderingLOD)
         {
             if(distanceCamToObj < 10)
@@ -375,14 +346,14 @@ void RenderWindow::render()
                 mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[2].size();
                 mObjectsDrawn++;
             }
-        }else if (mGameObjects[i]->mMeshComp->mIndices->size() > 0)
+        }// Draw for indices
+        else if (mGameObjects[i]->mMeshComp->mIndices->size() > 0)
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawElements(mGameObjects[i]->mMeshComp->mDrawType, mGameObjects[i]->mMeshComp->mIndices->size(), GL_UNSIGNED_INT, nullptr);
-//            glDrawArraysInstanced(mGameObjects[i]->mMeshComp->mDrawType, 0,mGameObjects[i]->mMeshComp->mIndices->size(), 50);
             mVerticesDrawn += mGameObjects[i]->mMeshComp->mVertices[0].size();
             mObjectsDrawn++;
-        }else
+        }else // Draw for Vertex array
         {
             glBindVertexArray( mGameObjects[i]->mMeshComp->mVAO[0] );
             glDrawArrays(mGameObjects[i]->mMeshComp->mDrawType, 0, mGameObjects[i]->mMeshComp->mVertices[0].size());
@@ -390,6 +361,7 @@ void RenderWindow::render()
             mObjectsDrawn++;
         }
 
+        // For collision boxes
         if( bShowAllCollisionBoxes )
         {
             glBindVertexArray( mGameObjects[i]->mCollisionLines->mVAO[0] );
@@ -401,6 +373,8 @@ void RenderWindow::render()
             glDrawElements(mGameObjects[i]->mCollisionLines->mDrawType, mGameObjects[i]->mCollisionLines->mIndices->size(), GL_UNSIGNED_INT, nullptr);
         }
     }
+
+    //Rendring the particles
     std::vector<Particle*> ptcl = ParticleSystem::particles;
     for(int i = 0; i < ptcl.size(); i++)
     {

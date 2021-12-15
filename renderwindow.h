@@ -54,6 +54,7 @@ public:
     Camera *mCurrentCamera{nullptr};
     float getCameraSpeed() const;
 
+
 private slots:
 
 private:

@@ -139,18 +139,6 @@ void MainWindow::clean()
     listWidget->clear();
 }
 
-void MainWindow::Scale()
-{
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getX(),
-                                                                   1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getY(),
-                                                                   1/GameObjects[ObjectListIndex]->mTransformComp->mScale.getZ());
-
-    GameObjects[ObjectListIndex]->mTransformComp->mMatrix.scale(scaleX,scaleY,scaleZ);
-
-    GameObjects[ObjectListIndex]->mTransformComp->mScale.setX(scaleX);
-    GameObjects[ObjectListIndex]->mTransformComp->mScale.setY(scaleY);
-    GameObjects[ObjectListIndex]->mTransformComp->mScale.setZ(scaleZ);
-}
 
 void MainWindow::initComboboxTexture(std::vector<std::string> &textureNames)
 {

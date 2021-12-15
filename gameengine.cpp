@@ -163,6 +163,8 @@ void GameEngine::HandleInput()
         if(mInput.E)
             currentCamera->updateHeigth(cameraSpeed);
     }
+
+
     if(bIsPlaying)
     {
         //qDebug() << "nr of obj: " << mRenderwindow->mGameObjects.size();
@@ -184,11 +186,9 @@ void GameEngine::HandleInput()
                 if(!CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateX(nextVec.x());
-//                    qDebug() << "seccondcolldie";
                     if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                     {
                         mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
-//                        qDebug() << "firstcollide";
                     }
                 }
             }
@@ -211,11 +211,9 @@ void GameEngine::HandleInput()
                 if(!CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateX(nextVec.x());
-                    qDebug() << "seccondcolldie";
                     if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                     {
                         mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
-                        qDebug() << "firstcollide";
                     }
                 }
             }
@@ -238,11 +236,9 @@ void GameEngine::HandleInput()
                 if(!CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateX(nextVec.x());
-                    qDebug() << "seccondcolldie";
                     if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                     {
                         mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
-                        qDebug() << "firstcollide";
                     }
                 }
             }
@@ -265,11 +261,9 @@ void GameEngine::HandleInput()
                 if(!CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                 {
                     mPlayer->mTransformComp->mMatrix.translateX(nextVec.x());
-                    qDebug() << "seccondcolldie";
                     if(CollisionSystem::isColliding(mPlayer, mRenderwindow->mGameObjects, currentPos))
                     {
                         mPlayer->mTransformComp->mMatrix.translateZ(nextVec.z());
-                        qDebug() << "firstcollide";
                     }
                 }
             }

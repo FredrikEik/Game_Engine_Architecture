@@ -11,10 +11,6 @@ CollisionSystem::CollisionSystem()
 
 bool CollisionSystem::isColliding(GameObject *player, std::vector<GameObject*> objects, QVector3D playerNextPos)
 {
-    // !! Hardcoded that player is object nr 0
-//    QVector3D playerPos {objects[0]->mTransformComp->mMatrix.getPosition().x,
-//                objects[0]->mTransformComp->mMatrix.getPosition().y,
-//                objects[0]->mTransformComp->mMatrix.getPosition().z};
     QVector3D playerPos = playerNextPos;
 
     QVector3D playerMaxCorner = player->mCollisionComp->maxCorner;
@@ -34,9 +30,7 @@ bool CollisionSystem::isColliding(GameObject *player, std::vector<GameObject*> o
                 otherPos.z() + otherMinCorner.z() < playerPos.z() + playerMaxCorner.z();
         bool yAxis =playerPos.y() + playerMinCorner.y() <= otherPos.y() + otherMaxCorner.y() &&
                 otherPos.y() + otherMinCorner.y() <= playerPos.y() + playerMaxCorner.y();
-//        qDebug() << "obj nr: " << i;
-//   qDebug() << "max: " << otherPos + otherMaxCorner << "min: " << otherPos + otherMinCorner;
-//   qDebug() << "pos: " << otherPos;
+
         if(xAxis && zAxis && yAxis)
         {
             //qDebug() << i;
