@@ -39,9 +39,9 @@ float ShadowCalculation(vec3 fragPos)
 
     float shadow = 0.0;
     float bias = 0.15;
-    int samples = 50;
+    int samples = 25;
     float viewDistance = length(u_camPos - fragPos);
-    float diskRadius = (5.0 + (viewDistance / u_far_plane)) / 5.0;
+    float diskRadius = (1 + (viewDistance / u_far_plane)) / 25.0;
     for(int i = 0; i < samples; ++i)
     {
         float closestDepth = texture(u_depthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;

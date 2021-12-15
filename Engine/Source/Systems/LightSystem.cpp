@@ -88,8 +88,8 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	
 	
 	sBufferComp->m_theta += glm::radians(45.f) * deltaTime;
-	const float radius{ 300.f };
-	sBufferComp->lightPos += glm::vec3(radius * std::sin(sBufferComp->m_theta), 0, radius * std::cos(sBufferComp->m_theta)) * deltaTime * 0.2f;
+	const float radius{ 100 };
+	sBufferComp->lightPos += glm::vec3(radius * std::sin(sBufferComp->m_theta), 0, radius * std::cos(sBufferComp->m_theta)) * deltaTime * 0.1f;
 
 
 	

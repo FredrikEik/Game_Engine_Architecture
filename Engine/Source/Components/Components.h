@@ -279,7 +279,7 @@ struct ShadowBufferComponent final :public Component
 	uint depthMapFBO{};
 	uint depthCubemap{};
 	float m_theta{};
-	glm::vec3 lightPos{0,100,0};
+	glm::vec3 lightPos{100,30,150};
 
 };
 
