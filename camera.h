@@ -96,11 +96,10 @@ private:
     gsl::Vector3D mPosition{0.f, 0.f, 0.f};
     float mPitch{0.f};
     float mYaw{0.f};
+    float mSpeed{0.f}; //camera will move by this speed along the mForward vector
 
     gsl::Matrix4x4 mYawMatrix;
     gsl::Matrix4x4 mPitchMatrix;
-
-    float mSpeed{0.f}; //camera will move by this speed along the mForward vector
 };
 
 #endif // CAMERA_H
