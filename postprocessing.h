@@ -2,42 +2,32 @@
 #define POSTPROCESSING_H
 #include "gameobject.h"
 #include "shader.h"
+#include "QOpenGLFunctions_4_1_Core"
 
-class PostProcessing : public GameObject
+class PostProcessing : public QOpenGLFunctions_4_1_Core
 {
 public:
     PostProcessing();
-    PostProcessing(Shader *shaderProgram[]);
+    PostProcessing(Shader *shader);
     ~PostProcessing();
 
-    void draw() override{0;}
-    void init() override{0;}
-    void move(float x, float y, float z) override{0;}
 
-
-    int createFramebuffer();
-    int createTextureAttachment(int width, int height);
-    void bindFramebuffer(int frameBuffer, int width, int height);
+    void createFramebuffer();
+    void bindFramebuffer(int frameBufferer, int width, int height);
     void unbindCurrentFramebuffer();
     void hdr();
     void genQuad();
     unsigned int quadVAO, quadVBO;
     unsigned int framebuffer;
-    unsigned int texture;
+    unsigned int framebufferTexture;
     unsigned int RBO;
 
     int refractionFramebuffer;
     int refractionTexture;
 
-    //Shader *fboshader;
-    class Shader *fboshader{nullptr};
-    class Shader *screenShader{nullptr};
-    class Shader *framebufferShader{nullptr};
+    class Shader *shaderprog{nullptr};
 
     int getRefractionFramebuffer(){return refractionFramebuffer;}
-
-
-
 
 
 };

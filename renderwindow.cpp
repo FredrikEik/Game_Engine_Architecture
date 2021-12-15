@@ -180,23 +180,22 @@ void RenderWindow::init()
     mShaderPrograms[3] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
-     mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "hdr.vert").c_str(),
-                                     (gsl::ShaderFilePath + "hdr.frag").c_str());
-                                      qDebug() << "hdr shader program id: " << mShaderPrograms[4]->getProgram();
-
+    mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "framebuffers_screen.vert").c_str(),
+                         (gsl::ShaderFilePath + "framebuffers_screen.frag").c_str());
+                            qDebug() << "hdr shader program id: " << mShaderPrograms[4]->getProgram();
 
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
-    setupHdrShader(4);
-    postFBO = new PostProcessing();
-    //postFBO->hdr();
+    setupFrameBufferShader(4);
+    //postFBO = new PostProcessing(mShaderPrograms[4]);
+
 
     //QWindow* test = new QWindow();
 
-    //test->FullScreen;
+
 
 
     //********************** Set up quadtree *******************
@@ -230,6 +229,8 @@ void RenderWindow::init()
     //mMario->play(); //doesnt work
     //mExplosionSound->play();
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
+
+
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
@@ -286,16 +287,18 @@ void RenderWindow::render()
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnable(GL_CULL_FACE);
-    glUseProgram(0); //reset shader type before rendering
+    //glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
 
     //mCurrentCamera->draw();
     //mTestFrustumCamera->draw();
 
-    //This should be in a loop! <- Ja vi må loope dette :/
-    postFBO->bindFramebuffer(0, 100,100);
 
+        if(postFBO)
+    postFBO->bindFramebuffer(0, 1920,1080);
+
+    //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
     {
 
@@ -384,6 +387,7 @@ void RenderWindow::render()
                                                             mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                             mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
                 factory->mGameObjects[i]->draw();
+
             }
 
 
@@ -416,7 +420,6 @@ void RenderWindow::render()
             } 
         }
 
-        //postFBO->unbindCurrentFramebuffer();
 
     }
 
@@ -426,9 +429,8 @@ void RenderWindow::render()
        mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
        mCurrentCamera->setPosition(thirdPersonPos);
     }
-
-
-
+    if(postFBO)
+    postFBO->unbindCurrentFramebuffer();
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -497,14 +499,9 @@ void RenderWindow::setupLightShader(int shaderIndex)
     mPhongTextureUniform         = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
 }
 
-void RenderWindow::setupHdrShader(int shaderIndex)
+void RenderWindow::setupFrameBufferShader(int shaderIndex)
 {
-
-
-    mMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
-    vMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
-    pMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
-
+    //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
 }
 
 //This function is called from Qt when window is exposed (shown)

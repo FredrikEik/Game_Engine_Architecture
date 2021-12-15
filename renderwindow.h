@@ -104,7 +104,7 @@ private:
     void setupTextureShader(int shaderIndex);
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
-    void setupHdrShader(int shaderIndex);
+    void setupFrameBufferShader(int shaderIndex);
 
     void generateShadowDepthMap();
 
@@ -157,8 +157,12 @@ private:
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;
 
-    PostProcessing* postFBO;
+    PostProcessing* postFBO={nullptr};
 
+    unsigned int framebuffer;
+    unsigned int framebufferTexture;
+    unsigned int RBO;
+    unsigned int quadVAO, quadVBO;
 
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};

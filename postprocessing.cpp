@@ -3,53 +3,54 @@
 PostProcessing::PostProcessing()
 {
     genQuad();
-    refractionFramebuffer = createFramebuffer();
-    //refractionTexture = createTextureAttachment(720,480);
-    fboshader = new Shader((gsl::ShaderFilePath + "hdr.vert").c_str(),
-                           (gsl::ShaderFilePath + "hdr.frag").c_str());
-    screenShader = new Shader((gsl::ShaderFilePath + "framebuffers_screen.vert").c_str(),
-                           (gsl::ShaderFilePath + "framebuffers_screen.frag").c_str());
-    framebufferShader = new Shader((gsl::ShaderFilePath + "framebuffers.vert").c_str(),
-                           (gsl::ShaderFilePath + "framebuffers.frag").c_str());
-    glUniform1i(glGetUniformLocation(screenShader->getProgram(), "screenTexture"), 0);
-
+    createFramebuffer();
 }
 
-
+PostProcessing::PostProcessing(Shader *shader)
+{
+    genQuad();
+    shaderprog = shader;
+    glUniform1i(glGetUniformLocation(shader->getProgram(), "screenTexture"), 0);
+    createFramebuffer();
+}
 
 PostProcessing::~PostProcessing()
 {}
 
-int PostProcessing::createFramebuffer()
+void PostProcessing::createFramebuffer()
 {
-    initializeOpenGLFunctions();
+    //initializeOpenGLFunctions();
 
-    //GLuint framebuffer{1};
+    float width = 1920;
+    float height = 1080;
+    // Create Frame Buffer Object
+
+    //screenShader->use();
+    //screenShader->setInt("screenTexture", 0);
+
     glGenFramebuffers(1, &framebuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-    //glDrawBuffer(GL_FRONT);
 
-
-    //GLuint texture{1};
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // Create Framebuffer Texture
+    glGenTextures(1, &framebufferTexture);
+    glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-    //GLuint RBO;
-    glGenRenderbuffers(1,&RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920, 1080);
+    // Create Render Buffer Objecy
+
+    glGenRenderbuffers(1, &RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
 
 
-
-
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
+        qDebug() << "FUCKYESSSS";
 
     auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if(fboStatus != GL_FRAMEBUFFER_COMPLETE)
@@ -57,59 +58,25 @@ int PostProcessing::createFramebuffer()
         qDebug() << "Framebuffer error: " << fboStatus;
     }
 
-
-
-    return framebuffer;
 }
 
-int PostProcessing::createTextureAttachment(int width, int height)
-{
-  /*  initializeOpenGLFunctions();
 
 
-        //GLuint texture{1};
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1920, 1080, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-
-        GLuint RBO;
-        glGenRenderbuffers(1,&RBO);
-        glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1920, 1080);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
-
-        auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if(fboStatus != GL_FRAMEBUFFER_COMPLETE)
-        {
-            qDebug() << "Framebuffer error: " << fboStatus;
-        }
-
-    return texture;*/
-}
-
-void PostProcessing::bindFramebuffer(int frameBuffer, int width, int height)
+void PostProcessing::bindFramebuffer(int frameBufferer, int width, int height)
 {
     initializeOpenGLFunctions();
 
-    //fboshader->use();
-
-    screenShader->use();
-    //framebufferShader->use();
-
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer); //skal sikkert være refraction buff
-    glEnable(GL_DEPTH_TEST);
+    // Bind the custom framebuffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+    glEnable(GL_DEPTH_TEST);    // Enable depth testing since it's disabled when drawing the framebuffer rectangle
+    // Specify the color of the background
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    // Clean the back buffer and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
-    glViewport(0, 0, 1000, 1000);
+
+
+    //glViewport(0, 0, 1920, 1080);
 }
 
 
@@ -119,23 +86,41 @@ void PostProcessing::unbindCurrentFramebuffer()
     initializeOpenGLFunctions();
 
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+    // clear all relevant buffers
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    screenShader->use();
+    shaderprog->use();
+    //
+
 
     glBindVertexArray(quadVAO);
-    glDisable(GL_DEPTH_TEST);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, framebufferTexture);	// use the color attachment texture as the texture of the quad plane
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+/*
+    // Bind the default framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // Draw the framebuffer rectangle
+        screenShader->use();
+        //fboshader->use();
+        glBindVertexArray(quadVAO);
+        glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
+        glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+*/
 
     //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     //glClear(GL_COLOR_BUFFER_BIT);
 
 
 
-    //glUseProgram(screenShader->getProgram());
-    //fboshader->use();
+
+
 
 
 
@@ -150,14 +135,15 @@ void PostProcessing::genQuad()
     initializeOpenGLFunctions();
     float quadVertices[] =
     {
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
+       -1.0f,  1.0f,  0.0f, 1.0f,
+       -1.0f, -1.0f,  0.0f, 0.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
 
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f,
+       -1.0f,  1.0f,  0.0f, 1.0f,
+        1.0f, -1.0f,  1.0f, 0.0f,
+        1.0f,  1.0f,  1.0f, 1.0f
     };
+
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
     glBindVertexArray(quadVAO);
@@ -167,6 +153,17 @@ void PostProcessing::genQuad()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+    /*
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));*/
 }
 
 
