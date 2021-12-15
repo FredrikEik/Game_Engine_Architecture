@@ -176,6 +176,12 @@ gsl::Vector3D ResourceManager::getHeightMapPosition()
     return mTerrain->transform->mMatrix.getPosition();
 }
 
+/**
+ * ResourceManager::makeHeightMapFromTxt is called when i need to make a terrain using a .txt file with coordinates
+ * in LAZ/LAS format.
+ * The function opens the file and creates a triangulation of the coordinates by splitting the terrain into a
+ * 100x100 (rows*cols) grid. This is explained well in the function itself, so no reason to explain further here.
+ */
 int ResourceManager::makeHeightMapFromTxt(std::string filename)
 {
     mMeshComponents.emplace_back(Mesh());   // Push a new mesh into mMeshcomponents.
@@ -388,6 +394,10 @@ int ResourceManager::makeHeightMapFromTxt(std::string filename)
     return mMeshComponents.size()-1; // Return index of last meshComponent, which is this objects mesh.
 }
 
+/**
+ * ResourceManager::makeHeightMap is called when i need to create a heightmap based on values extracted from a .bmp
+ * heightMap file. In the current scene, i don't use this, instead i use ResourceManager::makeHeightMapFromTxt().
+ */
 int ResourceManager::makeHeightMap(std::string filename)
 {
     texture = new Texture(filename, false);
@@ -539,19 +549,19 @@ int ResourceManager::makeHeightMap(std::string filename)
     return mMeshComponents.size()-1;    //returns index to last object
 }
 
-/*
- * Function that creates contour-lines (høyde-kurver) on mTerrain. (Height-map read from txt-file).
- * There is some confusion between y and z values because the txt-file uses z as height, but this game-engine uses y as 'up',
+/** ResoureManager::contourLines.
+ * - Function that creates contour-lines (høyde-kurver) on mTerrain. (Height-map read from txt-file).
+ * - There is some confusion between y and z values because the txt-file uses z as height, but this game-engine uses y as 'up',
  * so there are some variables that should be renamed (switch from y to z).
  *
- * The function checks between two points, and decides wether or not it should place a point on that line.
+ * - The function checks between two points, and decides wether or not it should place a point on that line.
  * If there should be a point there, it will calculate where on the line the point needs to be placed.
  * It checks all four outer lines in each quad, and after that, it draws a line between the two points it finds.
  *
- * To calculate the position of a point, we need:
- * -    a = lineheight - (the point that is above lineheight).
- * -    b = (the point that is above lineheight) - (the point that is below lineheight).
- * based on the height of two corners in the quad, we calculate the position of a contour-line point
+ * - To calculate the position of a point, we need:
+ *      - a = lineheight - (the point that is above lineheight).
+ *      - b = (the point that is above lineheight) - (the point that is below lineheight).
+ * - based on the height of two corners in the quad, we calculate the position of a contour-line point
  * by doing either 'pos = -(a/b)*step' or 'pos = (a/b)*step'
  */
 int ResourceManager::contourLines()
@@ -644,7 +654,8 @@ int ResourceManager::contourLines()
 
     return mMeshComponents.size()-1; // Return index of last meshComponent, which is this objects mesh.
 }
-/*
+/**
+ * ResourceManager::barycentricCoordinates
  * Calculates barycentric coordinates for an object that is on top of a triangle in the mTerrain-surface.
  * pos is the position of the object. And p1,p2,p3 is the corners of the triangle that the object is on top of.
  */
@@ -685,6 +696,11 @@ gsl::Vector3D ResourceManager::barycentricCoordinates(const gsl::Vector2D &pos, 
 
     return baryc;
 }
+
+/**
+ * ResourceManager::makeSphereRadius
+ * Uses the passed in parameters to set the radius of the current objects collisionSphere.
+ */
 void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
 {
     //making correct bounding sphere radius:
@@ -693,7 +709,10 @@ void ResourceManager::makeSphereRadius(Mesh *meshIn, gsl::Vector3D &vertexIn)
         meshIn->sphereRadius = length;
 }
 
-
+/**
+ * ResourceManager::readObj is called every time i need to create a mesh out of a .obj file.
+ * This code is made by Ole Flaten.
+ */
 int ResourceManager::readObj(std::string filename) //Ole's obj reader code
 {
     //should check if this object is new before this!
