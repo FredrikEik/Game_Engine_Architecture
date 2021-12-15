@@ -209,7 +209,7 @@ void RenderWindow::init()
     setupParticleShader(4);
     setupFrameBufferShader(5);
 
-    //postFBO = new PostProcessing(mShaderPrograms[5]);
+    postFBO = new PostProcessing(mShaderPrograms[5]);
 
 
 
@@ -563,7 +563,7 @@ void RenderWindow::setupParticleShader(int shaderIndex)
 
 void RenderWindow::setupFrameBufferShader(int shaderIndex)
 {
-    //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
+    //mShaderPrograms[shaderIndex]->setInt("screenTexture", 0); gives error...
 }
 
 //This function is called from Qt when window is exposed (shown)

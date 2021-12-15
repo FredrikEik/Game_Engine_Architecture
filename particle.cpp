@@ -183,7 +183,7 @@ void particle::update(float deltaTime, Camera* camera)
            spawnParticles(deltaTime, getTransformComponent()->mMatrix.getPosition(), cameraPosition);
            lastSpawned = 0;
 
-           qDebug() << emitter->activeParticles;
+           //qDebug() << emitter->activeParticles;
 
            //Sorter rekkefølgen av objekter som skal rendres
            std::sort(&emitter->particles[0], &emitter->particles[emitter->maxParticles-1]);
