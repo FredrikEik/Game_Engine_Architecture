@@ -20,15 +20,9 @@ Skybox::~Skybox()
 
 }
 
-void Skybox::init()//(GLint matrixUniform[4])
+void Skybox::init()
 {
-
-    //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-
-    //mMaterial->setActiveShader(ShaderType::SKYBOX_SHADER);
-    //mMaterial->setActiveTextureSlot(2);
-    //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
     glBindVertexArray( getMeshComponent()->mVAO );
@@ -77,9 +71,6 @@ void Skybox::readFile(std::string filename)
     std::vector<QVector3D> tempVertecies;
     std::vector<QVector3D> tempNormals;
     std::vector<QVector2D> tempUVs;
-
-    //    std::vector<Vertex> mVertices;    //made in VisualObject
-    //    std::vector<GLushort> mIndices;   //made in VisualObject
 
     // Varible for constructing the indices vector
     unsigned int temp_index = 0;

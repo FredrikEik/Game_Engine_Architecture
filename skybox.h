@@ -3,18 +3,22 @@
 #include "objreader.h"
 #include "gameobject.h"
 
-
-
 class Skybox : public GameObject
 {
+/**
+    \brief class for making the skybox
+    \author Paal Marius Haugen
+    \date 15/12/21
+*/
 public:
+    ///Constructs the class by running the readFile function
     Skybox(std::string filename);
     ~Skybox() override;
 
     void draw() override;
     void init() override;
-    //void init(GLint matrixUniform[4]);
     void move(float x, float y, float z) override;
+    ///Leser inn obj fila for skyboxen
     void readFile(std::string filename);
 };
 

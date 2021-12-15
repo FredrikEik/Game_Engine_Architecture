@@ -1,10 +1,6 @@
 #include "postprocessing.h"
 
-PostProcessing::PostProcessing()
-{
-    genQuad();
-    createFramebuffer();
-}
+
 
 PostProcessing::PostProcessing(Shader *shader)
 {
@@ -20,13 +16,13 @@ void PostProcessing::createFramebuffer()
 {
     initializeOpenGLFunctions();
 
+
     float width = 1920;
     float height = 1080;
     // Create Frame Buffer Object
-
     glGenFramebuffers(1, &framebuffer);
 
-    // Create Framebuffer Texture
+    //This creates a color attachment
     glGenTextures(1, &framebufferTexture);
     glBindTexture(GL_TEXTURE_2D, framebufferTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -35,17 +31,18 @@ void PostProcessing::createFramebuffer()
 
     // Create Render Buffer Object
     glGenRenderbuffers(1, &RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, RBO);//Bind it so its ready for storage
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 
+    //attach the texture and renderbuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);//Attach color texture
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
 
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
-        qDebug() << "FUCKYESSSS";
+        qDebug() << "Framebuffer complete";
 
     auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if(fboStatus != GL_FRAMEBUFFER_COMPLETE)
@@ -57,14 +54,13 @@ void PostProcessing::createFramebuffer()
 
 
 
-void PostProcessing::bindFramebuffer(int frameBufferer, int width, int height)
+void PostProcessing::bindFramebuffer()
 {
     initializeOpenGLFunctions();
 
     // Bind the custom framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
     glEnable(GL_DEPTH_TEST);    // Enable depth testing since it's disabled when drawing the framebuffer rectangle
-    // Specify the color of the background
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     // Clean the back buffer and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,7 +76,6 @@ void PostProcessing::unbindCurrentFramebuffer()
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
     // clear all relevant buffers
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
     glClear(GL_COLOR_BUFFER_BIT);
 
     shaderprog->use();
