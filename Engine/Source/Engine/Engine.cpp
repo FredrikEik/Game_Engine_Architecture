@@ -236,22 +236,13 @@ void Engine::initEtities()
 	LightSystem::InitSBuffer(sBufferComp);
 
 	terrainEntity = ECS->newEntity();
-	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
 	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
 	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
-	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	//meshComp->bDisregardedDuringFrustumCulling = true;
-	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
-	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
-	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
-
-	//viewport->begin(window, ECS->getNumberOfEntities());
-
 
 	
 	ScriptSystem::Init();
-	//viewport->begin(window, ECS->getNumberOfEntities());
+
 	unitEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");

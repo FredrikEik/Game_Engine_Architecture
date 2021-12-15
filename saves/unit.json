@@ -1,24 +1,24 @@
 [
     {
-        "7": [
+        "35": [
             {
                 "struct TransformComponent": [
                     [
-                        1.0,
+                        0.30000001192092896,
                         0.0,
                         0.0,
                         0.0
                     ],
                     [
                         0.0,
-                        1.0,
+                        0.30000001192092896,
                         0.0,
                         0.0
                     ],
                     [
                         0.0,
                         0.0,
-                        1.0,
+                        0.30000001192092896,
                         0.0
                     ],
                     [
@@ -30,15 +30,23 @@
                 ]
             },
             {
-                "struct MeshComponent": {
-                    "LODType": 0,
-                    "bDisregardedDuringFrustumCulling": true,
-                    "bIsTranslucent": false,
-                    "bShouldRender": true,
-                    "drawType": 4,
-                    "path": "Assets\\cube.obj",
-                    "reusable": true,
-                    "bDrawDeferred": false
+                "struct AxisAlignedBoxComponent": {
+                    "bShouldGenerateOverlapEvents": false,
+                    "center": [
+                        -0.1029999852180481,
+                        1.24069344997406,
+                        0.5128271579742432
+                    ],
+                    "max": [
+                        1.7239999771118164,
+                        2.504763603210449,
+                        3.0810000896453857
+                    ],
+                    "min": [
+                        -1.9299999475479126,
+                        -0.023376600816845894,
+                        -2.0553457736968994
+                    ]
                 }
             },
             {
@@ -47,23 +55,15 @@
                 }
             },
             {
-                "struct AxisAlignedBoxComponent": {
-                    "bShouldGenerateOverlapEvents": false,
-                    "center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "max": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "min": [
-                        -0.5,
-                        -0.5,
-                        -0.5
-                    ]
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": false,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets\\Dogling.obj",
+                    "reusable": true
                 }
             }
         ]

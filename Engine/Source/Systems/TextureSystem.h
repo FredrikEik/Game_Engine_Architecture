@@ -4,6 +4,7 @@
 #include "BaseSystem.h"
 #include <filesystem>
 #include <map>
+#include "mono/jit/jit.h"
 
 class TextureSystem final : public BaseSystem
 {
@@ -14,5 +15,6 @@ public:
 
 	static void loadImageWithAlpha(const std::filesystem::path& filePath, struct TextureComponent* textureComponent);
 
+	static void addMaterialTexture_Internal(uint32 entity, MonoString* uniform, MonoString* path);
 };
 

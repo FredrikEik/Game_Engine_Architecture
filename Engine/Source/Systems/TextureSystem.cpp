@@ -2,9 +2,9 @@
 #include "../Components/Components.h"
 #include "../ECSManager.h"
 #include "../Components/ComponentManager.h"
-
 //#define STB_IMAGE_IMPLEMENTATION
 #include "../stb_image.h"
+#include "../Engine/Engine.h"
 void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePath, TextureComponent* textureComponent)
 {
 	//TextureComponent* textureComponent = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entity);
@@ -79,4 +79,19 @@ void TextureSystem::loadImageWithAlpha(const std::filesystem::path& filePath, Te
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(textureComponent->rgbImage);
+}
+
+void TextureSystem::addMaterialTexture_Internal(uint32 entity, MonoString* uniform, MonoString* path)
+{
+	ECSManager* ECS = Engine::Get().getECSManager();
+	if (!ECS->getComponentManager<MaterialComponent>() ||
+		!ECS->getComponentManager<MaterialComponent>()->getComponentChecked(entity))
+	{
+		ECS->addComponent<MaterialComponent>(entity);
+	}
+	auto material = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(entity);
+
+	std::map<std::string, std::string> materialMap;
+	materialMap.insert(std::make_pair(mono_string_to_utf8(uniform), mono_string_to_utf8(path)));
+	loadMaterial(material, materialMap);
 }

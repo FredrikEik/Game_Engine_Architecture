@@ -1,6 +1,6 @@
 [
     {
-        "6": [
+        "35": [
             {
                 "struct TransformComponent": [
                     [
@@ -33,31 +33,31 @@
                 "struct MeshComponent": {
                     "LODType": 0,
                     "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": false,
                     "bIsTranslucent": false,
                     "bShouldRender": true,
                     "drawType": 4,
                     "path": "Assets\\sphere.obj",
-                    "reusable": true,
-                    "bDrawDeferred": false
+                    "reusable": true
                 }
             },
             {
                 "struct AxisAlignedBoxComponent": {
                     "bShouldGenerateOverlapEvents": true,
                     "center": [
+                        0.25,
                         0.0,
-                        0.0,
-                        0.0
+                        -0.800000011920929
                     ],
                     "max": [
-                        0.9510579705238342,
+                        1.0509999990463257,
                         1.0,
-                        1.0
+                        1.399999976158142
                     ],
                     "min": [
-                        -0.9510579705238342,
+                        -0.5509999990463257,
                         -1.0,
-                        -1.0
+                        -3.0
                     ]
                 }
             },

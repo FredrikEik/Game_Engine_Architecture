@@ -50,7 +50,6 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Transform::Move_Internal", &TransformSystem::move_internal);
 	BindInternalFunction("ScriptInJin.Transform::getTransform_internal", &TransformSystem::getTransform_internal);
 	BindInternalFunction("ScriptInJin.Transform::setPosition_internal", &TransformSystem::setPosition_internal);
-	//BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
 	BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
 	BindInternalFunction("ScriptInJin.Entity::isOverlappingEntity_Internal", &CollisionSystem::isOverlappingEntity_Internal);
 	BindInternalFunction("ScriptInJin.Entity::setVelocity_Internal", &PhysicsSystem::setVelocity_Internal);
@@ -60,6 +59,7 @@ void ScriptSystem::Init()
 	BindInternalFunction("ScriptInJin.Entity::createDefaultEntity_Internal", &Engine::createDefaultEntity_Internal);
 	BindInternalFunction("ScriptInJin.Entity::showHud_Internal", &HudSystem::showHud_Internal);
 	BindInternalFunction("ScriptInJin.Entity::removeHud_Internal", &HudSystem::removeHud_Internal);
+	BindInternalFunction("ScriptInJin.Entity::addMaterialTexture_Internal", &TextureSystem::addMaterialTexture_Internal);
 
 
 	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);
