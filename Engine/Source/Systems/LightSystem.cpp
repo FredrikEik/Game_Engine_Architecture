@@ -130,7 +130,7 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	ShadowShader->setInt("u_shadows", 1); // enable/disable shadows by pressing 'SPACE'
 	ShadowShader->setFloat("u_far_plane", cameraComp->far);
 
-	ShadowShader->setInt("u_tex_diffuse1", 0);
+	//ShadowShader->setInt("u_tex_diffuse1", 0);
 	ShadowShader->setInt("u_depthMap", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, sBufferComp->depthCubemap);

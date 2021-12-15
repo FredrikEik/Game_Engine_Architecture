@@ -67,9 +67,10 @@ private:
 	class Shader* GeometryPassShader{};
 	class Shader* LightPassShader{};
 
-
 	class Shader* ShadowShader{};
 	class Shader* ShadowDepthShader{};
+
+	class Shader* matShader{};
 
 	uint32 editorCameraEntity{};
 	uint32 gameCameraEntity{};
@@ -77,7 +78,7 @@ private:
 	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
-	uint32 gunEntity{};
+	uint32 dogEntity{};
 
 	uint32 lightEnitites[25]{};
 

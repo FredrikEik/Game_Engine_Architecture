@@ -5,9 +5,13 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
-
 uniform sampler2D u_tex_diffuse1;
+uniform sampler2D u_tex_specular1;
 uniform samplerCube u_depthMap;
+
+uniform int bUsingTexture = 0;
+uniform int bUsingMat = 0;
+
 
 uniform vec3 u_lightPos;
 uniform vec3 u_camPos;
@@ -55,10 +59,17 @@ float ShadowCalculation(vec3 fragPos)
 
 void main()
 {           
-    vec3 color = texture(u_tex_diffuse1, TexCoords).rgb;
+
+    vec4 color = vec4(0.3,0.6,0.9,1);
+
+    color.rgb = bUsingTexture * texture(u_tex_diffuse1, TexCoords).rgb +
+    bUsingMat * texture(u_tex_diffuse1, TexCoords).rgb +
+    (1 - bUsingTexture - bUsingMat) * vec4(0.3,0.6,0.9,1).rgb;
+
+    color.a = bUsingMat * texture(u_tex_specular1, TexCoords).r + (1-bUsingMat);
     vec3 normal = normalize(Normal);
     // ambient
-    vec3 ambient = 0.3 * u_lightColor;
+    vec3 ambient = 0.8 * u_lightColor;
     // diffuse
     vec3 lightDir = normalize(u_lightPos - FragPos);
     float diff = max(dot(lightDir, normal), 0.0);
@@ -72,7 +83,7 @@ void main()
     vec3 specular = spec * u_lightColor;    
     // calculate shadow
     float shadow = u_shadows ? ShadowCalculation(FragPos) : 0.0;                      
-    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
+    vec4 lighting = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1) * color;    
     
-    FragColor = vec4(lighting, 1.0);
+    FragColor = lighting;
 }

@@ -80,6 +80,7 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
                 glActiveTexture(GL_TEXTURE0);
                 shader->setInt("bUsingTexture", 1);
                 glBindTexture(GL_TEXTURE_2D, textureComp->textureID);
+                
             }
             else
             {
@@ -92,9 +93,11 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
 		    if (MatComp)
 		    {
 			    // bind appropriate textures
+                shader->setInt("bUsingMat", 1); 
 			    int incrementor = 0;
 			    for (auto& it : MatComp->textures)
 			    {
+
 				    std::string name = it.first;
 				    TextureComponent texComp = it.second;
                     glUniform1i(glGetUniformLocation(shader->getShaderID(), name.c_str()), incrementor);
@@ -103,6 +106,10 @@ void MeshSystem::draw(Shader* shader, const std::string& uniformName, class ECSM
                     ++incrementor;
 			    }
 		    }
+            else
+            {
+                shader->setInt("bUsingMat", 0);
+            }
         }
 
         // calculate distance form mesh to camera determine lod to draw
@@ -624,7 +631,7 @@ bool MeshSystem::readObj(const std::filesystem::path& filePath, MeshComponent& m
             stringStream >> word;
             tempUV.x = (std::stof(word));
             stringStream >> word;
-            tempUV.y = (std::stof(word));
+            tempUV.y = (1.0f - std::stof(word));
 
             tempVertexUVs.push_back(tempUV);
         }

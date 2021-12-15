@@ -172,6 +172,8 @@ void Engine::compileShaders()
 
 	ShadowShader = new Shader("Shaders/P_Shadows.vert", "Shaders/P_Shadows.frag");
 	ShadowDepthShader = new Shader("Shaders/P_ShadowsDepth.vert", "Shaders/P_ShadowsDepth.frag", "Shaders/P_ShadowsDepth.geo");
+	
+	matShader = new Shader("Shaders/debugMatShader.vert", "Shaders/debugMatShader.frag");
 }
 
 void Engine::initEtities()
@@ -190,7 +192,7 @@ void Engine::initEtities()
 	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent, GBufferComponent, ShadowBufferComponent>(SystemEntity);
 	auto gBufferComp = ECS->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
-	LightSystem::InitGBuffer(gBufferComp);
+	//LightSystem::InitGBuffer(gBufferComp);
 	auto sBufferComp = ECS->getComponentManager<ShadowBufferComponent>()->getComponentChecked(SystemEntity);
 	LightSystem::InitSBuffer(sBufferComp);
 
@@ -213,6 +215,18 @@ void Engine::initEtities()
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
 	*/
+
+	dogEntity = ECS->newEntity();
+	ECS->addComponents<TransformComponent, MeshComponent, MaterialComponent>(dogEntity);
+	ECS->loadAsset(dogEntity, "Assets/Dogling.obj");
+	//TransformSystem::setScale(dogEntity, glm::vec3(10, 10, 10), ECS);
+	MeshSystem::setConsideredForFrustumCulling(dogEntity, ECS, false);
+	//MeshSystem::setIsDeferredDraw(dogEntity, ECS, true);
+	auto gunMaterial = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(dogEntity);
+	std::map<std::string, std::string> materialMap;
+	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/Dogling_D.png"));
+	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/Dogling_S.png"));
+	TextureSystem::loadMaterial(gunMaterial, materialMap);
 
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
@@ -252,17 +266,6 @@ void Engine::init()
 	load(Save::getDefaultAbsolutePath());
 
 
-	gunEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, MeshComponent, MaterialComponent>(gunEntity);
-	ECS->loadAsset(gunEntity, "Assets/gun.obj");
-	TransformSystem::setScale(gunEntity, glm::vec3(10, 10, 10), ECS);
-	MeshSystem::setConsideredForFrustumCulling(gunEntity, ECS, false);
-	MeshSystem::setIsDeferredDraw(gunEntity, ECS, true);
-	auto gunMaterial = ECS->getComponentManager<MaterialComponent>()->getComponentChecked(gunEntity);
-	std::map<std::string, std::string> materialMap;
-	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/gun_BC.png"));
-	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/gun_R.png"));
-	TextureSystem::loadMaterial(gunMaterial, materialMap);
 }
 
 
@@ -305,11 +308,15 @@ void Engine::loop()
 		}
 		// contains camera draw and mesh system draw.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glStencilMask(0x00);
-		//LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity);
+		LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity);
 
-		LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
+		//LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 
+		CameraSystem::draw(cameraEntity, ShadowShader, ECS);
+		//CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
+		MeshSystem::draw(ShadowShader, "u_model", ECS, cameraEntity);
 		/*
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test

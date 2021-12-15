@@ -186,5 +186,61 @@
                 }
             }
         ]
+    },
+    {
+        "32": [
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": false,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/Dogling.obj",
+                    "reusable": true
+                }
+            },
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bDrawDeferred": false,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets/Dogling.obj",
+                    "reusable": true
+                }
+            }
+        ]
     }
 ]
