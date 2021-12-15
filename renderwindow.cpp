@@ -670,7 +670,7 @@ void RenderWindow::playPausebutton(const QSurfaceFormat &format)
         hjelpeObjekt->getTransformComponent()->mMatrix.setScale(1,1,1);
         hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
         hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
-        mIndexToPickedObject = -1;
+        mIndexToPickedObject = NULL;
         }
 
     }

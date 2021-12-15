@@ -119,7 +119,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 6;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 9;
 
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
@@ -158,7 +158,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["TriangleSurface"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 4;
         objectToCreate->mObjectType = "TriangleSurface";
         objectToCreate->mObjectName = "TriangleSurface";
 	}
