@@ -11,8 +11,6 @@
 #include "gltypes.h"
 #include "visualobject.h"
 
-
-
 using namespace std;
 
 class XYZ : public VisualObject
