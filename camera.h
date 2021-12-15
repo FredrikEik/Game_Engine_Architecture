@@ -9,6 +9,9 @@
   Holds normals to the different planes of the frustum
   and some other necessary data
  */ // Taken from Ole.Experiment branch on GEA2021
+/**
+ * @brief The Frustum struct. Contains data related to frustum culling
+ */
 struct Frustum
 {
     float mFarPlaneDistance{100.f};   //used to make projection matrix
