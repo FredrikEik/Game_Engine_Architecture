@@ -40,7 +40,6 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 	glm::vec4 ray_eye = glm::inverse(cameraComponent->m_projectionMatrix) * ray_clip;
 	ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
 	glm::vec3 ray_wor = glm::vec3(glm::inverse(cameraComponent->m_viewMatrix) * ray_eye);
-	// don't forget to normalise the vector at some point
 	ray_wor = glm::normalize(ray_wor);
 
 
@@ -78,8 +77,7 @@ void SelectionSystem::updateSelection(uint32 entity, uint32 cameraEntity, class 
 		AABB->maxScaled = glm::vec3(maxX, 4, maxZ);
 		AABB->center = glm::vec3((maxX + minX) / 2.f,
 			0, (maxZ + minZ) / 2.f);
-		// create rectancle
-		// apply collision check
+
 	}
 }
 
@@ -99,28 +97,15 @@ void SelectionSystem::drawSelectedArea(uint32 entity, Shader* shader, ECSManager
 		std::string uniform = "u_model";
 
 		MeshSystem::drawRTSSelection(shader, selectionComponent->initialHitPos, selectionComponent->currentHitPos, uniform, *meshComponent, *transformComponent);
-
-
-		//std::cout << "drawing rectangle from: x:" << selectionComponent->initialHitPos.x << "z: " << selectionComponent->initialHitPos.z <<
-		//	" to: x:  " << selectionComponent->currentHitPos.x <<" z: " << selectionComponent->currentHitPos.z << '\n';
-		//shader->use();
-		//SelectionComponent* selectionComponent{ ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity) };
-		//assert(selectionComponent);
 	}
 	
 	ECS->removeComponent<MeshComponent>(entity);
-
-	
-	//shader->setMat4("u_view", currentCamera->m_viewMatrix);
-	//shader->setMat4("u_projection", currentCamera->m_projectionMatrix);
-
 }
 
 void SelectionSystem::setHitEntities(uint32 entity, const std::vector<uint32> hitEntities, ECSManager* ECS)
 {
 	SelectionComponent* component = ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity);
 	assert(component);
-	//std::cout << "Setting hit entities: " << hitEntities.size() << "\n";
 	component->hitEntities = hitEntities;
 }
 
@@ -141,10 +126,8 @@ bool SelectionSystem::IsEntitySelected_internal(uint32 EntityID)
 
 glm::vec3 SelectionSystem::getCursorWorldPosition(uint32 entity, uint32 cameraEntity, ECSManager* ECS)
 {
-	//SelectionComponent* selectionComponent{ ECS->getComponentManager<SelectionComponent>()->getComponentChecked(entity) };
 	CameraComponent* cameraComponent{ ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity) };
 	TransformComponent* cameraTransformComp{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
-	//assert(selectionComponent);
 	assert(cameraComponent);
 	assert(cameraTransformComp);
 
@@ -161,7 +144,6 @@ glm::vec3 SelectionSystem::getCursorWorldPosition(uint32 entity, uint32 cameraEn
 	glm::vec4 ray_eye = glm::inverse(cameraComponent->m_projectionMatrix) * ray_clip;
 	ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
 	glm::vec3 ray_wor = glm::vec3(glm::inverse(cameraComponent->m_viewMatrix) * ray_eye);
-	// don't forget to normalise the vector at some point
 	ray_wor = glm::normalize(ray_wor);
 
 

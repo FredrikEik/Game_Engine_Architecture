@@ -2,18 +2,16 @@
 #include "../Components/Components.h"
 #include "../ECSManager.h"
 #include "../Components/ComponentManager.h"
-
-//#define STB_IMAGE_IMPLEMENTATION
 #include "../stb_image.h"
+
 void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePath, TextureComponent* textureComponent)
 {
-	//TextureComponent* textureComponent = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entity);
 	assert(textureComponent);
 
 	textureComponent->rgbImage = stbi_load(filePath.generic_string().c_str(), 
 				&textureComponent->width, &textureComponent->height, &textureComponent->numberOfChannels, 0);
 
-	assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
+	assert(textureComponent->rgbImage);
 
 	GLenum format{ GL_RGB };
 	if (textureComponent->numberOfChannels == 1)
@@ -36,7 +34,6 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 
 	stbi_image_free(textureComponent->rgbImage);
 }
-
 
 void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map<std::string, std::string>& nameFileMap)
 {
@@ -65,7 +62,6 @@ void TextureSystem::loadImageWithAlpha(const std::filesystem::path& filePath, Te
 
 	if (!textureComponent->rgbImage)
 		return;
-	//assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
 
 	glGenTextures(1, &textureComponent->textureID);
 	glBindTexture(GL_TEXTURE_2D, textureComponent->textureID);

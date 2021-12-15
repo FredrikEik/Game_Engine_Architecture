@@ -56,7 +56,6 @@ void LightSystem::InitGBuffer(GBufferComponent* GBufferComp)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-
 void LightSystem::InitSBuffer(ShadowBufferComponent* SComp)
 {
 	
@@ -82,10 +81,6 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 {
 	auto sBufferComp = ECS->getComponentManager<ShadowBufferComponent>()->getComponentChecked(SystemEntity);
 	auto cameraComp = ECS->getComponentManager<CameraComponent>()->getComponentChecked(cameraEntity);
-
-	// lighting info
-	// -------------
-	
 	
 	sBufferComp->m_theta += glm::radians(45.f) * deltaTime;
 	const float radius{ 100 };
@@ -135,24 +130,16 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	ShadowShader->setInt("u_shadows", 1); // enable/disable shadows by pressing 'SPACE'
 	ShadowShader->setFloat("u_far_plane", cameraComp->far);
 
-	//ShadowShader->setInt("u_tex_diffuse1", 0);
 	ShadowShader->setInt("u_depthMap", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, sBufferComp->depthCubemap);
-	
 
-
-
-	// setup optional using texutres in deffered shading and optional using material
-	// in deferred shading
 }
 
-// renderQuad() renders a 1x1 XY quad in NDC
-// -----------------------------------------
-unsigned int quadVAO = 0;
-unsigned int quadVBO;
 void renderQuad()
 {
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
 	if (quadVAO == 0)
 	{
 		float quadVertices[] = {
@@ -224,22 +211,15 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 			TransformComponent* lightTransform{ manager->getComponentManager<TransformComponent>()->getComponentChecked(light.entityID) };
 			glm::vec3 lightPos = lightTransform->transform[3];
 
-			//const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
 			const glm::vec3 ligthColor = light.m_LightColor;
 			const float linear = light.m_Linear;
 			const float quadratic = light.m_Quadratic;
 
 			LightPassShader->setVec3("u_Lights[" + std::to_string(i) + "].Position", lightPos);
 			LightPassShader->setVec3("u_Lights[" + std::to_string(i) + "].Color", ligthColor);
-			// update attenuation parameters and calculate radius
 
 			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Linear", linear);
 			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Quadratic", quadratic);
-			/* then calculate radius of light volume/sphere
-			const float maxBrightness = std::fmaxf(std::fmaxf(ligthColor.r, ligthColor.g), ligthColor.b);
-			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-			LightPassShader->setFloat("u_Lights[" + std::to_string(i) + "].Radius", radius);
-			*/
 			++i;
 		}
 
@@ -247,8 +227,7 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	TransformComponent* cameraTransformComp{ manager->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
 	glm::vec3 originOfCam = cameraTransformComp->transform[3];
 	LightPassShader->setVec3("u_CameraPos", originOfCam);
-	// send in light uniforms
-	// render a quad
+
 	renderQuad();
 	
 
@@ -256,9 +235,6 @@ void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPas
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferComp->gBuffer);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
 
-	// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
-	// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
-	// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
 	float SCR_WIDTH = Engine::Get().getWindowWidth();
 	float SCR_HEIGHT = Engine::Get().getWindowHeight();
 	glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);

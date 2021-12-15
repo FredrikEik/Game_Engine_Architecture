@@ -15,22 +15,64 @@ class Shader
 {
 private:
 	//The program ID
+/// <summary>
+/// The identifier
+/// </summary>
 	unsigned int ID;
 public:
 	// constructor reads and builds the shader
 
+/// <summary>
+/// Initializes a new instance of the <see cref="Shader" /> class.
+/// </summary>
+/// <param name="vertexPath">The vertex path.</param>
+/// <param name="fragmentPath">The fragment path.</param>
+/// <param name="geometryPath">The geometry path.</param>
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
-	// use/activate the shader
+	/// <summary>
+	/// Uses this instance.
+	/// </summary>
+	/// use/activate the shader
 	void use();
-	// utility uniform functions
+	/// <summary>
+	/// Sets the bool.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="value">if set to <c>true</c> [value].</param>
+	/// utility uniform functions
 	void setBool(const std::string& name, bool value) const;
+	/// <summary>
+	/// Sets the int.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="value">The value.</param>
 	void setInt(const std::string& name, int value) const;
+	/// <summary>
+	/// Sets the float.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="value">The value.</param>
 	void setFloat(const std::string& name, float value) const;
+	/// <summary>
+	/// Sets the mat4.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="value">The value.</param>
 	void setMat4(const std::string& name, glm::mat4 value) const;
+	/// <summary>
+	/// Sets the vec3.
+	/// </summary>
+	/// <param name="name">The name.</param>
+	/// <param name="value">The value.</param>
 	void setVec3(const std::string& name, glm::vec3 value) const;
 
+	/// <summary>
+	/// Gets the shader identifier.
+	/// </summary>
+	/// <returns></returns>
 	unsigned int getShaderID() const;
 };
+
 
 inline Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
@@ -137,35 +179,42 @@ inline Shader::Shader(const char* vertexPath, const char* fragmentPath, const ch
 		glDeleteShader(geometry);
 }
 
+
 inline void Shader::use()
 {
 	glUseProgram(ID);
 }
+
 
 inline void Shader::setBool(const std::string& name, bool value) const
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 
+
 inline void Shader::setInt(const std::string& name, int value) const
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
+
 
 inline void Shader::setFloat(const std::string& name, float value) const
 {
 	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
+
 inline void Shader::setMat4(const std::string& name, glm::mat4 value) const
 {
 	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
 
+
 inline void Shader::setVec3(const std::string& name, glm::vec3 value) const
 {
 	glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
 }
+
 
 
 inline unsigned int Shader::getShaderID() const
