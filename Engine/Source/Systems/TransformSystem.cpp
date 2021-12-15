@@ -6,7 +6,6 @@
 
 void TransformSystem::moveAll(class ComponentManager<TransformComponent>* componentManager)
 {
-	//ComponentManager<TransformComponent>* componentManager = manager->getComponentManager<TransformComponent>();
 	if (!componentManager)
 		return;
 	auto& transformArray = componentManager->getComponentArray();
@@ -56,7 +55,6 @@ void TransformSystem::setPosition(uint32 entity, glm::vec3 newLocation, ECSManag
 void TransformSystem::setScale(int32 entity, glm::vec3 newScale, ECSManager* ECS)
 {
 	glm::mat4x4& transform = ECS->getComponentManager<TransformComponent>()->getComponent(entity).transform;
-	//float scale[3] = { transform[0].x, transform[1].y, transform[2].z };
 	transform[0].x = newScale[0];
 	transform[1].y = newScale[1];
 	transform[2].z = newScale[2];

@@ -54,12 +54,6 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 			it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
 		}
 
-		//if (!tempIsInAir)
-		//{
-		//	glm::vec3 frictionDirection = glm::normalize(it.velocity) * -1.f;
-		//	it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
-		//}
-
 		// s = V_0 * t + 1/2*a*t*t
 		TransformSystem::move(*entityTransform, 
 			(it.velocity*deltaTime + 0.5f * glm::vec3(0, -core::GRAVITY,0)*deltaTime*deltaTime));

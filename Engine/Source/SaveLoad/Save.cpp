@@ -24,8 +24,6 @@ void Save::saveEntities(const std::array<
 		JSON components;
 		for (const auto& it : entities[i].second)
 		{	
-			// TODO: Add a flag for if the component is reusable to make sure loading just loads from path
-			// This should be done in the component's json() function.
 			addComponentToJson(it.first, i, components, ECS);
 		}
 		json.push_back({ { std::to_string(i), components } });
@@ -50,8 +48,6 @@ void Save::saveEntityPrefab(uint32 entityID, ECSManager* ECS)
 	JSON components;
 	for (const auto& it : entity)
 	{
-		// TODO: Add a flag for if the component is reusable to make sure loading just loads from path
-		// This should be done in the component's json() function.
 		addComponentToJson(it.first, entityID, components, ECS);
 	}
 	json.push_back({ { std::to_string(entityID), components } });

@@ -1,5 +1,7 @@
 #pragma once
 #include <AL\al.h>
+// code found here:
+// https://github.com/codetechandtutorials/openal-impl/releases/tag/vid1
 class SoundSource
 {
 public:

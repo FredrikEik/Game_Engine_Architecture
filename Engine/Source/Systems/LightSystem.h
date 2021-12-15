@@ -2,8 +2,9 @@
 #include "BaseSystem.h"
 #include "../Components/Components.h"
 
+
 /// <summary>
-/// LightSystem, deals with shadows, lighs and deferred rendering
+/// LightSystem handles lights, shadows and deferred rendering
 /// </summary>
 /// <seealso cref="BaseSystem" />
 class LightSystem : public BaseSystem
@@ -17,6 +18,8 @@ public:
 	static void InitGBuffer(GBufferComponent* GBufferComp);
 	/// <summary>
 	/// Defers the rendering.
+	/// Does a geometry pass, draws on gbuffer, does a lightpass.
+	/// writes that to main buffer
 	/// </summary>
 	/// <param name="GeometryPassShader">The geometry pass shader.</param>
 	/// <param name="LightPassShader">The light pass shader.</param>

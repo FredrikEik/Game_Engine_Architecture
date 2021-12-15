@@ -69,7 +69,7 @@ void LightSystem::InitSBuffer(ShadowBufferComponent* SComp)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	// attach depth texture as FBO's depth buffer
+
 	glBindFramebuffer(GL_FRAMEBUFFER, SComp->depthMapFBO);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, SComp->depthCubemap, 0);
 	glDrawBuffer(GL_NONE);
@@ -99,8 +99,8 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 	shadowTransforms.push_back(shadowProj * glm::lookAt(sBufferComp->lightPos, sBufferComp->lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
-	// 1. render scene to depth cubemap
-	// --------------------------------
+
+	// render to depthcubemap
 	glViewport(0, 0, sBufferComp->SHADOW_WIDTH, sBufferComp->SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, sBufferComp->depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -113,21 +113,20 @@ void LightSystem::DrawShadows(Shader* ShadowShader, Shader* ShadowDepthShader, c
 	MeshSystem::draw(ShadowDepthShader, uniformName, ECS, cameraEntity);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// 2. render scene as normal 
-	// -------------------------
+
+	// normal render
 	float SCR_WIDTH = Engine::Get().getWindowWidth();
 	float SCR_HEIGHT = Engine::Get().getWindowHeight();
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ShadowShader->use();
 	
-	// set lighting uniforms
 	ShadowShader->setVec3("u_lightPos", sBufferComp->lightPos);
 	TransformComponent* cameraTransformComp{ ECS->getComponentManager<TransformComponent>()->getComponentChecked(cameraEntity) };
 	glm::vec3 originOfCam = cameraTransformComp->transform[3];
 
 	ShadowShader->setVec3("u_camPos", originOfCam);
-	ShadowShader->setInt("u_shadows", 1); // enable/disable shadows by pressing 'SPACE'
+	ShadowShader->setInt("u_shadows", 1);
 	ShadowShader->setFloat("u_far_plane", cameraComp->far);
 
 	ShadowShader->setInt("u_depthMap", 3);
@@ -149,7 +148,6 @@ void renderQuad()
 			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
 			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 		};
-		// setup plane VAO
 		glGenVertexArrays(1, &quadVAO);
 		glGenBuffers(1, &quadVBO);
 		glBindVertexArray(quadVAO);
@@ -172,6 +170,7 @@ void LightSystem::SetLightValues(uint32 entityID, class ECSManager* ECS, glm::ve
 	ligthComp->m_Linear = linear;
 	ligthComp->m_Quadratic = quadratic;
 }
+
 
 void LightSystem::DeferredRendering(Shader* GeometryPassShader, Shader* LightPassShader, const std::string& uniformName, class ECSManager* manager, uint32 SystemEntity, uint32 cameraEntity)
 {
@@ -233,7 +232,7 @@ void LightSystem::DeferredRendering(Shader* GeometryPassShader, Shader* LightPas
 
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferComp->gBuffer);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	float SCR_WIDTH = Engine::Get().getWindowWidth();
 	float SCR_HEIGHT = Engine::Get().getWindowHeight();

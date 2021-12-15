@@ -20,7 +20,7 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 	for (const auto& outer : json.items())
 	{
 		uint32 entityID = ECS->newEntity();
-		//std::cout << entity << "\n\n\n\n";
+		
 		for (const auto& entity : outer.value().items())
 		{
 			for (const auto& components : entity.value().items())
@@ -28,7 +28,7 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 				for (auto component : components.value().items())
 				{
 					Component* comp = createComponent(component.key(), component.value(), entityID, ECS);
-					//std::cout <<entityID << " " << component.key() << "\n\n\n";
+					
 					if (comp)
 						comp->jsonParse(component.value());
 				}
@@ -41,7 +41,7 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 uint32 Load::loadEntity(uint32 entityID, const std::filesystem::path& filePath, ECSManager* ECS)
 {
 	std::ifstream file(filePath);
-	//uint32 entityID = core::MAX_ENTITIES + 1;
+	
 	if (!file)
 		return entityID;
 
@@ -51,8 +51,7 @@ uint32 Load::loadEntity(uint32 entityID, const std::filesystem::path& filePath, 
 
 	for (const auto& outer : json.items())
 	{
-		//entityID = ECS->newEntity();
-		//std::cout << entity << "\n\n\n\n";
+
 		for (const auto& entity : outer.value().items())
 		{
 			for (const auto& components : entity.value().items())
@@ -60,7 +59,7 @@ uint32 Load::loadEntity(uint32 entityID, const std::filesystem::path& filePath, 
 				for (auto component : components.value().items())
 				{
 					Component* comp = createComponent(component.key(), component.value(), entityID, ECS);
-					//std::cout <<entityID << " " << component.key() << "\n\n\n";
+					
 					if (comp)
 						comp->jsonParse(component.value());
 				}

@@ -26,5 +26,4 @@ private:
 
 	static std::string defaultSaveLocation;
 	static std::string defaultSaveName;
-	//static void WriteComponentValues();
 };
