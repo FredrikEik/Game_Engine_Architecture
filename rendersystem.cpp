@@ -316,7 +316,7 @@ void RenderSystem::render()
                 }
                 else if (helperObject == gameObject)
                 {
-                    mIndexToPickedObject = 0;
+                    mIndexToPickedObject = NULL;
                 }
                 gameObject->setMeshComponent(helperObjectMesh);
             }

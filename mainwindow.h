@@ -22,9 +22,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    ///Update outliner so newly created objects show up
     void updateOutliner(std::vector <GameObject *> &GameObjectData);
-
+    ///Selects object by index
     void selectObjectByIndex(int indexIn);
 	
     void init();
@@ -40,7 +40,7 @@ private slots:
     void on_pushButton_toggled(bool checked);
 
     void on_CreateObject_clicked();
-
+    /// Makes it possible to click items in the outliner
     void on_outliner_itemClicked(QTreeWidgetItem *item, int column);
 
     void on_toggleFrustumCulling_clicked(bool checked);
@@ -64,7 +64,7 @@ private:
     QTreeWidgetItem* mSceneOutlinerRoot{nullptr};
 
     //GameObject *mGameObject;
-
+    ///index for the selected object
     int mCurrentEditItemIndex{-1};  //index into selected GameObject
 
     float mPositionStep{1.f};
