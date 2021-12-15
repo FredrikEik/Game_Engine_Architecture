@@ -93,9 +93,6 @@ void resourceSystem::ResourceSystemInit(RenderSystem * inRendSys)
 
 void resourceSystem::SetMeshDataContainer()
 {
-
-
-
     meshDataContainer.clear();
     meshData obj;
     std::vector<Vertex> mVertices;

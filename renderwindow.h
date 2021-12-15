@@ -46,70 +46,111 @@ public:
     QOpenGLContext *context() { return mContext; }
 
     void exposeEvent(QExposeEvent *) override;
-    //! Turns Wireframe on or off
+
+    /**
+     * @brief toggleWireframe - Toggles wireframe on or off
+     * @param buttonState - button state gotten from UI.
+     */
     void toggleWireframe(bool buttonState);
 
-    //!  RenderSys - Pointer to current RenderSystem
+    /**
+     * @brief RenderSys - Pointer to current RenderSystem
+     */
     RenderSystem *RenderSys = new RenderSystem();
 
-    //! ResSys - Pointer to current Resource System
+    /**
+     * @brief ResSys - Pointer to current Resource System
+     */
     resourceSystem * ResSys = new resourceSystem();
-
-    //!  entitySys - Pointer to current Entitysystem
-    //!  takes in a pointer to RenderWindow
+    /**
+     * @brief entitySys - Pointer to current Entitysystem, takes in a pointer to RenderWindow
+     */
     EntitySystem * entitySys = new EntitySystem(this);
-
-    //!  collisionSys - Pointer to Collision System
+    /**
+     * @brief collisionSys - Pointer to Collision System
+     */
     collisionSystem* collisionSys = new collisionSystem();
-
-    //!  JSS - Pointer to JSON System
+    /**
+     * @brief JSS - Pointer to JSON System
+     */
     JSONSystem * JSS = new JSONSystem();
-
-    //!  entities vector array holding all the entitie Indexes
+    /**
+     * @brief entities - entities vector array holding all the entitie Indexes
+     */
     std::vector<int> entities;
-
-    //! @var meshCompVec - Pointer array of type MeshComponent*. Holds pointers to every meshComponent, sorted by Entity Index
+    /**
+     * @brief meshCompVec - Pointer array of type MeshComponent*. Holds pointers to every meshComponent, sorted by Entity Index
+     */
     std::vector<MeshComponent*> meshCompVec;
-
-    //! @var transformCompVec - Pointer array of type TransformComponent*. Holds pointers to every TransformComponent, sorted by Entity Index
+    /**
+     * @brief transformCompVec - Pointer array of type TransformComponent*. Holds pointers to every TransformComponent, sorted by Entity Index
+     */
     std::vector<TransformComponent*> transformCompVec;
-
-    //! @var MaterialCompVec - Pointer array of type MaterialComponent*. Holds pointers to every MaterialComponent, sorted by Entity Index
+    /**
+     * @brief MaterialCompVec - Pointer array of type MaterialComponent*. Holds pointers to every MaterialComponent, sorted by Entity Index.
+     */
     std::vector<MaterialComponent*> MaterialCompVec;
-
-    //! @var DeetsVector - Pointer array of type DetailsComponent*. Holds pointers to every DetailsComponent, sorted by Entity Index
+    /**
+     * @brief DeetsVector - Pointer array of type DetailsComponent*. Holds pointers to every DetailsComponent, sorted by Entity Index.
+     */
     std::vector<DetailsComponent*> DeetsVector;
 
-    //Some sounds...
-    //! @var mExplosionSound - Pointer to explosion sound file
-    //! @var mLaserSound - Pointer to Laser sound file
-    //! @var mStereoSound - Pointer to Stereo sound component
-    //! @var mSong  - Pointer to song sound file
+    /**
+     * @brief mExplosionSound - Pointer to explosion sound file
+     */
     SoundSource* mExplosionSound{};
+    /**
+     * @brief mLaserSound - Pointer to Laser sound file
+     */
     SoundSource* mLaserSound{};
+    /**
+     * @brief mStereoSound - Pointer to Stereo sound component
+     */
     SoundSource* mStereoSound{};
+    /**
+     * @brief mSong  - Pointer to song sound file.
+     */
     SoundSource* mSong{};
 
-    //! @var isPaused - for pausing of game
-    //! @var isPhysicsEnabled - Turn on or off physics
-    //! @var RecordBSplines - True == starts recording B-Spline positions
+    /**
+     * @brief isPaused - for pausing of game
+     */
     bool isPaused = false;
+    /**
+     * @brief isPhysicsEnabled - Turn on or off physics
+     */
     bool isPhysicsEnabled = false;
+    /**
+     * @brief RecordBSplines - True == starts recording B-Spline positions
+     */
     bool RecordBSplines = false;
 
-    //!PHYSICS
-    //! @var Physics - pointer to PhysicsSystem
-    //! @fn MakeGLSvec3D - Converts vector from QVector3D to gsl::Vector3D
-    //! @fn MakeQvec3D - Converts vector from gsl::Vector3D to QVector3D
+    /**
+     * @brief Physics - pointer to PhysicsSystem
+     */
     PhysicsSystem* Physics = new PhysicsSystem();
+    /**
+     * @brief MakeGSLvec3D - Converts vector from QVector3D to gsl::Vector3D
+     * @param vec
+     * @return
+     */
     gsl::Vector3D MakeGSLvec3D(QVector3D vec);
+    /**
+     * @brief MakeQvec3D - Converts vector from gsl::Vector3D to QVector3D
+     * @param vec
+     * @return
+     */
     QVector3D MakeQvec3D(gsl::Vector3D vec);
 
-    //! @fn togglePlayerCamera() toggels between player camera and editor camera
+    /**
+     * @brief togglePlayerCamera - toggels between player camera and editor camera
+     */
     void togglePlayerCamera();
 
 private slots:
-    //! @fn render - Main render loop. This is where the magic happens
+    /**
+     * @brief render - Main render loop. This is where the magic happens, every loop of this function is considered a "frame".
+     */
     void render();
 
 private:
@@ -300,11 +341,36 @@ private:
 
 protected:
     //The QWindow that we inherit from has these functions to capture mouse and keyboard.
+
+    /**
+     * @brief mousePressEvent
+     * @param event
+     */
     void mousePressEvent(QMouseEvent *event) override;
+    /**
+     * @brief mouseReleaseEvent
+     * @param event
+     */
     void mouseReleaseEvent(QMouseEvent *event) override;
+    /**
+     * @brief mouseMoveEvent
+     * @param event
+     */
     void mouseMoveEvent(QMouseEvent *event) override;
+    /**
+     * @brief keyPressEvent
+     * @param event
+     */
     void keyPressEvent(QKeyEvent *event) override;
+    /**
+     * @brief keyReleaseEvent
+     * @param event
+     */
     void keyReleaseEvent(QKeyEvent *event) override;
+    /**
+     * @brief wheelEvent
+     * @param event
+     */
     void wheelEvent(QWheelEvent *event) override;
 };
 
