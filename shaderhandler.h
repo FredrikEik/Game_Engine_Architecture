@@ -50,6 +50,8 @@ private:
     GLint mLinearUniform{-1};
     GLint mQuadraticUniform{-1};
     GLint mPhongTextureUniform{-1};
+
+    GLint mHUDUniform[4];
 };
 
 #endif // SHADERHANDLER_H

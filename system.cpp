@@ -132,6 +132,7 @@ void System::handleInput()
     else if(!editorMode)
     {
       static_cast<Player*>(renderSystem->player)->movement(input);
+      renderSystem->HUD->getMaterialComponent()->mTextureUnit = 5 + renderSystem->playerHP;
       renderSystem->skybox->getTransformComponent()->mMatrix.setPosition(renderSystem->playCamera->mPosition.x, renderSystem->playCamera->mPosition.y, renderSystem->playCamera->mPosition.z);
     }
 
@@ -197,6 +198,7 @@ void System::resetLevel()
 {
     renderSystem->format();
     clearLevel();
+    renderSystem->playerHP = 3;
     renderSystem->initObjects();
     mainWindow->updateOutliner(renderSystem->gameObjects);
 

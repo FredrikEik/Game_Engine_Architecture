@@ -4,14 +4,7 @@
 
 particle::particle()
 {
-
-}
-
-particle::particle(Camera* camera)
-{
     getTransformComponent()->mMatrix.setPosition(0,0,0);
-    cameraRef = camera;
-
 }
 
 particle::~particle()
@@ -176,14 +169,12 @@ void particle::update(float deltaTime, Camera* camera)
 {
 
 
-       gsl::Vector3D cameraPosition = gsl::Vector3D(cameraRef->mPosition);
+       gsl::Vector3D cameraPosition = gsl::Vector3D(camera->mPosition);
 
        static float lastSpawned = 0;
        lastSpawned += deltaTime;
            spawnParticles(deltaTime, getTransformComponent()->mMatrix.getPosition(), cameraPosition);
            lastSpawned = 0;
-
-           qDebug() << emitter->activeParticles;
 
            //Sorter rekkefølgen av objekter som skal rendres
            std::sort(&emitter->particles[0], &emitter->particles[emitter->maxParticles-1]);

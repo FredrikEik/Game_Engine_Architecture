@@ -8,7 +8,6 @@ class particle : public GameObject
 {
 public:
     particle();
-    particle(Camera* camera);
     ~particle();
 
     void draw() override;
@@ -23,7 +22,6 @@ private:
     ParticleComponent* particleComp;
     ParticleComponent* emitter = new ParticleComponent;
     int maxParticles = 100000;
-    Camera* cameraRef;
 
 
 

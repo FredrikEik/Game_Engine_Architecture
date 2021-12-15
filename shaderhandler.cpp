@@ -23,11 +23,18 @@ void ShaderHandler::init()
     mShaderPrograms[gsl::Shaders::SKYBOXSHADER] = new Shader((gsl::ShaderFilePath + "skyboxvertex.vert").c_str(),
                                     (gsl::ShaderFilePath + "skyboxfragment.frag").c_str());
                                      qDebug() << "Skybox shader program id: " << mShaderPrograms[3]->getProgram();
+    mShaderPrograms[gsl::Shaders::PARTICLESHADER] = new Shader((gsl::ShaderFilePath + "particle.vert").c_str(),
+                                    (gsl::ShaderFilePath + "particle.frag").c_str());
+                                     qDebug() << "Particle shader program id: " << mShaderPrograms[4]->getProgram();
+    mShaderPrograms[gsl::Shaders::FRAMEBUFFERSHADER] = new Shader((gsl::ShaderFilePath + "framebuffers_screen.vert").c_str(),
+                                     (gsl::ShaderFilePath + "framebuffers_screen.frag").c_str());
+                                     qDebug() << "hdr shader program id: " << mShaderPrograms[5]->getProgram();
 
                                      setupShaderUniformLocation(gsl::Shaders::PLAINSHADER);
                                      setupShaderUniformLocation(gsl::Shaders::TEXTURESHADER);
                                      setupShaderUniformLocation(gsl::Shaders::PHONGSHADER);
                                      setupShaderUniformLocation(gsl::Shaders::SKYBOXSHADER);
+
 }
 
 void ShaderHandler::setupShaderUniformLocation(int shaderIndex)
@@ -43,7 +50,9 @@ void ShaderHandler::setupShaderUniformLocation(int shaderIndex)
         mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
         vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
         pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+        mHUDUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "HUD");
         mTextureUniform             = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+
         break;
     case gsl::Shaders::PHONGSHADER:
         mMatrixUniform[shaderIndex]  = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
@@ -69,6 +78,14 @@ void ShaderHandler::setupShaderUniformLocation(int shaderIndex)
         pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
         mSkyboxUniform              = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
         break;
+    case gsl::Shaders::PARTICLESHADER:
+        mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
+        vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
+        pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+        break;
+    case gsl::Shaders::FRAMEBUFFERSHADER:
+        //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
+        break;
     default:
         break;
     }
@@ -81,6 +98,14 @@ void ShaderHandler::sendDataToShader(GameObject* gameObject)
     if(shaderProgramIndex == 1)
     {
         glUniform1i(mTextureUniform, gameObject->getMaterialComponent()->mTextureUnit);
+        if (gameObject->isHUD)
+        {
+            glUniform1i(mHUDUniform[shaderProgramIndex], true);
+        }
+        else
+        {
+            glUniform1i(mHUDUniform[shaderProgramIndex], false);
+        }
     }
     if(shaderProgramIndex == 2)
     {

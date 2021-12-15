@@ -34,6 +34,7 @@
 #include "soundsource.h"
 #include "vector3.h"
 #include "quadtree.cpp"
+#include "particle.h"
 #include "vector4d.h"
 #include "level.h"
 #include "matrix4x4.h"
@@ -90,6 +91,7 @@ void RenderSystem::init()
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
     std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
 
+
     //**********************  Texture stuff: **********************
     //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
     //and returns the Texture ID that OpenGL uses from Texture::id()
@@ -97,28 +99,40 @@ void RenderSystem::init()
     mTextures[0] = new Texture();
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
-    glActiveTexture(GL_TEXTURE3);
-    mTextures[3] = new Texture("wood.bmp");
-    glActiveTexture(GL_TEXTURE4);
-    mTextures[4] = new Texture("groundgrass.bmp");
-    glActiveTexture(GL_TEXTURE5);
-    mTextures[5] = new Texture("stone.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
-                               "left.bmp",
-                               "top.bmp",
-                               "bottom.bmp",
-                               "front.bmp",
-                               "back.bmp");
+    mTextures[2] = new Texture("wood.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    mTextures[3] = new Texture("groundgrass.bmp");
+    glActiveTexture(GL_TEXTURE4);
+    mTextures[4] = new Texture("stone.bmp");
+    glActiveTexture(GL_TEXTURE5);
+    mTextures[5] = new Texture("0hp.bmp");
+    glActiveTexture(GL_TEXTURE6);
+    mTextures[6] = new Texture("1hp.bmp");
+    glActiveTexture(GL_TEXTURE7);
+    mTextures[7] = new Texture("2hp.bmp");
+    glActiveTexture(GL_TEXTURE8);
+    mTextures[8] = new Texture("fullhp.bmp");
+    glActiveTexture(GL_TEXTURE9);
+    mTextures[9] = new Texture("right.bmp",
+                                "left.bmp",
+                                "top.bmp",
+                                "bottom.bmp",
+                                "front.bmp",
+                                "back.bmp");
 
     //Set the textures loaded to a texture unit
-
     glBindTexture(GL_TEXTURE_2D,       mTextures[0]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D,       mTextures[1]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D,       mTextures[2]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D,       mTextures[3]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D,       mTextures[4]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D,       mTextures[5]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D,       mTextures[6]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D,       mTextures[7]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D,       mTextures[8]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[9]->mGLTextureID);
+
 
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
@@ -157,6 +171,8 @@ void RenderSystem::init()
     playCamera = new Camera(90, 4/3);
     playCamera->init();
 
+    //postFBO = new PostProcessing(mShaderPrograms[5]);
+
     initObjects();
     //********************** Set up quadtree *******************
     //gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -164,6 +180,7 @@ void RenderSystem::init()
 
     //********************** Start the game loop *******************
     //systemRef->startGameLoop();
+
 }
 
 void RenderSystem::initObjects()
@@ -195,56 +212,24 @@ void RenderSystem::initObjects()
     mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light1));
     mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light2));
 
-//    //Helper Object
+    //Helper Object
     helperObject = factory->createObject(gsl::CUBE);
     helperObjectMesh = new MeshComponent;
     gameObjects.push_back(helperObject);
 
-    playCamera->setPosition(dynamic_cast<Player*>(player)->cameraTarget);
+    mParticles = new particle();
+    mParticles->init();
+
+    HUD = factory->createObject(gsl::BILLBOARD);
+    gameObjects.push_back(HUD);
+
     mMainWindow->updateOutliner(gameObjects);
 }
 
 void RenderSystem::initTextures()
 {
-    //Get the texture units of your GPU
-    int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
-    int textureUnits;
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &textureUnits);
-    std::cout << "  This GPU as " << textureUnits << " texture units / slots in total, ";
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &mTextureUnits);
-    std::cout << "and supports " << mTextureUnits << " texture units pr shader" << std::endl;
 
 
-
-    //**********************  Texture stuff: **********************
-    //Returns a pointer to the Texture class. This reads and sets up the texture for OpenGL
-    //and returns the Texture ID that OpenGL uses from Texture::id()
-    glActiveTexture(GL_TEXTURE0);
-    mTextures[0] = new Texture();
-    glActiveTexture(GL_TEXTURE1);
-    mTextures[1] = new Texture("hund.bmp");
-    glActiveTexture(GL_TEXTURE3);
-    mTextures[3] = new Texture("wood.bmp");
-    glActiveTexture(GL_TEXTURE4);
-    mTextures[4] = new Texture("groundgrass.bmp");
-    glActiveTexture(GL_TEXTURE5);
-    mTextures[5] = new Texture("stone.bmp");
-    glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
-                               "left.bmp",
-                               "top.bmp",
-                               "bottom.bmp",
-                               "front.bmp",
-                               "back.bmp");
-
-    //Set the textures loaded to a texture unit
-
-    glBindTexture(GL_TEXTURE_2D,       mTextures[0]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_2D,       mTextures[1]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_2D,       mTextures[3]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_2D,       mTextures[4]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_2D,       mTextures[5]->mGLTextureID);
 
 }
 
@@ -263,6 +248,9 @@ void RenderSystem::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnable(GL_CULL_FACE);
     glUseProgram(0); //reset shader type before rendering
+
+    if(postFBO)
+       postFBO->bindFramebuffer(0, 1920,1080);
 
     //Draws the objects
     if(gameObjects.size() > 0)
@@ -306,31 +294,42 @@ void RenderSystem::render()
                 gameObjects[i]->draw();
             }
 
+            glUseProgram(mShaderHandler->mShaderPrograms[gsl::Shaders::PARTICLESHADER]->getProgram());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderHandler->mShaderPrograms[gsl::Shaders::PARTICLESHADER]->getProgram(), "vMatrix"), 1, GL_TRUE, currentCamera->mViewMatrix.constData());
+            glUniformMatrix4fv( glGetUniformLocation(mShaderHandler->mShaderPrograms[gsl::Shaders::PARTICLESHADER]->getProgram(), "pMatrix"), 1, GL_TRUE, currentCamera->mProjectionMatrix.constData());
+            mParticles->update(0.16, currentCamera);
+
             if (i==mIndexToPickedObject)
             {
                 helperObjectMesh = gameObject->getMeshComponent();
                 helperObjectMesh->mDrawType = GL_LINE_STRIP;
                 helperObject->setMeshComponent(helperObjectMesh);
-            }
-            if (helperObject != gameObject)
-            {
-                gsl::Vector3D tempPosition;
-                gsl::Vector3D tempScale;
-                tempPosition = gameObject->getTransformComponent()->mMatrix.getPosition();
-                helperObject->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
-                tempScale = gameObject->getTransformComponent()->mMatrix.getScale();
-                helperObject->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
-            }
-            else if (helperObject == gameObject)
-            {
-                mIndexToPickedObject = 0;
+
+                if (helperObject != gameObject)
+                {
+                    gsl::Vector3D tempPosition;
+                    gsl::Vector3D tempScale;
+                    tempPosition = gameObject->getTransformComponent()->mMatrix.getPosition();
+                    helperObject->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+                    tempScale = gameObject->getTransformComponent()->mMatrix.getScale();
+                    helperObject->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
+                }
+                else if (helperObject == gameObject)
+                {
+                    mIndexToPickedObject = 0;
+                }
+                gameObject->setMeshComponent(helperObjectMesh);
             }
             if(systemRef->getEditorMode())
             {
                 playCamera->draw();
             }
+
         }
     }
+
+    if(postFBO)
+            postFBO->unbindCurrentFramebuffer();
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -352,6 +351,10 @@ void RenderSystem::render()
     //qDebug() << objectsDrawn;
     objectsDrawn = 0;
 
+    if(playerHP == 0)
+    {
+        systemRef->resetLevel();
+    }
 }
 
 //This function is called from Qt when window is exposed (shown)
@@ -614,6 +617,11 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
         }
         if(event->key() == Qt::Key_X)
         {
+            if(!systemRef->getEditorMode())
+            {
+                systemRef->getInput()->X = true;
+                static_cast<Player*>(player)->takeDamage(playerHP, systemRef->getInput());
+            }
         }
         if(event->key() == Qt::Key_Up)
         {
@@ -678,6 +686,8 @@ void RenderSystem::keyReleaseEvent(QKeyEvent *event)
         }
         if(event->key() == Qt::Key_X)
         {
+            if (systemRef->getEditorMode())
+                        systemRef->getInput()->X = false;
         }
         if(event->key() == Qt::Key_Up)
         {

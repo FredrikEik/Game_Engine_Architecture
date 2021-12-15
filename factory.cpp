@@ -287,7 +287,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["TriangleSurface"]));
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 3;
         objectToCreate->mObjectType = gsl::TRIANGLESURFACE;
         objectToCreate->mObjectName = "TriangleSurface";
 		break;

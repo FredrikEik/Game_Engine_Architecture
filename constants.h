@@ -15,7 +15,9 @@ namespace gsl  //Game School Lib
         PLAINSHADER = 0,
         TEXTURESHADER = 1,
         PHONGSHADER = 2,
-        SKYBOXSHADER = 3
+        SKYBOXSHADER = 3,
+        PARTICLESHADER = 4,
+        FRAMEBUFFERSHADER = 5
     };
 
     enum ObjectType
@@ -29,7 +31,8 @@ namespace gsl  //Game School Lib
         SKYBOX = 6,
         LIGHT = 7,
         PLAYER = 8,
-        TRIANGLESURFACE = 9
+        TRIANGLESURFACE = 9,
+        BILLBOARD = 10
     };
 
     const int NumberOfShaders{6};

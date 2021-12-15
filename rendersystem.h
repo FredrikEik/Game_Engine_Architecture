@@ -18,6 +18,8 @@
 #include "light.h"
 #include "player.h"
 #include "shaderhandler.h"
+#include "particle.h"
+#include "postprocessing.h"
 
 class QOpenGLContext;
 class Shader;
@@ -34,7 +36,7 @@ class System;
 // This is the same as using glad and glw from general OpenGL tutorials
 class RenderSystem : public QWindow, protected QOpenGLFunctions_4_1_Core
 {
-    Q_OBJECT
+
 public:
     RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow);
     ~RenderSystem() override;
@@ -61,6 +63,8 @@ public:
     void createObjectbutton(int objectType);
     void playPausebutton(const QSurfaceFormat &format);
 
+    int playerHP = 3;
+
     /**Textures**/
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
@@ -74,7 +78,16 @@ public:
     GameObject* skybox = nullptr;
     GameObject* triangleSurface = nullptr;
     GameObject* helperObject = nullptr;
+    GameObject* HUD;
+    particle* mParticles;
     MeshComponent *helperObjectMesh= nullptr;
+
+    /**Post Processing**/
+    PostProcessing* postFBO={nullptr};
+    unsigned int framebuffer;
+    unsigned int framebufferTexture;
+    unsigned int RBO;
+    unsigned int quadVAO, quadVBO;
 
     System* systemRef{nullptr}; //points back to system
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
