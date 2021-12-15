@@ -309,7 +309,8 @@ void RenderWindow::render()
             else
                 glUniform1i( m2DUniform1, 0);
             //draw the object
-            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox" && !ObjFactory->mGameObject[i]->bHudElement)
+            if(mUseFrustumCulling && i > cullSafe && ObjFactory->mGameObject.size() > 0 && ObjFactory->mGameObject[i]->mName != "skybox"
+                    && !ObjFactory->mGameObject[i]->bHudElement)
             {
                 if(frustumCulling(i))
                     continue;
