@@ -34,14 +34,14 @@ CoreEngine *CoreEngine::getInstance()
 
 void CoreEngine::togglePlayMode(bool shouldPlay)
 {
-    //isPlaying = shouldPlay;
+    //spill modus
     if (shouldPlay == true)
     {
         SoundSystem::getInstance()->togglePlaySounds(true);
         mRenderSystem->isPlaying = true;
         isPlaying = true;
-        //mRenderSystem->mCurrentCamera = mGameCamera;
     }
+    //editor modus
     else
     {
         SoundSystem::getInstance()->togglePlaySounds(false);
@@ -53,52 +53,17 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 
 }
 
+//setter opp default scene for editoren
 void CoreEngine::setUpScene()
 {
-    //********************** Making the object to be drawn **********************
-
-    //loadBoss("boss.json");
+    //setter opp alle textures
     mResourceManager->setUpAllTextures();
-
-    //Axis
+    //lager xyz akse for editormodus
     axis = mResourceManager->addObject("axis");
     axis->objName = "Axis";
     mRenderSystem->mGameObjects.push_back(axis);
-    //scene->setupScene1();
-    //scene->setupScene1();
 
-    //PLAYER
-    player = mResourceManager->addObject("suzanne.obj");
-    player->mMaterial->mShaderProgram = 0;
-    player->mMaterial->mTextureUnit = 0;
-    player->mTransform->mMatrix.rotateY(180.f);
-    player->mTransform->mMatrix.scale(0.5f);
-    player->mTransform->mMatrix.translate(0.f, 0, -20);
-    mResourceManager->addCollider("sphere", player);
-    //Adds sound to player:
-    mResourceManager->addComponent("neon_stereo.wav", player);
-
-    //Hack to test sound system
-    player->mSoundComponent->shouldPlay = true;
-    player->objName = "Player";
-
-
-    //BOSS
-//    boss = mResourceManager->addObject("suzanne3.obj");
-//    boss->mTransform->mMatrix.translate(-2, 1.f,2.f);
-//    boss->mMaterial->mShaderProgram = 1;
-//    boss->mMaterial->mTextureUnit = 2;
-//    boss->mTransform->mMatrix.rotateY(180.f);
-//    boss->mTransform->mMatrix.translate(-2.f/**i*/, -1.f, 5.f/**j*/);
-//    boss->mTransform->mMatrix.scale(1.5f);
-//    mResourceManager->addCollider("sphere", boss);
-//    mResourceManager->addComponent("run_stereo.wav", boss);
-//    boss->mSoundComponent->shouldPlay = false;
-//    //looping fungerer ikke
-//    boss->mSoundComponent->looping = false;
-//    boss->objName = "boss";
-    //mRenderSystem->mGameObjects.push_back(boss);
-
+    //Setter opp skybox
     skybox = mResourceManager->addObject("skybox");
     skybox->mMaterial->mShaderProgram = 2;
     skybox->mMaterial->mTextureUnit = 1;
@@ -106,16 +71,17 @@ void CoreEngine::setUpScene()
     skybox->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(skybox);
 
+    //setter opp begge kameraene
     mGameCamera = new Camera();
     mEditorCamera = new Camera();
     mGameCamera->mViewMatrix.rotateY(30.f);
     mGameCamera->mViewMatrix.rotateX(90.f);
     mEditorCamera->mPosition = gsl::Vector3D(0.f, 20.f, 13.f);
 
-    mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
     mRenderSystem->mCurrentCamera = mEditorCamera;
 
+    //Setter opp terrenget hentet fra las data
     Las = mResourceManager->addObject("LAS");
     Las->mMaterial->mShaderProgram =3;
     Las->mMaterial->mTextureUnit = 0;
@@ -123,29 +89,31 @@ void CoreEngine::setUpScene()
     Las->useFrustum = false;
     mRenderSystem->mGameObjects.push_back(Las);
 
-    //Connect the gameloop timer to the render function:
-    //This makes our render loop
+    //game/render loopen som skal oppdateres 60 ganger i sekundet
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
-    //This timer runs the actual MainLoop
-    //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
     mGameLoopTimer->start(16);
-    for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
-    {
-        mRenderSystem->mGameObjects[i]->startPos =
-                mRenderSystem->mGameObjects[i]->mTransform->mMatrix.getPosition();
-    }
-
-
-
-
-
 
 }
 
 void CoreEngine::testScene()
 {
+    //legger til en spiller
+    player = mResourceManager->addObject("suzanne.obj");
+    player->mMaterial->mShaderProgram = 0;
+    player->mMaterial->mTextureUnit = 0;
+    player->mTransform->mMatrix.rotateY(180.f);
+    player->mTransform->mMatrix.scale(0.5f);
+    player->mTransform->mMatrix.translate(0.f, 0, -20);
+    //legger til sphere kollisjon
+    mResourceManager->addCollider("sphere", player);
+    //legger til musikk til spilleren:
+    mResourceManager->addComponent("neon_stereo.wav", player);
+    player->mSoundComponent->shouldPlay = true;
+    player->objName = "Player";
+    mGameCamera->mPosition = player->mTransform->mMatrix.getPosition();
 
-   for(int i = 0; i < 10; i++)
+    //spawner 10 fiender på rekke
+    for(int i = 0; i < 10; i++)
     {
 
         enemy = mResourceManager->addObject("suzanne3.obj");
@@ -154,24 +122,18 @@ void CoreEngine::testScene()
         enemy->mMaterial->mTextureUnit = 2;
         enemy->mTransform->mMatrix.rotateY(180.f);
         enemy->mTransform->mMatrix.scale(0.5f);
-
+        //legger til sphere kollisjon og lyd
         mResourceManager->addCollider("sphere", enemy);
         mResourceManager->addComponent("roblox_stereo.wav", enemy);
         enemy->mSoundComponent->shouldPlay = false;
         enemy->mSoundComponent->looping = false;
-
         mRenderSystem->mGameObjects.push_back(enemy);
-
         enemy->objName = "enemy";
-
-        qDebug() << "enemy " << i;
-
-
         enemies.push_back(enemy);
-
 
     }
 
+    //legger til prosjektil
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
     projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
@@ -182,6 +144,7 @@ void CoreEngine::testScene()
     playerSpawned = true;
     enemySpawned = true;
 
+    //setter startpoisjon til objektene så de kan resettes senere
     for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
     {
         mRenderSystem->mGameObjects[i]->startPos =
@@ -195,6 +158,7 @@ void CoreEngine::testScene()
 void CoreEngine::spawnParticles(GameObject * temp)
 {
 
+    // Spawner partikler på posisjonen til objektet
     tempPosX = temp->mTransform->mMatrix.getPosition().getX();
     tempPosY = temp->mTransform->mMatrix.getPosition().getY();
     tempPosZ = temp->mTransform->mMatrix.getPosition().getZ();
@@ -211,11 +175,12 @@ void CoreEngine::spawnParticles(GameObject * temp)
 
     }
     particlesSpawned = true;
-    //Particles->isAlive = true;
+
 }
 
 void CoreEngine::spawnProjectile()
 {
+    // spawner prosjektilene ut fra spilleren
     tempPosX = player->mTransform->mMatrix.getPosition().getX();
     tempPosY = player->mTransform->mMatrix.getPosition().getY();
     tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
@@ -232,7 +197,7 @@ void CoreEngine::updateCamera()
     if (isPlaying)
     {
 
-        // MÅ ORDNE ROTATION RIKTIG
+        // oppdaterer 3.person kamera
         gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
         mRenderSystem->mCurrentCamera->mPosition = playerpos;
         mRenderSystem->mCurrentCamera->mPosition.setZ(playerpos.getZ()+2.f);
@@ -247,6 +212,8 @@ void CoreEngine::updateScene()
 {
 
     updateCamera();
+
+    //bestemmer hva som skal rendres i editor eller play mode
     if(isPlaying)
         axis->RenderInPlaymode = false;
     else
@@ -258,40 +225,37 @@ void CoreEngine::updateScene()
         spawnBoss = false;
     }
 
+    //beveger prosjektilen
     if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);
 
     for(unsigned int i = 0; i< enemies.size(); i++)
     {
+        //beveger fiender
         if(enemies[i]->isAlive)
         enemies[i]->mTransform->mMatrix.translateZ(-.002);
 
-        //test collision
+
         if(!enemies[i]->mCollider->objectsHasCollided)
         {
+            //sjekker om fiende blir truffet av prosjektilen
             if(getInstance()->mResourceManager->checkCollision(
             projectile, enemies[i]))
             {
                 qDebug() << "collided !";
+                //effekter får å se at fienden er død
                 enemies[i]->mTransform->mMatrix.rotateZ(90);
+
                 enemies[i]->mCollider->objectsHasCollided = true;
+                //en del bugs med lyden, kan uncommente for å se at det funker
                 //enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
-
-                //spawnParticles(enemies[i]);
-
-
-                // INVALID NAME ERROR KOMMER AV FEIL MED LYDEN!
-
-               // projectile->mSoundComponent->shouldPlay = true;
-
                 //velger om man skal drawe et object eller ikke
                 goatDead = true;
 
                 qDebug() << "enemy " << i << " hit";
 
-                //enemy->mSoundComponent->shouldPlay = false;
-
+                //oppdaterer score
                 score += 10;
 
 
@@ -302,20 +266,17 @@ void CoreEngine::updateScene()
 
         if(player->isAlive && enemies[i]->isAlive)
         {
+            //Sjekker om fienden treffer spilleren
             if(getInstance()->mResourceManager->checkCollision(
             player, enemies[i]))
             {
                 qDebug() << "You died!";
                 player->mTransform->mMatrix.rotateZ(90);
-                //enemy->mCollider->objectsHasCollided = true;
                 enemies[i]->mSoundComponent->shouldPlay = true;
-                //enemy->mSoundComponent->looping = false;
+                //spawner blodpartikler
                 spawnParticles(player);
                 projectile->mSoundComponent->shouldPlay = true;
-
-
-                testDelete = true;
-
+                particleTimer = true;
                 player->isAlive = false;
 
             }
@@ -325,12 +286,9 @@ void CoreEngine::updateScene()
 
 
 
-    //mMainWindow->UpdateScore(score);
-
-
 
 }
-
+//simulerings innlevering
 void CoreEngine::UpdateSimulation()
 {
     if(!Rain.empty()){
@@ -342,11 +300,12 @@ void CoreEngine::UpdateSimulation()
 
 }
 
+
 void CoreEngine::reset()
 {
     for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
     {
-
+        //resetter posisjonen til objektene i scenen
         mRenderSystem->mGameObjects[i]->mTransform->mMatrix.setPosition(
         mRenderSystem->mGameObjects[i]->startPos.x,
         mRenderSystem->mGameObjects[i]->startPos.y,
@@ -355,39 +314,38 @@ void CoreEngine::reset()
 
 }
 
-void CoreEngine::loadBoss(std::string scene)
+void CoreEngine::loadBoss(std::string file)
 {
-    QFile loadFile(QString((gsl::AssetFilePath + scene).c_str()));
+    //henter fil fra folder
+    QFile loadFile(QString((gsl::AssetFilePath + file).c_str()));
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qDebug() << "error reading JSON file";
         return;
     }
-    qDebug() << "scene open";
-    QByteArray saveData = loadFile.readAll();   //read whole file
-    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //convert to json document
-    QJsonObject jsonObject = loadDoc.object();  //read first object == whole thing
+
+    QByteArray saveData = loadFile.readAll();   //leser json fil
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //konverterer til json dokument
+    QJsonObject jsonObject = loadDoc.object();  //leser objekt data
 
     if (jsonObject.contains("Boss") && jsonObject["Boss"].isArray())
     {
         QJsonArray entityArray = jsonObject["Boss"].toArray();
-        //go through each entity in file
-        int entityIndex{0};   //used to print log afterwards
-        for ( ; entityIndex < entityArray.size(); ++entityIndex) {
+        //går gjennom alle entetiene i filen, for øyeblikket bare en
+
+        for ( int entityIndex{0}; entityIndex < entityArray.size(); ++entityIndex) {
             GameObject *tempObj{nullptr};
-            QString name;   //this is pushed as the key to the mEntityMap later ???? - maybe not
+            QString name;
 
-            QJsonObject entityObject = entityArray[entityIndex].toObject();   //first entity as object
+            QJsonObject entityObject = entityArray[entityIndex].toObject();
 
-            if (entityObject.contains("name") && entityObject["name"].isString())
-                name = entityObject["name"].toString();
-
+            //leser mesh navnet så man lager en entity utifra det
             if (entityObject.contains("mesh") && entityObject["mesh"].isString())
             {
                 QString mesh = entityObject["mesh"].toString();
                 tempObj = mResourceManager->addObject(mesh.toStdString());
 
             }
-
+            //henter posisjonen fra filen og setter posisjonen til bossen
             if (entityObject.contains("position") && entityObject["position"].isArray())
             {
                 QJsonArray positionArray = entityObject["position"].toArray();
@@ -397,6 +355,7 @@ void CoreEngine::loadBoss(std::string scene)
 
 
             }
+            //henter skaleringen og setter riktig størrelse til bossen
             if (entityObject.contains("scale") && entityObject["scale"].isArray())
             {
 
@@ -411,15 +370,14 @@ void CoreEngine::loadBoss(std::string scene)
         }
 
     }
-    else
-        qDebug() << "somwthing not right";
+
 
 }
 
 void CoreEngine::handleInput()
 {
     //Camera
-    float speed = .5f;
+    float speed = .4f;
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
     {
@@ -438,9 +396,9 @@ void CoreEngine::handleInput()
     }
     else if(mInput.LMB)
     {
-        if(isPlaying && playerSpawned)
+        if(isPlaying && playerSpawned && player->isAlive)
         {
-
+            //skyter prosjektiler
             spawnProjectile();
         }
     }
@@ -462,7 +420,7 @@ void CoreEngine::handleInput()
         if(isPlaying && player->isAlive)
         {
             player->move(speed, 0, 0);
-            //testDelete = true;
+
         }
 
     }

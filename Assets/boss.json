@@ -2,7 +2,6 @@
     "Boss":
     [
         {
-            "name": "boss",
             "mesh": "suzanne3.obj",
             "position": [-2, 1.0,2.0],
             "scale": [1.5, 1.5, 1.5]            

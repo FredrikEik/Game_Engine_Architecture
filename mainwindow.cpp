@@ -97,7 +97,7 @@ void MainWindow::init()
 
 
 
-//Example of a slot called from the button on the top of the program.
+//toggler wireframe
 void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 {
     mRenderSystem->toggleWireframe(checked);
@@ -110,52 +110,33 @@ void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 void MainWindow::on_pb_togglePlay_toggled(bool checked)
 {
 
-
     mCoreEngine->togglePlayMode(checked);
     mRenderSystem->toggleFrustum(checked);
-
+    //bytter mellom spill og editormodus
     if(checked)
         ui->pb_togglePlay->setText("Stop (R)");
     else
         ui->pb_togglePlay->setText("Play (R)");
 }
 
-
-
-
-
 void MainWindow::on_pushButton_clicked()
 {
+    //spawner boss
     if(!mRenderSystem->isPlaying)
     mCoreEngine->loadBoss("boss.json");
 
-
 }
-void MainWindow::selectObjectByIndex(int indexIn)
-{
 
-    //mCurrentSelectedItem->setForeground(Qt::green);
-//   if(mSceneOutlinerRoot)
-//    {
-//        if() mCurrentEditItem->setSelected(false);
-
-//        mCurrentEditItem = mSceneOutlinerRoot->child(indexIn);
-//        mCurrentEditItem->setSelected(true);
-
-//        on_outliner_itemClicked(mCurrentEditItem, 0);
-//    }
-
-}
 
 void MainWindow::UpdateScore(int value)
 {
-
-     ui->progressBar->setValue(value);
+    //oppdaterer scoreprogress
+    ui->progressBar->setValue(value);
 }
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
 
-//setter opp lists
+//setter opp lister med items
 
     if(clicked)
     {
@@ -181,15 +162,13 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
         mCurrentSelectedItem = nullptr;
     }
 
-
-
-
-
 }
+
+
 
 void MainWindow::on_actionAdd_Player_triggered()
 {
-    //mTransformWidget->objectsInList +=1;
+    //legger til spilleren
 
     if(CoreEngine::getInstance()->isPlaying == false)
     {
@@ -202,6 +181,7 @@ void MainWindow::on_actionAdd_Player_triggered()
 void MainWindow::on_actionAdd_Enemy_triggered()
 {
 
+    //legger til fiende
     if(CoreEngine::getInstance()->isPlaying == false)
     {
 
@@ -213,7 +193,7 @@ void MainWindow::on_actionAdd_Enemy_triggered()
 
 void MainWindow::on_actionAdd_XYZ_triggered()
 {
-
+    //legger til akse
     if(CoreEngine::getInstance()->isPlaying == false)
     {
 
@@ -226,7 +206,7 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-
+    //legger til en scene
     mCoreEngine->testScene();
 
 
@@ -244,9 +224,9 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_progressBar_valueChanged(int value)
 {
+ //sjekker om man har full score
  if(value == 100)
  {
-
      mCoreEngine->spawnBoss = true;
      qDebug() << " Boss Spawned!";
  }
@@ -254,5 +234,6 @@ void MainWindow::on_progressBar_valueChanged(int value)
 
 void MainWindow::on_pushButton_3_clicked()
 {
+    //reset scene
     mCoreEngine->reset();
 }

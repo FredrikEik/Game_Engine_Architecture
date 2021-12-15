@@ -69,7 +69,12 @@ public:
 
 private:
 
+
    int mIndexToPickedObject{-1};
+
+   int viewMatrix{-1};
+   int projectionMatrix{-1};
+   int modelMatrix{-1};
 
     void init();
 
@@ -83,6 +88,7 @@ private:
     GLint mMatrixUniform{-1};
     GLint vMatrixUniform{-1};
     GLint pMatrixUniform{-1};
+
 
     void setupTextureShader(int shaderIndex);
     GLint mMatrixUniform1{-1};
@@ -120,7 +126,7 @@ private:
 
     bool DrawInEditorOnly = false;
 
-    void updateDt();
+
     float dt = 0;
     float curTime = 0;
     float lastTime = 0;

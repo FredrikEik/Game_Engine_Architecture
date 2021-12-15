@@ -50,7 +50,7 @@ public:
     bool particlesSpawned = false;
     bool enemySpawned = false;
     bool goatDead = false;
-    bool testDelete = false;
+    bool particleTimer = false;
 
     bool startTimer = false;
 

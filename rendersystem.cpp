@@ -122,31 +122,18 @@ void RenderSystem::init()
                                     (gsl::ShaderFilePath + "phongshader.frag").c_str());
     qDebug() << "Texture shader program id: " << mShaderPrograms[3]->getProgram();
 
+    //setup alle shaders
     setupPlainShader(0);
     setupTextureShader(1);
     setupSkyboxShader(2);
     setupLightShader(3);
 
-    //********************** Making the object to be drawn **********************
-    //Safe to do here because we know OpenGL is started
-    //Probably should be placed elsewhere
-
-
     this->dt = 0;
     this->curTime = 0;
     this->lastTime = 0;
 
-
-
-
-    //timer.start();
-
-
-    //********************** Set up camera **********************
-    //Done in CoreEngine->setUpScene
 }
 
-// Called each frame - doing the job of the RenderSystem!!!!!
 void RenderSystem::render()
 {
     mTimeStart.restart();   //restart FPS clock
@@ -154,36 +141,28 @@ void RenderSystem::render()
     mObjectsDrawn = 0;      //reset object counter
     mParticlesDrawn = 0;
 
-    mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
+    mContext->makeCurrent(this);
+    initializeOpenGLFunctions();
 
-    initializeOpenGLFunctions();    //must call this every frame it seems...
-
-    //to clear the screen for each redraw
+    //klarer skjermen for hver redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(0); //reset shader type before rendering
 
-    //Draws the objects
     for(unsigned int i{0}; i < mGameObjects.size(); i++)
     {
-        /************** LOD and Frustum culling stuff ***********************/
+        //lod og frustum
         gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
         gsl::Vector3D distanceVector = gobPos -cameraPos;
 
         float angle = gsl::rad2degf(acos(distanceVector.normalized() * mCurrentCamera->mForward.normalized()));
+        //if angle between camera Forward, and camera->GameObject > FOV of camera
 
-        //float angle = gsl::rad2degf(acos(distanceVector.normalized() * CoreEngine::getInstance()->mEditorCamera->mForward.normalized()));
-
-        //        qDebug() << "angle:" << angle;    // <-qDebug() really kills performance
-
-//        //if angle between camera Forward, and camera->GameObject > FOV of camera
-
-        //Error når continue
-
+        //sjekker frustum hvis objekte har det aktivert
         if(!toogleFrustumDrawing && mGameObjects[i]->useFrustum)
         {
                     if( angle > mFOVangle)
-                        continue;   //don't draw object
+                        continue;   //ikke draw
         }
 
 
@@ -193,18 +172,10 @@ void RenderSystem::render()
         //LOD calculation
         float length = distanceVector.length();
 
-        /*************************************/
 
         glUseProgram(mShaderPrograms[mGameObjects[i]->mMaterial->mShaderProgram]->getProgram() );
 
-        /********************** REALLY, REALLY MAKE THIS ANTOHER WAY!!! *******************/
-
-        //This block sets up the uniforms for the shader used in the material
-        //Also sets up texture if needed.
-        int viewMatrix{-1};
-        int projectionMatrix{-1};
-        int modelMatrix{-1};
-
+        //oppdaterer alle 4 forskjellige shader alternativene
         if (mGameObjects[i]->mMaterial->mShaderProgram == 0)
         {
             viewMatrix = vMatrixUniform;
@@ -216,8 +187,6 @@ void RenderSystem::render()
             viewMatrix = vMatrixUniform1;
             projectionMatrix = pMatrixUniform1;
             modelMatrix = mMatrixUniform1;
-
-            //Now mMaterial component holds texture slot directly - probably should be changed
             glUniform1i(mTextureUniform, mGameObjects[i]->mMaterial->mTextureUnit);
         }
 
@@ -227,22 +196,23 @@ void RenderSystem::render()
             projectionMatrix = pMatrixUniformSS;
             modelMatrix = mMatrixUniformSS;
 
-            glUniform1i(mTextureUniformSS, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
+            glUniform1i(mTextureUniformSS, mGameObjects[i]->mMaterial->mTextureUnit);
         }
         else if (mGameObjects[i]->mMaterial->mShaderProgram == 3)
         {
+
+            //setter opp lys
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
             modelMatrix = mMatrixUniform2;
-            glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit); //Changing this int selects the texture to be used.
-
+            glUniform1i(mTextureUniform2, mGameObjects[i]->mMaterial->mTextureUnit);
             glUniform1f(mAmbientStrengt, mAmbientStrengt);
             glUniform1f(mLightStrengt, 2);
 
         }
-        /************ CHANGE THE ABOVE BLOCK !!!!!! ******************/
 
-        //send data to shader
+
+        //sender data til shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
@@ -250,14 +220,12 @@ void RenderSystem::render()
 
 
         //draw the object
-        //***Quick hack*** LOD test:
-
-        //test for å kun rendre det som er i live
+        //sjekker hvem som skal drawes i bare play mode også
         if(mGameObjects[i]->RenderInPlaymode)
         {
 
 
-            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //check LOD levels
+            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //sjekker LOD levels
             {
                 if (length < 8)
                 {
@@ -281,19 +249,17 @@ void RenderSystem::render()
                     mObjectsDrawn++;
                 }
             }
-            else    //no LOD exists
+            else    //ingen LOD
             {
                 glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-
                 glDrawArrays(mGameObjects[i]->mMesh->mDrawType, 0, mGameObjects[i]->mMesh->mVertexCount[0]);
-
                 mVerticesDrawn += mGameObjects[i]->mMesh->mVertexCount[0];
                 mObjectsDrawn++;
             }
         }
 
 
-
+        //lager linebox rundt objekte som er mousepicket
         if(i == mIndexToPickedObject)
         {
             linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
@@ -303,6 +269,7 @@ void RenderSystem::render()
 
 
         srand( (float)time( NULL ) );
+        //oppdaterer scenen hvis spille spilles og starter timeren
         if(CoreEngine::getInstance()->isPlaying == true)
         {
 
@@ -312,10 +279,9 @@ void RenderSystem::render()
 
         }
 
-
-       for(unsigned int j{0}; j < mParticles.size(); j++)
-       {
-
+        //oppdaterer alle partiklene
+        for(unsigned int j{0}; j < mParticles.size(); j++)
+        {
 
            glUseProgram(mShaderPrograms[mParticles[j]->mMaterial->mShaderProgram]->getProgram() );
 
@@ -329,7 +295,6 @@ void RenderSystem::render()
            if(mParticles[j]->isAlive)
            {
 
-
             glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mParticles[j]->mTransform->mMatrix.constData());
@@ -339,13 +304,6 @@ void RenderSystem::render()
             mVerticesDrawn += mParticles[j]->mMesh->mVertexCount[0];
             mParticlesDrawn ++;
 
-
-
-
-
-
-
-
             if(CoreEngine::getInstance()->isPlaying == true)
             {
 
@@ -353,7 +311,7 @@ void RenderSystem::render()
                 if(CoreEngine::getInstance()->particlesSpawned == true)
                 {
 
-
+                    //beveger partiklene i en tilfeldig retning for å få en splash effekt
                     mParticles[j]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
@@ -361,7 +319,8 @@ void RenderSystem::render()
                                                             );
 
 
-                }
+               }
+                //fjerner partiklene etter 1 sekund
                 if(timer.elapsedSeconds() >= 1)
                 {
                     mParticles[j]->isAlive = false;
@@ -375,9 +334,6 @@ void RenderSystem::render()
 
         }
 
-
-
-        this->updateDt();
         glBindVertexArray(0);
     }
 
@@ -385,6 +341,7 @@ void RenderSystem::render()
 
     Camera *tempcam = CoreEngine::getInstance()->mGameCamera;
 
+    //lager frustum
     MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(
                 tempcam ->mFrustum
                 );
@@ -394,20 +351,19 @@ void RenderSystem::render()
     temp.rotateY(-tempcam->mYaw);
     temp.rotateX(tempcam->mPitch);
 
-    //glUniformMatrix4fv( mMatrixUniform, 1, GL_TRUE, temp.constData());
+
     glBindVertexArray( frustum.mVAO[0] );
 
     if(toogleFrustumDrawing)
     {
+        //tegner frustum
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 
     }
 
 
-    timerSetup(!CoreEngine::getInstance()->testDelete);
-    //qDebug() << "Seconds: " << timer.elapsedSeconds();
-
+    timerSetup(!CoreEngine::getInstance()->particleTimer);
 
     //Calculate framerate before
     // checkForGLerrors() because that takes a long time
@@ -425,33 +381,18 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 }
 
-void RenderSystem::updateDt()
-{
-    curTime = mTimeStart.nsecsElapsed()/1000000.f;
-    dt = curTime - lastTime;
-    lastTime = curTime;
-
-    //qDebug() << "deltatime: " << dt;
-
-}
 
 void RenderSystem::rotateObj(double val)
 {
     mGameObjects[1]->mTransform->mMatrix.rotateZ(val);
 }
 
-void RenderSystem::setPickedObject(int pickedID)
-{
-
-}
-
 void RenderSystem::timerSetup(bool toggle)
 {
-    //bool temp = toggle;
+
     if(toggle)
     {
     timer.start();
-    //temp = false;
     }
 
 }
@@ -797,6 +738,8 @@ void RenderSystem::wheelEvent(QWheelEvent *event)
     }
     event->accept();
 }
+
+
 
 void RenderSystem::mousePicking(QMouseEvent *event)
 {
