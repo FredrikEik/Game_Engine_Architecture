@@ -35,6 +35,10 @@
 #include "../Systems/ScriptSystem.h"
 #include "../Systems/LightSystem.h"
 
+#include "../Systems/ParticleSystem.h"
+#include "../Systems/TerrainSystem.h"
+
+
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
 
@@ -75,7 +79,6 @@ void Engine::setIsPlaying(bool isPlaying)
 	{
 		save();
 	}
-	//std::cout << "bIsPlaying: " << bIsPlaying;
 }
 
 void Engine::save()
@@ -93,8 +96,8 @@ void Engine::load(const std::string& path)
 }
 
 Engine* Engine::instance = nullptr;
-float Engine::windowWidth = 800.f;
-float Engine::windowHeight = 600.f;
+float Engine::windowWidth = 1400.f;
+float Engine::windowHeight = 1000.f;
 float Engine::fov = 45.f;	
 
 //sa
@@ -166,6 +169,7 @@ void Engine::compileShaders()
 	phongShader = new Shader("Shaders/PhongShader.vert", "Shaders/PhongShader.frag");
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
+	particleShader = new Shader("Shaders/ParticleShader.vert", "Shaders/ParticleShader.frag");
 
 	GeometryPassShader = new Shader("Shaders/G_Buffer.vert", "Shaders/G_Buffer.frag");
 	LightPassShader = new Shader("Shaders/DefS_LightsShadows.vert", "Shaders/DefS_LightsShadows.frag");
@@ -185,6 +189,7 @@ void Engine::initEtities()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
+	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
 
 	SystemEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -197,16 +202,17 @@ void Engine::initEtities()
 	LightSystem::InitSBuffer(sBufferComp);
 
 	terrainEntity = ECS->newEntity();
-	ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	//ECS->loadAsset(terrainEntity, "Assets/plane.obj");
+	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
-	MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
-	meshComp->bDisregardedDuringFrustumCulling = true;
-	ECS->addComponents<TransformComponent>(terrainEntity);
-	TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
+	//MeshComponent* meshComp = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
+	//meshComp->bDisregardedDuringFrustumCulling = true;
+	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
 
-	/*
+	
 	ScriptSystem::Init();
 	//viewport->begin(window, ECS->getNumberOfEntities());
 	unitEntity = ECS->newEntity();
@@ -214,7 +220,8 @@ void Engine::initEtities()
 	ECS->loadAsset(unitEntity, "Assets/suzanne.obj");
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(unitEntity));
 	ScriptSystem::Invoke("BeginPlay", ECS);
-	*/
+
+	
 
 	dogEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, MeshComponent, MaterialComponent>(dogEntity);
@@ -256,6 +263,9 @@ void Engine::init()
 
 
 
+	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
+	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
+
 
 
 	reservedEntities = ECS->getNumberOfEntities();
@@ -266,12 +276,27 @@ void Engine::init()
 	load(Save::getDefaultAbsolutePath());
 
 
+
+	ParticleComponent::ParticleBlueprint particleBlueprint;
+	particleBlueprint.particle.currentLife = 0.5f;
+	particleBlueprint.particle.acceleration = glm::vec3(0, 0, 0);
+	particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
+	particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
+	particleBlueprint.particle.position = glm::vec3(1, 5, 1);
+	particleBlueprint.particle.startSize = 30;
+
+	//////TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
+	//uint32 particleEntity = ECS->newEntity();
+	//ECS->addComponents<TransformComponent, ParticleComponent>(particleEntity);
+	////ECS->addComponent<ParticleComponent>(unitEntity);
+	//ParticleSystem::init(particleEntity, 500000, 2000, particleBlueprint, ECS)
 }
 
 
 //int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//// input
@@ -280,9 +305,12 @@ void Engine::loop()
 		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
 
 		// TODO: Make this not happen every frame
-		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 100.0f);
+		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 
 		CollisionBroadphaseDatastructure->update();
 
@@ -295,7 +323,7 @@ void Engine::loop()
 		{
 			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
 
-			CameraSystem::updateGameCamera(cameraEntity, ECS, 0.016f);
+			CameraSystem::updateGameCamera(cameraEntity, ECS, deltaTime);
 
 			//temp placement -- calls update on scripts
 			ScriptSystem::Invoke("Update", ECS);
@@ -304,7 +332,7 @@ void Engine::loop()
 		{
 			//std::cout << "Editor camera'\n";
 			//TODO: Draw a game camera here
-			CameraSystem::updateEditorCamera(cameraEntity, ECS, 0.016f);
+			CameraSystem::updateEditorCamera(cameraEntity, ECS, deltaTime);
 		}
 		// contains camera draw and mesh system draw.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -359,11 +387,18 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
+		*/
+
 	
+
+		CameraSystem::draw(cameraEntity, particleShader, ECS);
+
+		ParticleSystem::update(cameraEntity, particleShader, ECS, deltaTime);
+
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		*/
+		
 		viewport->render();
 
 		glfwSwapBuffers(window);
@@ -480,4 +515,9 @@ bool Engine::GLLogCall(const char* function, const char* file, int line)
 		return false;
 	}
 	return true;
+}
+
+float Engine::getDeltaTime_Internal()
+{
+	return Get().deltaTime;
 }

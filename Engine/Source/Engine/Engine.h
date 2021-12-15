@@ -63,6 +63,7 @@ private:
 	class Shader* phongShader{};
 	class Shader* selectionShader{};
 	class Shader* outlineShader{};
+	class Shader* particleShader{};
 
 	class Shader* GeometryPassShader{};
 	class Shader* LightPassShader{};
@@ -78,9 +79,10 @@ private:
 	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
-	uint32 dogEntity{};
 
+	uint32 dogEntity{};
 	uint32 lightEnitites[25]{};
+
 
 	uint32 reservedEntities{};
 
@@ -98,6 +100,7 @@ public:
 	void setWindowWidth(float val) { windowWidth = val; }
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
+	uint32 getCameraEntity() const { return cameraEntity; }
 
-
+	static float getDeltaTime_Internal();
 };

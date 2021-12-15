@@ -1,8 +1,5 @@
 #include "Details.h"
 #include "../ECSManager.h"
-//#include <imgui.h>
-//#include "../imgui/Bindings/imgui_impl_glfw.h"
-//#include "../imgui/Bindings/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui.h"
 #include "../imgui/docking/imgui_impl_opengl3.h"
 #include "../imgui/docking/imgui_impl_glfw.h"
@@ -10,6 +7,8 @@
 #include "MeshWidget.h"
 #include "TextureWidget.h"
 #include "BoxColliderWidget.h"
+#include "ParticleWidget.h"
+#include "../Systems/ParticleSystem.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
 #include "../FileSystemHelpers.h"
@@ -98,6 +97,21 @@ void Details::update(int32 inEntityID)
 				break;
 			}
 		}
+		else if (index == TYPE(typeid(ParticleComponent)))
+		{
+			bool bEntityChanged{};
+			ParticleWidget* particleWidget = new ParticleWidget(windowName, ECS);
+			ImGui::NewLine();
+			particleWidget->begin(viewport, reservedEntities);
+			particleWidget->update(entityID, bEntityChanged);
+			particleWidget->end();
+			delete particleWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
+		}
 	}
 	//ImGui::BeginChild("AddComponent");
 	//static bool popup{true};
@@ -123,7 +137,8 @@ void Details::drawAddComponent()
 		transformComponent.c_str(), 
 		boxColliderComponent.c_str(), 
 		meshComponent.c_str(),
-		textureComponent.c_str()
+		textureComponent.c_str(),
+		particleComponent.c_str()
 	};
 	static const char* currentItem = "Select component";
 	ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
@@ -155,15 +170,6 @@ void Details::drawAddComponent()
 	{
 		removeComponent(currentItem);
 	}
-	//if (ImGui::ArrowButton("##r", ImGuiDir_Left))
-	//{
-	//}
-	//ImGui::SameLine(0, spacing);
-	//if (ImGui::ArrowButton("##r", ImGuiDir_Right))
-	//{
-	//}
-	//ImGui::SameLine(0, style.ItemInnerSpacing.x);
-	//ImGui::Text("Custom Combo");
 }
 
 void Details::addComponent(std::string componentToAdd)
@@ -182,6 +188,8 @@ void Details::addComponent(std::string componentToAdd)
 	}
 	else if (componentToAdd == textureComponent)
 		addTextureComponent();
+	else if (componentToAdd == particleComponent)
+		addParticleComponent();
 }
 
 void Details::removeComponent(std::string componentToAdd)
@@ -256,4 +264,16 @@ void Details::addTextureComponent()
 	{
 		ECS->loadAsset(entityID, path);
 	}
+}
+
+void Details::addParticleComponent()
+{
+	if (hasComponent(TYPE(typeid(ParticleComponent))))
+		return;
+
+	if (!hasComponent(TYPE(typeid(TransformComponent))))
+		ECS->addComponent<TransformComponent>(entityID);
+
+	ECS->addComponent<ParticleComponent>(entityID);
+	ParticleSystem::initMesh(ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID), entityID);
 }

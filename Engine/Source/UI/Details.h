@@ -22,6 +22,7 @@ protected:
 	void addMeshComponent();
 	void addAABBComponent();
 	void addTextureComponent();
+	void addParticleComponent();
 
 	std::vector<std::pair<std::type_index, uint32>> entity;
 	int32 entityID{};
@@ -29,5 +30,6 @@ protected:
 	const std::string boxColliderComponent{ "Box Collider" };
 	const std::string meshComponent{ "Mesh" };
 	const std::string textureComponent{ "Texture" };
+	const std::string particleComponent{ "Particle" };
 };
 

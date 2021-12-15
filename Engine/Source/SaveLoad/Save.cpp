@@ -62,10 +62,25 @@ void Save::saveEntityPrefab(uint32 entityID, ECSManager* ECS)
 	file.close();
 }
 
+void Save::saveComponent(uint32 entityID, std::type_index type, class ECSManager* ECS)
+{
+	std::string path;
+	if (!FileSystemHelpers::getSavePathFromFileExplorer(path))
+		return;
+	JSON component;
+	auto entity = ECS->getEntity(entityID);
+	addComponentToJson(type, entityID, component, ECS);
+	std::ofstream file(path);
+	assert(file);
+	file << std::setw(4) << component << std::endl;
+	file.close();
+}
+
 std::string Save::getDefaultAbsolutePath()
 {
 	return std::string(defaultSaveLocation + defaultSaveName);
 }
+
 
 void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::json& OUTjson, ECSManager* ECS)
 {
@@ -112,9 +127,24 @@ void Save::addComponentToJson(std::type_index type, uint32 entityID, nlohmann::j
 		assert(comp);
 		json = comp->json();
 	}
-
+	else if (type == std::type_index(typeid(ParticleComponent)))
+	{
+		auto comp = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
+		assert(comp);
+		json = comp->json();
+	}
 
 	if (json == JSON())
 		return;
 	OUTjson.push_back({ { type.name(), json} });
+}
+
+nlohmann::json Save::vec3JSON(const glm::vec3& v)
+{
+	return JSON::array({ v.x, v.y, v.z });
+}
+
+nlohmann::json Save::vec4JSON(const glm::vec4& v)
+{
+	return JSON::array({ v.x, v.y, v.z, v.w });
 }

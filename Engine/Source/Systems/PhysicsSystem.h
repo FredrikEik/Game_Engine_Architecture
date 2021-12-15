@@ -5,7 +5,7 @@ class PhysicsSystem : public BaseSystem
 {
 public:
 	static void update(uint32 terrainEntity, class ECSManager* ECS, float deltaTime);
-
+	static void setVelocity(uint32 entity, const glm::vec3& newVelocity, class ECSManager* ECS, bool isAdditive = false);
 private:
 	static glm::vec3 getAcceleration(const glm::vec3& surfaceNormal, const float& mass);
 	static glm::vec3 getVelocity(const glm::vec3& currentVelocity, 

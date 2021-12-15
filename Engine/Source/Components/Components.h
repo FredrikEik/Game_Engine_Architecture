@@ -57,7 +57,18 @@ public:
 	uint32 entityID; // TODO: Should probably be uint16
 	uint32 ID;
 	
-	virtual JSON json() { return JSON(); } // TODO: Make these pure virtual
+	/// <summary>
+	/// Formats the component as JSON. Make sure jsonParse reflects this
+	/// If not implemented, the component will not be saved.
+	/// </summary>
+	/// <returns>JSON object of all the data a component has</returns>
+	virtual JSON json() { return JSON(); }
+
+	/// <summary>
+	/// Parses the JSON and sets data accordingly. Make sure it reflects json()
+	/// If not implemented, the component cannot be loaded
+	/// </summary>
+	/// <param name="json">The json.</param>
 	virtual void jsonParse(const JSON& json) {}
 };
 
@@ -263,7 +274,83 @@ struct ShadowBufferComponent final :public Component
 	uint depthMapFBO{};
 	uint depthCubemap{};
 
+};
+
+/// <summary>
+/// The Particle Component acts as a typical particle emitter when given to an entity
+/// </summary>
+struct ParticleComponent final : public Component
+{
+	ParticleComponent(uint32 entity, uint32 componentID) : Component(entity, componentID),
+		mesh(entity, componentID), texture(entity, componentID){}
 
 
+	/// <summary>
+	/// This is the actual particle data. Should be one instance per particle
+	/// </summary>
+	struct Particle
+	{
+		glm::vec4 startColor{1,0,0,1}, endColor{1,0,0,1};
+		glm::vec3 position{};
+		glm::vec3 velocity{};
+		glm::vec3 acceleration{};
+		float totalLife{}, currentLife{}, cameraDistance{ -100000.f }, startSize{ 1 }, endSize{ 1 };
+		float textureIndex{ 1 };
+		bool active{ false };
+		bool operator<(const Particle& other)
+		{
+			return (this->active && this->cameraDistance > other.cameraDistance) || (this->active && !other.active);
+			//return (this->cameraDistance > other.cameraDistance);
+		}
+	};
 
+
+	/// <summary>
+	/// This is the template new particles are spawned from. 
+	/// If only Particle is initialized, all particles spawned will be identical. 
+	/// If any of the offsets are set, every new particle will spawn with the Particle data + random value between min and max
+	/// </summary>
+	struct ParticleBlueprint
+	{
+		Particle particle;
+		glm::vec3 positionMinOffset{}, positionMaxOffset{};
+		glm::vec3 velocityMinOffset{}, velocityMaxOffset{};
+		glm::vec3 accelerationMinOffset{}, accelerationMaxOffset{};
+		glm::vec4 colorMinOffset{}, colorMaxOffset{};
+		float sizeMinOffset{ }, sizeMaxOffset{ };
+		float lifeMinOffset{ }, lifeMaxOffset{ };
+	};
+
+	MeshComponent mesh;
+	TextureComponent texture;
+
+	std::vector<Particle> particles;
+	std::vector<float> positionData;
+	std::vector<float> colorData;
+	std::vector<float> lifeAndSizeData;
+
+	int textureRows{ 1 };
+
+	uint32 maxParticles{1};
+	uint32 activeParticles{};
+	uint32 lastUsedParticle{};
+	uint32 spawnRate{};
+
+	float spawnFrequency{};
+	float timeSinceLastSpawn{};
+	float emitterLifeTime{};
+	float emitterTotalLifeTime{};
+	bool bLoops{ false };
+
+	GLenum blendSFactor{ GL_SRC_ALPHA };
+	GLenum blendDFactor{ GL_ONE_MINUS_SRC_ALPHA };
+
+	ParticleBlueprint particleBlueprint;
+
+	GLuint positionBuffer{};
+	GLuint colorBuffer{};
+	GLuint lifeAndSizeDataBuffer{};
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };

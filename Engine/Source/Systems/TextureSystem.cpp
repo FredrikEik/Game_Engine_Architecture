@@ -37,7 +37,8 @@ void TextureSystem::loadImage(int32 entity, const std::filesystem::path& filePat
 	stbi_image_free(textureComponent->rgbImage);
 }
 
-void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map<std::string, std::string> &nameFileMap)
+
+void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map<std::string, std::string>& nameFileMap)
 {
 	std::cout << '\n' << nameFileMap.size();
 	for (const auto& it : nameFileMap)
@@ -48,9 +49,34 @@ void TextureSystem::loadMaterial(MaterialComponent* MaterialComp, const std::map
 		std::cout << name << '\n';
 
 		TextureComponent tex(MaterialComp->entityID, MaterialComp->ID);
-		loadImage(0,filename, &tex);
+		loadImage(0, filename, &tex);
 		std::cout << "test";
-		MaterialComp->textures.insert(std::make_pair(name,std::move(tex)));
+		MaterialComp->textures.insert(std::make_pair(name, std::move(tex)));
 
 	}
+}
+
+void TextureSystem::loadImageWithAlpha(const std::filesystem::path& filePath, TextureComponent* textureComponent)
+{
+	assert(textureComponent);
+
+	textureComponent->rgbImage = stbi_load(filePath.generic_string().c_str(),
+		&textureComponent->width, &textureComponent->height, &textureComponent->numberOfChannels, 0);
+
+	if (!textureComponent->rgbImage)
+		return;
+	//assert(textureComponent->rgbImage); // A bit harsh maybe. Implement graceful failing of image loading
+
+	glGenTextures(1, &textureComponent->textureID);
+	glBindTexture(GL_TEXTURE_2D, textureComponent->textureID);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureComponent->width, textureComponent->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureComponent->rgbImage);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	stbi_image_free(textureComponent->rgbImage);
 }

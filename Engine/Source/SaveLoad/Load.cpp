@@ -4,6 +4,7 @@
 #include <iostream>
 #include <typeindex>
 #include "../ECSManager.h"
+
 void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 {
 	std::ifstream file(filePath);
@@ -34,9 +35,34 @@ void Load::loadEntities(const std::filesystem::path& filePath, ECSManager* ECS)
 			}
 		}
 	}
+	file.close();
+}
 
+void Load::loadComponent(const std::filesystem::path& filePath, Component* component)
+{
+	std::ifstream file(filePath);
+	if (!file)
+		return;
+
+	JSON json;
+	file >> json;
+
+	for (const auto& entity : json)
+	{
+
+		for (const auto& it : entity.items())
+		{
+
+			component->jsonParse(it.value());
+		}
+			
+	
+	}
+
+	
 
 	file.close();
+
 }
 
 Component* Load::createComponent(std::string componentName, JSON jsonValue, uint32 entityID, ECSManager* ECS)
@@ -51,6 +77,11 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 	{
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 		component = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entityID);
+	}
+	else if (componentName == std::type_index(typeid(ParticleComponent)).name())
+	{
+		ECS->addComponent<ParticleComponent>(entityID);
+		component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
 	}
 	else if (componentName == std::type_index(typeid(MeshComponent)).name())
 	{
@@ -74,7 +105,13 @@ Component* Load::createComponent(std::string componentName, JSON jsonValue, uint
 		}
 		component = ECS->getComponentManager<TextureComponent>()->getComponentChecked(entityID);
 	}
-
+	//else if (componentName == std::type_index(typeid(ParticleComponent)).name())
+	//{
+	//	ECS->addComponent<ParticleComponent>(entityID);
+	//	component = ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID);
+	//	ParticleComponent* comp = dynamic_cast<ParticleComponent*>(component);
+	//	TextureSystem::loadImageWithAlpha(comp->texture.path, &comp->texture);
+	//}
 
 	return component;
 }

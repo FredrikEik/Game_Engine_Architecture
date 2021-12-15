@@ -7,7 +7,8 @@
 #include "../Engine/ScriptEngine.h"
 #include "TransformSystem.h"
 #include "SelectionSystem.h"
-
+#include "../Input/Input.h"
+#include "../Engine/Engine.h"
 void PrintMethod_Internal(MonoString* string)
 {
 	char* cppString = mono_string_to_utf8(string);// mono_string_chars(string);
@@ -40,12 +41,19 @@ void ScriptSystem::Init()
 	//Namespace.Class::Method + a Function pointer with the actual definition
 	BindInternalFunction("ScriptInJin.Debug::PrintMethod_Internal", &PrintMethod_Internal);
 
-	//mono_add_internal_call("ScriptInJin.Entity::get_EntityID", &);
+	//mono_add_internal_cl("ScriptInJin.Entity::get_EntityID", &);
 	BindInternalFunction("ScriptInJin.Entity::getEntityID_internal", &getEntityID_Internal);
 	BindInternalFunction("ScriptInJin.Transform::Move_Internal", &TransformSystem::move_internal);
 	BindInternalFunction("ScriptInJin.Transform::getTransform_internal", &TransformSystem::getTransform_internal);
+	BindInternalFunction("ScriptInJin.Transform::setPosition_internal", &TransformSystem::setPosition_internal);
+	//BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
 	BindInternalFunction("ScriptInJin.Entity::IsEntitySelected_internal", &SelectionSystem::IsEntitySelected_internal);
-	
+	BindInternalFunction("ScriptInJin.Input::getCursorWorldPosition_Internal", &SelectionSystem::getCursorWorldPosition_Internal);
+	BindInternalFunction("ScriptInJin.Input::getMouseKeyState_Internal", &Input::getMouseKeyState_Internal);
+	BindInternalFunction("ScriptInJin.Entity::getDeltaTime_Internal", &Engine::getDeltaTime_Internal);
+	BindInternalFunction("ScriptInJin.Entity::getObject_Internal", &ScriptSystem::getObject_Internal);
+
+
 }
 
 void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* manager)
@@ -55,6 +63,7 @@ void ScriptSystem::Invoke(const std::string& functionToCall, class ECSManager* m
 
 	for (auto ScriptComp : scriptArray)
 	{
+		//std::cout << "Invoking update on entity: " << ScriptComp.entityID<<"\n";
 		mono_runtime_invoke(ScriptComp.m_Methods[std::hash<std::string>{}(functionToCall)], ScriptComp.m_Object, nullptr, nullptr);
 	}
 }
@@ -89,7 +98,6 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string cla
 		scriptComp->m_Methods.insert(std::make_pair<size_t, MonoMethod*>(std::move(hashVal), std::move(monoMethod)));
 	}
 
-
 	scriptComp->m_Object = mono_object_new(SE->getDomain(), scriptComp->m_Class);
 	mono_runtime_object_init(scriptComp->m_Object);
 
@@ -99,4 +107,13 @@ void ScriptSystem::InitScriptObject(ScriptComponent* scriptComp, std::string cla
 	//todo 
 	// parameters
 	//fields
+}
+
+MonoObject* ScriptSystem::getObject_Internal(uint32 entity)
+{
+	ScriptComponent* component = Engine::Get().getECSManager()->getComponentManager<ScriptComponent>()->getComponentChecked(entity);
+	
+	if(!component)
+		return nullptr;
+	return component->m_Object;
 }

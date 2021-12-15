@@ -35,6 +35,24 @@ const MouseKeyState& Input::getMouseKeyState(uint8 key) const
     return m_mouseKeyStateCurrent[key];
 }
 
+
+bool Input::getMouseKeyState_Internal(uint8 key, PRESSED_STATE state)
+{
+    auto mouseKeyState = instance->getMouseKeyState(key);
+    switch (state)
+    {
+    case KEYSTATE_PRESSED:
+        return mouseKeyState.bPressed;
+    case KEYSTATE_HELD:
+        return mouseKeyState.bHeld;
+    case KEYSTATE_RELEASED:
+        return mouseKeyState.bReleased;
+    default:
+        break;
+    }
+    return false;
+}
+
 void Input::setMousePosition(GLFWwindow* window, double xpos, double ypos)
 {
     m_mousePosition.x = xpos;

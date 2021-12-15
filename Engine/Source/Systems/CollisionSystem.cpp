@@ -169,3 +169,10 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 		if (tempPos.z > OUTscaledMax.z) OUTscaledMax.z = (tempPos.z);
 	}
 }
+
+void CollisionSystem::setShouldGenerateOverlapEvents(uint32 entity, ECSManager* ECS, bool shouldGenerate)
+{
+	if (!ECS->getComponentManager<AxisAlignedBoxComponent>()) return;
+	AxisAlignedBoxComponent* AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
+	AABB->bShouldGenerateOverlapEvents = shouldGenerate;
+}
