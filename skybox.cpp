@@ -21,14 +21,10 @@ Skybox::~Skybox()
 
 }
 
-void Skybox::init()//(GLint matrixUniform[4])
+void Skybox::init()
 {
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-
-    //mMaterial->setActiveShader(ShaderType::SKYBOX_SHADER);
-    //mMaterial->setActiveTextureSlot(2);
-    //mMaterial->setupModelMatrixUniform(mMatrixUniform, matrixUniform);
 
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
     glBindVertexArray( getMeshComponent()->mVAO );
@@ -59,8 +55,6 @@ void Skybox::init()//(GLint matrixUniform[4])
     glBindVertexArray(0);
 }
 
-
-
 void Skybox::readFile(std::string filename)
 {
     //Open File
@@ -78,9 +72,6 @@ void Skybox::readFile(std::string filename)
     std::vector<QVector3D> tempNormals;
     std::vector<QVector2D> tempUVs;
 
-    //    std::vector<Vertex> mVertices;    //made in VisualObject
-    //    std::vector<GLushort> mIndices;   //made in VisualObject
-
     // Varible for constructing the indices vector
     unsigned int temp_index = 0;
 
@@ -97,14 +88,10 @@ void Skybox::readFile(std::string filename)
 
         if (oneWord == "#")
         {
-            //Ignore this line
-            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
             continue;
         }
         if (oneWord == "")
         {
-            //Ignore this line
-            //            qDebug() << "Line is blank ";
             continue;
         }
         if (oneWord == "v")
@@ -205,12 +192,11 @@ void Skybox::readFile(std::string filename)
 void Skybox::draw()
 {
     initializeOpenGLFunctions();
+
     //Disables depth masking temporarily while drawing skybox
     glDepthMask(GL_FALSE);
     glBindVertexArray(getMeshComponent()->mVAO);
-    //glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, getTransformComponent()->mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
-    //glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, &getMeshComponent()->mIndices);
     glDepthMask(GL_TRUE);
 }
 
