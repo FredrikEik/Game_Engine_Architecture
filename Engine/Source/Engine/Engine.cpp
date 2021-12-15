@@ -71,7 +71,7 @@ void Engine::setIsPlaying(bool isPlaying)
 	if (!isPlaying)
 	{
 		load(Save::getDefaultAbsolutePath());
-		TransformSystem::setPosition(gameCameraEntity, glm::vec3(80, 0, 145), ECS);
+		TransformSystem::setPosition(gameCameraEntity, glm::vec3(70, 0, 140), ECS);
 		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
 		ScriptSystem::uninitializeAllComponents(ECS);
 		ECS->removeComponent<ScriptComponent>(gameStateEntity);
@@ -189,8 +189,10 @@ void Engine::init()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
-	TransformSystem::move(gameCameraEntity, glm::vec3(80, 0, 145), ECS);
-	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
+	TransformSystem::move(gameCameraEntity, glm::vec3(70, 0, 140), ECS);
+	TransformSystem::move(editorCameraEntity, glm::vec3(40, 15, 145), ECS);
+	//TransformSystem::setHeight(editorCameraEntity, 5, ECS);
+	
 	RTSSelectionEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
 	//mesh comp
