@@ -98,7 +98,7 @@ void MainWindow::init()
     QSize tempSize = QGuiApplication::primaryScreen()->size();
 
     tempSize.rheight() *= 0.85;
-    tempSize.rwidth() *= 0.65;
+    tempSize.rwidth() *= 0.85;
     resize(tempSize);
 
     //sets the keyboard input focus to the RenderWindow when program starts

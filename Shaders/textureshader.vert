@@ -8,9 +8,16 @@ out vec2 UV;
 uniform mat4 mMatrix;
 uniform mat4 vMatrix;
 uniform mat4 pMatrix;
+uniform bool HUD;
 
 void main() {
    color = colorIn;
    UV = vertexUV;
+
+   if (HUD == true){
+    gl_Position = mMatrix * positionIn;
+    }
+
+   else
    gl_Position = pMatrix * vMatrix * mMatrix * positionIn;
 }

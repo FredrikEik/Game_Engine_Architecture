@@ -11,6 +11,7 @@
 #include "skybox.h"
 #include "trianglesurface.h"
 #include "player.h"
+#include "billboard.h"
 #include <QDebug>
 
 #define EXISTS(x) storedMeshes.find(x) != storedMeshes.end()
@@ -118,7 +119,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMeshComponent();
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
-        objectToCreate->getMaterialComponent()->mTextureUnit = 2;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 6;
 
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
@@ -147,6 +148,7 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
     }
+
     else if(objectName == "TriangleSurface")
     {
         objectToCreate = new TriangleSurface("../GEA2021/Assets/test_las.txt");
@@ -155,6 +157,19 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mTextureUnit = 5;
         objectToCreate->mObjectType = "TriangleSurface";
         objectToCreate->mObjectName = "TriangleSurface";
+	}
+
+    else if (objectName == "Billboard")
+    {
+        objectToCreate = new Billboard;
+        if(EXISTS("Billboard"))
+        {
+            objectToCreate->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Billboard"]));
+        }
+        objectToCreate->getMaterialComponent()->mShaderProgram = 1;
+        objectToCreate->getMaterialComponent()->mTextureUnit = 5;
+        objectToCreate->isHUD = true;
+        objectToCreate->mObjectName = "HUD";
     }
     else{return nullptr;}
 

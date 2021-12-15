@@ -82,6 +82,7 @@ private:
     void init();
     void initObjects();
 
+
     void checkForGLerrors();
 
     void calculateFramerate();
@@ -108,6 +109,9 @@ private:
     void setupParticleShader(int shaderIndex);
 
     void generateShadowDepthMap();
+
+    GLint mTextureUniform[4];
+    GLint mHUDUniform[4];
 
     class Texture *mTextures[gsl::NumberOfTextures]{nullptr}; //We can hold some textures
 
@@ -148,11 +152,12 @@ private:
 
 
     int mIndexToPickedObject{-1};
+    int playerHP=3;
 
 
     //std::vector<VisualObject*> mVisualObjects;
 
-
+    GameObject* HUD;
     GameObject* mPlayer;
     particle* mParticles;
     InputComponent mInput;

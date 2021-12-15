@@ -12,6 +12,8 @@
 #include <math.h>
 #include <iostream>
 #include <algorithm>
+#include <gl/GL.h>
+
 
 #include "shader.h"
 #include "mainwindow.h"
@@ -35,6 +37,7 @@
 #include "quadtree.cpp"
 #include "vector4d.h"
 #include "level.h"
+#include "player.h"
 #include "matrix4x4.h"
 
 RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
@@ -109,14 +112,22 @@ void RenderWindow::init()
     mTextures[0] = new Texture();
     glActiveTexture(GL_TEXTURE1);
     mTextures[1] = new Texture("hund.bmp");
-    glActiveTexture(GL_TEXTURE3);
-    mTextures[3] = new Texture("wood.bmp");
-    glActiveTexture(GL_TEXTURE4);
-    mTextures[4] = new Texture("groundgrass.bmp");
-    glActiveTexture(GL_TEXTURE5);
-    mTextures[5] = new Texture("stone.bmp");
     glActiveTexture(GL_TEXTURE2);
-    mTextures[2] = new Texture("right.bmp",
+    mTextures[2] = new Texture("wood.bmp");
+    glActiveTexture(GL_TEXTURE3);
+    mTextures[3] = new Texture("groundgrass.bmp");
+    glActiveTexture(GL_TEXTURE4);
+    mTextures[4] = new Texture("stone.bmp");
+    glActiveTexture(GL_TEXTURE5);
+    mTextures[5] = new Texture("0hp.bmp");
+    glActiveTexture(GL_TEXTURE6);
+    mTextures[6] = new Texture("1hp.bmp");
+    glActiveTexture(GL_TEXTURE7);
+    mTextures[7] = new Texture("2hp.bmp");
+    glActiveTexture(GL_TEXTURE8);
+    mTextures[8] = new Texture("fullhp.bmp");
+    glActiveTexture(GL_TEXTURE9);
+    mTextures[9] = new Texture("right.bmp",
                                "left.bmp",
                                "top.bmp",
                                "bottom.bmp",
@@ -124,15 +135,19 @@ void RenderWindow::init()
                                "back.bmp");
 
 
+
     //Set the textures loaded to a texture unit
 
     glBindTexture(GL_TEXTURE_2D, mTextures[0]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[1]->mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[2]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[2]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[3]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[4]->mGLTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextures[5]->mGLTextureID);
-
+    glBindTexture(GL_TEXTURE_2D, mTextures[6]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[7]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextures[8]->mGLTextureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mTextures[9]->mGLTextureID);
 
     //Start the Qt OpenGL debugger
     //Really helpfull when doing OpenGL
@@ -225,6 +240,8 @@ void RenderWindow::init()
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
+
+
 }
 
 void RenderWindow::initObjects()
@@ -246,9 +263,7 @@ void RenderWindow::initObjects()
             //TODO: Scaling have to be made easier and more automatic than this!
         }
     }
-
     */
-
 			mPlayer = factory->createObject("Player");
 			mPlayer->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
 			mPlayer->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
@@ -258,9 +273,14 @@ void RenderWindow::initObjects()
             mParticles = new particle(mCurrentCamera);
             mParticles->init();
 
-    hjelpeObjekt = factory->createObject("Cube");
+             hjelpeObjekt = factory->createObject("Cube");
+             hjelpeObjekt->mObjectName = "HjelpeObjekt";
+             hjelpeObjektMesh = new MeshComponent;
 
+             HUD =factory->createObject("Billboard");
 }
+
+
 
 // Called each frame - doing the rendering
 void RenderWindow::render()
@@ -300,6 +320,17 @@ void RenderWindow::render()
             if(shaderProgramIndex == 1 || shaderProgramIndex == 2)
             {
                 glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+			if(shaderProgramIndex == 1)
+            {
+                if (factory->mGameObjects[i]->isHUD)
+                {
+                    glUniform1i(mHUDUniform[shaderProgramIndex], true);
+                }
+                else
+                {
+                    glUniform1i(mHUDUniform[shaderProgramIndex], false);
+                }
+            }
             }
             if(shaderProgramIndex == 2)
             {
@@ -315,7 +346,7 @@ void RenderWindow::render()
                 glUniform1f(mLinearUniform, lightRef->linear);
                 glUniform1f(mQuadraticUniform, lightRef->quadratic);
                 glUniform1i(mPhongTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-            }
+
             if(shaderProgramIndex == 3)
             {
                glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
@@ -324,7 +355,9 @@ void RenderWindow::render()
             glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
             glUniformMatrix4fv( mMatrixUniform[shaderProgramIndex], 1, GL_TRUE, factory->mGameObjects[i]->getTransformComponent()->mMatrix.constData());
 
-            if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox")
+
+
+            if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox" && !factory->mGameObjects[i]->isHUD)
 			{
             gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
             float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
@@ -381,8 +414,8 @@ void RenderWindow::render()
 
             if (i==mIndexToPickedObject) {
 
-                //driver å må lage noe hjelpe objekt.
-            hjelpeObjektMesh = new MeshComponent;
+                //Setter meshen til hjelpeobjektet
+
             hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
             hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
             hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
@@ -395,11 +428,11 @@ void RenderWindow::render()
             tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
             hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
             }
-            else if (hjelpeObjekt == factory->mGameObjects[i]){
+            else {
                 mIndexToPickedObject = 0;
             }
 
-                factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
+                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
             }
         }
     }
@@ -419,6 +452,8 @@ void RenderWindow::render()
     //using our expanded OpenGL debugger to check if everything is OK.
     checkForGLerrors();
 
+
+
     //Qt require us to call this swapBuffers() -function.
     // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
     // and wait for vsync.
@@ -431,6 +466,9 @@ void RenderWindow::render()
     //qDebug() << objectsDrawn;
     objectsDrawn = 0;
 
+    if(playerHP == 0){
+        reset(format());
+    }
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -447,6 +485,7 @@ void RenderWindow::setupTextureShader(int shaderIndex)
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
     mTextureUniform             = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
    // factory->mGameObjects[shaderIndex]->getMaterialComponent()->mTextureUniform = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
+    mHUDUniform[shaderIndex] = glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "HUD");
 }
 
 void RenderWindow::setupSkyboxShader(int shaderIndex)
@@ -614,7 +653,7 @@ void RenderWindow::reset(const QSurfaceFormat &format)
     factory->mariocounter = 0;
     factory->spherecounter = 0;
     factory->trianglecounter = 0;
-
+    playerHP = 3;
     initObjects();
 //    factory->mGameObjects.clear();
 //    mRenderTimer->stop();
@@ -750,6 +789,7 @@ void RenderWindow::handleInput()
     else if(!editorMode) //karakter shit her
     {  
       static_cast<Player*>(mPlayer)->movement();
+      HUD->getMaterialComponent()->mTextureUnit = 2+playerHP;
     }
 	skybox->getTransformComponent()->mMatrix.setPosition(mCurrentCamera->mPosition.x, mCurrentCamera->mPosition.y, mCurrentCamera->mPosition.z);
 }
@@ -908,6 +948,9 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+       if (!editorMode)
+           static_cast<Player*>(mPlayer)->input.X = true;
+        static_cast<Player*>(mPlayer)->takeDamage(playerHP);
     }
     if(event->key() == Qt::Key_Up)
     {
@@ -976,6 +1019,8 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     }
     if(event->key() == Qt::Key_X)
     {
+        if (!editorMode)
+            static_cast<Player*>(mPlayer)->input.X = false;
     }
     if(event->key() == Qt::Key_Up)
     {
