@@ -105,15 +105,7 @@ void MainWindow::init()
     //sets the keyboard input focus to the RenderSystem when program starts
     // - can be deleted, but then you have to click inside the RenderSystem to get the focus
     mRenderSystemContainer->setFocus();
-    ui->createDropDownBox->addItem("Cube");
-    ui->createDropDownBox->addItem("Plane");
-    ui->createDropDownBox->addItem("Triangle");
-    ui->createDropDownBox->addItem("MarioCube");
-    ui->createDropDownBox->addItem("Camera");
-    ui->createDropDownBox->addItem("Sphere");
     ui->PlayPause->setText("Editor Mode(TAB)");
-    ui->createDropDownBox->addItem("Light");
-
 
 }
 
@@ -121,13 +113,6 @@ void MainWindow::init()
 void MainWindow::on_pushButton_toggled(bool checked)
 {
     mRenderSystem->toggleWireframe(checked);
-}
-
-
-
-void MainWindow::on_createDropDownBox_currentTextChanged(const QString &arg1)
-{
-            itemToSpawn = arg1.toStdString();
 }
 
 void MainWindow::on_CreateObject_clicked()
@@ -239,13 +224,19 @@ void MainWindow::on_toggleFrustumCulling_clicked(bool checked)
 
 void MainWindow::on_SaveLevel_clicked()
 {
-    mSystem->saveLevel();
+    mRenderSystem->systemRef->saveLevel();
     qDebug() << "Saving current level";
 }
 
 
 void MainWindow::on_LoadLevel_clicked()
 {
-    mSystem->loadLevel();
+    mRenderSystem->systemRef->loadLevel();
+}
+
+
+void MainWindow::on_createDropDownBox_currentIndexChanged(int index)
+{
+    itemToSpawn = index;
 }
 

@@ -21,7 +21,8 @@ void Level::saveLevelAs(QString levelName, std::multimap<gsl::ObjectType, SpawnS
         QJsonObject temp;
 
         gsl::ObjectType objType = it->first;
-        QJsonValue QObjType = objType;
+        int objTypeToInt = int(objType);
+        QJsonValue QObjType = objTypeToInt;
 
         temp.insert("objectType", QObjType);
         temp.insert("position", QJsonArray{it->second.initialPos.x,it->second.initialPos.y,it->second.initialPos.z});

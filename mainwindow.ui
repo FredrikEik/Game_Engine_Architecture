@@ -87,7 +87,58 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="createDropDownBox"/>
+       <widget class="QComboBox" name="createDropDownBox">
+        <item>
+         <property name="text">
+          <string>Cube</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Plane</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Triangle</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MarioCube</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sphere</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Camera</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Skybox</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Light</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Player</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TriangleSurface</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </item>
@@ -121,7 +172,7 @@
      <x>0</x>
      <y>0</y>
      <width>1320</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -210,7 +261,7 @@
           <x>0</x>
           <y>0</y>
           <width>330</width>
-          <height>338</height>
+          <height>336</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">

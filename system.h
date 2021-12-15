@@ -54,7 +54,6 @@ public:
 
     /**Getters**/
     InputComponent* getInput() {return input;}
-    //Player* getPlayer() {return player;}
     float getCameraSpeed() {return cameraSpeed;}
     float getCameraRotateSpeed() {return cameraRotateSpeed;}
     bool getEditorMode() {return editorMode;}
@@ -83,7 +82,6 @@ private:
     QOpenGLContext *renderContext{nullptr};
     RenderSystem* renderSystem = nullptr;
     MainWindow* mainWindow = nullptr;
-    Factory* factory = nullptr;
     QTimer *gameLoopTimer = nullptr;
     Level level;
     QJSEngine scriptEngine;

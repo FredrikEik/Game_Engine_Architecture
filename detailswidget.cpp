@@ -66,7 +66,7 @@ void DetailsWidget::readTextureAndShader()
 }
 void DetailsWidget::readLightStrengths()
 {
-    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
     {
         float ambientStrength =  dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientStrength;
         float lightStrength =    dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightStrength;
@@ -177,7 +177,7 @@ void DetailsWidget::on_pushButton_clicked()
     {
         QRgb rgb = color.rgb();
         gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
-        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
         {
             dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientColor = vectorRGB;
             //qDebug() << "tried to change ambient color";
@@ -188,7 +188,7 @@ void DetailsWidget::on_pushButton_clicked()
 
 void DetailsWidget::on_horizontalSlider_sliderMoved(int position)
 {
-    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
     {
         float ambientStrength = float(position)/100;
         dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientStrength = ambientStrength;
@@ -199,7 +199,7 @@ void DetailsWidget::on_horizontalSlider_sliderMoved(int position)
 
 void DetailsWidget::on_horizontalSlider_2_sliderMoved(int position)
 {
-    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
     {
         float lightStrength = float(position)/100;
         dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightStrength = lightStrength;
@@ -215,7 +215,7 @@ void DetailsWidget::on_pushButton_2_clicked()
     {
         QRgb rgb = color.rgb();
         gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
-        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
         {
             dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightColor = vectorRGB;
             //qDebug() << "tried to change light color";
@@ -226,7 +226,7 @@ void DetailsWidget::on_pushButton_2_clicked()
 
 void DetailsWidget::on_horizontalSlider_3_sliderMoved(int position)
 {
-    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == gsl::LIGHT)
     {
         float specularStrength = float(position)/100;
         dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mSpecularStrength = specularStrength;

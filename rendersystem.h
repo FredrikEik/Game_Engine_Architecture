@@ -39,6 +39,8 @@ public:
     RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow);
     ~RenderSystem() override;
 
+    void initObjects();
+
     QOpenGLContext *context() { return mContext; }
 
     void exposeEvent(QExposeEvent *) override;
@@ -56,7 +58,7 @@ public:
     Camera* playCamera = nullptr;
     Camera* editorCamera = nullptr;
 
-    void createObjectbutton(std::string objectName);
+    void createObjectbutton(int objectType);
     void playPausebutton(const QSurfaceFormat &format);
 
     /**Textures**/
@@ -84,8 +86,6 @@ public:
 private:
     void init();
 
-    void initObjects();
-
     void checkForGLerrors();
 
     void calculateFramerate();
@@ -103,6 +103,7 @@ private:
 
     QOpenGLContext *mContext{nullptr};
     bool mInitialized;
+    bool bPause{true};
 
     int mMouseXlast{0};
     int mMouseYlast{0};

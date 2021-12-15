@@ -137,27 +137,25 @@ void RenderSystem::init()
         //Qt makes a build-folder besides the project folder. That is why we go down one directory
         // (out of the build-folder) and then up into the project folder.
 
-    //Editor camera
-    editorCamera = new Camera(90, 4/3);
-    editorCamera->init();
-    editorCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
-    editorCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
 
-
-    //Play camera
-    playCamera = new Camera(90, 4/3);
-    playCamera->init();
     //playCamera->setPosition(systemRef->getPlayer()->cameraTarget);
 
     //********************** Set up ShaderHandler *******************
     mShaderHandler = new ShaderHandler();
     mShaderHandler->init();
-    mShaderHandler->cameraRef = editorCamera;
 
     //********************** Set up System *******************
     factory = new Factory();
     systemRef = new System(mMainWindow, this);
 
+    //Editor camera
+    editorCamera = new Camera(90, 4/3);
+    editorCamera->init();
+    editorCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+
+    //Play camera
+    playCamera = new Camera(90, 4/3);
+    playCamera->init();
 
     initObjects();
     //********************** Set up quadtree *******************
@@ -170,38 +168,40 @@ void RenderSystem::init()
 
 void RenderSystem::initObjects()
 {
-    //skybox = factory->createObject<Skybox>(gsl::SKYBOX);
 
     //Skybox
     skybox = factory->createObject(gsl::SKYBOX);
-//    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
-//    skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
-//    gameObjects.push_back(skybox);
+    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
+    skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
+    gameObjects.push_back(skybox);
 
-//    //Surface
-//    triangleSurface = factory->createObject("TriangleSurface");
-//    gameObjects.push_back(triangleSurface);
+    //Surface
+    triangleSurface = factory->createObject(gsl::TRIANGLESURFACE);
+    gameObjects.push_back(triangleSurface);
 
-//    //Player
-//    player = factory->createObject("Player");
-//    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-//    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-//    dynamic_cast<Player*>(player)->setSurfaceToWalkOn(triangleSurface);
-//    gameObjects.push_back(player);
+    //Player
+    player = factory->createObject(gsl::PLAYER);
+    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+    dynamic_cast<Player*>(player)->setSurfaceToWalkOn(triangleSurface);
+    dynamic_cast<Player*>(player)->setPlayerCamera(playCamera);
+    gameObjects.push_back(player);
 
-//    //Lights
-//    GameObject* light1 = factory->createObject("Light");
-//    GameObject* light2 = factory->createObject("Light");
-//    gameObjects.push_back(light1);
-//    gameObjects.push_back(light2);
-//    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light1));
-//    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light2));
+    //Lights - Only one lightsource work for now :(
+    GameObject* light1 = factory->createObject(gsl::LIGHT);
+    GameObject* light2 = factory->createObject(gsl::LIGHT);
+    gameObjects.push_back(light1);
+    gameObjects.push_back(light2);
+    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light1));
+    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light2));
 
 //    //Helper Object
-//    helperObject = factory->createObject("Cube");
-//    gameObjects.push_back(helperObject);
+    helperObject = factory->createObject(gsl::CUBE);
+    helperObjectMesh = new MeshComponent;
+    gameObjects.push_back(helperObject);
 
-//    playCamera->setPosition(dynamic_cast<Player*>(player)->cameraTarget);
+    playCamera->setPosition(dynamic_cast<Player*>(player)->cameraTarget);
+    mMainWindow->updateOutliner(gameObjects);
 }
 
 void RenderSystem::initTextures()
@@ -253,6 +253,7 @@ void RenderSystem::initTextures()
 void RenderSystem::render()
 {
     editorCamera->update(editorCamera->FOV, editorCamera->aRatio);
+    playCamera->update(playCamera->FOV, playCamera->aRatio);
 
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -269,7 +270,17 @@ void RenderSystem::render()
         for(int i{0}; i < gameObjects.size(); i++)
         {
             GameObject* gameObject = gameObjects[i];
-            Camera* currentCamera = editorCamera;
+            Camera* currentCamera;
+            if(systemRef->getEditorMode())
+            {
+                currentCamera = editorCamera;
+                mShaderHandler->cameraRef = editorCamera;
+            }
+            else
+            {
+                currentCamera = playCamera;
+                mShaderHandler->cameraRef = playCamera;
+            }
 
             mShaderHandler->sendDataToShader(gameObject);
             if(toggleFrustumCulling && gameObject->mObjectName != "Skybox")
@@ -292,10 +303,8 @@ void RenderSystem::render()
                 gameObjects[i]->draw();
             }
 
-            /*
             if (i==mIndexToPickedObject)
             {
-                helperObjectMesh = new MeshComponent;
                 helperObjectMesh = gameObject->getMeshComponent();
                 helperObjectMesh->mDrawType = GL_LINE_STRIP;
                 helperObject->setMeshComponent(helperObjectMesh);
@@ -313,9 +322,6 @@ void RenderSystem::render()
             {
                 mIndexToPickedObject = 0;
             }
-
-            gameObject->setMeshComponent(helperObjectMesh);
-            */
         }
     }
 
@@ -371,6 +377,8 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 
     //calculate aspect ration and set projection matrix
     mAspectratio = static_cast<float>(width()) / height();
+    editorCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    playCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
     //    qDebug() << mAspectratio;
     //    qDebug() << mCamera.mProjectionMatrix;
 }
@@ -419,21 +427,18 @@ void RenderSystem::toggleWireframe(bool buttonState)
     }
 }
 
-void RenderSystem::createObjectbutton(std::string objectName)
+void RenderSystem::createObjectbutton(int objectType)
 {
     if(systemRef != nullptr)
     {
         systemRef->clickSound->play();
-        //factory->createObject(gsl::ObjectType objectType);
+        gameObjects.push_back(factory->createObject(gsl::ObjectType(objectType)));
+        mMainWindow->updateOutliner(gameObjects);
     }
 }
 void RenderSystem::playPausebutton(const QSurfaceFormat &format)
 {
-    if(systemRef != nullptr)
-    {
-        systemRef->clickSound->play();
-        systemRef->toggleEditorMode();
-    }
+    systemRef->toggleEditorMode();
 }
 
 //Uses QOpenGLDebugLogger if this is present

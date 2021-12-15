@@ -171,7 +171,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.7;
         cubecounter++;
-        objectToCreate->mObjectType = "Cube";
+        objectToCreate->mObjectType = gsl::CUBE;
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
         //static_cast<Cube*>(objectToCreate)->init();
         break;
@@ -184,7 +184,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         planecounter++;
-        objectToCreate->mObjectType = "Plane";
+        objectToCreate->mObjectType = gsl::PLANE;
         objectToCreate->mObjectName = "Plane " + std::to_string(planecounter);
         //static_cast<Plane*>(objectToCreate)->init();
         break;
@@ -197,7 +197,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         trianglecounter++;
-        objectToCreate->mObjectType = "Triangle";
+        objectToCreate->mObjectType = gsl::TRIANGLE;
         objectToCreate->mObjectName = "Triangle " + std::to_string(trianglecounter);
         //static_cast<Triangle*>(objectToCreate)->init();
         break;
@@ -214,7 +214,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.5;
         mariocounter++;
-        objectToCreate->mObjectType = "MarioCube";
+        objectToCreate->mObjectType = gsl::MARIOCUBE;
         objectToCreate->mObjectName = "MarioCube " + std::to_string(mariocounter);
         //static_cast<MarioCube*>(objectToCreate)->init();
         break;
@@ -230,7 +230,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
         objectToCreate->getSphereCollisionComponent()->radius = 0.25;
         spherecounter++;
-        objectToCreate->mObjectType = "Sphere";
+        objectToCreate->mObjectType = gsl::SPHERE;
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
         //static_cast<Sphere*>(objectToCreate)->init();
 
@@ -240,7 +240,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         cameracounter++;
-        objectToCreate->mObjectType = "Camera";
+        objectToCreate->mObjectType = gsl::CAMERA;
         objectToCreate->mObjectName = "Camera " + std::to_string(cameracounter);
         //static_cast<Camera*>(objectToCreate)->init();
         break;
@@ -250,7 +250,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
 
         //skyboxcounter++;
-        objectToCreate->mObjectType = "Skybox";
+        objectToCreate->mObjectType = gsl::SKYBOX;
         objectToCreate->mObjectName = "Skybox";
         //static_cast<Skybox*>(objectToCreate)->init();
         break;
@@ -264,7 +264,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 1;
         lightCounter++;
-        objectToCreate->mObjectType = "Light";
+        objectToCreate->mObjectType = gsl::LIGHT;
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
         //static_cast<Light*>(objectToCreate)->init();
         break;
@@ -276,6 +276,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         }
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
+        objectToCreate->mObjectType = gsl::PLAYER;
         objectToCreate->mObjectName = "Player";
         //static_cast<Player*>(objectToCreate)->init();
         break;
@@ -285,7 +286,7 @@ GameObject* Factory::createObject(gsl::ObjectType objectType)
         //objectToCreate = new TriangleSurface("../GEA2021/Assets/LAS/kongehuset.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 5;
-        objectToCreate->mObjectType = "TriangleSurface";
+        objectToCreate->mObjectType = gsl::TRIANGLESURFACE;
         objectToCreate->mObjectName = "TriangleSurface";
         //static_cast<TriangleSurface*>(objectToCreate)->init();
         break;

@@ -20,9 +20,6 @@ System::System(MainWindow *mw, RenderSystem *rs) : renderSystem(rs), mainWindow(
 }
 void System::init()
 {
-    //Create factory
-    factory = new Factory();
-
     //Create input
     input = new InputComponent();
 
@@ -40,17 +37,17 @@ void System::startGameLoop()
 
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-    gameLoopTimer->start(16);
+    gameLoopTimer->start(8);
     timeStart.start();
 }
 
 void System::createMeshes()
 {
     qDebug() << "Created meshes";
-    factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
-    factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
-    factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
-    factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
+    renderSystem->factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
+    renderSystem->factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
+    renderSystem->factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
+    renderSystem->factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
 }
 void System::createObjects()
 {
@@ -157,8 +154,7 @@ void System::saveLevel()
     for(unsigned int i = 0; i < renderSystem->gameObjects.size(); i++)
     {
         SpawnSettings settings;
-        //gsl::ObjectType objectType = renderSystem->gameObjects[i]->mObjectType;
-        gsl::ObjectType objectType = gsl::CUBE;
+        gsl::ObjectType objectType = renderSystem->gameObjects[i]->mObjectType;
         gsl::Matrix4x4 m = renderSystem->gameObjects[i]->getTransformComponent()->mMatrix;
         settings.initialPos =  m.getPosition();
         settings.initialScale = m.getScale();
@@ -170,10 +166,9 @@ void System::saveLevel()
 
 void System::loadLevel()
 {
-    clearLevel();
     resetLevel();
     level.loadLevel("../GEA2021/Saves/savedLevel.json");
-    factory->openLevel(level);
+    renderSystem->factory->openLevel(level);
     mainWindow->updateOutliner(renderSystem->gameObjects);
 }
 
@@ -186,22 +181,24 @@ void System::clearLevel()
     }
     for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
     {
-        factory->mAvailableIDs.push(ID);
+        renderSystem->factory->mAvailableIDs.push(ID);
     }
     renderSystem->gameObjects.clear();
-    factory->cameracounter = 0;
-    factory->cubecounter = 0;
-    factory->lightCounter = 0;
-    factory->skyboxcounter = 0;
-    factory->mariocounter = 0;
-    factory->spherecounter = 0;
-    factory->trianglecounter = 0;
+    renderSystem->factory->cameracounter = 0;
+    renderSystem->factory->cubecounter = 0;
+    renderSystem->factory->lightCounter = 0;
+    renderSystem->factory->skyboxcounter = 0;
+    renderSystem->factory->mariocounter = 0;
+    renderSystem->factory->spherecounter = 0;
+    renderSystem->factory->trianglecounter = 0;
 }
 
 void System::resetLevel()
 {
+    renderSystem->format();
     clearLevel();
-    createObjects();
+    renderSystem->initObjects();
+    mainWindow->updateOutliner(renderSystem->gameObjects);
 
     //    gameObjects.clear();
     //    gameLoopTimer->stop();

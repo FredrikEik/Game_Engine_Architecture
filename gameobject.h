@@ -15,7 +15,7 @@ public:
 
     uint32_t ID;
     std::string mObjectName{"NoName"};  //temp
-    std::string mObjectType{"NoType"};
+    gsl::ObjectType mObjectType{gsl::CUBE};
 
     TransformComponent* getTransformComponent(){return transformComp;}
     MeshComponent* getMeshComponent(){return meshComp;}

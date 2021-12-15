@@ -399,7 +399,7 @@ void Camera::draw()
 
 void Camera::move(float x, float y, float z)
 {
-    //dsgetTransformComponent()->mMatrix.translate(x,y,z);
-    //getFrustumComponent()->mMatrix.translate(x,y,z);
+    getTransformComponent()->mMatrix.translate(x,y,z);
+    getFrustumComponent()->mMatrix.translate(x,y,z);
 }
 
