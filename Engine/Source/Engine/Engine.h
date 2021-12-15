@@ -1,6 +1,9 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "../CoreMinimal.h"
+#include "../Sound/SoundBuffer.h"
+#include "../Sound/SoundDevice.h"
+#include "../Sound/SoundSource.h"
 #include <iostream>
 //#define DEBUG
 //#define DEBUG_BROADPHASE

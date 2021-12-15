@@ -39,9 +39,9 @@ float ShadowCalculation(vec3 fragPos)
 
     float shadow = 0.0;
     float bias = 0.15;
-    int samples = 20;
+    int samples = 50;
     float viewDistance = length(u_camPos - fragPos);
-    float diskRadius = (1.0 + (viewDistance / u_far_plane)) / 25.0;
+    float diskRadius = (5.0 + (viewDistance / u_far_plane)) / 5.0;
     for(int i = 0; i < samples; ++i)
     {
         float closestDepth = texture(u_depthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
@@ -69,7 +69,7 @@ void main()
     color.a = bUsingMat * texture(u_tex_specular1, TexCoords).r + (1-bUsingMat);
     vec3 normal = normalize(Normal);
     // ambient
-    vec3 ambient = 0.8 * u_lightColor;
+    vec3 ambient = 0.3 * u_lightColor;
     // diffuse
     vec3 lightDir = normalize(u_lightPos - FragPos);
     float diff = max(dot(lightDir, normal), 0.0);
