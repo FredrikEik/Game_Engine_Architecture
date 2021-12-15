@@ -16,6 +16,7 @@
 #include "light.h"
 #include "particle.h"
 #include "player.h"
+#include "postprocessing.h"
 
 class QOpenGLContext;
 class Shader;
@@ -107,6 +108,7 @@ private:
     void setupSkyboxShader(int shaderIndex);
     void setupLightShader(int shaderIndex);
     void setupParticleShader(int shaderIndex);
+    void setupFrameBufferShader(int shaderIndex);
 
     void generateShadowDepthMap();
 
@@ -164,6 +166,12 @@ private:
     gsl::Vector3D thirdPersonPos;
     gsl::Vector3D inFrontOfPlayer;
 
+    PostProcessing* postFBO={nullptr};
+
+    unsigned int framebuffer;
+    unsigned int framebufferTexture;
+    unsigned int RBO;
+    unsigned int quadVAO, quadVBO;
 
     float mCameraSpeed{0.05f};
     float mCameraRotateSpeed{0.1f};

@@ -198,13 +198,22 @@ void RenderWindow::init()
     mShaderPrograms[4] = new Shader((gsl::ShaderFilePath + "particle.vert").c_str(),
                                      (gsl::ShaderFilePath + "particle.frag").c_str());
                                       qDebug() << "Particle shader program id: " << mShaderPrograms[4]->getProgram();
-
+    mShaderPrograms[5] = new Shader((gsl::ShaderFilePath + "framebuffers_screen.vert").c_str(),
+                         (gsl::ShaderFilePath + "framebuffers_screen.frag").c_str());
+                            qDebug() << "hdr shader program id: " << mShaderPrograms[4]->getProgram();
 
     setupPlainShader(0);
     setupTextureShader(1);
     setupLightShader(2);
     setupSkyboxShader(3);
-    setupParticleShader(4);
+    setupParticleShader(54);
+    setupFrameBufferShader(5);
+    //postFBO = new PostProcessing(mShaderPrograms[4]);
+
+
+    //QWindow* test = new QWindow();
+
+
 
     //********************** Set up quadtree *******************
     gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
@@ -229,7 +238,7 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Sounds/videogameland.wav", false, 0.2f);
     mVideoGameLand2 = SoundManager::getInstance()->createSource(
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
-                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
+                "../GEA2021/Assets/Sounds/videogameland2.wav", false, 0.2f);
 
     //mVideoGameLand->play();
     //mVideoGameLand2->play();
@@ -237,6 +246,8 @@ void RenderWindow::init()
     //mMario->play(); //doesnt work
     //mExplosionSound->play();
     //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
+
+
 
     initObjects();
 	mMainWindow->updateOutliner(factory->mGameObjects);
@@ -295,15 +306,21 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
+
+
     //to clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnable(GL_CULL_FACE);
-    glUseProgram(0); //reset shader type before rendering
+    //glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
 
     //mCurrentCamera->draw();
     //mTestFrustumCamera->draw();
+
+
+    if(postFBO)
+        postFBO->bindFramebuffer(0, 1920,1080);
 
     //This should be in a loop! <- Ja vi må loope dette :/
     if(factory->mGameObjects.size() > 0)
@@ -311,26 +328,27 @@ void RenderWindow::render()
 
         for(int i{0}; i < factory->mGameObjects.size(); i++)
 
-		{	
+        {
+
 
             unsigned int shaderProgramIndex = factory->mGameObjects[i]->getMaterialComponent()->mShaderProgram;
             glUseProgram(mShaderPrograms[shaderProgramIndex]->getProgram()); // What shader program to use
-			//send data to shader
+            //send data to shader
             //qDebug() << shaderProgramIndex;
-            if(shaderProgramIndex == 1 || shaderProgramIndex == 2)
+            if(shaderProgramIndex == 1)
             {
                 glUniform1i(mTextureUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
-			if(shaderProgramIndex == 1)
-            {
-                if (factory->mGameObjects[i]->isHUD)
+                if(shaderProgramIndex == 1)
                 {
-                    glUniform1i(mHUDUniform[shaderProgramIndex], true);
+                    if (factory->mGameObjects[i]->isHUD)
+                    {
+                        glUniform1i(mHUDUniform[shaderProgramIndex], true);
+                    }
+                    else
+                    {
+                        glUniform1i(mHUDUniform[shaderProgramIndex], false);
+                    }
                 }
-                else
-                {
-                    glUniform1i(mHUDUniform[shaderProgramIndex], false);
-                }
-            }
             }
             if(shaderProgramIndex == 2)
             {
@@ -349,7 +367,7 @@ void RenderWindow::render()
             }
             if(shaderProgramIndex == 3)
             {
-               glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
+                glUniform1i(mSkyboxUniform, factory->mGameObjects[i]->getMaterialComponent()->mTextureUnit);
             }
             glUniformMatrix4fv( vMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
             glUniformMatrix4fv( pMatrixUniform[shaderProgramIndex], 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
@@ -358,15 +376,15 @@ void RenderWindow::render()
 
 
             if(toggleFrustumCulling && factory->mGameObjects[i]->mObjectName != "Skybox" && !factory->mGameObjects[i]->isHUD)
-			{
-            gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
-            float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
-            if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
             {
-                gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
-                float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
-                if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
-                /*{
+                gsl::Vector3D rightPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, mCurrentCamera->rightPlaneNormal);
+                if(rightPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                {
+                    gsl::Vector3D leftPlaneToObjectVector = mCurrentCamera->nearPlaneTopLeft - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
+                    float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, mCurrentCamera->leftPlaneNormal);
+                    if(leftPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
+                        /*{
                     gsl::Vector3D nearPlaneToObjectVector = mCurrentCamera->nearPlaneBottomRight - factory->mGameObjects[i]->getSphereCollisionComponent()->center;
                     float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, mCurrentCamera->nearPlaneNormal);
                     if(nearPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
@@ -383,28 +401,30 @@ void RenderWindow::render()
                                 float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, mCurrentCamera->bottomPlaneNormal);
                                 if(bottomPlaneHeightToObject + factory->mGameObjects[i]->getSphereCollisionComponent()->radius >= 0)
                                 */
-                                {
-                                   // qDebug() << "Object inside frustum";
-                    factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
-                                                                mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
-                                                               mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                    {
+                        // qDebug() << "Object inside frustum";
+                        factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
+                                                                    mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
+                                                                   mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
+                        factory->mGameObjects[i]->draw();
 
-                                   factory->mGameObjects[i]->draw();
-                                   objectsDrawn++;
-                                }
-            }
-                        /*}
+                        objectsDrawn++;
+
+                    }
+                }
+                /*}
                     }
                 }
             }*/
-			}
+            }
+
             else
             {
                 factory->mGameObjects[i]->checkLodDistance((factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition() -
                                                             mCurrentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                            mCurrentCamera->getFrustumComponent()->farPlaneLength/2);
-
                 factory->mGameObjects[i]->draw();
+
             }
             glUseProgram(mShaderPrograms[4]->getProgram());
             glUniformMatrix4fv( glGetUniformLocation(mShaderPrograms[4]->getProgram(), "vMatrix"), 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
@@ -412,63 +432,78 @@ void RenderWindow::render()
 
             mParticles->update(0.16, mCurrentCamera);
 
+
+
+
+
+
+
             if (i==mIndexToPickedObject) {
 
                 //Setter meshen til hjelpeobjektet
 
-            hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
-            hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
-            hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
+                hjelpeObjektMesh = factory->mGameObjects[i]->getMeshComponent();
+                hjelpeObjektMesh->mDrawType = GL_LINE_STRIP;
+                hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
 
-            if (hjelpeObjekt != factory->mGameObjects[i]){
-            gsl::Vector3D tempPosition;
-            gsl::Vector3D tempScale;
-            tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
-            hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
-            tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
-            hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
-            }
-            else {
-                mIndexToPickedObject = 0;
-            }
+                if (hjelpeObjekt != factory->mGameObjects[i]){
+                    gsl::Vector3D tempPosition;
+                    gsl::Vector3D tempScale;
+                    tempPosition = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getPosition();
+                    hjelpeObjekt->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+                    tempScale = factory->mGameObjects[i]->getTransformComponent()->mMatrix.getScale();
+                    hjelpeObjekt->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
+                }
+                else {
+                    mIndexToPickedObject = 0;
+                }
 
-                //factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
-            }
+
+            factory->mGameObjects[i]->setMeshComponent(hjelpeObjektMesh);
         }
-    }
-    if (!editorMode){
-       thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
-       inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
-       mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
-       mCurrentCamera->setPosition(thirdPersonPos);
+
     }
 
 
-    //Calculate framerate before
-    // checkForGLerrors() because that takes a long time
-    // and before swapBuffers(), else it will show the vsync time
-    calculateFramerate();
+}
 
-    //using our expanded OpenGL debugger to check if everything is OK.
-    checkForGLerrors();
+if (!editorMode){
+    thirdPersonPos = static_cast<Player*>(mPlayer)->getTransformComponent()->mMatrix.getPosition() + gsl::Vector3D(-3.0f,2.f,0.0f);
+    inFrontOfPlayer = static_cast<Player*>(mPlayer)->getCameraTarget();
+    mCurrentCamera->lookat(thirdPersonPos, inFrontOfPlayer, mCurrentCamera->up());
+    mCurrentCamera->setPosition(thirdPersonPos);
+}
+if(postFBO)
+postFBO->unbindCurrentFramebuffer();
+
+//Calculate framerate before
+// checkForGLerrors() because that takes a long time
+// and before swapBuffers(), else it will show the vsync time
+calculateFramerate();
+
+//using our expanded OpenGL debugger to check if everything is OK.
+checkForGLerrors();
 
 
 
-    //Qt require us to call this swapBuffers() -function.
-    // swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
-    // and wait for vsync.
-    mContext->swapBuffers(this);
+//Qt require us to call this swapBuffers() -function.
+// swapInterval is 1 by default which means that swapBuffers() will (hopefully) block
+// and wait for vsync.
 
-    glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
+mContext->swapBuffers(this);
+
+glUseProgram(0); //reset shader type before next frame. Got rid of "Vertex shader in program _ is being recompiled based on GL state"
 
 
-    //qDebug() << "Rendered objects: ";
-    //qDebug() << objectsDrawn;
-    objectsDrawn = 0;
+//qDebug() << "Rendered objects: ";
+//qDebug() << objectsDrawn;
+objectsDrawn = 0;
 
-    if(playerHP == 0){
-        reset(format());
-    }
+
+if(playerHP == 0){
+    reset(format());
+}
+
 }
 
 void RenderWindow::setupPlainShader(int shaderIndex)
@@ -522,6 +557,11 @@ void RenderWindow::setupParticleShader(int shaderIndex)
     mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
     vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
     pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
+}
+
+void RenderWindow::setupFrameBufferShader(int shaderIndex)
+{
+    //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
 }
 
 //This function is called from Qt when window is exposed (shown)

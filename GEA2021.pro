@@ -45,6 +45,7 @@ SOURCES += main.cpp \
     particle.cpp \
     plane.cpp \
     player.cpp \
+    postprocessing.cpp \
     quadtree.cpp \
     renderwindow.cpp \
     shader.cpp \
@@ -87,6 +88,7 @@ HEADERS += \
     particle.h \
     plane.h \
     player.h \
+    postprocessing.h \
     quadtree.h \
     renderwindow.h \
     shader.h \
@@ -112,6 +114,12 @@ FORMS += \
 DISTFILES += \
     Shaders/particle.frag \
     Shaders/particle.vert \
+    Shaders/framebuffers.frag \
+    Shaders/framebuffers.vert \
+    Shaders/framebuffers_screen.frag \
+    Shaders/framebuffers_screen.vert \
+    Shaders/hdr.frag \
+    Shaders/hdr.vert \
     Shaders/skyboxfragment.frag \
     Shaders/skyboxvertex.vert \
     Shaders/textureshader.frag \
