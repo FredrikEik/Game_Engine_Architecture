@@ -10,7 +10,6 @@ Factory::~Factory()
 
 Factory::ReusableAsset Factory::getReusableAsset(std::size_t hash)
 {
-	
 	return reusableAssetComponents.at(hash);
 }
 
@@ -20,13 +19,13 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 	switch (defaultAsset)
 	{
 	case DefaultAsset::CUBE:
-		return loadAsset(entityID, "Assets/cube.obj"); // Hardcoding filepath. Could generate as well
+		return loadAsset(entityID, "Assets/cube.obj"); 
 		break;
 	case DefaultAsset::SPHERE:
-		assert(false); // Implement it first, dummy
+		assert(false); // Implement it first
 		break;
 	case DefaultAsset::PLANE:
-		assert(false); // Implement it first, dummy
+		assert(false); // Implement it first
 		break;
 	default:
 		assert(false); // Trying to load asset that do not exist
@@ -36,8 +35,9 @@ uint32 Factory::loadAsset(uint32 entityID, DefaultAsset defaultAsset)
 	return uint32();
 }
 
-// TODO: This is broken. "componentManagers->at(componentType)->removeComponent(entityID);" gets garbage values due to 
-// acting on Component base class. Could maybe solve using the size of the type?
+// This is broken. "componentManagers->at(componentType)->removeComponent(entityID);" gets garbage values due to 
+// acting on Component base class. Could probably be solved by managing the memory manually.
+// 
 //void Factory::removeComponent(uint32 entityID, std::type_index componentType, uint32 componentID)
 //{
 //	assert(componentManagers->find(componentType) != componentManagers->end());

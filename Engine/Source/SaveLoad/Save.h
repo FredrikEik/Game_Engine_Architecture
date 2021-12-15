@@ -5,6 +5,9 @@
 #include "glm/glm.hpp"
 #include "../JSON/json.hpp"
 
+/// <summary>
+/// Used for any and all saving. Can save a single component, single entity or as many entities as needed.
+/// </summary>
 class Save
 {
 public:
@@ -26,5 +29,4 @@ private:
 
 	static std::string defaultSaveLocation;
 	static std::string defaultSaveName;
-	//static void WriteComponentValues();
 };

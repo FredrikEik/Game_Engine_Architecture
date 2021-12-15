@@ -9,6 +9,15 @@
 #include <algorithm>
 enum class DefaultAsset : uint8;
 
+/// <summary>
+/// The ECSManager is the bread and butter of the entire ECS system. 
+/// This is the class that will act as the public API for anything using the ECS.
+/// It is perfectly valid, even encouraged, to get the ComponentManager,
+/// All entities is stored and handled here.
+/// 
+/// Should be single instance, but not singleton. Private constructor so only the Engine can create it.
+/// Relies mostly on dependency injection.
+/// </summary>
 class ECSManager
 {
 	friend class Engine;
@@ -26,6 +35,10 @@ public:
 	template<typename ... Types>
 	void removeComponents(uint32 entityID);
 
+	/// <summary>
+	/// Destroys the entity and all its components
+	/// </summary>
+	/// <param name="entityID">The entity identifier.</param>
 	void destroyEntity(uint32 entityID);
 
 	uint32 newEntity();
@@ -46,14 +59,21 @@ public:
 private:
 	ECSManager();
 
+	/// <summary>
+	/// IMPORTANT: Any new component must be added here.
+	/// Removes the component by its Run Time Type Index.
+	/// </summary>
+	/// <param name="entityID">The entity identifier.</param>
+	/// <param name="componentType">Type of the component.</param>
 	void removeComponentByRTTI(uint32 entityID, std::type_index componentType);
 	class Factory& factory;
 	template <typename... Ts>
 	void swallow(Ts&&...);
 
-	/** Reads as std::pair<isActive, std::vector<std::pair<type_index of component, componentID>>>
-	* Iterating the entire array can be slow if entities are spread out, but that should not be necessary. 
-	*/
+	/// <summary>
+	/// Reads as std::pair<isActive, std::vector<std::pair<type_index of component, componentID>>>
+	/// Iterating the entire array can be slow if entities are spread out, but that should not be necessary.
+	/// </summary>
 	std::array<std::pair<bool, std::vector<std::pair<std::type_index, uint32>>>, core::MAX_ENTITIES>& entities;
 	// Keeping record of available entity ids
 	std::vector<uint32> &availableEntityIDs;

@@ -2,6 +2,11 @@
 #include "../CoreMinimal.h"
 #include <filesystem>
 #include "../JSON/json.hpp"
+
+
+/// <summary>
+/// Used for any and all loading. Can load a single component, single entity, or an entire score of entities 
+/// </summary>
 class Load
 {
 public:

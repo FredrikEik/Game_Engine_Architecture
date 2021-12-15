@@ -5,6 +5,9 @@
 #include "../FileSystemHelpers.h"
 #include "mono/jit/jit.h"
 
+/// <summary>
+/// Handles all HUD. Any HudComponent in existence will be rendered via render.
+/// </summary>
 class HudSystem : public BaseSystem
 {
 public:

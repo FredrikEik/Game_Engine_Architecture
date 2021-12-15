@@ -3,6 +3,9 @@
 #include "BaseSystem.h"
 #include "glm/glm.hpp"
 
+/// <summary>
+/// Handles narrow phase collision checks as well as collision components. See SweepAndPrune to see the broad phase.
+/// </summary>
 class CollisionSystem : public BaseSystem
 {
 public:

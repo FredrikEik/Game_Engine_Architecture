@@ -60,7 +60,6 @@ void ECSManager::destroyEntity(uint32 entityID)
 	std::vector<std::pair<std::type_index, uint32>> components = entities[entityID].second;
 	for (uint32 i{}; i < components.size(); ++i)
 	{
-		//factory.removeComponent(entityID, components[i].first, components[i].second); 
 		removeComponentByRTTI(entityID, components[i].first);
 	}
 	entities[entityID].second.clear();
@@ -82,9 +81,6 @@ void ECSManager::printEntity(uint32 entityID)
 
 uint32 ECSManager::loadAsset(uint32 entityID, const std::filesystem::path& filePath)
 {
-	// TODO: Add the component to the entity
-	//return factory.loadAsset(entityID, filePath);
-
 	uint32 componentID = factory.loadAsset(entityID, filePath);
 
 	std::pair<std::type_index, uint32> componentLocation(getAssetTypeIndex(filePath), componentID);
@@ -117,7 +113,7 @@ std::type_index ECSManager::getAssetTypeIndex(DefaultAsset defaultAsset)
 	else
 		assert(false);
 
-	//INVALID
+	//INVALID, just to suppress warning
 	return std::type_index(typeid(ECSManager));
 }
 
@@ -132,7 +128,7 @@ std::type_index ECSManager::getAssetTypeIndex(const std::filesystem::path& fileP
 	else
 		assert(false);
 
-	//INVALID
+	//INVALID just to suppress warning
 	return std::type_index(typeid(ECSManager));
 }
 
@@ -170,6 +166,8 @@ void ECSManager::removeComponentByRTTI(uint32 entityID, std::type_index componen
 		removeComponent<ParticleComponent>(entityID);	
 	else if (componentType == std::type_index(typeid(HudComponent)))
 		removeComponent<HudComponent>(entityID);
+	else if (componentType == std::type_index(typeid(testComponent)))
+		removeComponent<testComponent>(entityID);
 	else
 	{
 		std::string msg{ "You are trying to remove component " };
