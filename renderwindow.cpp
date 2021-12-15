@@ -321,6 +321,7 @@ void RenderWindow::render()
 
             if (i > 1)
             {
+                //if player collides with something else, toggles gamemode so game is reset.
                 bool test;
                 test = objectsColliding(*mPlayer->mMesh->CollisionComp, *ObjFactory->mGameObject[i]->getCollisionComp(),
                                         *mPlayer->mMesh->TransformComp,
