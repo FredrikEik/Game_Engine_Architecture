@@ -5,6 +5,11 @@
 #include <vector>
 #include "components.h"
 
+
+/**
+    \brief The base game object.
+ */
+
 class GameObject: public QOpenGLFunctions_4_1_Core {
 public:
     GameObject();
