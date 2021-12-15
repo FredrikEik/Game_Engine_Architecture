@@ -197,16 +197,18 @@ void RenderWindow::init()
                 "../GEA2021/Assets/Audio/Caravan_mono.wav", false, 1.0f);
 
     //********************** Set up camera **********************
-    mCurrentCamera = new Camera(50.f, 0.1f,300.f);
-    mCurrentCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
-    mCurrentCamera->pitch(30);
-    mCurrentCamera->yaw(180);
+    mEditorCamera = new Camera(50.f, 0.1f,300.f);
+    mEditorCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
+    mEditorCamera->pitch(30);
+    mEditorCamera->yaw(180);
 
     mPlayerCamera = new Camera(20.f, 0.1f,300.f);
     mPlayerCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
+    mPlayerCamera->pitch(30);
+    mPlayerCamera->yaw(30);
 
-    mEditorCamera = mCurrentCamera;
-    mEditorCamera->setPosition(gsl::Vector3D(200.f, 100.f, 200.f));
+
+    mCurrentCamera = mEditorCamera;
 
 
     //create bullets

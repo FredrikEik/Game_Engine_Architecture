@@ -10,6 +10,10 @@ namespace Ui {
 class MainWindow;
 }
 
+
+/**
+ * @brief The MainWindow class - Responsible for managing UI and communications between UI and the backend.
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

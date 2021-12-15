@@ -34,7 +34,6 @@ SOURCES += main.cpp \
     openal/wavfilehandler.cpp \
     renderwindow.cpp \
     mainwindow.cpp \
-    systems/bsplinesystem.cpp \
     systems/collisionsystem.cpp \
     systems/entitysystem.cpp \
     systems/jsonsystem.cpp \
@@ -63,7 +62,6 @@ HEADERS += \
     openal/wavfilehandler.h \
     renderwindow.h \
     mainwindow.h \
-    systems/bsplinesystem.h \
     systems/collisionsystem.h \
     systems/entitysystem.h \
     systems/jsonsystem.h \

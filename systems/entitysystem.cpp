@@ -50,11 +50,11 @@ void EntitySystem::construct(std::string ObjReader, QVector3D StartPos, GLuint s
         TransComp = new TransformComponent();
         MeshComp = new MeshComponent();
         MatComp = new MaterialComponent();
-        Deets = new DetailsComponent();
+        DetailsComp = new DetailsComponent();
 
-        Deets->entity = EntityId;
-        Deets->title = ObjReader+"-"+std::to_string(EntityId);
-        inRW->DeetsVector.push_back(Deets);
+        DetailsComp->entity = EntityId;
+        DetailsComp->title = ObjReader+"-"+std::to_string(EntityId);
+        inRW->DeetsVector.push_back(DetailsComp);
 
         TransComp->mMatrix.setToIdentity();
         TransComp->entity = EntityId;
@@ -122,12 +122,12 @@ void EntitySystem::construcRay(QVector3D LineVec, QVector3D CameraPos, float Len
         TransComp = new TransformComponent();
         MeshComp = new MeshComponent();
         MatComp = new MaterialComponent();
-        Deets = new DetailsComponent();
+        DetailsComp = new DetailsComponent();
 
-        Deets->entity = EntityId;
-        Deets->title = ObjReader+"-"+std::to_string(EntityId);
-        Deets->type = helper;
-        inRW->DeetsVector.push_back(Deets);
+        DetailsComp->entity = EntityId;
+        DetailsComp->title = ObjReader+"-"+std::to_string(EntityId);
+        DetailsComp->type = helper;
+        inRW->DeetsVector.push_back(DetailsComp);
 
         TransComp->mMatrix.setToIdentity();
         TransComp->entity = EntityId;
@@ -229,11 +229,11 @@ void EntitySystem::constructSkybox(GLuint shader ,GLint texture )
             TransComp = new TransformComponent();
             MeshComp = new MeshComponent();
             MatComp = new MaterialComponent();
-            Deets = new DetailsComponent();
+            DetailsComp = new DetailsComponent();
 
-            Deets->entity = EntityId;
-            Deets->title = ObjReader+"-"+std::to_string(EntityId);
-            inRW->DeetsVector.push_back(Deets);
+            DetailsComp->entity = EntityId;
+            DetailsComp->title = ObjReader+"-"+std::to_string(EntityId);
+            inRW->DeetsVector.push_back(DetailsComp);
 
             TransComp->mMatrix.setToIdentity();
             TransComp->entity = EntityId;
@@ -303,7 +303,7 @@ void EntitySystem::constructSkybox(GLuint shader ,GLint texture )
     }
 }
 
-void EntitySystem::LODSuzanneSwithcer(MeshComponent *mesh)
+void EntitySystem::LODSwithcer(MeshComponent *mesh)
 {
     if(mesh->LODLevel == 0)
     {

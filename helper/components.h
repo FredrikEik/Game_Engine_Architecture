@@ -7,7 +7,7 @@
 #include "gltypes.h"
 
 //! @enum objectType
-//! helps us to difirentiate usecases of objects
+//! helps us to difirentiate use cases of objects
 enum objectType {
     helper = 0,
     skybox = 1,
