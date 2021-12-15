@@ -91,29 +91,7 @@ void ShaderHandler::use()
     glUseProgram( this->program );
 }
 
-void ShaderHandler::setupShader(bool useTexture, bool useLight)
-{
-    mMatrixUniform = glGetUniformLocation( program, "mMatrix" );
-    vMatrixUniform = glGetUniformLocation( program, "vMatrix" );
-    pMatrixUniform = glGetUniformLocation( program, "pMatrix" );
-    if(useTexture)
-        mTextureUniform = glGetUniformLocation(program, "textureSampler");
 
-    if(useLight)
-    {
-        mCameraPosition = glGetUniformLocation( program, "cameraPosition" );
-        mLightPosition = glGetUniformLocation( program, "lightPosition" );
-        mLightDirection = glGetUniformLocation( program, "lightDirection" );
-        mLightColor = glGetUniformLocation( program, "lightColor" );
-        mObjectColor = glGetUniformLocation( program, "objectColor" );
-        mAmbientColor = glGetUniformLocation( program, "ambientColor");
-        mAmbientStrengt = glGetUniformLocation( program, "ambientStrengt" );
-        mLightStrengt = glGetUniformLocation( program, "lightStrengt" );
-        mSpecularStrength = glGetUniformLocation( program, "specularStrength" );
-        mSpecularExponent = glGetUniformLocation( program, "specularExponent" );
-
-    }
-}
 
 GLuint ShaderHandler::getProgram() const
 {

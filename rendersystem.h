@@ -36,45 +36,34 @@ public:
 
     void toggleWireframe(bool buttonState);
 
-    std::vector<GameObject*> mGameObjects;  //should probably not belong to renderer
+    std::vector<GameObject*> mGameObjects;
 
     std::vector<GameObject*> mParticles;
 
     std::vector<GameObject*> mProjectiles;
 
-    //Camera *mGameCamera{nullptr};
-
     bool isPlaying{false};  //is the game playing?
     Camera *mCurrentCamera{nullptr};
 
     bool toogleFrustumDrawing = true;
-
+    ///render loop
     void render();
 
     void rotateObj(double val);
 
-   void setPickedObject(int pickedID);
-
-   void updatePickedObject();
-
-   void timerSetup(bool toggle);
-
-   void toggleFrustum(bool toggle);
-
-
-
-
-
+    void timerSetup(bool toggle);
+    ///toggler frustum
+    void toggleFrustum(bool toggle);
 
 
 private:
 
 
-   int mIndexToPickedObject{-1};
+    int mIndexToPickedObject{-1};
 
-   int viewMatrix{-1};
-   int projectionMatrix{-1};
-   int modelMatrix{-1};
+    int viewMatrix{-1};
+    int projectionMatrix{-1};
+    int modelMatrix{-1};
 
     void init();
 
@@ -107,7 +96,6 @@ private:
     GLint vMatrixUniform2{-1};
     GLint pMatrixUniform2{-1};
     GLint mTextureUniform2{-1};
-    //GLint mTextureUniform{-1};
 
     GLint mCameraPosition{-1};
 
@@ -163,7 +151,6 @@ private:
     class QOpenGLDebugLogger *mOpenGLDebugLogger{nullptr};
 
     Timer timer;
-   // MeshData linebox;
     MeshData linebox2;
 
     MeshData circle1;
@@ -179,6 +166,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    ///mousepicking
     void mousePicking(QMouseEvent *event);
 };
 

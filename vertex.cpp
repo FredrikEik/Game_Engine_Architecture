@@ -93,13 +93,6 @@ void Vertex::set_uv(GLfloat u, GLfloat v)
     mST.setY(v);
 }
 
-//std::ostream& operator<<(std::ostream& os, const Vertex& v)
-//{
-//   os << "(" << v.mXYZ.getX() << ", " << v.mXYZ.getY() << ", " << v.mXYZ.getZ() << ") ";
-//   os << "(" << v.mNormal.getX() << ", " << v.mNormal.getY() << ", " << v.mNormal.getZ() << ") ";
-
-//   return os;
-//}
 
 std::ostream& operator<< (std::ostream& os, const Vertex& v) {
     os << std::fixed;

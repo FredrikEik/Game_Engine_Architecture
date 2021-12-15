@@ -43,16 +43,11 @@ SOURCES += main.cpp \
     gsl/vector4d.cpp \
     rendersystem.cpp \
     mainwindow.cpp \
-    scene.cpp \
-    simpleparticles.cpp \
     soundsystem.cpp \
-    soundsource.cpp \
     timer.cpp \
     transformwidget.cpp \
-    triangle.cpp \
     vertex.cpp \
-    gameobject.cpp \
-    xyz.cpp
+    gameobject.cpp
 
 HEADERS += \
     altypes.h \
@@ -75,16 +70,11 @@ HEADERS += \
     ResourceManager/meshhandler.h \
     rendersystem.h \
     mainwindow.h \
-    scene.h \
-    simpleparticles.h \
     soundsystem.h \
-    soundsource.h \
     timer.h \
     transformwidget.h \
-    triangle.h \
     vertex.h \
-    gameobject.h \
-    xyz.h
+    gameobject.h
 
 FORMS += \
     mainwindow.ui \

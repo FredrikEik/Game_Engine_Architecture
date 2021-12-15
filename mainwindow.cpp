@@ -30,7 +30,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::init()
 {
     //This will contain the setup of the OpenGL surface we will render into
@@ -95,9 +94,7 @@ void MainWindow::init()
     ui->progressBar->setValue(0);
 }
 
-
-
-//toggler wireframe
+///toggler wireframe
 void MainWindow::on_pb_toggleWireframe_toggled(bool checked)
 {
     mRenderSystem->toggleWireframe(checked);
@@ -112,7 +109,7 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
     mCoreEngine->togglePlayMode(checked);
     mRenderSystem->toggleFrustum(checked);
-    //bytter mellom spill og editormodus
+    ///bytter mellom spill og editormodus
     if(checked)
         ui->pb_togglePlay->setText("Stop (R)");
     else
@@ -121,22 +118,21 @@ void MainWindow::on_pb_togglePlay_toggled(bool checked)
 
 void MainWindow::on_pushButton_clicked()
 {
-    //spawner boss
+    ///spawner boss
     if(!mRenderSystem->isPlaying)
     mCoreEngine->loadBoss("boss.json");
 
 }
 
-
 void MainWindow::UpdateScore(int value)
 {
-    //oppdaterer scoreprogress
+    ///oppdaterer scoreprogress
     ui->progressBar->setValue(value);
 }
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
 
-//setter opp lister med items
+///setter opp lister med items
 
     if(clicked)
     {
@@ -163,7 +159,6 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
     }
 
 }
-
 
 
 void MainWindow::on_actionAdd_Player_triggered()
@@ -203,7 +198,6 @@ void MainWindow::on_actionAdd_XYZ_triggered()
 }
 
 
-
 void MainWindow::on_pushButton_2_clicked()
 {
     //legger til en scene
@@ -218,13 +212,9 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 
-
-
-
-
 void MainWindow::on_progressBar_valueChanged(int value)
 {
- //sjekker om man har full score
+ ///sjekker om man har full score
  if(value == 100)
  {
      mCoreEngine->spawnBoss = true;
@@ -234,6 +224,6 @@ void MainWindow::on_progressBar_valueChanged(int value)
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    //reset scene
+    ///reset scene
     mCoreEngine->reset();
 }

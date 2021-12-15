@@ -41,13 +41,7 @@ int TextureHandler::makeTexture(const std::string &filename, bool cubeMap)
         mTextures.emplace_back(Texture());
         if (filename.find(".bmp") != std::string::npos)
         {
-//            if(cubeMap)
-//            {
 
-//                textureIndex = readCubeMap(filename);
-//            }
-
-//            else
                 textureIndex = readBitmap(filename);
         }
         if(filename == "none")
@@ -164,71 +158,4 @@ void TextureHandler::setTexture(Texture &textureIn)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-//int TextureHandler::readCubeMap(const std::string &filename)
-//{
-//    //TODO: This is not finished yet - will probably mess up mTextures vector
-//    Texture &tempTexture = mTextures.back();
 
-//    std::string justName;
-//    std::stringstream sStream;
-//    sStream << filename;
-//    std::getline(sStream, justName, '.');   //deleting .bmp
-//    justName.pop_back();    //removing 1
-//    for(int i{0}; i< 6; i++)
-//    {
-//        //TODO: clean this up! Decide where CubeMaps should be located
-//        std::string temp = justName + std::to_string(i+1) + ".bmp";
-//        readBitmap(temp);
-//        tempTexture.mCubemap[i] = tempTexture.mBitmap;
-//    }
-
-//     qDebug() << "Cubemap:" << QString(filename.c_str()) <<"loaded";
-
-//    setCubemapTexture(tempTexture);
-
-//    return mTextures.size()-1;    //returns index to last object
-//}
-//void TextureHandler::setCubemapTexture(Texture &textureIn)
-//{
-//    glGenTextures(1, &textureIn.mGLTextureID);
-//    glBindTexture(GL_TEXTURE_CUBE_MAP, textureIn.mGLTextureID);
-
-//    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-//    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-//    if(!textureIn.mAlphaUsed)  //no alpha in this bmp
-//        for(int i{0}; i< 6; i++)
-//        {
-//            glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, textureIn.mColumns,
-//                          textureIn.mRows, 0, GL_BGR, GL_UNSIGNED_BYTE,  textureIn.mCubemap[i]);
-//        }
-
-//    else    //alpha is present, so we set up an alpha channel
-//        qDebug() << "Skybox with alpha probably make no sense!?";
-
-//    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-//    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-//    qDebug() << "Cubemap Texture" << "successfully read | id = "
-//             << textureIn.mGLTextureID << "| bytes pr pixel:" << textureIn.mBytesPrPixel <<
-//                "| using alpha:" << textureIn.mAlphaUsed
-//             << "| w:" << textureIn.mColumns << "|h:" << textureIn.mRows;
-//}
-
-
-//float TextureHandler::getHeightFromIndex(int i)
-//{
-//    if (i > mColumns * mRows || i < 0)
-//        return 0;
-
-//    int r = mBitmap[i*3];
-//    int g = mBitmap[i*3+1];
-//    int b = mBitmap[i*3+2];
-
-//    float height = (r+g+b)/3.f;
-
-//    return height;
-//}

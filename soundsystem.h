@@ -3,11 +3,10 @@
 
 #include <string>
 #include <vector>
-//#include "soundsource.h"
 #include "vector3d.h"
 #include "altypes.h"
 
-//Forward declaration
+
 class RenderSystem;
 
 /// Class handling OpenAL setup and plays sound sources.

@@ -4,9 +4,8 @@
 #include <QMainWindow>
 #include "QListWidgetItem"
 
-//Forward declarations
+
 class QWidget;
-//class QListWidgetItem;
 class QTreeWidgetItem;
 class RenderSystem;
 class CoreEngine;
@@ -27,7 +26,6 @@ public:
     void selectObjectByIndex(int indexIn);
     QListWidgetItem *mCurrentSelectedItem{nullptr};
     QTreeWidgetItem *mCurrentTreeItem{nullptr};
-
     void UpdateScore(int value);
 
 
@@ -40,34 +38,20 @@ public slots:
 
 private slots:
     void on_pushButton_clicked();
-
-
     void on_listWidget_itemClicked(QListWidgetItem *item);
-
     void on_actionAdd_Player_triggered();
-
     void on_actionAdd_Enemy_triggered();
-
     void on_actionAdd_XYZ_triggered();
-
-
     void on_pushButton_2_clicked();
-
-
-
     void on_progressBar_valueChanged(int value);
-
     void on_pushButton_3_clicked();
 
 private:
     void init();
-
-
     class transformWidget *mTransformWidget{nullptr};
     bool clicked = true;
 
     Ui::MainWindow *ui;
-   // int currentIndex{-1};
     QString prevstring;
     bool itemFromSceneAdded = false;
     QWidget *mRenderWindowContainer{nullptr};

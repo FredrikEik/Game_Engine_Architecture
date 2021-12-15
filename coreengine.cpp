@@ -53,7 +53,7 @@ void CoreEngine::togglePlayMode(bool shouldPlay)
 
 }
 
-//setter opp default scene for editoren
+///setter opp default scene for editoren
 void CoreEngine::setUpScene()
 {
     //setter opp alle textures
@@ -136,10 +136,12 @@ void CoreEngine::testScene()
     //legger til prosjektil
     projectile = mResourceManager->addObject("projectile");
     projectile->mTransform->mMatrix.rotateY(180.f);
-    projectile->mTransform->mMatrix.translate(0.f, 0, -2.5);
+    projectile->mTransform->mMatrix.translate(0.f, 0, -25);
     mResourceManager->addComponent("splat_stereo.wav", projectile);
     projectile->mSoundComponent->shouldPlay = false;
     mResourceManager->addCollider("sphere", projectile);
+
+
     mRenderSystem->mGameObjects.push_back(player);
     playerSpawned = true;
     enemySpawned = true;
@@ -158,7 +160,7 @@ void CoreEngine::testScene()
 void CoreEngine::spawnParticles(GameObject * temp)
 {
 
-    // Spawner partikler på posisjonen til objektet
+    /// Spawner partikler på posisjonen til objektet
     tempPosX = temp->mTransform->mMatrix.getPosition().getX();
     tempPosY = temp->mTransform->mMatrix.getPosition().getY();
     tempPosZ = temp->mTransform->mMatrix.getPosition().getZ();
@@ -180,11 +182,10 @@ void CoreEngine::spawnParticles(GameObject * temp)
 
 void CoreEngine::spawnProjectile()
 {
-    // spawner prosjektilene ut fra spilleren
+    /// spawner prosjektilene ut fra spilleren
     tempPosX = player->mTransform->mMatrix.getPosition().getX();
     tempPosY = player->mTransform->mMatrix.getPosition().getY();
     tempPosZ = player->mTransform->mMatrix.getPosition().getZ();
-
 
     projectile->mTransform->mMatrix.setPosition(tempPosX, tempPosY, tempPosZ);
     projectile->ProjectileSpawned = true;
@@ -197,7 +198,7 @@ void CoreEngine::updateCamera()
     if (isPlaying)
     {
 
-        // oppdaterer 3.person kamera
+        /// oppdaterer 3.person kamera
         gsl::Vector3D playerpos = player->mTransform->mMatrix.getPosition();
         mRenderSystem->mCurrentCamera->mPosition = playerpos;
         mRenderSystem->mCurrentCamera->mPosition.setZ(playerpos.getZ()+2.f);
@@ -213,7 +214,7 @@ void CoreEngine::updateScene()
 
     updateCamera();
 
-    //bestemmer hva som skal rendres i editor eller play mode
+    ///bestemmer hva som skal rendres i editor eller play mode
     if(isPlaying)
         axis->RenderInPlaymode = false;
     else
@@ -225,37 +226,35 @@ void CoreEngine::updateScene()
         spawnBoss = false;
     }
 
-    //beveger prosjektilen
+    ///beveger prosjektilen
     if(projectile->ProjectileSpawned)
     projectile->mTransform->mMatrix.translateZ(.01f);
 
     for(unsigned int i = 0; i< enemies.size(); i++)
     {
-        //beveger fiender
+        ///beveger fiender
         if(enemies[i]->isAlive)
         enemies[i]->mTransform->mMatrix.translateZ(-.002);
 
 
         if(!enemies[i]->mCollider->objectsHasCollided)
         {
-            //sjekker om fiende blir truffet av prosjektilen
+            ///sjekker om fiende blir truffet av prosjektilen
             if(getInstance()->mResourceManager->checkCollision(
             projectile, enemies[i]))
             {
                 qDebug() << "collided !";
-                //effekter får å se at fienden er død
+                ///effekter får å se at fienden er død
                 enemies[i]->mTransform->mMatrix.rotateZ(90);
 
                 enemies[i]->mCollider->objectsHasCollided = true;
                 //en del bugs med lyden, kan uncommente for å se at det funker
                 //enemies[i]->mSoundComponent->shouldPlay = true;
                 enemies[i]->isAlive = false;
-                //velger om man skal drawe et object eller ikke
-                goatDead = true;
 
                 qDebug() << "enemy " << i << " hit";
 
-                //oppdaterer score
+                ///oppdaterer score
                 score += 10;
 
 
@@ -266,14 +265,14 @@ void CoreEngine::updateScene()
 
         if(player->isAlive && enemies[i]->isAlive)
         {
-            //Sjekker om fienden treffer spilleren
+            ///Sjekker om fienden treffer spilleren
             if(getInstance()->mResourceManager->checkCollision(
             player, enemies[i]))
             {
                 qDebug() << "You died!";
                 player->mTransform->mMatrix.rotateZ(90);
                 enemies[i]->mSoundComponent->shouldPlay = true;
-                //spawner blodpartikler
+                ///spawner blodpartikler
                 spawnParticles(player);
                 projectile->mSoundComponent->shouldPlay = true;
                 particleTimer = true;
@@ -305,7 +304,7 @@ void CoreEngine::reset()
 {
     for(unsigned int i{0}; i < mRenderSystem->mGameObjects.size(); i++)
     {
-        //resetter posisjonen til objektene i scenen
+        ///resetter posisjonen til objektene i scenen
         mRenderSystem->mGameObjects[i]->mTransform->mMatrix.setPosition(
         mRenderSystem->mGameObjects[i]->startPos.x,
         mRenderSystem->mGameObjects[i]->startPos.y,
@@ -316,21 +315,21 @@ void CoreEngine::reset()
 
 void CoreEngine::loadBoss(std::string file)
 {
-    //henter fil fra folder
+    ///henter fil fra mappe
     QFile loadFile(QString((gsl::AssetFilePath + file).c_str()));
     if (!loadFile.open(QIODevice::ReadOnly)) {
         qDebug() << "error reading JSON file";
         return;
     }
 
-    QByteArray saveData = loadFile.readAll();   //leser json fil
-    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   //konverterer til json dokument
-    QJsonObject jsonObject = loadDoc.object();  //leser objekt data
+    QByteArray saveData = loadFile.readAll();   ///leser json fil
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));   ///konverterer til json dokument
+    QJsonObject jsonObject = loadDoc.object();  ///leser objekt data
 
     if (jsonObject.contains("Boss") && jsonObject["Boss"].isArray())
     {
         QJsonArray entityArray = jsonObject["Boss"].toArray();
-        //går gjennom alle entetiene i filen, for øyeblikket bare en
+        ///går gjennom alle entetiene i filen, for øyeblikket bare en
 
         for ( int entityIndex{0}; entityIndex < entityArray.size(); ++entityIndex) {
             GameObject *tempObj{nullptr};
@@ -338,14 +337,14 @@ void CoreEngine::loadBoss(std::string file)
 
             QJsonObject entityObject = entityArray[entityIndex].toObject();
 
-            //leser mesh navnet så man lager en entity utifra det
+            ///leser mesh navnet så man lager en entity utifra det
             if (entityObject.contains("mesh") && entityObject["mesh"].isString())
             {
                 QString mesh = entityObject["mesh"].toString();
                 tempObj = mResourceManager->addObject(mesh.toStdString());
 
             }
-            //henter posisjonen fra filen og setter posisjonen til bossen
+            ///henter posisjonen fra filen og setter posisjonen til bossen
             if (entityObject.contains("position") && entityObject["position"].isArray())
             {
                 QJsonArray positionArray = entityObject["position"].toArray();
@@ -355,7 +354,7 @@ void CoreEngine::loadBoss(std::string file)
 
 
             }
-            //henter skaleringen og setter riktig størrelse til bossen
+            ///henter skaleringen og setter riktig størrelse til bossen
             if (entityObject.contains("scale") && entityObject["scale"].isArray())
             {
 
@@ -376,7 +375,7 @@ void CoreEngine::loadBoss(std::string file)
 
 void CoreEngine::handleInput()
 {
-    //Camera
+    ///Camera
     float speed = .4f;
     mEditorCamera->setSpeed(0.f);  //cancel last frame movement
     if(mInput.RMB)
@@ -398,7 +397,7 @@ void CoreEngine::handleInput()
     {
         if(isPlaying && playerSpawned && player->isAlive)
         {
-            //skyter prosjektiler
+            ///skyter prosjektiler
             spawnProjectile();
         }
     }
@@ -450,7 +449,7 @@ void CoreEngine::playSound(std::string assetName)
 
 void CoreEngine::gameLoop()
 {
-    //Keyboard / mouse input
+    ///Keyboard / mouse input
     handleInput();
 
     mRenderSystem->mCurrentCamera->update();

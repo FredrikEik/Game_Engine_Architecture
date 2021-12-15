@@ -9,15 +9,14 @@
 class MeshHandler;
 class GameObject : public QOpenGLFunctions_4_1_Core {
 public:
-    std::string mName{"NoName"};
-    QString objName{"NoName"};
+     std::string mName{"NoName"};
+     QString objName{"NoName"};
 
      ColliderComponent *mCollider{nullptr};
      TransformComponent* mTransform{nullptr};
      MeshComponent* mMesh{nullptr};
      MaterialComponent* mMaterial{nullptr};
      SoundComponet* mSoundComponent{nullptr};
-
      MeshHandler* mMeshHandlerGameObject{nullptr};
 
      bool isAlive = true;
@@ -29,6 +28,9 @@ public:
      gsl::Vector3D startPos{0,0,0};
 
      GameObject* _las;
+     /*!
+      * \brief movement funksjon for å bevege spilleren/objekter
+      */
      void move(float x, float y, float z);
      void setSurface(GameObject* surface);
 };

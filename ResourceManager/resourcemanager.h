@@ -5,13 +5,11 @@
 #include <string>
 #include <map>
 #include <vector>
-
 #include "components.h"
 #include "constants.h"
 #include "soundhandler.h"
 #include "collisionhandler.h"
 
-//forward declaration
 class GameObject;
 class MeshHandler;
 class TextureHandler;
@@ -24,33 +22,28 @@ public:
     static ResourceManager& getInstance();
 
     ColliderComponent *mCollider = new ColliderComponent();
+    //!funksjon for å legge til et objekt, returnerer fra meshhandler
     GameObject* addObject(std::string meshName);
     GameObject* addTerrain(TextureHandler* t,float horSpaceing, float verSpacing, float height);
     bool addCollider(std::string colliderType, GameObject* obj);
     bool addComponent(std::string assetName, GameObject* ownerObject);
 
-
     void setUpAllTextures();
-    void setUpAllShaders();
 
     MeshData makeLineBox(std::string meshName);
     MeshData makeCircleSphere(float radius, bool rgbColor);
-    MeshData makeFrustumDrawing();
     MeshData makeFrustum(const struct Frustum &frustumIn);
 
     void setSurface(GameObject* surface, GameObject* ball);
     void moveAlongSurface(float dt, GameObject * ball);
 
     MeshHandler* mMeshHandler{nullptr};
-
+    ///sjekker kollisjon, returnerer true hvis kollidert
     bool checkCollision( GameObject* obj1, GameObject * obj2);
-
-    void update(const float dt);
 
     std::map<std::string, unsigned int> mShaderMap;
     std::vector<ShaderHandler*> mShaders;
-    //CollisionHandler *mCollisionHandler{nullptr};
-    //bool checkCollision(MeshData &linebox1, MeshData &linebox2);
+
 
 private:
     ResourceManager();  //singleton
@@ -60,8 +53,6 @@ private:
     gsl::AssetType findAssetType(std::string assetName);
 
     SoundComponet* makeSoundComponent(std::string assetName);
-
-    //Should these belong to other class - like in MeshHandler?
     std::map<std::string, unsigned int> mSoundBufferMap;
     std::vector<WaveRawData> mWaveBuffers;
 

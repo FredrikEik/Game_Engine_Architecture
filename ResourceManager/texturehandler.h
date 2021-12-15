@@ -40,8 +40,6 @@ public:
 
     int makeTexture(const std::string &filename = "none", bool cubeMap = false);
 
-    //float getHeightFromIndex(int i);
-
     std::map<std::string, unsigned int> mTextureMap;
     std::vector<Texture> mTextures;
 
@@ -52,17 +50,8 @@ private:
     int makeBMP(const std::string &filename, bool cubeMap = false);
     int readBitmap(const std::string &filename);
     void setTexture(Texture &textureIn);
-    //int readCubeMap(const std::string &filename);
-    //void setCubemapTexture(Texture &textureIn);
 
     static TextureHandler* mInstance;
-
-    /*************************************/
-    //this is put inside this class to avoid spamming the main namespace
-    //with stuff that only is used inside this class
-
-    //Quick fix to get rid of windows.h which contains
-    //BITMAPINFOHEADER and BITMAPFILEHEADER.
     typedef unsigned short int OWORD;    //should be 16 bit
     typedef unsigned int ODWORD;         //should be 32 bit
     typedef int OLONG;                   //should be 32 bit

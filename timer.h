@@ -7,6 +7,9 @@
 #include <ctime>
 #include <cmath>
 
+/*!
+ * \brief Timer klassen er til hjelp for å kunne operere ryddig med tidsvariabler og funksjoner
+ */
 class Timer
 {
 public:

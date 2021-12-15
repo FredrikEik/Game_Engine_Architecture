@@ -28,8 +28,6 @@ WaveRawData *SoundHandler::loadWave(std::string fileName)
         return wavePtr;
     }
 
-    //Starting to use the WavRawData pointer:
-    //File found so hopefully it is OK:
     wavePtr = new WaveRawData();
 
     std::fread(&wavePtr->size, sizeof(uint32_t), 1, fp);
@@ -158,14 +156,9 @@ bool SoundHandler::makeALBuffer(WaveRawData *waveData)
     checkALError("alBufferData");
     if(!checkALError("alBufferData"))
         return false;
-//    alSourcei(mSource, AL_BUFFER, waveData->mALBuffer);
-//    checkALError("alSourcei (loadWave)");
 
     qDebug() << "Making ALBuffer complete!";
 
-    //Should we delete the raw data from RAM?
-//    if (waveData->audioData)
-//        delete waveData->audioData;
     return true;
 }
 
@@ -175,7 +168,7 @@ int SoundHandler::makeALSource(ALuint bufferIn, float vol)
     alGetError();
     alGenSources(1, &tempSource);
     if(!checkALError("alGenSources"))
-        return -1;   //Fix - not totally correct. 0 is probably a
+        return -1;
     alSourcei(tempSource, AL_BUFFER, bufferIn);
     if(!checkALError("alSourcei (makeALSource)"))
         return -1;

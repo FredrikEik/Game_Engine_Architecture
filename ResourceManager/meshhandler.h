@@ -6,11 +6,12 @@
 #include "gltypes.h"
 #include "components.h"
 #include "texturehandler.h"
-//#include "coreengine.h"
 #include "camera.h"
 #include "gameobject.h"
 
-
+/*!
+ * \brief  Physics struct mest brukt for visualiseringsprosjektet.
+ */
 struct Physics
 {
     float radius = 0.25;
@@ -58,6 +59,10 @@ struct Physics
     }
 };
 
+/*!
+ * \brief MeshData structe inneholder variablene til alle meshene
+ * pluss en transform komponent som alle objekter kan ta i bruk
+ */
 struct MeshData
 {
     GLuint mVAO[3]{0};
@@ -69,17 +74,16 @@ struct MeshData
     std::vector<Vertex> mVertices[3];
     std::vector<Vertex> positions;
     std::vector<GLuint> mIndices[3];
-    //AABB Collider box: (the largest of these will be the radius for a Bounding sphere)
     gsl::Vector3D mUpRightFrontCorner{};
     gsl::Vector3D mLowLeftBackCorner{};
     float mColliderRadius{0};
 
     TransformComponent *mTransform;
-    //MeshComponent* mMeshComponent;
+
 
 };
 
-//Because we need OpenGLFunctions, this class can not be static
+
 class GameObject;
 typedef gsl::Vector3D Vec3;
 class MeshHandler : public QOpenGLFunctions_4_1_Core
@@ -87,6 +91,7 @@ class MeshHandler : public QOpenGLFunctions_4_1_Core
 public:
     MeshHandler();
 
+    ///lager en type mesh utifra input
     int makeMesh(std::string meshName);
 
     ///Makes an AABB box matching the size of the mesh given
@@ -105,7 +110,7 @@ public:
     std::vector<Vertex> getmVertices() const;
     void setPositions(const std::vector<Vertex> &value);
 
-
+    ///saker til visualisering
     void calculateNormals();
     void initTerrain();
     void lagTriangel(const Vec3& v1, const Vec3& v2, const Vec3& v3, MeshData &tempMesh);
@@ -115,8 +120,6 @@ public:
     void moveAlongLAs( float dt, GameObject *ball);
     void baryMove(float x, float y, float z);
     void setSurface2(GameObject* surface, GameObject* ball);
-    //gsl::Vector3D Get_position();
-    //void setPosition(gsl::Vector3D v);
     void setHeight(float z, GameObject* ball);
     void heightAt(MeshData &tempMesh);
 
@@ -126,8 +129,6 @@ public:
     Physics* p;
     
     GameObject* _las;
-    
-    //void updateParticles(const float dt);
 
     TextureHandler *mTexture;
     unsigned short mWidth{0};
@@ -135,10 +136,8 @@ public:
     float mHorisontalSpacing{1.f};
     float mHeightSpacing{1.f};
     float mHeightPlacement{0.f};
-
     float vertexXStart{0.f};
     float vertexZStart{0.f};
-      //  std::vector<Vertex> surfVertices;
 private:
     int readObj(std::string filename);
     int readObj2(std::string filename);
@@ -153,16 +152,14 @@ private:
 
     void calculateHeighMapNormals(int width, int depth, MeshData &mesh);
 
-    //LAS SETUP
+    ///LAS SETUP
     int makeLAS(std::string fileName);
     void ReadDatafromFile(std::string fileName, MeshData &mesh);
 
-    //void RemoveDeltaPos(MeshData &mesh);
-    //void GenerateHeightMap(MeshData &mesh);
-    //float CalcHeight(float x = 0, float z = 0);
+
 
     int m_rekursjoner;
-    int m_indeks;               // brukes i rekursjon, til å bygge m_vertices
+    int m_indeks;
     gsl::Vector3D m_normal{0.0, 0.0, 1.0};
     gsl::Vector3D old_normal{0.0, 0.0, 1.0};
     gsl::Vector3D mN{0.0, 0.0, 1.0};
@@ -178,15 +175,12 @@ private:
     float posY = 1.f;
     float posZ = 1.f;
 
-
     struct Particle
     {
         gsl::Vector3D position;
         float lifetime;
     };
     std::vector< Particle > particles;
-
-    //float positions[400];
     float PosArr[1000][2000];
 
     void makeColliderCorners(MeshData &meshIn, gsl::Vector3D &vertexIn);

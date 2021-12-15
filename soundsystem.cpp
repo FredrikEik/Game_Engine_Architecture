@@ -53,7 +53,6 @@ void SoundSystem::cleanUp()
 
 void SoundSystem::update(RenderSystem *renderWindowIn)
 {
-    //Super hack - should only be set once!
     mRenderSystem = renderWindowIn;
 
     if(shouldPlaySounds)
@@ -135,14 +134,7 @@ void SoundSystem::togglePlaySounds(bool shouldPlay)
     }
 }
 
-//SoundSource* SoundSystem::createSource(std::string name, gsl::Vector3D pos, std::string fileName, bool loop, float gain)
-//{
-//    SoundSource* tempPtr = new SoundSource(name, loop, gain);
-//    tempPtr->setPosition(pos);
-//    if (fileName != "")
-//        tempPtr->loadWave(fileName);
-//    return tempPtr;
-//}
+
 
 void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Vector3D &up)
 {
@@ -152,11 +144,6 @@ void SoundSystem::updateListener(gsl::Vector3D &pos, gsl::Vector3D &dir, gsl::Ve
     ALfloat headVec[6]{dir.x, dir.y, dir.z, up.x, up.y, up.z};
     alListenerfv(AL_ORIENTATION, headVec);
 
-    //    gsl::Vector3D vel
-    //    ALfloat velVec[3];,
-    //    velVec[0] = vel.x;
-    //    velVec[1] = vel.y;
-    //    velVec[2] = vel.z;
-    //    alListenerfv(AL_VELOCITY, velVec);
+
 
 }

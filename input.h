@@ -1,9 +1,8 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-/**
-    This struce just defines the keys we want usually want to use
-    You have to set the state of this table manually!
+/*!
+ * \brief Input struct som holder alle keys som skal bli brukt
  */
 struct Input
 {

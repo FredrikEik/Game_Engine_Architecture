@@ -16,8 +16,6 @@
 #include "shaderhandler.h"
 #include "mainwindow.h"
 #include "gameobject.h"
-#include "xyz.h"
-#include "triangle.h"
 #include "camera.h"
 #include "constants.h"
 #include "texturehandler.h"
@@ -95,6 +93,8 @@ void RenderSystem::init()
     //Supported on most Windows machines
     //reverts to plain glGetError() on Mac and other unsupported PCs
     // - can be deleted
+
+
     startOpenGLDebugger();
 
     //general OpenGL stuff:
@@ -150,7 +150,7 @@ void RenderSystem::render()
 
     for(unsigned int i{0}; i < mGameObjects.size(); i++)
     {
-        //lod og frustum
+        ///lod og frustum
         gsl::Vector3D cameraPos = mCurrentCamera->mPosition;
         gsl::Vector3D gobPos = mGameObjects[i]->mTransform->mMatrix.getPosition();
         gsl::Vector3D distanceVector = gobPos -cameraPos;
@@ -169,7 +169,7 @@ void RenderSystem::render()
 
 
 
-        //LOD calculation
+        ///LOD calculation
         float length = distanceVector.length();
 
 
@@ -201,7 +201,7 @@ void RenderSystem::render()
         else if (mGameObjects[i]->mMaterial->mShaderProgram == 3)
         {
 
-            //setter opp lys
+            ///setter opp lys
             viewMatrix = vMatrixUniform2;
             projectionMatrix = pMatrixUniform2;
             modelMatrix = mMatrixUniform2;
@@ -212,20 +212,20 @@ void RenderSystem::render()
         }
 
 
-        //sender data til shader
+        ///sender data til shader
         glUniformMatrix4fv( viewMatrix, 1, GL_TRUE, mCurrentCamera->mViewMatrix.constData());
         glUniformMatrix4fv( projectionMatrix, 1, GL_TRUE, mCurrentCamera->mProjectionMatrix.constData());
         glUniformMatrix4fv( modelMatrix, 1, GL_TRUE, mGameObjects[i]->mTransform->mMatrix.constData());
 
 
 
-        //draw the object
+        ///drawer objektene
         //sjekker hvem som skal drawes i bare play mode også
         if(mGameObjects[i]->RenderInPlaymode)
         {
 
 
-            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) //sjekker LOD levels
+            if(mGameObjects[i]->mMesh->mVertexCount[1] > 0) ///sjekker LOD levels
             {
                 if (length < 8)
                 {
@@ -259,7 +259,7 @@ void RenderSystem::render()
         }
 
 
-        //lager linebox rundt objekte som er mousepicket
+        ///lager linebox rundt objekte som er mousepicket
         if(i == mIndexToPickedObject)
         {
             linebox2 = CoreEngine::getInstance()->mResourceManager->makeLineBox("suzanne3.obj");
@@ -311,7 +311,7 @@ void RenderSystem::render()
                 if(CoreEngine::getInstance()->particlesSpawned == true)
                 {
 
-                    //beveger partiklene i en tilfeldig retning for å få en splash effekt
+                    ///beveger partiklene i en tilfeldig retning for å få en splash effekt
                     mParticles[j]->mTransform->mMatrix.translate(
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
                                                              ((float) rand()/(RAND_MAX / 1 )) - .5f,
@@ -320,7 +320,7 @@ void RenderSystem::render()
 
 
                }
-                //fjerner partiklene etter 1 sekund
+                ///fjerner partiklene etter 1 sekund
                 if(timer.elapsedSeconds() >= 1)
                 {
                     mParticles[j]->isAlive = false;
@@ -341,7 +341,7 @@ void RenderSystem::render()
 
     Camera *tempcam = CoreEngine::getInstance()->mGameCamera;
 
-    //lager frustum
+    ///lager frustum
     MeshData frustum = CoreEngine::getInstance()->mResourceManager->makeFrustum(
                 tempcam ->mFrustum
                 );
@@ -356,7 +356,7 @@ void RenderSystem::render()
 
     if(toogleFrustumDrawing)
     {
-        //tegner frustum
+        ///tegner frustum
         glDrawElements(frustum.mDrawType, frustum.mIndexCount[0], GL_UNSIGNED_INT, nullptr);
 
 

@@ -11,7 +11,9 @@ namespace Ui {
 class transformWidget;
 
 }
-
+/*!
+ * \brief transformWidget klassen er til for UI widgets
+ */
 class transformWidget : public QWidget
 {
     Q_OBJECT
@@ -40,15 +42,11 @@ private slots:
 private:
     Ui::transformWidget *ui;
     MainWindow *mMainWindow{nullptr};
-
-            //int objectsInList{-1};
-
     RenderSystem* mRenderSystem{nullptr};
-
     CoreEngine * mCoreEngine{nullptr};
     float translatex{0};
     float translatey{0};
-    float translatez;
+    float translatez{0};
 };
 
 #endif // TRANSFORMWIDGET_H

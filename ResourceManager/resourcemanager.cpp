@@ -21,7 +21,7 @@
 
 ResourceManager::ResourceManager()
 {
-    SoundSystem::getInstance();    //makes sure the SoundManager is made - needed before adding sounds
+    SoundSystem::getInstance();
     mMeshHandler = new MeshHandler();
     mTextureHandler = new TextureHandler();
 }
@@ -46,7 +46,7 @@ GameObject *ResourceManager::addObject(std::string meshName)
     //run through all potential LOD levels:
     for(int i{0}; i<3; i++)
     {
-        //Dangerous, because mMeshes vector can resize and will move pointers:
+
         tempMesh->mVAO[i] = mMeshHandler->mMeshes.at(meshIndex).mVAO[i];
         tempMesh->mVertexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mVertexCount[i];
         tempMesh->mIndexCount[i] = mMeshHandler->mMeshes.at(meshIndex).mIndexCount[i];
@@ -59,7 +59,7 @@ GameObject *ResourceManager::addObject(std::string meshName)
     tempObject->mTransform = new TransformComponent();
     tempObject->mCollider = new ColliderComponent();
 
-    return tempObject; //temporary to get to compile
+    return tempObject;
 
 }
 
@@ -105,12 +105,6 @@ bool ResourceManager::checkCollision(GameObject* obj1, GameObject * obj2)
 
 }
 
-void ResourceManager::update(const float dt)
-{
-    //mMeshHandler->updateParticles(dt);
-    //qDebug() << "suppose to work";
-
-}
 bool ResourceManager::addComponent(std::string assetName, GameObject *ownerObject)
 {
     if(!ownerObject)
@@ -162,7 +156,7 @@ SoundComponet *ResourceManager::makeSoundComponent(std::string assetName)
     //check if asset is made:
     auto result = mSoundBufferMap.find(assetName);
     //if already made
-    if (result != mSoundBufferMap.end()) {        //found!!!
+    if (result != mSoundBufferMap.end()) {
         soundIndex = result->second;
     }
     //not made, make new
@@ -201,22 +195,18 @@ void ResourceManager::setUpAllTextures()
         QStringList filters;
         filters << "*.bmp";
         tempDir.setNameFilters(filters);
-       // qDebug() << std::to_string(tempDir.entryInfoList().size()) +
+
         //                  " - .bmp textures will be read from " + gsl::TextureFilePath;
 
 
         //read all regular textures
         for(QFileInfo &var : tempDir.entryInfoList())
         {
-           // qDebug() << "Texture name: " + var.fileName().toStdString();
-            mTextureHandler->makeTexture(var.fileName().toStdString());
+
+             mTextureHandler->makeTexture(var.fileName().toStdString());
         }
     }
-//    else
-//    {
-//        qDebug() << "*** ERROR reading textures *** : Asset-folder " +
-//                         gsl::TextureFilePath + " does not exist!";
-//    }
+
 }
 
 

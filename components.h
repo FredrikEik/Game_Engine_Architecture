@@ -7,6 +7,10 @@
 #include "gltypes.h"
 #include "altypes.h"
 
+/*!
+ * \brief ColliderComponent holder variablene for å sjekke sphere collision
+ */
+
 struct ColliderComponent
 {
     bool objectsHasCollided = false;
@@ -30,7 +34,7 @@ struct MeshComponent
     GLint mIndexCount[3]{-1};
     GLenum mDrawType{GL_TRIANGLES};
     float mColliderRadius{0.f};
-    //    bool collided = false;
+
 };
 
 struct MaterialComponent
@@ -42,16 +46,14 @@ struct MaterialComponent
 struct SoundListenerComponent
 {
     gsl::Vector3D vel{0.0f, 0.0f, 0.0f};
-    //should be fetced from other component?
     gsl::Vector3D dir{0.0f, 0.0f, 1.0f};
-    //should be fetced from other component?
     gsl::Vector3D up{0.0f, 1.0f, 0.0f};
 };
 
 struct LightComponet
 {
-    gsl::LightTypes mType{gsl::POINT};      //only POINT is supported for now
-    gsl::Vector3D mDirection{0.f, -1.f, 0.f};   //not used in POINT
+    gsl::LightTypes mType{gsl::POINT};
+    gsl::Vector3D mDirection{0.f, -1.f, 0.f};
     gsl::Vector3D mColor{0.9f};
     float mLightStrenght{1.0f};
     gsl::Vector3D mAmbientColor{0.5f};
@@ -61,7 +63,6 @@ struct LightComponet
 struct SoundComponet
 {
     ALuint mSource;             ///< The sound source ID.
-//    ALuint mBuffer;             ///< The buffer the source should play.
     gsl::Vector3D mVelocity;    ///< Vector containing source velocity.
     float gain{1};
     float setVolume(float vol)
@@ -71,7 +72,6 @@ struct SoundComponet
         return gain;
     };
     bool shouldPlay{false};
-//    bool isPlaying{false};
     bool looping{false};
     bool stop{false};
 

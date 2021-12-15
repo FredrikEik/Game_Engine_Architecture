@@ -82,7 +82,6 @@ public:
         return QVector3D(x, y, z);
     }   //for use with qDebug()
 
-    //private:  //Making these public to avoid having to do things like setY(getY()+3) etc.
     GLfloat x;
     GLfloat y;
     GLfloat z;

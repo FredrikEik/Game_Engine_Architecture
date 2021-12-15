@@ -13,8 +13,6 @@
 
 MeshHandler::MeshHandler()
 {
-    //This is a hack - to make sure my MeshComponens are not moved for now
-    //Please fix
     mMeshes.reserve(gsl::MAX_MESHCOMPONENTS);
 }
 
@@ -26,13 +24,12 @@ int MeshHandler::makeMesh(std::string meshName)
     auto result = mMeshMap.find(meshName);
     //if already made
     if (result != mMeshMap.end()) {        //found!!!
-//        qDebug() << meshName.c_str() << "made already";
         meshIndex = result->second;
     }
     //not made, make new
     else {
 
-        //Simple "factory" - making the meshobject said in the filename
+        ///liste med objekter som lages utifra navn
         if (meshName.find(".obj") != std::string::npos)
             meshIndex = readObj(meshName);
         if (meshName.find("axis") != std::string::npos)
@@ -55,7 +52,6 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeBall(3);
 
         //If nothing matches meshName - just make a triangle
-        //Fix - this will make duplicate triangles
         if(meshIndex == -1)
             meshIndex = makeTriangle();
 
@@ -74,11 +70,9 @@ int MeshHandler::readObj(std::string filename)
     std::string tempName{0};
     filename.erase(filename.find(".obj"));  //deleting .obj ending to make LOD-level filenames
 
-    // testing stuff ///////
 
 
-    //tempName = gsl::MeshFilePath + tempName + ".obj";
-    //  ^^^^^¨¨^^^^^     /////////
+
     for (unsigned short lod{0}; lod < 3; lod++ )  //we test for 3 LOD levels
     {
         if (lod == 0)     //original mesh - not reduced size
@@ -121,19 +115,18 @@ int MeshHandler::readObj(std::string filename)
 
             if (oneWord == "#")
             {
-                //Ignore this line
-                //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
+
                 continue;
             }
             if (oneWord == "")
             {
                 //Ignore this line
-                //            qDebug() << "Line is blank ";
+
                 continue;
             }
             if (oneWord == "v")
             {
-                //            qDebug() << "Line is vertex "  << QString::fromStdString(oneWord) << " ";
+
                 gsl::Vector3D tempVertex;
                 sStream >> oneWord;
                 tempVertex.x = std::stof(oneWord);
@@ -153,7 +146,7 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "vt")
             {
-                //            qDebug() << "Line is UV-coordinate "  << QString::fromStdString(oneWord) << " ";
+
                 gsl::Vector2D tempUV;
                 sStream >> oneWord;
                 tempUV.x = std::stof(oneWord);
@@ -167,7 +160,7 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "vn")
             {
-                //            qDebug() << "Line is normal "  << QString::fromStdString(oneWord) << " ";
+
                 gsl::Vector3D tempNormal;
                 sStream >> oneWord;
                 tempNormal.x = std::stof(oneWord);
@@ -182,8 +175,8 @@ int MeshHandler::readObj(std::string filename)
             }
             if (oneWord == "f")
             {
-                //            qDebug() << "Line is a face "  << QString::fromStdString(oneWord) << " ";
-                //int slash; //used to get the / from the v/t/n - format
+
+
                 int index, normal, uv;
                 for(int i = 0; i < 3; i++)
                 {
@@ -200,7 +193,7 @@ int MeshHandler::readObj(std::string filename)
                         uv = std::stoi(segmentArray[1]);
                     else
                     {
-                        //qDebug() << "No uvs in mesh";       //uv not present
+                                                            //uv not present
                         uv = 0;                             //this will become -1 in a couple of lines
                     }
                     normal = std::stoi(segmentArray[2]);    //third is normal
@@ -226,13 +219,12 @@ int MeshHandler::readObj(std::string filename)
                 continue;
             }
         }
-        //beeing a nice boy and closing the file after use
         fileIn.close();
 
         initMesh(temp, lod);
     }
 
-    //calculate ca radius for collider - TODO: this is not correct:
+
     float a = temp.mLowLeftBackCorner.length();
     float b = temp.mUpRightFrontCorner.length();
     temp.mColliderRadius = (a>b) ? a : b;
@@ -249,7 +241,7 @@ int MeshHandler::readObj(std::string filename)
 
 int MeshHandler::makeAxis()
 {
-    //should check if this object is new before this!
+
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
 
@@ -262,7 +254,6 @@ int MeshHandler::makeAxis()
 
     temp.mDrawType = GL_LINES;
 
-    //only LOD level 0
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
@@ -270,7 +261,7 @@ int MeshHandler::makeAxis()
 
 int MeshHandler::makeTriangle()
 {
-    //should check if this object is new before this!
+
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
     temp.mVertices[0].push_back(Vertex{-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  0.f, 0.f}); // Bottom Left
@@ -279,7 +270,6 @@ int MeshHandler::makeTriangle()
 
     temp.mDrawType = GL_TRIANGLES;
 
-    //only LOD level 0
     initMesh(temp, 0);
 
     return mMeshes.size()-1;    //returns index to last object
@@ -401,54 +391,6 @@ int MeshHandler::makeSkybox()
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
 
-//    temp.mVertices[0].insert( temp.mVertices[0].end(),
-//    {// front
-//     Vertex{gsl::Vector3D(-1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.333f)},
-//     Vertex{gsl::Vector3D( 1.f, -1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.333f)},
-//     Vertex{gsl::Vector3D(-1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.25f, 0.666f)},
-//     Vertex{gsl::Vector3D( 1.f,  1.f, 1.f),    gsl::Vector3D(0.f, 0.f, 1.0f),  gsl::Vector2D(0.5f,  0.666f)},
-
-//     // right
-//     Vertex{gsl::Vector3D(1.f, -1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.333f)},
-//     Vertex{gsl::Vector3D(1.f, -1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.333f)},
-//     Vertex{gsl::Vector3D(1.f,  1.f,  1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
-//     Vertex{gsl::Vector3D(1.f,  1.f, -1.f),    gsl::Vector3D(1.f, 0.f, 0.f),   gsl::Vector2D(0.75f, 0.666f)},
-
-//     // back
-//     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.333f)},
-//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.333f)},
-//     Vertex{gsl::Vector3D( 1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(0.75f, 0.666f)},
-//     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(0.f, 0.f, -1.f),  gsl::Vector2D(1.f,   0.666f)},
-
-//     // left
-//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.333f)},
-//     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
-//     Vertex{gsl::Vector3D(-1.f,  1.f, -1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.f, 0.666f)},
-//     Vertex{gsl::Vector3D(-1.f,  1.f,  1.f),   gsl::Vector3D(-1.f, 0.f, 0.f),  gsl::Vector2D(0.25f,   0.666f)},
-
-//     // bottom
-//     Vertex{gsl::Vector3D(-1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.f)},
-//     Vertex{gsl::Vector3D( 1.f, -1.f, -1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.f)},
-//     Vertex{gsl::Vector3D(-1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.25f, 0.333f)},
-//     Vertex{gsl::Vector3D( 1.f, -1.f,  1.f),   gsl::Vector3D(0.f, -1.f, 0.f),  gsl::Vector2D(0.5f,  0.333f)},
-
-//     // top
-//     Vertex{gsl::Vector3D(-1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.666f)},
-//     Vertex{gsl::Vector3D( 1.f, 1.f,  1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.666f)},
-//     Vertex{gsl::Vector3D(-1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.25f, 0.999f)},
-//     Vertex{gsl::Vector3D( 1.f, 1.f, -1.f),    gsl::Vector3D(0.f, 1.f, 0.f),   gsl::Vector2D(0.5f,  0.999f)}
-//                      });
-
-//    temp.mIndices[0].insert( temp.mIndices[0].end(),
-//    { 0,  2,  1,  1,  2,  3,
-//      4,  6,  5,  5,  6,  7,
-//      8,  10,  9, 9,  10, 11,
-//      12, 14, 13, 13, 14, 15,
-//      16, 18, 17, 17, 18, 19,
-//      20, 22, 21, 21, 22, 23
-//                     });
-
-
     temp.mVertices[0].push_back(Vertex{-1.0f,  1.0f, -1.0f ,1,1,1});
     temp.mVertices[0].push_back(Vertex{-1.0f, -1.0f, -1.0f ,1,1,1});
     temp.mVertices[0].push_back(Vertex{ 1.0f, -1.0f, -1.0f ,1,1,1});
@@ -501,7 +443,7 @@ int MeshHandler::makeSkybox()
 
 int MeshHandler::makeCube()
 {
-    //should check if this object is new before this!
+
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
     temp.mVertices[0].push_back(Vertex(-0.5,-0.5,0.5   , 1, 0, 1));
@@ -652,7 +594,7 @@ MeshData MeshHandler::makeCircleSphere(float radius, bool rgbColor)
 
 int MeshHandler::makeTerrain(std::string heightMapName)
 {
-    //should check if this object is new before this!
+
     mMeshes.emplace_back(MeshData());
     MeshData &tempMesh = mMeshes.back();
 
@@ -743,7 +685,7 @@ int MeshHandler::makeLAS(std::string fileName)
     mMeshes.emplace_back(MeshData());
     MeshData &temp = mMeshes.back();
 
-    //qDebug() << "making lAas";
+
     ReadDatafromFile(fileName, temp);
     minMaxNormalize();
     //GenerateHeightMap(temp);
@@ -769,7 +711,7 @@ int MeshHandler::makeLAS(std::string fileName)
 
 
     //For every vertices
-    //qDebug() << "Vertices size" << lasData.size();
+
     for(int i = 0; i < lasData.size(); i++)
     {
         //.. find what column the vertex is on
@@ -799,12 +741,12 @@ int MeshHandler::makeLAS(std::string fileName)
     //qDebug() << "size of height array " << heights.size();
     for(int i = 0; i < heights.size(); i++)
     {
-        //qDebug() << "size of height vector " << i << heights[i].size();
+
 
         //Calculate the average of all heights in quad
         //.. and put it in the array of averageHeights
 
-        //float sum = std::accumulate(heights[i].begin(), heights[i].end(), 0);
+
 
         float sum = 0;
         for(int j = 0; j < heights[i].size(); j++)
@@ -815,10 +757,6 @@ int MeshHandler::makeLAS(std::string fileName)
         averageHeights[i] = sum;
     }
 
-//    for(int i = 0; i < 25 ; i++)
-//    {
-//        qDebug() << "averageheight:" << i << " " << averageHeights[i];
-//    }
 
     //Create triangulated surface
     float R = 10;
@@ -864,74 +802,6 @@ int MeshHandler::makeLAS(std::string fileName)
 
 void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
 {
-    /*
-    std::string line;
-
-
-    std::string tempName{0};
-    tempName = fileName;
-
-    tempName = gsl::DataFilePath + tempName;
-
-    qDebug() << "Reading " << tempName.c_str();
-    std::ifstream fileIn;
-    fileIn.open (tempName, std::ifstream::in);
-    std::string x,y,z;
-    if (fileIn.is_open())
-    {
-        qDebug() << "file read.";
-        getline (fileIn,line);
-        while ( getline (fileIn,line) )
-        {
-            //getting x positions
-            x += line[0];
-            x += line[1];
-            x += line[2];
-            x += line[3];
-            x += line[4];
-            x += line[5];
-            x += line[6];
-            x += line[7];
-            x += line[8];
-
-            //getting y positions
-            y += line[10];
-            y += line[11];
-            y += line[12];
-            y += line[13];
-            y += line[14];
-            y += line[15];
-            y += line[16];
-            y += line[17];
-            y += line[18];
-            y += line[19];
-            //getting z positions
-            z += line[21];
-            z += line[22];
-            z += line[23];
-            z += line[24];
-            z += line[25];
-            z += line[26];
-
-            //std::cout <<x<< " "<< y << " "<<z<< '\n';
-            mesh.positions.push_back(Vertex(std::stof(x),std::stof(z),std::stof(y), (line[4] - '0')*0.1f ,(line[23]- '0')*0.1f ,(line[16]- '0')*0.1f ,0 ,0)); // setting data into Vertex
-            x = "";
-            y = "";
-            z = "";
-
-        }
-        fileIn.close();
-        //delete delta in the vertex, as it starts with insaneley big values :D
-        //RemoveDeltaPos(mesh);
-        //initMesh(mesh, 0);
-    }
-    else
-    {
-        QString string = QString::fromStdString( fileName);
-        qDebug() << "Unable to open file: " << string;
-    }
-    */
-
 
     std::string tempName{0};
     tempName = fileName;
@@ -987,10 +857,7 @@ void MeshHandler::ReadDatafromFile(std::string fileName, MeshData &mesh)
 
     /*Print las data*/
     qDebug() << highestX << highestY << highestZ << lowestX << lowestY << lowestZ;
-//    for(int i = 0; i < 1000; i++)
-//    {
-//        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;
-//    }
+
 
 
 }
@@ -1011,7 +878,7 @@ void MeshHandler::minMaxNormalize()
 
 void MeshHandler::calculateHeighMapNormals(int width, int depth, MeshData &mesh)
 {
-    //TODO: This can be optimized and calculated while heightMap is read in
+
 
     //not tested for non square textures:
     if (width != depth)
@@ -1138,7 +1005,7 @@ void MeshHandler::calculateHeighMapNormals(int width, int depth, MeshData &mesh)
         result.normalize();
 
         //put the normal into the vertex
-//        qDebug() << result;
+
         mesh.mVertices[0].at(i).mNormal = result;
     }
     qDebug() << "Normals for ground calclulated";
@@ -1314,15 +1181,12 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
 {
 
     gsl::Vector3D bary;
-    //std::vector<gsml::Vertex> vertices = triangle_surface->get_vertices();
     gsl::Vector2D ballPosXY(ball->mTransform->mMatrix.getPosition().x, ball->mTransform->mMatrix.getPosition().y);
     for (size_t i=0; i<lasData.size(); i++)
     {
-        //qDebug() << "ground size: " << vertices.size();
         gsl::Vector3D p1 = lasData[i].get_xyz();
         gsl::Vector3D p2 = lasData[++i].get_xyz();
         gsl::Vector3D p3 = lasData[++i].get_xyz();
-        //qDebug() << "p1: " << p1.x << p1.y << p1.z << "p2: " << p2.x << p2.y << p2.z << "p3: " << p3.x << p3.y << p3.z;
 
         m_indeks = static_cast<int>(i+1) /3;
 
@@ -1330,8 +1194,6 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
                                  gsl::Vector2D(p2.x, p2.y),
                                  gsl::Vector2D(p3.x, p3.y),
                                  ballPosXY);
-
-        //qDebug() << "bary value: " << bary.x << " " << bary.y << " " << bary.z;
 
         if (bary.x >=0 && bary.y >=0 && bary.z >=0)
         {
@@ -1379,7 +1241,6 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
                 p->Velocity = mN * gsl::Vector3D::dot(p->VelocityOld, mN);
                 p->Velocity = p->VelocityOld - p->Velocity * 2;
                 p->Velocity = p->Velocity * p->friction;
-                //qDebug() << "mVelocity: " << p->Velocity.x << p->Velocity.y << p->Velocity.z;
             }
             p->VelocityOld = p->Velocity;
             old_normal = m_normal;
@@ -1393,7 +1254,6 @@ void MeshHandler::moveAlongLAs(float dt, GameObject *ball)
 void MeshHandler::setSurface2(GameObject *surface, GameObject * ball)
 {
     _las = surface;
-    //lasData = _las->mMeshHandlerGameObject->getmVertices();
     int mT = static_cast<int>(lasData.size());
     if(lasData.size()>100){
         mT = rand()%mT;
@@ -1404,8 +1264,7 @@ void MeshHandler::setSurface2(GameObject *surface, GameObject * ball)
         gsl::Vector3D pos = (v1+v2+v3)*0.333;
         pos.x += 2;
         ball->mTransform->mMatrix.setPosition(pos.x, pos.y, pos.z);}
-//    else
-//        move(1,1,5, ball);
+
 }
 
 void MeshHandler::setHeight(float z, GameObject* ball)
@@ -1419,7 +1278,6 @@ void MeshHandler::setHeight(float z, GameObject* ball)
     if(z !=  ball->mTransform->mMatrix.getPosition().z)
     {
         ball->mTransform->mMatrix.setPosition(Translation.x, Translation.y, Translation.z);
-        //mMatrix.setPosition(Translation.x,Translation.y,Translation.z);
     }
 }
 
@@ -1472,7 +1330,6 @@ float MeshHandler::barycentricHeight(const gsl::Vector3D &point, const gsl::Vect
     float w = (d00 * d21 - d01 * d20) * invDenom;
     float u = 1.0f - v - w;
 
-    //        qDebug() << "BaryCords:" << u << v << w;
 
     float heightOut;
     if(u >= 0.f && v >= 0.f && w >= 0.f )
