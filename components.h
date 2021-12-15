@@ -35,12 +35,7 @@ public:
     MaterialComponent();
     GLuint mShaderProgram;
     GLint mTextureUnit;
-
-
-
     void setupUniforms();
-
-
 };
 
 struct LightComponent

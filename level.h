@@ -3,6 +3,7 @@
 
 #include "factory.h"
 #include "gsl/vector3d.h"
+#include "constants.h"
 #include <vector>
 
 //Level scripted from javascript
@@ -12,12 +13,12 @@ class Level
 public:
     Level();
 
-    void saveLevelAs(QString levelName, std::multimap<std::string, struct SpawnSettings> objectMap);
+    void saveLevelAs(QString levelName, std::multimap<gsl::ObjectType, struct SpawnSettings> objectMap);
     void loadLevel(QString fileName);
     void write(QJsonDocument document, QString fileName) const;
     void read(const QJsonObject &json);
 
-    std::multimap<std::string, struct SpawnSettings> objectsInLevel;
+    std::multimap<gsl::ObjectType, struct SpawnSettings> objectsInLevel;
 
 };
 struct SpawnSettings

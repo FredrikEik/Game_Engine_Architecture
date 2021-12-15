@@ -4,8 +4,7 @@
 #include <QWidget>
 #include "vector3d.h"
 
-
-class Factory;
+class RenderSystem;
 
 namespace Ui {
 class DetailsWidget;
@@ -19,10 +18,7 @@ public:
     explicit DetailsWidget(QWidget *parent = nullptr, float positionPace = 1.f, float rotationPace = 1.f, float scalePace = 1.f);
     ~DetailsWidget();
 
-    void init(Factory *factory, int index);
-
-
-
+    void init(RenderSystem *systemIn, int index);
 
 private slots:
     void on_DoubleSpinBoxXPosition_valueChanged(double arg1);
@@ -43,12 +39,28 @@ private slots:
 
     void on_DoubleSpinBoxZScale_valueChanged(double arg1);
 
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_comboBox_2_currentIndexChanged(int index);
+
+    void on_pushButton_clicked();
+
+    void on_horizontalSlider_sliderMoved(int position);
+
+    void on_horizontalSlider_2_sliderMoved(int position);
+
+    void on_pushButton_2_clicked();
+
+    void on_horizontalSlider_3_sliderMoved(int position);
+
 private:
     Ui::DetailsWidget *ui;
 
     void readPosition();
     void readRotation();
     void readScale();
+    void readTextureAndShader();
+    void readLightStrengths();
     void setPosition();
     void setRotation();
     void setScale();
@@ -58,7 +70,7 @@ private:
     double mScalePace {0.1};
 
     int inSceneArrayIndex{-1};
-    Factory *mfactory{nullptr};
+    RenderSystem* renderSystem;
     gsl::Vector3D position;
     gsl::Vector3D rotation;
     gsl::Vector3D scale;

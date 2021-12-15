@@ -13,8 +13,6 @@ class Factory
 {
 public:
     Factory();
-    std::vector<GameObject*> mGameObjects;
-
     int cubecounter=0;
     int mariocounter=0;
     int trianglecounter=0;
@@ -24,7 +22,11 @@ public:
     int cameracounter=0;
     int lightCounter=0;
 
-    GameObject* createObject(std::string objectName);
+    GameObject* createObject(gsl::ObjectType objectType);
+
+    template<typename T>
+    T* createObject(gsl::ObjectType objectType);
+    //std::vector<GameObject*> gameObjects;
 
     void saveMesh(std::string fileName, std::string nickName);
 
@@ -32,6 +34,7 @@ public:
     void openLevel(Level level);
     MeshComponent* getMeshFromMap(std::string name) {return storedMeshes[name];}
 private:
+
     std::unordered_map<std::string, MeshComponent*> storedMeshes;
 
 

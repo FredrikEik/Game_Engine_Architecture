@@ -2,13 +2,13 @@
 
 #include "light.h"
 #include "components.h"
-#include "renderwindow.h"
+#include "rendersystem.h"
 
 Light::Light()
 {
     // Ambient
     mAmbientStrength = 0.15f;
-    mAmbientColor = gsl::Vector3D(0.3f, 0.3f, 0.8f);
+    mAmbientColor = gsl::Vector3D(0.8f, 0.8f, 0.8f);
 
     // Light
     mLightStrength = 1.5f;

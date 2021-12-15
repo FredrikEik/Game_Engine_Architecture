@@ -1,10 +1,10 @@
 {
     "Objects": [
         {
-            "objectType": "Cube",
+            "objectType": 0,
             "position": [
                 0,
-                3,
+                0,
                 0
             ],
             "rotation": [
@@ -19,11 +19,29 @@
             ]
         },
         {
-            "objectType": "Skybox",
+            "objectType": 6,
             "position": [
-                -4.378979682922363,
-                2.0162885189056396,
-                3.7486572265625
+                -6.468057632446289,
+                -0.5635110139846802,
+                7.809206485748291
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                50,
+                50,
+                50
+            ]
+        },
+        {
+            "objectType": 7,
+            "position": [
+                0,
+                0,
+                0
             ],
             "rotation": [
                 0,
@@ -37,10 +55,46 @@
             ]
         },
         {
-            "objectType": "Sphere",
+            "objectType": 7,
             "position": [
                 0,
-                3,
+                0,
+                0
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "objectType": 8,
+            "position": [
+                0,
+                0.6000000238418579,
+                0
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "scale": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ]
+        },
+        {
+            "objectType": 9,
+            "position": [
+                0,
+                -7,
                 0
             ],
             "rotation": [

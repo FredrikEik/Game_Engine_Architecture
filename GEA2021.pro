@@ -47,13 +47,15 @@ SOURCES += main.cpp \
     player.cpp \
     postprocessing.cpp \
     quadtree.cpp \
-    renderwindow.cpp \
+    rendersystem.cpp \
     shader.cpp \
     mainwindow.cpp \
     SoundCode/scr/soundmanager.cpp \
     SoundCode/scr/soundsource.cpp \
+    shaderhandler.cpp \
     skybox.cpp \
     sphere.cpp \
+    system.cpp \
     texture.cpp \
     gsl/vector2d.cpp \
     gsl/vector3d.cpp \
@@ -90,11 +92,13 @@ HEADERS += \
     player.h \
     postprocessing.h \
     quadtree.h \
-    renderwindow.h \
+    rendersystem.h \
     shader.h \
     mainwindow.h \
+    shaderhandler.h \
     skybox.h \
     sphere.h \
+    system.h \
     texture.h \
     gsl/vector2d.h \
     gsl/vector3d.h \

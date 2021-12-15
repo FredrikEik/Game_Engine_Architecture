@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1047</width>
-    <height>788</height>
+    <width>1320</width>
+    <height>720</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Epic Gamer Engine</string>
@@ -69,13 +75,70 @@
       </item>
       <item>
        <widget class="QPushButton" name="CreateObject">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Create Object</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="createDropDownBox"/>
+       <widget class="QComboBox" name="createDropDownBox">
+        <item>
+         <property name="text">
+          <string>Cube</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Plane</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Triangle</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MarioCube</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sphere</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Camera</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Skybox</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Light</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Player</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TriangleSurface</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </item>
@@ -108,10 +171,26 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1047</width>
-     <height>20</height>
+     <width>1320</width>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave_Level"/>
+    <addaction name="actionLoad_Level"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionToggle_Wireframe"/>
+    <addaction name="actionToggle_Frustum_Culling"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -123,9 +202,15 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="minimumSize">
     <size>
-     <width>300</width>
+     <width>350</width>
      <height>405</height>
     </size>
    </property>
@@ -161,6 +246,12 @@
      </item>
      <item>
       <widget class="QScrollArea" name="scrollArea_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
@@ -169,26 +260,30 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>280</width>
-          <height>338</height>
+          <width>330</width>
+          <height>336</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <layout class="QVBoxLayout" name="blDetailsContainer"/>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>215</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QVBoxLayout" name="blDetailsContainer">
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>215</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -227,6 +322,26 @@
     </layout>
    </widget>
   </widget>
+  <action name="actionSave_Level">
+   <property name="text">
+    <string>Save Level</string>
+   </property>
+  </action>
+  <action name="actionLoad_Level">
+   <property name="text">
+    <string>Load Level</string>
+   </property>
+  </action>
+  <action name="actionToggle_Wireframe">
+   <property name="text">
+    <string>Toggle Wireframe</string>
+   </property>
+  </action>
+  <action name="actionToggle_Frustum_Culling">
+   <property name="text">
+    <string>Toggle Frustum Culling</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <QOpenGLFunctions_4_1_Core>
 
 Skybox::Skybox(std::string filename)
 {
@@ -22,7 +23,6 @@ Skybox::~Skybox()
 
 void Skybox::init()//(GLint matrixUniform[4])
 {
-
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
 
