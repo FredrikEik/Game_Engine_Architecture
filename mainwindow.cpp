@@ -261,7 +261,18 @@ void MainWindow::on_actionControls_triggered()
 {
     QMessageBox msgBox;
     msgBox.setIcon(QMessageBox::Information);
-    msgBox.setText("Move and rotate camera by holding down right mouse button. \nUse WASD to move around. \nQ = down, \nE = up. \nUse ScrollWheel to adjust speed.");
+    msgBox.setText("PS!!! To play the game, do not move editor camera on start up!!\
+                    \nEDITOR CONTROLS: \
+                    \nMove and rotate camera by holding down right mouse button. \
+                    \nUse WASD to move around. \
+                    \nQ = down, \
+                    \nE = up. \
+                    \nUse ScrollWheel to adjust speed.\
+                    \nGAME CONTROLS:\
+                    \nUse W - D to move player right and left. \
+                    \nUse RIGHT MOUSE BUTTON to load a projectile \
+                    \nUse LEFT MOUSE BUTTON to fire a projectile \
+                    \nPS: To win, kill all enemies.");
     msgBox.exec();
 }
 
