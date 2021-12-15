@@ -9,7 +9,7 @@ Level::Level()
 
 }
 
-void Level::saveLevelAs(QString levelName, std::multimap<std::string, SpawnSettings> objectMap)
+void Level::saveLevelAs(QString levelName, std::multimap<gsl::ObjectType, SpawnSettings> objectMap)
 {
     QString fileName{"../GEA2021/Saves/" + levelName + ".json"};
     QJsonDocument newLevel;
@@ -20,8 +20,8 @@ void Level::saveLevelAs(QString levelName, std::multimap<std::string, SpawnSetti
         qDebug() << "loop iterator";
         QJsonObject temp;
 
-        std::string objType = it->first;
-        QString QObjType = QString::fromStdString(objType);
+        gsl::ObjectType objType = it->first;
+        QJsonValue QObjType = objType;
 
         temp.insert("objectType", QObjType);
         temp.insert("position", QJsonArray{it->second.initialPos.x,it->second.initialPos.y,it->second.initialPos.z});
@@ -68,20 +68,20 @@ void Level::read(const QJsonObject &json)
             QJsonObject jsonObject = objectArray[i].toObject();
             SpawnSettings settings;
 
-            std::string objectType;
+            gsl::ObjectType objectType;
             gsl::Vector3D spawnPos;
             gsl::Vector3D spawnRot;
             gsl::Vector3D spawnScale;
 
 
             //Gets objectType
-            if(jsonObject.contains("objectType") && jsonObject["objectType"].isString())
+            if(jsonObject.contains("objectType") && jsonObject["objectType"].isDouble())
             {
-                objectType = jsonObject["objectType"].toString().toStdString();
+                objectType = gsl::ObjectType(jsonObject["objectType"].toInt());
             }
             else
             {
-                objectType = "Cube";
+                objectType = gsl::CUBE;
             }
 
             //Gets spawn position
@@ -123,7 +123,7 @@ void Level::read(const QJsonObject &json)
                 spawnRot = gsl::Vector3D(0,0,0);
             }
 
-            objectsInLevel.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+            objectsInLevel.insert(std::pair<gsl::ObjectType, struct SpawnSettings>(objectType, settings));
         }
     }
 }

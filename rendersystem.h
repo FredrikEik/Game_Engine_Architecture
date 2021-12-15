@@ -7,6 +7,8 @@
 #include <QElapsedTimer>
 #include <QJSEngine>
 #include "gameobject.h"
+#include "skybox.h"
+#include "trianglesurface.h"
 #include "factory.h"
 #include "level.h"
 #include "input.h"
@@ -51,6 +53,9 @@ public:
     void setPickedObject(int pickedID);
     void cancelPickedObject();
 
+    Camera* playCamera = nullptr;
+    Camera* editorCamera = nullptr;
+
     void createObjectbutton(std::string objectName);
     void playPausebutton(const QSurfaceFormat &format);
 
@@ -60,7 +65,16 @@ public:
     /**ShaderHandler**/
     ShaderHandler* mShaderHandler;
 
-    System* systemRef; //points back to system
+    /**GameObjects**/
+    std::vector<GameObject*> gameObjects;
+    Factory* factory = nullptr;
+    GameObject* player = nullptr;
+    GameObject* skybox = nullptr;
+    GameObject* triangleSurface = nullptr;
+    GameObject* helperObject = nullptr;
+    MeshComponent *helperObjectMesh= nullptr;
+
+    System* systemRef{nullptr}; //points back to system
     MainWindow *mMainWindow{nullptr};        //points back to MainWindow to be able to put info in StatusBar
 
     void moveHelpObjectToSelected();
@@ -69,6 +83,8 @@ public:
 
 private:
     void init();
+
+    void initObjects();
 
     void checkForGLerrors();
 

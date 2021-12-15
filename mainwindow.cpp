@@ -102,8 +102,6 @@ void MainWindow::init()
     tempSize.rwidth() *= 0.85;
     resize(tempSize);
 
-    mSystem = new System(this, mRenderSystem);
-
     //sets the keyboard input focus to the RenderSystem when program starts
     // - can be deleted, but then you have to click inside the RenderSystem to get the focus
     mRenderSystemContainer->setFocus();
@@ -215,7 +213,7 @@ void MainWindow::on_outliner_itemClicked(QTreeWidgetItem *item, int column)
     //Transform widget:
        mDetailsWidget = new DetailsWidget(this, mPositionStep, mRotationStep, mScaleStep);
        mDetailsWidget->setObjectName("DetailsWidget"); //not sure if this is necessary
-       mDetailsWidget->init(mSystem, mCurrentEditItemIndex);
+       mDetailsWidget->init(mRenderSystem, mCurrentEditItemIndex);
        ui->blDetailsContainer->addWidget(mDetailsWidget);    //add to details pane
 }
 

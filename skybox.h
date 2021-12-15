@@ -2,6 +2,7 @@
 #define SKYBOX_H
 #include "objreader.h"
 #include "gameobject.h"
+#include <QOpenGLFunctions_4_1_Core>
 
 
 

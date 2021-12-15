@@ -3,6 +3,7 @@
 
 #include <QElapsedTimer>
 #include <QJSEngine>
+#include <QObject>
 #include "components.h"
 #include "level.h"
 
@@ -17,11 +18,13 @@ class Skybox;
 class TriangleSurface;
 class MainWindow;
 
-class System : public QObject, protected QOpenGLFunctions_4_1_Core
+class System : public QObject
 {
+    Q_OBJECT
 public:
     System(MainWindow *mw, RenderSystem *rs);
     void init();
+    void startGameLoop();
 
     /**Level**/
     void saveLevel();
@@ -46,24 +49,17 @@ public:
     /**Camera**/
     void setCameraSpeed(float value);
 
-    /**Create object**/
-    void createObject(std::string objectName);
-
     /**Setters**/
-    void* setRenderSystem(RenderSystem* rs) {renderSystem = rs;}
+    void setRenderSystem(RenderSystem* rs) {renderSystem = rs;}
 
     /**Getters**/
     InputComponent* getInput() {return input;}
-    Camera* getEditorCamera() {return editorCamera;}
-    Camera* getPlayCamera() {return playCamera;}
+    //Player* getPlayer() {return player;}
     float getCameraSpeed() {return cameraSpeed;}
     float getCameraRotateSpeed() {return cameraRotateSpeed;}
     bool getEditorMode() {return editorMode;}
 
     /**Public for RenderSystems sake**/
-    std::vector<GameObject*> gameObjects;
-    GameObject* helperObject = nullptr;
-    MeshComponent *helperObjectMesh= nullptr;
     QElapsedTimer timeStart;
 
     /**Sound**/
@@ -72,13 +68,19 @@ public:
     SoundSource* videoGameLandSound{};
     SoundSource* videoGameLandSound2{};
 
+    /**Failcheck**/
+    bool isInitialized {false};
+
+private slots:
+    void gameLoop();
+
 private:
-    void initMeshes();
-    void initObjects();
-    void initTextures();
-    void initSounds();
+    void createMeshes();
+    void createObjects();
+    void createSounds();
 
     /**Systems**/
+    QOpenGLContext *renderContext{nullptr};
     RenderSystem* renderSystem = nullptr;
     MainWindow* mainWindow = nullptr;
     Factory* factory = nullptr;
@@ -86,15 +88,8 @@ private:
     Level level;
     QJSEngine scriptEngine;
 
-    /**Objects**/
-    Camera* playCamera = nullptr;
-    Camera* editorCamera = nullptr;
-    Player* player = nullptr;
-    Skybox* skybox = nullptr;
-    TriangleSurface* triangleSurface = nullptr;
-
     /**Input**/
-    InputComponent* input;
+    InputComponent* input = nullptr;
 
     /**Settings**/
     bool bPause = true;
@@ -115,8 +110,7 @@ private:
     gsl::Vector3D thirdPersonCameraPos;
     gsl::Vector3D inFrontOfPlayer;
 
-private slots:
-    void gameLoop();
+
 protected:
     //QWindow which RenderSystem inherits from has Keyboard and mouse function events
     //RenderSystem notifies system whenever an input is pressed

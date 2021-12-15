@@ -4,8 +4,7 @@
 #include <QWidget>
 #include "vector3d.h"
 
-
-class System;
+class RenderSystem;
 
 namespace Ui {
 class DetailsWidget;
@@ -19,7 +18,7 @@ public:
     explicit DetailsWidget(QWidget *parent = nullptr, float positionPace = 1.f, float rotationPace = 1.f, float scalePace = 1.f);
     ~DetailsWidget();
 
-    void init(System *systemIn, int index);
+    void init(RenderSystem *systemIn, int index);
 
 private slots:
     void on_DoubleSpinBoxXPosition_valueChanged(double arg1);
@@ -71,7 +70,7 @@ private:
     double mScalePace {0.1};
 
     int inSceneArrayIndex{-1};
-    System* system;
+    RenderSystem* renderSystem;
     gsl::Vector3D position;
     gsl::Vector3D rotation;
     gsl::Vector3D scale;

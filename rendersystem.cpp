@@ -1,4 +1,4 @@
-﻿#include "RenderSystem.h"
+﻿#include "rendersystem.h"
 #include <QTimer>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -54,6 +54,9 @@ RenderSystem::RenderSystem(const QSurfaceFormat &format, MainWindow *mainWindow)
         mContext = nullptr;
         qDebug() << "Context could not be made - quitting this application";
     }
+    else{
+        qDebug() << "Context was made";
+    }
 }
 
 RenderSystem::~RenderSystem()
@@ -78,15 +81,6 @@ void RenderSystem::init()
 
     //must call this to use OpenGL functions
     initializeOpenGLFunctions();
-
-    //Print render version info (what GPU is used):
-    //(Have to use cout to see text- qDebug just writes numbers...)
-    //Nice to see if you use the Intel GPU or the dedicated GPU on your laptop
-    // - can be deleted
-    std::cout << "The active GPU and API: \n";
-    std::cout << "  Vendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "  Renderer: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "  Version: " << glGetString(GL_VERSION) << std::endl;
 
     //Get the texture units of your GPU
     int mTextureUnits; //Supported Texture Units (slots) pr shader. - maybe have in header!?
@@ -143,14 +137,71 @@ void RenderSystem::init()
         //Qt makes a build-folder besides the project folder. That is why we go down one directory
         // (out of the build-folder) and then up into the project folder.
 
+    //Editor camera
+    editorCamera = new Camera(90, 4/3);
+    editorCamera->init();
+    editorCamera->mProjectionMatrix.perspective(45.f, mAspectratio, 0.1f, 100.f);
+    editorCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
+
+
+    //Play camera
+    playCamera = new Camera(90, 4/3);
+    playCamera->init();
+    //playCamera->setPosition(systemRef->getPlayer()->cameraTarget);
 
     //********************** Set up ShaderHandler *******************
     mShaderHandler = new ShaderHandler();
     mShaderHandler->init();
+    mShaderHandler->cameraRef = editorCamera;
 
+    //********************** Set up System *******************
+    factory = new Factory();
+    systemRef = new System(mMainWindow, this);
+
+
+    initObjects();
     //********************** Set up quadtree *******************
-    gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
-    mQuadtree.init(nw, ne, sw, se);
+    //gsml::Point2D nw{-10,-10}, ne{10,-10}, sw{-10, 10}, se{10, 10}; //specifies the quadtree area
+    //mQuadtree.init(nw, ne, sw, se);
+
+    //********************** Start the game loop *******************
+    //systemRef->startGameLoop();
+}
+
+void RenderSystem::initObjects()
+{
+    //skybox = factory->createObject<Skybox>(gsl::SKYBOX);
+
+    //Skybox
+    skybox = factory->createObject(gsl::SKYBOX);
+//    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
+//    skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
+//    gameObjects.push_back(skybox);
+
+//    //Surface
+//    triangleSurface = factory->createObject("TriangleSurface");
+//    gameObjects.push_back(triangleSurface);
+
+//    //Player
+//    player = factory->createObject("Player");
+//    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
+//    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
+//    dynamic_cast<Player*>(player)->setSurfaceToWalkOn(triangleSurface);
+//    gameObjects.push_back(player);
+
+//    //Lights
+//    GameObject* light1 = factory->createObject("Light");
+//    GameObject* light2 = factory->createObject("Light");
+//    gameObjects.push_back(light1);
+//    gameObjects.push_back(light2);
+//    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light1));
+//    mShaderHandler->lightRefs.push_back(dynamic_cast<Light*>(light2));
+
+//    //Helper Object
+//    helperObject = factory->createObject("Cube");
+//    gameObjects.push_back(helperObject);
+
+//    playCamera->setPosition(dynamic_cast<Player*>(player)->cameraTarget);
 }
 
 void RenderSystem::initTextures()
@@ -197,10 +248,11 @@ void RenderSystem::initTextures()
 
 }
 
+
 // Called each frame - doing the rendering
 void RenderSystem::render()
 {
-    systemRef->getEditorCamera()->update(systemRef->getEditorCamera()->FOV, systemRef->getEditorCamera()->aRatio);
+    editorCamera->update(editorCamera->FOV, editorCamera->aRatio);
 
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
@@ -212,12 +264,12 @@ void RenderSystem::render()
     glUseProgram(0); //reset shader type before rendering
 
     //Draws the objects
-    if(systemRef->gameObjects.size() > 0)
+    if(gameObjects.size() > 0)
     {
-        for(int i{0}; i < systemRef->gameObjects.size(); i++)
+        for(int i{0}; i < gameObjects.size(); i++)
         {
-            GameObject* gameObject = systemRef->gameObjects[i];
-            Camera* currentCamera = systemRef->getEditorCamera();
+            GameObject* gameObject = gameObjects[i];
+            Camera* currentCamera = editorCamera;
 
             mShaderHandler->sendDataToShader(gameObject);
             if(toggleFrustumCulling && gameObject->mObjectName != "Skybox")
@@ -225,43 +277,45 @@ void RenderSystem::render()
                 if(systemRef->isCollidingWithFrustum(*gameObject->getSphereCollisionComponent()))
                 {
                     // qDebug() << "Object inside frustum";
-                    systemRef->gameObjects[i]->checkLodDistance((gameObject->getTransformComponent()->mMatrix.getPosition() -
+                    gameObjects[i]->checkLodDistance((gameObject->getTransformComponent()->mMatrix.getPosition() -
                                                                  currentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                                 currentCamera->getFrustumComponent()->farPlaneLength/2);
-                    systemRef->gameObjects[i]->draw();
+                    gameObjects[i]->draw();
                     objectsDrawn++;
                 }
             }
             else
             {
-                systemRef->gameObjects[i]->checkLodDistance((gameObject->getTransformComponent()->mMatrix.getPosition() -
+                gameObjects[i]->checkLodDistance((gameObject->getTransformComponent()->mMatrix.getPosition() -
                                                              currentCamera->getFrustumComponent()->mMatrix.getPosition()),
                                                             currentCamera->getFrustumComponent()->farPlaneLength/2);
-                systemRef->gameObjects[i]->draw();
+                gameObjects[i]->draw();
             }
 
+            /*
             if (i==mIndexToPickedObject)
             {
-                systemRef->helperObjectMesh = new MeshComponent;
-                systemRef->helperObjectMesh = gameObject->getMeshComponent();
-                systemRef->helperObjectMesh->mDrawType = GL_LINE_STRIP;
-                systemRef->helperObject->setMeshComponent(systemRef->helperObjectMesh);
+                helperObjectMesh = new MeshComponent;
+                helperObjectMesh = gameObject->getMeshComponent();
+                helperObjectMesh->mDrawType = GL_LINE_STRIP;
+                helperObject->setMeshComponent(helperObjectMesh);
             }
-            if (systemRef->helperObject != gameObject)
+            if (helperObject != gameObject)
             {
                 gsl::Vector3D tempPosition;
                 gsl::Vector3D tempScale;
                 tempPosition = gameObject->getTransformComponent()->mMatrix.getPosition();
-                systemRef->helperObject->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
+                helperObject->getTransformComponent()->mMatrix.setPosition(tempPosition.x, tempPosition.y, tempPosition.z);
                 tempScale = gameObject->getTransformComponent()->mMatrix.getScale();
-                systemRef->helperObject->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
+                helperObject->getTransformComponent()->mMatrix.setScale(tempScale.x*1.2f, tempScale.y*1.2f, tempScale.z*1.2f);
             }
-            else if (systemRef->helperObject == gameObject)
+            else if (helperObject == gameObject)
             {
                 mIndexToPickedObject = 0;
             }
 
-            gameObject->setMeshComponent(systemRef->helperObjectMesh);
+            gameObject->setMeshComponent(helperObjectMesh);
+            */
         }
     }
 
@@ -294,7 +348,13 @@ void RenderSystem::exposeEvent(QExposeEvent *)
 {
     //if not already initialized - run init() function
     if (!mInitialized)
+    {
         init();
+    }
+    else{
+        qDebug() << "RenderSystem already initialized.";
+    }
+
 
     //This is just to support modern screens with "double" pixels (Macs and some 4k Windows laptops)
     const qreal retinaScale = devicePixelRatio();
@@ -343,7 +403,10 @@ void RenderSystem::calculateFramerate()
 //lines instead of filled polygons
 void RenderSystem::toggleWireframe(bool buttonState)
 {
-    systemRef->clickSound->play();
+    if(systemRef != nullptr)
+    {
+        systemRef->clickSound->play();
+    }
     if (buttonState)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);    //turn on wireframe mode
@@ -358,14 +421,19 @@ void RenderSystem::toggleWireframe(bool buttonState)
 
 void RenderSystem::createObjectbutton(std::string objectName)
 {
-    systemRef->clickSound->play();
-    systemRef->createObject(objectName);
+    if(systemRef != nullptr)
+    {
+        systemRef->clickSound->play();
+        //factory->createObject(gsl::ObjectType objectType);
+    }
 }
-
 void RenderSystem::playPausebutton(const QSurfaceFormat &format)
 {
-    systemRef->clickSound->play();
-    systemRef->toggleEditorMode();
+    if(systemRef != nullptr)
+    {
+        systemRef->clickSound->play();
+        systemRef->toggleEditorMode();
+    }
 }
 
 //Uses QOpenGLDebugLogger if this is present
@@ -413,13 +481,16 @@ void RenderSystem::startOpenGLDebugger()
 
 
 void RenderSystem::mousePicking(QMouseEvent *event)
+
 {
+    if(systemRef != nullptr)
+    {
         int mouseXPixel = event->pos().x();
         int mouseYPixel = event->pos().y(); //y is 0 at top of screen!
 
         //Since we are going to invert these, I make a copy
-        gsl::Matrix4x4 projMatrix = systemRef->getEditorCamera()->mProjectionMatrix;
-        gsl::Matrix4x4 viewMatrix = systemRef->getEditorCamera()->mViewMatrix;
+        gsl::Matrix4x4 projMatrix = editorCamera->mProjectionMatrix;
+        gsl::Matrix4x4 viewMatrix = editorCamera->mViewMatrix;
 
         //step 1
         float x = (2.0f * mouseXPixel) / width() - 1.0f;
@@ -449,10 +520,10 @@ void RenderSystem::mousePicking(QMouseEvent *event)
 
         //This is ray vs bounding sphere collision
 
-        for(int i{0}; i < systemRef->gameObjects.size(); i++)
+        for(int i{0}; i <gameObjects.size(); i++)
         {
             //making the vector from camera to object we test against
-            gsl::Vector3D camToObject = systemRef->gameObjects[i]->getTransformComponent()->mMatrix.getPosition() - systemRef->getEditorCamera()->position();
+            gsl::Vector3D camToObject = gameObjects[i]->getTransformComponent()->mMatrix.getPosition() - editorCamera->position();
 
             //making the normal of the ray - in relation to the camToObject vector
             //this is the normal of the surface the camToObject and ray_wor makes:
@@ -470,15 +541,16 @@ void RenderSystem::mousePicking(QMouseEvent *event)
             distance = abs(distance);
 
             //if distance to ray < objects bounding sphere == we have a collision
-            if(distance < 0.5f && systemRef->getEditorMode() && systemRef->gameObjects[i]->mObjectName != "Skybox")
+             if(distance < 0.5f && systemRef->getEditorMode() && gameObjects[i]->mObjectName != "Skybox")
             {
-    //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
+                //            qDebug() << "Collision with object index" << i << distance << "meters away from ray";
                 mIndexToPickedObject = i;
                 mMainWindow->selectObjectByIndex(mIndexToPickedObject);
                 //factory->mGameObjects[i]->move(1000.f,0,0);
                 break;  //breaking out of for loop - does not check if ray touch several objects
             }
         }
+    }
 }
 void RenderSystem::setPickedObject(int pickedID)
 {
@@ -498,164 +570,180 @@ void RenderSystem::keyPressEvent(QKeyEvent *event)
         mMainWindow->close();
     }
 
-    //send input to system
-    if(event->key() == Qt::Key_W)
+    if(systemRef != nullptr)
     {
-        systemRef->getInput()->W = true;
+        //send input to system
+        if(event->key() == Qt::Key_W)
+        {
+            systemRef->getInput()->W = true;
+        }
+        if(event->key() == Qt::Key_S)
+        {
+            systemRef->getInput()->S = true;
+        }
+        if(event->key() == Qt::Key_D)
+        {
+           systemRef->getInput()->D = true;
+        }
+        if(event->key() == Qt::Key_A)
+        {
+            systemRef->getInput()->A = true;
+        }
+        if(event->key() == Qt::Key_Q)
+        {
+            systemRef->getInput()->Q = true;
+        }
+        if(event->key() == Qt::Key_E)
+        {
+            systemRef->getInput()->E = true;
+        }
+        if(event->key() == Qt::Key_Z)
+        {
+        }
+        if(event->key() == Qt::Key_X)
+        {
+        }
+        if(event->key() == Qt::Key_Up)
+        {
+            systemRef->getInput()->UP = true;
+        }
+        if(event->key() == Qt::Key_Down)
+        {
+            systemRef->getInput()->DOWN = true;
+        }
+        if(event->key() == Qt::Key_Left)
+        {
+            systemRef->getInput()->LEFT = true;
+        }
+        if(event->key() == Qt::Key_Right)
+        {
+            systemRef->getInput()->RIGHT = true;
+        }
+        if(event->key() == Qt::Key_U)
+        {
+        }
+        if(event->key() == Qt::Key_O)
+        {
+        }
+        if(event->key() == Qt::Key_R)
+        {
+             systemRef->resetLevel();
+        }
     }
-    if(event->key() == Qt::Key_S)
-    {
-        systemRef->getInput()->S = true;
-    }
-    if(event->key() == Qt::Key_D)
-    {
-       systemRef->getInput()->D = true;
-    }
-    if(event->key() == Qt::Key_A)
-    {
-        systemRef->getInput()->A = true;
-    }
-    if(event->key() == Qt::Key_Q)
-    {
-        systemRef->getInput()->Q = true;
-    }
-    if(event->key() == Qt::Key_E)
-    {
-        systemRef->getInput()->E = true;
-    }
-    if(event->key() == Qt::Key_Z)
-    {
-    }
-    if(event->key() == Qt::Key_X)
-    {
-    }
-    if(event->key() == Qt::Key_Up)
-    {
-        systemRef->getInput()->UP = true;
-    }
-    if(event->key() == Qt::Key_Down)
-    {
-        systemRef->getInput()->DOWN = true;
-    }
-    if(event->key() == Qt::Key_Left)
-    {
-        systemRef->getInput()->LEFT = true;
-    }
-    if(event->key() == Qt::Key_Right)
-    {
-        systemRef->getInput()->RIGHT = true;
-    }
-    if(event->key() == Qt::Key_U)
-    {
-    }
-    if(event->key() == Qt::Key_O)
-    {
-    }
-    if(event->key() == Qt::Key_R)
-    {
-         systemRef->resetLevel();
-    }
+
 }
 
 void RenderSystem::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_W)
+    if(systemRef != nullptr)
     {
-        systemRef->getInput()->W = false;
-    }
-    if(event->key() == Qt::Key_S)
-    {
-        systemRef->getInput()->S = false;
-    }
-    if(event->key() == Qt::Key_D)
-    {
-        systemRef->getInput()->D = false;
-    }
-    if(event->key() == Qt::Key_A)
-    {
-       systemRef->getInput()->A = false;
-    }
-    if(event->key() == Qt::Key_Q)
-    {
-        systemRef->getInput()->Q = false;
-    }
-    if(event->key() == Qt::Key_E)
-    {
-        systemRef->getInput()->E = false;
-    }
-    if(event->key() == Qt::Key_Z)
-    {
-    }
-    if(event->key() == Qt::Key_X)
-    {
-    }
-    if(event->key() == Qt::Key_Up)
-    {
-        systemRef->getInput()->UP = false;
-    }
-    if(event->key() == Qt::Key_Down)
-    {
-        systemRef->getInput()->DOWN = false;
-    }
-    if(event->key() == Qt::Key_Left)
-    {
-        systemRef->getInput()->LEFT = false;
-    }
-    if(event->key() == Qt::Key_Right)
-    {
-        systemRef->getInput()->RIGHT = false;
-    }
-    if(event->key() == Qt::Key_U)
-    {
-    }
-    if(event->key() == Qt::Key_O)
-    {
-    }
-    if (event->key() == Qt::Key_Tab)
-    {
-        bool check = !systemRef->getEditorMode();
-        mMainWindow->on_PlayPause_clicked(check);
+        if(event->key() == Qt::Key_W)
+        {
+            systemRef->getInput()->W = false;
+        }
+        if(event->key() == Qt::Key_S)
+        {
+            systemRef->getInput()->S = false;
+        }
+        if(event->key() == Qt::Key_D)
+        {
+            systemRef->getInput()->D = false;
+        }
+        if(event->key() == Qt::Key_A)
+        {
+            systemRef->getInput()->A = false;
+        }
+        if(event->key() == Qt::Key_Q)
+        {
+            systemRef->getInput()->Q = false;
+        }
+        if(event->key() == Qt::Key_E)
+        {
+            systemRef->getInput()->E = false;
+        }
+        if(event->key() == Qt::Key_Z)
+        {
+        }
+        if(event->key() == Qt::Key_X)
+        {
+        }
+        if(event->key() == Qt::Key_Up)
+        {
+            systemRef->getInput()->UP = false;
+        }
+        if(event->key() == Qt::Key_Down)
+        {
+            systemRef->getInput()->DOWN = false;
+        }
+        if(event->key() == Qt::Key_Left)
+        {
+            systemRef->getInput()->LEFT = false;
+        }
+        if(event->key() == Qt::Key_Right)
+        {
+            systemRef->getInput()->RIGHT = false;
+        }
+        if(event->key() == Qt::Key_U)
+        {
+        }
+        if(event->key() == Qt::Key_O)
+        {
+        }
+        if (event->key() == Qt::Key_Tab)
+        {
+            bool check = !systemRef->getEditorMode();
+            mMainWindow->on_PlayPause_clicked(check);
+        }
     }
 }
 
 void RenderSystem::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton)
-        systemRef->getInput()->RMB = true;
-    if (event->button() == Qt::LeftButton)
-        systemRef->getInput()->LMB = true;
-    if (event->button() == Qt::MiddleButton)
-        systemRef->getInput()->MMB = true;
-
-    if(event->button() == Qt::LeftButton)
+    if(systemRef != nullptr)
     {
-        mousePicking(event);
+        if (event->button() == Qt::RightButton)
+            systemRef->getInput()->RMB = true;
+        if (event->button() == Qt::LeftButton)
+            systemRef->getInput()->LMB = true;
+        if (event->button() == Qt::MiddleButton)
+            systemRef->getInput()->MMB = true;
+
+        if(event->button() == Qt::LeftButton)
+        {
+            mousePicking(event);
+        }
     }
 }
 
 void RenderSystem::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton)
-        systemRef->getInput()->RMB = false;
-    if (event->button() == Qt::LeftButton)
-        systemRef->getInput()->RMB = false;
-    if (event->button() == Qt::MiddleButton)
-        systemRef->getInput()->RMB = false;
+    if(systemRef != nullptr)
+    {
+        if (event->button() == Qt::RightButton)
+            systemRef->getInput()->RMB = false;
+        if (event->button() == Qt::LeftButton)
+            systemRef->getInput()->RMB = false;
+        if (event->button() == Qt::MiddleButton)
+            systemRef->getInput()->RMB = false;
+    }
 }
 
 void RenderSystem::wheelEvent(QWheelEvent *event)
 {
     QPoint numDegrees = event->angleDelta() / 8;
 
-    //if RMB, change the speed of the camera
-    if (systemRef->getInput()->RMB == true)
+    if(systemRef != nullptr)
     {
-        if (numDegrees.y() < 1)
+        //if RMB, change the speed of the camera
+        if (systemRef->getInput()->RMB == true)
+        {
+            if (numDegrees.y() < 1)
 
-        if (numDegrees.y() > 1)
-            systemRef->setCameraSpeed(-0.001f);
+            if (numDegrees.y() > 1)
+                systemRef->setCameraSpeed(-0.001f);
+        }
+        event->accept();
     }
-    event->accept();
 }
 
 void RenderSystem::mouseMoveEvent(QMouseEvent *event)
@@ -666,38 +754,38 @@ void RenderSystem::mouseMoveEvent(QMouseEvent *event)
         if (systemRef->getEditorMode())
         {
 
-        if (systemRef->getInput()->RMB)
-        {
-            //Using mMouseXYlast as deltaXY so we don't need extra variables
-            mMouseXlast = event->pos().x() - mMouseXlast;
-            mMouseYlast = event->pos().y() - mMouseYlast;
+            if (systemRef->getInput()->RMB)
+            {
+                //Using mMouseXYlast as deltaXY so we don't need extra variables
+                mMouseXlast = event->pos().x() - mMouseXlast;
+                mMouseYlast = event->pos().y() - mMouseYlast;
 
-            if (mMouseXlast != 0)
-                systemRef->getEditorCamera()->yaw(systemRef->getCameraRotateSpeed() * mMouseXlast);
-            if (mMouseYlast != 0)
-                systemRef->getEditorCamera()->pitch(systemRef->getCameraRotateSpeed() * mMouseYlast);
+                if (mMouseXlast != 0)
+                    editorCamera->yaw(systemRef->getCameraRotateSpeed() * mMouseXlast);
+                if (mMouseYlast != 0)
+                    editorCamera->pitch(systemRef->getCameraRotateSpeed() * mMouseYlast);
+            }
+            mMouseXlast = event->pos().x();
+            mMouseYlast = event->pos().y();
+            c.setShape(Qt::ArrowCursor);
+            setCursor(c);
         }
-        mMouseXlast = event->pos().x();
-        mMouseYlast = event->pos().y();
-        c.setShape(Qt::ArrowCursor);
-        setCursor(c);
-        }
-    //    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
-    //    {
-    //            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
-    //                                mMainWindow->y() + mMainWindow->height() / 2);
+        //    else if(!editorMode) //SKRIV OM TIL Å VÆRE 3D PERSON CAMERA
+        //    {
+        //            QPoint windowCenter(mMainWindow->x() + mMainWindow->width() / 2,
+        //                                mMainWindow->y() + mMainWindow->height() / 2);
 
-    //            //Using mMouseXYlast as deltaXY so we don't need extra variables
+        //            //Using mMouseXYlast as deltaXY so we don't need extra variables
 
-    //            mMouseXlast = windowCenter.x() - c.pos().x();
-    //            mMouseYlast = windowCenter.y() - c.pos().y();
+        //            mMouseXlast = windowCenter.x() - c.pos().x();
+        //            mMouseYlast = windowCenter.y() - c.pos().y();
 
-    //             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
-    //             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
-    //             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
-    //             c.setShape(Qt::BlankCursor);
-    //             setCursor(c);
+        //             mCurrentCamera->yaw(-mMouseXlast * mouseSpeed);
+        //             mCurrentCamera->pitch(-mMouseYlast * mouseSpeed);
+        //             c.setPos(QPoint(windowCenter.x(), windowCenter.y()));
+        //             c.setShape(Qt::BlankCursor);
+        //             setCursor(c);
 
-    //    }
+        //    }
     }
 }

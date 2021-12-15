@@ -2,6 +2,8 @@
 #include "camera.h"
 #include "factory.h"
 #include "skybox.h"
+#include "mariocube.h"
+#include "sphere.h"
 #include "trianglesurface.h"
 #include "player.h"
 #include "light.h"
@@ -14,15 +16,24 @@ System::System(MainWindow *mw, RenderSystem *rs) : renderSystem(rs), mainWindow(
 {
     gameLoopTimer = new QTimer(this);
     init();
+    isInitialized = true;
 }
 void System::init()
 {
-    //initializeOpenGLFunctions();
-    initMeshes();
-    //initTextures();
-    initSounds();
-    initObjects();
+    //Create factory
+    factory = new Factory();
 
+    //Create input
+    input = new InputComponent();
+
+    createMeshes();
+    createObjects();
+    createSounds();
+    startGameLoop();
+}
+
+void System::startGameLoop()
+{
     //Connect the gameloop timer to the render function:
     //This makes our render loop
     connect(gameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
@@ -33,73 +44,34 @@ void System::init()
     timeStart.start();
 }
 
-void System::initMeshes()
+void System::createMeshes()
 {
-    factory = new Factory();
+    qDebug() << "Created meshes";
     factory->saveMesh("../GEA2021/Assets/Meshes/mariocube.obj", "MarioCube");
     factory->saveMesh("../GEA2021/Assets/Meshes/sphere.obj", "Sphere");
     factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
     factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
 }
-void System::initObjects()
+void System::createObjects()
 {
-    //Skybox
-    skybox = static_cast<Skybox*>(factory->createObject("Skybox"));
-    skybox->getTransformComponent()->mMatrix.setRotation(-180, 0, 0);
-    skybox->getTransformComponent()->mMatrix.setScale(50,50,50);
-    gameObjects.push_back(skybox);
+    //renderSystem->gameObjects.push_back(factory->createObject("Cube"));
 
-    //Surface
-    triangleSurface = static_cast<TriangleSurface*>(factory->createObject("TriangleSurface"));
-    gameObjects.push_back(triangleSurface);
-
-    //Player
-    player = static_cast<Player*>(factory->createObject("Player"));
-    player->getTransformComponent()->mMatrix.setScale(0.1f,0.1f,0.1f);
-    player->getTransformComponent()->mMatrix.setPosition(0.f,0.6f,0.f);
-    dynamic_cast<Player*>(player)->setSurfaceToWalkOn(triangleSurface);
-    gameObjects.push_back(player);
-
-    //Lights
-    Light* light1 = static_cast<Light*>(factory->createObject("Light"));
-    Light* light2 = static_cast<Light*>(factory->createObject("Light"));
-    gameObjects.push_back(light1);
-    gameObjects.push_back(light2);
-    renderSystem->mShaderHandler->lightRefs.push_back(light1);
-    renderSystem->mShaderHandler->lightRefs.push_back(light2);
-
-    //Editor camera
-    editorCamera = new Camera(90, 4/3);
-    editorCamera->init();
-    editorCamera->setPosition(gsl::Vector3D(0.f, 0.f, 0.f));
-    editorCamera->mProjectionMatrix.perspective(45.f, renderSystem->getAspectRatio(), 0.1f, 100.f);
-    renderSystem->mShaderHandler->cameraRef = editorCamera;
-
-    //Play camera
-    playCamera = new Camera(90, 4/3);
-    playCamera->init();
-    playCamera->setPosition(player->cameraTarget);
-
-    //Helper Object
-    helperObject = factory->createObject("Cube");
-
-    mainWindow->updateOutliner(gameObjects);
 }
 
-void System::initTextures()
-{
-    //Initializing textures in system.cpp not working therefore we just make rendersystem do it
-    renderSystem->initTextures();
-}
+//void System::initTextures()
+//{
+//    //Initializing textures in system.cpp not working therefore we just make rendersystem do it
+//    renderSystem->initTextures();
+//}
 
-void System::initSounds()
+void System::createSounds()
 {
     //********************** Sound set up **********************
     SoundManager::getInstance()->init();
+
     clickSound = SoundManager::getInstance()->createSource(
                 "Click", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/click.wav", false, 1.0f);
-
     /*mMario = SoundManager::getInstance()->createSource(
                 "Mario", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/mario.wav", false, 1.0f);*/
@@ -109,6 +81,7 @@ void System::initSounds()
     videoGameLandSound2 = SoundManager::getInstance()->createSource(
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
+
     //mVideoGameLand->play();
     //mVideoGameLand2->play();
 
@@ -136,32 +109,33 @@ void System::gameLoop()
 void System::handleInput()
 {
     //Camera
-    editorCamera->setSpeed(0.f);  //cancel last frame movement
-    playCamera->setSpeed(0.f);
+    renderSystem->editorCamera->setSpeed(0.f);  //cancel last frame movement
+    renderSystem->playCamera->setSpeed(0.f);
     if(editorMode)
     {
         if(input->RMB) //editor
         {
             if(input->W)
-                editorCamera->setSpeed(-cameraSpeed);
+                renderSystem->editorCamera->setSpeed(-cameraSpeed);
             if(input->S)
-                editorCamera->setSpeed(cameraSpeed);
+                renderSystem->editorCamera->setSpeed(cameraSpeed);
             if(input->D)
-                editorCamera->moveRight(cameraSpeed);
+                renderSystem->editorCamera->moveRight(cameraSpeed);
             if(input->A)
-                editorCamera->moveRight(-cameraSpeed);
+                renderSystem->editorCamera->moveRight(-cameraSpeed);
             if(input->Q)
-                editorCamera->updateHeigth(-cameraSpeed);
+                renderSystem->editorCamera->updateHeigth(-cameraSpeed);
             if(input->E)
-                editorCamera->updateHeigth(cameraSpeed);
+                renderSystem->editorCamera->updateHeigth(cameraSpeed);
         }
-        skybox->getTransformComponent()->mMatrix.setPosition(editorCamera->mPosition.x, editorCamera->mPosition.y, editorCamera->mPosition.z);
+        if(renderSystem->skybox != nullptr)
+        renderSystem->skybox->getTransformComponent()->mMatrix.setPosition(renderSystem->editorCamera->mPosition.x, renderSystem->editorCamera->mPosition.y, renderSystem->editorCamera->mPosition.z);
     }
 
-    else if(!editorMode) //karakter shit her
+    else if(!editorMode)
     {
-      static_cast<Player*>(player)->movement(input);
-      skybox->getTransformComponent()->mMatrix.setPosition(playCamera->mPosition.x, playCamera->mPosition.y, playCamera->mPosition.z);
+      static_cast<Player*>(renderSystem->player)->movement(input);
+      renderSystem->skybox->getTransformComponent()->mMatrix.setPosition(renderSystem->playCamera->mPosition.x, renderSystem->playCamera->mPosition.y, renderSystem->playCamera->mPosition.z);
     }
 
 }
@@ -177,24 +151,19 @@ void System::setCameraSpeed(float value)
         cameraSpeed = 0.3f;
 }
 
-void System::createObject(std::string objectName)
-{
-    GameObject* newObject = factory->createObject(objectName);
-    gameObjects.push_back(newObject);
-}
-
 void System::saveLevel()
 {
-    std::multimap<std::string, struct SpawnSettings> objectMap;
-    for(unsigned int i = 0; i < gameObjects.size(); i++)
+    std::multimap<gsl::ObjectType, struct SpawnSettings> objectMap;
+    for(unsigned int i = 0; i < renderSystem->gameObjects.size(); i++)
     {
         SpawnSettings settings;
-        std::string objectType = gameObjects[i]->mObjectType;
-        gsl::Matrix4x4 m = gameObjects[i]->getTransformComponent()->mMatrix;
+        //gsl::ObjectType objectType = renderSystem->gameObjects[i]->mObjectType;
+        gsl::ObjectType objectType = gsl::CUBE;
+        gsl::Matrix4x4 m = renderSystem->gameObjects[i]->getTransformComponent()->mMatrix;
         settings.initialPos =  m.getPosition();
         settings.initialScale = m.getScale();
         settings.initialRot = m.getRotation();
-        objectMap.insert(std::pair<std::string, struct SpawnSettings>(objectType, settings));
+        objectMap.insert(std::pair<gsl::ObjectType, struct SpawnSettings>(objectType, settings));
     }
     level.saveLevelAs("savedLevel", objectMap);
 }
@@ -205,21 +174,21 @@ void System::loadLevel()
     resetLevel();
     level.loadLevel("../GEA2021/Saves/savedLevel.json");
     factory->openLevel(level);
-    mainWindow->updateOutliner(gameObjects);
+    mainWindow->updateOutliner(renderSystem->gameObjects);
 }
 
 void System::clearLevel()
 {
-    while(!gameObjects.empty())
+    while(!renderSystem->gameObjects.empty())
     {
-        gameObjects.pop_back();
+        renderSystem->gameObjects.pop_back();
 
     }
     for (uint32_t ID = 0; ID < gsl::MAX_OBJECTS; ++ID)
     {
         factory->mAvailableIDs.push(ID);
     }
-    gameObjects.clear();
+    renderSystem->gameObjects.clear();
     factory->cameracounter = 0;
     factory->cubecounter = 0;
     factory->lightCounter = 0;
@@ -232,7 +201,7 @@ void System::clearLevel()
 void System::resetLevel()
 {
     clearLevel();
-    initObjects();
+    createObjects();
 
     //    gameObjects.clear();
     //    gameLoopTimer->stop();
@@ -294,20 +263,20 @@ bool System::isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &S
 
 bool System::isCollidingWithFrustum(SphereCollisionComponent &Sphere)
 {
-    gsl::Vector3D rightPlaneToObjectVector = playCamera->nearPlaneBottomRight - Sphere.center;
-    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, playCamera->rightPlaneNormal);
+    gsl::Vector3D rightPlaneToObjectVector = renderSystem->playCamera->nearPlaneBottomRight - Sphere.center;
+    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, renderSystem->playCamera->rightPlaneNormal);
     if(rightPlaneHeightToObject + Sphere.radius >= 0)
     {
-        gsl::Vector3D leftPlaneToObjectVector = playCamera->nearPlaneTopLeft - Sphere.center;
-        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, playCamera->leftPlaneNormal);
+        gsl::Vector3D leftPlaneToObjectVector = renderSystem->playCamera->nearPlaneTopLeft - Sphere.center;
+        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, renderSystem->playCamera->leftPlaneNormal);
         if(leftPlaneHeightToObject + Sphere.radius >= 0)
         {
-            gsl::Vector3D nearPlaneToObjectVector = playCamera->nearPlaneBottomRight - Sphere.center;
-            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, playCamera->nearPlaneNormal);
+            gsl::Vector3D nearPlaneToObjectVector = renderSystem->playCamera->nearPlaneBottomRight - Sphere.center;
+            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, renderSystem->playCamera->nearPlaneNormal);
             if(nearPlaneHeightToObject + Sphere.radius >= 0)
             {
-                gsl::Vector3D farPlaneToObjectVector = playCamera->farPlaneBottomLeft - Sphere.center;
-                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, playCamera->farPlaneNormal);
+                gsl::Vector3D farPlaneToObjectVector = renderSystem->playCamera->farPlaneBottomLeft - Sphere.center;
+                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, renderSystem->playCamera->farPlaneNormal);
                 if(farPlaneHeightToObject + Sphere.radius >= 0)
                 {
 //                    gsl::Vector3D topPlaneToObjectVector = playCamera->nearPlaneTopRight - Sphere.center;

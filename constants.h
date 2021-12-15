@@ -18,6 +18,20 @@ namespace gsl  //Game School Lib
         SKYBOXSHADER = 3
     };
 
+    enum ObjectType
+    {
+        CUBE = 0,
+        PLANE = 1,
+        TRIANGLE = 2,
+        MARIOCUBE = 3,
+        SPHERE = 4,
+        CAMERA = 5,
+        SKYBOX = 6,
+        LIGHT = 7,
+        PLAYER = 8,
+        TRIANGLESURFACE = 9
+    };
+
     const int NumberOfShaders{4};
     const int NumberOfTextures{16};
     const int NumberOfMaterials{10};

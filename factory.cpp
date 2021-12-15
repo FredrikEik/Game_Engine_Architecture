@@ -22,14 +22,145 @@ Factory::Factory()
         mAvailableIDs.push(ID);
     }
 }
+template <class T>
+T* Factory::createObject(gsl::ObjectType objectType)
+{
+    //Doesn't work
+    T* newObject;
 
-GameObject* Factory::createObject(std::string objectName)
+    switch(objectType)
+    {
+    case gsl::CUBE:
+        newObject = new Cube;
+        newObject->getMaterialComponent()->mShaderProgram = 1;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        newObject->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        newObject->getSphereCollisionComponent()->radius = 0.7;
+        cubecounter++;
+        newObject->mObjectType = "Cube";
+        newObject->mObjectName = "Cube " + std::to_string(cubecounter);
+        break;
+
+    case gsl::PLANE:
+        newObject = new Plane;
+        newObject->getMaterialComponent()->mShaderProgram = 2;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        planecounter++;
+        newObject->mObjectType = "Plane";
+        newObject->mObjectName = "Plane " + std::to_string(planecounter);
+        //static_cast<Plane*>(objectToCreate)->init();
+        break;
+
+    case gsl::TRIANGLE:
+        newObject = new Triangle;
+        newObject->getMaterialComponent()->mShaderProgram = 1;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        trianglecounter++;
+        newObject->mObjectType = "Triangle";
+        newObject->mObjectName = "Triangle " + std::to_string(trianglecounter);
+        break;
+
+    case gsl::MARIOCUBE:
+        newObject = new MarioCube;
+        if(EXISTS("MarioCube")) //If MarioCube mesh exists
+        {
+            newObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["MarioCube"]));
+        }
+        newObject->getMaterialComponent()->mShaderProgram = 1;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        newObject->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        newObject->getSphereCollisionComponent()->radius = 0.5;
+        mariocounter++;
+        newObject->mObjectType = "MarioCube";
+        newObject->mObjectName = "MarioCube " + std::to_string(mariocounter);
+        //static_cast<MarioCube*>(objectToCreate)->init();
+        break;
+
+    case gsl::SPHERE:
+        newObject = new Sphere;
+        if(EXISTS("Sphere")) //If Sphere mesh exists
+        {
+            newObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Sphere"]));
+        }
+        newObject->getMaterialComponent()->mShaderProgram = 2;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        newObject->getSphereCollisionComponent()->center = gsl::Vector3D( 0.0f,  0.0f,  0.0f);
+        newObject->getSphereCollisionComponent()->radius = 0.25;
+        spherecounter++;
+        newObject->mObjectType = "Sphere";
+        newObject->mObjectName = "Sphere " + std::to_string(spherecounter);
+        //static_cast<Sphere*>(objectToCreate)->init();
+        break;
+
+    case gsl::CAMERA:
+        newObject = new Camera(45, 4/3);
+        newObject->getMaterialComponent()->mShaderProgram = 0;
+        newObject->getMaterialComponent()->mTextureUnit = 0;
+        cameracounter++;
+        newObject->mObjectType = "Camera";
+        newObject->mObjectName = "Camera " + std::to_string(cameracounter);
+        //static_cast<Camera*>(objectToCreate)->init();
+        break;
+
+    case gsl::SKYBOX:
+        newObject = new Skybox("../GEA2021/Assets/skybox.obj");
+        newObject->getMaterialComponent()->mShaderProgram = 3;
+        newObject->getMaterialComponent()->mTextureUnit = 2;
+        skyboxcounter++;
+        newObject->mObjectType = "Skybox";
+        newObject->mObjectName = "Skybox";
+        break;
+    case gsl::LIGHT:
+        newObject = new Light;
+        if(EXISTS("Light")) //If Light mesh exists
+        {
+        newObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Light"]));
+        }
+        newObject->getMaterialComponent()->mShaderProgram = 1;
+        newObject->getMaterialComponent()->mTextureUnit = 1;
+        lightCounter++;
+        newObject->mObjectType = "Light";
+        newObject->mObjectName = "Light " + std::to_string(lightCounter);
+        //static_cast<Light*>(objectToCreate)->init();
+        break;
+
+    case gsl::PLAYER:
+        newObject = new Player;
+        if(EXISTS("Wario"))
+        {
+        newObject->setMeshComponent(static_cast<MeshComponent*>(storedMeshes["Wario"]));
+        }
+        newObject->getMaterialComponent()->mShaderProgram = 1;
+        newObject->getMaterialComponent()->mTextureUnit = 0;
+        newObject->mObjectName = "Player";
+        //static_cast<Player*>(objectToCreate)->init();
+        break;
+
+    case gsl::TRIANGLESURFACE:
+        newObject = new TriangleSurface("../GEA2021/Assets/test_las.txt");
+        //objectToCreate = new TriangleSurface("../GEA2021/Assets/LAS/kongehuset.txt");
+        newObject->getMaterialComponent()->mShaderProgram = 2;
+        newObject->getMaterialComponent()->mTextureUnit = 5;
+        newObject->mObjectType = "TriangleSurface";
+        newObject->mObjectName = "TriangleSurface";
+        //static_cast<TriangleSurface*>(objectToCreate)->init();
+        break;
+    default:
+        break;
+    }
+    newObject->init();
+    return newObject;
+}
+
+
+GameObject* Factory::createObject(gsl::ObjectType objectType)
 {
 
-    GameObject* objectToCreate;
+    GameObject *objectToCreate;
 
-    if(objectName == "Cube")
+    switch(objectType)
     {
+    case gsl::CUBE:
         objectToCreate = new Cube;
         if(EXISTS("Cube")) //If cube mesh exists
         {
@@ -42,10 +173,9 @@ GameObject* Factory::createObject(std::string objectName)
         cubecounter++;
         objectToCreate->mObjectType = "Cube";
         objectToCreate->mObjectName = "Cube " + std::to_string(cubecounter);
-    }
-
-    else if(objectName == "Plane")
-    {
+        //static_cast<Cube*>(objectToCreate)->init();
+        break;
+    case gsl::PLANE:
         objectToCreate = new Plane;
         if(EXISTS("Plane")) //If Plane mesh exists
         {
@@ -56,10 +186,9 @@ GameObject* Factory::createObject(std::string objectName)
         planecounter++;
         objectToCreate->mObjectType = "Plane";
         objectToCreate->mObjectName = "Plane " + std::to_string(planecounter);
-    }
-
-    else if(objectName == "Triangle")
-    {
+        //static_cast<Plane*>(objectToCreate)->init();
+        break;
+    case gsl::TRIANGLE:
         objectToCreate = new Triangle;
         if(EXISTS("Triangle")) //If Triangle mesh exists
         {
@@ -70,10 +199,11 @@ GameObject* Factory::createObject(std::string objectName)
         trianglecounter++;
         objectToCreate->mObjectType = "Triangle";
         objectToCreate->mObjectName = "Triangle " + std::to_string(trianglecounter);
-    }
+        //static_cast<Triangle*>(objectToCreate)->init();
+        break;
 
-    else if(objectName == "MarioCube")
-    {
+    case gsl::MARIOCUBE:
+
         objectToCreate = new MarioCube;
         if(EXISTS("MarioCube")) //If MarioCube mesh exists
         {
@@ -86,10 +216,10 @@ GameObject* Factory::createObject(std::string objectName)
         mariocounter++;
         objectToCreate->mObjectType = "MarioCube";
         objectToCreate->mObjectName = "MarioCube " + std::to_string(mariocounter);
-    }
+        //static_cast<MarioCube*>(objectToCreate)->init();
+        break;
 
-    else if(objectName == "Sphere")
-    {
+    case gsl::SPHERE:
         objectToCreate = new Sphere;
         if(EXISTS("Sphere")) //If Sphere mesh exists
         {
@@ -102,18 +232,19 @@ GameObject* Factory::createObject(std::string objectName)
         spherecounter++;
         objectToCreate->mObjectType = "Sphere";
         objectToCreate->mObjectName = "Sphere " + std::to_string(spherecounter);
-    }
-    else if(objectName == "Camera")
-    {
+        //static_cast<Sphere*>(objectToCreate)->init();
+
+    case gsl::CAMERA:
+
         objectToCreate = new Camera(45, 4/3);
         objectToCreate->getMaterialComponent()->mShaderProgram = 0;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         cameracounter++;
         objectToCreate->mObjectType = "Camera";
         objectToCreate->mObjectName = "Camera " + std::to_string(cameracounter);
-    }
-    else if(objectName == "Skybox")
-    {
+        //static_cast<Camera*>(objectToCreate)->init();
+        break;
+    case gsl::SKYBOX:
         objectToCreate = new Skybox("../GEA2021/Assets/skybox.obj");
         objectToCreate->getMaterialComponent()->mShaderProgram = 3;
         objectToCreate->getMaterialComponent()->mTextureUnit = 2;
@@ -121,9 +252,10 @@ GameObject* Factory::createObject(std::string objectName)
         //skyboxcounter++;
         objectToCreate->mObjectType = "Skybox";
         objectToCreate->mObjectName = "Skybox";
-    }
-    else if(objectName == "Light")
-    {
+        //static_cast<Skybox*>(objectToCreate)->init();
+        break;
+
+    case gsl::LIGHT:
         objectToCreate = new Light;
         if(EXISTS("Light")) //If Light mesh exists
         {
@@ -134,9 +266,9 @@ GameObject* Factory::createObject(std::string objectName)
         lightCounter++;
         objectToCreate->mObjectType = "Light";
         objectToCreate->mObjectName = "Light " + std::to_string(lightCounter);
-    }
-    else if (objectName == "Player")
-    {
+        //static_cast<Light*>(objectToCreate)->init();
+        break;
+    case gsl::PLAYER:
         objectToCreate = new Player;
         if(EXISTS("Wario"))
         {
@@ -145,23 +277,26 @@ GameObject* Factory::createObject(std::string objectName)
         objectToCreate->getMaterialComponent()->mShaderProgram = 1;
         objectToCreate->getMaterialComponent()->mTextureUnit = 0;
         objectToCreate->mObjectName = "Player";
-    }
-    else if(objectName == "TriangleSurface")
-    {
+        //static_cast<Player*>(objectToCreate)->init();
+        break;
+
+    case gsl::TRIANGLESURFACE:
         objectToCreate = new TriangleSurface("../GEA2021/Assets/test_las.txt");
         //objectToCreate = new TriangleSurface("../GEA2021/Assets/LAS/kongehuset.txt");
         objectToCreate->getMaterialComponent()->mShaderProgram = 2;
         objectToCreate->getMaterialComponent()->mTextureUnit = 5;
         objectToCreate->mObjectType = "TriangleSurface";
         objectToCreate->mObjectName = "TriangleSurface";
+        //static_cast<TriangleSurface*>(objectToCreate)->init();
+        break;
+    default:
+        return nullptr;
     }
-    else{return nullptr;}
 
     objectToCreate->init();
     objectToCreate->ID = mAvailableIDs.front(); //Give ID to GameObject
     mAvailableIDs.pop();                        //Pop ID from queue of available IDs
-
-    //mGameObjects.push_back(objectToCreate);
+    //gameObjects.push_back(objectToCreate);
     return objectToCreate;
 }
 

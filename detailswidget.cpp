@@ -20,9 +20,9 @@ DetailsWidget::~DetailsWidget()
     delete ui;
 }
 
-void DetailsWidget::init(System *systemIn, int index)
+void DetailsWidget::init(RenderSystem *systemIn, int index)
 {
-    system = systemIn;
+    renderSystem = systemIn;
     inSceneArrayIndex = index;
     readPosition();
     readRotation();
@@ -34,7 +34,7 @@ void DetailsWidget::init(System *systemIn, int index)
 
 void DetailsWidget::readPosition()
 {
-    position = system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
+    position = renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getPosition();
     ui->DoubleSpinBoxXPosition->setValue(position.x);
     ui->DoubleSpinBoxYPosition->setValue(position.y);
     ui->DoubleSpinBoxZPosition->setValue(position.z);
@@ -42,7 +42,7 @@ void DetailsWidget::readPosition()
 
 void DetailsWidget::readRotation()
 {
-     rotation = system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getRotation();
+     rotation = renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getRotation();
      ui->DoubleSpinBoxXRotation->setValue(rotation.x);
      ui->DoubleSpinBoxYRotation->setValue(rotation.y);
      ui->DoubleSpinBoxZRotation->setValue(rotation.z);
@@ -52,25 +52,25 @@ void DetailsWidget::readScale()
 {
     // lagre en inverse av scale og rotation i matrix4x4, lag en set funksjon ved å først rotere/scale med inverse for å så bruke den nye verdien
     // til å rotere/scale
-    scale = system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getScale();
+    scale = renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.getScale();
     ui->DoubleSpinBoxXScale->setValue(scale.x);
     ui->DoubleSpinBoxYScale->setValue(scale.y);
     ui->DoubleSpinBoxZScale->setValue(scale.z);
 }
 void DetailsWidget::readTextureAndShader()
 {
-    int shaderIndex = system->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram;
-    int textureIndex = system->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit;
+    int shaderIndex = renderSystem->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram;
+    int textureIndex = renderSystem->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit;
     ui->comboBox->setCurrentIndex(shaderIndex);
     ui->comboBox_2->setCurrentIndex(textureIndex);
 }
 void DetailsWidget::readLightStrengths()
 {
-    if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
     {
-        float ambientStrength =  dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mAmbientStrength;
-        float lightStrength =    dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mLightStrength;
-        float specularStrength = dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mSpecularStrength;
+        float ambientStrength =  dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientStrength;
+        float lightStrength =    dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightStrength;
+        float specularStrength = dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mSpecularStrength;
         ui->horizontalSlider->setValue(ambientStrength*100);
         ui->horizontalSlider_2->setValue(lightStrength*100);
         ui->horizontalSlider_3->setValue(specularStrength*100);
@@ -78,18 +78,18 @@ void DetailsWidget::readLightStrengths()
 }
 void DetailsWidget::setPosition()
 {
-    system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
-    system->gameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
+    renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setPosition(position.x,position.y,position.z);
+    renderSystem->gameObjects[inSceneArrayIndex]->getSphereCollisionComponent()->center = position;
 }
 
 void DetailsWidget::setRotation()
 {
-    system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setRotation(rotation.x,rotation.y,rotation.z);
+    renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setRotation(rotation.x,rotation.y,rotation.z);
 }
 
 void DetailsWidget::setScale()
 {
-    system->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setScale(scale.x,scale.y,scale.z);
+    renderSystem->gameObjects[inSceneArrayIndex]->getTransformComponent()->mMatrix.setScale(scale.x,scale.y,scale.z);
 }
 
 void DetailsWidget::on_DoubleSpinBoxXPosition_valueChanged(double arg1)
@@ -160,13 +160,13 @@ void DetailsWidget::on_DoubleSpinBoxZScale_valueChanged(double arg1)
 
 void DetailsWidget::on_comboBox_currentIndexChanged(int index)
 {
-    system->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram = index;
+    renderSystem->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mShaderProgram = index;
 }
 
 
 void DetailsWidget::on_comboBox_2_currentIndexChanged(int index)
 {
-    system->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit = index;
+    renderSystem->gameObjects[inSceneArrayIndex]->getMaterialComponent()->mTextureUnit = index;
 }
 
 
@@ -177,9 +177,9 @@ void DetailsWidget::on_pushButton_clicked()
     {
         QRgb rgb = color.rgb();
         gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
-        if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
         {
-            dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mAmbientColor = vectorRGB;
+            dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientColor = vectorRGB;
             //qDebug() << "tried to change ambient color";
         }
     }
@@ -188,10 +188,10 @@ void DetailsWidget::on_pushButton_clicked()
 
 void DetailsWidget::on_horizontalSlider_sliderMoved(int position)
 {
-    if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
     {
         float ambientStrength = float(position)/100;
-        dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mAmbientStrength = ambientStrength;
+        dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mAmbientStrength = ambientStrength;
         //qDebug() << "tried to change ambient strength";
     }
 }
@@ -199,10 +199,10 @@ void DetailsWidget::on_horizontalSlider_sliderMoved(int position)
 
 void DetailsWidget::on_horizontalSlider_2_sliderMoved(int position)
 {
-    if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
     {
         float lightStrength = float(position)/100;
-        dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mLightStrength = lightStrength;
+        dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightStrength = lightStrength;
         //qDebug() << "tried to change light strength";
     }
 }
@@ -215,9 +215,9 @@ void DetailsWidget::on_pushButton_2_clicked()
     {
         QRgb rgb = color.rgb();
         gsl::Vector3D vectorRGB = gsl::Vector3D(qRed(rgb), qGreen(rgb), qBlue(rgb));
-        if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+        if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
         {
-            dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mLightColor = vectorRGB;
+            dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mLightColor = vectorRGB;
             //qDebug() << "tried to change light color";
         }
     }
@@ -226,10 +226,10 @@ void DetailsWidget::on_pushButton_2_clicked()
 
 void DetailsWidget::on_horizontalSlider_3_sliderMoved(int position)
 {
-    if(system->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
+    if(renderSystem->gameObjects[inSceneArrayIndex]->mObjectType == "Light")
     {
         float specularStrength = float(position)/100;
-        dynamic_cast<Light*>(system->gameObjects[inSceneArrayIndex])->mSpecularStrength = specularStrength;
+        dynamic_cast<Light*>(renderSystem->gameObjects[inSceneArrayIndex])->mSpecularStrength = specularStrength;
         //qDebug() << "tried to change specular strength";
     }
 }
