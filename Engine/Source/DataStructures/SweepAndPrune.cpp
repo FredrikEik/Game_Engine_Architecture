@@ -37,7 +37,8 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
 	{
 		auto& temp = m_collisionPairs.at(entityID);
-		std::copy(temp.begin(), temp.end(), OUTVector.begin());
+		OUTVector = temp;
+		//std::copy(temp.begin(), temp.end(), OUTVector.begin());
 		return true;
 	}
 
@@ -46,11 +47,11 @@ bool SweepAndPrune::getOverlappedEntities(uint32 entityID, std::vector<uint32>& 
 
 const std::vector<uint32>& SweepAndPrune::getOverlappedEntities(uint32 entityID)
 {
-	std::cout << "Overlapped called\n";
+	//std::cout << "Overlapped called\n";
 
 	if (m_collisionPairs.find(entityID) != m_collisionPairs.end())
 	{
-		std::cout << "Overlapped entities\n";
+		//std::cout << "Overlapped entities\n";
 		return m_collisionPairs.at(entityID);
 	}
 	return std::vector<uint32>();
@@ -69,7 +70,8 @@ void SweepAndPrune::sortAndSweep()
 		// if a should generate overlap while b shouldn't, a is pushed in front
 		// Seems to work so far, needs more testing
 		// If collision issues arise, remove everything after the OR
-		return (minA > minB) || (a.bShouldGenerateOverlapEvents > b.bShouldGenerateOverlapEvents);
+		//return (minA > minB) || (a.bShouldGenerateOverlapEvents > b.bShouldGenerateOverlapEvents);
+		return (minA < minB);
 	};
 	//std::sort(m_data.begin(), m_data.end(), compareAABB(*this));
 	std::sort(m_data.begin(), m_data.end(), compare);
@@ -96,15 +98,23 @@ void SweepAndPrune::sortAndSweep()
 
 			// If the tested collision can collide on one axis collide with the current collision, test collision.
 			// If not, break
-			if ((m_data.at(j).max[sortAxis]) >=
-				(m_data.at(i).min[sortAxis]) &&
-				(m_data.at(i).max[sortAxis]) >=
-				(m_data.at(j).min[sortAxis]))
+			//if ((m_data.at(j).max[sortAxis]) >=
+			//	(m_data.at(i).min[sortAxis]) &&
+			//	(m_data.at(i).max[sortAxis]) >=
+			//	(m_data.at(j).min[sortAxis]))
+
+
+
+			if ((m_data.at(j).min[sortAxis]) >
+				(m_data.at(i).max[sortAxis]) )
 				// Does the actual collision test.
-				if (CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS))
-					insertCollisionPair(m_data.at(i).entity, m_data.at(j).entity);
-			else
+			{
+				//std::cout << "entity " << m_data.at(j).entity << " min: " << m_data.at(j).min[sortAxis]
+				//	<< " entity " << m_data.at(i).entity << " max " << (m_data.at(i).max[sortAxis]) << '\n';
 				break;
+			}
+			if (CollisionSystem::testCollision(m_data.at(i).entity, m_data.at(j).entity, ECS))
+				insertCollisionPair(m_data.at(i).entity, m_data.at(j).entity);
 
 			++CollisionsTested;
 
@@ -148,7 +158,7 @@ void SweepAndPrune::clearAndFillData()
 	for (const auto& it : componentArray)
 	{
 		m_data.push_back(SweepElement(it.entityID, it.bShouldGenerateOverlapEvents));
-		std::cout << "should generate: " << it.bShouldGenerateOverlapEvents << '\n';
+		//std::cout << "should generate: " << it.bShouldGenerateOverlapEvents << '\n';
 	}
 }
 
@@ -169,13 +179,27 @@ bool SweepAndPrune::updateData()
 
 	for (auto& it : m_data)
 	{
+		if (!ECS->entityExists(it.entity))
+			continue;
 		TransformComponent transform{ transformManager->getComponent(it.entity) };
 		AxisAlignedBoxComponent AABB{ AABBManager->getComponent(it.entity) };
 
+		//if(it.entity == 2)
+		//std::cout << "entity " << it.entity << " min x: " << AABB.minScaled.x
+		//	<< " max x" << AABB.maxScaled.x <<  " min z: " << AABB.minScaled.z << " max z: "
+		//	<< AABB.maxScaled.z << " pos x: " <<transform.transform[3].x << " z: "
+		//	<< transform.transform[3].z <<'\n';
+
 		it.min = glm::vec2(AABB.minScaled.x + transform.transform[3].x,
 			AABB.minScaled.z + transform.transform[3].z);
+
 		it.max = glm::vec2(AABB.maxScaled.x + transform.transform[3].x,
 			AABB.maxScaled.z + transform.transform[3].z);
+
+		//if(it.entity == 2)
+		//std::cout << "\n\nentity " << it.entity << " min x: " << it.min.x
+		//	<< " max x: " << it.max.x << " min z: " << it.min.y << " max z: "
+		//	<< it.max.y << "\n\n";
 	}
 	return true;
 	//AxisAlignedBoxComponent* AABBComponent = AABBManager->getComponentChecked(entity);

@@ -1,0 +1,77 @@
+[
+    {
+        "6": [
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        90.5999984741211,
+                        1.5,
+                        131.10000610351563,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct MeshComponent": {
+                    "LODType": 0,
+                    "bDisregardedDuringFrustumCulling": true,
+                    "bIsTranslucent": false,
+                    "bShouldRender": true,
+                    "drawType": 4,
+                    "path": "Assets\\sphere.obj",
+                    "reusable": true,
+                    "bDrawDeferred": false
+                }
+            },
+            {
+                "struct AxisAlignedBoxComponent": {
+                    "bShouldGenerateOverlapEvents": true,
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "max": [
+                        0.9510579705238342,
+                        1.0,
+                        1.0
+                    ],
+                    "min": [
+                        -0.9510579705238342,
+                        -1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "struct ScriptComponent": {
+                    "ScriptClassName": "Ball"
+                }
+            },
+            {
+                "struct PhysicsComponent": {
+                    "mass": 1.0,
+                    "restitution": 0.75
+                }
+            }
+        ]
+    }
+]

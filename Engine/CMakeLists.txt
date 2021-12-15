@@ -35,6 +35,10 @@ file(GLOB_RECURSE SHADERFILES CONFIGURE_DEPENDS
 file(GLOB_RECURSE Assets CONFIGURE_DEPENDS 
 	Assets/*.obj
 )
+
+file(GLOB_RECURSE GAMESOURCE CONFIGURE_DEPENDS 
+	../Game/Source/*.cs
+)
 assign_source_group(${SOURCE})
 assign_source_group(${SHADERFILES})
 file( COPY  ${Assets} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin/Assets )
@@ -89,7 +93,7 @@ include(CSharpUtilities)
 add_library(Game SHARED
 	../Game/Source/App.config
 	../Game/Source/Properties/AssemblyInfo.cs
-	../Game/Source/Unit.cs
+	${GAMESOURCE}
 )
 
 set_property(TARGET Game PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")

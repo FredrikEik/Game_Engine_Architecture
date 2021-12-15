@@ -6,6 +6,7 @@ class Load
 {
 public:
 	static void loadEntities(const std::filesystem::path& filePath, class ECSManager* ECS);
+	static uint32 loadEntity(uint32 entityID, const std::filesystem::path& filePath, class ECSManager* ECS);
 	static void loadComponent(const std::filesystem::path& filePath, class Component* component);
 
 private:

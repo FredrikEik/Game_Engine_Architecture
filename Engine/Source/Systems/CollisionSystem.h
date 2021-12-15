@@ -25,8 +25,11 @@ public:
 	static void scaleToMesh(const struct MeshComponent* mesh,
 		glm::vec3 &OUTscaledMin, glm::vec3 &OUTscaledMax);
 
+	static void updateCenter(uint32 entity, class ECSManager* ECS);
+
 	static void setShouldGenerateOverlapEvents(uint32 entity, class ECSManager* ECS, bool shouldGenerate);
 
+	static bool isOverlappingEntity_Internal(uint32 entityA, uint32 entityB);
 private:
 
 	/// <summary>

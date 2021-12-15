@@ -22,8 +22,6 @@ namespace ScriptInJin.Math
             m_x = x;
             m_y = y;
             m_z = z;
-
-
         }
 
         public Vec3(float scalar)

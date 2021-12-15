@@ -3,7 +3,8 @@
 #include "../Components/Components.h"
 #include "../Components/ComponentManager.h"
 #include "../Vertex.h"
-
+#include "../Engine/Engine.h"
+#include "../DataStructures/SweepAndPrune.h"
 void CollisionSystem::construct(uint32 entity,
 	class ECSManager* ECS, bool shouldGenerateOverlapEvents)
 {
@@ -61,8 +62,8 @@ void CollisionSystem::construct(uint32 entity,
 
 	collisionComponent->minScaled = min;
 	collisionComponent->maxScaled = max;
-	collisionComponent->center = glm::vec3((max.x - min.x) / 2.f,
-		(max.y - min.y) / 2.f, (max.z - min.z) / 2.f);
+	collisionComponent->center = glm::vec3((max.x + min.x) / 2.f,
+		(max.y + min.y) / 2.f, (max.z + min.z) / 2.f);
 	collisionComponent->bShouldGenerateOverlapEvents = shouldGenerateOverlapEvents;
 }
 
@@ -84,39 +85,37 @@ bool CollisionSystem::isColliding(AxisAlignedBoxComponent& firstCollisionCompone
 
 	glm::vec3 otherPosition{ otherCollisionComponent.center +
 		glm::vec3(otherTransform.transform[3])};
-	// -----------------------------------------------------------------
 
-	// Check if we collide along the x axis
-	if ((firstPosition.x + firstCollisionComponent.maxScaled.x) >= 
-		(otherPosition.x + otherCollisionComponent.minScaled.x) &&
-		(otherPosition.x + otherCollisionComponent.maxScaled.x) >= 
-		(firstPosition.x + otherCollisionComponent.minScaled.x))
+
+	// testing collision on Z
+	if ((firstPosition.z) <
+		(otherPosition.z + (otherCollisionComponent.maxScaled.z -otherCollisionComponent.minScaled.z)) &&
+		(firstPosition.z + (firstCollisionComponent.maxScaled.z - firstCollisionComponent.minScaled.z)) >
+		otherPosition.z)
+		;
+	else
+		return false;
+
+	// testing collision on Y
+	if ((firstPosition.y) <
+		(otherPosition.y + (otherCollisionComponent.maxScaled.y - otherCollisionComponent.minScaled.y)) &&
+		(firstPosition.y + (firstCollisionComponent.maxScaled.y - firstCollisionComponent.minScaled.y)) >
+		otherPosition.y)
+		;
+	else
+		return false;
+
+	// testing collision on X
+	if ((firstPosition.x) <
+		(otherPosition.x + (otherCollisionComponent.maxScaled.x - otherCollisionComponent.minScaled.x)) &&
+		(firstPosition.x + (firstCollisionComponent.maxScaled.x - firstCollisionComponent.minScaled.x)) >
+		otherPosition.x)
 		;
 	else
 		return false;
 	// -----------------------------------------------------------------
 
-	// If we need collision in the Y axis, make sure this does not break the collision overall. 
-	// Check if we collide along the y axis
-	//if ((firstPosition.y + firstCollisionComponent.maxScaled.y) >=
-	//	(otherPosition.y + otherCollisionComponent.minScaled.y) &&
-	//	(otherPosition.y + otherCollisionComponent.maxScaled.y) >=
-	//	(firstPosition.y + otherCollisionComponent.minScaled.y))
-	//	;
-	//else
-	//	return false;
-	// -----------------------------------------------------------------
-
-	// Check if we collide along the z axis
-	if ((firstPosition.z + firstCollisionComponent.maxScaled.z) >=
-		(otherPosition.z + otherCollisionComponent.minScaled.z) &&
-		(otherPosition.z + otherCollisionComponent.maxScaled.z) >=
-		(firstPosition.z + otherCollisionComponent.minScaled.z))
-		;
-	else
-		return false;
-	// -----------------------------------------------------------------
-
+	// Collides
 	return true;
 }
 
@@ -159,7 +158,7 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 	glm::vec3 tempPos{};
 	for (const auto& it : vertices)
 	{
-		tempPos = glm::vec3(it.m_xyz[0], it.m_xyz[0], it.m_xyz[0]);
+		tempPos = glm::vec3(it.m_xyz[0], it.m_xyz[1], it.m_xyz[2]);
 		if (tempPos.x < OUTscaledMin.x) OUTscaledMin.x = (tempPos.x);
 		if (tempPos.y < OUTscaledMin.y) OUTscaledMin.y = (tempPos.y);
 		if (tempPos.z < OUTscaledMin.z) OUTscaledMin.z =(tempPos.z);
@@ -170,9 +169,45 @@ void CollisionSystem::scaleToMesh(const MeshComponent* mesh,
 	}
 }
 
+void CollisionSystem::updateCenter(uint32 entity, ECSManager* ECS)
+{
+	AxisAlignedBoxComponent* AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
+	assert(AABB);
+
+	glm::vec3& max = AABB->maxScaled;
+	glm::vec3& min= AABB->minScaled;
+	AABB->center = glm::vec3((max.x + min.x) / 2.f,
+		(max.y + min.y) / 2.f, (max.z + min.z) / 2.f);
+}
+
 void CollisionSystem::setShouldGenerateOverlapEvents(uint32 entity, ECSManager* ECS, bool shouldGenerate)
 {
 	if (!ECS->getComponentManager<AxisAlignedBoxComponent>()) return;
 	AxisAlignedBoxComponent* AABB = ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(entity);
 	AABB->bShouldGenerateOverlapEvents = shouldGenerate;
+}
+
+bool CollisionSystem::isOverlappingEntity_Internal(uint32 entityA, uint32 entityB)
+{
+	SweepAndPrune* collisionDataStructure =  Engine::Get().getCollisionDatastructure();
+	std::vector<uint32> collisionEntities;
+	collisionDataStructure->getOverlappedEntities(entityA, collisionEntities);
+
+	
+	// Not perfect, but checking if A has a collision pair with B and vice versa.
+	for (const auto& it : collisionEntities)
+	{
+		if (it == entityB)
+			return true;
+	}
+	collisionEntities.clear();
+
+	collisionDataStructure->getOverlappedEntities(entityB, collisionEntities);
+	for (const auto& it : collisionEntities)
+	{
+		if (it == entityA)
+			return true;
+	}
+
+	return false;
 }

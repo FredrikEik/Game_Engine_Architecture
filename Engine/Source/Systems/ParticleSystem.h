@@ -56,6 +56,7 @@ public:
 	/// <param name="ECS">The ecs.</param>
 	static void setParticleActive(uint32 entityID, bool bShouldBeActive, ECSManager* ECS);
 	static void setParticleActive(class ParticleComponent* emitter, bool bShouldBeActive);
+	static void setParticleActive_Internal(uint32 entityID, bool bShouldBeActive);
 private:
 	/// <summary>
 	/// Spawns all particles that should be spawned this frame.

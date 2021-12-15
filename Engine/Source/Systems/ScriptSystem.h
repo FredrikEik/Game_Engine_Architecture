@@ -16,11 +16,15 @@ public:
 	static void Init();
 
 	static void Invoke(const std::string& functionToCall, class ECSManager* manager);
+	static void Invoke(uint32 entity, const std::string& functionToCall, class ECSManager* manager);
 
 	//Namespace.Class::Method + a Function pointer with the actual definition
 	static void BindInternalFunction(const std::string& name, const void* functionPtr);
 	static std::string ScriptSystem::GetName(MonoMethod* method);
 	static void InitScriptObject(ScriptComponent* scriptComp, std::string className = "Unit");
+	static void uninitializeAllComponents(class ECSManager* manager);
+
+	static void setScriptClassName(uint32 entityID, const std::string& className, ECSManager* ECS);
 
 	static MonoObject* getObject_Internal(uint32 entity);
 private:

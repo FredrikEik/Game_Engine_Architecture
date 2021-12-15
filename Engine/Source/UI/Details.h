@@ -23,6 +23,8 @@ protected:
 	void addAABBComponent();
 	void addTextureComponent();
 	void addParticleComponent();
+	void addScriptComponent();
+	void addPhysicsComponent();
 
 	std::vector<std::pair<std::type_index, uint32>> entity;
 	int32 entityID{};
@@ -31,5 +33,7 @@ protected:
 	const std::string meshComponent{ "Mesh" };
 	const std::string textureComponent{ "Texture" };
 	const std::string particleComponent{ "Particle" };
+	const std::string scriptComponent{ "Script" };
+	const std::string physicsComponent{ "Physics" };
 };
 

@@ -21,6 +21,7 @@ class ComponentManager
 	{
 		for (auto &it: sparseComponentArray)
 			it=core::MAX_ENTITIES+1;
+		packedComponentArray.reserve(50);
 	}
 	~ComponentManager();
 public:

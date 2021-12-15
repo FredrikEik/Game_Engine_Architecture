@@ -21,6 +21,7 @@
 #include "Engine/Engine.h"	
 #include "Engine/ScriptEngine.h"
 
+#include <thread>
 
 
 
@@ -91,8 +92,8 @@ int main()
 	Engine& engine = Engine::Get();
 	ScriptEngine* scriptEngine = ScriptEngine::GetInstance();
 
-
 	engine.start();
+
 	delete scriptEngine;
 	delete& engine;
 

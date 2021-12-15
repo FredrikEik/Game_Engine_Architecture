@@ -2,8 +2,11 @@
 #include "../ECSManager.h"
 #include "TerrainSystem.h"
 #include "TransformSystem.h"
+#include "../Engine/Engine.h"
 void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTime)
 {
+	if (!ECS->getComponentManager<PhysicsComponent>())
+		return;
 	std::vector<PhysicsComponent>& physicsComponents = ECS->getComponentManager<PhysicsComponent>()->getComponentArray();
 	auto transformManager = ECS->getComponentManager<TransformComponent>();
 	MeshComponent* terrain = ECS->getComponentManager<MeshComponent>()->getComponentChecked(terrainEntity);
@@ -26,19 +29,36 @@ void PhysicsSystem::update(uint32 terrainEntity, ECSManager* ECS, float deltaTim
 
 		// If airborne there is no surface normal. 
 		tempSurfaceNormal = TerrainSystem::getNormal(*entityTransform, *terrain, tempTerrainIndex) * (float)!tempIsInAir;
+		if (tempTerrainIndex < 0)
+			tempSurfaceNormal = glm::normalize(it.velocity*-1.f);
+
 
 		it.acceleration = getAcceleration(tempSurfaceNormal, it.mass);
 		it.velocity += it.acceleration * deltaTime;
 
-
-		if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
+		if (tempTerrainIndex < 0)
+		{
+			tempSurfaceNormal = glm::normalize(it.velocity * -1.f);
+			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
+			float speed = glm::length(it.velocity) > 5.f ? glm::length(it.velocity) : 5;
+			it.velocity = tempCollisionNormal * speed;
+		}
+		else if (tempTerrainIndex != it.lastTriangleIndex && !tempIsInAir)
 		{
 			tempCollisionNormal = getCollisionNormal(it.velocity, tempSurfaceNormal);
 			if(it.bIsInAir) // if entity was in air last frame
 				it.velocity = tempCollisionNormal * glm::length(it.velocity) * it.restitution;
 			else
 				it.velocity = tempCollisionNormal * glm::length(it.velocity);
+			glm::vec3 frictionDirection = glm::normalize(it.velocity) * -1.f;
+			it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
 		}
+
+		//if (!tempIsInAir)
+		//{
+		//	glm::vec3 frictionDirection = glm::normalize(it.velocity) * -1.f;
+		//	it.velocity += (it.friction * frictionDirection * glm::length(it.velocity));
+		//}
 
 		// s = V_0 * t + 1/2*a*t*t
 		TransformSystem::move(*entityTransform, 
@@ -59,6 +79,11 @@ void PhysicsSystem::setVelocity(uint32 entity, const glm::vec3& newVelocity, ECS
 {
 	PhysicsComponent* component = ECS->getComponentManager<PhysicsComponent>()->getComponentChecked(entity);
 	component->velocity = isAdditive ? component->velocity + newVelocity : newVelocity;
+}
+
+void PhysicsSystem::setVelocity_Internal(uint32 entity, glm::vec3 newVelocity, bool isAdditive)
+{
+	setVelocity(entity, newVelocity, Engine::Get().getECSManager(), isAdditive);
 }
 
 glm::vec3 PhysicsSystem::getAcceleration(const glm::vec3& surfaceNormal, const float& mass)

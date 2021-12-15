@@ -18,6 +18,16 @@ namespace ScriptInJin
             get { return getEntityID_internal(this, ToString());}
         }
 
+        public Vec3 getPosition()
+        {
+            return Transform.getTransform_internal(entityID); 
+        }
+
+        public void setPosition(Vec3 newPosition)
+        {
+            Transform.setPosition_internal(entityID, newPosition);
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private static uint getEntityID_internal(Entity ptr, string className);
 
@@ -37,16 +47,29 @@ namespace ScriptInJin
         extern public static float getDeltaTime_Internal();
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern public static Entity getObject_Internal(uint EntityID);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static uint createDefaultEntity_Internal(string path);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static bool isOverlappingEntity_Internal(uint EntityA, uint EntityB);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void setVelocity_Internal(uint Entity, Vec3 newVelocity, bool isAdditive);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void setParticleActive_Internal(uint Entity, bool isActive);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void showHud_Internal(uint Entity, string path);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern public static void removeHud_Internal(uint Entity);
     }
 
     public class Transform
     {
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static void Move_Internal(uint entity, Vec3 newLocation);
+        extern public static void Move_Internal(uint EntityID, Vec3 newLocation);
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static Vec3 getTransform_internal(uint entity);
+        extern public static Vec3 getTransform_internal(uint EntityID);
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public static void setPosition_internal(uint entity, Vec3 newLocation);
+        extern public static void setPosition_internal(uint EntityID, Vec3 newLocation);
     }
 
     public class Debug

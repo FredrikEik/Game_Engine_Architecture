@@ -1,0 +1,142 @@
+[
+    {
+        "5": [
+            {
+                "struct TransformComponent": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                ]
+            },
+            {
+                "struct ParticleComponent": {
+                    "bLoops": false,
+                    "blendDFactor": 771,
+                    "blendSFactor": 770,
+                    "destroyOnLifetimeEnd": true,
+                    "emitterTotalLifeTime": 0.44999998807907104,
+                    "maxParticles": 5,
+                    "mesh": {
+                        "LODType": 0,
+                        "bDisregardedDuringFrustumCulling": false,
+                        "bIsTranslucent": false,
+                        "bShouldRender": true,
+                        "drawType": 4,
+                        "path": "",
+                        "reusable": true,
+                        "bDrawDeferred":false
+                    },
+                    "particleBlueprint": {
+                        "accelerationMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "accelerationMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "colorMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "colorMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "lifeMaxOffset": 0.0,
+                        "lifeMinOffset": 0.0,
+                        "particle": {
+                            "acceleration": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "currentLife": 0.44999995827674866,
+                            "endColor": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "endSize": 30.0,
+                            "position": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "startColor": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "startSize": 30.0,
+                            "velocity": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        "positionMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "positionMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "sizeMaxOffset": 0.0,
+                        "sizeMinOffset": 0.0,
+                        "velocityMaxOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "velocityMinOffset": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "spawnFrequency": 1.0,
+                    "spawnRate": 1,
+                    "texture": {
+                        "path": "C:\\Github_Projects\\School\\GEA2021\\Engine\\Assets\\particleAtlas.png",
+                        "reusable": true,
+                        "wrapMode": 10497
+                    },
+                    "textureRows": 8
+                }
+            }
+        ]
+    }
+]

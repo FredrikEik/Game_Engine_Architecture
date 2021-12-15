@@ -196,12 +196,13 @@ struct ScriptComponent final : public Component
 	MonoClass* m_Class{};
 	MonoObject* m_Object{};
 	MonoClassField* entityID_handle{};
-	
+	bool bInitialized{ false };
 	//std::unordered_map<size_t, Ref<ScriptField>> m_Fields;
 	std::unordered_map<size_t, MonoMethod*> m_Methods;
 	//std::unordered_map<size_t, Ref<ScriptProperty>> m_Properties;
 
-
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct SoundComponent final : public Component
@@ -230,6 +231,10 @@ struct PhysicsComponent final : public Component
 	//float baryCentricErrorMargin{0.985f};
 	bool bIsInAir{ false };
 	float restitution{ 0.75 }; // How bouncy/elastic it is.
+	float friction{ 0.04f };
+
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
 };
 
 struct TrailComponent final : public Component
@@ -343,6 +348,7 @@ struct ParticleComponent final : public Component
 	float emitterLifeTime{};
 	float emitterTotalLifeTime{};
 	bool bLoops{ false };
+	bool destroyOnLifetimeEnd{ false };
 
 	GLenum blendSFactor{ GL_SRC_ALPHA };
 	GLenum blendDFactor{ GL_ONE_MINUS_SRC_ALPHA };
@@ -353,6 +359,19 @@ struct ParticleComponent final : public Component
 	GLuint colorBuffer{};
 	GLuint lifeAndSizeDataBuffer{};
 
+	JSON json() override;
+	void jsonParse(const JSON& json) override;
+};
+
+struct HudComponent final : public Component
+{
+	HudComponent(uint32 entity, uint32 componentID) : Component(entity, componentID),
+		mesh(entity, componentID), texture(entity, componentID) {}
+	MeshComponent mesh;
+	TextureComponent texture;
+
+	GLuint positionBuffer{};
+	glm::vec4 center{0.f, 0.f, 1, 1};
 	JSON json() override;
 	void jsonParse(const JSON& json) override;
 };

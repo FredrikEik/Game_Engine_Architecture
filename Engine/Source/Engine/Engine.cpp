@@ -37,10 +37,14 @@
 
 #include "../Systems/ParticleSystem.h"
 #include "../Systems/TerrainSystem.h"
+#include "../Systems/PhysicsSystem.h"
+#include "../Systems/HudSystem.h"
 
 
 #include "../SaveLoad/Save.h"
 #include "../SaveLoad/Load.h"
+
+#include <thread>
 
 
 
@@ -64,22 +68,38 @@ Engine::~Engine()
 	delete ECS;
 	delete ourShader;
 	delete viewport;
+
+	delete phongShader;
+	delete selectionShader;
+	delete outlineShader;
+	delete particleShader;
+	delete hudShader;
 }
 
 void Engine::setIsPlaying(bool isPlaying)
 {
-	bIsPlaying = isPlaying;
 	MeshSystem::setHiddenInGame(gameCameraEntity, ECS, isPlaying);
 	if (!isPlaying)
 	{
 		load(Save::getDefaultAbsolutePath());
-		TransformSystem::setPosition(gameCameraEntity, glm::vec3(), ECS);
+		TransformSystem::setPosition(gameCameraEntity, glm::vec3(70, 0, 140), ECS);
 		CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016);
+		ScriptSystem::uninitializeAllComponents(ECS);
+		ECS->removeComponent<ScriptComponent>(gameStateEntity);
+		ECS->addComponent<ScriptComponent>(gameStateEntity);
+		ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
+
 	}
 	else
 	{
-		save();
+		//save();
+		// First invoking on the game state because it created new entities.
+		// This will cause the components to shift around in memory, so it cannot be done
+		// while looping through all components
+		ScriptSystem::Invoke(gameStateEntity, "BeginPlay", ECS);
+		ScriptSystem::Invoke("BeginPlay", ECS);
 	}
+	bIsPlaying = isPlaying;
 }
 
 void Engine::save()
@@ -96,6 +116,14 @@ void Engine::load(const std::string& path)
 	Load::loadEntities(path, ECS);
 }
 
+uint32 Engine::createDefaultEntity_Internal(MonoString* path)
+{
+	//uint32 entity = Get().ECS->newEntity();
+	//Get().pendingEntities.push_back(std::make_pair(entity, mono_string_to_utf8(path)));
+	//return entity;
+	return Load::loadEntity(Get().ECS->newEntity(), mono_string_to_utf8(path), Get().ECS);
+}
+
 Engine* Engine::instance = nullptr;
 float Engine::windowWidth = 1400.f;
 float Engine::windowHeight = 1000.f;
@@ -106,6 +134,7 @@ void Engine::start()
 {
 	init();
 	loop();
+
 	terminate();
 }
 
@@ -171,6 +200,7 @@ void Engine::compileShaders()
 	selectionShader = new Shader("Shaders/SelectionShader.vert", "Shaders/SelectionShader.frag");
 	outlineShader = new Shader("Shaders/OutlineShader.vert", "Shaders/OutlineShader.frag");
 	particleShader = new Shader("Shaders/ParticleShader.vert", "Shaders/ParticleShader.frag");
+	hudShader = new Shader("Shaders/HudShader.vert", "Shaders/HudShader.frag");
 
 	GeometryPassShader = new Shader("Shaders/G_Buffer.vert", "Shaders/G_Buffer.frag");
 	LightPassShader = new Shader("Shaders/DefS_LightsShadows.vert", "Shaders/DefS_LightsShadows.frag");
@@ -190,7 +220,11 @@ void Engine::initEtities()
 	CameraSystem::setPerspective(gameCameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 30.0f);
 	CameraSystem::updateGameCamera(gameCameraEntity, ECS, 0.016f);
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
-	TransformSystem::setHeight(editorCameraEntity, 5, ECS);
+	TransformSystem::move(gameCameraEntity, glm::vec3(70, 0, 140), ECS);
+	TransformSystem::move(editorCameraEntity, glm::vec3(40, 15, 145), ECS);
+	//TransformSystem::setHeight(editorCameraEntity, 5, ECS);
+	
+	//RTSSelectionEntity = ECS->newEntity();
 
 	SystemEntity = ECS->newEntity();
 	/// transform can be used to creat rts selection
@@ -212,6 +246,9 @@ void Engine::initEtities()
 	//TransformSystem::setScale(terrainEntity, glm::vec3(100, 1, 100), ECS);
 	//TransformSystem::setPosition(terrainEntity, glm::vec3(0, -1.1, 0), ECS);
 	//ECS->addComponent<AxisAlignedBoxComponent>(entity);
+
+	//viewport->begin(window, ECS->getNumberOfEntities());
+
 
 	
 	ScriptSystem::Init();
@@ -235,7 +272,10 @@ void Engine::initEtities()
 	materialMap.insert(std::make_pair("u_tex_diffuse1", "Assets/Dogling_D.png"));
 	materialMap.insert(std::make_pair("u_tex_specular1", "Assets/Dogling_S.png"));
 	TextureSystem::loadMaterial(gunMaterial, materialMap);
-
+	ECS->addComponent<HudComponent>(gameCameraEntity);
+	HudSystem::init(gameCameraEntity, ECS, "Assets/ballChase.png");
+	HudSystem::setPosition(gameCameraEntity, glm::vec2(-0.65, 0.65), ECS);
+	HudSystem::setScale(gameCameraEntity, glm::vec2(0.5, 0.5), ECS);
 	//ScriptTest
 	//Init - binds all internal functions - Important first step
 
@@ -267,6 +307,11 @@ void Engine::init()
 	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
 	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
 
+	gameStateEntity = ECS->newEntity();
+	ECS->addComponent<ScriptComponent>(gameStateEntity);
+	//ScriptSystem::setScriptClassName(gameStateEntity, "GameMode", ECS);
+	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
+
 
 
 
@@ -276,22 +321,6 @@ void Engine::init()
 	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
 	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
-
-
-
-	ParticleComponent::ParticleBlueprint particleBlueprint;
-	particleBlueprint.particle.currentLife = 0.5f;
-	particleBlueprint.particle.acceleration = glm::vec3(0, 0, 0);
-	particleBlueprint.particle.velocity = glm::vec3(0, 0.f, 0);
-	particleBlueprint.particle.startColor = glm::vec4(1, 1, 1,1);
-	particleBlueprint.particle.position = glm::vec3(1, 5, 1);
-	particleBlueprint.particle.startSize = 30;
-
-	//////TransformSystem::setPosition(unitEntity, glm::vec3(0, 15, 0), ECS);
-	//uint32 particleEntity = ECS->newEntity();
-	//ECS->addComponents<TransformComponent, ParticleComponent>(particleEntity);
-	////ECS->addComponent<ParticleComponent>(unitEntity);
-	//ParticleSystem::init(particleEntity, 500000, 2000, particleBlueprint, ECS)
 }
 
 
@@ -299,7 +328,7 @@ void Engine::init()
 void Engine::loop()
 {
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window) || bIsPlaying)
 	{
 		//// input
 		processInput(window);
@@ -310,12 +339,32 @@ void Engine::loop()
 		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
-
+		//deltaTime = currentFrame - lastFrame;
+		//lastFrame = currentFrame;
+		//loadPendingEntities();
+		if (!bIsPlaying)
+		{
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+		}
+		else
+		{
+			//0.016f - (currentFrame - lastFrame)
+			//_sleep((0.016f - (currentFrame - lastFrame)));
+			std::this_thread::sleep_for(std::chrono::duration<float>(0.016f - (currentFrame - lastFrame)));
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+			//PhysicsSystem::update(terrainEntity, ECS, 0.016); // without deltatime for debugging
+			PhysicsSystem::update(terrainEntity, ECS, deltaTime);
+			//TrailSystem::recordPositions(ECS, currentFrame);
+			//TrailSystem::generateBSplines(trailEntity, ECS);
+		}
 
 		CollisionBroadphaseDatastructure->update();
 
+
+
+		if(bIsPlaying)
 
 		//// RENDER
 		// Selection Render
@@ -371,6 +420,7 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
+		*/
 
 		if (bIsPlaying)
 		{
@@ -378,6 +428,7 @@ void Engine::loop()
 			CameraSystem::draw(cameraEntity, ourShader, ECS);
 
 			// Only checks collision for one frame, so we delete it after
+			//if (ECS->getComponentManager<AxisAlignedBoxComponent>() && ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(RTSSelectionEntity))
 			if (ECS->getComponentManager<AxisAlignedBoxComponent>()->getComponentChecked(SystemEntity))
 			{
 				SelectionSystem::setHitEntities(SystemEntity,
@@ -389,14 +440,13 @@ void Engine::loop()
 			//SelectionSystem::drawSelectedArea(RTSSelectionEntity, ourShader, ECS);
 			SelectionSystem::drawSelectedArea(SystemEntity, ourShader, ECS);
 		}
-		*/
 
 	
 
 		CameraSystem::draw(cameraEntity, particleShader, ECS);
 
 		ParticleSystem::update(cameraEntity, particleShader, ECS, deltaTime);
-
+		HudSystem::render(ECS, hudShader);
 		//// Render dear imgui into screen
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -406,6 +456,7 @@ void Engine::loop()
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	std::cout << "\nMain loop ended\n";
 }
 
 
@@ -466,6 +517,15 @@ void Engine::terminate()
 	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
 }
+
+//void Engine::loadPendingEntities()
+//{
+//	for (auto& it : pendingEntities)
+//	{
+//		Load::loadEntity(it.first, it.second, ECS);
+//	}
+//	pendingEntities.clear();
+//}
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {

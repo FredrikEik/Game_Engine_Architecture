@@ -8,6 +8,7 @@
 #include "TextureWidget.h"
 #include "BoxColliderWidget.h"
 #include "ParticleWidget.h"
+#include "ScriptWidget.h"
 #include "../Systems/ParticleSystem.h"
 #include "nfd.h"
 #include "../Systems/CollisionSystem.h"
@@ -27,7 +28,7 @@ void Details::begin(Viewport* inViewport, int32 inReservedEntities)
 
 void Details::update(int32 inEntityID)
 {
-	if (inEntityID < reservedEntities/* || !ECS->entityExists(inEntityID)*/)
+	if (inEntityID < reservedEntities || !ECS->entityExists(inEntityID))
 		return;
 
 	//while (!ECS->entityExists(inEntityID))
@@ -112,6 +113,26 @@ void Details::update(int32 inEntityID)
 				break;
 			}
 		}
+		else if (index == TYPE(typeid(ScriptComponent)))
+		{
+			bool bEntityChanged{};
+			ScriptWidget* scriptWidget = new ScriptWidget(windowName, ECS);
+			ImGui::NewLine();
+			scriptWidget->begin(viewport, reservedEntities);
+			scriptWidget->update(entityID, bEntityChanged);
+			scriptWidget->end();
+			delete scriptWidget;
+			if (bEntityChanged)
+			{
+				entity = ECS->getEntity(entityID);
+				break;
+			}
+		}
+		else if (index == TYPE(typeid(PhysicsComponent)))
+		{
+			ImGui::NewLine();
+			ImGui::Text("Has physics component");
+		}
 	}
 	//ImGui::BeginChild("AddComponent");
 	//static bool popup{true};
@@ -138,7 +159,9 @@ void Details::drawAddComponent()
 		boxColliderComponent.c_str(), 
 		meshComponent.c_str(),
 		textureComponent.c_str(),
-		particleComponent.c_str()
+		particleComponent.c_str(),
+		scriptComponent.c_str(),
+		physicsComponent.c_str()
 	};
 	static const char* currentItem = "Select component";
 	ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
@@ -190,6 +213,10 @@ void Details::addComponent(std::string componentToAdd)
 		addTextureComponent();
 	else if (componentToAdd == particleComponent)
 		addParticleComponent();
+	else if (componentToAdd == scriptComponent)
+		addScriptComponent();
+	else if (componentToAdd == physicsComponent)
+		addPhysicsComponent();
 }
 
 void Details::removeComponent(std::string componentToAdd)
@@ -251,6 +278,8 @@ void Details::addMeshComponent()
 
 void Details::addAABBComponent()
 {
+	if (!hasComponent(TYPE(typeid(TransformComponent))))
+		ECS->addComponent<TransformComponent>(entityID);
 	if (!hasComponent(TYPE(typeid(AxisAlignedBoxComponent))))
 		ECS->addComponent<AxisAlignedBoxComponent>(entityID);
 }
@@ -276,4 +305,20 @@ void Details::addParticleComponent()
 
 	ECS->addComponent<ParticleComponent>(entityID);
 	ParticleSystem::initMesh(ECS->getComponentManager<ParticleComponent>()->getComponentChecked(entityID), entityID);
+}
+
+void Details::addScriptComponent()
+{
+	if (hasComponent(TYPE(typeid(ScriptComponent))))
+		return;
+
+	ECS->addComponent<ScriptComponent>(entityID);
+}
+
+void Details::addPhysicsComponent()
+{
+	if (hasComponent(TYPE(typeid(PhysicsComponent))))
+		return;
+
+	ECS->addComponent<PhysicsComponent>(entityID);
 }

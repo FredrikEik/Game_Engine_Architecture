@@ -59,11 +59,14 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 			}
 
 
+			ImGui::Checkbox("Destroy When Finished##particle", &component->destroyOnLifetimeEnd);
 			ImGui::Checkbox("Loops##particle", &component->bLoops);
 			if (!component->bLoops && ImGui::Button("Activate##particle"))
 			{
 				ParticleSystem::setParticleActive(component, true);
 			}
+
+
 			ImGui::InputFloat("Emitter Lifetime##particle", &component->emitterTotalLifeTime, 0.01f, 0.1f);
 			ImGui::InputFloat("Spawn Frequency##particle", &component->spawnFrequency, 0.01f, 0.1f);
 			ImGui::InputInt("Spawn Rate##particle", (int*)&component->spawnRate, 1, 10);
@@ -74,6 +77,7 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 					component->maxParticles = 1;
 				ParticleSystem::initMesh(component, component->maxParticles);
 			}
+			ImGui::InputFloat("Lifetime##particle", &component->particleBlueprint.particle.currentLife, 0.01f, 0.1f);
 		
 
 			ImGui::SliderInt("Texture Rows##particle", &component->textureRows, 1, 20);
@@ -94,7 +98,6 @@ void ParticleWidget::update(int32 entityID, bool& entitiesChanged)
 				ImGui::DragFloat3("Position##particle", &component->particleBlueprint.particle.position.x, 0.1f, -10000.f, 10000.f);
 				ImGui::DragFloat3("Initial Velocity##particle", &component->particleBlueprint.particle.velocity.x, 0.1f, -10000.f, 10000.f);
 				ImGui::DragFloat3("Acceleration##particle", &component->particleBlueprint.particle.acceleration.x, 0.1f, -10000.f, 10000.f);
-				ImGui::InputFloat("Lifetime##particle", &component->particleBlueprint.particle.currentLife, 0.01f, 0.1f);
 				ImGui::InputFloat("Start Size##particle", &component->particleBlueprint.particle.startSize, 0.01f, 0.1f);
 				ImGui::InputFloat("End Size##particle", &component->particleBlueprint.particle.endSize, 0.01f, 0.1f);
 

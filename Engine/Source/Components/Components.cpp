@@ -2,6 +2,10 @@
 #include <iostream>
 #include "../SaveLoad/Save.h"
 #include "../Systems/ParticleSystem.h"
+#include "../Systems/ScriptSystem.h"
+#include "../Engine/Engine.h"
+#include "../Systems/HudSystem.h"
+
 JSON TransformComponent::json()
 {
 	JSON matrix;
@@ -101,6 +105,7 @@ JSON ParticleComponent::json()
 	{"spawnFrequency", spawnFrequency},
 	{"emitterTotalLifeTime", emitterTotalLifeTime},
 	{"bLoops", bLoops},
+	{"destroyOnLifetimeEnd", destroyOnLifetimeEnd},
 	{"blendSFactor", blendSFactor},
 	{"blendDFactor", blendDFactor},
 	{"mesh", mesh.json()},
@@ -148,6 +153,7 @@ void ParticleComponent::jsonParse(const JSON& json)
 	spawnFrequency = json["spawnFrequency"];
 	emitterTotalLifeTime = json["emitterTotalLifeTime"];
 	bLoops = json["bLoops"];
+	destroyOnLifetimeEnd = json["destroyOnLifetimeEnd"];
 	blendSFactor = json["blendSFactor"];
 	blendDFactor = json["blendDFactor"];
 	mesh.jsonParse(json["mesh"]);
@@ -179,4 +185,55 @@ void ParticleComponent::jsonParse(const JSON& json)
 
 	ParticleSystem::initMesh(this, maxParticles);
 	ParticleSystem::initTexture(this, texture.path, textureRows);
+}
+
+JSON ScriptComponent::json()
+{
+	return JSON{
+	{"ScriptClassName", ScriptClassName}
+	};
+}
+
+void ScriptComponent::jsonParse(const JSON& json)
+{
+	ScriptClassName = json["ScriptClassName"];
+	ScriptSystem::InitScriptObject(this, ScriptClassName);
+
+	if(Engine::Get().getIsPlaying())
+		ScriptSystem::Invoke(entityID, "BeginPlay", Engine::Get().getECSManager());
+}
+
+JSON PhysicsComponent::json()
+{
+	return {
+		{"mass", mass},
+		{"restitution", restitution},
+	};
+}
+
+void PhysicsComponent::jsonParse(const JSON& json)
+{
+	mass = json["mass"];
+	restitution = json["restitution"];
+}
+
+JSON HudComponent::json()
+{
+	return JSON{ 
+		{"center", Save::vec4JSON(center)},
+		{"texture", texture.json()},
+		{"mesh", mesh.json()}
+	};
+}
+
+void HudComponent::jsonParse(const JSON& json)
+{
+	auto vec4 = [](const JSON& json)
+	{return glm::vec4(json[0], json[1], json[2], json[3]); };
+
+	center = vec4(json["center"]);
+	mesh.jsonParse(json["mesh"]);
+	texture.jsonParse(json["texture"]);
+
+	HudSystem::init(entityID, Engine::Get().getECSManager(), texture.path);
 }

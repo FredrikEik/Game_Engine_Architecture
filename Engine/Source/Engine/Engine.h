@@ -7,7 +7,9 @@
 #include <iostream>
 //#define DEBUG
 //#define DEBUG_BROADPHASE
-
+#include "mono/jit/jit.h"
+//#include <mono/metadata/assembly.h>
+#include <vector>
 class Engine
 {
 public:
@@ -23,6 +25,8 @@ public:
 	void setIsPlaying(bool isPlaying);
 	void save();
 	void load(const std::string& path);
+
+	static uint32 createDefaultEntity_Internal(MonoString* path);
 private:
 	static Engine* instance;
 	Engine();
@@ -67,6 +71,7 @@ private:
 	class Shader* selectionShader{};
 	class Shader* outlineShader{};
 	class Shader* particleShader{};
+	class Shader* hudShader{};
 
 	class Shader* GeometryPassShader{};
 	class Shader* LightPassShader{};
@@ -82,6 +87,8 @@ private:
 	uint32 SystemEntity{};
 	uint32 terrainEntity{};
 	uint32 unitEntity{};
+	//uint32 cameraEntity{};
+	uint32 gameStateEntity{};
 
 	uint32 dogEntity{};
 	uint32 lightEnitites[25]{};
@@ -97,6 +104,8 @@ private:
 	class Viewport* viewport;
 
 	bool bIsPlaying{ false };
+
+	std::vector<std::pair<uint32, std::string>> pendingEntities;
 public:
 	ECSManager* getECSManager() const { return ECS; }
 	float getWindowWidth() const { return windowWidth; }
@@ -104,6 +113,8 @@ public:
 	float getWindowHeight() const { return windowHeight; }
 	void setWindowHeight(float val) { windowHeight = val; }
 	uint32 getCameraEntity() const { return cameraEntity; }
+	bool getIsPlaying() const { return bIsPlaying; }
+	SweepAndPrune* getCollisionDatastructure() { return CollisionBroadphaseDatastructure; }
 
 	static float getDeltaTime_Internal();
 };
