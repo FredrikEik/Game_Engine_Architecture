@@ -19,12 +19,13 @@ namespace Game
             {
                 Unit overlappedUnit = (Unit)getObject_Internal(player);
                 Vec3 playerPosition = overlappedUnit.getPosition();
-
-                Vec3 collisionDirection = playerPosition - getPosition();
+                playerPosition.m_y = 0.5f;
+                Vec3 collisionDirection =  getPosition() - playerPosition;
+                //Vec3 collisionDirection = playerPosition - getPosition();
                 collisionDirection.Normalize();
-                
+                playSound_Internal();
 
-                setVelocity_Internal(entityID, collisionDirection * -10, false);
+                setVelocity_Internal(entityID, collisionDirection * 10, false);
             }
         }
         public void setPlayer(uint unit)

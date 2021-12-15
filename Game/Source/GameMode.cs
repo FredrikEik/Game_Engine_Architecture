@@ -22,6 +22,9 @@ namespace Game
             obstacle = createDefaultEntity_Internal("../Saves/obstacle.json");
             goal = createDefaultEntity_Internal("../Saves/goal.json");
 
+            addMaterialTexture_Internal(unit, "u_tex_diffuse1", "Assets/Dogling_D.png");
+            addMaterialTexture_Internal(unit, "u_tex_specular1", "Assets/Dogling_S.png");
+
             Ball ballRef = (Ball)getObject_Internal(ball);
             ballRef.setPlayer(unit);
             Obstacle obstacleRef = (Obstacle)getObject_Internal(obstacle);
@@ -32,6 +35,7 @@ namespace Game
 
             Console.WriteLine("Obstacle id: " + obstacle);
             Transform.setPosition_internal(obstacle, new Vec3(100, 0, 140));
+            //playSound_Internal();
         }
         public override void Update()
         {

@@ -173,7 +173,7 @@ void LightSystem::SetLightValues(uint32 entityID, class ECSManager* ECS, glm::ve
 	ligthComp->m_Quadratic = quadratic;
 }
 
-void LightSystem::DefferedRendering(Shader* GeometryPassShader, Shader* LightPassShader, const std::string& uniformName, class ECSManager* manager, uint32 SystemEntity, uint32 cameraEntity)
+void LightSystem::DeferredRendering(Shader* GeometryPassShader, Shader* LightPassShader, const std::string& uniformName, class ECSManager* manager, uint32 SystemEntity, uint32 cameraEntity)
 {
 	auto gBufferComp = manager->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
 
