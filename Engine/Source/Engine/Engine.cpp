@@ -182,15 +182,6 @@ void Engine::initOpenGL()
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);	
-
-
-	/*
-	glDepthFunc(GL_LESS);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	*/
-
 }
 
 void Engine::compileShaders()
@@ -222,14 +213,8 @@ void Engine::initEtities()
 	CameraSystem::createFrustumMesh(gameCameraEntity, ECS);
 	TransformSystem::move(gameCameraEntity, glm::vec3(70, 0, 140), ECS);
 	TransformSystem::move(editorCameraEntity, glm::vec3(40, 15, 145), ECS);
-	//TransformSystem::setHeight(editorCameraEntity, 5, ECS);
-	
-	//RTSSelectionEntity = ECS->newEntity();
 
 	SystemEntity = ECS->newEntity();
-	/// transform can be used to creat rts selection
-	//mesh comp
-	// opacity shader
 	ECS->addComponents<TransformComponent, SelectionComponent, GBufferComponent, ShadowBufferComponent>(SystemEntity);
 	auto gBufferComp = ECS->getComponentManager<GBufferComponent>()->getComponentChecked(SystemEntity);
 	//LightSystem::InitGBuffer(gBufferComp);
@@ -237,12 +222,10 @@ void Engine::initEtities()
 	LightSystem::InitSBuffer(sBufferComp);
 
 	terrainEntity = ECS->newEntity();
-	ECS->addComponents<TransformComponent, MeshComponent>(terrainEntity);
+	ECS->addComponents<TransformComponent, MeshComponent, testComponent>(terrainEntity);
 	TerrainSystem::generateRegularGrid(terrainEntity, ECS);
 	ECS->loadAsset(terrainEntity, "Assets/grass.png");
 
-	
-	ScriptSystem::Init();
 
 	unitEntity = ECS->newEntity();
 	ECS->addComponents<TransformComponent, ScriptComponent, MeshComponent, AxisAlignedBoxComponent>(unitEntity);
@@ -291,31 +274,22 @@ void Engine::init()
 	initGLFW();
 	initOpenGL();
 	compileShaders();
+	ScriptSystem::Init();
 	initEtities();
 
-
-
 	CollisionSystem::setShouldGenerateOverlapEvents(unitEntity, ECS, false);
-	//MeshSystem::setHiddenInGame(unitEntity, ECS, true);
 
 	gameStateEntity = ECS->newEntity();
 	ECS->addComponent<ScriptComponent>(gameStateEntity);
-	//ScriptSystem::setScriptClassName(gameStateEntity, "GameMode", ECS);
 	ScriptSystem::InitScriptObject(ECS->getComponentManager<ScriptComponent>()->getComponentChecked(gameStateEntity), "GameMode");
-
-
 
 
 	reservedEntities = ECS->getNumberOfEntities();
 
 	viewport->begin(window, reservedEntities);
-	//Save::saveEntities(ECS->entities, reservedEntities, ECS); // MOVE TO UI
-	//Load::loadEntities("../saves/entities.json", ECS);
 	load(Save::getDefaultAbsolutePath());
 }
 
-
-//int EntityToTransform{}; // TODO: VERY TEMP, remove as soon as widgets are implemented
 void Engine::loop()
 {
 
@@ -326,13 +300,10 @@ void Engine::loop()
 
 		cameraEntity = bIsPlaying ? gameCameraEntity : editorCameraEntity;
 
-		// TODO: Make this not happen every frame
+		
 		CameraSystem::setPerspective(cameraEntity, ECS, fov, windowWidth / windowHeight, 0.1f, 1000.0f);
 		// can be used to calc deltatime
 		float currentFrame = glfwGetTime();
-		//deltaTime = currentFrame - lastFrame;
-		//lastFrame = currentFrame;
-		//loadPendingEntities();
 		if (!bIsPlaying)
 		{
 			deltaTime = currentFrame - lastFrame;
@@ -340,8 +311,7 @@ void Engine::loop()
 		}
 		else
 		{
-			//0.016f - (currentFrame - lastFrame)
-			//_sleep((0.016f - (currentFrame - lastFrame)));
+
 			std::this_thread::sleep_for(std::chrono::duration<float>(0.016f - (currentFrame - lastFrame)));
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
@@ -355,49 +325,42 @@ void Engine::loop()
 
 
 
-		if(bIsPlaying)
-
-		//// RENDER
-		// Selection Render
-		editorSelection();
+		if(!bIsPlaying)
+			editorSelection();
 
 		if (bIsPlaying)
 		{
-			//CameraSystem::updateGameCamera(editorCameraEntity, ECS, 0.016f);
+			
 
 			CameraSystem::updateGameCamera(cameraEntity, ECS, deltaTime);
-
-			//temp placement -- calls update on scripts
 			ScriptSystem::Invoke("Update", ECS);
 		}
 		else
 		{
-			//std::cout << "Editor camera'\n";
-			//TODO: Draw a game camera here
+
 			CameraSystem::updateEditorCamera(cameraEntity, ECS, deltaTime);
 		}
 		// contains camera draw and mesh system draw.
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		glStencilMask(0x00);
 		LightSystem::DrawShadows(ShadowShader, ShadowDepthShader, "u_model", ECS, SystemEntity, cameraEntity, deltaTime);
 
 		//LightSystem::DefferedRendering(GeometryPassShader, LightPassShader, "u_model", ECS, SystemEntity, cameraEntity);
 
-		CameraSystem::draw(cameraEntity, ShadowShader, ECS);
-		//CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
-		MeshSystem::draw(ShadowShader, "u_model", ECS, cameraEntity);
-		/*
+
+	
+		glDepthFunc(GL_LESS);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
 		glStencilMask(0xFF);
 		CameraSystem::draw(cameraEntity, ShadowShader, ECS);
 		MeshSystem::draw(ShadowShader, "u_model", ECS, cameraEntity);
 		// enable writing to the stencil buffer
-		//CameraSystem::draw(cameraEntity, phongShader, ECS);
-		//CameraSystem::setPhongUniforms(cameraEntity, phongShader, ECS);
-		//MeshSystem::draw(ourShader, "u_model", ECS, editorCameraEntity);
-		//MeshSystem::draw(phongShader, "u_model", ECS, cameraEntity);
 
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -411,7 +374,8 @@ void Engine::loop()
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glEnable(GL_DEPTH_TEST);
 
-		*/
+		glDisable(GL_STENCIL_TEST);
+		
 
 		if (bIsPlaying)
 		{
@@ -438,10 +402,7 @@ void Engine::loop()
 
 		ParticleSystem::update(cameraEntity, particleShader, ECS, deltaTime);
 		HudSystem::render(ECS, hudShader);
-		//// Render dear imgui into screen
-		//ImGui::Render();
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		
+		//// Render dear imgui into screen		
 		viewport->render();
 
 		glfwSwapBuffers(window);
@@ -501,22 +462,9 @@ void Engine::editorSelection()
 
 void Engine::terminate()
 {
-	//ImGui_ImplOpenGL3_Shutdown();
-	//ImGui_ImplGlfw_Shutdown();
-	//ImGui::DestroyContext();
 	viewport->end();
-	// delete all GLFW's resources that were allocated..
 	glfwTerminate();
 }
-
-//void Engine::loadPendingEntities()
-//{
-//	for (auto& it : pendingEntities)
-//	{
-//		Load::loadEntity(it.first, it.second, ECS);
-//	}
-//	pendingEntities.clear();
-//}
 
 void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -536,11 +484,6 @@ void Engine::mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Input::getInstance()->setScrollState(xoffset, yoffset);
-	//fov -= (float)yoffset;
-	//if (fov < 1.0f)
-	//	fov = 1.0f;
-	//if (fov > 45.0f)
-	//	fov = 45.0f;
 }
 
 void Engine::mouseButton_callback(GLFWwindow* window, int button, int action, int mods)
