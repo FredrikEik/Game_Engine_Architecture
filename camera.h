@@ -4,9 +4,10 @@
 #include "matrix4x4.h"
 #include "vector3d.h"
 #include "visualobject.h"
+
 /**
-  This class still have some bugs. It mostly work, but when you rotate the camera 180 degrees
-  the forward / backward is wrong, when steered with W and S.
+  FrustumComponent holder data vi trenger til Frustumet vårt.
+  Dette er også verdiene vi har som parameter i Projection-matrix.
  */
 
 struct FrustumComponent
@@ -19,6 +20,14 @@ struct FrustumComponent
 
 class Camera;
 
+/**
+  FrustumSystem inneholder funksjoner for å sette opp frustum.
+  @param Camera* C - Sender inn kameraet frustumet skal festes til.
+  calculateFrustumVectors - regner ut NearPlane, FarPlane og punktene vi trenger.
+  makeFrustumLines - tegner Frustumet
+  insideFrustum - sjekker om objekter er innenfor frustum(uferdig)
+ */
+
 class FrustumSystem : public VisualObject
 {
 public:
@@ -28,7 +37,7 @@ public:
     void calculateFrustumVectors();
     void makeFrustumLines();
     void updateFrustumPos();
-    bool insideFrustum(gsl::Vector3D pos);
+    //bool insideFrustum(gsl::Vector3D pos);
 
 private:
     Camera* mCam;
@@ -46,6 +55,13 @@ private:
     gsl::Vector3D mLeftBotFar;
 
 };
+
+/**
+   Camera-klassen har matriser, komponenter, vectorer og funksjoner.
+   Vi har ikke satt opp Camera-klassen i et fullstendig ECS-system ettersom
+   vi ikke syntes det var nødvendig.
+   Den tar likevel inn komponenter som MovementComponent og FrustumComponent.
+ */
 
 class Camera
 {
@@ -74,7 +90,6 @@ public:
     gsl::Vector3D right() const;
 
 private:
-    gsl::Vector3D mForward{0.f, 0.f, -1.f};
     gsl::Vector3D mRight{1.f, 0.f, 0.f};
     gsl::Vector3D mUp{0.f, 1.f, 0.f};
 

@@ -1,7 +1,13 @@
 #ifndef COLLISIONSYSTEM_H
 #define COLLISIONSYSTEM_H
+
 #include "vector3d.h"
 #include <math.h>
+
+/**
+  CollisionComponent inneholder data vi trenger for Sphere- og box-collision.
+  Vi har også med to void funksjoner, som kun setter disse verdiene.
+ */
 
 struct CollisionComponent
 {
@@ -13,6 +19,13 @@ struct CollisionComponent
     gsl::Vector3D BoundingBoxMin;
     gsl::Vector3D BoundingBoxMax;
 };
+
+/**
+  CollisionSystem gjør alle kollisjonsoperasjoner for bounding-box og sphere.
+  Vi har funksjoner for å flytte kollisjonsboksene,
+  sjekke forskjellige typer kollisjon,
+  og for å sjekke MousePickCollision.
+ */
 
 class CollisionSystem
 {

@@ -5,14 +5,13 @@ MovementSystem::MovementSystem()
 
 }
 
-void MovementSystem::update(Camera *mCamera, Player* dPlayer, Input mInput)
+void MovementSystem::update(Camera *mCamera, Player* dPlayer, InputComponent mInput)
 {
     mPlayer = dPlayer;
-    MovementComponent* i;
+    MovementComponent* i = mCamera->mMoveComp;
     mCamera->setSpeed(0.f);
     if(mInput.RMB == true)
     {
-        i = mCamera->mMoveComp;
         if(mInput.W == true)
             mCamera->setSpeed(-i->mSpeed);
         if(mInput.S == true)
@@ -79,42 +78,22 @@ void MovementSystem::setCameraSpeed(Camera *mCamera, float value)
         m->mSpeed = 0.3f;
 }
 
-void MovementSystem::movePlayer()
+void MovementSystem::moveUnit(VisualObject* vo, MovementComponent* moveC)
 {
-    mPlayer->mMoveComp->posX={static_cast<int>(mPlayer->mTransform->mPosition.x)};
-    mPlayer->mMoveComp->posZ={static_cast<int>(mPlayer->mTransform->mPosition.z)};
+    moveC->posX = {static_cast<int>(vo->mTransform->mPosition.x)};
+    moveC->posZ = {static_cast<int>(vo->mTransform->mPosition.z)};
 
-    if(mPlayer->mMoveComp->mForward.x > 0)
-        mPlayer->mMoveComp->posX = std::ceil(mPlayer->mTransform->mPosition.x);
-    else if(mPlayer->mMoveComp->mForward.x <0)
-        mPlayer->mMoveComp->posX = std::floor(mPlayer->mTransform->mPosition.x);
+    if(moveC->mForward.x > 0)
+        moveC->posX = std::ceil(vo->mTransform->mPosition.x);
+    else if(moveC->mForward.x <0)
+        moveC->posX = std::floor(vo->mTransform->mPosition.x);
     else{
-        if(mPlayer->mMoveComp->mForward.z >0)
-            mPlayer->mMoveComp->posZ = std::ceil(mPlayer->mTransform->mPosition.z);
-        else if(mPlayer->mMoveComp->mForward.z <0)
-            mPlayer->mMoveComp->posZ = std::floor(mPlayer->mTransform->mPosition.z);
+        if(moveC->mForward.z >0)
+            moveC->posZ = std::ceil(vo->mTransform->mPosition.z);
+        else if(moveC->mForward.z <0)
+            moveC->posZ = std::floor(vo->mTransform->mPosition.z);
         else
-            qDebug() << "error in MovementSystem::movePlayer";}
-}
-
-void MovementSystem::moveEnemy(int randNum, std::vector<Enemy*> mEnemies)
-{
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        mEnemies[i]->mMoveComp->posX = {static_cast<int>(mEnemies[i]->mTransform->mPosition.x)};
-        mEnemies[i]->mMoveComp->posZ = {static_cast<int>(mEnemies[i]->mTransform->mPosition.z)};
-
-        if(mEnemies[i]->mMoveComp->mForward.x > 0)
-            mEnemies[i]->mMoveComp->posX = std::ceil( mEnemies[i]->mTransform->mPosition.x);
-        else if(mEnemies[i]->mMoveComp->mForward.x <0)
-            mEnemies[i]->mMoveComp->posX = std::floor(mEnemies[i]->mTransform->mPosition.x);
-        else{
-            if(mEnemies[i]->mMoveComp->mForward.z >0)
-                mEnemies[i]->mMoveComp->posZ = std::ceil(mEnemies[i]->mTransform->mPosition.z);
-            else if(mEnemies[i]->mMoveComp->mForward.z <0)
-                mEnemies[i]->mMoveComp->posZ = std::floor(mEnemies[i]->mTransform->mPosition.z);
-            else
-                qDebug() << "error in MovementSystem::moveEnemy";}
-    }
+            qDebug() << "error in MovementSystem::moveEnemy";}
 }
 
 void MovementSystem::moveParticle(gsl::Vector3D color, Particle* par)
@@ -131,8 +110,6 @@ void MovementSystem::moveParticle(gsl::Vector3D color, Particle* par)
 void MovementSystem::setPlayerForward(float dx, float dz)
 {
     mPlayer->mMoveComp->mForward = {dx, 0, dz};
-    mPlayer->mTransform->mMatrix.setRotationToVector(mPlayer->mMoveComp->mForward);
-    mPlayer->mTransform->mMatrix.scale(0.5);
 }
 
 void MovementSystem::moveForward(VisualObject* vo, MovementComponent* m)
@@ -140,4 +117,19 @@ void MovementSystem::moveForward(VisualObject* vo, MovementComponent* m)
     vo->mTransform->mMatrix.setRotationToVector(m->mForward);
     vo->mTransform->mMatrix.scale(vo->mTransform->mScale);
     move(vo, m->mForward.x * m->mSpeed, m->mForward.y * m->mSpeed, m->mForward.z * m->mSpeed);
+}
+
+void MovementSystem::centerPlayer()
+{
+    gsl::Vector3D mPos = mPlayer->mTransform->mPosition;
+    gsl::Vector3D mRound {std::round(mPos.x), 0, std::round(mPos.z)};
+
+    float xDiff = mRound.x - mPos.x;
+    float zDiff = mRound.z - mPos.z;
+    gsl::Vector3D temp(xDiff,0,zDiff);
+
+    mPlayer->mTransform->mPosition += temp;
+    mPlayer->mTransform->mMatrix.setPosition(mPlayer->mTransform->mPosition.x, mPlayer->mTransform->mPosition.y, mPlayer->mTransform->mPosition.z);
+    mColSystem->moveBoundingBox(temp.x, temp.y, temp.z, mPlayer->mCollision);
+    mColSystem->moveBoundingSphere(temp.x, temp.y, temp.z, mPlayer->mCollision);
 }

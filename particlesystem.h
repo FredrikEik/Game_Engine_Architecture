@@ -1,6 +1,12 @@
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
+
 #include "visualobject.h"
+
+/**
+   I ParticleComponent har vi alt som trengs av rå data til partikler.
+   Den trenger retning, fart og en måte å bestemme levetid på.
+ */
 
 struct ParticleComponent
 {
@@ -11,16 +17,25 @@ struct ParticleComponent
     int secCount = 0;
 };
 
+/**
+   Her har vi Particle-klassen som arver fra VisualObject og holder en
+   ParticleComponent.
+   I konstruktøren henter vi MeshComponent fra shapefactory, som returnerer
+   samme mesh, men med forskjellige farger.
+ */
+
 class Particle : public VisualObject
 {
 public:
     Particle(ShapeFactory* f, Player *mPlayer);
     ~Particle();
     ParticleComponent* mPC;
-private:
-    CollisionSystem* mColSystem;
-    ShapeFactory* factoryPtr;
 };
+
+/**
+   I ParticleSystem gjør vi beregninger av posisjon og levetid for partiklene.
+   Vi tar derfor alltid inn en PartikkelKompinent i parametrene.
+ */
 
 class ParticleSystem
 {

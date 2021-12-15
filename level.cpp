@@ -7,9 +7,9 @@ Level::Level(Camera* cam)
     mParticleSystem = new ParticleSystem();
     mCam = cam;
     mShapeFactory.makeVertices();
-    script = new Script();
+    //script = new Script();
     DrawBoard();
-    readJS();
+    //readJS();
 }
 
 Level::~Level()
@@ -30,21 +30,21 @@ int Level::GameBoard[Level::DIM_Z][Level::DIM_X] =
    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},// 0
    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},// 1
    {1,0,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,0,1},// 2
-   {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
+   {1,0,4,0,0,1,0,0,0,1,0,0,0,1,0,0,4,0,1},
    {1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1},// 4
    {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1},// 5
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
-   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,0,0,0,0,4,0,0,1,0,0,0,0,0,0,0,0,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},
    {1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1},// 10
-   {1,0,0,0,0,1,0,0,4,4,4,0,0,1,0,0,0,0,1},
-   {1,1,1,1,0,1,0,1,1,4,1,1,0,1,0,1,1,1,1},// 12
+   {1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1},
+   {1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1},// 12
    {1,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,1,1,1},// 13
    {1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},// 14
    {1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
    {1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
-   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
+   {1,0,0,0,0,0,0,0,0,1,0,0,0,0,4,0,0,0,1},
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1}, //18
    {1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
    {1,2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1},
@@ -204,16 +204,16 @@ void Level::readJS()
     //Call the function
     QJSValue speed = directCCall.call();
 
-    //    if(script->trophyPos.size() > 0){
-    //    //Bruker script til å sette Trofè-posisjon
-    //    for(int i{0}; i<static_cast<int>(script->trophyPos.size()); i++){
-    //        VisualObject* temp = mShapeFactory.createShape("Circle");
-    //        temp->init();
-    //        temp->mMaterial->mShaderProgram = 0;    //plain shader
-    //        temp->move(script->trophyPos[i].getX(), script->trophyPos[i].getY(), script->trophyPos[i].getZ());
-    //        mVisualObjects.push_back(temp);
-    //        mTransComps.push_back(temp->mTransform);
-    //        mNameComps.push_back(temp->mNameComp);}}
+    if(script->trophyPos.size() > 0){
+        //    //Bruker script til å sette Trofè-posisjon
+        for(int i{0}; i<static_cast<int>(script->trophyPos.size()); i++){
+            VisualObject* temp = mShapeFactory.createShape("Circle");
+            temp->init();
+            temp->mMaterial->mShaderProgram = 0;    //plain shader
+            mMovementSystem->move(temp, script->trophyPos[i].getX(), script->trophyPos[i].getY(), script->trophyPos[i].getZ());
+            mVisualObjects.push_back(temp);
+            mTransComps.push_back(temp->mTransform);
+            mNameComps.push_back(temp->mNameComp);}}
 }
 
 void Level::checkCollision()
@@ -231,6 +231,7 @@ void Level::checkCollision()
                     continue;
             }else{
                 qDebug() << "You Win";
+                winner = true;
                 resetGame();}
         }
     }
@@ -273,7 +274,7 @@ void Level::setupSound()
     mSounds.push_back(tempSound);
 }
 
-void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
+void Level::update(Camera* dc, InputComponent di, int randO, gsl::Vector3D col, int fC)
 {
     mMovementSystem->update(dc, mPlayer, di);
     dc->update();
@@ -281,9 +282,9 @@ void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
 
     if(playM)
     {
-        moveEnemy(randO);
-        movePlayer();
-        moveParticles(col);
+        updateEnemy(randO);
+        updatePlayer();
+        updateParticles(col);
         if(mParticles.size()<20)
             spawnParticle();
         for(int i{0}; i < mParticles.size(); i++)
@@ -291,11 +292,6 @@ void Level::update(Camera* dc, Input di, int randO, gsl::Vector3D col, int fC)
             mParticleSystem->update(fC, mParticles[i]->mPC);
         }
     }
-}
-
-void Level::drawObjects()
-{
-
 }
 
 bool Level::wallCheck(int x, int z)
@@ -306,6 +302,38 @@ bool Level::wallCheck(int x, int z)
         return false;
 }
 
+void Level::updatePlayer()
+{
+    mMovementSystem->moveUnit(mPlayer, mPlayer->mMoveComp);
+    if(wallCheck(mPlayer->mMoveComp->posX, mPlayer->mMoveComp->posZ))
+    {
+        mMovementSystem->centerPlayer();
+    }
+    else
+        mMovementSystem->moveForward(mPlayer, mPlayer->mMoveComp);
+}
+
+void Level::updateEnemy(int randNr)
+{
+    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++)
+    {
+        mMovementSystem->moveUnit(mEnemies[i], mEnemies[i]->mMoveComp);
+        if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
+        {
+            if(randNr<5)
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);
+            else{
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);
+                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
+        }
+        else
+            mMovementSystem->moveForward(mEnemies[i], mEnemies[i]->mMoveComp);
+    }
+}
+
+
+
 void Level::resetGame()
 {
     gsl::Vector3D playerP = {1,CENTER_Y,20};
@@ -315,7 +343,8 @@ void Level::resetGame()
     VisualObject* vPlayer = static_cast<VisualObject*>(mPlayer);
     mMovementSystem->move(vPlayer, playerP.x-currP.x, 0, playerP.z-currP.z);
 
-    if(mLives==0){
+    if(mLives==0 || winner)
+    {
         for(int i{0}; i<static_cast<int>(mVisualObjects.size()); i++)
         {
             mVisualObjects[i]->drawMe = true;
@@ -323,42 +352,15 @@ void Level::resetGame()
         trophies = 0;
         mLives = 3;
         int eID = 0;
-        for(int i = 0; i<DIM_Z;i++)
-        {
+        winner = false;
+        for(int i = 0; i<DIM_Z;i++){
             for(int j = 0; j<DIM_X; j++){
                 if(GameBoard[i][j] == 4){
                     gsl::Vector3D enemyP = {static_cast<GLfloat>(j), CENTER_Y,static_cast<GLfloat>(i)};
                     gsl::Vector3D currEP = mEnemies[eID]->mTransform->mPosition;
                     mMovementSystem->move(mEnemies[eID], enemyP.x-currEP.x, CENTER_Y, enemyP.z-currEP.z);
-                    eID++;}
-            }
-        }}
-}
-
-void Level::movePlayer()
-{
-    mMovementSystem->movePlayer();
-    if(wallCheck(mPlayer->mMoveComp->posX, mPlayer->mMoveComp->posZ))
-    {
-        mPlayer->centerPlayer();
-    }
-    else
-        mMovementSystem->moveForward(mPlayer, mPlayer->mMoveComp);
-}
-
-void Level::moveEnemy(int randNr)
-{
-    for(int i{0}; i<static_cast<int>(mEnemies.size()); i++){
-        mMovementSystem->moveEnemy(randNr,mEnemies);
-        if(wallCheck(mEnemies[i]->mMoveComp->posX, mEnemies[i]->mMoveComp->posZ))
-        {
-            if(randNr<5){
-                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
-            else{
-                mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);mMovementSystem->rotateForward(mEnemies[i]->mMoveComp);}
+                    eID++;}}
         }
-        else
-            mMovementSystem->moveForward(mEnemies[i], mEnemies[i]->mMoveComp);
     }
 }
 
@@ -376,7 +378,7 @@ void Level::spawnParticle()
 
 }
 
-void Level::moveParticles(gsl::Vector3D mColor)
+void Level::updateParticles(gsl::Vector3D mColor)
 {
     mShapeFactory.mColor = mColor;
     for(auto i{0}; i<mParticles.size(); i++)

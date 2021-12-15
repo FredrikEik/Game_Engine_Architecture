@@ -75,12 +75,9 @@
     <property name="title">
      <string>Toggle Object</string>
     </property>
-    <addaction name="actionAdd_Triangle"/>
     <addaction name="actionAdd_Circle"/>
     <addaction name="actionAdd_Square"/>
     <addaction name="actionAdd_Monkey"/>
-    <addaction name="actionAdd_Big_Wall"/>
-    <addaction name="actionAdd_Small_Wall"/>
    </widget>
    <addaction name="menuAdd_Object"/>
   </widget>

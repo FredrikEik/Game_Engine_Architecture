@@ -14,7 +14,7 @@
 Texture::Texture()
 {
     initializeOpenGLFunctions();
-    //small dummy texture
+
     mBitmap = new unsigned char[16];
     for (int i=0; i<16; i++)
         mBitmap[i] = 0;
@@ -112,7 +112,6 @@ void Texture::readCubeMap()
     std::getline(sStream, justName, '.');   //deleting .bmp
     for(int i{0}; i< 6; i++)
     {
-        //TODO: clean this up! Decide where CubeMaps should be located
         std::string temp ="skybox/"+ justName+ std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         mCubemap[i] = mBitmap;

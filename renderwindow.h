@@ -2,6 +2,12 @@
 #define RENDERWINDOW_H
 #include "level.h"
 
+/**
+   Renderwindow gjør alt av rendering og spesifikke Qt-funksjonaliteter som f.eks QKeyEvents.
+   Her setter vi også opp shader-programmer og teksturer, selv om noe av dette kunne blitt flyttet
+   til en annen klasse.
+ */
+
 // This inherits from QWindow to get access to the Qt functionality and
 // OpenGL surface.
 // We also inherit from QOpenGLFunctions, to get access to the OpenGL functions
@@ -27,8 +33,7 @@ private slots:
     void render();
 
 private:
-    Input mInput;
-    MovementComponent* mMovementComponent;
+    InputComponent mInput;
     int levelOfDetail(int i);
     void mousePickingRay(QMouseEvent *event);
     gsl::Vector3D ray_wor;

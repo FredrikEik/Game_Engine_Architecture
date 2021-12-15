@@ -129,7 +129,6 @@ void RenderWindow::init()
     mLight = mLvl->mLight;
     mPlayer = mLvl->mPlayer;
     mMainWindow->run();
-    mMovementComponent = new MovementComponent; //Til mouseMoveEvent
 }
 
 void RenderWindow::drawObject()
@@ -518,30 +517,30 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
 int RenderWindow::levelOfDetail(int i)
 {
 
-    //    //if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
-    //    //making the vector from camera to object we test against
-    //    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
+//    //if(i!=9 && i!=10){ // hvis objektet ikke er SkyBox eller Light
+//    //making the vector from camera to object we test against
+//    gsl::Vector3D camToObject = mVisualObjects[i]->mTransform->mMatrix.getPosition() - mCurrentCamera->position();
 
-    //    if(camToObject.length()<10)
-    //    {
-    //        return mVisualObjects[i]->mMesh->mVertices.size();
-    //    }
-    //    else if(camToObject.length()<30)
-    //    {
-    //        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
-    //            return mVisualObjects[i]->mMesh->mVertices.size()/2;
-    //        else
-    //            return mVisualObjects[i]->mMesh->mVertices.size();
-    //    }
-    //    else
-    //    {
-    //        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
-    //            return mVisualObjects[i]->mMesh->mVertices.size()/4;
-    //        else
-    //            return mVisualObjects[i]->mMesh->mVertices.size();
-    //    }
+//    if(camToObject.length()<10)
+//    {
+//        return mVisualObjects[i]->mMesh->mVertices.size();
+//    }
+//    else if(camToObject.length()<30)
+//    {
+//        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
+//            return mVisualObjects[i]->mMesh->mVertices.size()/2;
+//        else
+//            return mVisualObjects[i]->mMesh->mVertices.size();
+//    }
+//    else
+//    {
+//        if(mVisualObjects[i]->mMesh->mVertices.size()>40)
+//            return mVisualObjects[i]->mMesh->mVertices.size()/4;
+//        else
+//            return mVisualObjects[i]->mMesh->mVertices.size();
+//    }
 
-    //else
+//    else
     return mLvl->mVisualObjects[i]->mMesh->mVertices.size();
 
 }
@@ -618,16 +617,16 @@ void RenderWindow::mouseMoveEvent(QMouseEvent *event)
     if (mInput.RMB)
     {
         //Using mMouseXYlast as deltaXY so we don't need extra variables
-        mMovementComponent->mMouseXlast = event->pos().x() - mMovementComponent->mMouseXlast;
-        mMovementComponent-> mMouseYlast = event->pos().y() - mMovementComponent->mMouseYlast;
+        mInput.MOUSEX = event->pos().x() - mInput.MOUSEX;
+        mInput.MOUSEY = event->pos().y() - mInput.MOUSEY;
 
-        if (mMovementComponent->mMouseXlast != 0)
-            mCurrentCamera->yaw(mMovementComponent->mRotateSpeed * mMovementComponent->mMouseXlast);
-        if (mMovementComponent->mMouseYlast != 0)
-            mCurrentCamera->pitch(mMovementComponent->mRotateSpeed * mMovementComponent->mMouseYlast);
+        if (mInput.MOUSEX != 0)
+            mCurrentCamera->yaw(mCurrentCamera->mMoveComp->mRotateSpeed * mInput.MOUSEX);
+        if (mInput.MOUSEY != 0)
+            mCurrentCamera->pitch(mCurrentCamera->mMoveComp->mRotateSpeed * mInput.MOUSEY);
     }
-    mMovementComponent->mMouseXlast = event->pos().x();
-    mMovementComponent->mMouseYlast = event->pos().y();
+    mInput.MOUSEX = event->pos().x();
+    mInput.MOUSEY = event->pos().y();
 }
 
 void RenderWindow::wheelEvent(QWheelEvent *event)
@@ -638,9 +637,9 @@ void RenderWindow::wheelEvent(QWheelEvent *event)
     if (mInput.RMB)
     {
         if (numDegrees.y() < 1)
-            mCurrentCamera->setSpeed(0.001f);
+            mLvl->mMovementSystem->setCameraSpeed(mCurrentCamera, -0.01f);
         if (numDegrees.y() > 1)
-            mLvl->mMovementSystem->setCameraSpeed(mCurrentCamera,-0.001f);
+            mLvl->mMovementSystem->setCameraSpeed(mCurrentCamera, 0.01f);
     }
     event->accept();
 }

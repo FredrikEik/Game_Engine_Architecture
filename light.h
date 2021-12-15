@@ -4,6 +4,12 @@
 #include "visualobject.h"
 #include "matrix4x4.h"
 
+/**
+ * Light-klassen holder på verdier for belysningen.
+ * Den har også en mesh for kunne se lys-posisjonen
+ * i scenen.
+ */
+
 class Light : public VisualObject
 {
 public:

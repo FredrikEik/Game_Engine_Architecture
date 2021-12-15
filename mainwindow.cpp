@@ -91,7 +91,7 @@ void MainWindow::on_pushButton_2_toggled(bool checked)
 {
     mRenderWindow->playMode(checked);
     if(checked){
-        ui->pushButton_2->setText("Restart");
+        ui->pushButton_2->setText("Stop");
         ui->dockWidget->hide();
         ui->RoationGroupBox->hide();
         ui->TransformGroupBox->hide();
@@ -170,8 +170,8 @@ void MainWindow::PointCount(int points)
 void MainWindow::on_treeWidget_viewportEntered()
 {
     ui->treeWidget->addTopLevelItem(Widgetitem);
-    Widgetitem->setText(0, "Objects");
-    Widgetitem->setExpanded(true);
+    //Widgetitem->setText(0, "Objects");
+    //Widgetitem->setExpanded(true);
 
     for(auto i = 0; i <= mRenderWindow->mLvl->mNameComps.back()->objectID; i++){
         QTreeWidgetItem * item = new QTreeWidgetItem(Widgetitem);

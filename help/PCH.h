@@ -1,5 +1,11 @@
 #ifndef PCH_H
 #define PCH_H
+
+/**
+   I PCH (PreCompiledHeader) inkluderer vi alle typiske includes
+   som <iostream> og header-filer som vi ikke endrer på lenger.
+ */
+
 #include <QWindow>
 #include <QOpenGLFunctions_4_1_Core>
 #include <QTimer>
@@ -12,7 +18,6 @@
 #include <QDebug>
 #include <iostream>
 
-#include "input.h"
 #include "constants.h"
 #include "movementsystem.h"
 #include "component.h"

@@ -2,17 +2,16 @@
 
 Particle::Particle(ShapeFactory* f,Player *mPlayer)
 {
-    factoryPtr = f;
     mPC = new ParticleComponent;
     mTransform = new TransformComponent();
     mTransform->mMatrix.setToIdentity();
-    mMesh = factoryPtr->getParticleMesh();
+    mMesh = f->getParticleMesh();
     mCollision = new CollisionComponent;
     mNameComp = new NameComponent();
     mMaterial = new MaterialComponent();
-    mNameComp->mName = "Particles_" + to_string(factoryPtr->getCount());
-    mNameComp->objectID = factoryPtr->getCount();
-    factoryPtr->addCount();
+    mNameComp->mName = "Particles_" + to_string(f->getCount());
+    mNameComp->objectID = f->getCount();
+    f->addCount();
     mPC->direction = {(-1)*mPlayer->mMoveComp->mForward.x,0,(-1)*mPlayer->mMoveComp->mForward.z};
 }
 

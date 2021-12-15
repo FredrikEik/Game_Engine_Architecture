@@ -10,6 +10,13 @@ class QWidget;
 class RenderWindow;
 class VisualObject;
 
+/**
+   I MainWindow har vi lagt til UI for editor-mode og play-mode.
+   Vi bytter mellom modusene med en Play/Stop-knapp.
+   Vi bruker dette for å se og endre objektdetaljer i editor-mode.
+   Vi har poeng-teller og liv-teller i play-mode.
+ */
+
 namespace Ui {
 class MainWindow;
 }
@@ -62,7 +69,6 @@ private:
     VisualObject *mVisualObject;
     int objectID = 0;
     QTreeWidgetItem *Widgetitem{nullptr};
-    //QTreeWidgetItem *mQTWItem{nullptr};
 
     QWidget *mRenderWindowContainer;
     RenderWindow *mRenderWindow;

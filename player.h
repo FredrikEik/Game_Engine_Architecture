@@ -4,17 +4,18 @@
 #include "visualobject.h"
 #include "shapefactory.h"
 
+/**
+Player-klassen arver fra VisualObject og legger på en MovementComponent.
+Her sender vi også inn shapeFactory-peker i konstruktøren for å hente ut
+riktig mesh og kollisjon.
+ */
+
 class Player : public VisualObject
 {
 public:
     Player(ShapeFactory* f);
-    ~Player();
-    void centerPlayer();
+    ~Player(){};
     MovementComponent* mMoveComp;
-private:
-    float mx, my, mz; // posisjon
-    CollisionSystem* mColSystem;
-    ShapeFactory* factoryPtr;
 };
 
 #endif // PLAYER_H

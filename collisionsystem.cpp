@@ -31,30 +31,6 @@ void CollisionSystem::moveBoundingSphere(float dx, float dy, float dz, Collision
 
 bool CollisionSystem::CheckBoxCol(CollisionComponent *aCollision, CollisionComponent *bCollision)
 {
-
-    //    bool result;
-    //    //Fikse utregning her, dele opp if så den sjekker x y og z hver for seg
-    //        if(aCollision->BoundingBoxMax.getX() >= bCollision->BoundingBoxMin.getX() && aCollision->BoundingBoxMin.getX() <= bCollision->BoundingBoxMax.getX())
-    //             resultX = true;
-    //        else
-    //            resultX = false;
-
-    //        if(aCollision->BoundingBoxMax.getY() >= bCollision->BoundingBoxMin.getY() && aCollision->BoundingBoxMin.getY() <= bCollision->BoundingBoxMax.getY())
-    //             resultY = true;
-    //        else
-    //            resultY = false;
-
-    //        if(aCollision->BoundingBoxMax.getZ() >= bCollision->BoundingBoxMin.getZ() && aCollision->BoundingBoxMin.getZ() <= bCollision->BoundingBoxMax.getZ())
-    //             resultZ = true;
-    //        else
-    //            resultZ = false;
-
-    //        if(resultX == true && resultY == true && resultZ == true)
-    //            result = true;
-    //        else result = false;
-    //       // qDebug() << result;
-    //        return result;
-
     bool result;
     if(aCollision->BoundingBoxMax.getX() >= bCollision->BoundingBoxMin.getX() && aCollision->BoundingBoxMin.getX() <= bCollision->BoundingBoxMax.getX()
             && aCollision->BoundingBoxMax.getY() >= bCollision->BoundingBoxMin.getY() && aCollision->BoundingBoxMin.getY() <= bCollision->BoundingBoxMax.getY()
@@ -111,5 +87,4 @@ bool CollisionSystem::CheckMousePickCollision(CollisionComponent *aCollision, gs
     distance = abs(distance);
 
     return(distance < aCollision->radius); /*||mCollisionSystem->CheckMousePickCollision(distance, mPlayer->mCollision)*/
-
 }

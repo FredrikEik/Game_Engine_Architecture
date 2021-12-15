@@ -19,40 +19,6 @@ Square::Square()
     mNameComp = new NameComponent();
 }
 
-void Square::CheckPlayerCol(VisualObject* p)
-{
-    auto x = fmax(mCollision->BoundingBoxMin.getX(), fmin(p->mCollision->center.getX(), mCollision->BoundingBoxMax.getX()));
-    auto z = fmax(mCollision->BoundingBoxMin.getZ(), fmin(p->mCollision->center.getZ(), mCollision->BoundingBoxMax.getZ()));
-    auto xdiff = x - p->mCollision->center.getX();
-    auto zdiff = z - p->mCollision->center.getZ();
-
-    //qDebug() << mCollision->center;
-    auto distance = sqrt((x - p->mCollision->center.getX()) * (x - p->mCollision->center.getX()));
-    if(distance < p->mCollision->radius)
-    {
-        if(xdiff > 0.f){
-            onLwallX = true; onRwallX = false;}//qDebug() << "onLwallX";
-        if(xdiff < 0.f){
-            onRwallX = true; onLwallX = false;}//qDebug() << "onRwallX";
-    }
-    else if(distance >= p->mCollision->radius)
-    {
-        onRwallX = false;onLwallX = false;
-    }
-    distance = sqrt((z - p->mCollision->center.getZ()) * (z - p->mCollision->center.getZ()));
-    if(distance < p->mCollision->radius)
-    {
-        if(zdiff > 0.f){
-            onBwallY = true; onFwallY = false;}//qDebug() << "onBwallY";
-        if(zdiff < 0.f){
-            onFwallY = true; onBwallY = false;}//qDebug() << "onFwallY";
-    }
-    else if(distance >= p->mCollision->radius)
-    {
-        onBwallY = false;onFwallY = false;
-    }
-}
-
 Plain::Plain()
 {
     mTransform = new TransformComponent();
@@ -164,7 +130,7 @@ VisualObject* ShapeFactory::createShape(string shapeName)
         temp->mCollision = new CollisionComponent;
         temp->mCollision->setBoundingSphere(myCollis[mCounter]->radius, temp->mTransform->mPosition);
         shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();shapeName.pop_back();
-        myObjs[shapeName] = mCounter;
+        myObjs[shapeName] = objCounter;
         temp->mNameComp->mName = shapeName;
         temp->mNameComp->objectID = mCounter;
         objCounter++;
@@ -542,8 +508,6 @@ void ShapeFactory::subDivide(const gsl::Vector3D &a, const gsl::Vector3D &b, con
         myMeshes[0]->mVertices.push_back(v);
     }
 }
-
-
 
 XYZ::XYZ()
 {

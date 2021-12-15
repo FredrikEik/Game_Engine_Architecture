@@ -4,9 +4,8 @@
 #include <QOpenGLFunctions_4_1_Core>
 
 /**
-    \brief Simple class for creating textures from a bitmap file.
-    \author Dag Nylund
-    \date 16/02/05
+   Texture klassen lager teksturer til objekter og skybox.
+   Dette gjøres ved å lese av Bitmap eller Cubemap.
  */
 class Texture : protected QOpenGLFunctions_4_1_Core
 {
@@ -22,7 +21,7 @@ public:
     int mColumns{};
     int mRows{};
     unsigned char *mBitmap{nullptr};
-    ///If this is a cubemap, this will be an array of 6 mBitmaps
+    //If this is a cubemap, this will be an array of 6 mBitmaps
     unsigned char *mCubemap[6]{nullptr};
 
     GLuint mGLTextureID{0};          //Texture ID that OpenGL makes when glGenTextures is called
