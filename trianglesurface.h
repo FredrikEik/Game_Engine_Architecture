@@ -3,7 +3,9 @@
 #include "gameobject.h"
 
 #pragma once
-
+///
+/// \brief A class for reading LAS heightdata and triangulating to mesh
+///
 class TriangleSurface : public GameObject
 {
 public:

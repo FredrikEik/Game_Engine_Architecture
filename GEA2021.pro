@@ -63,7 +63,6 @@ SOURCES += main.cpp \
     trianglesurface.cpp \
     vertex.cpp \
     SoundCode/scr/wavfilehandler.cpp \
-    xyz.cpp \
     triangle.cpp
 
 
@@ -104,7 +103,6 @@ HEADERS += \
     gsl/vector3d.h \
     trianglesurface.h \
     vertex.h \
-    xyz.h \
     triangle.h \
     SoundCode/h/vector3.h \
     SoundCode/h/wavfilehandler.h \

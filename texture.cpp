@@ -126,7 +126,6 @@ void Texture::readCubeMap()
     justName.pop_back();    //removing 1
     for(int i{0}; i< 6; i++)
     {
-        //TODO: clean this up! Decide where CubeMaps should be located
         std::string temp = "../CubeMaps/" +justName + std::to_string(i+1) + ".bmp";   //adding Cubemap path and 1 - 6 to filename
         readBitmap(temp);
         mCubemap[i] = mBitmap;
@@ -240,40 +239,3 @@ void Texture::generateShadowDepthMap()
         qDebug() << "Framebuffer error";
     }
 }
-/*void Texture::setCubemapTexture()
-{
-    //Reads the cubemap array of 6 bitmaps to one cubemap texture.
-    glGenTextures(1, &mGLTextureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, mGLTextureID);
-    qDebug()
-        << "Cubemap texture"
-        << "successfully read | id = " << mGLTextureID
-        << "| bytes pr pixel:" << mBytesPrPixel
-        << "| using alpha:" << mAlphaUsed
-        << "| Columns:" << mColumns
-        << "| Rows:" << mRows;
-
-
-    if(!mAlphaUsed)
-    {
-        for(int i = 0; i < 6; i++)
-        {
-            //GL_TEXTURE_CUBE_MAP_POSITIVE_X is the first of the cubemap enums, therefore we can iterate with i
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, mColumns, mRows, 0, GL_BGR, GL_UNSIGNED_BYTE, mCubemap[i]);
-        }
-    }
-    else
-    {
-        qDebug() << "Skybox has alpha, weird";
-    }
-
-    //Cubemap texture parameters
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-
-}*/

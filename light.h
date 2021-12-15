@@ -4,13 +4,18 @@
 #pragma once
 
 #include "gameobject.h"
-
+///
+/// \brief Class for making a phong pointlight source.
+/// \author Lars Joar Bjørkeland & Thobias G Halse Ovastrøm
+/// \date 15/12/21
+///
 class Light : public GameObject
 {
 public:
     Light();
     ~Light();
 
+    ///Hello world
     void init() override;
     void draw() override;
     void move(float x, float y, float z) override;

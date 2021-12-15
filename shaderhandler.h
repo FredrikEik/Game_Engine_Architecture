@@ -9,6 +9,10 @@ class Shader;
 class GameObject;
 class Light;
 class Camera;
+
+///
+/// \brief A class for handling shaders, setting up shaderuniforms and sending/retrieving data.
+///
 class ShaderHandler : public QOpenGLFunctions_4_1_Core
 {
 public:
@@ -16,12 +20,18 @@ public:
 
     void init();
 
+    ///Holds all shader programs
     Shader *mShaderPrograms[gsl::NumberOfShaders]{nullptr};
 
+    ///Sets up all uniformlocations
     void setupShaderUniformLocation(int shaderIndex);
+
+    ///Retrieves data from gameObject and sends to shader
     void sendDataToShader(GameObject* gameObject);
 
+    ///References to all lights in the scene.
     std::vector<Light*> lightRefs;
+
     Camera* cameraRef;
 private:
 
@@ -51,6 +61,7 @@ private:
     GLint mQuadraticUniform{-1};
     GLint mPhongTextureUniform{-1};
 
+    // HUD shader uniform
     GLint mHUDUniform[4];
 };
 

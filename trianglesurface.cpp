@@ -15,26 +15,16 @@ TriangleSurface::TriangleSurface(std::string fileName)
     // Using min, max and step to find how many quads the TriangleSurface has in each direction
     const int quadAmountX = (xMax-xMin)/step; //qDebug() << quadAmountX;
     const int quadAmountZ = (zMax-zMin)/step; //qDebug() << quadAmountZ;
-    //const int numOfQuads = quadAmountX*quadAmountZ; //qDebug() << numOfQuads;
-
-    // An array of vectors that hold all the heights for each quad
-    // Size of array is hardcoded, unsure how to do it from numOfQuads
-    //std::array<std::vector<float>,900> heights;
-    //std::array<std::vector<float>,numOfQuads> heights;
-
-    //An array that holds the average height of each quad
-    //float averageHeights[900];
 
     std::array<std::array<std::vector<float>,80>,80> heights;
     float averageHeights[80][80];
-    //float averageHeights[numOfQuads];
 
     //For every vertices
     //qDebug() << "Vertices size" << lasData.size();
     for(int i = 0; i < lasData.size(); i++)
     {
         //.. find what column the vertex is on
-        for(int j = xMin; j < xMax; j+=step) // j = -5.0f, -3.0f, -1.0f, 1.0f, 3.0f, 5.0f
+        for(int j = xMin; j < xMax; j+=step)
         {
             if(lasData[i].getXYZ().getX() > j && lasData[i].getXYZ().getX() < j + step)
             {
@@ -51,8 +41,6 @@ TriangleSurface::TriangleSurface(std::string fileName)
         }
 
         //Pushes the height(y) to the correct vector in the array
-        //heights[vectorIndex].push_back(lasData[i].getXYZ().getY());
-
         heights[quadCoordX][quadCoordZ].push_back(lasData[i].getXYZ().getY());
     }
 
@@ -109,13 +97,6 @@ TriangleSurface::TriangleSurface(std::string fileName)
             /*x0z1*/getMeshComponent()->mIndices.push_back(  i+((j+1)*quadAmountZ)); /*30*/
         }
     }
-    /* Print all vertices in trianglesurface*/
-//    for(int i = 0; i < getMeshComponent()->mVertices.size(); i++)
-//    {
-//        qDebug() << getMeshComponent()->mVertices[i].getXYZ().getX()
-//                 << getMeshComponent()->mVertices[i].getXYZ().getY()
-//                 << getMeshComponent()->mVertices[i].getXYZ().getZ();
-//    }
     makeContourLines();
 }
 
@@ -172,13 +153,6 @@ void TriangleSurface::readLAS(std::string fileName)
         }
         inn.close();
     }
-
-    /*Print las data*/
-    qDebug() << highestX << highestY << highestZ << lowestX << lowestY << lowestZ;
-//    for(int i = 0; i < 1000; i++)
-//    {
-//        qDebug() << lasData[i].getXYZ().getX() << lasData[i].getXYZ().getY() << lasData[i].getXYZ().getZ() ;
-//    }
 }
 
 void TriangleSurface::minMaxNormalize()
@@ -239,18 +213,6 @@ void TriangleSurface::makeContourLines()
             bd.set_y(contourHeight);
             bbd.set_y(contourHeight);
             dbd.set_y(contourHeight);
-            //        Vertex ab = a;
-            //        ab.set_x(ab.getXYZ().getX() + (step/2));
-            //        ab.set_y(contourHeight);
-            //        Vertex bc = b;
-            //        bc.set_z(ab.getXYZ().getZ() + (step/2));
-            //        bc.set_y(contourHeight);
-            //        Vertex cd = c;
-            //        cd.set_x(ab.getXYZ().getX() - (step/2));
-            //        cd.set_y(contourHeight);
-            //        Vertex da = d;
-            //        da.set_z(ab.getXYZ().getZ() - (step/2));
-            //        da.set_y(contourHeight);
 
             int state = getState(A,B,C,D);
 
@@ -413,7 +375,6 @@ void TriangleSurface::draw()
 {
     glBindVertexArray(getMeshComponent()->mVAO );
     glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, nullptr);
-    //glDrawArrays(GL_LINE_STRIP, 0, getMeshComponent()->mVertices.size());
     glBindVertexArray(0);
 }
 

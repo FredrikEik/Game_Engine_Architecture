@@ -23,7 +23,6 @@ Skybox::~Skybox()
 
 void Skybox::init()
 {
-
     initializeOpenGLFunctions();
 
     glGenVertexArrays( 1, &getMeshComponent()->mVAO );
@@ -54,8 +53,6 @@ void Skybox::init()
 
     glBindVertexArray(0);
 }
-
-
 
 void Skybox::readFile(std::string filename)
 {
@@ -90,14 +87,10 @@ void Skybox::readFile(std::string filename)
 
         if (oneWord == "#")
         {
-            //Ignore this line
-            //            qDebug() << "Line is comment "  << QString::fromStdString(oneWord);
             continue;
         }
         if (oneWord == "")
         {
-            //Ignore this line
-            //            qDebug() << "Line is blank ";
             continue;
         }
         if (oneWord == "v")
@@ -198,12 +191,11 @@ void Skybox::readFile(std::string filename)
 void Skybox::draw()
 {
     initializeOpenGLFunctions();
+
     //Disables depth masking temporarily while drawing skybox
     glDepthMask(GL_FALSE);
     glBindVertexArray(getMeshComponent()->mVAO);
-    //glUniformMatrix4fv(getMeshComponent()->mMatrixUniform, 1, GL_FALSE, getTransformComponent()->mMatrix.constData());
     glDrawArrays(GL_TRIANGLES, 0, getMeshComponent()->mVertices.size());
-    //glDrawElements(GL_TRIANGLES, getMeshComponent()->mIndices.size(), GL_UNSIGNED_INT, &getMeshComponent()->mIndices);
     glDepthMask(GL_TRUE);
 }
 

@@ -24,7 +24,6 @@ void System::init()
     input = new InputComponent();
 
     createMeshes();
-    createObjects();
     createSounds();
     startGameLoop();
 }
@@ -49,17 +48,6 @@ void System::createMeshes()
     renderSystem->factory->saveMesh("../GEA2021/Assets/skybox.obj", "Skybox");
     renderSystem->factory->saveMesh("../GEA2021/Assets/Meshes/wario.obj", "Wario");
 }
-void System::createObjects()
-{
-    //renderSystem->gameObjects.push_back(factory->createObject("Cube"));
-
-}
-
-//void System::initTextures()
-//{
-//    //Initializing textures in system.cpp not working therefore we just make rendersystem do it
-//    renderSystem->initTextures();
-//}
 
 void System::createSounds()
 {
@@ -78,13 +66,6 @@ void System::createSounds()
     videoGameLandSound2 = SoundManager::getInstance()->createSource(
                 "VideoGameLand2", Vector3(10.0f, 0.0f, 0.0f),
                 "../GEA2021/Assets/Sounds/videogameland2.wav", false, 1.0f);
-
-    //mVideoGameLand->play();
-    //mVideoGameLand2->play();
-
-    //mMario->play(); //doesnt work
-    //mExplosionSound->play();
-    //mExplosionSound->setPosition(Vector3(200.0f, 30.0f, -1000.0f));
 }
 
 void System::gameLoop()
@@ -201,18 +182,6 @@ void System::resetLevel()
     renderSystem->playerHP = 3;
     renderSystem->initObjects();
     mainWindow->updateOutliner(renderSystem->gameObjects);
-
-    //    gameObjects.clear();
-    //    gameLoopTimer->stop();
-
-
-    //    //Make the gameloop timer:
-    //    gameLoopTimer = new QTimer(this);
-
-    //    mMainWindow->init();
-    //    System::init();
-
-    //    mRenderTimer->start(16);    //starts the timer
 }
 
 void System::toggleEditorMode()
@@ -228,15 +197,6 @@ void System::toggleEditorMode()
     else
     {
         videoGameLandSound->play();
-
-//        if (mIndexToPickedObject > -1)
-//        {
-//            helperObject->getTransformComponent()->mMatrix.setScale(1,1,1);
-//            hjelpeObjektMesh->mDrawType = GL_TRIANGLES;
-//            hjelpeObjekt->setMeshComponent(hjelpeObjektMesh);
-//            mIndexToPickedObject = -1;
-//        }
-
     }
 }
 
@@ -262,20 +222,22 @@ bool System::isColliding(BoxCollisionComponent &Box, SphereCollisionComponent &S
 
 bool System::isCollidingWithFrustum(SphereCollisionComponent &Sphere)
 {
-    gsl::Vector3D rightPlaneToObjectVector = renderSystem->editorCamera->nearPlaneBottomRight - Sphere.center;
-    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, renderSystem->editorCamera->rightPlaneNormal);
+
+    Camera* cullCamera = renderSystem->editorCamera;
+    gsl::Vector3D rightPlaneToObjectVector = cullCamera->nearPlaneBottomRight - Sphere.center;
+    float rightPlaneHeightToObject = gsl::Vector3D::dot(rightPlaneToObjectVector, cullCamera->rightPlaneNormal);
     if(rightPlaneHeightToObject + Sphere.radius >= 0)
     {
-        gsl::Vector3D leftPlaneToObjectVector = renderSystem->editorCamera->nearPlaneTopLeft - Sphere.center;
-        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, renderSystem->editorCamera->leftPlaneNormal);
+        gsl::Vector3D leftPlaneToObjectVector = cullCamera->nearPlaneTopLeft - Sphere.center;
+        float leftPlaneHeightToObject = gsl::Vector3D::dot(leftPlaneToObjectVector, cullCamera->leftPlaneNormal);
         if(leftPlaneHeightToObject + Sphere.radius >= 0)
         {
-            gsl::Vector3D nearPlaneToObjectVector = renderSystem->editorCamera->nearPlaneBottomRight - Sphere.center;
-            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, renderSystem->editorCamera->nearPlaneNormal);
+            gsl::Vector3D nearPlaneToObjectVector = cullCamera->nearPlaneBottomRight - Sphere.center;
+            float nearPlaneHeightToObject = gsl::Vector3D::dot(nearPlaneToObjectVector, cullCamera->nearPlaneNormal);
             if(nearPlaneHeightToObject + Sphere.radius >= 0)
             {
-                gsl::Vector3D farPlaneToObjectVector = renderSystem->editorCamera->farPlaneBottomLeft - Sphere.center;
-                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, renderSystem->editorCamera->farPlaneNormal);
+                gsl::Vector3D farPlaneToObjectVector = cullCamera->farPlaneBottomLeft - Sphere.center;
+                float farPlaneHeightToObject = gsl::Vector3D::dot(farPlaneToObjectVector, cullCamera->farPlaneNormal);
                 if(farPlaneHeightToObject + Sphere.radius >= 0)
                 {
 //                    gsl::Vector3D topPlaneToObjectVector = playCamera->nearPlaneTopRight - Sphere.center;
@@ -286,7 +248,6 @@ bool System::isCollidingWithFrustum(SphereCollisionComponent &Sphere)
 //                        float bottomPlaneHeightToObject = gsl::Vector3D::dot(bottomPlaneToObjectVector, playCamera->bottomPlaneNormal);
 //                        if(bottomPlaneHeightToObject + Sphere.radius >= 0)
 //                        {
-                            // qDebug() << "Object inside frustum";
                             return true;
 //                        }
 //                    }

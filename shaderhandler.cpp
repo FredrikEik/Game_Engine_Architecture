@@ -34,6 +34,9 @@ void ShaderHandler::init()
                                      setupShaderUniformLocation(gsl::Shaders::TEXTURESHADER);
                                      setupShaderUniformLocation(gsl::Shaders::PHONGSHADER);
                                      setupShaderUniformLocation(gsl::Shaders::SKYBOXSHADER);
+                                     setupShaderUniformLocation(gsl::Shaders::SKYBOXSHADER);
+                                     setupShaderUniformLocation(gsl::Shaders::PARTICLESHADER);
+                                     setupShaderUniformLocation(gsl::Shaders::FRAMEBUFFERSHADER);
 
 }
 
@@ -46,6 +49,7 @@ void ShaderHandler::setupShaderUniformLocation(int shaderIndex)
         vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
         pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
         break;
+
     case gsl::Shaders::TEXTURESHADER:
         mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
         vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
@@ -72,17 +76,20 @@ void ShaderHandler::setupShaderUniformLocation(int shaderIndex)
         mQuadraticUniform            = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "quadratic" );
         mPhongTextureUniform         = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "textureSampler");
         break;
+
     case gsl::Shaders::SKYBOXSHADER:
         mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
         vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
         pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
         mSkyboxUniform              = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "cubeSampler");
         break;
+
     case gsl::Shaders::PARTICLESHADER:
         mMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "mMatrix" );
         vMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "vMatrix" );
         pMatrixUniform[shaderIndex] = glGetUniformLocation( mShaderPrograms[shaderIndex]->getProgram(), "pMatrix" );
         break;
+
     case gsl::Shaders::FRAMEBUFFERSHADER:
         //glUniform1i(glGetUniformLocation(mShaderPrograms[shaderIndex]->getProgram(), "screenTexture"), 0);
         break;
