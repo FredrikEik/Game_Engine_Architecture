@@ -96,7 +96,7 @@ void RenderWindow::init()
     //ECS Coordinator:
     //Make sure only one instance is created!
     ECScord = std::make_unique<ECScoordinator>();
-    ECScord->init();
+    ECScord->Init();
 
     //Create shaders:
     m_shaderProgramMap.insert(std::pair<std::string, Shader*>{"plain", new PlainShader((gsl::ShaderFilePath + "plainshader.vert").c_str(), (gsl::ShaderFilePath + "plainshader.frag").c_str())});
