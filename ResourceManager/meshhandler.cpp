@@ -580,7 +580,7 @@ int MeshHandler::readLasFile()
     float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
 
     std::ifstream inLasFile;
-    inLasFile.open(gsl::ProjectFolderName + "Assets/data.txt"); //Open file using a constant adress, called test_las.txt
+    inLasFile.open(gsl::ProjectFolderName + "Assets/data.txt"); //Open file using a constant adress
 
     if(!inLasFile) //if file not found
     {
@@ -639,11 +639,11 @@ int MeshHandler::readLasFile()
 
 
     // This serves as "resolution" for planeGrid[arrayX][arrayZ].
-    const int arrayX = 6; //Using 6x6 to get 5x5 squares.
+    const int arrayX = 6; //Using 6x6 to get 5x5m squares.
     const int arrayZ = 6;
 
     float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale  = 1.0f; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
+    float depthScale  = 1.0; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
     float heigthScale = 1.0f; //How "flat" the surface will be, 1 = normal, higher number = smaller difference
 
     //The assignment specified a 5x5 meter grid.
@@ -651,9 +651,9 @@ int MeshHandler::readLasFile()
     float distanceBetweenSquaresZ = 5.0f;//(zMax - zMin) / arrayZ;
 
     //Various variables needed for the simplification
-    gsl::Vector3D planeGrid [arrayX][arrayZ] = {{0}}; // planeGrid stores a rectangulated x,z and an average y height for all points in the data
-    int nrPoints            [arrayX][arrayZ] = {{0}}; //Used to count how many points are in each square
-    float sumPointData      [arrayX][arrayZ] = {{0}}; //Used to sum all the points in each square, is then used to average the y.
+    gsl::Vector3D planeGrid [arrayX][arrayZ] = {{0}}; // planeGrid stores a rectangulated x, z and an average y height for all points in the data
+    int nrPoints            [arrayX][arrayZ] = {{0}}; // Used to count how many points are in each square
+    float sumPointData      [arrayX][arrayZ] = {{0}}; // Used to sum all the points in each square, is then used to average the y height.
 
     //Getting a reference of the last created mesh, should be "empty" beacuse it was recently created and filled below.
     mMeshes.emplace_back(MeshData());
@@ -679,7 +679,7 @@ int MeshHandler::readLasFile()
                    allLasPointData[pointDataSearch].getX() < (planeGrid[x][z].x + distanceBetweenSquaresX) && //But also needs to be before next planeGrid square.
                    allLasPointData[pointDataSearch].getZ() < (planeGrid[x][z].z + distanceBetweenSquaresZ))
                 {
-                    nrPoints[x][z]++; // Keep track of y positions in spesific x z squares.
+                    nrPoints[x][z]++; // Keep track of how many y positions in spesific x z squares.
                     sumPointData[x][z] += allLasPointData[pointDataSearch].getY(); //Sum all the y positions in x z, used to average.
                 }
             }
@@ -690,13 +690,13 @@ int MeshHandler::readLasFile()
                 planeGrid[x][z].y = sumPointData[x][z] / nrPoints[x][z]; //If one or more point is found, make an average value.
             }
 
-            planeGrid[x][z].x -= xMin; // Gives new positions to points, to give a resonable origin of the mesh in scene
+            planeGrid[x][z].x -= xMin; //Gives new positions to points, to give a resonable origin of the mesh in scene
             planeGrid[x][z].z -= zMin;
             planeGrid[x][z].y -= yMin;
 
-//            planeGrid[x][z].x /= widthScale; //Scales the distance between points, to give a resonable size of the mesh in scene
-//            planeGrid[x][z].z /= depthScale;
-//            planeGrid[x][z].y /= heigthScale;
+            planeGrid[x][z].x /= widthScale; //After all points found, scale the distance between points, to give a resonable size of the mesh in scene
+            planeGrid[x][z].z /= depthScale;
+//            planeGrid[x][z].y /= heigthScale; //HeightScale not needed, beacuse using yMin is resonable.
 
             //Only using mVertices[0] beacuse there is no lod for this mesh.
             //It could have been fun to use the "resolution" or arrayX & arrayY to produce lower quality LODs, but that falls a bit out of scope for Vis & Sim.
@@ -705,10 +705,7 @@ int MeshHandler::readLasFile()
                                                             0.0f, 0.0f});     //UVs
         }
     }
-    qDebug() << "planeGrid is now filled"; //Basic progress functionality. Let the user know the program hasnt crashed.
-
-    distanceBetweenSquaresX /= widthScale; //To make normal calculation work. Makes the distances scale according to cordinates in grid
-    distanceBetweenSquaresZ /= depthScale;
+    qDebug() << "planeGrid is now filled"; //Basic progress outputting. Let the user know the program hasnt crashed.
 
     ////Create triangle based on the points
     qDebug() << "Start of triangle calculations (should be much less expensive)";

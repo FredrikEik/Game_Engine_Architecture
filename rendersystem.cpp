@@ -253,11 +253,11 @@ void RenderSystem::render()
 
 
           //Get the Vis&Sim groundplane to draw triangles. Causes all lod to be drawn on top of each other
-//        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0)
-//        {
-//            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
-//            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
-//        }
+        if(mGameObjects[i]->mMesh->mIndexCount[0] > 0)
+        {
+            glBindVertexArray( mGameObjects[i]->mMesh->mVAO[0] );
+            glDrawElements( mGameObjects[i]->mMesh->mDrawType, mGameObjects[i]->mMesh->mIndexCount[0], GL_UNSIGNED_INT, nullptr );
+        }
 
 
         //Quick hack test to check if linebox/circle works:

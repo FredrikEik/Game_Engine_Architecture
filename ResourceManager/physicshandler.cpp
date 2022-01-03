@@ -57,7 +57,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     gsl::Vector3D velocity[51];
     gsl::Vector3D newBallPosition[51];
 
-    searchGameName = "RulleBall";
+    searchGameName = "RollingBall_";
 
     //Run through rest of code per ball
 //    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
@@ -84,8 +84,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
         {
             //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-            v0[ball] = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ,
-            v1[ball] = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ,
+            v0[ball] = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
+            v1[ball] = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
             v2[ball] = ballPosition3D[ball] - triangleVertices[i].mXYZ;
 
             den[ball] = (v0[ball].x * v1[ball].y) - (v1[ball].x * v0[ball].y);

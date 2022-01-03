@@ -127,7 +127,7 @@
      <x>0</x>
      <y>0</y>
      <width>1047</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGameObject">
@@ -242,7 +242,7 @@
    <property name="minimumSize">
     <size>
      <width>300</width>
-     <height>117</height>
+     <height>119</height>
     </size>
    </property>
    <property name="maximumSize">
@@ -291,7 +291,7 @@
           <x>0</x>
           <y>0</y>
           <width>294</width>
-          <height>235</height>
+          <height>234</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -372,6 +372,9 @@
     <bool>true</bool>
    </property>
    <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="text">
@@ -423,6 +426,9 @@
     <bool>true</bool>
    </property>
    <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="text">
@@ -467,8 +473,11 @@
    </property>
   </action>
   <action name="actionSimulatePhysics">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="AppIconResources.qrc">
