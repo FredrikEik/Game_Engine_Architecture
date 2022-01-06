@@ -10,7 +10,7 @@ PhysicsHandler::PhysicsHandler()
     mGameObjectManager = &GameObjectManager::getInstance();
 }
 
-void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics, const int numberOfSimulatedBalls)
+void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics)
 {
     if(simulatePhysics == true) //Only simulate Physics when QAction is pressed in MainWindow
     {
@@ -45,88 +45,87 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
 //    Get the details of the ball
     std::string searchGameName{0};
-    GameObject physicsBall[51];
-    gsl::Vector3D ballPosition3D[51];
+    GameObject physicsBall;
+    gsl::Vector3D ballPosition3D;
 
-    //Trying to get each ball their own coordinates to go by, this works.
-    gsl::Vector3D v0[51], v1[51], v2[51];
-    gsl::Vector3D baryCoordinates[51];
-    gsl::Vector3D triangleNormal[51];
-    float den[51];
-    gsl::Vector3D acceleration[51];
-    gsl::Vector3D velocity[51];
-    gsl::Vector3D newBallPosition[51];
+    searchGameName = "RulleBall"; //Search for gameobject named:
 
-    searchGameName = "RollingBall_";
-
-    //Run through rest of code per ball
-//    for (int ball = 0; ball <= numberOfSimulatedBalls; ball++)
-//    {
-        int ball = 0;
-        for (int i = 0; i < mGameObjects.size(); i++)
+    for (int i = 0; i < mGameObjects.size(); i++)
+    {
+        if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
         {
-//            searchGameName = "RollingBall_" + std::to_string(i);
+            physicsBall.mName = mGameObjects[i]->mName;
+            physicsBall.mMesh = mGameObjects[i]->mMesh;
+            physicsBall.mMaterial = mGameObjects[i]->mMaterial;
+            physicsBall.mTransform = mGameObjects[i]->mTransform;
+            physicsBall.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
-            if(mGameObjects[i]->mName == searchGameName) //If string name matches - copy all the info from mGameObjects into physicsBall
-            {
-                physicsBall[ball].mName = mGameObjects[i]->mName;
-                physicsBall[ball].mMesh = mGameObjects[i]->mMesh;
-                physicsBall[ball].mMaterial = mGameObjects[i]->mMaterial;
-                physicsBall[ball].mTransform = mGameObjects[i]->mTransform;
-                physicsBall[ball].mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
-
-                //Find the Vector3D position of the ball
-                ballPosition3D[ball] = physicsBall[ball].mTransform->mMatrix.getPosition();
-            }
+            //Find the Vector3D position of the ball
+            ballPosition3D = physicsBall.mTransform->mMatrix.getPosition();
         }
-//qDebug() << triangleVertices.size();
-        //Search through all trianglevertices and get barycentric based on ball coordinates.
-        for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
+    }
+
+    //Variables used to calculate triangle normals and barycentric cordinates.
+    gsl::Vector3D v0, v1, v2;
+    gsl::Vector3D baryCoordinates;
+    gsl::Vector3D triangleNormal;
+    float den;
+
+    //Variables used for ball physics.
+    gsl::Vector3D acceleration;
+    gsl::Vector3D velocity;
+    gsl::Vector3D newBallPosition;
+
+    //Search through all trianglevertices and get barycentric based on ball coordinates.
+    for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
+    {
+        //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+        v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
+        v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
+        v2 = ballPosition3D - triangleVertices[i].mXYZ;
+
+        den = (v0.x * v1.y) - (v1.x * v0.y);
+        baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den;
+        baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
+        baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
+
+        qDebug() << baryCoordinates;
+
+        //If barycentric is 0 or above, current closest triangle have been found.
+        if (baryCoordinates.x >= 0.0f && baryCoordinates.y >= 0.0f && baryCoordinates.z >= 0.0f)
         {
-            //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-            v0[ball] = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
-            v1[ball] = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
-            v2[ball] = ballPosition3D[ball] - triangleVertices[i].mXYZ;
+            qDebug() << baryCoordinates;
+            //Normal of triangle is calculated.
+            triangleNormal = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
+                             (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
+            triangleNormal.normalize();
 
-            den[ball] = (v0[ball].x * v1[ball].y) - (v1[ball].x * v0[ball].y);
-            baryCoordinates[ball].x = (v2[ball].x * v1[ball].y - v1[ball].x * v2[ball].y) / den[ball];
-            baryCoordinates[ball].y = (v0[ball].x * v2[ball].y - v2[ball].x * v0[ball].y) / den[ball];
-            baryCoordinates[ball].z = 1.0f - baryCoordinates[ball].x - baryCoordinates[ball].y;
+            //Move the ball
+            acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
+            velocity = velocity + acceleration * 0.17f;
 
-//    qDebug() << baryCoordinates[0];
+            newBallPosition = ballPosition3D + velocity;
 
-            //If barycentric is 0 or above, current closest triangle have been found.
-            if (baryCoordinates[ball].x >= 0.0f && baryCoordinates[ball].y >= 0.0f && baryCoordinates[ball].z >= 0.0f)
-            {
-                //Normal of triangle is calculated.
-                triangleNormal[ball] = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
-                                       (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
-                triangleNormal[ball].normalize();
+            //Only needed when simulating a single ball
+            newBallPosition.y = (baryCoordinates.x * triangleVertices[i].mXYZ.y +
+                                 baryCoordinates.y * triangleVertices[i+1].mXYZ.y + 0.25f +
+                                 baryCoordinates.z * triangleVertices[i+2].mXYZ.y);
 
-                //Move the ball
-                acceleration[ball] = gravity * 0.05f ^ triangleNormal[ball] ^ gsl::Vector3D(0, triangleNormal[ball].y, 0);
-                velocity[ball] = velocity[ball] + acceleration[ball] * 0.17f;
-
-                newBallPosition[ball] = ballPosition3D[ball] + velocity[ball];
-
-                physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition[ball].x, newBallPosition[ball].y, newBallPosition[ball].z);
-            }
+            physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
         }
-            if (baryCoordinates[ball].x < 0 || baryCoordinates[ball].x < 0 || baryCoordinates[ball].z < 0.0f) //if no triangle is found, make the ball fall.
-            {
-                acceleration[ball] = (-gravity * 0.01f);
+    }
+        if (baryCoordinates.x < 0 || baryCoordinates.x < 0 || baryCoordinates.z < 0.0f) //if no triangle is found, make the ball fall.
+        {
+            qDebug() << "No triangle found";
+            acceleration = (-gravity * 0.01f);
 
-                velocity[ball] = velocity[ball] + (acceleration[ball] * 0.17f);
+            velocity = velocity + (acceleration * 0.17f);
 
-                newBallPosition[ball] = ballPosition3D[ball] + velocity[ball];
+            newBallPosition = ballPosition3D + velocity;
 
-                physicsBall[ball].mTransform->mMatrix.setPosition(newBallPosition[ball].x, newBallPosition[ball].y, newBallPosition[ball].z);
-            }
-//        }//End of for loop for the 51 balls
+            physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+        }
     }//End of simulatePhysics-bool loop
 }
 
-////Only needed when simulating a single ball
-//newBallPosition[ball].y = (baryCoordinates[ball].x * triangleVertices[i].mXYZ.y +
-//                           baryCoordinates[ball].y * triangleVertices[i+1].mXYZ.y + 0.25f +
-//                           baryCoordinates[ball].z * triangleVertices[i+2].mXYZ.y);
+

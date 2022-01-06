@@ -50,8 +50,6 @@ public:
     bool isPlaying{false};           //is the game playing?
     bool isSimulatingPhysics{false}; //is physics simulating?
 
-    const int numberOfSimulatedBalls = 50;
-
     Input mInput;
 
     //Reads info from JavaScript about all objects in the scene

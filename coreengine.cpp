@@ -123,26 +123,26 @@ void CoreEngine::setUpScene()
     lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
 
-//    temp = mGameObjectManager->addObject("Ball.obj");
-//    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation for exam vis&sim.
-//    temp->mTransform->mMatrix.scale(0.5f);
-//    temp->mName = "RulleBall";
-//    mGameObjectManager->addComponent("PhysicsComponent", temp);
-//    mRenderSystem->mGameObjects.push_back(temp);
+    temp = mGameObjectManager->addObject("Ball.obj");
+    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation for exam vis&sim.
+    temp->mTransform->mMatrix.scale(0.5f);
+    temp->mName = "RulleBall";
+    mGameObjectManager->addComponent("PhysicsComponent", temp);
+    mRenderSystem->mGameObjects.push_back(temp);
 
-    //Create many balls to "simulate" rain.
-    for(int i = 0; i <= numberOfSimulatedBalls; i++)
-    {
-        temp = mGameObjectManager->addObject("Ball.obj");
-        //Place the balls randomly between these points.
-        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(0, 26), //Include first value, exlude second value
-                                            QRandomGenerator::global()->bounded(15,  31),
-                                            QRandomGenerator::global()->bounded(0, 26));
-        temp->mTransform->mMatrix.scale(1.0f);
-        temp->mName = "RollingBall_" + std::to_string(i);
-        mGameObjectManager->addComponent("PhysicsComponent", temp);
-        mRenderSystem->mGameObjects.push_back(temp);
-    }
+//    //Create many balls to "simulate" rain.
+//    for(int i = 0; i <= numberOfSimulatedBalls; i++)
+//    {
+//        temp = mGameObjectManager->addObject("Ball.obj");
+//        //Place the balls randomly between these points.
+//        temp->mTransform->mMatrix.translate(QRandomGenerator::global()->bounded(0, 26), //Include first value, exlude second value
+//                                            QRandomGenerator::global()->bounded(15,  31),
+//                                            QRandomGenerator::global()->bounded(0, 26));
+//        temp->mTransform->mMatrix.scale(1.0f);
+//        temp->mName = "RollingBall_" + std::to_string(i);
+//        mGameObjectManager->addComponent("PhysicsComponent", temp);
+//        mRenderSystem->mGameObjects.push_back(temp);
+//    }
 
 //    temp = mGameObjectManager->addObject("ball.obj");
 //    temp->mTransform->mMatrix.translate(0.5f, 2.0f, -0.25f);
@@ -289,7 +289,7 @@ void CoreEngine::gameLoop()
     std::vector<GameObject*> mGameObjects = mRenderSystem->getAllGameObjects();
     PhysicsHandler ph;
 
-    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics, numberOfSimulatedBalls);
+    ph.movePhysicsObject(mGameObjects, isSimulatingPhysics);
     }
 
 //    //To play tetris during runtime.
