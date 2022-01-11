@@ -70,7 +70,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
     {
         //Get corners of triangle nr i.
-        gsl::Vector3D p0 = gsl::Vector3D(triangleVertices[i].mXYZ),
+        gsl::Vector3D p0 = gsl::Vector3D(triangleVertices[i].mXYZ), //Hmm, something seems odd here. does not look like three points that make up a triangle.
                       p1 = gsl::Vector3D(triangleVertices[i+1].mXYZ),
                       p2 = gsl::Vector3D(triangleVertices[i+2].mXYZ);
 
