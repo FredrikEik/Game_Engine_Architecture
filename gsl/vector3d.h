@@ -113,21 +113,20 @@ public:
         Vector3D p = p2 - *this;
         Vector3D q = p3 - *this;
         n = p^q;
-        baryc.x = n.length()/areal_123;
+        baryc.x = n.y/areal_123;
         // v
         p = p3 - *this;
         q = p1 - *this;
         n = p^q;
-        baryc.y = n.length()/areal_123;
+        baryc.y = n.y/areal_123;
         // w
         p = p1 - *this;
         q = p2 - *this;
         n = p^q;
-        baryc.z = n.length()/areal_123;
+        baryc.z = n.y/areal_123;
 
         return baryc;
     }
-
 };
 
 } //namespace
