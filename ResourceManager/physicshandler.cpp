@@ -65,26 +65,18 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         }
     }
 
-    //Variables used to calculate triangle normals and barycentric cordinates.
-    gsl::Vector3D v0, v1, v2;
     gsl::Vector3D baryCoordinates;
-    gsl::Vector3D triangleNormal;
-    float den;
-
-    //Variables used for ball physics.
-    gsl::Vector3D acceleration;
-    gsl::Vector3D velocity;
-    gsl::Vector3D newBallPosition;
 
     //Search through all trianglevertices and get barycentric based on ball coordinates.
     for (int i = 0; i < triangleVertices.size()-2; i += 3) //Cycle through trianglevertices three by three.
     {
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-        v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ;
-        v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ;
-        v2 = ballPosition3D - triangleVertices[i].mXYZ;
+        gsl::Vector3D v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ,
+                      v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ,
+                      v2 = ballPosition3D - triangleVertices[i].mXYZ;
 
-        den = (v0.x * v1.y) - (v1.x * v0.y);
+        float den = (v0.x * v1.y) - (v1.x * v0.y);
+
         baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den;
         baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
         baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
@@ -95,12 +87,18 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         if (baryCoordinates.x >= 0.0f && baryCoordinates.y >= 0.0f && baryCoordinates.z >= 0.0f)
         {
             qDebug() << baryCoordinates;
+
             //Normal of triangle is calculated.
+            gsl::Vector3D triangleNormal;
             triangleNormal = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
                              (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
             triangleNormal.normalize();
 
             //Move the ball
+            gsl::Vector3D acceleration;
+            gsl::Vector3D velocity;
+            gsl::Vector3D newBallPosition;
+
             acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
             velocity = velocity + acceleration * 0.17f;
 
@@ -117,6 +115,11 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         if (baryCoordinates.x < 0 || baryCoordinates.x < 0 || baryCoordinates.z < 0.0f) //if no triangle is found, make the ball fall.
         {
             qDebug() << "No triangle found";
+
+            gsl::Vector3D acceleration;
+            gsl::Vector3D velocity;
+            gsl::Vector3D newBallPosition;
+
             acceleration = (-gravity * 0.01f);
 
             velocity = velocity + (acceleration * 0.17f);

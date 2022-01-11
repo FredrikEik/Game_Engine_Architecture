@@ -224,7 +224,7 @@ void CoreEngine::setUpScene()
     mEditorCamera->mPitch = -25.0f;
     mRenderSystem->mEditorCamera = mEditorCamera;
 
-    mGameCamera->mPosition = gsl::Vector3D(12.5f, 10.0f, -10.0f);
+    mGameCamera->mPosition = gsl::Vector3D(12.5f, 10.0f, -20.0f);
     mGameCamera->mYaw = 180.0f;
     mRenderSystem->mGameCamera = mGameCamera;
 
