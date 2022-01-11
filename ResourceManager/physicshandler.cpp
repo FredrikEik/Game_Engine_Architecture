@@ -77,7 +77,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         //Get Barycentric cordinates based on ball given triangle i.
         baryCoordinates = ballPosition3D.barycentricCoordinates(p0, p1, p2);
 
-//        //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+        //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 //        gsl::Vector3D v0 = triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ,
 //                      v1 = triangleVertices[i+2].mXYZ - triangleVertices[i].mXYZ,
 //                      v2 = ballPosition3D - triangleVertices[i].mXYZ;
@@ -89,7 +89,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 //        baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
 
 //        qDebug() << den;
-        qDebug() << baryCoordinates;
+//        qDebug() << baryCoordinates;
 
         //If barycentric is 0 or above, current closest triangle have been found.
         if (baryCoordinates.x >= 0.0f && baryCoordinates.y >= 0.0f && baryCoordinates.z >= 0.0f)

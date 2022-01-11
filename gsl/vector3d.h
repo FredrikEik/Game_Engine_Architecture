@@ -100,6 +100,7 @@ public:
 
     Vector3D barycentricCoordinates(const Vector3D& p1, const Vector3D& p2, const Vector3D& p3)
     {
+
         Vector3D p12 = p2-p1;
         Vector3D p13 = p3-p1;
         // Ikke bruk y-koordinatene. Vi jobber med trekanter i 2D her og projiserer
@@ -109,19 +110,30 @@ public:
         float areal_123 = n.length(); // dobbelt areal
 
         Vector3D baryc; // til retur
+
         // u
         Vector3D p = p2 - *this;
         Vector3D q = p3 - *this;
+        p.y = 0; //Ignore height
+        q.y = 0;
         n = p^q;
         baryc.x = n.y/areal_123;
+
+
         // v
         p = p3 - *this;
         q = p1 - *this;
+        p.y = 0; //Ignore height
+        q.y = 0;
         n = p^q;
         baryc.y = n.y/areal_123;
+
+
         // w
         p = p1 - *this;
         q = p2 - *this;
+        p.y = 0; //Ignore height
+        q.y = 0;
         n = p^q;
         baryc.z = n.y/areal_123;
 
