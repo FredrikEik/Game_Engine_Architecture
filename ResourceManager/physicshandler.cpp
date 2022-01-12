@@ -73,7 +73,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     {
         //Get corners of triangle nr i.
         gsl::Vector3D p0, p1, p2;
-        p0 = gsl::Vector3D(triangleVertices[triangleIndices[i]].mXYZ); //Hmm, something seems odd here. does not look like three points that make up a triangle.
+        p0 = gsl::Vector3D(triangleVertices[triangleIndices[i]].mXYZ);
         p1 = gsl::Vector3D(triangleVertices[triangleIndices[i+1]].mXYZ);
         p2 = gsl::Vector3D(triangleVertices[triangleIndices[i+2]].mXYZ);
 
@@ -81,10 +81,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         baryCoordinates = ballPosition3D.barycentricCoordinates(p0, p1, p2);
 
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-//        for(int j = 0; j < triangleIndices.size()-2; j+= 3)
-//        {
 //        gsl::Vector3D v0, v1, v2;
-//        //By searching through indices, i can access values outside of vertices-range. no good.
 //        v0 = triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
 //        v1 = triangleVertices[triangleIndices[i+2]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
 //        v2 = ballPosition3D - triangleVertices[triangleIndices[i]].mXYZ;
@@ -95,8 +92,8 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 //        baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
 //        baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
 
-    //        qDebug() << den;
-            qDebug() << baryCoordinates;
+//            qDebug() << den;
+//            qDebug() << baryCoordinates;
 //        }
         //If barycentric is 0 or above, current closest triangle have been found.
         if (baryCoordinates.x >= 0.0f && baryCoordinates.y >= 0.0f && baryCoordinates.z >= 0.0f)
@@ -109,29 +106,39 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                              (triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i+2]].mXYZ);
             triangleNormal.normalize();
 
-            //Move the ball
-            gsl::Vector3D acceleration;
-            acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
-            qDebug() << acceleration; //Answer to question three on 2021 exam.
+            float surfaceY;
+            surfaceY = triangleVertices[triangleIndices[i]].mXYZ.y * baryCoordinates.x +
+                       triangleVertices[triangleIndices[i+1]].mXYZ.y * baryCoordinates.y +
+                       triangleVertices[triangleIndices[i+2]].mXYZ.y * baryCoordinates.z;
 
-            gsl::Vector3D velocity;
-            velocity = velocity + acceleration * 0.17f;
+            if(ballPosition3D.y < surfaceY + (0.2f))
+            {
+                //Move the ball
+                gsl::Vector3D acceleration;
+                acceleration = gsl::Vector3D(triangleNormal.x * triangleNormal.y * 9.80565f,
+                                             triangleNormal.y * triangleNormal.y * 9.80565f,
+                                             triangleNormal.z * triangleNormal.y * 9.80565f) + gravity;
 
-            gsl::Vector3D newBallPosition;
-            newBallPosition = ballPosition3D + velocity;
+//                acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
+//                qDebug() << acceleration; //Answer to question three on 2021 exam.
 
-            //Only needed when simulating a single ball
-            newBallPosition.y = (baryCoordinates.x * triangleVertices[triangleIndices[i]].mXYZ.y +
-                                 baryCoordinates.y * triangleVertices[triangleIndices[i+1]].mXYZ.y + 0.25f +
-                                 baryCoordinates.z * triangleVertices[triangleIndices[i+2]].mXYZ.y);
+                gsl::Vector3D velocity;
+                velocity = velocity + acceleration * 0.17f;
 
-            physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+                gsl::Vector3D newBallPosition;
+                newBallPosition = ballPosition3D + velocity * 0.17f;
+
+                //Only needed when simulating a single ball
+//                newBallPosition.y = (baryCoordinates.x * triangleVertices[triangleIndices[i]].mXYZ.y +
+//                                     baryCoordinates.y * triangleVertices[triangleIndices[i+1]].mXYZ.y + 0.25f +
+//                                     baryCoordinates.z * triangleVertices[triangleIndices[i+2]].mXYZ.y);
+
+                physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, surfaceY + 0.25f, newBallPosition.z);
+            }
         }
-    }
-        if (baryCoordinates.x < 0 || baryCoordinates.x < 0 || baryCoordinates.z < 0.0f) //if no triangle is found, make the ball fall.
+        else
         {
 //            qDebug() << "No triangle found";
-
             gsl::Vector3D acceleration;
             gsl::Vector3D velocity;
             gsl::Vector3D newBallPosition;
@@ -144,6 +151,11 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
             physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
         }
+    }
+//        if (baryCoordinates.x < 0 || baryCoordinates.x < 0 || baryCoordinates.z < 0.0f) //if no triangle is found, make the ball fall.
+//        {
+
+//        }
     }//End of simulatePhysics-bool check
 }
 
