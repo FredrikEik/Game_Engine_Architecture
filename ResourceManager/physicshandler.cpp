@@ -72,27 +72,28 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
     for (int i = 0; i < triangleIndices.size()-2; i += 3) //Cycle through trianglevertices three by three.
     {
         //Get corners of triangle nr i.
-//        gsl::Vector3D p0 = gsl::Vector3D(triangleVertices[triangleIndices[i]].mXYZ), //Hmm, something seems odd here. does not look like three points that make up a triangle.
-//                      p1 = gsl::Vector3D(triangleVertices[triangleIndices[i+1]].mXYZ),
-//                      p2 = gsl::Vector3D(triangleVertices[triangleIndices[i+2]].mXYZ);
+        gsl::Vector3D p0, p1, p2;
+        p0 = gsl::Vector3D(triangleVertices[triangleIndices[i]].mXYZ); //Hmm, something seems odd here. does not look like three points that make up a triangle.
+        p1 = gsl::Vector3D(triangleVertices[triangleIndices[i+1]].mXYZ);
+        p2 = gsl::Vector3D(triangleVertices[triangleIndices[i+2]].mXYZ);
 
-//        //Get Barycentric cordinates based on ball given triangle i.
-//        baryCoordinates = ballPosition3D.barycentricCoordinates(p0, p1, p2);
+        //Get Barycentric cordinates based on ball given triangle i.
+        baryCoordinates = ballPosition3D.barycentricCoordinates(p0, p1, p2);
 
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 //        for(int j = 0; j < triangleIndices.size()-2; j+= 3)
 //        {
-        gsl::Vector3D v0, v1, v2;
-        //By searching through indices, i can access values outside of vertices-range. no good.
-        v0 = triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
-        v1 = triangleVertices[triangleIndices[i+2]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
-        v2 = ballPosition3D - triangleVertices[triangleIndices[i]].mXYZ;
+//        gsl::Vector3D v0, v1, v2;
+//        //By searching through indices, i can access values outside of vertices-range. no good.
+//        v0 = triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
+//        v1 = triangleVertices[triangleIndices[i+2]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
+//        v2 = ballPosition3D - triangleVertices[triangleIndices[i]].mXYZ;
 
-        float den = (v0.x * v1.y) - (v1.x * v0.y);
+//        float den = (v0.x * v1.y) - (v1.x * v0.y);
 
-        baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den;
-        baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
-        baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
+//        baryCoordinates.x = (v2.x * v1.y - v1.x * v2.y) / den;
+//        baryCoordinates.y = (v0.x * v2.y - v2.x * v0.y) / den;
+//        baryCoordinates.z = 1.0f - baryCoordinates.x - baryCoordinates.y;
 
     //        qDebug() << den;
             qDebug() << baryCoordinates;

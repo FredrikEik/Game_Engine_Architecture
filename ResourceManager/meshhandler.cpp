@@ -639,8 +639,8 @@ int MeshHandler::readLasFile()
 
 
     // How many squares do you want for planeGrid[arrayX][arrayZ].
-    const int arrayX = 5;
-    const int arrayZ = 5;
+    const int arrayX = 7;
+    const int arrayZ = 7;
 
     float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 1.0;  //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
