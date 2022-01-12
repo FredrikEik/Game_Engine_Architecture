@@ -30,6 +30,7 @@ struct MeshData
     float mColliderRadius{0};
 
     std::vector<Vertex> get_MeshData_mVertices() { return mVertices[0]; } //Only need the first, beacuse there is no LOD.
+    std::vector<GLuint> get_MeshData_mIndices() { return mIndices[0]; }
 };
 
 /**

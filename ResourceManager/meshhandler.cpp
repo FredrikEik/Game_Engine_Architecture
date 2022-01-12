@@ -594,7 +594,7 @@ int MeshHandler::readLasFile()
 
     if(inLasFile.is_open())
     {
-        qDebug() << "Opening las file"; //Sort of timer functionality, lets me know in application output if something freezes.
+//        qDebug() << "Opening las file"; //Sort of timer functionality, lets me know in application output if something freezes.
         inLasFile >> sizeOfLasFile; //read first line, the approximate number of datalines.
         allLasPointData.reserve(sizeOfLasFile); //reserve the space for the number of datalines.
 
@@ -632,18 +632,18 @@ int MeshHandler::readLasFile()
         }
     }
     inLasFile.close();
-    qDebug() << "Closing las file";
+//    qDebug() << "Closing las file";
 
 
     //--------------Done reading las file, on to creating a simplification-------------------//
 
 
-    // This serves as "resolution" for planeGrid[arrayX][arrayZ].
-    const int arrayX = 6; //Using 6x6 to get 5x5m squares.
-    const int arrayZ = 6;
+    // How many squares do you want for planeGrid[arrayX][arrayZ].
+    const int arrayX = 8;
+    const int arrayZ = 5;
 
     float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
-    float depthScale  = 1.0; //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
+    float depthScale  = 1.0;  //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
     float heigthScale = 1.0f; //How "flat" the surface will be, 1 = normal, higher number = smaller difference
 
     //The assignment specified a 5x5 meter grid.
@@ -659,8 +659,8 @@ int MeshHandler::readLasFile()
     mMeshes.emplace_back(MeshData());
     MeshData &meshDataPoints = mMeshes.back(); //Used to store scaled and positioned correctly vector3d's
 
-    qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
-    qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machines in debug mode";
+//    qDebug() << "planeGrid is being filled with data of size" << arrayX << "*" << arrayZ << ". The higher the number, the longer time needed. Most likely not crashed"; //Used to output some progress in application output.
+//    qDebug() << "For example 50 * 50 gets me ok resolution, and takes about 30 seconds to compute on my machines in debug mode";
 
     for (int x = 0; x < arrayX; x++)
     {
@@ -705,10 +705,10 @@ int MeshHandler::readLasFile()
                                                             0.0f, 0.0f});     //UVs
         }
     }
-    qDebug() << "planeGrid is now filled"; //Basic progress outputting. Let the user know the program hasnt crashed.
+//    qDebug() << "planeGrid is now filled"; //Basic progress outputting. Let the user know the program hasnt crashed.
 
-    ////Create triangle based on the points
-    qDebug() << "Start of triangle calculations (should be much less expensive)";
+//    ////Create triangle based on the points
+//    qDebug() << "Start of triangle calculations (should be much less expensive)";
 
     int check = 0;
     for (int depth = 0; depth < (meshDataPoints.mVertices[0].size() - arrayX - 1); depth++) //This should run for all the rows of the grid, but stop before "overdrawing"
@@ -730,10 +730,10 @@ int MeshHandler::readLasFile()
         meshDataPoints.mIndices[0].push_back(depth + 1);
         meshDataPoints.mIndices[0].push_back(depth + arrayX + 1);
     }
-    qDebug() << "End of triangle calculation";
+//    qDebug() << "End of triangle calculation";
 
 
-    qDebug() << "Start of normal calculation";
+//    qDebug() << "Start of normal calculation";
 {
 ////Leaving some variations that i implemented, that could have worked, but did not.
 //    gsl::Vector3D triangleNormal{0};
@@ -767,7 +767,7 @@ int MeshHandler::readLasFile()
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
-    for (int i = 1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
+    for (int i =  1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
     {
         gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
 
@@ -818,7 +818,7 @@ int MeshHandler::readLasFile()
 
     meshDataPoints.mVertices[0][i].set_normal(nV);
 }
-qDebug() << "End of normal calculations";
+//qDebug() << "End of normal calculations";
 
 //Finalize mesh
 //meshDataPoints.mDrawType = GL_POINTS; //If points are needed instead of default triangles.
