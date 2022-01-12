@@ -20,7 +20,11 @@ public:
 
     GameObjectManager *mGameObjectManager{nullptr};
 
+    gsl::Vector3D acceleration;
+    gsl::Vector3D velocity;
     gsl::Vector3D gravity{0.0f, 9.8f, 0.0f};
+
+    float yOffset = 0.25f;
 
 private:
     class Logger *mLogger{nullptr};
