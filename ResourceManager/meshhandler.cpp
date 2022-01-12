@@ -639,7 +639,7 @@ int MeshHandler::readLasFile()
 
 
     // How many squares do you want for planeGrid[arrayX][arrayZ].
-    const int arrayX = 8;
+    const int arrayX = 5;
     const int arrayZ = 5;
 
     float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
@@ -767,6 +767,7 @@ int MeshHandler::readLasFile()
     gsl::Vector3D pCenter,p0,p1,p2,p3,p4,p5; //Points
     gsl::Vector3D n0,n1,n2,n3,n4,n5;         //Normals
 
+    //This needs to account for if arrayX and ArrayZ are not the same value, instead of using mVertices size.
     for (int i =  1; i < (meshDataPoints.mVertices[0].size() - arrayX); i++) // -arrayX to not use triangles out of "bounds".
     {
         gsl::Vector3D pos = meshDataPoints.mVertices[0][i].mXYZ; //Get the position of mVertice nr in LOD 0.
@@ -778,13 +779,13 @@ int MeshHandler::readLasFile()
 //            qDebug() << "Normal calculated" << i;
 
             // Store the nearest vertices, based on how the triangles been created.
-            p0 = meshDataPoints.mVertices[0][i - arrayX    ].mXYZ;
+            p0 = meshDataPoints.mVertices[0][i - arrayX    ].mXYZ; //This wont work if f.eks arrayX is 7, beacuse if i=6 then the result is negative.
             p1 = meshDataPoints.mVertices[0][i + 1 - arrayX].mXYZ;
             p2 = meshDataPoints.mVertices[0][i + 1         ].mXYZ;
+
             p3 = meshDataPoints.mVertices[0][i + arrayX    ].mXYZ;
             p4 = meshDataPoints.mVertices[0][i - 1 + arrayX].mXYZ;
             p5 = meshDataPoints.mVertices[0][i - 1         ].mXYZ;
-
         }
 
     //Create a vector to all the points

@@ -82,9 +82,11 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         //Barycentric Coordinate function - https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 //        for(int j = 0; j < triangleIndices.size()-2; j+= 3)
 //        {
-        gsl::Vector3D v0 = triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ,
-                      v1 = triangleVertices[triangleIndices[i+2]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ,
-                      v2 = ballPosition3D - triangleVertices[triangleIndices[i]].mXYZ;
+        gsl::Vector3D v0, v1, v2;
+        //By searching through indices, i can access values outside of vertices-range. no good.
+        v0 = triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
+        v1 = triangleVertices[triangleIndices[i+2]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ;
+        v2 = ballPosition3D - triangleVertices[triangleIndices[i]].mXYZ;
 
         float den = (v0.x * v1.y) - (v1.x * v0.y);
 
@@ -102,26 +104,25 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 
             //Normal of triangle is calculated.
             gsl::Vector3D triangleNormal;
-            triangleNormal = (triangleVertices[i+1].mXYZ - triangleVertices[i].mXYZ) ^
-                             (triangleVertices[i+1].mXYZ - triangleVertices[i+2].mXYZ);
+            triangleNormal = (triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ) ^
+                             (triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i+2]].mXYZ);
             triangleNormal.normalize();
 
             //Move the ball
             gsl::Vector3D acceleration;
-            gsl::Vector3D velocity;
-            gsl::Vector3D newBallPosition;
-
             acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
             qDebug() << acceleration; //Answer to question three on 2021 exam.
 
+            gsl::Vector3D velocity;
             velocity = velocity + acceleration * 0.17f;
 
+            gsl::Vector3D newBallPosition;
             newBallPosition = ballPosition3D + velocity;
 
             //Only needed when simulating a single ball
-            newBallPosition.y = (baryCoordinates.x * triangleVertices[i].mXYZ.y +
-                                 baryCoordinates.y * triangleVertices[i+1].mXYZ.y + 0.25f +
-                                 baryCoordinates.z * triangleVertices[i+2].mXYZ.y);
+            newBallPosition.y = (baryCoordinates.x * triangleVertices[triangleIndices[i]].mXYZ.y +
+                                 baryCoordinates.y * triangleVertices[triangleIndices[i+1]].mXYZ.y + 0.25f +
+                                 baryCoordinates.z * triangleVertices[triangleIndices[i+2]].mXYZ.y);
 
             physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
         }
