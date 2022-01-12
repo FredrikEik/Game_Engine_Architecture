@@ -137,9 +137,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
             }
             else
             {
-    //            qDebug() << "No triangle found";
-                gsl::Vector3D acceleration;
-                gsl::Vector3D velocity;
+//                qDebug() << "No triangle found";
                 gsl::Vector3D newBallPosition;
 
                 acceleration = (-gravity * 0.01f);
