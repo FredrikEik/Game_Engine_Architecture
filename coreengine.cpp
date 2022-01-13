@@ -118,13 +118,13 @@ void CoreEngine::setUpScene()
     {
     //readLasFile = HUGELY EXPENSIVE FUNCTION - TO BE USED WITH VIS & SIM
     //Create the gameobject LasGround
-    GameObject *lasGround = mGameObjectManager->addObject("Data"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
+    GameObject *lasGround = mGameObjectManager->addObject("konte"); //Via a couple of jumps, eventually calles the hugely expensive "readLasFile" function in MeshHandler
     lasGround->mName = "LasGround";
     lasGround->mTransform->mMatrix.translate(0.0f, 0.0f, 0.0f);
     mRenderSystem->mGameObjects.push_back(lasGround);
 
     temp = mGameObjectManager->addObject("Ball.obj");
-    temp->mTransform->mMatrix.translate((615197.0f - 615181.0625f), 5.0f, (6758309.0f - 6758294)); //Ball position minus xMin and zMin to see simulation for exam vis&sim.
+    temp->mTransform->mMatrix.translate((615095.0f - 615095.0f), 5.0f, (6757380.0f - 6757380.0f)); //Ball position minus xMin and zMin to see simulation for exam vis&sim.
     temp->mTransform->mMatrix.scale(0.5f);
     temp->mName = "RulleBall";
     mGameObjectManager->addComponent("PhysicsComponent", temp);
@@ -164,10 +164,11 @@ void CoreEngine::setUpScene()
     mRenderSystem->mGameObjects.push_back(temp);
 
     //Ground
-//    temp = mGameObjectManager->addObject("Plane5x5.obj");
-//    temp->mName = "Ground";
-////    temp->mMaterial = mGameObjectManager->getMaterial("Phong");
-//    mRenderSystem->mGameObjects.push_back(temp);
+    temp = mGameObjectManager->addObject("Plane5x5.obj");
+    temp->mName = "Ground";
+    temp->mTransform->mMatrix.translate(0.0f, 1.0f, 0.0f);
+//    temp->mMaterial = mGameObjectManager->getMaterial("Phong");
+    mRenderSystem->mGameObjects.push_back(temp);
 
 //    //Point Light
 //    temp = mGameObjectManager->addObject("triangle");
@@ -236,7 +237,7 @@ void CoreEngine::setUpScene()
     connect(mGameLoopTimer, SIGNAL(timeout()), this, SLOT(gameLoop()));
     //This timer runs the actual MainLoop
     //16 means 16ms = 60 Frames pr second (should be 16.6666666 to be exact...)
-    mGameLoopTimer->start(7); //Edited to 7 ms, this gives an fps of about 143fps
+    mGameLoopTimer->start(16); //Edited to 7 ms, this gives an fps of about 143fps
 }
 
 void CoreEngine::handleInput()

@@ -8,6 +8,8 @@ PhysicsHandler::PhysicsHandler()
 {
     mLogger = Logger::getInstance();
     mGameObjectManager = &GameObjectManager::getInstance();
+
+    velocity = 0;
 }
 
 void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bool simulatePhysics)
@@ -35,7 +37,7 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                 groundObject.mTransform = mGameObjects[i]->mTransform;
                 groundObject.mPhysicsComponent = mGameObjects[i]->mPhysicsComponent;
 
-                auto placement = GameObjectMap.find("Data"); //with the name found, find the index in the gameObjectMap
+                auto placement = GameObjectMap.find("konte"); //with the name found, find the index in the gameObjectMap
 
                 triangleVertices = GameObjectMeshData[placement->second].get_MeshData_mVertices(); //Get the vertices, the "second" value from the GameObjectMeshData
                 triangleIndices = GameObjectMeshData[placement->second].get_MeshData_mIndices();
@@ -98,14 +100,16 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
         //If barycentric is 0 or above, current closest triangle have been found.
         if (baryCoordinates.x >= 0.0f && baryCoordinates.y >= 0.0f && baryCoordinates.z >= 0.0f)
         {
-            qDebug() << "Ball closest to indices nr:" << i;
+//            qDebug() << i;
+//            qDebug() << "Ball closest to indices nr:" << i;
 
             //Normal of current triangle is calculated.
             gsl::Vector3D triangleNormal;
             triangleNormal = (triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i]].mXYZ) ^
                              (triangleVertices[triangleIndices[i+1]].mXYZ - triangleVertices[triangleIndices[i+2]].mXYZ);
+//            qDebug() << "Not normalized:" << triangleNormal;
             triangleNormal.normalize();
-            qDebug() << "Normal:      " << triangleNormal;
+//            qDebug() << "Normal:      " << triangleNormal;
 
             //Get height of surface
             float surfaceY;
@@ -120,13 +124,14 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
                                              triangleNormal.z * triangleNormal.y * 9.80565f) - gravity;
 
 //                acceleration = gravity * 0.05f ^ triangleNormal ^ gsl::Vector3D(0, triangleNormal.y, 0);
-                qDebug() << "Acceleration:" << acceleration; //Answer to question three on 2021 exam.
+//                qDebug() << "Acceleration:" << acceleration; //Answer to question three on 2021 exam.
 
-                velocity = velocity + acceleration * 0.0017f;
-                qDebug() << "Velocity:    " << velocity;
+                velocity += acceleration * 0.0016f;
+//                qDebug() << "Velocity:    " << velocity;
 
                 gsl::Vector3D newBallPosition;
                 newBallPosition = ballPosition3D + velocity;
+//                qDebug() << newBallPosition;
 
                 //Only needed when simulating a single ball
 //                newBallPosition.y = (baryCoordinates.x * triangleVertices[triangleIndices[i]].mXYZ.y +
@@ -134,6 +139,12 @@ void PhysicsHandler::movePhysicsObject(std::vector<GameObject*> mGameObjects, bo
 //                                     baryCoordinates.z * triangleVertices[triangleIndices[i+2]].mXYZ.y);
 
                 physicsBall.mTransform->mMatrix.setPosition(newBallPosition.x, newBallPosition.y, newBallPosition.z);
+
+//                if(i > 3)
+//                {
+                    qDebug() << i << acceleration;
+////                    qDebug() << "new triangle";
+//                }
             }
             else
             {

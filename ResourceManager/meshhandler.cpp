@@ -48,7 +48,7 @@ int MeshHandler::makeMesh(std::string meshName)
             meshIndex = makeTriangle();
         if (meshName.find("editorgrid") != std::string::npos)
             meshIndex = makeEditorGrid();
-        if (meshName.find("Data") != std::string::npos)
+        if (meshName.find("konte") != std::string::npos)
             meshIndex = readLasFile();
 
 
@@ -580,7 +580,7 @@ int MeshHandler::readLasFile()
     float xMin{0}, xMax{0}, yMin{0}, yMax{0}, zMin{0}, zMax{0};
 
     std::ifstream inLasFile;
-    inLasFile.open(gsl::ProjectFolderName + "Assets/data.txt"); //Open file using a constant adress
+    inLasFile.open(gsl::ProjectFolderName + "Assets/konte.txt"); //Open file using a constant adress
 
     if(!inLasFile) //if file not found
     {
@@ -639,8 +639,8 @@ int MeshHandler::readLasFile()
 
 
     // How many squares do you want for planeGrid[arrayX][arrayZ].
-    const int arrayX = 7;
-    const int arrayZ = 7;
+    const int arrayX = 4;
+    const int arrayZ = 4;
 
     float widthScale  = 1.0f; //How big the mesh-width will be in WorldSpace 1 = normal, higher number = smaller
     float depthScale  = 1.0;  //How big the mesh-depth will be in WorldSpace 1 = normal, higher number = smaller (Data is slighly rectangular, not square, so to make it more square, scale is different)
